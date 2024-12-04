@@ -1020,7 +1020,7 @@ $A8:9363             dx 0004, 01F8,00,A11E, 01F8,F8,211E, 0000,00,2117, 0000,F8,
 }
 
 
-;;; $9379..99AB: Funes ;;;
+;;; $9379..99AB: Fune / namihe ;;;
 {
 ;;; $9379: Palette - enemy $E6FF (fune) ;;;
 {
@@ -1028,64 +1028,67 @@ $A8:9379             dw 3800, 4B9C, 3694, 0929, 0042, 3B18, 2A52, 19AD, 116B, 7F
 }
 
 
-;;; $9399..F8: Instruction lists ;;;
+;;; $9399..F8: Fune instruction lists ;;;
 {
-;;; $9399: Instruction list -  ;;;
+;;; $9399: Instruction list - fune - facing left - idle ;;;
 {
 $A8:9399             dx 0001,93F9,
                         812F        ; Sleep
 }
 
 
-;;; $939F: Instruction list -  ;;;
+;;; $939F: Instruction list - fune - facing left - active ;;;
 {
 $A8:939F             dx 0010,93F9,
                         0008,9423,
                         0008,944D,
                         0008,9477,
-                        9663,       ; ???
-                        9625,       ; ???
+                        9663,       ; Spawn leftwards fune fireball
+                        9625,       ; Queue fune spits sound effect
                         0010,94A1,
                         0008,9477,
                         0008,944D,
                         0008,9423,
-                        9695,       ; ???
+                        9695,       ; Finish activity
                         80ED,9399   ; Go to $9399
 }
 
 
-;;; $93C9: Instruction list -  ;;;
+;;; $93C9: Instruction list - fune - facing right - idle ;;;
 {
 $A8:93C9             dx 0001,94CB,
                         812F        ; Sleep
 }
 
 
-;;; $93CF: Instruction list -  ;;;
+;;; $93CF: Instruction list - fune - facing right - active ;;;
 {
 $A8:93CF             dx 0010,94CB,
                         0008,94F5,
                         0008,951F,
                         0008,9549,
-                        967C,       ; ???
-                        9625,       ; ???
+                        967C,       ; Spawn rightwards fune fireball
+                        9625,       ; Queue fune spits sound effect
                         0010,9573,
                         0008,9549,
                         0008,951F,
                         0008,94F5,
-                        96B4,       ; ???
+                        96B4,       ; Finish activity
                         80ED,93C9   ; Go to $93C9
 }
 }
 
 
-;;; $93F9: Spritemaps ;;;
+;;; $93F9: Fune spritemaps ;;;
 {
+; Facing left
 $A8:93F9             dx 0008, 0008,0C,2127, 0000,0C,2126, 8000,FC,2122, 8000,EC,2120, 81F0,FC,2102, 01F8,FC,2125, 01F0,FC,2124, 81F0,EC,2100
 $A8:9423             dx 0008, 0006,0C,2127, 01FE,0C,2126, 81FE,FC,2122, 81FE,EC,2120, 81EE,FE,2102, 01F6,FC,2125, 01EE,FC,2124, 81EE,EC,2100
 $A8:944D             dx 0008, 0004,0C,2127, 01FC,0C,2126, 81FC,FC,2122, 81FC,EC,2120, 81EC,00,2102, 01F4,FC,2125, 01EC,FC,2124, 81EC,EC,2100
 $A8:9477             dx 0008, 0002,0C,2127, 01FA,0C,2126, 81FA,FC,2122, 81FA,EC,2120, 81EA,01,2102, 01F2,FC,2125, 01EA,FC,2124, 81EA,EC,2100
 $A8:94A1             dx 0008, 0000,0C,2127, 01F8,0C,2126, 81F8,FC,2122, 81F8,EC,2120, 81E8,03,2102, 01F0,FC,2125, 01E8,FC,2124, 81E8,EC,2100
+
+; Facing right
 $A8:94CB             dx 0008, 01F0,0C,6127, 01F8,0C,6126, 81F0,FC,6122, 81F0,EC,6120, 8000,FC,6102, 0000,FC,6125, 0008,FC,6124, 8000,EC,6100
 $A8:94F5             dx 0008, 01F2,0C,6127, 01FA,0C,6126, 81F2,FC,6122, 81F2,EC,6120, 8002,FE,6102, 0002,FC,6125, 000A,FC,6124, 8002,EC,6100
 $A8:951F             dx 0008, 01F4,0C,6127, 01FC,0C,6126, 81F4,FC,6122, 81F4,EC,6120, 8004,00,6102, 0004,FC,6125, 000C,FC,6124, 8004,EC,6100
@@ -1100,54 +1103,54 @@ $A8:959D             dw 3800, 4B9C, 3694, 0929, 0042, 3B18, 2A52, 19AD, 116B, 7F
 }
 
 
-;;; $95BD..9624: Instruction lists ;;;
+;;; $95BD..9624: Namihe instruction lists ;;;
 {
-;;; $95BD: Instruction list -  ;;;
+;;; $95BD: Instruction list - namihe - facing left - idle ;;;
 {
 $A8:95BD             dx 0001,97B4,
                         812F        ; Sleep
 }
 
 
-;;; $95C3: Instruction list -  ;;;
+;;; $95C3: Instruction list - namihe - facing left - active ;;;
 {
 $A8:95C3             dx 0008,97B4,
                         0008,97DE,
                         0008,9808,
                         0008,9832,
                         0008,985C,
-                        9631,       ; ???
-                        9625,       ; ???
+                        9631,       ; Spawn leftwards namihe fireball
+                        9625,       ; Queue fune spits sound effect
                         0008,9886,
                         0008,985C,
                         0008,9832,
                         0008,9808,
-                        9695,       ; ???
+                        9695,       ; Finish activity
                         80ED,95BD   ; Go to $95BD
 }
 
 
-;;; $95F1: Instruction list -  ;;;
+;;; $95F1: Instruction list - namihe - facing right - idle ;;;
 {
 $A8:95F1             dx 0001,98B0,
                         812F        ; Sleep
 }
 
 
-;;; $95F7: Instruction list -  ;;;
+;;; $95F7: Instruction list - namihe - facing right - active ;;;
 {
 $A8:95F7             dx 0008,98B0,
                         0008,98DA,
                         0008,9904,
                         0008,992E,
                         0008,9958,
-                        964A,       ; ???
-                        9625,       ; ???
+                        964A,       ; Spawn rightwards namihe fireball
+                        9625,       ; Queue fune spits sound effect
                         0008,9982,
                         0008,9958,
                         0008,992E,
                         0008,9904,
-                        96B4,       ; ???
+                        96B4,       ; Finish activity
                         80ED,95F1   ; Go to $95F1
 }
 }
@@ -1155,7 +1158,7 @@ $A8:95F7             dx 0008,98B0,
 
 ;;; $9625..D2: Instructions ;;;
 {
-;;; $9625: Instruction ;;;
+;;; $9625: Instruction - queue fune spits sound effect ;;;
 {
 $A8:9625 5A          PHY
 $A8:9626 DA          PHX
@@ -1167,88 +1170,89 @@ $A8:9630 6B          RTL
 }
 
 
-;;; $9631: Instruction ;;;
+;;; $9631: Instruction - spawn leftwards namihe fireball ;;;
 {
 $A8:9631 5A          PHY
 $A8:9632 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9635 BD B6 0F    LDA $0FB6,x[$7E:10B6]
-$A8:9638 29 FF 00    AND #$00FF
-$A8:963B 8D 95 19    STA $1995  [$7E:1995]
+$A8:9635 BD B6 0F    LDA $0FB6,x[$7E:10B6]  ;\
+$A8:9638 29 FF 00    AND #$00FF             ;} Enemy projectile initialisation parameter 1 = [enemy parameter 2 low] (never read)
+$A8:963B 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A8:963E A9 00 00    LDA #$0000             ;\
-$A8:9641 A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile
+$A8:9641 A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile with parameter 0 (direction = left)
 $A8:9644 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:9648 7A          PLY
 $A8:9649 6B          RTL
 }
 
 
-;;; $964A: Instruction ;;;
+;;; $964A: Instruction - spawn rightwards namihe fireball ;;;
 {
 $A8:964A 5A          PHY
 $A8:964B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:964E BD B6 0F    LDA $0FB6,x[$7E:0FF6]
-$A8:9651 29 FF 00    AND #$00FF
-$A8:9654 8D 95 19    STA $1995  [$7E:1995]
+$A8:964E BD B6 0F    LDA $0FB6,x[$7E:0FF6]  ;\
+$A8:9651 29 FF 00    AND #$00FF             ;} Enemy projectile initialisation parameter 1 = [enemy parameter 2 low] (never read)
+$A8:9654 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A8:9657 A9 01 00    LDA #$0001             ;\
-$A8:965A A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile
+$A8:965A A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile with parameter 1 (direction = right)
 $A8:965D 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:9661 7A          PLY
 $A8:9662 6B          RTL
 }
 
 
-;;; $9663: Instruction ;;;
+;;; $9663: Instruction - spawn leftwards fune fireball ;;;
 {
 $A8:9663 5A          PHY
 $A8:9664 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9667 BD B6 0F    LDA $0FB6,x[$7E:1076]
-$A8:966A 29 FF 00    AND #$00FF
-$A8:966D 8D 95 19    STA $1995  [$7E:1995]
+$A8:9667 BD B6 0F    LDA $0FB6,x[$7E:1076]  ;\
+$A8:966A 29 FF 00    AND #$00FF             ;} Enemy projectile initialisation parameter 1 = [enemy parameter 2 low] (never read)
+$A8:966D 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A8:9670 A9 00 00    LDA #$0000             ;\
-$A8:9673 A0 CA DF    LDY #$DFCA             ;} Spawn fune fireball enemy projectile
+$A8:9673 A0 CA DF    LDY #$DFCA             ;} Spawn fune fireball enemy projectile with parameter 0 (direction = left)
 $A8:9676 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:967A 7A          PLY
 $A8:967B 6B          RTL
 }
 
 
-;;; $967C: Instruction ;;;
+;;; $967C: Instruction - spawn rightwards fune fireball ;;;
 {
 $A8:967C 5A          PHY
 $A8:967D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9680 BD B6 0F    LDA $0FB6,x[$7E:1136]
-$A8:9683 29 FF 00    AND #$00FF
-$A8:9686 8D 95 19    STA $1995  [$7E:1995]
+$A8:9680 BD B6 0F    LDA $0FB6,x[$7E:1136]  ;\
+$A8:9683 29 FF 00    AND #$00FF             ;} Enemy projectile initialisation parameter 1 = [enemy parameter 2 low] (never read)
+$A8:9686 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A8:9689 A9 01 00    LDA #$0001             ;\
-$A8:968C A0 CA DF    LDY #$DFCA             ;} Spawn fune fireball enemy projectile
+$A8:968C A0 CA DF    LDY #$DFCA             ;} Spawn fune fireball enemy projectile with parameter 1 (direction = right)
 $A8:968F 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:9693 7A          PLY
 $A8:9694 6B          RTL
 }
 
 
-;;; $9695: Instruction ;;;
+;;; $9695: Instruction - finish activity ;;;
 {
 $A8:9695 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9698 BD A8 0F    LDA $0FA8,x[$7E:1068]
-$A8:969B 1A          INC A
-$A8:969C 1A          INC A
-$A8:969D 1A          INC A
-$A8:969E 1A          INC A
-$A8:969F 9D A8 0F    STA $0FA8,x[$7E:1068]
-$A8:96A2 A9 37 97    LDA #$9737
-$A8:96A5 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A8:96A8 BD AE 0F    LDA $0FAE,x[$7E:106E]
-$A8:96AB F0 06       BEQ $06    [$96B3]
-$A8:96AD A9 5C 97    LDA #$975C
-$A8:96B0 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A8:9698 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
+$A8:969B 1A          INC A                  ;|
+$A8:969C 1A          INC A                  ;|
+$A8:969D 1A          INC A                  ;} Enemy instruction list pointers pointer += 4 (idle)
+$A8:969E 1A          INC A                  ;|
+$A8:969F 9D A8 0F    STA $0FA8,x[$7E:1068]  ;/
+$A8:96A2 A9 37 97    LDA #$9737             ;\
+$A8:96A5 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy function = $9737 (wait for timer)
+$A8:96A8 BD AE 0F    LDA $0FAE,x[$7E:106E]  ;\
+$A8:96AB F0 06       BEQ $06    [$96B3]     ;} If [enemy variant index] != fune:
+$A8:96AD A9 5C 97    LDA #$975C             ;\
+$A8:96B0 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $975C (wait for Samus to get near)
 
 $A8:96B3 6B          RTL
 }
 
 
-;;; $96B4: Instruction ;;;
+;;; $96B4: Instruction - finish activity ;;;
 {
+; Clone of $9695
 $A8:96B4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:96B7 BD A8 0F    LDA $0FA8,x[$7E:1128]
 $A8:96BA 1A          INC A
@@ -1270,40 +1274,46 @@ $A8:96D2 6B          RTL
 
 ;;; $96D3: Instruction list pointers ;;;
 {
-$A8:96D3             dw 939F, 93CF, 9399, 93C9, 95C3, 95F7, 95BD, 95F1
+;                        ___________________ Active - facing left
+;                       |     ______________ Active - facing right
+;                       |    |      ________ Idle - facing left
+;                       |    |     |     ___ Idle - facing right
+;                       |    |     |    |
+$A8:96D3             dw 939F,93CF, 9399,93C9 ; Fune
+$A8:96DB             dw 95C3,95F7, 95BD,95F1 ; Namihe
 }
 
 
 ;;; $96E3: Initialisation AI - enemy $E6FF/$E73F (fune / namihe) ;;;
 {
 $A8:96E3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:96E6 A9 D7 96    LDA #$96D7
-$A8:96E9 9D A8 0F    STA $0FA8,x[$7E:1068]
-$A8:96EC A9 37 97    LDA #$9737
-$A8:96EF 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A8:96F2 BD B4 0F    LDA $0FB4,x[$7E:1074]
-$A8:96F5 29 0F 00    AND #$000F
-$A8:96F8 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A8:96FB F0 0C       BEQ $0C    [$9709]
-$A8:96FD A9 DF 96    LDA #$96DF
-$A8:9700 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A8:9703 A9 5C 97    LDA #$975C
-$A8:9706 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$A8:96E6 A9 D7 96    LDA #$96D7             ;\
+$A8:96E9 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy instruction list pointers pointer = $96D3 + 4 (fune - active - facing left)
+$A8:96EC A9 37 97    LDA #$9737             ;\
+$A8:96EF 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy function = $9737 (wait for timer)
+$A8:96F2 BD B4 0F    LDA $0FB4,x[$7E:1074]  ;\
+$A8:96F5 29 0F 00    AND #$000F             ;} Enemy variant index = [enemy parameter 1 low] & Fh
+$A8:96F8 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
+$A8:96FB F0 0C       BEQ $0C    [$9709]     ; If [enemy variant index] != fune:
+$A8:96FD A9 DF 96    LDA #$96DF             ;\
+$A8:9700 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy instruction list pointers pointer = $96DB + 4 (namihe - active - facing left)
+$A8:9703 A9 5C 97    LDA #$975C             ;\
+$A8:9706 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function = $975C (wait for Samus to get near)
 
-$A8:9709 BD B4 0F    LDA $0FB4,x[$7E:1074]
-$A8:970C 29 F0 00    AND #$00F0
-$A8:970F F0 06       BEQ $06    [$9717]
-$A8:9711 FE A8 0F    INC $0FA8,x[$7E:10A8]
-$A8:9714 FE A8 0F    INC $0FA8,x[$7E:10A8]
+$A8:9709 BD B4 0F    LDA $0FB4,x[$7E:1074]  ;\
+$A8:970C 29 F0 00    AND #$00F0             ;} If [enemy parameter 1 low] & F0h != 0: (facing right)
+$A8:970F F0 06       BEQ $06    [$9717]     ;/
+$A8:9711 FE A8 0F    INC $0FA8,x[$7E:10A8]  ;\
+$A8:9714 FE A8 0F    INC $0FA8,x[$7E:10A8]  ;} Enemy instruction list pointers pointer += 2 (facing right)
 
-$A8:9717 20 9B 97    JSR $979B  [$A8:979B]
-$A8:971A BD B7 0F    LDA $0FB7,x[$7E:1077]
-$A8:971D 29 FF 00    AND #$00FF
-$A8:9720 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A8:9723 BD B5 0F    LDA $0FB5,x[$7E:1075]
-$A8:9726 29 FF 00    AND #$00FF
-$A8:9729 9D B2 0F    STA $0FB2,x[$7E:1072]
-$A8:972C 9E B0 0F    STZ $0FB0,x[$7E:1070]
+$A8:9717 20 9B 97    JSR $979B  [$A8:979B]  ; Set fune / namihe instruction list
+$A8:971A BD B7 0F    LDA $0FB7,x[$7E:1077]  ;\
+$A8:971D 29 FF 00    AND #$00FF             ;} Enemy Y proximity = [enemy parameter 2 high]
+$A8:9720 9D AC 0F    STA $0FAC,x[$7E:106C]  ;/
+$A8:9723 BD B5 0F    LDA $0FB5,x[$7E:1075]  ;\
+$A8:9726 29 FF 00    AND #$00FF             ;} Enemy cooldown time = [enemy parameter 1 high]
+$A8:9729 9D B2 0F    STA $0FB2,x[$7E:1072]  ;/
+$A8:972C 9E B0 0F    STZ $0FB0,x[$7E:1070]  ; Enemy cooldown timer = 0
 $A8:972F 6B          RTL
 }
 
@@ -1311,54 +1321,54 @@ $A8:972F 6B          RTL
 ;;; $9730: Main AI - enemy $E6FF/$E73F (fune / namihe) ;;;
 {
 $A8:9730 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9733 FC AA 0F    JSR ($0FAA,x)[$A8:9737]
+$A8:9733 FC AA 0F    JSR ($0FAA,x)[$A8:9737]; Execute [enemy function]
 $A8:9736 6B          RTL
 }
 
 
-;;; $9737:  ;;;
+;;; $9737: Fune / namihe function - wait for timer (fune) ;;;
 {
 $A8:9737 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:973A FE B0 0F    INC $0FB0,x[$7E:1130]
-$A8:973D BD B0 0F    LDA $0FB0,x[$7E:1130]
-$A8:9740 DD B2 0F    CMP $0FB2,x[$7E:1132]
-$A8:9743 30 16       BMI $16    [$975B]
-$A8:9745 BD A8 0F    LDA $0FA8,x[$7E:1128]
-$A8:9748 3A          DEC A
-$A8:9749 3A          DEC A
-$A8:974A 3A          DEC A
-$A8:974B 3A          DEC A
-$A8:974C 9D A8 0F    STA $0FA8,x[$7E:1128]
-$A8:974F 20 9B 97    JSR $979B  [$A8:979B]
-$A8:9752 A9 8E 97    LDA #$978E
-$A8:9755 9D AA 0F    STA $0FAA,x[$7E:112A]
-$A8:9758 9E B0 0F    STZ $0FB0,x[$7E:1130]
+$A8:973A FE B0 0F    INC $0FB0,x[$7E:1130]  ; Increment enemy cooldown timer
+$A8:973D BD B0 0F    LDA $0FB0,x[$7E:1130]  ;\
+$A8:9740 DD B2 0F    CMP $0FB2,x[$7E:1132]  ;} If [enemy cooldown timer] >= [enemy cooldown time]:
+$A8:9743 30 16       BMI $16    [$975B]     ;/
+$A8:9745 BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
+$A8:9748 3A          DEC A                  ;|
+$A8:9749 3A          DEC A                  ;|
+$A8:974A 3A          DEC A                  ;} Enemy instruction list pointers pointer -= 4 (active)
+$A8:974B 3A          DEC A                  ;|
+$A8:974C 9D A8 0F    STA $0FA8,x[$7E:1128]  ;/
+$A8:974F 20 9B 97    JSR $979B  [$A8:979B]  ; Set fune / namihe instruction list
+$A8:9752 A9 8E 97    LDA #$978E             ;\
+$A8:9755 9D AA 0F    STA $0FAA,x[$7E:112A]  ;} Enemy function = RTS
+$A8:9758 9E B0 0F    STZ $0FB0,x[$7E:1130]  ; Enemy cooldown timer = 0
 
 $A8:975B 60          RTS
 }
 
 
-;;; $975C:  ;;;
+;;; $975C: Fune / namihe function - wait for Samus to get near (namihe) ;;;
 {
 $A8:975C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:975F BD A8 0F    LDA $0FA8,x[$7E:10A8]
-$A8:9762 9F 00 78 7E STA $7E7800,x[$7E:7900]
-$A8:9766 20 90 97    JSR $9790  [$A8:9790]
-$A8:9769 F0 1B       BEQ $1B    [$9786]
-$A8:976B BF 00 78 7E LDA $7E7800,x[$7E:7900]
-$A8:976F 9D A8 0F    STA $0FA8,x[$7E:10A8]
-$A8:9772 3A          DEC A
-$A8:9773 3A          DEC A
-$A8:9774 3A          DEC A
-$A8:9775 3A          DEC A
-$A8:9776 9F 00 78 7E STA $7E7800,x[$7E:7900]
-$A8:977A 9D A8 0F    STA $0FA8,x[$7E:10A8]
-$A8:977D 20 9B 97    JSR $979B  [$A8:979B]
-$A8:9780 A9 8F 97    LDA #$978F
-$A8:9783 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A8:975F BD A8 0F    LDA $0FA8,x[$7E:10A8]  ;\
+$A8:9762 9F 00 78 7E STA $7E7800,x[$7E:7900];} Enemy $7E:7800 = [enemy instruction list pointers pointer] (not meaningfully used)
+$A8:9766 20 90 97    JSR $9790  [$A8:9790]  ;\
+$A8:9769 F0 1B       BEQ $1B    [$9786]     ;} If Samus is in proximity:
+$A8:976B BF 00 78 7E LDA $7E7800,x[$7E:7900];\
+$A8:976F 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} >_<;
+$A8:9772 3A          DEC A                  ;\
+$A8:9773 3A          DEC A                  ;|
+$A8:9774 3A          DEC A                  ;|
+$A8:9775 3A          DEC A                  ;} Enemy instruction list pointers pointer -= 4 (active)
+$A8:9776 9F 00 78 7E STA $7E7800,x[$7E:7900];|
+$A8:977A 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;/
+$A8:977D 20 9B 97    JSR $979B  [$A8:979B]  ; Set fune / namihe instruction list
+$A8:9780 A9 8F 97    LDA #$978F             ;\
+$A8:9783 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = RTS
 
-$A8:9786 BF 00 78 7E LDA $7E7800,x[$7E:7900]
-$A8:978A 9D A8 0F    STA $0FA8,x[$7E:10A8]
+$A8:9786 BF 00 78 7E LDA $7E7800,x[$7E:7900];\
+$A8:978A 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} >_<;
 $A8:978D 60          RTS
 }
 
@@ -1375,25 +1385,27 @@ $A8:978F 60          RTS
 }
 
 
-;;; $9790:  ;;;
+;;; $9790: Check if Samus is in proximity ;;;
 {
+;; Returns:
+;;     Zero: Clear if Samus is in proximity, set otherwise
 $A8:9790 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9793 BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
-$A8:9796 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} Is Samus is within [enemy $0FAC] pixel rows of enemy
+$A8:9796 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} Is Samus is within [enemy Y proximity] pixel rows of enemy
 $A8:979A 60          RTS
 }
 
 
-;;; $979B:  ;;;
+;;; $979B: Set fune / namihe instruction list ;;;
 {
 $A8:979B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:979E A9 01 00    LDA #$0001             ;\
 $A8:97A1 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
-$A8:97A4 9E 90 0F    STZ $0F90,x[$7E:1050]
-$A8:97A7 BD A8 0F    LDA $0FA8,x[$7E:1068]
-$A8:97AA A8          TAY
-$A8:97AB B9 00 00    LDA $0000,y[$A8:96D7]
-$A8:97AE 9D 92 0F    STA $0F92,x[$7E:1052]
+$A8:97A4 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
+$A8:97A7 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
+$A8:97AA A8          TAY                    ;|
+$A8:97AB B9 00 00    LDA $0000,y[$A8:96D7]  ;} Enemy instruction list pointer = [[enemy instruction list pointers pointer]]
+$A8:97AE 9D 92 0F    STA $0F92,x[$7E:1052]  ;/
 $A8:97B1 60          RTS
 }
 
@@ -1410,14 +1422,17 @@ $A8:97B3 6B          RTL
 }
 
 
-;;; $97B4: Spritemaps ;;;
+;;; $97B4: Namihe spritemaps ;;;
 {
+; Facing left
 $A8:97B4             dx 0008, 0008,0C,2127, 0000,0C,2126, 8000,FC,2122, 8000,EC,2120, 81F0,00,2106, 01F8,FC,2135, 01F0,FC,2134, 81F0,EC,2104
 $A8:97DE             dx 0008, 81F0,00,2106, 01F8,EC,2105, 01F0,EC,2104, 81F0,F4,2108, 0008,0C,2127, 0000,0C,2126, 8000,FC,2122, 8000,EC,2120
 $A8:9808             dx 0008, 81EE,02,2106, 01F6,EC,2105, 01EE,EC,2104, 81EE,F4,2108, 0006,0C,2127, 01FE,0C,2126, 81FE,FC,2122, 81FE,EC,2120
 $A8:9832             dx 0008, 81EC,03,2106, 01F4,EC,2105, 01EC,EC,2104, 81EC,F4,2108, 0004,0C,2127, 01FC,0C,2126, 81FC,FC,2122, 81FC,EC,2120
 $A8:985C             dx 0008, 81EA,04,2106, 01F2,EC,2105, 01EA,EC,2104, 81EA,F4,2108, 0002,0C,2127, 01FA,0C,2126, 81FA,FC,2122, 81FA,EC,2120
 $A8:9886             dx 0008, 81E9,05,2106, 01F0,EC,2105, 01E8,EC,2104, 81E8,F4,2108, 0000,0C,2127, 01F8,0C,2126, 81F8,FC,2122, 81F8,EC,2120
+
+; Facing right
 $A8:98B0             dx 0008, 01F0,0C,6127, 01F8,0C,6126, 81F0,FC,6122, 81F0,EC,6120, 8000,00,6106, 0000,FC,6135, 0008,FC,6134, 8000,EC,6104
 $A8:98DA             dx 0008, 8000,00,6106, 0000,EC,6105, 0008,EC,6104, 8000,F4,6108, 01F0,0C,6127, 01F8,0C,6126, 81F0,FC,6122, 81F0,EC,6120
 $A8:9904             dx 0008, 8002,02,6106, 0002,EC,6105, 000A,EC,6104, 8002,F4,6108, 01F2,0C,6127, 01FA,0C,6126, 81F2,FC,6122, 81F2,EC,6120
@@ -1436,7 +1451,7 @@ $A8:99AC             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 01
 }
 
 
-;;; $99CC: Coven palettes ;;;
+;;; $99CC: Unused. Black palettes ;;;
 {
 $A8:99CC             dw 3800, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 $A8:99EC             dw 3800, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
@@ -1447,7 +1462,7 @@ $A8:9A6C             dw 3800, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 }
 
 
-;;; $9A8C: Instruction list -  ;;;
+;;; $9A8C: Instruction list - coven ;;;
 {
 $A8:9A8C             dx 0010,9E46,
                         0010,9E5C,
@@ -1483,8 +1498,8 @@ $A8:9AFD 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A8:9B00 9E 90 0F    STZ $0F90,x[$7E:0F90]
 $A8:9B03 A9 8C 9A    LDA #$9A8C             ;\
 $A8:9B06 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9A8C
-$A8:9B09 A9 13 9D    LDA #$9D13
-$A8:9B0C 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9B09 A9 13 9D    LDA #$9D13             ;\
+$A8:9B0C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13
 $A8:9B0F AD A4 9A    LDA $9AA4  [$A8:9AA4]
 $A8:9B12 18          CLC
 $A8:9B13 69 A0 00    ADC #$00A0
@@ -1515,11 +1530,11 @@ $A8:9B3B 6B          RTL
 ;;; $9B3C: Main AI - enemy $E77F (coven) ;;;
 {
 $A8:9B3C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]
+$A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]; Go to [enemy function]
 }
 
 
-;;; $9B42:  ;;;
+;;; $9B42: Coven function -  ;;;
 {
 $A8:9B42 DA          PHX
 $A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]
@@ -1554,8 +1569,8 @@ $A8:9B7B D0 E1       BNE $E1    [$9B5E]
 $A8:9B7D C0 10 00    CPY #$0010
 $A8:9B80 30 29       BMI $29    [$9BAB]
 $A8:9B82 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9B85 A9 AD 9B    LDA #$9BAD
-$A8:9B88 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9B85 A9 AD 9B    LDA #$9BAD             ;\
+$A8:9B88 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9BAD
 $A8:9B8B BD 96 0F    LDA $0F96,x[$7E:0F96]
 $A8:9B8E EB          XBA
 $A8:9B8F 0A          ASL A
@@ -1581,7 +1596,7 @@ $A8:9BAC 6B          RTL
 }
 
 
-;;; $9BAD:  ;;;
+;;; $9BAD: Coven function -  ;;;
 {
 $A8:9BAD 20 88 9E    JSR $9E88  [$A8:9E88]
 $A8:9BB0 48          PHA
@@ -1594,8 +1609,8 @@ $A8:9BBD BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A8:9BC0 29 FF FB    AND #$FBFF
 $A8:9BC3 29 FF FE    AND #$FEFF
 $A8:9BC6 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A8:9BC9 A9 8A 9C    LDA #$9C8A
-$A8:9BCC 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9BC9 A9 8A 9C    LDA #$9C8A             ;\
+$A8:9BCC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C8A
 $A8:9BCF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A8:9BD2 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A8:9BD6 A9 01 00    LDA #$0001
@@ -1663,14 +1678,14 @@ $A8:9C68 60          RTS
 }
 
 
-;;; $9C69:  ;;;
+;;; $9C69: Coven function -  ;;;
 {
 $A8:9C69 20 88 9E    JSR $9E88  [$A8:9E88]
 $A8:9C6C C9 00 00    CMP #$0000
 $A8:9C6F D0 18       BNE $18    [$9C89]
 $A8:9C71 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9C74 A9 13 9D    LDA #$9D13
-$A8:9C77 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9C74 A9 13 9D    LDA #$9D13             ;\
+$A8:9C77 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13
 $A8:9C7A BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A8:9C7D 09 00 01    ORA #$0100
 $A8:9C80 9D 86 0F    STA $0F86,x[$7E:0F86]
@@ -1681,7 +1696,7 @@ $A8:9C89 6B          RTL
 }
 
 
-;;; $9C8A:  ;;;
+;;; $9C8A: Coven function -  ;;;
 {
 $A8:9C8A BD 80 0F    LDA $0F80,x[$7E:0F80]
 $A8:9C8D 18          CLC
@@ -1714,8 +1729,8 @@ $A8:9CD8 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
 $A8:9CDB 3A          DEC A
 $A8:9CDC 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $A8:9CDF D0 31       BNE $31    [$9D12]
-$A8:9CE1 A9 69 9C    LDA #$9C69
-$A8:9CE4 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9CE1 A9 69 9C    LDA #$9C69             ;\
+$A8:9CE4 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C69
 $A8:9CE7 BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A8:9CEA 09 00 04    ORA #$0400
 $A8:9CED 9D 86 0F    STA $0F86,x[$7E:0F86]
@@ -1743,7 +1758,7 @@ $A8:9D12 6B          RTL
 }
 
 
-;;; $9D13:  ;;;
+;;; $9D13: Coven function -  ;;;
 {
 $A8:9D13 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
 $A8:9D16 F0 06       BEQ $06    [$9D1E]
@@ -1755,8 +1770,8 @@ $A8:9D1E A9 01 00    LDA #$0001
 $A8:9D21 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $A8:9D24 A9 02 00    LDA #$0002
 $A8:9D27 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A8:9D2A A9 36 9D    LDA #$9D36
-$A8:9D2D 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9D2A A9 36 9D    LDA #$9D36             ;\
+$A8:9D2D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D36
 
 $A8:9D30 6B          RTL
 }
@@ -1775,7 +1790,7 @@ $A8:9D34             dw 0001
 }
 
 
-;;; $9D36:  ;;;
+;;; $9D36: Coven function -  ;;;
 {
 $A8:9D36 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A8:9D39 DF 0E 78 7E CMP $7E780E,x[$7E:780E]
@@ -1821,8 +1836,8 @@ $A8:9D9C AD 9C 9A    LDA $9A9C  [$A8:9A9C]
 $A8:9D9F 9F 1C 78 7E STA $7E781C,x[$7E:781C]
 $A8:9DA3 80 6A       BRA $6A    [$9E0F]
 
-$A8:9DA5 A9 42 9B    LDA #$9B42
-$A8:9DA8 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:9DA5 A9 42 9B    LDA #$9B42             ;\
+$A8:9DA8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9B42
 $A8:9DAB AD 9E 9A    LDA $9A9E  [$A8:9A9E]
 $A8:9DAE 9F 1A 78 7E STA $7E781A,x[$7E:781A]
 $A8:9DB2 AD 9C 9A    LDA $9A9C  [$A8:9A9C]

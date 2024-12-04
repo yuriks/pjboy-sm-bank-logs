@@ -13559,7 +13559,7 @@ $86:DF05 99 93 1A    STA $1A93,y[$7E:1AB5]  ;|
 $86:DF08 BD 80 0F    LDA $0F80,x[$7E:1100]  ;} Enemy projectile Y position = [enemy Y position]
 $86:DF0B 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
 $86:DF0E BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
-$86:DF11 29 0F 00    AND #$000F             ;} If [enemy $0FB4] & Fh != 0:
+$86:DF11 29 0F 00    AND #$000F             ;} If [enemy parameter 1 low] & Fh != 0: (namihe)
 $86:DF14 F0 0A       BEQ $0A    [$DF20]     ;/
 $86:DF16 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
 $86:DF19 18          CLC                    ;|
@@ -13568,7 +13568,7 @@ $86:DF1D 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 
 $86:DF20 BD B6 0F    LDA $0FB6,x[$7E:1136]  ;\
 $86:DF23 29 FF 00    AND #$00FF             ;|
-$86:DF26 0A          ASL A                  ;} X = [enemy $0FB6 low] * 4
+$86:DF26 0A          ASL A                  ;} X = [enemy parameter 2 low] * 4
 $86:DF27 0A          ASL A                  ;|
 $86:DF28 AA          TAX                    ;/
 $86:DF29 BD B6 DE    LDA $DEB6,x[$86:DED2]  ;\
