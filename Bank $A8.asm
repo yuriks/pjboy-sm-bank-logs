@@ -1473,14 +1473,23 @@ $A8:9A8C             dx 0010,9E46,
 
 ;;; $9A9C: Coven constants ;;;
 {
-$A8:9A9C             dw 0010
-$A8:9A9E             dw 0040
+$A8:9A9C             dw 0010 ; Number of times Samus has to move in the same direction to materialise
+$A8:9A9E             dw 0040 ; Number of frames Samus has to remain stationary to materialise
 $A8:9AA0             dw 1800
 $A8:9AA2             dw 0001
-$A8:9AA4             dw 0078
-$A8:9AA6             dw 0078
+$A8:9AA4             dw 0078 ; Number of frames to sleep after dematerialising
+$A8:9AA6             dw 0078 ; Number of frames to be materialised for
 
-$A8:9AA8             dw FFC0,FFC0, 0000,FFC0, 0040,0000, FFC0,0000, 0000,0000, 0040,0000, FFC0,0040, 0000,0040, 0040,0040
+; X/Y offsets from Samus position to materialise when Samus has been moving a given direction
+$A8:9AA8             dw FFC0,FFC0, ; 0: Up-left
+                        0000,FFC0, ; 4: Up
+                        0040,0000, ; 8: Up-right
+                        FFC0,0000, ; Ch: Left
+                        0000,0000, ; 10h: None (dummy)
+                        0040,0000, ; 14h: Right
+                        FFC0,0040, ; 18h: Down-left
+                        0000,0040, ; 1Ch: Down
+                        0040,0040  ; 20h: Down-right
 
 $A8:9ACC             dw 0001, 0008, 0001, 0008, 0001, 0007, 0001, 0007, 0002, 0006, 0002, 0006, 0003, 0005, 0003, 0005,
                         FFFF
@@ -1490,39 +1499,39 @@ $A8:9ACC             dw 0001, 0008, 0001, 0008, 0001, 0007, 0001, 0007, 0002, 00
 ;;; $9AEE: Initialisation AI - enemy $E77F (coven) ;;;
 {
 $A8:9AEE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9AF1 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:9AF4 09 00 25    ORA #$2500
-$A8:9AF7 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A8:9AF1 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:9AF4 09 00 25    ORA #$2500             ;} Set enemy to process instructions, as intangible and invisible
+$A8:9AF7 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:9AFA A9 01 00    LDA #$0001             ;\
 $A8:9AFD 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$A8:9B00 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A8:9B00 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A8:9B03 A9 8C 9A    LDA #$9A8C             ;\
 $A8:9B06 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9A8C
 $A8:9B09 A9 13 9D    LDA #$9D13             ;\
-$A8:9B0C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13
-$A8:9B0F AD A4 9A    LDA $9AA4  [$A8:9AA4]
-$A8:9B12 18          CLC
-$A8:9B13 69 A0 00    ADC #$00A0
-$A8:9B16 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$A8:9B0C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13 (dematerialised - asleep)
+$A8:9B0F AD A4 9A    LDA $9AA4  [$A8:9AA4]  ;\
+$A8:9B12 18          CLC                    ;|
+$A8:9B13 69 A0 00    ADC #$00A0             ;} Enemy function timer = 280
+$A8:9B16 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A8:9B19 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9B1C BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:9B1F EB          XBA
-$A8:9B20 0A          ASL A
-$A8:9B21 0A          ASL A
-$A8:9B22 0A          ASL A
-$A8:9B23 0A          ASL A
-$A8:9B24 18          CLC
-$A8:9B25 69 00 01    ADC #$0100
-$A8:9B28 AA          TAX
-$A8:9B29 A9 10 00    LDA #$0010
-$A8:9B2C 85 12       STA $12    [$7E:0012]
-$A8:9B2E A9 00 00    LDA #$0000
-
-$A8:9B31 9F 00 C2 7E STA $7EC200,x[$7E:C320]
-$A8:9B35 E8          INX
-$A8:9B36 E8          INX
-$A8:9B37 C6 12       DEC $12    [$7E:0012]
-$A8:9B39 10 F6       BPL $F6    [$9B31]
+$A8:9B1C BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:9B1F EB          XBA                    ;|
+$A8:9B20 0A          ASL A                  ;|
+$A8:9B21 0A          ASL A                  ;|
+$A8:9B22 0A          ASL A                  ;|
+$A8:9B23 0A          ASL A                  ;|
+$A8:9B24 18          CLC                    ;|
+$A8:9B25 69 00 01    ADC #$0100             ;|
+$A8:9B28 AA          TAX                    ;|
+$A8:9B29 A9 10 00    LDA #$0010             ;} Target enemy sprite palette = 0
+$A8:9B2C 85 12       STA $12    [$7E:0012]  ;|
+$A8:9B2E A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A8:9B31 9F 00 C2 7E STA $7EC200,x[$7E:C320];|
+$A8:9B35 E8          INX                    ;|
+$A8:9B36 E8          INX                    ;|
+$A8:9B37 C6 12       DEC $12    [$7E:0012]  ;|
+$A8:9B39 10 F6       BPL $F6    [$9B31]     ;/
 $A8:9B3B 6B          RTL
 }
 
@@ -1534,7 +1543,7 @@ $A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]; Go to [enemy function]
 }
 
 
-;;; $9B42: Coven function -  ;;;
+;;; $9B42: Coven function - materialising - fade to white ;;;
 {
 $A8:9B42 DA          PHX
 $A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]
@@ -1596,7 +1605,7 @@ $A8:9BAC 6B          RTL
 }
 
 
-;;; $9BAD: Coven function -  ;;;
+;;; $9BAD: Coven function - materialising - fade from white ;;;
 {
 $A8:9BAD 20 88 9E    JSR $9E88  [$A8:9E88]
 $A8:9BB0 48          PHA
@@ -1646,39 +1655,39 @@ $A8:9C30 6B          RTL
 
 ;;; $9C31:  ;;;
 {
-$A8:9C31 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A8:9C34 F0 1F       BEQ $1F    [$9C55]
-$A8:9C36 3A          DEC A
-$A8:9C37 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9C3A D0 18       BNE $18    [$9C54]
-$A8:9C3C BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A8:9C3F A8          TAY
-$A8:9C40 B9 CC 9A    LDA $9ACC,y[$A8:9ACE]
-$A8:9C43 30 1A       BMI $1A    [$9C5F]
-$A8:9C45 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9C48 98          TYA
-$A8:9C49 1A          INC A
-$A8:9C4A 1A          INC A
-$A8:9C4B 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A8:9C4E 98          TYA
-$A8:9C4F 89 02 00    BIT #$0002
-$A8:9C52 F0 01       BEQ $01    [$9C55]
+$A8:9C31 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A8:9C34 F0 1F       BEQ $1F    [$9C55]     ;} If [enemy function timer] != 0:
+$A8:9C36 3A          DEC A                  ;\
+$A8:9C37 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Decrement enemy function timer
+$A8:9C3A D0 18       BNE $18    [$9C54]     ; If [enemy function timer] != 0: return
+$A8:9C3C BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A8:9C3F A8          TAY                    ;} Y = [enemy $0FAC]
+$A8:9C40 B9 CC 9A    LDA $9ACC,y[$A8:9ACE]  ;\
+$A8:9C43 30 1A       BMI $1A    [$9C5F]     ;} If [$9ACC + [Y]] < 0: go to BRANCH_END
+$A8:9C45 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy function timer = [$9ACC + [Y]]
+$A8:9C48 98          TYA                    ;\
+$A8:9C49 1A          INC A                  ;|
+$A8:9C4A 1A          INC A                  ;} Enemy $0FAC += 2
+$A8:9C4B 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
+$A8:9C4E 98          TYA                    ;\
+$A8:9C4F 89 02 00    BIT #$0002             ;} If [Y] / 2 % 2 != 0:
+$A8:9C52 F0 01       BEQ $01    [$9C55]     ;/
+$A8:9C54 60          RTS                    ; Return
 
-$A8:9C54 60          RTS
+$A8:9C55 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:9C58 29 FF FE    AND #$FEFF             ;} Set enemy as visible
+$A8:9C5B 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A8:9C5E 60          RTS                    ; Return
 
-$A8:9C55 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:9C58 29 FF FE    AND #$FEFF
-$A8:9C5B 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A8:9C5E 60          RTS
-
-$A8:9C5F A9 00 00    LDA #$0000
-$A8:9C62 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9C65 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+; BRANCH_END
+$A8:9C5F A9 00 00    LDA #$0000             ;\
+$A8:9C62 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 0
+$A8:9C65 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = 0
 $A8:9C68 60          RTS
 }
 
 
-;;; $9C69: Coven function -  ;;;
+;;; $9C69: Coven function - dematerialising ;;;
 {
 $A8:9C69 20 88 9E    JSR $9E88  [$A8:9E88]
 $A8:9C6C C9 00 00    CMP #$0000
@@ -1689,14 +1698,14 @@ $A8:9C77 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13
 $A8:9C7A BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A8:9C7D 09 00 01    ORA #$0100
 $A8:9C80 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A8:9C83 AD A4 9A    LDA $9AA4  [$A8:9AA4]
-$A8:9C86 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$A8:9C83 AD A4 9A    LDA $9AA4  [$A8:9AA4]  ;\
+$A8:9C86 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 120
 
 $A8:9C89 6B          RTL
 }
 
 
-;;; $9C8A: Coven function -  ;;;
+;;; $9C8A: Coven function - materialised ;;;
 {
 $A8:9C8A BD 80 0F    LDA $0F80,x[$7E:0F80]
 $A8:9C8D 18          CLC
@@ -1725,10 +1734,10 @@ $A8:9CCD BF 04 78 7E LDA $7E7804,x[$7E:7804]
 $A8:9CD1 69 00 00    ADC #$0000
 $A8:9CD4 9F 04 78 7E STA $7E7804,x[$7E:7804]
 
-$A8:9CD8 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A8:9CDB 3A          DEC A
-$A8:9CDC 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9CDF D0 31       BNE $31    [$9D12]
+$A8:9CD8 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A8:9CDB 3A          DEC A                  ;} Decrement enemy function timer
+$A8:9CDC 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+$A8:9CDF D0 31       BNE $31    [$9D12]     ; If [enemy function timer] != 0: return
 $A8:9CE1 A9 69 9C    LDA #$9C69             ;\
 $A8:9CE4 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C69
 $A8:9CE7 BD 86 0F    LDA $0F86,x[$7E:0F86]
@@ -1758,18 +1767,18 @@ $A8:9D12 6B          RTL
 }
 
 
-;;; $9D13: Coven function -  ;;;
+;;; $9D13: Coven function - dematerialised - asleep ;;;
 {
-$A8:9D13 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A8:9D16 F0 06       BEQ $06    [$9D1E]
-$A8:9D18 3A          DEC A
-$A8:9D19 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9D1C D0 12       BNE $12    [$9D30]
+$A8:9D13 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A8:9D16 F0 06       BEQ $06    [$9D1E]     ;} If [enemy function timer] != 0:
+$A8:9D18 3A          DEC A                  ;\
+$A8:9D19 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Decrement enemy function timer
+$A8:9D1C D0 12       BNE $12    [$9D30]     ; If [enemy function timer] != 0: return
 
-$A8:9D1E A9 01 00    LDA #$0001
-$A8:9D21 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9D24 A9 02 00    LDA #$0002
-$A8:9D27 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$A8:9D1E A9 01 00    LDA #$0001             ;\
+$A8:9D21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 1
+$A8:9D24 A9 02 00    LDA #$0002             ;\
+$A8:9D27 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 2
 $A8:9D2A A9 36 9D    LDA #$9D36             ;\
 $A8:9D2D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D36
 
@@ -1783,122 +1792,134 @@ $A8:9D31 6B          RTL
 }
 
 
-;;; $9D32:  ;;;
+;;; $9D32: Coven stationary zone radii ;;;
 {
-$A8:9D32             dw 0001
-$A8:9D34             dw 0001
+; Number of pixels of tolerance to consider Samus stationary for the materialisation check
+$A8:9D32             dw 0001 ; X radius
+$A8:9D34             dw 0001 ; Y radius
 }
 
 
-;;; $9D36: Coven function -  ;;;
+;;; $9D36: Coven function - dematerialised - awake ;;;
 {
-$A8:9D36 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9D39 DF 0E 78 7E CMP $7E780E,x[$7E:780E]
-$A8:9D3D 30 33       BMI $33    [$9D72]
-$A8:9D3F DF 10 78 7E CMP $7E7810,x[$7E:7810]
-$A8:9D43 10 2D       BPL $2D    [$9D72]
-$A8:9D45 BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ; <-- bug
-$A8:9D48 DF 16 78 7E CMP $7E7816,x[$7E:7816]
-$A8:9D4C 30 24       BMI $24    [$9D72]
-$A8:9D4E DF 18 78 7E CMP $7E7818,x[$7E:7818]
-$A8:9D52 10 1E       BPL $1E    [$9D72]
-$A8:9D54 BF 1A 78 7E LDA $7E781A,x[$7E:781A]
-$A8:9D58 3A          DEC A
-$A8:9D59 9F 1A 78 7E STA $7E781A,x[$7E:781A]
-$A8:9D5D F0 03       BEQ $03    [$9D62]
-$A8:9D5F 4C 0F 9E    JMP $9E0F  [$A8:9E0F]
+; The Samus position loads at $9D45 / $9DC3 / $9DCD are erroneously being indexed by X, which is the enemy index
+; Consequently, this code has unexpected results if the enemy is not enemy slot 0
 
-$A8:9D62 A9 04 00    LDA #$0004
-$A8:9D65 9F 0A 78 7E STA $7E780A,x
-$A8:9D69 A9 0C 00    LDA #$000C
-$A8:9D6C 9F 12 78 7E STA $7E7812,x
-$A8:9D70 80 33       BRA $33    [$9DA5]
+; Materialise if Samus has moved at most 1px/frame for 40h frames (tracked by the "lock-on timer" and "zone" variables)
+; or has moved more than 1px/frame in the same direction 10h times (tracked by the "directed movement timer" and "previous Samus" variables)
+$A8:9D36 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9D39 DF 0E 78 7E CMP $7E780E,x[$7E:780E];|
+$A8:9D3D 30 33       BMI $33    [$9D72]     ;} If not [enemy zone left position] <= [Samus X position] < [enemy zone right position]: go to BRANCH_BREAK_LOCK_ON
+$A8:9D3F DF 10 78 7E CMP $7E7810,x[$7E:7810];|
+$A8:9D43 10 2D       BPL $2D    [$9D72]     ;/
+$A8:9D45 BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ;\
+$A8:9D48 DF 16 78 7E CMP $7E7816,x[$7E:7816];|
+$A8:9D4C 30 24       BMI $24    [$9D72]     ;} If not [enemy zone top position] <= [Samus Y position] (buggy) < [enemy zone bottom position]: go to BRANCH_BREAK_LOCK_ON
+$A8:9D4E DF 18 78 7E CMP $7E7818,x[$7E:7818];|
+$A8:9D52 10 1E       BPL $1E    [$9D72]     ;/
+$A8:9D54 BF 1A 78 7E LDA $7E781A,x[$7E:781A];\
+$A8:9D58 3A          DEC A                  ;} Decrement enemy lock-on timer
+$A8:9D59 9F 1A 78 7E STA $7E781A,x[$7E:781A];/
+$A8:9D5D F0 03       BEQ $03    [$9D62]     ; If [enemy lock-on timer] != 0:
+$A8:9D5F 4C 0F 9E    JMP $9E0F  [$A8:9E0F]  ; Go to BRANCH_UPDATE_ZONE
 
-$A8:9D72 AD 9E 9A    LDA $9A9E  [$A8:9A9E]
-$A8:9D75 9F 1A 78 7E STA $7E781A,x[$7E:781A]
-$A8:9D79 A0 00 00    LDY #$0000
-$A8:9D7C AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9D7F 38          SEC
-$A8:9D80 FF 0C 78 7E SBC $7E780C,x[$7E:780C]
-$A8:9D84 30 0A       BMI $0A    [$9D90]
-$A8:9D86 F0 05       BEQ $05    [$9D8D]
-$A8:9D88 A0 08 00    LDY #$0008
+$A8:9D62 A9 04 00    LDA #$0004             ;\
+$A8:9D65 9F 0A 78 7E STA $7E780A,x          ;} Enemy previous Samus X movement direction = 4 (none)
+$A8:9D69 A9 0C 00    LDA #$000C             ;\
+$A8:9D6C 9F 12 78 7E STA $7E7812,x          ;} Enemy previous Samus Y movement direction = Ch (none)
+$A8:9D70 80 33       BRA $33    [$9DA5]     ; Go to BRANCH_MATERIALISE
+
+; BRANCH_BREAK_LOCK_ON
+$A8:9D72 AD 9E 9A    LDA $9A9E  [$A8:9A9E]  ;\
+$A8:9D75 9F 1A 78 7E STA $7E781A,x[$7E:781A];} Enemy lock-on timer = 40h
+$A8:9D79 A0 00 00    LDY #$0000             ; Y = 0 (left)
+$A8:9D7C AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9D7F 38          SEC                    ;|
+$A8:9D80 FF 0C 78 7E SBC $7E780C,x[$7E:780C];} If [Samus X position] < [enemy previous Samus X position]: go to BRANCH_CHECK_X_MOVEMENT_DIRECTION
+$A8:9D84 30 0A       BMI $0A    [$9D90]     ;/
+$A8:9D86 F0 05       BEQ $05    [$9D8D]     ; If [Samus X position] > [enemy previous Samus X position]:
+$A8:9D88 A0 08 00    LDY #$0008             ; Y = 8 (right)
 $A8:9D8B 80 03       BRA $03    [$9D90]
+                                            ; Else ([Samus X position] = [enemy previous Samus X position]):
+$A8:9D8D A0 04 00    LDY #$0004             ; Y = 4 (none)
 
-$A8:9D8D A0 04 00    LDY #$0004
+; BRANCH_CHECK_X_MOVEMENT_DIRECTION
+$A8:9D90 98          TYA                    ;\
+$A8:9D91 DF 0A 78 7E CMP $7E780A,x[$7E:780A];} If [Y] = [enemy previous Samus X movement direction]: go to BRANCH_CHECK_Y_MOVEMENT
+$A8:9D95 F0 41       BEQ $41    [$9DD8]     ;/
+$A8:9D97 98          TYA                    ; >_<;
+$A8:9D98 9F 0A 78 7E STA $7E780A,x[$7E:780A]; Enemy previous Samus X movement direction = [Y]
+$A8:9D9C AD 9C 9A    LDA $9A9C  [$A8:9A9C]  ;\
+$A8:9D9F 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy directed movement timer = 10h
+$A8:9DA3 80 6A       BRA $6A    [$9E0F]     ; Go to BRANCH_UPDATE_ZONE
 
-$A8:9D90 98          TYA
-$A8:9D91 DF 0A 78 7E CMP $7E780A,x[$7E:780A]
-$A8:9D95 F0 41       BEQ $41    [$9DD8]
-$A8:9D97 98          TYA
-$A8:9D98 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A8:9D9C AD 9C 9A    LDA $9A9C  [$A8:9A9C]
-$A8:9D9F 9F 1C 78 7E STA $7E781C,x[$7E:781C]
-$A8:9DA3 80 6A       BRA $6A    [$9E0F]
-
+; BRANCH_MATERIALISE
 $A8:9DA5 A9 42 9B    LDA #$9B42             ;\
 $A8:9DA8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9B42
-$A8:9DAB AD 9E 9A    LDA $9A9E  [$A8:9A9E]
-$A8:9DAE 9F 1A 78 7E STA $7E781A,x[$7E:781A]
-$A8:9DB2 AD 9C 9A    LDA $9A9C  [$A8:9A9C]
-$A8:9DB5 9F 1C 78 7E STA $7E781C,x[$7E:781C]
-$A8:9DB9 BF 0A 78 7E LDA $7E780A,x[$7E:780A]
-$A8:9DBD 18          CLC
-$A8:9DBE 7F 12 78 7E ADC $7E7812,x[$7E:7812]
-$A8:9DC2 A8          TAY
-$A8:9DC3 BD F6 0A    LDA $0AF6,x[$7E:0AF6]  ; <-- bug
-$A8:9DC6 18          CLC
-$A8:9DC7 79 A8 9A    ADC $9AA8,y[$A8:9AB0]
-$A8:9DCA 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A8:9DCD BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ; <-- bug
-$A8:9DD0 18          CLC
-$A8:9DD1 79 AA 9A    ADC $9AAA,y[$A8:9AB2]
-$A8:9DD4 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A8:9DD7 6B          RTL
+$A8:9DAB AD 9E 9A    LDA $9A9E  [$A8:9A9E]  ;\
+$A8:9DAE 9F 1A 78 7E STA $7E781A,x[$7E:781A];} Enemy lock-on timer = 40h
+$A8:9DB2 AD 9C 9A    LDA $9A9C  [$A8:9A9C]  ;\
+$A8:9DB5 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy directed movement timer = 10h
+$A8:9DB9 BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
+$A8:9DBD 18          CLC                    ;|
+$A8:9DBE 7F 12 78 7E ADC $7E7812,x[$7E:7812];} Y = [enemy previous Samus Y movement direction] + [enemy previous Samus X movement direction]
+$A8:9DC2 A8          TAY                    ;/
+$A8:9DC3 BD F6 0A    LDA $0AF6,x[$7E:0AF6]  ;\
+$A8:9DC6 18          CLC                    ;|
+$A8:9DC7 79 A8 9A    ADC $9AA8,y[$A8:9AB0]  ;} Enemy X position = [Samus X position] (buggy) + [$9AA8 + [Y]]
+$A8:9DCA 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A8:9DCD BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ;\
+$A8:9DD0 18          CLC                    ;|
+$A8:9DD1 79 AA 9A    ADC $9AAA,y[$A8:9AB2]  ;} Enemy Y position = [Samus Y position] (buggy) + [$9AA8 + [Y] + 2]
+$A8:9DD4 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A8:9DD7 6B          RTL                    ; Return
 
-$A8:9DD8 A0 00 00    LDY #$0000
-$A8:9DDB AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:9DDE 38          SEC
-$A8:9DDF FF 14 78 7E SBC $7E7814,x[$7E:7814]
-$A8:9DE3 30 0A       BMI $0A    [$9DEF]
-$A8:9DE5 F0 05       BEQ $05    [$9DEC]
-$A8:9DE7 A0 18 00    LDY #$0018
+; BRANCH_CHECK_Y_MOVEMENT
+$A8:9DD8 A0 00 00    LDY #$0000             ; Y = 0 (up)
+$A8:9DDB AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A8:9DDE 38          SEC                    ;|
+$A8:9DDF FF 14 78 7E SBC $7E7814,x[$7E:7814];} If [Samus Y position] < [enemy previous Samus Y position]: go to BRANCH_CHECK_Y_MOVEMENT_DIRECTION
+$A8:9DE3 30 0A       BMI $0A    [$9DEF]     ;/
+$A8:9DE5 F0 05       BEQ $05    [$9DEC]     ; If [Samus Y position] > [enemy previous Samus Y position]:
+$A8:9DE7 A0 18 00    LDY #$0018             ; Y = 18h (down)
 $A8:9DEA 80 03       BRA $03    [$9DEF]
+                                            ; Else ([Samus Y position] = [enemy previous Samus Y position]):
+$A8:9DEC A0 0C 00    LDY #$000C             ; Y = Ch (none)
 
-$A8:9DEC A0 0C 00    LDY #$000C
-
-$A8:9DEF 98          TYA
-$A8:9DF0 DF 12 78 7E CMP $7E7812,x[$7E:7812]
-$A8:9DF4 F0 0E       BEQ $0E    [$9E04]
-$A8:9DF6 98          TYA
-$A8:9DF7 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$A8:9DFB AD 9C 9A    LDA $9A9C  [$A8:9A9C]
-$A8:9DFE 9F 1C 78 7E STA $7E781C,x[$7E:781C]
+; BRANCH_CHECK_Y_MOVEMENT_DIRECTION
+$A8:9DEF 98          TYA                    ;\
+$A8:9DF0 DF 12 78 7E CMP $7E7812,x[$7E:7812];} If [Y] != [enemy previous Samus Y movement direction]:
+$A8:9DF4 F0 0E       BEQ $0E    [$9E04]     ;/
+$A8:9DF6 98          TYA                    ; >_<;
+$A8:9DF7 9F 12 78 7E STA $7E7812,x[$7E:7812]; Enemy previous Samus Y movement direction = [Y]
+$A8:9DFB AD 9C 9A    LDA $9A9C  [$A8:9A9C]  ;\
+$A8:9DFE 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy directed movement timer = 10h
 $A8:9E02 80 0B       BRA $0B    [$9E0F]
 
-$A8:9E04 BF 1C 78 7E LDA $7E781C,x[$7E:781C]
-$A8:9E08 3A          DEC A
-$A8:9E09 9F 1C 78 7E STA $7E781C,x[$7E:781C]
-$A8:9E0D F0 96       BEQ $96    [$9DA5]
+$A8:9E04 BF 1C 78 7E LDA $7E781C,x[$7E:781C];\ Else ([Y] = [enemy previous Samus Y movement direction]):
+$A8:9E08 3A          DEC A                  ;} Decrement enemy directed movement timer
+$A8:9E09 9F 1C 78 7E STA $7E781C,x[$7E:781C];/
+$A8:9E0D F0 96       BEQ $96    [$9DA5]     ; If [enemy directed movement timer] = 0: go to BRANCH_MATERIALISE
 
-$A8:9E0F AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9E12 9F 0C 78 7E STA $7E780C,x[$7E:780C]
-$A8:9E16 38          SEC
-$A8:9E17 ED 32 9D    SBC $9D32  [$A8:9D32]
-$A8:9E1A 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A8:9E1E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9E21 18          CLC
-$A8:9E22 6D 32 9D    ADC $9D32  [$A8:9D32]
-$A8:9E25 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A8:9E29 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:9E2C 9F 14 78 7E STA $7E7814,x[$7E:7814]
-$A8:9E30 38          SEC
-$A8:9E31 ED 34 9D    SBC $9D34  [$A8:9D34]
-$A8:9E34 9F 16 78 7E STA $7E7816,x[$7E:7816]
-$A8:9E38 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:9E3B 18          CLC
-$A8:9E3C 6D 34 9D    ADC $9D34  [$A8:9D34]
-$A8:9E3F 9F 18 78 7E STA $7E7818,x[$7E:7818]
+; BRANCH_UPDATE_ZONE
+$A8:9E0F AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9E12 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy previous Samus X position = [Samus X position]
+$A8:9E16 38          SEC                    ;\
+$A8:9E17 ED 32 9D    SBC $9D32  [$A8:9D32]  ;} Enemy zone left position = [Samus X position] - 1
+$A8:9E1A 9F 0E 78 7E STA $7E780E,x[$7E:780E];/
+$A8:9E1E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9E21 18          CLC                    ;|
+$A8:9E22 6D 32 9D    ADC $9D32  [$A8:9D32]  ;} Enemy zone right position = [Samus X position] + 1
+$A8:9E25 9F 10 78 7E STA $7E7810,x[$7E:7810];/
+$A8:9E29 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A8:9E2C 9F 14 78 7E STA $7E7814,x[$7E:7814];} Enemy previous Samus Y position = [Samus Y position]
+$A8:9E30 38          SEC                    ;\
+$A8:9E31 ED 34 9D    SBC $9D34  [$A8:9D34]  ;} Enemy zone top position = [Samus Y position] - 1
+$A8:9E34 9F 16 78 7E STA $7E7816,x[$7E:7816];/
+$A8:9E38 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A8:9E3B 18          CLC                    ;|
+$A8:9E3C 6D 34 9D    ADC $9D34  [$A8:9D34]  ;} Enemy zone bottom position = [Samus Y position] + 1
+$A8:9E3F 9F 18 78 7E STA $7E7818,x[$7E:7818];/
 $A8:9E43 6B          RTL
 }
 
@@ -9846,7 +9867,7 @@ $A8:F446 7F 08 78 7E ADC $7E7808,x[$7E:7988];/
 $A8:F44A DF 00 78 7E CMP $7E7800,x[$7E:7980];\
 $A8:F44E 30 04       BMI $04    [$F454]     ;} Enemy arc angular velocity = min([enemy arc angular velocity], [enemy arc angular velocity cap])
 $A8:F450 BF 00 78 7E LDA $7E7800,x[$7E:7980];/
-                                            
+
 $A8:F454 9F 04 78 7E STA $7E7804,x[$7E:7984]
 $A8:F458 BD B2 0F    LDA $0FB2,x[$7E:1132]  ;\
 $A8:F45B 18          CLC                    ;|
@@ -10437,7 +10458,7 @@ $A8:F915 C9 00 C0    CMP #$C000             ;} If [enemy arc angle] >= -4000h:
 $A8:F918 30 04       BMI $04    [$F91E]     ;/
 $A8:F91A 20 47 F9    JSR $F947  [$A8:F947]  ; Set up falling ki-hunter wings drifting left
 $A8:F91D 6B          RTL                    ; Return
-                                            
+
 $A8:F91E BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;\
 $A8:F921 38          SEC                    ;} Enemy speed table index -= 180h
 $A8:F922 E9 80 01    SBC #$0180             ;/

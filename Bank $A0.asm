@@ -3964,7 +3964,7 @@ $A0:A0EC FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;|
 $A0:A0EF 10 04       BPL $04    [$A0F5]     ;|
 $A0:A0F1 49 FF FF    EOR #$FFFF             ;|
 $A0:A0F4 1A          INC A                  ;|
-                                            ;} If |[Samus Y position] - [enemy Y position]| >= [Samus Y radius] + [enemy X radius]:
+                                            ;} If |[Samus Y position] - [enemy Y position]| >= [Samus Y radius] + [enemy Y radius]:
 $A0:A0F5 38          SEC                    ;|
 $A0:A0F6 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $A0:A0F9 90 07       BCC $07    [$A102]     ;|
