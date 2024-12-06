@@ -1546,59 +1546,60 @@ $A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]; Go to [enemy function]
 ;;; $9B42: Coven function - materialising - fade to white ;;;
 {
 $A8:9B42 DA          PHX
-$A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]
-$A8:9B46 A0 10 00    LDY #$0010
+$A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]  ; Execute $9C31
+$A8:9B46 A0 10 00    LDY #$0010             ; Y = 10h
 $A8:9B49 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9B4C BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:9B4F EB          XBA
-$A8:9B50 0A          ASL A
-$A8:9B51 0A          ASL A
-$A8:9B52 0A          ASL A
-$A8:9B53 0A          ASL A
-$A8:9B54 18          CLC
-$A8:9B55 69 00 01    ADC #$0100
-$A8:9B58 AA          TAX
-$A8:9B59 A9 10 00    LDA #$0010
-$A8:9B5C 85 12       STA $12    [$7E:0012]
+$A8:9B4C BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:9B4F EB          XBA                    ;|
+$A8:9B50 0A          ASL A                  ;|
+$A8:9B51 0A          ASL A                  ;|
+$A8:9B52 0A          ASL A                  ;} X = 100h + [enemy palette index] / 10h
+$A8:9B53 0A          ASL A                  ;|
+$A8:9B54 18          CLC                    ;|
+$A8:9B55 69 00 01    ADC #$0100             ;|
+$A8:9B58 AA          TAX                    ;/
+$A8:9B59 A9 10 00    LDA #$0010             ;\
+$A8:9B5C 85 12       STA $12    [$7E:0012]  ;} $12 = 10h
 
-$A8:9B5E BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9B62 29 1F 00    AND #$001F
-$A8:9B65 C9 1F 00    CMP #$001F
-$A8:9B68 10 0D       BPL $0D    [$9B77]
-$A8:9B6A BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9B6E 18          CLC
-$A8:9B6F 69 21 04    ADC #$0421
-$A8:9B72 9F 00 C0 7E STA $7EC000,x[$7E:C120]
-$A8:9B76 88          DEY
+; LOOP
+$A8:9B5E BF 00 C0 7E LDA $7EC000,x[$7E:C120];\
+$A8:9B62 29 1F 00    AND #$001F             ;|
+$A8:9B65 C9 1F 00    CMP #$001F             ;} If [$7E:C000 + [X]] & 1Fh (red component) != 1Fh:
+$A8:9B68 10 0D       BPL $0D    [$9B77]     ;/
+$A8:9B6A BF 00 C0 7E LDA $7EC000,x[$7E:C120];\
+$A8:9B6E 18          CLC                    ;|
+$A8:9B6F 69 21 04    ADC #$0421             ;} $7E:C000 + [X] += 1 | 1 << 5 | 1 << Ah (increment each colour component)
+$A8:9B72 9F 00 C0 7E STA $7EC000,x[$7E:C120];/
+$A8:9B76 88          DEY                    ; Decrement Y
 
-$A8:9B77 E8          INX
-$A8:9B78 E8          INX
-$A8:9B79 C6 12       DEC $12    [$7E:0012]
-$A8:9B7B D0 E1       BNE $E1    [$9B5E]
-$A8:9B7D C0 10 00    CPY #$0010
-$A8:9B80 30 29       BMI $29    [$9BAB]
+$A8:9B77 E8          INX                    ;\
+$A8:9B78 E8          INX                    ;} X += 2
+$A8:9B79 C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$A8:9B7B D0 E1       BNE $E1    [$9B5E]     ; If [$12] != 0: go to LOOP
+$A8:9B7D C0 10 00    CPY #$0010             ;\
+$A8:9B80 30 29       BMI $29    [$9BAB]     ;} If [Y] < 10h: return
 $A8:9B82 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9B85 A9 AD 9B    LDA #$9BAD             ;\
 $A8:9B88 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9BAD
-$A8:9B8B BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:9B8E EB          XBA
-$A8:9B8F 0A          ASL A
-$A8:9B90 0A          ASL A
-$A8:9B91 0A          ASL A
-$A8:9B92 0A          ASL A
-$A8:9B93 18          CLC
-$A8:9B94 69 00 01    ADC #$0100
-$A8:9B97 AA          TAX
-$A8:9B98 A0 00 00    LDY #$0000
-
-$A8:9B9B B9 AC 99    LDA $99AC,y[$A8:99AC]
-$A8:9B9E 9F 00 C2 7E STA $7EC200,x[$7E:C320]
-$A8:9BA2 E8          INX
-$A8:9BA3 E8          INX
-$A8:9BA4 C8          INY
-$A8:9BA5 C8          INY
-$A8:9BA6 C0 20 00    CPY #$0020
-$A8:9BA9 30 F0       BMI $F0    [$9B9B]
+$A8:9B8B BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:9B8E EB          XBA                    ;|
+$A8:9B8F 0A          ASL A                  ;|
+$A8:9B90 0A          ASL A                  ;|
+$A8:9B91 0A          ASL A                  ;|
+$A8:9B92 0A          ASL A                  ;|
+$A8:9B93 18          CLC                    ;|
+$A8:9B94 69 00 01    ADC #$0100             ;|
+$A8:9B97 AA          TAX                    ;|
+$A8:9B98 A0 00 00    LDY #$0000             ;} Target enemy sprite palette = [$99AC..CB]
+                                            ;|
+$A8:9B9B B9 AC 99    LDA $99AC,y[$A8:99AC]  ;|
+$A8:9B9E 9F 00 C2 7E STA $7EC200,x[$7E:C320];|
+$A8:9BA2 E8          INX                    ;|
+$A8:9BA3 E8          INX                    ;|
+$A8:9BA4 C8          INY                    ;|
+$A8:9BA5 C8          INY                    ;|
+$A8:9BA6 C0 20 00    CPY #$0020             ;|
+$A8:9BA9 30 F0       BMI $F0    [$9B9B]     ;/
 
 $A8:9BAB FA          PLX
 $A8:9BAC 6B          RTL
