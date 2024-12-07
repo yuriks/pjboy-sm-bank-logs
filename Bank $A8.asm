@@ -1475,8 +1475,8 @@ $A8:9A8C             dx 0010,9E46,
 {
 $A8:9A9C             dw 0010 ; Number of times Samus has to move in the same direction to materialise
 $A8:9A9E             dw 0040 ; Number of frames Samus has to remain stationary to materialise
-$A8:9AA0             dw 1800
-$A8:9AA2             dw 0001
+$A8:9AA0             dw 1800 ; Hovering Y acceleration/deceleration
+$A8:9AA2             dw 0001 ; Initial hovering Y velocity
 $A8:9AA4             dw 0078 ; Number of frames to sleep after dematerialising
 $A8:9AA6             dw 0078 ; Number of frames to be materialised for
 
@@ -1491,6 +1491,7 @@ $A8:9AA8             dw FFC0,FFC0, ; 0: Up-left
                         0000,0040, ; 1Ch: Down
                         0040,0040  ; 20h: Down-right
 
+; Palette transition delay table
 $A8:9ACC             dw 0001, 0008, 0001, 0008, 0001, 0007, 0001, 0007, 0002, 0006, 0002, 0006, 0003, 0005, 0003, 0005,
                         FFFF
 }
@@ -1545,8 +1546,10 @@ $A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]; Go to [enemy function]
 
 ;;; $9B42: Coven function - materialising - fade to white ;;;
 {
+; You only see this fade to white transition once where it transitions from the initial black palette
+; On subsequent calls to this function, it will already have a white palette from the dematerialisation fade to white
 $A8:9B42 DA          PHX
-$A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]  ; Execute $9C31
+$A8:9B43 20 31 9C    JSR $9C31  [$A8:9C31]  ; Process coven palette transition delay
 $A8:9B46 A0 10 00    LDY #$0010             ; Y = 10h
 $A8:9B49 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9B4C BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
@@ -1580,7 +1583,7 @@ $A8:9B7D C0 10 00    CPY #$0010             ;\
 $A8:9B80 30 29       BMI $29    [$9BAB]     ;} If [Y] < 10h: return
 $A8:9B82 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9B85 A9 AD 9B    LDA #$9BAD             ;\
-$A8:9B88 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9BAD
+$A8:9B88 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9BAD (materialising - fade from white)
 $A8:9B8B BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
 $A8:9B8E EB          XBA                    ;|
 $A8:9B8F 0A          ASL A                  ;|
@@ -1608,53 +1611,53 @@ $A8:9BAC 6B          RTL
 
 ;;; $9BAD: Coven function - materialising - fade from white ;;;
 {
-$A8:9BAD 20 88 9E    JSR $9E88  [$A8:9E88]
-$A8:9BB0 48          PHA
-$A8:9BB1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9BB4 20 31 9C    JSR $9C31  [$A8:9C31]
-$A8:9BB7 68          PLA
-$A8:9BB8 1D AA 0F    ORA $0FAA,x[$7E:0FAA]
-$A8:9BBB D0 73       BNE $73    [$9C30]
-$A8:9BBD BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:9BC0 29 FF FB    AND #$FBFF
-$A8:9BC3 29 FF FE    AND #$FEFF
-$A8:9BC6 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A8:9BAD 20 88 9E    JSR $9E88  [$A8:9E88]  ; Advance coven palette transition
+$A8:9BB0 48          PHA                    ;\
+$A8:9BB1 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A8:9BB4 20 31 9C    JSR $9C31  [$A8:9C31]  ;} Process coven palette transition delay
+$A8:9BB7 68          PLA                    ;/
+$A8:9BB8 1D AA 0F    ORA $0FAA,x[$7E:0FAA]  ;\
+$A8:9BBB D0 73       BNE $73    [$9C30]     ;} If transition not complete or [enemy function timer] != 0: return
+$A8:9BBD BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:9BC0 29 FF FB    AND #$FBFF             ;|
+$A8:9BC3 29 FF FE    AND #$FEFF             ;} Set enemy as tangible and visible
+$A8:9BC6 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:9BC9 A9 8A 9C    LDA #$9C8A             ;\
-$A8:9BCC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C8A
-$A8:9BCF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:9BD2 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A8:9BD6 A9 01 00    LDA #$0001
-$A8:9BD9 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9BDC A9 02 00    LDA #$0002
-$A8:9BDF 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A8:9BE2 A9 00 00    LDA #$0000
-$A8:9BE5 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A8:9BE9 AD A2 9A    LDA $9AA2  [$A8:9AA2]
-$A8:9BEC 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A8:9BF0 AD A6 9A    LDA $9AA6  [$A8:9AA6]
-$A8:9BF3 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:9BF6 A9 04 00    LDA #$0004
-$A8:9BF9 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A8:9BFD AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9C00 9F 0C 78 7E STA $7E780C,x[$7E:780C]
-$A8:9C04 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A8:9C08 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A8:9C0C A9 0C 00    LDA #$000C
-$A8:9C0F 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$A8:9C13 BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ; <-- bug
-$A8:9C16 9F 14 78 7E STA $7E7814,x[$7E:7814]
-$A8:9C1A 9F 16 78 7E STA $7E7816,x[$7E:7816]
-$A8:9C1E 9F 18 78 7E STA $7E7818,x[$7E:7818]
-$A8:9C22 AD 9E 9A    LDA $9A9E  [$A8:9A9E]
-$A8:9C25 9F 1A 78 7E STA $7E781A,x[$7E:781A]
-$A8:9C29 AD 9C 9A    LDA $9A9C  [$A8:9A9C]
-$A8:9C2C 9F 1C 78 7E STA $7E781C,x[$7E:781C]
+$A8:9BCC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C8A (materialised)
+$A8:9BCF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:9BD2 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy hover centre Y position = [enemy Y position]
+$A8:9BD6 A9 01 00    LDA #$0001             ;\
+$A8:9BD9 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} >_<;
+$A8:9BDC A9 02 00    LDA #$0002             ;\
+$A8:9BDF 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy palette transition delay index = 2
+$A8:9BE2 A9 00 00    LDA #$0000             ;\
+$A8:9BE5 9F 02 78 7E STA $7E7802,x[$7E:7802];|
+$A8:9BE9 AD A2 9A    LDA $9AA2  [$A8:9AA2]  ;} Enemy Y velocity = 1.0
+$A8:9BEC 9F 04 78 7E STA $7E7804,x[$7E:7804];/
+$A8:9BF0 AD A6 9A    LDA $9AA6  [$A8:9AA6]  ;\
+$A8:9BF3 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 120
+$A8:9BF6 A9 04 00    LDA #$0004             ;\
+$A8:9BF9 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy previous Samus X movement direction = none
+$A8:9BFD AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9C00 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy previous Samus X position = [Samus X position]
+$A8:9C04 9F 0E 78 7E STA $7E780E,x[$7E:780E]; Enemy zone left position = [Samus X position]
+$A8:9C08 9F 10 78 7E STA $7E7810,x[$7E:7810]; Enemy zone right position = [Samus X position]
+$A8:9C0C A9 0C 00    LDA #$000C             ;\
+$A8:9C0F 9F 12 78 7E STA $7E7812,x[$7E:7812];} Enemy previous Samus Y movement direction = none
+$A8:9C13 BD FA 0A    LDA $0AFA,x[$7E:0AFA]  ;\
+$A8:9C16 9F 14 78 7E STA $7E7814,x[$7E:7814];} Enemy previous Samus Y position = [Samus Y position] (buggy)
+$A8:9C1A 9F 16 78 7E STA $7E7816,x[$7E:7816]; Enemy zone top position = [Samus Y position]
+$A8:9C1E 9F 18 78 7E STA $7E7818,x[$7E:7818]; Enemy zone bottom position = [Samus Y position]
+$A8:9C22 AD 9E 9A    LDA $9A9E  [$A8:9A9E]  ;\
+$A8:9C25 9F 1A 78 7E STA $7E781A,x[$7E:781A];} Enemy lock-on timer = 40h
+$A8:9C29 AD 9C 9A    LDA $9A9C  [$A8:9A9C]  ;\
+$A8:9C2C 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy directed movement timer = 10h
 
 $A8:9C30 6B          RTL
 }
 
 
-;;; $9C31:  ;;;
+;;; $9C31: Process coven palette transition delay ;;;
 {
 $A8:9C31 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:9C34 F0 1F       BEQ $1F    [$9C55]     ;} If [enemy function timer] != 0:
@@ -1662,13 +1665,13 @@ $A8:9C36 3A          DEC A                  ;\
 $A8:9C37 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Decrement enemy function timer
 $A8:9C3A D0 18       BNE $18    [$9C54]     ; If [enemy function timer] != 0: return
 $A8:9C3C BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:9C3F A8          TAY                    ;} Y = [enemy $0FAC]
+$A8:9C3F A8          TAY                    ;} Y = [enemy palette transition delay index]
 $A8:9C40 B9 CC 9A    LDA $9ACC,y[$A8:9ACE]  ;\
 $A8:9C43 30 1A       BMI $1A    [$9C5F]     ;} If [$9ACC + [Y]] < 0: go to BRANCH_END
 $A8:9C45 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy function timer = [$9ACC + [Y]]
 $A8:9C48 98          TYA                    ;\
 $A8:9C49 1A          INC A                  ;|
-$A8:9C4A 1A          INC A                  ;} Enemy $0FAC += 2
+$A8:9C4A 1A          INC A                  ;} Enemy palette transition delay index += 2
 $A8:9C4B 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $A8:9C4E 98          TYA                    ;\
 $A8:9C4F 89 02 00    BIT #$0002             ;} If [Y] / 2 % 2 != 0:
@@ -1683,22 +1686,22 @@ $A8:9C5E 60          RTS                    ; Return
 ; BRANCH_END
 $A8:9C5F A9 00 00    LDA #$0000             ;\
 $A8:9C62 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 0
-$A8:9C65 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = 0
+$A8:9C65 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy palette transition delay index = 0
 $A8:9C68 60          RTS
 }
 
 
 ;;; $9C69: Coven function - dematerialising ;;;
 {
-$A8:9C69 20 88 9E    JSR $9E88  [$A8:9E88]
-$A8:9C6C C9 00 00    CMP #$0000
-$A8:9C6F D0 18       BNE $18    [$9C89]
+$A8:9C69 20 88 9E    JSR $9E88  [$A8:9E88]  ; Advance coven palette transition
+$A8:9C6C C9 00 00    CMP #$0000             ;\
+$A8:9C6F D0 18       BNE $18    [$9C89]     ;} If completed transition:
 $A8:9C71 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9C74 A9 13 9D    LDA #$9D13             ;\
-$A8:9C77 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13
-$A8:9C7A BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:9C7D 09 00 01    ORA #$0100
-$A8:9C80 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A8:9C77 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D13 (dematerialised - asleep)
+$A8:9C7A BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:9C7D 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A8:9C80 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:9C83 AD A4 9A    LDA $9AA4  [$A8:9AA4]  ;\
 $A8:9C86 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 120
 
@@ -1708,61 +1711,61 @@ $A8:9C89 6B          RTL
 
 ;;; $9C8A: Coven function - materialised ;;;
 {
-$A8:9C8A BD 80 0F    LDA $0F80,x[$7E:0F80]
-$A8:9C8D 18          CLC
-$A8:9C8E 7F 02 78 7E ADC $7E7802,x[$7E:7802]
-$A8:9C92 9D 80 0F    STA $0F80,x[$7E:0F80]
-$A8:9C95 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:9C98 7F 04 78 7E ADC $7E7804,x[$7E:7804]
-$A8:9C9C 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A8:9C9F BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:9CA2 DF 00 78 7E CMP $7E7800,x[$7E:7800]
-$A8:9CA6 30 19       BMI $19    [$9CC1]
-$A8:9CA8 BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A8:9CAC 38          SEC
-$A8:9CAD ED A0 9A    SBC $9AA0  [$A8:9AA0]
-$A8:9CB0 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A8:9CB4 BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A8:9CB8 E9 00 00    SBC #$0000
-$A8:9CBB 9F 04 78 7E STA $7E7804,x[$7E:7804]
+$A8:9C8A BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\
+$A8:9C8D 18          CLC                    ;|
+$A8:9C8E 7F 02 78 7E ADC $7E7802,x[$7E:7802];|
+$A8:9C92 9D 80 0F    STA $0F80,x[$7E:0F80]  ;} Enemy Y position += [enemy Y velocity]
+$A8:9C95 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
+$A8:9C98 7F 04 78 7E ADC $7E7804,x[$7E:7804];|
+$A8:9C9C 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A8:9C9F BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:9CA2 DF 00 78 7E CMP $7E7800,x[$7E:7800];} If [enemy Y position] >= [enemy hover centre Y position]:
+$A8:9CA6 30 19       BMI $19    [$9CC1]     ;/
+$A8:9CA8 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A8:9CAC 38          SEC                    ;|
+$A8:9CAD ED A0 9A    SBC $9AA0  [$A8:9AA0]  ;|
+$A8:9CB0 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy Y velocity -= 0.1800h
+$A8:9CB4 BF 04 78 7E LDA $7E7804,x[$7E:7804];|
+$A8:9CB8 E9 00 00    SBC #$0000             ;|
+$A8:9CBB 9F 04 78 7E STA $7E7804,x[$7E:7804];/
 $A8:9CBF 80 17       BRA $17    [$9CD8]
 
-$A8:9CC1 BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A8:9CC5 18          CLC
-$A8:9CC6 6D A0 9A    ADC $9AA0  [$A8:9AA0]
-$A8:9CC9 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A8:9CCD BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A8:9CD1 69 00 00    ADC #$0000
-$A8:9CD4 9F 04 78 7E STA $7E7804,x[$7E:7804]
+$A8:9CC1 BF 02 78 7E LDA $7E7802,x[$7E:7802];\ Else ([enemy Y position] < [enemy hover centre Y position]):
+$A8:9CC5 18          CLC                    ;|
+$A8:9CC6 6D A0 9A    ADC $9AA0  [$A8:9AA0]  ;|
+$A8:9CC9 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy Y velocity += 0.1800h
+$A8:9CCD BF 04 78 7E LDA $7E7804,x[$7E:7804];|
+$A8:9CD1 69 00 00    ADC #$0000             ;|
+$A8:9CD4 9F 04 78 7E STA $7E7804,x[$7E:7804];/
 
 $A8:9CD8 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:9CDB 3A          DEC A                  ;} Decrement enemy function timer
 $A8:9CDC 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A8:9CDF D0 31       BNE $31    [$9D12]     ; If [enemy function timer] != 0: return
 $A8:9CE1 A9 69 9C    LDA #$9C69             ;\
-$A8:9CE4 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C69
-$A8:9CE7 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:9CEA 09 00 04    ORA #$0400
-$A8:9CED 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A8:9CE4 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9C69 (dematerialising)
+$A8:9CE7 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:9CEA 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A8:9CED 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:9CF0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9CF3 BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:9CF6 EB          XBA
-$A8:9CF7 0A          ASL A
-$A8:9CF8 0A          ASL A
-$A8:9CF9 0A          ASL A
-$A8:9CFA 0A          ASL A
-$A8:9CFB 18          CLC
-$A8:9CFC 69 00 01    ADC #$0100
-$A8:9CFF AA          TAX
-$A8:9D00 A9 10 00    LDA #$0010
-$A8:9D03 85 12       STA $12    [$7E:0012]
-$A8:9D05 A9 FF 7F    LDA #$7FFF
-
-$A8:9D08 9F 00 C2 7E STA $7EC200,x[$7E:C320]
-$A8:9D0C E8          INX
-$A8:9D0D E8          INX
-$A8:9D0E C6 12       DEC $12    [$7E:0012]
-$A8:9D10 10 F6       BPL $F6    [$9D08]
+$A8:9CF3 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:9CF6 EB          XBA                    ;|
+$A8:9CF7 0A          ASL A                  ;|
+$A8:9CF8 0A          ASL A                  ;|
+$A8:9CF9 0A          ASL A                  ;|
+$A8:9CFA 0A          ASL A                  ;|
+$A8:9CFB 18          CLC                    ;|
+$A8:9CFC 69 00 01    ADC #$0100             ;|
+$A8:9CFF AA          TAX                    ;|
+$A8:9D00 A9 10 00    LDA #$0010             ;} Enemy target sprite palette = 7FFFh
+$A8:9D03 85 12       STA $12    [$7E:0012]  ;|
+$A8:9D05 A9 FF 7F    LDA #$7FFF             ;|
+                                            ;|
+$A8:9D08 9F 00 C2 7E STA $7EC200,x[$7E:C320];|
+$A8:9D0C E8          INX                    ;|
+$A8:9D0D E8          INX                    ;|
+$A8:9D0E C6 12       DEC $12    [$7E:0012]  ;|
+$A8:9D10 10 F6       BPL $F6    [$9D08]     ;/
 
 $A8:9D12 6B          RTL
 }
@@ -1779,9 +1782,9 @@ $A8:9D1C D0 12       BNE $12    [$9D30]     ; If [enemy function timer] != 0: re
 $A8:9D1E A9 01 00    LDA #$0001             ;\
 $A8:9D21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = 1
 $A8:9D24 A9 02 00    LDA #$0002             ;\
-$A8:9D27 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 2
+$A8:9D27 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy palette transition delay index = 2
 $A8:9D2A A9 36 9D    LDA #$9D36             ;\
-$A8:9D2D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D36
+$A8:9D2D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9D36 (dematerialised - awake)
 
 $A8:9D30 6B          RTL
 }
@@ -1856,7 +1859,7 @@ $A8:9DA3 80 6A       BRA $6A    [$9E0F]     ; Go to BRANCH_UPDATE_ZONE
 
 ; BRANCH_MATERIALISE
 $A8:9DA5 A9 42 9B    LDA #$9B42             ;\
-$A8:9DA8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9B42
+$A8:9DA8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9B42 (materialising - fade to white)
 $A8:9DAB AD 9E 9A    LDA $9A9E  [$A8:9A9E]  ;\
 $A8:9DAE 9F 1A 78 7E STA $7E781A,x[$7E:781A];} Enemy lock-on timer = 40h
 $A8:9DB2 AD 9C 9A    LDA $9A9C  [$A8:9A9C]  ;\
@@ -1945,106 +1948,113 @@ $A8:9E72             dx 0004, 8000,00,310E, 81F0,00,310C, 8000,F0,3102, 81F0,F0,
 }
 
 
-;;; $9E88:  ;;;
+;;; $9E88: Advance coven palette transition ;;;
 {
+;; Returns:
+;;     A: Zero if completed transition, non-zero otherwise
 $A8:9E88 08          PHP
 $A8:9E89 DA          PHX
 $A8:9E8A 5A          PHY
 $A8:9E8B C2 30       REP #$30
-$A8:9E8D A0 00 00    LDY #$0000
-$A8:9E90 AD 97 07    LDA $0797  [$7E:0797]
-$A8:9E93 F0 03       BEQ $03    [$9E98]
-$A8:9E95 4C 4A 9F    JMP $9F4A  [$A8:9F4A]
+$A8:9E8D A0 00 00    LDY #$0000             ; Y = 0
+$A8:9E90 AD 97 07    LDA $0797  [$7E:0797]  ;\
+$A8:9E93 F0 03       BEQ $03    [$9E98]     ;} If [door transition flag] != 0:
+$A8:9E95 4C 4A 9F    JMP $9F4A  [$A8:9F4A]  ; Go to BRANCH_RETURN
 
 $A8:9E98 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9E9B BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:9E9E EB          XBA
-$A8:9E9F 0A          ASL A
-$A8:9EA0 0A          ASL A
-$A8:9EA1 0A          ASL A
-$A8:9EA2 0A          ASL A
-$A8:9EA3 18          CLC
-$A8:9EA4 69 00 01    ADC #$0100
-$A8:9EA7 AA          TAX
-$A8:9EA8 18          CLC
-$A8:9EA9 69 20 00    ADC #$0020
-$A8:9EAC 85 14       STA $14    [$7E:0014]
+$A8:9E9B BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:9E9E EB          XBA                    ;|
+$A8:9E9F 0A          ASL A                  ;|
+$A8:9EA0 0A          ASL A                  ;|
+$A8:9EA1 0A          ASL A                  ;} X = 100h + [enemy palette index] / 10h (palette colour index)
+$A8:9EA2 0A          ASL A                  ;|
+$A8:9EA3 18          CLC                    ;|
+$A8:9EA4 69 00 01    ADC #$0100             ;|
+$A8:9EA7 AA          TAX                    ;/
+$A8:9EA8 18          CLC                    ;\
+$A8:9EA9 69 20 00    ADC #$0020             ;} $14 = [X] + 20h
+$A8:9EAC 85 14       STA $14    [$7E:0014]  ;/
 
-$A8:9EAE BF 00 C2 7E LDA $7EC200,x[$7E:C320]
-$A8:9EB2 DF 00 C0 7E CMP $7EC000,x[$7E:C120]
-$A8:9EB6 D0 03       BNE $03    [$9EBB]
-$A8:9EB8 4C 41 9F    JMP $9F41  [$A8:9F41]
+; LOOP
+$A8:9EAE BF 00 C2 7E LDA $7EC200,x[$7E:C320];\
+$A8:9EB2 DF 00 C0 7E CMP $7EC000,x[$7E:C120];} If (palette colour) = (target palette colour):
+$A8:9EB6 D0 03       BNE $03    [$9EBB]     ;/
+$A8:9EB8 4C 41 9F    JMP $9F41  [$A8:9F41]  ; Go to BRANCH_NEXT
 
-$A8:9EBB 29 1F 00    AND #$001F
-$A8:9EBE 85 12       STA $12    [$7E:0012]
-$A8:9EC0 BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9EC4 29 1F 00    AND #$001F
-$A8:9EC7 C5 12       CMP $12    [$7E:0012]
-$A8:9EC9 F0 16       BEQ $16    [$9EE1]
-$A8:9ECB 10 03       BPL $03    [$9ED0]
-$A8:9ECD 1A          INC A
+$A8:9EBB 29 1F 00    AND #$001F             ;\
+$A8:9EBE 85 12       STA $12    [$7E:0012]  ;} $12 = (target palette colour) & 1Fh (target red component)
+$A8:9EC0 BF 00 C0 7E LDA $7EC000,x[$7E:C120];\
+$A8:9EC4 29 1F 00    AND #$001F             ;} A = (palette colour) & 1Fh (red component)
+$A8:9EC7 C5 12       CMP $12    [$7E:0012]  ;\
+$A8:9EC9 F0 16       BEQ $16    [$9EE1]     ;} If (red component) = (target red component): go to BRANCH_RED_END
+$A8:9ECB 10 03       BPL $03    [$9ED0]     ; If (red component) < (target red component):
+$A8:9ECD 1A          INC A                  ; A += 1
 $A8:9ECE 80 01       BRA $01    [$9ED1]
+                                            ; Else ((red component) > (target red component)):
+$A8:9ED0 3A          DEC A                  ; A -= 1
 
-$A8:9ED0 3A          DEC A
+$A8:9ED1 85 12       STA $12    [$7E:0012]  ;\
+$A8:9ED3 BF 00 C0 7E LDA $7EC000,x[$7E:C120];|
+$A8:9ED7 29 E0 FF    AND #$FFE0             ;} (Palette colour) = (palette colour) & ~1Fh | [A] (set the red component)
+$A8:9EDA 05 12       ORA $12    [$7E:0012]  ;|
+$A8:9EDC 9F 00 C0 7E STA $7EC000,x[$7E:C120];/
+$A8:9EE0 C8          INY                    ; Increment Y
 
-$A8:9ED1 85 12       STA $12    [$7E:0012]
-$A8:9ED3 BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9ED7 29 E0 FF    AND #$FFE0
-$A8:9EDA 05 12       ORA $12    [$7E:0012]
-$A8:9EDC 9F 00 C0 7E STA $7EC000,x[$7E:C120]
-$A8:9EE0 C8          INY
-
-$A8:9EE1 BF 00 C2 7E LDA $7EC200,x[$7E:C320]
-$A8:9EE5 29 E0 03    AND #$03E0
-$A8:9EE8 85 12       STA $12    [$7E:0012]
-$A8:9EEA BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9EEE 29 E0 03    AND #$03E0
-$A8:9EF1 C5 12       CMP $12    [$7E:0012]
-$A8:9EF3 F0 1C       BEQ $1C    [$9F11]
-$A8:9EF5 10 06       BPL $06    [$9EFD]
-$A8:9EF7 18          CLC
-$A8:9EF8 69 20 00    ADC #$0020
+; BRANCH_RED_END
+$A8:9EE1 BF 00 C2 7E LDA $7EC200,x[$7E:C320];\
+$A8:9EE5 29 E0 03    AND #$03E0             ;} $12 = (target palette colour) & 1Fh << 5 (target green component)
+$A8:9EE8 85 12       STA $12    [$7E:0012]  ;/
+$A8:9EEA BF 00 C0 7E LDA $7EC000,x[$7E:C120];\
+$A8:9EEE 29 E0 03    AND #$03E0             ;} A = (palette colour) & 1Fh << 5 (green component)
+$A8:9EF1 C5 12       CMP $12    [$7E:0012]  ;\
+$A8:9EF3 F0 1C       BEQ $1C    [$9F11]     ;} If (green component) = (target green component): go to BRANCH_GREEN_END
+$A8:9EF5 10 06       BPL $06    [$9EFD]     ; If (green component) < (target green component):
+$A8:9EF7 18          CLC                    ;\
+$A8:9EF8 69 20 00    ADC #$0020             ;} A += 1 << 5
 $A8:9EFB 80 04       BRA $04    [$9F01]
 
-$A8:9EFD 38          SEC
-$A8:9EFE E9 20 00    SBC #$0020
+$A8:9EFD 38          SEC                    ;\ Else ((green component) > (target green component)):
+$A8:9EFE E9 20 00    SBC #$0020             ;} A += 1 << 5
 
-$A8:9F01 85 12       STA $12    [$7E:0012]
-$A8:9F03 BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9F07 29 1F FC    AND #$FC1F
-$A8:9F0A 05 12       ORA $12    [$7E:0012]
-$A8:9F0C 9F 00 C0 7E STA $7EC000,x[$7E:C120]
-$A8:9F10 C8          INY
+$A8:9F01 85 12       STA $12    [$7E:0012]  ;\
+$A8:9F03 BF 00 C0 7E LDA $7EC000,x[$7E:C120];|
+$A8:9F07 29 1F FC    AND #$FC1F             ;} (Palette colour) = (palette colour) & ~(1Fh << 5) | [A] (set the green component)
+$A8:9F0A 05 12       ORA $12    [$7E:0012]  ;|
+$A8:9F0C 9F 00 C0 7E STA $7EC000,x[$7E:C120];/
+$A8:9F10 C8          INY                    ; Increment Y
 
-$A8:9F11 BF 00 C2 7E LDA $7EC200,x[$7E:C320]
-$A8:9F15 29 00 7C    AND #$7C00
-$A8:9F18 85 12       STA $12    [$7E:0012]
-$A8:9F1A BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9F1E 29 00 7C    AND #$7C00
-$A8:9F21 C5 12       CMP $12    [$7E:0012]
-$A8:9F23 F0 1C       BEQ $1C    [$9F41]
-$A8:9F25 10 06       BPL $06    [$9F2D]
-$A8:9F27 18          CLC
-$A8:9F28 69 00 04    ADC #$0400
-$A8:9F2B 80 04       BRA $04    [$9F31]
+; BRANCH_GREEN_END
+$A8:9F11 BF 00 C2 7E LDA $7EC200,x[$7E:C320];\
+$A8:9F15 29 00 7C    AND #$7C00             ;} $12 = (target palette colour) & 1Fh << Ah (target blue component)
+$A8:9F18 85 12       STA $12    [$7E:0012]  ;/
+$A8:9F1A BF 00 C0 7E LDA $7EC000,x[$7E:C120];\
+$A8:9F1E 29 00 7C    AND #$7C00             ;} A = (palette colour) & 1Fh << Ah (blue component)
+$A8:9F21 C5 12       CMP $12    [$7E:0012]  ;\
+$A8:9F23 F0 1C       BEQ $1C    [$9F41]     ;} If (blue component) = (target blue component): go to BRANCH_NEXT
+$A8:9F25 10 06       BPL $06    [$9F2D]     ; If (blue component) < (target blue component):
+$A8:9F27 18          CLC                    ;\
+$A8:9F28 69 00 04    ADC #$0400             ;} A += 1 << Ah
+$A8:9F2B 80 04       BRA $04    [$9F31]     
+                                            
+$A8:9F2D 38          SEC                    ;\ Else ((blue component) > (target blue component)):
+$A8:9F2E E9 00 04    SBC #$0400             ;} A += 1 << Ah
+                                            
+$A8:9F31 85 12       STA $12    [$7E:0012]  ;\
+$A8:9F33 BF 00 C0 7E LDA $7EC000,x[$7E:C120];|
+$A8:9F37 29 FF 83    AND #$83FF             ;} (Palette colour) = (palette colour) & ~(1Fh << Ah) | [A] (set the blue component)
+$A8:9F3A 05 12       ORA $12    [$7E:0012]  ;|
+$A8:9F3C 9F 00 C0 7E STA $7EC000,x[$7E:C120];/
+$A8:9F40 C8          INY                    ; Increment Y
 
-$A8:9F2D 38          SEC
-$A8:9F2E E9 00 04    SBC #$0400
+; BRANCH_NEXT
+$A8:9F41 E8          INX                    ;\
+$A8:9F42 E8          INX                    ;} X += 2
+$A8:9F43 E4 14       CPX $14    [$7E:0014]  ;\
+$A8:9F45 10 03       BPL $03    [$9F4A]     ;} If [X] < [$14]:
+$A8:9F47 4C AE 9E    JMP $9EAE  [$A8:9EAE]  ; Go to LOOP
 
-$A8:9F31 85 12       STA $12    [$7E:0012]
-$A8:9F33 BF 00 C0 7E LDA $7EC000,x[$7E:C120]
-$A8:9F37 29 FF 83    AND #$83FF
-$A8:9F3A 05 12       ORA $12    [$7E:0012]
-$A8:9F3C 9F 00 C0 7E STA $7EC000,x[$7E:C120]
-$A8:9F40 C8          INY
-
-$A8:9F41 E8          INX
-$A8:9F42 E8          INX
-$A8:9F43 E4 14       CPX $14    [$7E:0014]
-$A8:9F45 10 03       BPL $03    [$9F4A]
-$A8:9F47 4C AE 9E    JMP $9EAE  [$A8:9EAE]
-
-$A8:9F4A 98          TYA
+; BRANCH_RETURN
+$A8:9F4A 98          TYA                    ; A = [Y]
 $A8:9F4B 7A          PLY
 $A8:9F4C FA          PLX
 $A8:9F4D 28          PLP
@@ -2235,6 +2245,8 @@ $A8:A0C5             dw FFF8
 }
 
 
+;;; $A0C7..A147: Instructions ;;;
+{
 ;;; $A0C7: Instruction ;;;
 {
 $A8:A0C7 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2315,6 +2327,7 @@ $A8:A145 FA          PLX
 $A8:A146 7A          PLY
 $A8:A147 6B          RTL
 }
+}
 
 
 ;;; $A148: Initialisation AI - enemy $E7BF (yapping maw) ;;;
@@ -2335,7 +2348,7 @@ $A8:A174 9F 0C 78 7E STA $7E780C,x[$7E:780C]; Enemy $7E:780C = 0
 $A8:A178 9F 0E 78 7E STA $7E780E,x[$7E:780E]; Enemy $7E:780E = 0
 $A8:A17C 9F 20 80 7E STA $7E8020,x[$7E:8020]; Enemy $7E:8020 = 0
 $A8:A180 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A8:A183 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = [enemy parameter 1]
+$A8:A183 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy proximity = [enemy parameter 1]
 $A8:A186 A9 40 00    LDA #$0040             ;\
 $A8:A189 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = 40h
 $A8:A18C A9 6F 9F    LDA #$9F6F             ;\
@@ -2396,7 +2409,7 @@ $A8:A210 6B          RTL
 {
 $A8:A211 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A214 BF 2A 80 7E LDA $7E802A,x[$7E:806A];\
-$A8:A218 3A          DEC A                  ;} Decrement enemy $7E:802A
+$A8:A218 3A          DEC A                  ;} Decrement enemy intangibility timer
 $A8:A219 9F 2A 80 7E STA $7E802A,x[$7E:806A];/
 $A8:A21D 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ; Check if enemy centre is on screen or not
 $A8:A221 9F 2C 80 7E STA $7E802C,x[$7E:806C]; Enemy off-screen flag = [A]
@@ -2422,7 +2435,7 @@ $A8:A24A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A8:A24D 8D 38 0E    STA $0E38  [$7E:0E38]  ;} $0E38 = [Samus Y position]
 $A8:A250 22 A8 AC A0 JSL $A0ACA8[$A0:ACA8]  ; Calculate distance and angle of Samus from enemy
 $A8:A254 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; >_<;
-$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850]; Enemy $7E:7810 = (distance of Samus from enemy)
+$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850]; Enemy target distance = (distance of Samus from enemy)
 $A8:A25C C9 20 00    CMP #$0020             ;\
 $A8:A25F 30 23       BMI $23    [$A284]     ;} If [A] < 20h: go to BRANCH_POINT_BLANK
 $A8:A261 DD B2 0F    CMP $0FB2,x[$7E:0FF2]  ;\
@@ -2430,78 +2443,78 @@ $A8:A264 10 1D       BPL $1D    [$A283]     ;} If [A] >= [enemy proximity]: retu
 $A8:A266 BF 10 78 7E LDA $7E7810,x[$7E:7850]; >_<;
 $A8:A26A C9 40 00    CMP #$0040             ;\
 $A8:A26D 30 07       BMI $07    [$A276]     ;|
-$A8:A26F A9 40 00    LDA #$0040             ;} Enemy $7E:7810 = min(40h, [A])
+$A8:A26F A9 40 00    LDA #$0040             ;} Enemy target distance = min(40h, [A])
 $A8:A272 9F 10 78 7E STA $7E7810,x[$7E:7890];/
 
 $A8:A276 AD 3A 0E    LDA $0E3A  [$7E:0E3A]  ;\
-$A8:A279 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy $7E:7814 = [$0E3A] (angle of Samus from enemy)
+$A8:A279 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy target angle = [$0E3A] (angle of Samus from enemy)
 $A8:A27D A9 8C A2    LDA #$A28C             ;\
-$A8:A280 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A28C
+$A8:A280 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A28C (attack)
 
 $A8:A283 60          RTS                    ; Return
 
 ; BRANCH_POINT_BLANK
 $A8:A284 A9 30 00    LDA #$0030             ;\
-$A8:A287 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy $7E:802A = 30h
+$A8:A287 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy intangibility timer = 30h
 $A8:A28B 60          RTS
 }
 
 
-;;; $A28C: Yapping maw function -  ;;;
+;;; $A28C: Yapping maw function - attack ;;;
 {
 $A8:A28C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A28F 9E AA 0F    STZ $0FAA,x[$7E:0FEA]
-$A8:A292 9E AC 0F    STZ $0FAC,x[$7E:0FEC]
-$A8:A295 9E AE 0F    STZ $0FAE,x[$7E:0FEE]
-$A8:A298 BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$A8:A29C 4A          LSR A
-$A8:A29D 9F 12 78 7E STA $7E7812,x[$7E:7852]
-$A8:A2A1 BF 14 78 7E LDA $7E7814,x[$7E:7854]
-$A8:A2A5 38          SEC
-$A8:A2A6 E9 40 00    SBC #$0040
-$A8:A2A9 29 FF 00    AND #$00FF
-$A8:A2AC 49 FF FF    EOR #$FFFF
-$A8:A2AF 1A          INC A
-$A8:A2B0 18          CLC
-$A8:A2B1 69 00 01    ADC #$0100
-$A8:A2B4 29 FF 00    AND #$00FF
-$A8:A2B7 9F 16 78 7E STA $7E7816,x[$7E:7856]
-$A8:A2BB C9 80 00    CMP #$0080
-$A8:A2BE 10 09       BPL $09    [$A2C9]
-$A8:A2C0 A9 00 00    LDA #$0000
-$A8:A2C3 9F 1E 80 7E STA $7E801E,x[$7E:805E]
+$A8:A28F 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ; Enemy $0FAA = 0
+$A8:A292 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ; Enemy $0FAC = 0
+$A8:A295 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ; Enemy $0FAE = 0
+$A8:A298 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$A8:A29C 4A          LSR A                  ;} Enemy $7E:7812 = [enemy target distance] / 2
+$A8:A29D 9F 12 78 7E STA $7E7812,x[$7E:7852];/
+$A8:A2A1 BF 14 78 7E LDA $7E7814,x[$7E:7854];\
+$A8:A2A5 38          SEC                    ;|
+$A8:A2A6 E9 40 00    SBC #$0040             ;|
+$A8:A2A9 29 FF 00    AND #$00FF             ;|
+$A8:A2AC 49 FF FF    EOR #$FFFF             ;|
+$A8:A2AF 1A          INC A                  ;} Enemy $7E:7816 = (40h - [enemy target angle]) % 100h (angle using common maths convention)
+$A8:A2B0 18          CLC                    ;|
+$A8:A2B1 69 00 01    ADC #$0100             ;|
+$A8:A2B4 29 FF 00    AND #$00FF             ;|
+$A8:A2B7 9F 16 78 7E STA $7E7816,x[$7E:7856];/
+$A8:A2BB C9 80 00    CMP #$0080             ;\
+$A8:A2BE 10 09       BPL $09    [$A2C9]     ;} If [enemy $7E:7816] < 80h:
+$A8:A2C0 A9 00 00    LDA #$0000             ;\
+$A8:A2C3 9F 1E 80 7E STA $7E801E,x[$7E:805E];} Enemy $7E:801E = 0
 $A8:A2C7 80 07       BRA $07    [$A2D0]
 
-$A8:A2C9 A9 01 00    LDA #$0001
-$A8:A2CC 9F 1E 80 7E STA $7E801E,x[$7E:821E]
+$A8:A2C9 A9 01 00    LDA #$0001             ;\
+$A8:A2CC 9F 1E 80 7E STA $7E801E,x[$7E:821E];} Enemy $7E:801E = 1
 
-$A8:A2D0 20 10 A3    JSR $A310  [$A8:A310]
-$A8:A2D3 BF 14 78 7E LDA $7E7814,x[$7E:7854]
-$A8:A2D7 18          CLC
-$A8:A2D8 69 10 00    ADC #$0010
-$A8:A2DB 29 FF 00    AND #$00FF
-$A8:A2DE 4A          LSR A
-$A8:A2DF 4A          LSR A
-$A8:A2E0 4A          LSR A
-$A8:A2E1 4A          LSR A
-$A8:A2E2 4A          LSR A
-$A8:A2E3 0A          ASL A
-$A8:A2E4 9F 28 80 7E STA $7E8028,x[$7E:8068]
-$A8:A2E8 A8          TAY
-$A8:A2E9 B9 97 A0    LDA $A097,y[$A8:A099]
-$A8:A2EC 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$A8:A2D0 20 10 A3    JSR $A310  [$A8:A310]  ; Execute $A310
+$A8:A2D3 BF 14 78 7E LDA $7E7814,x[$7E:7854];\
+$A8:A2D7 18          CLC                    ;|
+$A8:A2D8 69 10 00    ADC #$0010             ;|
+$A8:A2DB 29 FF 00    AND #$00FF             ;|
+$A8:A2DE 4A          LSR A                  ;|
+$A8:A2DF 4A          LSR A                  ;|
+$A8:A2E0 4A          LSR A                  ;} Y = enemy instruction list table index = ([enemy target angle] + 10h) % 100h / 20h * 2
+$A8:A2E1 4A          LSR A                  ;|
+$A8:A2E2 4A          LSR A                  ;|
+$A8:A2E3 0A          ASL A                  ;|
+$A8:A2E4 9F 28 80 7E STA $7E8028,x[$7E:8068];|
+$A8:A2E8 A8          TAY                    ;/
+$A8:A2E9 B9 97 A0    LDA $A097,y[$A8:A099]  ;} Enemy instruction list pointer = [$A097 + [Y]]
+$A8:A2EC 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;/
 $A8:A2EF A9 01 00    LDA #$0001             ;\
 $A8:A2F2 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
-$A8:A2F5 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A8:A2F8 98          TYA
-$A8:A2F9 0A          ASL A
-$A8:A2FA A8          TAY
-$A8:A2FB B9 A7 A0    LDA $A0A7,y[$A8:A0AB]
-$A8:A2FE 9F 24 80 7E STA $7E8024,x[$7E:8064]
-$A8:A302 B9 A9 A0    LDA $A0A9,y[$A8:A0AD]
-$A8:A305 9F 26 80 7E STA $7E8026,x[$7E:8066]
+$A8:A2F5 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A8:A2F8 98          TYA                    ;\
+$A8:A2F9 0A          ASL A                  ;} Y *= 2
+$A8:A2FA A8          TAY                    ;/
+$A8:A2FB B9 A7 A0    LDA $A0A7,y[$A8:A0AB]  ;\
+$A8:A2FE 9F 24 80 7E STA $7E8024,x[$7E:8064];} Enemy $7E:8024 = [$A0A7 + [Y]]
+$A8:A302 B9 A9 A0    LDA $A0A9,y[$A8:A0AD]  ;\
+$A8:A305 9F 26 80 7E STA $7E8026,x[$7E:8066];} Enemy $7E:8026 = [$A0A7 + [Y] + 2]
 $A8:A309 A9 45 A4    LDA #$A445             ;\
-$A8:A30C 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A445
+$A8:A30C 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A445 (attacking)
 $A8:A30F 60          RTS
 }
 
@@ -2509,17 +2522,17 @@ $A8:A30F 60          RTS
 ;;; $A310:  ;;;
 {
 $A8:A310 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A313 BF 12 78 7E LDA $7E7812,x[$7E:7852]
-$A8:A317 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A31A A9 80 00    LDA #$0080
-$A8:A31D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A321 9F 1C 78 7E STA $7E781C,x[$7E:785C]
-$A8:A325 BF 12 78 7E LDA $7E7812,x[$7E:7852]
-$A8:A329 4A          LSR A
-$A8:A32A 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A32D A9 80 00    LDA #$0080
-$A8:A330 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A334 9F 1E 78 7E STA $7E781E,x[$7E:785E]
+$A8:A313 BF 12 78 7E LDA $7E7812,x[$7E:7852];\
+$A8:A317 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A31A A9 80 00    LDA #$0080             ;} Enemy $7E:781C = [enemy $7E:7812] * -7FFFh / 8000h
+$A8:A31D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A321 9F 1C 78 7E STA $7E781C,x[$7E:785C];/
+$A8:A325 BF 12 78 7E LDA $7E7812,x[$7E:7852];\
+$A8:A329 4A          LSR A                  ;|
+$A8:A32A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A32D A9 80 00    LDA #$0080             ;} Enemy $7E:781E = 0
+$A8:A330 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A334 9F 1E 78 7E STA $7E781E,x[$7E:785E];/
 $A8:A338 60          RTS
 }
 
@@ -2527,24 +2540,24 @@ $A8:A338 60          RTS
 ;;; $A339:  ;;;
 {
 $A8:A339 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A33C BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A8:A340 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A343 A9 00 00    LDA #$0000
-$A8:A346 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A34A 9F 20 78 7E STA $7E7820,x[$7E:7860]
-$A8:A34E A9 00 00    LDA #$0000
-$A8:A351 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A355 9F 22 78 7E STA $7E7822,x[$7E:7862]
-$A8:A359 BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A35D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A361 38          SEC
-$A8:A362 FF 20 78 7E SBC $7E7820,x[$7E:7860]
-$A8:A366 9F 0E 80 7E STA $7E800E,x[$7E:804E]
-$A8:A36A BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A36E 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A372 38          SEC
-$A8:A373 FF 22 78 7E SBC $7E7822,x[$7E:7862]
-$A8:A377 9F 10 80 7E STA $7E8010,x[$7E:8050]
+$A8:A33C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$A8:A340 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A343 A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy body segment 1 X offset] * 7FFFh / 8000h
+$A8:A346 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A34A 9F 20 78 7E STA $7E7820,x[$7E:7860];/
+$A8:A34E A9 00 00    LDA #$0000             ;\
+$A8:A351 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
+$A8:A355 9F 22 78 7E STA $7E7822,x[$7E:7862];/
+$A8:A359 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A35D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A361 38          SEC                    ;} Enemy $7E:800E = [enemy body segment 1 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A362 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
+$A8:A366 9F 0E 80 7E STA $7E800E,x[$7E:804E];/
+$A8:A36A BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A36E 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A372 38          SEC                    ;} Enemy $7E:8010 = [enemy body segment 1 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A373 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
+$A8:A377 9F 10 80 7E STA $7E8010,x[$7E:8050];/
 $A8:A37B 60          RTS
 }
 
@@ -2552,24 +2565,24 @@ $A8:A37B 60          RTS
 ;;; $A37C:  ;;;
 {
 $A8:A37C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A37F BF 04 78 7E LDA $7E7804,x[$7E:7844]
-$A8:A383 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A386 A9 00 00    LDA #$0000
-$A8:A389 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A38D 9F 20 78 7E STA $7E7820,x[$7E:7860]
-$A8:A391 A9 00 00    LDA #$0000
-$A8:A394 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A398 9F 22 78 7E STA $7E7822,x[$7E:7862]
-$A8:A39C BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A3A0 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A3A4 38          SEC
-$A8:A3A5 FF 20 78 7E SBC $7E7820,x[$7E:7860]
-$A8:A3A9 9F 12 80 7E STA $7E8012,x[$7E:8052]
-$A8:A3AD BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A3B1 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A3B5 38          SEC
-$A8:A3B6 FF 22 78 7E SBC $7E7822,x[$7E:7862]
-$A8:A3BA 9F 14 80 7E STA $7E8014,x[$7E:8054]
+$A8:A37F BF 04 78 7E LDA $7E7804,x[$7E:7844];\
+$A8:A383 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A386 A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy body segment 2 X offset] * 7FFFh / 8000h
+$A8:A389 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A38D 9F 20 78 7E STA $7E7820,x[$7E:7860];/
+$A8:A391 A9 00 00    LDA #$0000             ;\
+$A8:A394 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
+$A8:A398 9F 22 78 7E STA $7E7822,x[$7E:7862];/
+$A8:A39C BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A3A0 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A3A4 38          SEC                    ;} Enemy $7E:8012 = [enemy body segment 2 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3A5 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
+$A8:A3A9 9F 12 80 7E STA $7E8012,x[$7E:8052];/
+$A8:A3AD BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A3B1 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A3B5 38          SEC                    ;} Enemy $7E:8014 = [enemy body segment 2 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A3B6 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
+$A8:A3BA 9F 14 80 7E STA $7E8014,x[$7E:8054];/
 $A8:A3BE 60          RTS
 }
 
@@ -2577,24 +2590,24 @@ $A8:A3BE 60          RTS
 ;;; $A3BF:  ;;;
 {
 $A8:A3BF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A3C2 BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A8:A3C6 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A3C9 A9 00 00    LDA #$0000
-$A8:A3CC 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A3D0 9F 20 78 7E STA $7E7820,x[$7E:7860]
-$A8:A3D4 A9 00 00    LDA #$0000
-$A8:A3D7 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A3DB 9F 22 78 7E STA $7E7822,x[$7E:7862]
-$A8:A3DF BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A3E3 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A3E7 38          SEC
-$A8:A3E8 FF 20 78 7E SBC $7E7820,x[$7E:7860]
-$A8:A3EC 9F 16 80 7E STA $7E8016,x[$7E:8056]
-$A8:A3F0 BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A3F4 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A3F8 38          SEC
-$A8:A3F9 FF 22 78 7E SBC $7E7822,x[$7E:7862]
-$A8:A3FD 9F 18 80 7E STA $7E8018,x[$7E:8058]
+$A8:A3C2 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A8:A3C6 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A3C9 A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy body segment 3 X offset] * 7FFFh / 8000h
+$A8:A3CC 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A3D0 9F 20 78 7E STA $7E7820,x[$7E:7860];/
+$A8:A3D4 A9 00 00    LDA #$0000             ;\
+$A8:A3D7 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
+$A8:A3DB 9F 22 78 7E STA $7E7822,x[$7E:7862];/
+$A8:A3DF BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A3E3 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A3E7 38          SEC                    ;} Enemy $7E:8016 = [enemy body segment 3 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3E8 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
+$A8:A3EC 9F 16 80 7E STA $7E8016,x[$7E:8056];/
+$A8:A3F0 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A3F4 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A3F8 38          SEC                    ;} Enemy $7E:8018 = [enemy body segment 3 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A3F9 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
+$A8:A3FD 9F 18 80 7E STA $7E8018,x[$7E:8058];/
 $A8:A401 60          RTS
 }
 
@@ -2602,24 +2615,24 @@ $A8:A401 60          RTS
 ;;; $A402:  ;;;
 {
 $A8:A402 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A405 BF 0C 78 7E LDA $7E780C,x[$7E:784C]
-$A8:A409 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A40C A9 00 00    LDA #$0000
-$A8:A40F 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A413 9F 20 78 7E STA $7E7820,x[$7E:7860]
-$A8:A417 A9 00 00    LDA #$0000
-$A8:A41A 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A41E 9F 22 78 7E STA $7E7822,x[$7E:7862]
-$A8:A422 BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A426 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A42A 38          SEC
-$A8:A42B FF 20 78 7E SBC $7E7820,x[$7E:7860]
-$A8:A42F 9F 1A 80 7E STA $7E801A,x[$7E:805A]
-$A8:A433 BF 16 78 7E LDA $7E7816,x[$7E:7856]
-$A8:A437 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A43B 38          SEC
-$A8:A43C FF 22 78 7E SBC $7E7822,x[$7E:7862]
-$A8:A440 9F 1C 80 7E STA $7E801C,x[$7E:805C]
+$A8:A405 BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
+$A8:A409 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A40C A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy $7E:780C] * 7FFFh / 8000h
+$A8:A40F 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A413 9F 20 78 7E STA $7E7820,x[$7E:7860];/
+$A8:A417 A9 00 00    LDA #$0000             ;\
+$A8:A41A 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
+$A8:A41E 9F 22 78 7E STA $7E7822,x[$7E:7862];/
+$A8:A422 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A426 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A42A 38          SEC                    ;} Enemy $7E:801A = [enemy $7E:780C] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A42B FF 20 78 7E SBC $7E7820,x[$7E:7860];|
+$A8:A42F 9F 1A 80 7E STA $7E801A,x[$7E:805A];/
+$A8:A433 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
+$A8:A437 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A43B 38          SEC                    ;} Enemy $7E:801C = [enemy $7E:780C] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A43C FF 22 78 7E SBC $7E7822,x[$7E:7862];|
+$A8:A440 9F 1C 80 7E STA $7E801C,x[$7E:805C];/
 $A8:A444 60          RTS
 }
 
@@ -2771,7 +2784,7 @@ $A8:A5F4 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = 
 $A8:A5F7 80 0E       BRA $0E    [$A607]
 
 $A8:A5F9 A9 3D A0    LDA #$A03D             ;\
-$A8:A5FC 9D 92 0F    STA $0F92,x    ;} Enemy instruction list pointer = $A03D
+$A8:A5FC 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $A03D
 $A8:A5FF 80 06       BRA $06    [$A607]
 
 $A8:A601 A9 25 A0    LDA #$A025             ;\
@@ -2791,7 +2804,7 @@ $A8:A61F 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = 
 $A8:A622 80 10       BRA $10    [$A634]
 
 $A8:A624 A9 79 A0    LDA #$A079             ;\
-$A8:A627 9D 92 0F    STA $0F92,x    ;} Enemy instruction list pointer = $A079
+$A8:A627 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $A079
 $A8:A62A 80 08       BRA $08    [$A634]
 
 $A8:A62C A9 61 A0    LDA #$A061             ;\
@@ -2889,7 +2902,7 @@ $A8:A6C3 60          RTS
 {
 $A8:A6C4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A6C7 BF 00 88 7E LDA $7E8800,x[$7E:8840];\
-$A8:A6CB A8          TAY                    ;} Y = [enemy $7E:8800] (enemy projectile index)
+$A8:A6CB A8          TAY                    ;} Y = [enemy body segment 0 enemy projectile index] (enemy projectile index)
 $A8:A6CC BF 18 78 7E LDA $7E7818,x[$7E:7858];\
 $A8:A6D0 99 4B 1A    STA $1A4B,y[$7E:1A5F]  ;} Enemy projectile X position = [enemy body segment base X position]
 $A8:A6D3 BF 1A 78 7E LDA $7E781A,x[$7E:785A];\
@@ -2902,7 +2915,7 @@ $A8:A6DA 60          RTS
 {
 $A8:A6DB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A6DE BF 02 88 7E LDA $7E8802,x[$7E:8842];\
-$A8:A6E2 A8          TAY                    ;} Y = [enemy $7E:8802] (enemy projectile index)
+$A8:A6E2 A8          TAY                    ;} Y = [enemy body segment 1 enemy projectile index] (enemy projectile index)
 $A8:A6E3 BF 18 78 7E LDA $7E7818,x[$7E:7858];\
 $A8:A6E7 18          CLC                    ;|
 $A8:A6E8 7F 00 78 7E ADC $7E7800,x[$7E:7840];} Enemy projectile X position = [enemy body segment base X position] + [enemy body segment 1 X offset]
@@ -2919,7 +2932,7 @@ $A8:A6FB 60          RTS
 {
 $A8:A6FC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A6FF BF 04 88 7E LDA $7E8804,x[$7E:8844];\
-$A8:A703 A8          TAY                    ;} Y = [enemy $7E:8804] (enemy projectile index)
+$A8:A703 A8          TAY                    ;} Y = [enemy body segment 2 enemy projectile index] (enemy projectile index)
 $A8:A704 BF 18 78 7E LDA $7E7818,x[$7E:7858];\
 $A8:A708 18          CLC                    ;|
 $A8:A709 7F 04 78 7E ADC $7E7804,x[$7E:7844];} Enemy projectile X position = [enemy body segment base X position] + [enemy body segment 2 X offset]
@@ -2936,7 +2949,7 @@ $A8:A71C 60          RTS
 {
 $A8:A71D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A720 BF 06 88 7E LDA $7E8806,x[$7E:8846];\
-$A8:A724 A8          TAY                    ;} Y = [enemy $7E:8806] (enemy projectile index)
+$A8:A724 A8          TAY                    ;} Y = [enemy body segment 3 enemy projectile index] (enemy projectile index)
 $A8:A725 BF 18 78 7E LDA $7E7818,x[$7E:7858];\
 $A8:A729 18          CLC                    ;|
 $A8:A72A 7F 08 78 7E ADC $7E7808,x[$7E:7848];} Enemy projectile X position = [enemy body segment base X position] + [enemy body segment 3 X offset]
@@ -2949,58 +2962,68 @@ $A8:A73D 60          RTS
 }
 
 
-;;; $A73E:  ;;;
+;;; $A73E: A = [$0E32] * cos([A] * pi / 80h) * 7FFFh / 8000h ;;;
 {
-$A8:A73E 38          SEC
-$A8:A73F E9 40 00    SBC #$0040
+;; Parameters:
+;;     A: Angle
+;;     $0E32: Radius
+;; Returns:
+;;     A: [$0E32] * cos([A] * pi / 80h) * 7FFFh / 8000h
+$A8:A73E 38          SEC                    ;\
+$A8:A73F E9 40 00    SBC #$0040             ;} A -= 40h
 }
 
 
-;;; $A742:  ;;;
+;;; $A742: A = [$0E32] * -sin([A] * pi / 80h) * 7FFFh / 8000h ;;;
 {
-$A8:A742 85 12       STA $12    [$7E:0012]
-$A8:A744 A9 00 01    LDA #$0100
-$A8:A747 38          SEC
-$A8:A748 E5 12       SBC $12    [$7E:0012]
-$A8:A74A 29 FF 00    AND #$00FF
-$A8:A74D 0A          ASL A
-$A8:A74E AA          TAX
+;; Parameters:
+;;     A: Angle
+;;     $0E32: Radius
+;; Returns:
+;;     A: [$0E32] * -sin([A] * pi / 80h) * 7FFFh / 8000h
+$A8:A742 85 12       STA $12    [$7E:0012]  ;\
+$A8:A744 A9 00 01    LDA #$0100             ;|
+$A8:A747 38          SEC                    ;|
+$A8:A748 E5 12       SBC $12    [$7E:0012]  ;} X = -[A] % 100h * 2
+$A8:A74A 29 FF 00    AND #$00FF             ;|
+$A8:A74D 0A          ASL A                  ;|
+$A8:A74E AA          TAX                    ;/
 $A8:A74F 08          PHP
-$A8:A750 64 14       STZ $14    [$7E:0014]
-$A8:A752 64 16       STZ $16    [$7E:0016]
-$A8:A754 BF C3 B1 A0 LDA $A0B1C3,x[$A0:B343]
-$A8:A758 10 06       BPL $06    [$A760]
-$A8:A75A 49 FF FF    EOR #$FFFF
-$A8:A75D 1A          INC A
-$A8:A75E E6 14       INC $14    [$7E:0014]
+$A8:A750 64 14       STZ $14    [$7E:0014]  ; $14 = 0 (sign bit)
+$A8:A752 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (result)
+$A8:A754 BF C3 B1 A0 LDA $A0B1C3,x[$A0:B343]; A = sin([X] / 2 * pi / 80h) * 7FFFh
+$A8:A758 10 06       BPL $06    [$A760]     ; If [A] < 0:
+$A8:A75A 49 FF FF    EOR #$FFFF             ;\
+$A8:A75D 1A          INC A                  ;} Negate A
+$A8:A75E E6 14       INC $14    [$7E:0014]  ; $14 = 1
 
-$A8:A760 29 00 FF    AND #$FF00
-$A8:A763 EB          XBA
-$A8:A764 E2 20       SEP #$20
-$A8:A766 8D 02 42    STA $4202  [$7E:4202]
-$A8:A769 AD 32 0E    LDA $0E32  [$7E:0E32]
-$A8:A76C F0 24       BEQ $24    [$A792]
-$A8:A76E 8D 03 42    STA $4203  [$7E:4203]
-$A8:A771 EA          NOP
-$A8:A772 EA          NOP
-$A8:A773 EA          NOP
-$A8:A774 C2 20       REP #$20
-$A8:A776 AD 16 42    LDA $4216  [$7E:4216]
-$A8:A779 29 00 FF    AND #$FF00
-$A8:A77C EB          XBA
-$A8:A77D 0A          ASL A
-$A8:A77E 85 16       STA $16    [$7E:0016]
-$A8:A780 A5 14       LDA $14    [$7E:0014]
-$A8:A782 F0 0E       BEQ $0E    [$A792]
-$A8:A784 AD 16 42    LDA $4216  [$7E:4216]
-$A8:A787 49 FF FF    EOR #$FFFF
-$A8:A78A 1A          INC A
-$A8:A78B EB          XBA
-$A8:A78C 0A          ASL A
-$A8:A78D 09 00 FF    ORA #$FF00
-$A8:A790 85 16       STA $16    [$7E:0016]
+$A8:A760 29 00 FF    AND #$FF00             ;\
+$A8:A763 EB          XBA                    ;|
+$A8:A764 E2 20       SEP #$20               ;} $4202 = [A] / 100h
+$A8:A766 8D 02 42    STA $4202  [$7E:4202]  ;/
+$A8:A769 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
+$A8:A76C F0 24       BEQ $24    [$A792]     ;} If [$0E32] != 0:
+$A8:A76E 8D 03 42    STA $4203  [$7E:4203]  ;\
+$A8:A771 EA          NOP                    ;|
+$A8:A772 EA          NOP                    ;|
+$A8:A773 EA          NOP                    ;|
+$A8:A774 C2 20       REP #$20               ;|
+$A8:A776 AD 16 42    LDA $4216  [$7E:4216]  ;} $16 = [$4202] * [$0E32] / 100h * 2
+$A8:A779 29 00 FF    AND #$FF00             ;|
+$A8:A77C EB          XBA                    ;|
+$A8:A77D 0A          ASL A                  ;|
+$A8:A77E 85 16       STA $16    [$7E:0016]  ;/
+$A8:A780 A5 14       LDA $14    [$7E:0014]  ;\
+$A8:A782 F0 0E       BEQ $0E    [$A792]     ;} If [$14] != 0:
+$A8:A784 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$A8:A787 49 FF FF    EOR #$FFFF             ;|
+$A8:A78A 1A          INC A                  ;|
+$A8:A78B EB          XBA                    ;} Negate $16
+$A8:A78C 0A          ASL A                  ;|
+$A8:A78D 09 00 FF    ORA #$FF00             ;|
+$A8:A790 85 16       STA $16    [$7E:0016]  ;/
 
-$A8:A792 A5 16       LDA $16    [$7E:0016]
+$A8:A792 A5 16       LDA $16    [$7E:0016]  ; A = [$16]
 $A8:A794 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A797 28          PLP
 $A8:A798 6B          RTL
