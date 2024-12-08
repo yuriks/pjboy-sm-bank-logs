@@ -2073,7 +2073,7 @@ $A8:9F4F             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 00
 
 ;;; $9F6F..A096: Instruction lists - yapping maw ;;;
 {
-;;; $9F6F: Instruction list - initial ;;;
+;;; $9F6F: Instruction list - attacking - facing up / initial - facing up ;;;
 {
 $A8:9F6F             dx 0005,A8EE,
                         0003,A909,
@@ -2084,7 +2084,7 @@ $A8:9F6F             dx 0005,A8EE,
 }
 
 
-;;; $9F85: Instruction list -  ;;;
+;;; $9F85: Instruction list - attacking - facing up-right ;;;
 {
 $A8:9F85             dx 0005,A935,
                         0003,A946,
@@ -2095,7 +2095,7 @@ $A8:9F85             dx 0005,A935,
 }
 
 
-;;; $9F9B: Instruction list -  ;;;
+;;; $9F9B: Instruction list - attacking - facing right ;;;
 {
 $A8:9F9B             dx 0005,A972,
                         0003,A98D,
@@ -2106,7 +2106,7 @@ $A8:9F9B             dx 0005,A972,
 }
 
 
-;;; $9FB1: Instruction list -  ;;;
+;;; $9FB1: Instruction list - attacking - facing down-right ;;;
 {
 $A8:9FB1             dx 0005,A9B9,
                         0003,A9CA,
@@ -2117,7 +2117,7 @@ $A8:9FB1             dx 0005,A9B9,
 }
 
 
-;;; $9FC7: Instruction list -  ;;;
+;;; $9FC7: Instruction list - attacking - facing down / initial - facing down ;;;
 {
 $A8:9FC7             dx 0005,A9F6,
                         0003,AA11,
@@ -2128,7 +2128,7 @@ $A8:9FC7             dx 0005,A9F6,
 }
 
 
-;;; $9FDD: Instruction list -  ;;;
+;;; $9FDD: Instruction list - attacking - facing down-left ;;;
 {
 $A8:9FDD             dx 0005,AA3D,
                         0003,AA4E,
@@ -2139,7 +2139,7 @@ $A8:9FDD             dx 0005,AA3D,
 }
 
 
-;;; $9FF3: Instruction list -  ;;;
+;;; $9FF3: Instruction list - attacking - facing left ;;;
 {
 $A8:9FF3             dx 0005,AA7A,
                         0003,AA95,
@@ -2150,7 +2150,7 @@ $A8:9FF3             dx 0005,AA7A,
 }
 
 
-;;; $A009: Instruction list -  ;;;
+;;; $A009: Instruction list - attacking - facing up-left ;;;
 {
 $A8:A009             dx 0005,AAC1,
                         0003,AAD2,
@@ -2161,12 +2161,17 @@ $A8:A009             dx 0005,AAC1,
 }
 
 
-;;; $A01F: Instruction list -  ;;;
+;;; $A01F: Instruction list - cooldown - facing up-right ;;;
 {
-$A8:A01F             dx A0C7,       ; ???
-                        0004,A961,
-                        A10F        ; ???
-$A8:A027             dx 0050,A91A,
+$A8:A01F             dw A0C7,       ; Offset Samus up-right
+                        0004,A961
+}
+
+
+;;; $A025: Instruction list - cooldown - facing up ;;;
+{
+$A8:A025             dw A10F        ; Offset Samus up
+$A8:A027             dw 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
@@ -2175,11 +2180,11 @@ $A8:A027             dx 0050,A91A,
 }
 
 
-;;; $A03D: Instruction list -  ;;;
+;;; $A03D: Instruction list - cooldown - facing up-left ;;;
 {
-$A8:A03D             dx A0D9,       ; ???
+$A8:A03D             dx A0D9,       ; Offset Samus up-left
                         0004,AAED,
-                        A10F        ; ???
+                        A10F        ; Offset Samus up
 $A2:A045             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
@@ -2189,12 +2194,17 @@ $A2:A045             dx 0050,A91A,
 }
 
 
-;;; $A05B: Instruction list -  ;;;
+;;; $A05B: Instruction list - cooldown - facing down-right ;;;
 {
-$A8:A05B             dx A0EB,       ; ???
-                        0004,A9E5,
-                        A121        ; ???
-$A2:A063             dx 0050,AA22,
+$A8:A05B             dw A0EB,       ; Offset Samus down-right
+                        0004,A9E5
+}
+
+
+;;; $A061: Instruction list - cooldown - facing down ;;;
+{
+$A2:A061             dw A121        ; Offset Samus down
+$A2:A063             dw 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
@@ -2203,11 +2213,11 @@ $A2:A063             dx 0050,AA22,
 }
 
 
-;;; $A079: Instruction list -  ;;;
+;;; $A079: Instruction list - cooldown - facing down-left ;;;
 {
-$A8:A079             dx A0FD,       ; ???
+$A8:A079             dx A0FD,       ; Offset Samus down-left
                         0004,AA69,
-                        A121        ; ???
+                        A121        ; Offset Samus down
 $A2:A081             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
@@ -2218,97 +2228,95 @@ $A2:A081             dx 0050,AA22,
 }
 
 
-;;; $A097: Instruction list pointers ;;;
+;;; $A097: Yapping maw attack instruction list pointers ;;;
 {
+; Indexed by [enemy $7E:8028]
 $A8:A097             dw 9F6F, 9F85, 9F9B, 9FB1, 9FC7, 9FDD, 9FF3, A009
 }
 
 
-;;; $A0A7: Yapping maw constants ;;;
+;;; $A0A7: Yapping maw Samus offsets ;;;
 {
-$A8:A0A7             dw 0000
-$A8:A0A9             dw FFF0
-$A8:A0AB             dw 0008
-$A8:A0AD             dw FFF8
-$A8:A0AF             dw 0010
-$A8:A0B1             dw 0000
-$A8:A0B3             dw 0008
-$A8:A0B5             dw 0008
-$A8:A0B7             dw 0000
-$A8:A0B9             dw 0010
-$A8:A0BB             dw FFF8
-$A8:A0BD             dw 0008
-$A8:A0BF             dw FFF0
-$A8:A0C1             dw 0000
-$A8:A0C3             dw FFF8
-$A8:A0C5             dw FFF8
+; Offset from enemy position to place Samus when grabbed
+
+;                        _________ X offset
+;                       |      ___ Y offset
+;                       |     |
+$A8:A0A7             dw 0000, FFF0 ; Up
+$A8:A0AB             dw 0008, FFF8 ; Up-right
+$A8:A0AF             dw 0010, 0000 ; Unused. Right
+$A8:A0B3             dw 0008, 0008 ; Down-right
+$A8:A0B7             dw 0000, 0010 ; Down
+$A8:A0BB             dw FFF8, 0008 ; Down-left
+$A8:A0BF             dw FFF0, 0000 ; Unused. Left
+$A8:A0C3             dw FFF8, FFF8 ; Up-left
 }
 
 
 ;;; $A0C7..A147: Instructions ;;;
 {
-;;; $A0C7: Instruction ;;;
+;;; $A0C7: Instruction - offset Samus up-right ;;;
 {
 $A8:A0C7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A0CA AD AB A0    LDA $A0AB  [$A8:A0AB]
-$A8:A0CD 9F 24 80 7E STA $7E8024,x[$7E:8064]
-$A8:A0D1 AD AD A0    LDA $A0AD  [$A8:A0AD]
-$A8:A0D4 9F 26 80 7E STA $7E8026,x[$7E:8066]
+$A8:A0CA AD AB A0    LDA $A0AB  [$A8:A0AB]  ;\
+$A8:A0CD 9F 24 80 7E STA $7E8024,x[$7E:8064];} Enemy Samus X offset = 8
+$A8:A0D1 AD AD A0    LDA $A0AD  [$A8:A0AD]  ;\
+$A8:A0D4 9F 26 80 7E STA $7E8026,x[$7E:8066];} Enemy Samus Y offset = -8
 $A8:A0D8 6B          RTL
 }
 
 
-;;; $A0D9: Instruction ;;;
+;;; $A0D9: Instruction - offset Samus up-left ;;;
 {
 $A8:A0D9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A0DC AD C3 A0    LDA $A0C3  [$A8:A0C3]
-$A8:A0DF 9F 24 80 7E STA $7E8024,x
-$A8:A0E3 AD C5 A0    LDA $A0C5  [$A8:A0C5]
-$A8:A0E6 9F 26 80 7E STA $7E8026,x
+$A8:A0DC AD C3 A0    LDA $A0C3  [$A8:A0C3]  ;\
+$A8:A0DF 9F 24 80 7E STA $7E8024,x          ;} Enemy Samus X offset = -8
+$A8:A0E3 AD C5 A0    LDA $A0C5  [$A8:A0C5]  ;\
+$A8:A0E6 9F 26 80 7E STA $7E8026,x          ;} Enemy Samus Y offset = -8
 $A8:A0EA 6B          RTL
 }
 
 
-;;; $A0EB: Instruction ;;;
+;;; $A0EB: Instruction - offset Samus down-right ;;;
 {
 $A8:A0EB AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A0EE AD B3 A0    LDA $A0B3  [$A8:A0B3]
-$A8:A0F1 9F 24 80 7E STA $7E8024,x[$7E:8024]
-$A8:A0F5 AD B5 A0    LDA $A0B5  [$A8:A0B5]
-$A8:A0F8 9F 26 80 7E STA $7E8026,x[$7E:8026]
+$A8:A0EE AD B3 A0    LDA $A0B3  [$A8:A0B3]  ;\
+$A8:A0F1 9F 24 80 7E STA $7E8024,x[$7E:8024];} Enemy Samus X offset = 8
+$A8:A0F5 AD B5 A0    LDA $A0B5  [$A8:A0B5]  ;\
+$A8:A0F8 9F 26 80 7E STA $7E8026,x[$7E:8026];} Enemy Samus Y offset = 8
 $A8:A0FC 6B          RTL
 }
 
 
-;;; $A0FD: Instruction ;;;
+;;; $A0FD: Instruction - offset Samus down-left ;;;
 {
 $A8:A0FD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A100 AD BB A0    LDA $A0BB  [$A8:A0BB]
-$A8:A103 9F 24 80 7E STA $7E8024,x
-$A8:A107 AD BD A0    LDA $A0BD  [$A8:A0BD]
-$A8:A10A 9F 26 80 7E STA $7E8026,x
+$A8:A100 AD BB A0    LDA $A0BB  [$A8:A0BB]  ;\
+$A8:A103 9F 24 80 7E STA $7E8024,x          ;} Enemy Samus X offset = -8
+$A8:A107 AD BD A0    LDA $A0BD  [$A8:A0BD]  ;\
+$A8:A10A 9F 26 80 7E STA $7E8026,x          ;} Enemy Samus Y offset = 8
 $A8:A10E 6B          RTL
 }
 
 
-;;; $A10F: Instruction ;;;
+;;; $A10F: Instruction - offset Samus up ;;;
 {
 $A8:A10F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A112 AD A7 A0    LDA $A0A7  [$A8:A0A7]
-$A8:A115 9F 24 80 7E STA $7E8024,x[$7E:8064]
-$A8:A119 AD A9 A0    LDA $A0A9  [$A8:A0A9]
-$A8:A11C 9F 26 80 7E STA $7E8026,x[$7E:8066]
+$A8:A112 AD A7 A0    LDA $A0A7  [$A8:A0A7]  ;\
+$A8:A115 9F 24 80 7E STA $7E8024,x[$7E:8064];} Enemy Samus X offset = 0
+$A8:A119 AD A9 A0    LDA $A0A9  [$A8:A0A9]  ;\
+$A8:A11C 9F 26 80 7E STA $7E8026,x[$7E:8066];} Enemy Samus Y offset = -10h
 $A8:A120 6B          RTL
 }
 
 
-;;; $A121: Instruction ;;;
+;;; $A121: Instruction - offset Samus down ;;;
 {
 $A8:A121 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A124 AD B7 A0    LDA $A0B7  [$A8:A0B7]
-$A8:A127 9F 24 80 7E STA $7E8024,x[$7E:8024]
-$A8:A12B AD B9 A0    LDA $A0B9  [$A8:A0B9]
-$A8:A12E 9F 26 80 7E STA $7E8026,x[$7E:8026]
+$A8:A124 AD B7 A0    LDA $A0B7  [$A8:A0B7]  ;\
+$A8:A127 9F 24 80 7E STA $7E8024,x[$7E:8024];} Enemy Samus X offset = 0
+$A8:A12B AD B9 A0    LDA $A0B9  [$A8:A0B9]  ;\
+$A8:A12E 9F 26 80 7E STA $7E8026,x[$7E:8026];} Enemy Samus Y offset = 10h
 $A8:A132 6B          RTL
 }
 
@@ -2344,13 +2352,13 @@ $A8:A164 9F 04 78 7E STA $7E7804,x[$7E:7804]; Enemy body segment 2 X offset = 0
 $A8:A168 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy body segment 2 Y offset = 0
 $A8:A16C 9F 08 78 7E STA $7E7808,x[$7E:7808]; Enemy body segment 3 X offset = 0
 $A8:A170 9F 0A 78 7E STA $7E780A,x[$7E:780A]; Enemy body segment 3 Y offset = 0
-$A8:A174 9F 0C 78 7E STA $7E780C,x[$7E:780C]; Enemy $7E:780C = 0
-$A8:A178 9F 0E 78 7E STA $7E780E,x[$7E:780E]; Enemy $7E:780E = 0
-$A8:A17C 9F 20 80 7E STA $7E8020,x[$7E:8020]; Enemy $7E:8020 = 0
+$A8:A174 9F 0C 78 7E STA $7E780C,x[$7E:780C]; Enemy head segment X offset = 0
+$A8:A178 9F 0E 78 7E STA $7E780E,x[$7E:780E]; Enemy head segment Y offset = 0
+$A8:A17C 9F 20 80 7E STA $7E8020,x[$7E:8020]; Enemy grabbing Samus flag = 0
 $A8:A180 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A8:A183 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy proximity = [enemy parameter 1]
 $A8:A186 A9 40 00    LDA #$0040             ;\
-$A8:A189 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = 40h
+$A8:A189 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy cooldown timer = 40h
 $A8:A18C A9 6F 9F    LDA #$9F6F             ;\
 $A8:A18F 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9F6F
 $A8:A192 A9 39 00    LDA #$0039             ;\
@@ -2372,7 +2380,7 @@ $A8:A1B7 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A8:A1BA A9 35 A2    LDA #$A235             ;\
 $A8:A1BD 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $A235 (neutral)
 $A8:A1C0 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
-$A8:A1C3 29 00 0E    AND #$0E00             ;} Enemy $7E:880A = [enemy palette index]
+$A8:A1C3 29 00 0E    AND #$0E00             ;} Enemy initial palette index = [enemy palette index]
 $A8:A1C6 9F 0A 88 7E STA $7E880A,x[$7E:880A];/
 $A8:A1CA A9 03 00    LDA #$0003             ;\
 $A8:A1CD 9F 08 88 7E STA $7E8808,x[$7E:8808];} Enemy body segment index = 3
@@ -2435,7 +2443,7 @@ $A8:A24A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A8:A24D 8D 38 0E    STA $0E38  [$7E:0E38]  ;} $0E38 = [Samus Y position]
 $A8:A250 22 A8 AC A0 JSL $A0ACA8[$A0:ACA8]  ; Calculate distance and angle of Samus from enemy
 $A8:A254 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; >_<;
-$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850]; Enemy target distance = (distance of Samus from enemy)
+$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850]; Enemy target length = (distance of Samus from enemy)
 $A8:A25C C9 20 00    CMP #$0020             ;\
 $A8:A25F 30 23       BMI $23    [$A284]     ;} If [A] < 20h: go to BRANCH_POINT_BLANK
 $A8:A261 DD B2 0F    CMP $0FB2,x[$7E:0FF2]  ;\
@@ -2443,7 +2451,7 @@ $A8:A264 10 1D       BPL $1D    [$A283]     ;} If [A] >= [enemy proximity]: retu
 $A8:A266 BF 10 78 7E LDA $7E7810,x[$7E:7850]; >_<;
 $A8:A26A C9 40 00    CMP #$0040             ;\
 $A8:A26D 30 07       BMI $07    [$A276]     ;|
-$A8:A26F A9 40 00    LDA #$0040             ;} Enemy target distance = min(40h, [A])
+$A8:A26F A9 40 00    LDA #$0040             ;} Enemy target length = min(40h, [A])
 $A8:A272 9F 10 78 7E STA $7E7810,x[$7E:7890];/
 
 $A8:A276 AD 3A 0E    LDA $0E3A  [$7E:0E3A]  ;\
@@ -2463,32 +2471,32 @@ $A8:A28B 60          RTS
 ;;; $A28C: Yapping maw function - attack ;;;
 {
 $A8:A28C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A28F 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ; Enemy $0FAA = 0
-$A8:A292 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ; Enemy $0FAC = 0
-$A8:A295 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ; Enemy $0FAE = 0
+$A8:A28F 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ;\
+$A8:A292 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ;} Enemy angle = 0.0
+$A8:A295 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ; Enemy angular speed table index = 0
 $A8:A298 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A8:A29C 4A          LSR A                  ;} Enemy $7E:7812 = [enemy target distance] / 2
+$A8:A29C 4A          LSR A                  ;} Enemy length = [enemy target length] / 2
 $A8:A29D 9F 12 78 7E STA $7E7812,x[$7E:7852];/
 $A8:A2A1 BF 14 78 7E LDA $7E7814,x[$7E:7854];\
 $A8:A2A5 38          SEC                    ;|
 $A8:A2A6 E9 40 00    SBC #$0040             ;|
 $A8:A2A9 29 FF 00    AND #$00FF             ;|
 $A8:A2AC 49 FF FF    EOR #$FFFF             ;|
-$A8:A2AF 1A          INC A                  ;} Enemy $7E:7816 = (40h - [enemy target angle]) % 100h (angle using common maths convention)
+$A8:A2AF 1A          INC A                  ;} Enemy target angle = (40h - [enemy target angle]) % 100h (angle using common maths convention)
 $A8:A2B0 18          CLC                    ;|
 $A8:A2B1 69 00 01    ADC #$0100             ;|
 $A8:A2B4 29 FF 00    AND #$00FF             ;|
 $A8:A2B7 9F 16 78 7E STA $7E7816,x[$7E:7856];/
 $A8:A2BB C9 80 00    CMP #$0080             ;\
-$A8:A2BE 10 09       BPL $09    [$A2C9]     ;} If [enemy $7E:7816] < 80h:
+$A8:A2BE 10 09       BPL $09    [$A2C9]     ;} If [enemy target angle] < 80h:
 $A8:A2C0 A9 00 00    LDA #$0000             ;\
-$A8:A2C3 9F 1E 80 7E STA $7E801E,x[$7E:805E];} Enemy $7E:801E = 0
+$A8:A2C3 9F 1E 80 7E STA $7E801E,x[$7E:805E];} Enemy aiming down flag = 0
 $A8:A2C7 80 07       BRA $07    [$A2D0]
 
-$A8:A2C9 A9 01 00    LDA #$0001             ;\
-$A8:A2CC 9F 1E 80 7E STA $7E801E,x[$7E:821E];} Enemy $7E:801E = 1
+$A8:A2C9 A9 01 00    LDA #$0001             ;\ Else ([enemy target angle] >= 80h):
+$A8:A2CC 9F 1E 80 7E STA $7E801E,x[$7E:821E];} Enemy aiming down flag = 1
 
-$A8:A2D0 20 10 A3    JSR $A310  [$A8:A310]  ; Execute $A310
+$A8:A2D0 20 10 A3    JSR $A310  [$A8:A310]  ; Calculate yapping maw origin position
 $A8:A2D3 BF 14 78 7E LDA $7E7814,x[$7E:7854];\
 $A8:A2D7 18          CLC                    ;|
 $A8:A2D8 69 10 00    ADC #$0010             ;|
@@ -2510,34 +2518,34 @@ $A8:A2F8 98          TYA                    ;\
 $A8:A2F9 0A          ASL A                  ;} Y *= 2
 $A8:A2FA A8          TAY                    ;/
 $A8:A2FB B9 A7 A0    LDA $A0A7,y[$A8:A0AB]  ;\
-$A8:A2FE 9F 24 80 7E STA $7E8024,x[$7E:8064];} Enemy $7E:8024 = [$A0A7 + [Y]]
+$A8:A2FE 9F 24 80 7E STA $7E8024,x[$7E:8064];} Enemy Samus X offset = [$A0A7 + [Y]]
 $A8:A302 B9 A9 A0    LDA $A0A9,y[$A8:A0AD]  ;\
-$A8:A305 9F 26 80 7E STA $7E8026,x[$7E:8066];} Enemy $7E:8026 = [$A0A7 + [Y] + 2]
+$A8:A305 9F 26 80 7E STA $7E8026,x[$7E:8066];} Enemy Samus Y offset = [$A0A7 + [Y] + 2]
 $A8:A309 A9 45 A4    LDA #$A445             ;\
 $A8:A30C 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A445 (attacking)
 $A8:A30F 60          RTS
 }
 
 
-;;; $A310:  ;;;
+;;; $A310: Calculate yapping maw origin position ;;;
 {
 $A8:A310 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A313 BF 12 78 7E LDA $7E7812,x[$7E:7852];\
 $A8:A317 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:A31A A9 80 00    LDA #$0080             ;} Enemy $7E:781C = [enemy $7E:7812] * -7FFFh / 8000h
+$A8:A31A A9 80 00    LDA #$0080             ;} Enemy origin X position = [enemy length] * -7FFFh / 8000h
 $A8:A31D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
 $A8:A321 9F 1C 78 7E STA $7E781C,x[$7E:785C];/
 $A8:A325 BF 12 78 7E LDA $7E7812,x[$7E:7852];\
 $A8:A329 4A          LSR A                  ;|
 $A8:A32A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:A32D A9 80 00    LDA #$0080             ;} Enemy $7E:781E = 0
+$A8:A32D A9 80 00    LDA #$0080             ;} Enemy origin Y position = 0
 $A8:A330 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
 $A8:A334 9F 1E 78 7E STA $7E781E,x[$7E:785E];/
 $A8:A338 60          RTS
 }
 
 
-;;; $A339:  ;;;
+;;; $A339: Calculate body segment 1 velocities ;;;
 {
 $A8:A339 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A33C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
@@ -2550,19 +2558,19 @@ $A8:A351 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A355 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A359 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A35D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A361 38          SEC                    ;} Enemy $7E:800E = [enemy body segment 1 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A361 38          SEC                    ;} Enemy body segment 1 X velocity = [enemy body segment 1 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
 $A8:A362 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A366 9F 0E 80 7E STA $7E800E,x[$7E:804E];/
 $A8:A36A BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A36E 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A372 38          SEC                    ;} Enemy $7E:8010 = [enemy body segment 1 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A372 38          SEC                    ;} Enemy body segment 1 Y velocity = [enemy body segment 1 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
 $A8:A373 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A377 9F 10 80 7E STA $7E8010,x[$7E:8050];/
 $A8:A37B 60          RTS
 }
 
 
-;;; $A37C:  ;;;
+;;; $A37C: Calculate body segment 2 velocities ;;;
 {
 $A8:A37C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A37F BF 04 78 7E LDA $7E7804,x[$7E:7844];\
@@ -2575,19 +2583,19 @@ $A8:A394 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A398 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A39C BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3A0 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A3A4 38          SEC                    ;} Enemy $7E:8012 = [enemy body segment 2 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3A4 38          SEC                    ;} Enemy body segment 2 X velocity = [enemy body segment 2 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
 $A8:A3A5 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A3A9 9F 12 80 7E STA $7E8012,x[$7E:8052];/
 $A8:A3AD BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3B1 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A3B5 38          SEC                    ;} Enemy $7E:8014 = [enemy body segment 2 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A3B5 38          SEC                    ;} Enemy body segment 2 Y velocity = [enemy body segment 2 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
 $A8:A3B6 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A3BA 9F 14 80 7E STA $7E8014,x[$7E:8054];/
 $A8:A3BE 60          RTS
 }
 
 
-;;; $A3BF:  ;;;
+;;; $A3BF: Calculate body segment 3 velocities ;;;
 {
 $A8:A3BF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A3C2 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
@@ -2600,24 +2608,24 @@ $A8:A3D7 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A3DB 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A3DF BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3E3 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A3E7 38          SEC                    ;} Enemy $7E:8016 = [enemy body segment 3 X offset] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3E7 38          SEC                    ;} Enemy body segment 3 X velocity = [enemy body segment 3 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
 $A8:A3E8 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A3EC 9F 16 80 7E STA $7E8016,x[$7E:8056];/
 $A8:A3F0 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3F4 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A3F8 38          SEC                    ;} Enemy $7E:8018 = [enemy body segment 3 X offset] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A3F8 38          SEC                    ;} Enemy body segment 3 Y velocity = [enemy body segment 3 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
 $A8:A3F9 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A3FD 9F 18 80 7E STA $7E8018,x[$7E:8058];/
 $A8:A401 60          RTS
 }
 
 
-;;; $A402:  ;;;
+;;; $A402: Calculate head segment velocities ;;;
 {
 $A8:A402 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A405 BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
 $A8:A409 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:A40C A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy $7E:780C] * 7FFFh / 8000h
+$A8:A40C A9 00 00    LDA #$0000             ;} Enemy $7E:7820 = [enemy head segment X offset] * 7FFFh / 8000h
 $A8:A40F 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
 $A8:A413 9F 20 78 7E STA $7E7820,x[$7E:7860];/
 $A8:A417 A9 00 00    LDA #$0000             ;\
@@ -2625,12 +2633,12 @@ $A8:A41A 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A41E 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A422 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A426 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A42A 38          SEC                    ;} Enemy $7E:801A = [enemy $7E:780C] * cos([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A42A 38          SEC                    ;} Enemy head segment X velocity = [enemy head segment X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
 $A8:A42B FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A42F 9F 1A 80 7E STA $7E801A,x[$7E:805A];/
 $A8:A433 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A437 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A43B 38          SEC                    ;} Enemy $7E:801C = [enemy $7E:780C] * -sin([enemy $7E:7816] * pi / 80h) * 7FFFh / 8000h
+$A8:A43B 38          SEC                    ;} Enemy head segment Y velocity = [enemy head segment X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
 $A8:A43C FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A440 9F 1C 80 7E STA $7E801C,x[$7E:805C];/
 $A8:A444 60          RTS
@@ -2639,195 +2647,209 @@ $A8:A444 60          RTS
 
 ;;; $A445: Yapping maw function - attacking ;;;
 {
+; Eventually we end up approximating these rather complicated calculations for each segment:
+;     Enemy segment X offset = ([enemy length] * cos([enemy segment angle] * pi / 80h) - [enemy origin X position]) * cos([enemy target angle] * pi / 80h)
+;     Enemy segment Y offset = ([enemy length] * cos([enemy segment angle] * pi / 80h) - [enemy origin X position]) * -sin([enemy target angle] * pi / 80h) + [enemy length] / 2 * -sin([enemy segment angle] * pi / 80h) - [enemy origin Y position]
+
+; TODO: deserving of a diagram? need to verify with lua script also
 $A8:A445 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A448 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:A44B 4A          LSR A
-$A8:A44C 4A          LSR A
-$A8:A44D 85 14       STA $14    [$7E:0014]
-$A8:A44F BF 1E 80 7E LDA $7E801E,x[$7E:805E]
-$A8:A453 D0 1E       BNE $1E    [$A473]
-$A8:A455 38          SEC
-$A8:A456 A9 80 00    LDA #$0080
-$A8:A459 E5 14       SBC $14    [$7E:0014]
-$A8:A45B 9F 02 80 7E STA $7E8002,x[$7E:8042]
-$A8:A45F E5 14       SBC $14    [$7E:0014]
-$A8:A461 9F 04 80 7E STA $7E8004,x[$7E:8044]
-$A8:A465 E5 14       SBC $14    [$7E:0014]
-$A8:A467 9F 06 80 7E STA $7E8006,x[$7E:8046]
-$A8:A46B E5 14       SBC $14    [$7E:0014]
-$A8:A46D 9F 08 80 7E STA $7E8008,x[$7E:8048]
+$A8:A448 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:A44B 4A          LSR A                  ;|
+$A8:A44C 4A          LSR A                  ;} $14 = [enemy angle] / 4
+$A8:A44D 85 14       STA $14    [$7E:0014]  ;/
+$A8:A44F BF 1E 80 7E LDA $7E801E,x[$7E:805E];\
+$A8:A453 D0 1E       BNE $1E    [$A473]     ;} If [enemy aiming down flag] = 0:
+$A8:A455 38          SEC                    ;\
+$A8:A456 A9 80 00    LDA #$0080             ;|
+$A8:A459 E5 14       SBC $14    [$7E:0014]  ;} Enemy body segment 1 angle = 80h - [$14]
+$A8:A45B 9F 02 80 7E STA $7E8002,x[$7E:8042];/
+$A8:A45F E5 14       SBC $14    [$7E:0014]  ;\
+$A8:A461 9F 04 80 7E STA $7E8004,x[$7E:8044];} Enemy body segment 2 angle = 80h - [$14] * 2
+$A8:A465 E5 14       SBC $14    [$7E:0014]  ;\
+$A8:A467 9F 06 80 7E STA $7E8006,x[$7E:8046];} Enemy body segment 3 angle = 80h - [$14] * 3
+$A8:A46B E5 14       SBC $14    [$7E:0014]  ;\
+$A8:A46D 9F 08 80 7E STA $7E8008,x[$7E:8048];} Enemy head segment angle = 80h - [$14] * 4
 $A8:A471 80 1C       BRA $1C    [$A48F]
 
-$A8:A473 18          CLC
-$A8:A474 A9 80 00    LDA #$0080
-$A8:A477 65 14       ADC $14    [$7E:0014]
-$A8:A479 9F 02 80 7E STA $7E8002,x[$7E:8202]
-$A8:A47D 65 14       ADC $14    [$7E:0014]
-$A8:A47F 9F 04 80 7E STA $7E8004,x[$7E:8204]
-$A8:A483 65 14       ADC $14    [$7E:0014]
-$A8:A485 9F 06 80 7E STA $7E8006,x[$7E:8206]
-$A8:A489 65 14       ADC $14    [$7E:0014]
-$A8:A48B 9F 08 80 7E STA $7E8008,x[$7E:8208]
+$A8:A473 18          CLC                    ;\ Else ([enemy aiming down flag] != 0):
+$A8:A474 A9 80 00    LDA #$0080             ;|
+$A8:A477 65 14       ADC $14    [$7E:0014]  ;} Enemy body segment 1 angle = 80h + [$14]
+$A8:A479 9F 02 80 7E STA $7E8002,x[$7E:8202];/
+$A8:A47D 65 14       ADC $14    [$7E:0014]  ;\
+$A8:A47F 9F 04 80 7E STA $7E8004,x[$7E:8204];} Enemy body segment 2 angle = 80h + [$14] * 2
+$A8:A483 65 14       ADC $14    [$7E:0014]  ;\
+$A8:A485 9F 06 80 7E STA $7E8006,x[$7E:8206];} Enemy body segment 3 angle = 80h + [$14] * 3
+$A8:A489 65 14       ADC $14    [$7E:0014]  ;\
+$A8:A48B 9F 08 80 7E STA $7E8008,x[$7E:8208];} Enemy head segment angle = 80h + [$14] * 4
 
-$A8:A48F BF 12 78 7E LDA $7E7812,x[$7E:7852]
-$A8:A493 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A496 BF 02 80 7E LDA $7E8002,x[$7E:8042]
-$A8:A49A 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A49E 38          SEC
-$A8:A49F FF 1C 78 7E SBC $7E781C,x[$7E:785C]
-$A8:A4A3 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$A8:A4A7 BF 04 80 7E LDA $7E8004,x[$7E:8044]
-$A8:A4AB 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A4AF 38          SEC
-$A8:A4B0 FF 1C 78 7E SBC $7E781C,x[$7E:785C]
-$A8:A4B4 9F 04 78 7E STA $7E7804,x[$7E:7844]
-$A8:A4B8 BF 06 80 7E LDA $7E8006,x[$7E:8046]
-$A8:A4BC 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A4C0 38          SEC
-$A8:A4C1 FF 1C 78 7E SBC $7E781C,x[$7E:785C]
-$A8:A4C5 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A8:A4C9 BF 08 80 7E LDA $7E8008,x[$7E:8048]
-$A8:A4CD 22 3E A7 A8 JSL $A8A73E[$A8:A73E]
-$A8:A4D1 38          SEC
-$A8:A4D2 FF 1C 78 7E SBC $7E781C,x[$7E:785C]
-$A8:A4D6 9F 0C 78 7E STA $7E780C,x[$7E:784C]
-$A8:A4DA BF 12 78 7E LDA $7E7812,x[$7E:7852]
-$A8:A4DE 4A          LSR A
-$A8:A4DF 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:A4E2 BF 02 80 7E LDA $7E8002,x[$7E:8042]
-$A8:A4E6 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A4EA 38          SEC
-$A8:A4EB FF 1E 78 7E SBC $7E781E,x[$7E:785E]
-$A8:A4EF 9F 02 78 7E STA $7E7802,x[$7E:7842]
-$A8:A4F3 BF 04 80 7E LDA $7E8004,x[$7E:8044]
-$A8:A4F7 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A4FB 38          SEC
-$A8:A4FC FF 1E 78 7E SBC $7E781E,x[$7E:785E]
-$A8:A500 9F 06 78 7E STA $7E7806,x[$7E:7846]
-$A8:A504 BF 06 80 7E LDA $7E8006,x[$7E:8046]
-$A8:A508 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A50C 38          SEC
-$A8:A50D FF 1E 78 7E SBC $7E781E,x[$7E:785E]
-$A8:A511 9F 0A 78 7E STA $7E780A,x[$7E:784A]
-$A8:A515 BF 08 80 7E LDA $7E8008,x[$7E:8048]
-$A8:A519 22 42 A7 A8 JSL $A8A742[$A8:A742]
-$A8:A51D 38          SEC
-$A8:A51E FF 1E 78 7E SBC $7E781E,x[$7E:785E]
-$A8:A522 9F 0E 78 7E STA $7E780E,x[$7E:784E]
-$A8:A526 20 39 A3    JSR $A339  [$A8:A339]
-$A8:A529 20 7C A3    JSR $A37C  [$A8:A37C]
-$A8:A52C 20 BF A3    JSR $A3BF  [$A8:A3BF]
-$A8:A52F 20 02 A4    JSR $A402  [$A8:A402]
-$A8:A532 18          CLC
-$A8:A533 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A8:A537 7F 0E 80 7E ADC $7E800E,x[$7E:804E]
-$A8:A53B 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$A8:A53F BF 02 78 7E LDA $7E7802,x[$7E:7842]
-$A8:A543 7F 10 80 7E ADC $7E8010,x[$7E:8050]
-$A8:A547 9F 02 78 7E STA $7E7802,x[$7E:7842]
-$A8:A54B BF 04 78 7E LDA $7E7804,x[$7E:7844]
-$A8:A54F 7F 12 80 7E ADC $7E8012,x[$7E:8052]
-$A8:A553 9F 04 78 7E STA $7E7804,x[$7E:7844]
-$A8:A557 BF 06 78 7E LDA $7E7806,x[$7E:7846]
-$A8:A55B 7F 14 80 7E ADC $7E8014,x[$7E:8054]
-$A8:A55F 9F 06 78 7E STA $7E7806,x[$7E:7846]
-$A8:A563 BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A8:A567 7F 16 80 7E ADC $7E8016,x[$7E:8056]
-$A8:A56B 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A8:A56F BF 0A 78 7E LDA $7E780A,x[$7E:784A]
-$A8:A573 7F 18 80 7E ADC $7E8018,x[$7E:8058]
-$A8:A577 9F 0A 78 7E STA $7E780A,x[$7E:784A]
-$A8:A57B BF 0C 78 7E LDA $7E780C,x[$7E:784C]
-$A8:A57F 7F 1A 80 7E ADC $7E801A,x[$7E:805A]
-$A8:A583 9F 0C 78 7E STA $7E780C,x[$7E:784C]
-$A8:A587 BF 0E 78 7E LDA $7E780E,x[$7E:784E]
-$A8:A58B 7F 1C 80 7E ADC $7E801C,x[$7E:805C]
-$A8:A58F 9F 0E 78 7E STA $7E780E,x[$7E:784E]
-$A8:A593 BF 18 78 7E LDA $7E7818,x[$7E:7858]
-$A8:A597 18          CLC
-$A8:A598 7F 0C 78 7E ADC $7E780C,x[$7E:784C]
-$A8:A59C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A8:A59F BF 1A 78 7E LDA $7E781A,x[$7E:785A]
-$A8:A5A3 18          CLC
-$A8:A5A4 7F 0E 78 7E ADC $7E780E,x[$7E:784E]
-$A8:A5A8 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:A5AB 20 3E A6    JSR $A63E  [$A8:A63E]
-$A8:A5AE BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:A5B1 C9 00 00    CMP #$0000
-$A8:A5B4 30 1C       BMI $1C    [$A5D2]
-$A8:A5B6 C9 80 00    CMP #$0080
-$A8:A5B9 30 34       BMI $34    [$A5EF]
-$A8:A5BB A9 80 00    LDA #$0080
-$A8:A5BE 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A8:A5C1 9E AC 0F    STZ $0FAC,x[$7E:0FEC]
-$A8:A5C4 FE AE 0F    INC $0FAE,x[$7E:0FEE]
-$A8:A5C7 FE AE 0F    INC $0FAE,x[$7E:0FEE]
-$A8:A5CA FE AE 0F    INC $0FAE,x[$7E:0FEE]
-$A8:A5CD FE AE 0F    INC $0FAE,x[$7E:0FEE]
-$A8:A5D0 80 1D       BRA $1D    [$A5EF]
+$A8:A48F BF 12 78 7E LDA $7E7812,x[$7E:7852];\
+$A8:A493 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A496 BF 02 80 7E LDA $7E8002,x[$7E:8042];|
+$A8:A49A 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;} Enemy body segment 1 X offset = [enemy length] * cos([enemy body segment 1 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A49E 38          SEC                    ;|
+$A8:A49F FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
+$A8:A4A3 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$A8:A4A7 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
+$A8:A4AB 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A4AF 38          SEC                    ;} Enemy body segment 2 X offset = [enemy length] * cos([enemy body segment 2 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4B0 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
+$A8:A4B4 9F 04 78 7E STA $7E7804,x[$7E:7844];/
+$A8:A4B8 BF 06 80 7E LDA $7E8006,x[$7E:8046];\
+$A8:A4BC 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A4C0 38          SEC                    ;} Enemy body segment 3 X offset = [enemy length] * cos([enemy body segment 3 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4C1 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
+$A8:A4C5 9F 08 78 7E STA $7E7808,x[$7E:7848];/
+$A8:A4C9 BF 08 80 7E LDA $7E8008,x[$7E:8048];\
+$A8:A4CD 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
+$A8:A4D1 38          SEC                    ;} Enemy head segment X offset = [enemy length] * cos([enemy head segment angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4D2 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
+$A8:A4D6 9F 0C 78 7E STA $7E780C,x[$7E:784C];/
+$A8:A4DA BF 12 78 7E LDA $7E7812,x[$7E:7852];\
+$A8:A4DE 4A          LSR A                  ;|
+$A8:A4DF 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:A4E2 BF 02 80 7E LDA $7E8002,x[$7E:8042];|
+$A8:A4E6 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy body segment 1 Y offset = [enemy length] / 2 * -sin([enemy body segment 1 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A4EA 38          SEC                    ;|
+$A8:A4EB FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
+$A8:A4EF 9F 02 78 7E STA $7E7802,x[$7E:7842];/
+$A8:A4F3 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
+$A8:A4F7 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A4FB 38          SEC                    ;} Enemy body segment 2 Y offset = [enemy length] / 2 * -sin([enemy body segment 2 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A4FC FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
+$A8:A500 9F 06 78 7E STA $7E7806,x[$7E:7846];/
+$A8:A504 BF 06 80 7E LDA $7E8006,x[$7E:8046];\
+$A8:A508 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A50C 38          SEC                    ;} Enemy body segment 3 Y offset = [enemy length] / 2 * -sin([enemy body segment 3 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A50D FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
+$A8:A511 9F 0A 78 7E STA $7E780A,x[$7E:784A];/
+$A8:A515 BF 08 80 7E LDA $7E8008,x[$7E:8048];\
+$A8:A519 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
+$A8:A51D 38          SEC                    ;} Enemy head segment Y offset = [enemy length] / 2 * -sin([enemy head segment angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A51E FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
+$A8:A522 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
+$A8:A526 20 39 A3    JSR $A339  [$A8:A339]  ; Calculate body segment 1 velocities
+$A8:A529 20 7C A3    JSR $A37C  [$A8:A37C]  ; Calculate body segment 2 velocities
+$A8:A52C 20 BF A3    JSR $A3BF  [$A8:A3BF]  ; Calculate body segment 3 velocities
+$A8:A52F 20 02 A4    JSR $A402  [$A8:A402]  ; Calculate head segment velocities
+$A8:A532 18          CLC                    ;\
+$A8:A533 BF 00 78 7E LDA $7E7800,x[$7E:7840];|
+$A8:A537 7F 0E 80 7E ADC $7E800E,x[$7E:804E];} Enemy body segment 1 X offset += [enemy body segment 1 X velocity]
+$A8:A53B 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$A8:A53F BF 02 78 7E LDA $7E7802,x[$7E:7842];\
+$A8:A543 7F 10 80 7E ADC $7E8010,x[$7E:8050];} Enemy body segment 1 Y offset += [enemy body segment 1 Y velocity]
+$A8:A547 9F 02 78 7E STA $7E7802,x[$7E:7842];/
+$A8:A54B BF 04 78 7E LDA $7E7804,x[$7E:7844];\
+$A8:A54F 7F 12 80 7E ADC $7E8012,x[$7E:8052];} Enemy body segment 2 X offset += [enemy body segment 2 X velocity]
+$A8:A553 9F 04 78 7E STA $7E7804,x[$7E:7844];/
+$A8:A557 BF 06 78 7E LDA $7E7806,x[$7E:7846];\
+$A8:A55B 7F 14 80 7E ADC $7E8014,x[$7E:8054];} Enemy body segment 2 Y offset += [enemy body segment 2 Y velocity]
+$A8:A55F 9F 06 78 7E STA $7E7806,x[$7E:7846];/
+$A8:A563 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A8:A567 7F 16 80 7E ADC $7E8016,x[$7E:8056];} Enemy body segment 3 X offset += [enemy body segment 3 X velocity]
+$A8:A56B 9F 08 78 7E STA $7E7808,x[$7E:7848];/
+$A8:A56F BF 0A 78 7E LDA $7E780A,x[$7E:784A];\
+$A8:A573 7F 18 80 7E ADC $7E8018,x[$7E:8058];} Enemy body segment 3 Y offset += [enemy body segment 3 Y velocity]
+$A8:A577 9F 0A 78 7E STA $7E780A,x[$7E:784A];/
+$A8:A57B BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
+$A8:A57F 7F 1A 80 7E ADC $7E801A,x[$7E:805A];} Enemy head segment X offset += [enemy head segment X velocity]
+$A8:A583 9F 0C 78 7E STA $7E780C,x[$7E:784C];/
+$A8:A587 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
+$A8:A58B 7F 1C 80 7E ADC $7E801C,x[$7E:805C];} Enemy head segment Y offset += [enemy head segment Y velocity]
+$A8:A58F 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
+$A8:A593 BF 18 78 7E LDA $7E7818,x[$7E:7858];\
+$A8:A597 18          CLC                    ;|
+$A8:A598 7F 0C 78 7E ADC $7E780C,x[$7E:784C];} Enemy X position = [enemy body segment base X position] + [enemy head segment X offset]
+$A8:A59C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$A8:A59F BF 1A 78 7E LDA $7E781A,x[$7E:785A];\
+$A8:A5A3 18          CLC                    ;|
+$A8:A5A4 7F 0E 78 7E ADC $7E780E,x[$7E:784E];} Enemy Y position = [enemy body segment base Y position] + [enemy head segment Y offset]
+$A8:A5A8 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A8:A5AB 20 3E A6    JSR $A63E  [$A8:A63E]  ; Update yapping maw angular speed
+$A8:A5AE BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:A5B1 C9 00 00    CMP #$0000             ;} If [enemy angle] < 0: go to BRANCH_COOLDOWN
+$A8:A5B4 30 1C       BMI $1C    [$A5D2]     ;/
+$A8:A5B6 C9 80 00    CMP #$0080             ;\
+$A8:A5B9 30 34       BMI $34    [$A5EF]     ;} If [enemy angle] < 80h: go to BRANCH_MOVE_SAMUS
+$A8:A5BB A9 80 00    LDA #$0080             ;\
+$A8:A5BE 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy angle = 80h.0
+$A8:A5C1 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ;/
+$A8:A5C4 FE AE 0F    INC $0FAE,x[$7E:0FEE]  ;\
+$A8:A5C7 FE AE 0F    INC $0FAE,x[$7E:0FEE]  ;|
+$A8:A5CA FE AE 0F    INC $0FAE,x[$7E:0FEE]  ;} Enemy angular speed table index += 4 (negated speed)
+$A8:A5CD FE AE 0F    INC $0FAE,x[$7E:0FEE]  ;/
+$A8:A5D0 80 1D       BRA $1D    [$A5EF]     ; Go to BRANCH_MOVE_SAMUS
 
+; BRANCH_COOLDOWN
 $A8:A5D2 A9 8A A6    LDA #$A68A             ;\
-$A8:A5D5 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A68A
-$A8:A5D8 A9 30 00    LDA #$0030
-$A8:A5DB 9F 2A 80 7E STA $7E802A,x[$7E:806A]
-$A8:A5DF BF 28 80 7E LDA $7E8028,x[$7E:8068]
-$A8:A5E3 C9 04 00    CMP #$0004
-$A8:A5E6 F0 09       BEQ $09    [$A5F1]
-$A8:A5E8 C9 0C 00    CMP #$000C
-$A8:A5EB F0 0C       BEQ $0C    [$A5F9]
-$A8:A5ED 80 12       BRA $12    [$A601]
+$A8:A5D5 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A68A (cooldown)
+$A8:A5D8 A9 30 00    LDA #$0030             ;\
+$A8:A5DB 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy intangibility timer = 30h
+$A8:A5DF BF 28 80 7E LDA $7E8028,x[$7E:8068];\
+$A8:A5E3 C9 04 00    CMP #$0004             ;} If [enemy instruction list table index] = right: go to BRANCH_UP_RIGHT
+$A8:A5E6 F0 09       BEQ $09    [$A5F1]     ;/
+$A8:A5E8 C9 0C 00    CMP #$000C             ;\
+$A8:A5EB F0 0C       BEQ $0C    [$A5F9]     ;} If [enemy instruction list table index] = left: go to BRANCH_UP_LEFT
+$A8:A5ED 80 12       BRA $12    [$A601]     ; Go to BRANCH_UP
 
 $A8:A5EF 80 43       BRA $43    [$A634]
 
+; BRANCH_UP_RIGHT
 $A8:A5F1 A9 1F A0    LDA #$A01F             ;\
 $A8:A5F4 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $A01F
-$A8:A5F7 80 0E       BRA $0E    [$A607]
+$A8:A5F7 80 0E       BRA $0E    [$A607]     ; Go to BRANCH_UP_MERGE
 
+; BRANCH_UP_LEFT
 $A8:A5F9 A9 3D A0    LDA #$A03D             ;\
 $A8:A5FC 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $A03D
-$A8:A5FF 80 06       BRA $06    [$A607]
+$A8:A5FF 80 06       BRA $06    [$A607]     ; Go to BRANCH_UP_MERGE
 
+; BRANCH_UP
 $A8:A601 A9 25 A0    LDA #$A025             ;\
 $A8:A604 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $A025
 
-$A8:A607 BD B6 0F    LDA $0FB6,x[$7E:0FF6]
-$A8:A60A D0 31       BNE $31    [$A63D]
-$A8:A60C BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A8:A610 C9 04 00    CMP #$0004
-$A8:A613 F0 07       BEQ $07    [$A61C]
-$A8:A615 C9 0C 00    CMP #$000C
-$A8:A618 F0 0A       BEQ $0A    [$A624]
-$A8:A61A 80 10       BRA $10    [$A62C]
+; BRANCH_UP_MERGE
+$A8:A607 BD B6 0F    LDA $0FB6,x[$7E:0FF6]  ;\
+$A8:A60A D0 31       BNE $31    [$A63D]     ;} If [enemy parameter 2] != 0: return
+$A8:A60C BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A8:A610 C9 04 00    CMP #$0004             ;} If [enemy instruction list table index] = right: go to BRANCH_DOWN_RIGHT
+$A8:A613 F0 07       BEQ $07    [$A61C]     ;/
+$A8:A615 C9 0C 00    CMP #$000C             ;\
+$A8:A618 F0 0A       BEQ $0A    [$A624]     ;} If [enemy instruction list table index] = left: go to BRANCH_DOWN_LEFT
+$A8:A61A 80 10       BRA $10    [$A62C]     ; Go to BRANCH_DOWN
 
+; BRANCH_DOWN_RIGHT
 $A8:A61C A9 5B A0    LDA #$A05B             ;\
 $A8:A61F 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $A05B
-$A8:A622 80 10       BRA $10    [$A634]
+$A8:A622 80 10       BRA $10    [$A634]     ; Go to BRANCH_MOVE_SAMUS
 
+; BRANCH_DOWN_LEFT
 $A8:A624 A9 79 A0    LDA #$A079             ;\
 $A8:A627 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $A079
-$A8:A62A 80 08       BRA $08    [$A634]
+$A8:A62A 80 08       BRA $08    [$A634]     ; Go to BRANCH_MOVE_SAMUS
 
+; BRANCH_DOWN
 $A8:A62C A9 61 A0    LDA #$A061             ;\
 $A8:A62F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $A061
-$A8:A632 80 09       BRA $09    [$A63D]
+$A8:A632 80 09       BRA $09    [$A63D]     ; Return
 
-$A8:A634 BF 20 80 7E LDA $7E8020,x[$7E:8060]
-$A8:A638 F0 03       BEQ $03    [$A63D]
-$A8:A63A 20 65 A6    JSR $A665  [$A8:A665]
+; BRANCH_MOVE_SAMUS
+$A8:A634 BF 20 80 7E LDA $7E8020,x[$7E:8060];\
+$A8:A638 F0 03       BEQ $03    [$A63D]     ;} If [enemy grabbing Samus flag] != 0:
+$A8:A63A 20 65 A6    JSR $A665  [$A8:A665]  ; Move Samus with yapping maw pincers
 
 $A8:A63D 60          RTS
 }
 
 
-;;; $A63E:  ;;;
+;;; $A63E: Update yapping maw angular speed ;;;
 {
-$A8:A63E BC AE 0F    LDY $0FAE,x[$7E:0FEE]  ; Y = [enemy $0FAE] (quadratic speed table index)
+$A8:A63E BC AE 0F    LDY $0FAE,x[$7E:0FEE]  ; Y = [enemy angular speed table index] (quadratic speed table index)
 $A8:A641 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:A644 18          CLC                    ;|
 $A8:A645 79 91 83    ADC $8391,y[$A8:8391]  ;|
 $A8:A648 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;|
 $A8:A64B BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;|
-$A8:A64E 18          CLC                    ;} Enemy $0FAA.$0FAC += [$838F + [Y] + 2].[$838F + [Y]]
+$A8:A64E 18          CLC                    ;} Enemy angle += [$838F + [Y] + 2].[$838F + [Y]]
 $A8:A64F 79 8F 83    ADC $838F,y[$A8:838F]  ;|
 $A8:A652 90 03       BCC $03    [$A657]     ;|
 $A8:A654 FE AA 0F    INC $0FAA,x[$7E:0FEA]  ;|
@@ -2835,25 +2857,25 @@ $A8:A654 FE AA 0F    INC $0FAA,x[$7E:0FEA]  ;|
 $A8:A657 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;/
 $A8:A65A BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
 $A8:A65D 18          CLC                    ;|
-$A8:A65E 69 08 00    ADC #$0008             ;} Enemy $0FAE += 8
+$A8:A65E 69 08 00    ADC #$0008             ;} Enemy angular speed table index += 8
 $A8:A661 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A8:A664 60          RTS
 }
 
 
-;;; $A665:  ;;;
+;;; $A665: Move Samus with yapping maw pincers ;;;
 {
 $A8:A665 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A668 A9 03 00    LDA #$0003             ;\
 $A8:A66B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unspin Samus
-$A8:A66F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A8:A672 18          CLC
-$A8:A673 7F 24 80 7E ADC $7E8024,x[$7E:8064]
-$A8:A677 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$A8:A67A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:A67D 18          CLC
-$A8:A67E 7F 26 80 7E ADC $7E8026,x[$7E:8066]
-$A8:A682 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$A8:A66F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$A8:A672 18          CLC                    ;|
+$A8:A673 7F 24 80 7E ADC $7E8024,x[$7E:8064];} Samus X position = [enemy X position] + [enemy Samus X offset]
+$A8:A677 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$A8:A67A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:A67D 18          CLC                    ;|
+$A8:A67E 7F 26 80 7E ADC $7E8026,x[$7E:8066];} Samus Y position = [enemy Y position] + [enemy Samus Y offset]
+$A8:A682 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $A8:A685 22 A1 B7 A0 JSL $A0B7A1[$A0:B7A1]  ; Cap scrolling speed
 $A8:A689 60          RTS
 }
@@ -2874,25 +2896,25 @@ $A8:A689 60          RTS
 ;      Eventually, the PC lands on $0001 and starts executing from WRAM where a crash is inevitable
 
 $A8:A68A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A68D BF 20 80 7E LDA $7E8020,x[$7E:8060]
-$A8:A691 F0 03       BEQ $03    [$A696]
-$A8:A693 20 65 A6    JSR $A665  [$A8:A665]
+$A8:A68D BF 20 80 7E LDA $7E8020,x[$7E:8060];\
+$A8:A691 F0 03       BEQ $03    [$A696]     ;} If [enemy grabbing Samus flag] != 0:
+$A8:A693 20 65 A6    JSR $A665  [$A8:A665]  ; Move Samus with yapping maw pincers
 
-$A8:A696 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A8:A699 10 28       BPL $28    [$A6C3]
+$A8:A696 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy cooldown timer
+$A8:A699 10 28       BPL $28    [$A6C3]     ; If [enemy cooldown timer] >= 0: return
 $A8:A69B AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
 $A8:A69E C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] = $E91D (demo): return
 $A8:A6A1 F0 20       BEQ $20    [$A6C3]     ;/
 $A8:A6A3 A9 13 E9    LDA #$E913             ;\
 $A8:A6A6 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
-$A8:A6A9 A9 00 00    LDA #$0000
-$A8:A6AC 9F 20 80 7E STA $7E8020,x[$7E:80A0]
-$A8:A6B0 A9 30 00    LDA #$0030
-$A8:A6B3 9F 2A 80 7E STA $7E802A,x[$7E:80AA]
-$A8:A6B7 A9 40 00    LDA #$0040
-$A8:A6BA 9D B0 0F    STA $0FB0,x[$7E:1030]
+$A8:A6A9 A9 00 00    LDA #$0000             ;\
+$A8:A6AC 9F 20 80 7E STA $7E8020,x[$7E:80A0];} Enemy grabbing Samus flag = 0
+$A8:A6B0 A9 30 00    LDA #$0030             ;\
+$A8:A6B3 9F 2A 80 7E STA $7E802A,x[$7E:80AA];} Enemy intangibility timer = 30h
+$A8:A6B7 A9 40 00    LDA #$0040             ;\
+$A8:A6BA 9D B0 0F    STA $0FB0,x[$7E:1030]  ;} Enemy cooldown timer = 40h
 $A8:A6BD A9 35 A2    LDA #$A235             ;\
-$A8:A6C0 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $A235
+$A8:A6C0 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $A235 (neutral)
 
 $A8:A6C3 60          RTS
 }
@@ -3034,13 +3056,13 @@ $A8:A798 6B          RTL
 {
 $A8:A799 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A79C BF 2A 80 7E LDA $7E802A,x[$7E:806A];\
-$A8:A7A0 10 1A       BPL $1A    [$A7BC]     ;} If [enemy $7E:802A] >= 0: return
+$A8:A7A0 10 1A       BPL $1A    [$A7BC]     ;} If [enemy intangibility timer] >= 0: return
 $A8:A7A2 BF 20 80 7E LDA $7E8020,x[$7E:8060];\
-$A8:A7A6 D0 14       BNE $14    [$A7BC]     ;} If [enemy $7E:8020] != 0: return
+$A8:A7A6 D0 14       BNE $14    [$A7BC]     ;} If [enemy grabbing Samus flag] != 0: return
 $A8:A7A8 A9 00 00    LDA #$0000             ;\
-$A8:A7AB 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy $7E:802A = 0
+$A8:A7AB 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy intangibility timer = 0
 $A8:A7AF A9 01 00    LDA #$0001             ;\
-$A8:A7B2 9F 20 80 7E STA $7E8020,x[$7E:8060];} Enemy $7E:8020 = 1
+$A8:A7B2 9F 20 80 7E STA $7E8020,x[$7E:8060];} Enemy grabbing Samus flag = 1
 $A8:A7B6 A9 0E E9    LDA #$E90E             ;\
 $A8:A7B9 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 
@@ -3084,7 +3106,7 @@ $A8:A80B A9 13 E9    LDA #$E913             ;\
 $A8:A80E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $A8:A811 A9 00 00    LDA #$0000             ;\
-$A8:A814 9F 20 80 7E STA $7E8020,x          ;} Enemy $7E:8020 = 0
+$A8:A814 9F 20 80 7E STA $7E8020,x          ;} Enemy grabbing Samus flag = 0
 $A8:A818 80 1A       BRA $1A    [$A834]     ; Return
 
 ; BRANCH_ALIVE
@@ -3097,7 +3119,7 @@ $A8:A827 A9 13 E9    LDA #$E913             ;\
 $A8:A82A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $A8:A82D A9 00 00    LDA #$0000             ;\
-$A8:A830 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy $7E:8020 = 0
+$A8:A830 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy grabbing Samus flag = 0
 
 $A8:A834 6B          RTL
 }
@@ -3226,7 +3248,7 @@ $A8:AAFE             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 01
 }
 
 
-;;; $AB1E: Instruction list -  ;;;
+;;; $AB1E: Instruction list - slow ;;;
 {
 $A8:AB1E             dx 000A,ABDA,
                         000A,ABF0,
@@ -3236,7 +3258,7 @@ $A8:AB1E             dx 000A,ABDA,
 }
 
 
-;;; $AB32: Instruction list -  ;;;
+;;; $AB32: Instruction list - fast ;;;
 {
 $A8:AB32             dx 0003,ABDA,
                         0003,ABF0,
@@ -3248,21 +3270,22 @@ $A8:AB32             dx 0003,ABDA,
 
 ;;; $AB46: Initialisation AI - enemy $E7FF (kago) ;;;
 {
+; Hit counter is $7E:7808, how obscure
 $A8:AB46 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AB49 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:AB4C 09 00 20    ORA #$2000
-$A8:AB4F 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A8:AB49 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:AB4C 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A8:AB4F 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:AB52 A9 01 00    LDA #$0001             ;\
 $A8:AB55 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$A8:AB58 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A8:AB5B 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
+$A8:AB58 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A8:AB5B 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0 (never read)
 $A8:AB5E A9 1E AB    LDA #$AB1E             ;\
-$A8:AB61 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $AB1E
-$A8:AB64 A9 7B AB    LDA #$AB7B
-$A8:AB67 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A8:AB6A 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
-$A8:AB6D BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A8:AB70 9F 08 78 7E STA $7E7808,x[$7E:7808]
+$A8:AB61 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $AB1E (slow)
+$A8:AB64 A9 7B AB    LDA #$AB7B             ;\
+$A8:AB67 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $AB7B (nothing)
+$A8:AB6A 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0 (never read)
+$A8:AB6D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A8:AB70 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy hit counter = [enemy parameter 1]
 $A8:AB74 6B          RTL
 }
 
@@ -3270,14 +3293,14 @@ $A8:AB74 6B          RTL
 ;;; $AB75: Main AI - enemy $E7FF (kago) ;;;
 {
 $A8:AB75 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AB78 7C A8 0F    JMP ($0FA8,x)[$A8:AB7B]
+$A8:AB78 7C A8 0F    JMP ($0FA8,x)[$A8:AB7B]; Go to [enemy function]
 }
 
 
-;;; $AB7B:  ;;;
+;;; $AB7B: Kago function - nothing ;;;
 {
-$A8:AB7B A9 81 AB    LDA #$AB81
-$A8:AB7E 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$A8:AB7B A9 81 AB    LDA #$AB81             ;\
+$A8:AB7E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTL
 $A8:AB81 6B          RTL
 }
 
@@ -3298,28 +3321,28 @@ $A8:AB8C 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pix
 $A8:AB8F A9 10 00    LDA #$0010             ;\
 $A8:AB92 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10h
 $A8:AB95 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AB98 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:AB9B D0 12       BNE $12    [$ABAF]
-$A8:AB9D A9 01 00    LDA #$0001
-$A8:ABA0 9D AA 0F    STA $0FAA,x[$7E:0FEA]
+$A8:AB98 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:AB9B D0 12       BNE $12    [$ABAF]     ;} If [enemy fast animation flag] = 0:
+$A8:AB9D A9 01 00    LDA #$0001             ;\
+$A8:ABA0 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy fast animation flag = 1
 $A8:ABA3 A9 32 AB    LDA #$AB32             ;\
-$A8:ABA6 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $AB32
+$A8:ABA6 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $AB32 (fast)
 $A8:ABA9 A9 01 00    LDA #$0001             ;\
 $A8:ABAC 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 
-$A8:ABAF BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A8:ABB3 38          SEC
-$A8:ABB4 E9 01 00    SBC #$0001
-$A8:ABB7 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A8:ABBB 10 10       BPL $10    [$ABCD]
+$A8:ABAF BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A8:ABB3 38          SEC                    ;|
+$A8:ABB4 E9 01 00    SBC #$0001             ;} Decrement enemy hit counter
+$A8:ABB7 9F 08 78 7E STA $7E7808,x[$7E:7848];/
+$A8:ABBB 10 10       BPL $10    [$ABCD]     ; If [enemy hit counter] < 0:
 $A8:ABBD A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $A8:ABC0 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A8:ABC4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:ABC7 A9 01 00    LDA #$0001
-$A8:ABCA 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:ABC7 A9 01 00    LDA #$0001             ;\
+$A8:ABCA 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = 1 (never read)
 
 $A8:ABCD A0 2E D0    LDY #$D02E             ;\
-$A8:ABD0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} Spawn kago bug enemy projectile
+$A8:ABD0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} Spawn kago bug enemy projectile (parameter ignored)
 $A8:ABD3 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:ABD7 7A          PLY
 $A8:ABD8 FA          PLX
@@ -3976,15 +3999,15 @@ $A8:B109 6B          RTL
 ;;; $B10A: Main AI - enemy $E83F (magdollite) ;;;
 {
 $A8:B10A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B10D BF 08 78 7E LDA $7E7808,x[$7E:7808]
-$A8:B111 3A          DEC A
-$A8:B112 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A8:B116 FC B2 0F    JSR ($0FB2,x)[$A8:B11A]
+$A8:B10D BF 08 78 7E LDA $7E7808,x[$7E:7808];\
+$A8:B111 3A          DEC A                  ;} Decrement enemy $7E:7808
+$A8:B112 9F 08 78 7E STA $7E7808,x[$7E:7808];/
+$A8:B116 FC B2 0F    JSR ($0FB2,x)[$A8:B11A]; Execute [enemy function]
 $A8:B119 6B          RTL
 }
 
 
-;;; $B11A:  ;;;
+;;; $B11A: Magdollite function -  ;;;
 {
 $A8:B11A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B11D A9 00 00    LDA #$0000
@@ -4022,7 +4045,7 @@ $A8:B174 60          RTS
 }
 
 
-;;; $B175:  ;;;
+;;; $B175: Magdollite function -  ;;;
 {
 $A8:B175 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B178 BF 02 78 7E LDA $7E7802,x[$7E:7802]
@@ -4038,7 +4061,7 @@ $A8:B192 60          RTS
 }
 
 
-;;; $B193:  ;;;
+;;; $B193: Magdollite function -  ;;;
 {
 $A8:B193 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B196 BF 04 78 7E LDA $7E7804,x[$7E:7804]
@@ -4058,7 +4081,7 @@ $A8:B1B7 60          RTS
 }
 
 
-;;; $B1B8:  ;;;
+;;; $B1B8: Magdollite function -  ;;;
 {
 $A8:B1B8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B1BB BF 02 78 7E LDA $7E7802,x[$7E:7802]
@@ -4078,7 +4101,7 @@ $A8:B1DC 60          RTS
 }
 
 
-;;; $B1DD:  ;;;
+;;; $B1DD: Magdollite function -  ;;;
 {
 $A8:B1DD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B1E0 BF 1A 78 7E LDA $7E781A,x[$7E:785A]
@@ -4097,7 +4120,7 @@ $A8:B203 60          RTS
 }
 
 
-;;; $B204:  ;;;
+;;; $B204: Magdollite function -  ;;;
 {
 $A8:B204 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B207 18          CLC
@@ -4165,7 +4188,7 @@ $A8:B290 60          RTS
 }
 
 
-;;; $B291:  ;;;
+;;; $B291: Magdollite function -  ;;;
 {
 $A8:B291 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B294 60          RTS
@@ -4232,7 +4255,7 @@ $A8:B30C 60          RTS
 }
 
 
-;;; $B30D:  ;;;
+;;; $B30D: Magdollite function -  ;;;
 {
 $A8:B30D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B310 BD 32 0F    LDA $0F32,x[$7E:0FB2]
@@ -4245,7 +4268,7 @@ $A8:B31E 60          RTS
 }
 
 
-;;; $B31F:  ;;;
+;;; $B31F: Magdollite function -  ;;;
 {
 $A8:B31F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B322 BF 02 78 7E LDA $7E7802,x[$7E:7882]
@@ -4269,7 +4292,7 @@ $A8:B355 60          RTS
 }
 
 
-;;; $B356:  ;;;
+;;; $B356: Magdollite function -  ;;;
 {
 $A8:B356 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B359 BF D8 77 7E LDA $7E77D8,x[$7E:7858]
@@ -4305,7 +4328,7 @@ $A8:B3A6 60          RTS
 }
 
 
-;;; $B3A7:  ;;;
+;;; $B3A7: Magdollite function -  ;;;
 {
 $A8:B3A7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B3AA BD 32 0F    LDA $0F32,x[$7E:0FB2]
@@ -8114,6 +8137,8 @@ $A8:DBC7             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 5A
 }
 
 
+;;; $DBE7..DCC6: Instruction lists ;;;
+{
 ;;; $DBE7: Instruction list -  ;;;
 {
 $A8:DBE7             dx DF71,       ; ???
@@ -8207,6 +8232,7 @@ $A8:DC73             dx 0014,E160,
 {
 $A8:DCC1             dx 7FFF,E140,
                         812F        ; Sleep
+}
 }
 
 
@@ -8531,6 +8557,8 @@ $A8:DF1B 6B          RTL
 }
 
 
+;;; $DF1C..9B: Instructions ;;;
+{
 ;;; $DF1C: Instruction ;;;
 {
 $A8:DF1C 5A          PHY
@@ -8615,6 +8643,7 @@ $A8:DF94 49 FF FF    EOR #$FFFF
 $A8:DF97 1A          INC A
 $A8:DF98 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 $A8:DF9B 6B          RTL
+}
 }
 
 
