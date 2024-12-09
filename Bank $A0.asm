@@ -235,11 +235,11 @@ $A0:807B 60          RTS
 
 ;;; $807C: Instruction - delete enemy ;;;
 {
-$A0:807C BD 86 0F    LDA $0F86,x
-$A0:807F 09 00 02    ORA #$0200
-$A0:8082 9D 86 0F    STA $0F86,x
-$A0:8085 68          PLA
-$A0:8086 F4 AE C2    PEA $C2AE
+$A0:807C BD 86 0F    LDA $0F86,x            ;\
+$A0:807F 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$A0:8082 9D 86 0F    STA $0F86,x            ;/
+$A0:8085 68          PLA                    ;\
+$A0:8086 F4 AE C2    PEA $C2AE              ;} Terminate enemy instruction processing
 $A0:8089 6B          RTL
 }
 
@@ -401,12 +401,12 @@ $A0:812E 6B          RTL
 
 ;;; $812F: Instruction - sleep ;;;
 {
-$A0:812F 88          DEY
-$A0:8130 88          DEY
-$A0:8131 98          TYA
-$A0:8132 9D 92 0F    STA $0F92,x
-$A0:8135 68          PLA
-$A0:8136 F4 AE C2    PEA $C2AE
+$A0:812F 88          DEY                    ;\
+$A0:8130 88          DEY                    ;|
+$A0:8131 98          TYA                    ;} Enemy instruction list pointer = [Y] - 2
+$A0:8132 9D 92 0F    STA $0F92,x            ;/
+$A0:8135 68          PLA                    ;\
+$A0:8136 F4 AE C2    PEA $C2AE              ;} Terminate enemy instruction processing
 $A0:8139 6B          RTL
 }
 
@@ -417,14 +417,14 @@ $A0:8139 6B          RTL
 ; Used for running a delay that doesn't update graphics,
 ; useful for e.g. GT eye beam attack ($AA:D10D), implemented by an instruction list that has no graphical instructions,
 ; which allows it to be called from multiple different poses
-$A0:813A B9 00 00    LDA $0000,y
-$A0:813D 9D 94 0F    STA $0F94,x
-$A0:8140 C8          INY
-$A0:8141 C8          INY
-$A0:8142 98          TYA
-$A0:8143 9D 92 0F    STA $0F92,x
-$A0:8146 68          PLA
-$A0:8147 F4 AE C2    PEA $C2AE
+$A0:813A B9 00 00    LDA $0000,y            ;\
+$A0:813D 9D 94 0F    STA $0F94,x            ;} Enemy instruction list timer = [[Y]]
+$A0:8140 C8          INY                    ;\
+$A0:8141 C8          INY                    ;|
+$A0:8142 98          TYA                    ;} Enemy instruction list pointer = [Y] + 2
+$A0:8143 9D 92 0F    STA $0F92,x            ;/
+$A0:8146 68          PLA                    ;\
+$A0:8147 F4 AE C2    PEA $C2AE              ;} Terminate enemy instruction processing
 $A0:814A 6B          RTL
 }
 

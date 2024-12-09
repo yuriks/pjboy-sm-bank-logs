@@ -672,8 +672,8 @@ $84:85B3 60          RTS
 {
 $84:85B4 08          PHP
 $84:85B5 8B          PHB
-$84:85B6 4B          PHK
-$84:85B7 AB          PLB
+$84:85B6 4B          PHK                    ;\
+$84:85B7 AB          PLB                    ;} DB = $84
 $84:85B8 C2 30       REP #$30
 $84:85BA 2C 23 1C    BIT $1C23  [$7E:1C23]  ;\
 $84:85BD 10 18       BPL $18    [$85D7]     ;} If PLMs not enabled: return
@@ -701,6 +701,9 @@ $84:85D9 6B          RTL
 {
 ;; Parameter:
 ;;     X: PLM index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $85F7 to return out of *this* routine
+; (marked "terminate processing PLM")
 $84:85DA FC D7 1C    JSR ($1CD7,x)[$84:B7DD]; Execute PLM pre-instruction
 $84:85DD AE 27 1C    LDX $1C27  [$7E:1C27]  ; X = [PLM index]
 $84:85E0 BF 1C DE 7E LDA $7EDE1C,x[$7E:DE6A];\
@@ -716,7 +719,7 @@ $84:85F3 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction point
 $84:85F5 C8          INY                    ;\
 $84:85F6 C8          INY                    ;} Y += 2
 $84:85F7 F4 ED 85    PEA $85ED              ; Return to LOOP
-$84:85FA 6C 12 00    JMP ($0012)[$84:86B4]  ; Execute ASM instruction
+$84:85FA 6C 12 00    JMP ($0012)[$84:86B4]  ; Execute (ASM instruction pointer)
 
 $84:85FD 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68]; PLM instruction timer = [[Y]] (draw timer)
 $84:8601 B9 02 00    LDA $0002,y[$84:C1AA]  ;\
@@ -841,19 +844,19 @@ $84:86B1 4C 29 86    JMP $8629  [$84:8629]  ; Go to LOOP_DRAW_ENTRY
 {
 ;;; $86B4: Instruction - sleep ;;;
 {
-$84:86B4 88          DEY
-$84:86B5 88          DEY
-$84:86B6 98          TYA
-$84:86B7 9D 27 1D    STA $1D27,x[$7E:1D75]
-$84:86BA 68          PLA
+$84:86B4 88          DEY                    ;\
+$84:86B5 88          DEY                    ;|
+$84:86B6 98          TYA                    ;} PLM instruction list pointer = [Y] - 2
+$84:86B7 9D 27 1D    STA $1D27,x[$7E:1D75]  ;/
+$84:86BA 68          PLA                    ; Terminate processing PLM
 $84:86BB 60          RTS
 }
 
 
 ;;; $86BC: Instruction - delete ;;;
 {
-$84:86BC 9E 37 1C    STZ $1C37,x[$7E:1C85]
-$84:86BF 68          PLA
+$84:86BC 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; PLM ID = 0
+$84:86BF 68          PLA                    ; Terminate processing PLM
 $84:86C0 60          RTS
 }
 
@@ -1629,7 +1632,7 @@ $84:8B46 20 1E 86    JSR $861E  [$84:861E]  ; Process PLM draw instruction
 $84:8B49 AE 27 1C    LDX $1C27  [$7E:1C27]
 $84:8B4C 22 90 82 84 JSL $848290[$84:8290]  ; Calculate PLM block co-ordinates
 $84:8B50 20 AA 8D    JSR $8DAA  [$84:8DAA]  ; Draw PLM
-$84:8B53 68          PLA
+$84:8B53 68          PLA                    ; Terminate processing PLM
 $84:8B54 60          RTS
 }
 

@@ -1005,7 +1005,7 @@ $88:84AB DA          PHX
 $88:84AC A6 14       LDX $14    [$7E:0014]  ;\
 $88:84AE B9 00 00    LDA $0000,y[$88:EB63]  ;} HDMA control / target = [(return address) + 1] / [(return address) + 2]
 $88:84B1 9D 00 43    STA $4300,x[$7E:4320]  ;/
-$88:84B4 68          PLA                    ; A = HDMA object index
+$88:84B4 68          PLA                    ; A = (HDMA object index)
 $88:84B5 AB          PLB
 $88:84B6 28          PLP
 $88:84B7 18          CLC                    ;\
@@ -1074,6 +1074,11 @@ $88:851B 6B          RTL
 
 ;;; $851C: HDMA object instruction handler ;;;
 {
+;; Parameter:
+;;     X: HDMA object index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $854F to return out of *this* routine
+; (marked "terminate processing HDMA object")
 $88:851C C2 20       REP #$20
 $88:851E BD F0 18    LDA $18F0,x[$7E:18F0]  ;\
 $88:8521 85 12       STA $12    [$7E:0012]  ;|
@@ -1122,8 +1127,8 @@ $88:8568 60          RTS
 {
 ;;; $8569: Instruction - delete ;;;
 {
-$88:8569 9E B4 18    STZ $18B4,x[$7E:18B4]
-$88:856C 68          PLA
+$88:8569 9E B4 18    STZ $18B4,x[$7E:18B4]  ; Delete HDMA object
+$88:856C 68          PLA                    ; Terminate processing HDMA object
 $88:856D E2 30       SEP #$30
 $88:856F 60          RTS
 }
@@ -1373,11 +1378,11 @@ $88:8681 60          RTS
 
 ;;; $8682: Instruction - sleep ;;;
 {
-$88:8682 88          DEY
-$88:8683 88          DEY
-$88:8684 98          TYA
-$88:8685 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:8688 68          PLA
+$88:8682 88          DEY                    ;\
+$88:8683 88          DEY                    ;|
+$88:8684 98          TYA                    ;} HDMA object instruction list pointer = [Y] - 2
+$88:8685 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:8688 68          PLA                    ; Terminate processing HDMA object
 $88:8689 E2 30       SEP #$30
 $88:868B 60          RTS
 }

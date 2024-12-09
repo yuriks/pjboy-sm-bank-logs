@@ -1468,6 +1468,9 @@ $82:8C2A 60          RTS
 {
 ;; Parameter:
 ;;     X: Game options menu object index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $8C42 to return out of *this* routine
+; (marked "terminate processing game options menu object")
 $82:8C2B FC 0D 1B    JSR ($1B0D,x)[$82:F2A9]; Execute [game options menu object pre-instruction]
 $82:8C2E AE 8F 1A    LDX $1A8F  [$7E:1A8F]
 $82:8C31 DE 1D 1B    DEC $1B1D,x[$7E:1B2B]  ; Decrement game options menu object instruction timer

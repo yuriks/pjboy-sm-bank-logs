@@ -212,6 +212,9 @@ $86:8124 6B          RTL
 {
 ;; Parameter:
 ;;     X: Enemy projectile index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $813C to return out of *this* routine
+; (marked "terminate processing enemy projectile")
 $86:8125 FC 03 1A    JSR ($1A03,x)[$86:A328]; Execute [enemy projectile pre-instruction]
 $86:8128 AE 91 19    LDX $1991  [$7E:1991]  ; X = [enemy projectile index]
 $86:812B DE 8F 1B    DEC $1B8F,x[$7E:1BB1]  ; Decrement enemy projectile instruction timer
@@ -243,19 +246,19 @@ $86:8153 60          RTS
 {
 ;;; $8154: Instruction - delete ;;;
 {
-$86:8154 9E 97 19    STZ $1997,x[$7E:19B7]
-$86:8157 68          PLA
+$86:8154 9E 97 19    STZ $1997,x[$7E:19B7]  ; Enemy projectile ID = 0
+$86:8157 68          PLA                    ; Terminate processing enemy projectile
 $86:8158 60          RTS
 }
 
 
 ;;; $8159: Instruction - sleep ;;;
 {
-$86:8159 88          DEY
-$86:815A 88          DEY
-$86:815B 98          TYA
-$86:815C 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:815F 68          PLA
+$86:8159 88          DEY                    ;\
+$86:815A 88          DEY                    ;|
+$86:815B 98          TYA                    ;} Enemy projectile instruction list pointer = [Y] - 2
+$86:815C 9D 47 1B    STA $1B47,x[$7E:1B69]  ;/
+$86:815F 68          PLA                    ; Terminate processing enemy projectile
 $86:8160 60          RTS
 }
 
@@ -12322,7 +12325,7 @@ $86:D61E 98          TYA                    ;\
 $86:D61F 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list pointer = [Y]
 $86:D622 A9 01 00    LDA #$0001             ;\
 $86:D625 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
-$86:D628 68          PLA                    ; End instruction list processing
+$86:D628 68          PLA                    ; Terminate processing enemy projectile
 $86:D629 60          RTS
 }
 
@@ -12347,7 +12350,7 @@ $86:D646 98          TYA                    ;\
 $86:D647 9D 47 1B    STA $1B47,x[$7E:1B57]  ;} Enemy projectile instruction list pointer = [Y]
 $86:D64A A9 01 00    LDA #$0001             ;\
 $86:D64D 9D 8F 1B    STA $1B8F,x[$7E:1B9F]  ;} Enemy projectile instruction timer = 1
-$86:D650 68          PLA                    ; End instruction list processing
+$86:D650 68          PLA                    ; Terminate processing enemy projectile
 $86:D651 60          RTS
 }
 

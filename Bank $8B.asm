@@ -2796,6 +2796,9 @@ $8B:9408 60          RTS
 {
 ;; Parameters:
 ;;     X: Cinematic sprite object index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $9420 to return out of *this* routine
+; (marked "terminate processing cinematic sprite object")
 $8B:9409 FC 3D 1B    JSR ($1B3D,x)[$8B:9CCF]; Execute [cinematic sprite object pre-instruction]
 $8B:940C AE 59 1A    LDX $1A59  [$7E:1A59]
 $8B:940F DE 5D 1B    DEC $1B5D,x[$7E:1B7B]  ; Decrement cinematic sprite object instruction timer
@@ -2828,9 +2831,9 @@ $8B:9437 60          RTS
 ;;; $9438: Instruction - delete ;;;
 {
 $8B:9438 C2 30       REP #$30
-$8B:943A 9E 5D 1A    STZ $1A5D,x[$7E:1A7B]
-$8B:943D 9E 1D 1B    STZ $1B1D,x[$7E:1B3B]
-$8B:9440 68          PLA
+$8B:943A 9E 5D 1A    STZ $1A5D,x[$7E:1A7B]  ; Cinematic sprite object spritemap pointer = 0
+$8B:943D 9E 1D 1B    STZ $1B1D,x[$7E:1B3B]  ; Cinematic sprite object instruction list pointer = 0
+$8B:9440 68          PLA                    ; Terminate processing cinematic sprite object
 $8B:9441 60          RTS
 }
 
@@ -2838,11 +2841,11 @@ $8B:9441 60          RTS
 ;;; $9442: Unused. Instruction - sleep ;;;
 {
 $8B:9442 C2 30       REP #$30
-$8B:9444 88          DEY
-$8B:9445 88          DEY
-$8B:9446 98          TYA
-$8B:9447 9D 1D 1B    STA $1B1D,x
-$8B:944A 68          PLA
+$8B:9444 88          DEY                    ;\
+$8B:9445 88          DEY                    ;|
+$8B:9446 98          TYA                    ;} Cinematic sprite object instruction list pointer = [Y] - 2
+$8B:9447 9D 1D 1B    STA $1B1D,x            ;/
+$8B:944A 68          PLA                    ; Terminate processing cinematic sprite object
 $8B:944B 60          RTS
 }
 
@@ -3046,6 +3049,9 @@ $8B:9536 60          RTS
 {
 ;; Parameters:
 ;;     X: Mode 7 object index
+
+; The sleep instruction pops the return address pushed to the stack by $954E to return out of *this* routine
+; (marked "terminate processing mode 7 object")
 $8B:9537 FC A5 19    JSR ($19A5,x)[$8B:93D9]; Execute [mode 7 object pre-instruction]
 $8B:953A AE B1 19    LDX $19B1  [$7E:19B1]
 $8B:953D DE A9 19    DEC $19A9,x[$7E:19AB]  ; Decrement mode 7 object instruction timer
@@ -3080,8 +3086,8 @@ $8B:956A 60          RTS
 ;;; $956B: Instruction - delete ;;;
 {
 $8B:956B C2 30       REP #$30
-$8B:956D 9E A1 19    STZ $19A1,x
-$8B:9570 68          PLA
+$8B:956D 9E A1 19    STZ $19A1,x            ; Mode 7 object instruction list pointer = 0
+$8B:9570 68          PLA                    ; Terminate processing mode 7 object
 $8B:9571 60          RTS
 }
 
@@ -3279,6 +3285,11 @@ $8B:9658 60          RTS
 
 ;;; $9659: Process cinematic BG object instruction list ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+
+; Some instructions (e.g. sleep) pop the return address pushed to the stack by $9676 and bank to return out of *this* routine
+; (marked "terminate processing cinematic BG object")
 $8B:9659 FC D5 19    JSR ($19D5,x)[$8B:B4BC]; Execute [cinematic BG object pre-instruction]
 $8B:965C 8B          PHB
 $8B:965D F4 00 8C    PEA $8C00              ;\
@@ -3319,10 +3330,10 @@ $8B:9697 60          RTS
 ;;; $9698: Instruction - delete ;;;
 {
 $8B:9698 C2 30       REP #$30
-$8B:969A 9E B5 19    STZ $19B5,x[$7E:19B9]
-$8B:969D 9E CD 19    STZ $19CD,x[$7E:19D1]
-$8B:96A0 68          PLA
-$8B:96A1 AB          PLB
+$8B:969A 9E B5 19    STZ $19B5,x[$7E:19B9]  ; Cinematic BG object indirect instruction pointer = 0
+$8B:969D 9E CD 19    STZ $19CD,x[$7E:19D1]  ; Cinematic BG object instruction list pointer = 0
+$8B:96A0 68          PLA                    ;\
+$8B:96A1 AB          PLB                    ;} Terminate processing cinematic BG object
 $8B:96A2 60          RTS
 }
 
@@ -3330,12 +3341,12 @@ $8B:96A2 60          RTS
 ;;; $96A3: Unused. Instruction - sleep ;;;
 {
 $8B:96A3 C2 30       REP #$30
-$8B:96A5 88          DEY
-$8B:96A6 88          DEY
-$8B:96A7 98          TYA
-$8B:96A8 9D CD 19    STA $19CD,x
-$8B:96AB 68          PLA
-$8B:96AC AB          PLB
+$8B:96A5 88          DEY                    ;\
+$8B:96A6 88          DEY                    ;|
+$8B:96A7 98          TYA                    ;} Cinematic BG object instruction list pointer = [Y] - 2
+$8B:96A8 9D CD 19    STA $19CD,x            ;/
+$8B:96AB 68          PLA                    ;\
+$8B:96AC AB          PLB                    ;} Terminate processing cinematic BG object
 $8B:96AD 60          RTS
 }
 
@@ -3802,6 +3813,8 @@ $8B:9969 60          RTS
 
 ;;; $996A: Process credits object instruction list ;;;
 {
+; The delete instruction pops the return address pushed to the stack by $99A4 and bank to return out of *this* routine
+; (marked "terminate processing credits object")
 $8B:996A A2 00 00    LDX #$0000             ;\
 $8B:996D FC FD 19    JSR ($19FD,x)[$8B:93D9];} Execute [credits object pre-instruction]
 $8B:9970 8B          PHB
@@ -3890,9 +3903,9 @@ $8B:99FD 60          RTS
 ;;; $99FE: Instruction - delete ;;;
 {
 $8B:99FE C2 30       REP #$30
-$8B:9A00 9C F7 19    STZ $19F7  [$7E:19F7]
-$8B:9A03 68          PLA
-$8B:9A04 AB          PLB
+$8B:9A00 9C F7 19    STZ $19F7  [$7E:19F7]  ; Credits object instruction list pointer = 0
+$8B:9A03 68          PLA                    ;\
+$8B:9A04 AB          PLB                    ;} Terminate processing credits object
 $8B:9A05 60          RTS
 }
 

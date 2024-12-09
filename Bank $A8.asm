@@ -602,7 +602,7 @@ $A8:8B38 BD CA 0F    LDA $0FCA,x[$7E:108A]  ;\
 $A8:8B3B 09 04 00    ORA #$0004             ;} Set enemy ([X] + 1) frozen AI
 $A8:8B3E 9D CA 0F    STA $0FCA,x[$7E:108A]  ;/
 $A8:8B41 BD 2C 10    LDA $102C,x[$7E:10EC]  ;\
-$A8:8B44 C9 3B 8A    CMP #$8A3B             ;} If [enemy ([X] + 2) function] = $8A3B: return
+$A8:8B44 C9 3B 8A    CMP #$8A3B             ;} If [enemy ([X] + 2) function] = $8A3B (moving): return
 $A8:8B47 F0 0F       BEQ $0F    [$8B58]     ;/
 $A8:8B49 BD 0A 10    LDA $100A,x[$7E:118A]  ;\
 $A8:8B4C 09 04 00    ORA #$0004             ;} Set enemy ([X] + 2) frozen AI
@@ -3799,7 +3799,7 @@ $A8:AF4E 6B          RTL
 }
 
 
-;;; $AF4F:  ;;;
+;;; $AF4F: Initialisation function pointers ;;;
 {
 $A8:AF4F             dw AF9D, AFE2, B020
 }
@@ -3816,46 +3816,46 @@ $A8:AF79             dw 000C, 000C, 0014, 001C, 0024, 002C, 0034, 003C, 0044
 ;;; $AF8B: Initialisation AI - enemy $E83F (magdollite) ;;;
 {
 $A8:AF8B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AF8E BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A8:AF91 0A          ASL A
-$A8:AF92 AA          TAX
-$A8:AF93 FC 4F AF    JSR ($AF4F,x)[$A8:AF9D]
-$A8:AF96 20 5E B0    JSR $B05E  [$A8:B05E]
-$A8:AF99 20 88 B0    JSR $B088  [$A8:B088]
+$A8:AF8E BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A8:AF91 0A          ASL A                  ;|
+$A8:AF92 AA          TAX                    ;} Execute [$AF4F + [enemy parameter 1] * 2]
+$A8:AF93 FC 4F AF    JSR ($AF4F,x)[$A8:AF9D];/
+$A8:AF96 20 5E B0    JSR $B05E  [$A8:B05E]  ; Execute $B05E
+$A8:AF99 20 88 B0    JSR $B088  [$A8:B088]  ; Set up magdollite palette cycling
 $A8:AF9C 6B          RTL
 }
 
 
-;;; $AF9D:  ;;;
+;;; $AF9D: Magdollite initialisation function - head ;;;
 {
 $A8:AF9D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AFA0 A9 00 00    LDA #$0000
-$A8:AFA3 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A8:AFA6 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A8:AFAA 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A8:AFAE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:AFB1 9F 06 78 7E STA $7E7806,x[$7E:7806]
+$A8:AFA0 A9 00 00    LDA #$0000             ;\
+$A8:AFA3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy instruction list = 0
+$A8:AFA6 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy $7E:7800 = 0
+$A8:AFAA 9F 04 78 7E STA $7E7804,x[$7E:7804]; Enemy $7E:7804 = 0
+$A8:AFAE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:AFB1 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [enemy Y position]
 $A8:AFB5 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:AFB9 10 07       BPL $07    [$AFC2]     ;} If [Samus X position] < [enemy X position]:
-$A8:AFBB A9 01 00    LDA #$0001
-$A8:AFBE 9F 00 78 7E STA $7E7800,x[$7E:7800]
+$A8:AFBB A9 01 00    LDA #$0001             ;\
+$A8:AFBE 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = 1
 
 $A8:AFC2 BF 00 78 7E LDA $7E7800,x[$7E:7800]; >_<;
-$A8:AFC6 A9 9C AC    LDA #$AC9C
-$A8:AFC9 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:AFCC BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$A8:AFD0 D0 06       BNE $06    [$AFD8]
-$A8:AFD2 A9 3C AD    LDA #$AD3C
-$A8:AFD5 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:AFC6 A9 9C AC    LDA #$AC9C             ;\
+$A8:AFC9 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AC9C
+$A8:AFCC BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$A8:AFD0 D0 06       BNE $06    [$AFD8]     ;} If [enemy $7E:7800] = 0:
+$A8:AFD2 A9 3C AD    LDA #$AD3C             ;\
+$A8:AFD5 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD3C
 
-$A8:AFD8 20 E5 B3    JSR $B3E5  [$A8:B3E5]
-$A8:AFDB A9 1A B1    LDA #$B11A
-$A8:AFDE 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:AFD8 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
+$A8:AFDB A9 1A B1    LDA #$B11A             ;\
+$A8:AFDE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B11A
 $A8:AFE1 60          RTS
 }
 
 
-;;; $AFE2:  ;;;
+;;; $AFE2: Magdollite initialisation function - arm ;;;
 {
 $A8:AFE2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AFE5 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
@@ -3867,7 +3867,7 @@ $A8:AFF6 A9 01 00    LDA #$0001
 $A8:AFF9 9F 1A 78 7E STA $7E781A,x[$7E:785A]
 $A8:AFFD A9 DC AD    LDA #$ADDC
 $A8:B000 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A8:B003 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B003 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B006 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
 $A8:B009 18          CLC
 $A8:B00A 69 20 00    ADC #$0020
@@ -3881,7 +3881,7 @@ $A8:B01F 60          RTS
 }
 
 
-;;; $B020:  ;;;
+;;; $B020: Magdollite initialisation function - hand ;;;
 {
 $A8:B020 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B023 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
@@ -3893,7 +3893,7 @@ $A8:B034 9D AC 0F    STA $0FAC,x[$7E:102C]
 $A8:B037 9F 08 78 7E STA $7E7808,x[$7E:7888]
 $A8:B03B A9 0C AE    LDA #$AE0C
 $A8:B03E 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A8:B041 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B041 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B044 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
 $A8:B047 18          CLC
 $A8:B048 69 20 00    ADC #$0020
@@ -3910,43 +3910,43 @@ $A8:B05D 60          RTS
 ;;; $B05E:  ;;;
 {
 $A8:B05E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B061 BD B7 0F    LDA $0FB7,x[$7E:0FB7]
-$A8:B064 29 FF 00    AND #$00FF
-$A8:B067 0A          ASL A
-$A8:B068 0A          ASL A
-$A8:B069 0A          ASL A
-$A8:B06A A8          TAY
-$A8:B06B B9 87 81    LDA $8187,y[$A8:8357]
-$A8:B06E 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A8:B072 B9 89 81    LDA $8189,y[$A8:8359]
-$A8:B075 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A8:B079 B9 8B 81    LDA $818B,y[$A8:835B]
-$A8:B07C 9F 14 78 7E STA $7E7814,x[$7E:7814]
-$A8:B080 B9 8D 81    LDA $818D,y[$A8:835D]
-$A8:B083 9F 12 78 7E STA $7E7812,x[$7E:7812]
+$A8:B061 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
+$A8:B064 29 FF 00    AND #$00FF             ;|
+$A8:B067 0A          ASL A                  ;|
+$A8:B068 0A          ASL A                  ;} Y = [enemy parameter 2 high] * 8 (linear speed table index)
+$A8:B069 0A          ASL A                  ;|
+$A8:B06A A8          TAY                    ;/
+$A8:B06B B9 87 81    LDA $8187,y[$A8:8357]  ;\
+$A8:B06E 9F 10 78 7E STA $7E7810,x[$7E:7810];|
+$A8:B072 B9 89 81    LDA $8189,y[$A8:8359]  ;} Enemy $7E:780E = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A8:B075 9F 0E 78 7E STA $7E780E,x[$7E:780E];/
+$A8:B079 B9 8B 81    LDA $818B,y[$A8:835B]  ;\
+$A8:B07C 9F 14 78 7E STA $7E7814,x[$7E:7814];|
+$A8:B080 B9 8D 81    LDA $818D,y[$A8:835D]  ;} Enemy $7E:7812 = [$8187 + [Y] + 4].[$8187 + [Y] + 8]
+$A8:B083 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $A8:B087 60          RTS
 }
 
 
-;;; $B088:  ;;;
+;;; $B088: Set up magdollite palette cycling ;;;
 {
-$A8:B088 A9 B2 B0    LDA #$B0B2
-$A8:B08B 8D 8C 17    STA $178C  [$7E:178C]
-$A8:B08E A9 A8 00    LDA #$00A8
-$A8:B091 8D 8E 17    STA $178E  [$7E:178E]
-$A8:B094 BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A8:B097 29 00 0E    AND #$0E00
-$A8:B09A 4A          LSR A
-$A8:B09B 4A          LSR A
-$A8:B09C 4A          LSR A
-$A8:B09D 4A          LSR A
-$A8:B09E 18          CLC
-$A8:B09F 69 00 01    ADC #$0100
-$A8:B0A2 8D 94 17    STA $1794  [$7E:1794]
-$A8:B0A5 A9 08 00    LDA #$0008
-$A8:B0A8 8D 98 17    STA $1798  [$7E:1798]
-$A8:B0AB A9 00 00    LDA #$0000
-$A8:B0AE 8D 96 17    STA $1796  [$7E:1796]
+$A8:B088 A9 B2 B0    LDA #$B0B2             ;\
+$A8:B08B 8D 8C 17    STA $178C  [$7E:178C]  ;|
+$A8:B08E A9 A8 00    LDA #$00A8             ;} Enemy graphics drawn hook = $A8:B0B2
+$A8:B091 8D 8E 17    STA $178E  [$7E:178E]  ;/
+$A8:B094 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A8:B097 29 00 0E    AND #$0E00             ;|
+$A8:B09A 4A          LSR A                  ;|
+$A8:B09B 4A          LSR A                  ;|
+$A8:B09C 4A          LSR A                  ;} Enemy palette cycle enemy palette index = 100h + [enemy palette index] / 10h
+$A8:B09D 4A          LSR A                  ;|
+$A8:B09E 18          CLC                    ;|
+$A8:B09F 69 00 01    ADC #$0100             ;|
+$A8:B0A2 8D 94 17    STA $1794  [$7E:1794]  ;/
+$A8:B0A5 A9 08 00    LDA #$0008             ;\
+$A8:B0A8 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 8
+$A8:B0AB A9 00 00    LDA #$0000             ;\
+$A8:B0AE 8D 96 17    STA $1796  [$7E:1796]  ;} Enemy palette cycle colour set index = 0
 $A8:B0B1 60          RTS
 }
 
@@ -4021,7 +4021,7 @@ $A8:B133 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 $A8:B136 A9 01 00    LDA #$0001
 $A8:B139 9F 00 78 7E STA $7E7800,x[$7E:7800]
 
-$A8:B13D 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B13D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B140 BF 88 78 7E LDA $7E7888,x[$7E:7888]
 $A8:B144 10 2E       BPL $2E    [$B174]
 $A8:B146 A9 00 00    LDA #$0000
@@ -4037,7 +4037,7 @@ $A8:B163 F0 06       BEQ $06    [$B16B]
 $A8:B165 A9 7E AD    LDA #$AD7E
 $A8:B168 9D AE 0F    STA $0FAE,x[$7E:112E]
 
-$A8:B16B 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B16B 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B16E A9 75 B1    LDA #$B175
 $A8:B171 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 
@@ -4073,7 +4073,7 @@ $A8:B1A6 30 06       BMI $06    [$B1AE]     ;} If [Samus X position] >= [enemy X
 $A8:B1A8 A9 AC AD    LDA #$ADAC
 $A8:B1AB 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 
-$A8:B1AE 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B1AE 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B1B1 A9 B8 B1    LDA #$B1B8
 $A8:B1B4 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 
@@ -4093,7 +4093,7 @@ $A8:B1CB 30 06       BMI $06    [$B1D3]     ;} If [Samus X position] >= [enemy X
 $A8:B1CD A9 3C AD    LDA #$AD3C
 $A8:B1D0 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 
-$A8:B1D3 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B1D3 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B1D6 A9 1A B1    LDA #$B11A
 $A8:B1D9 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 
@@ -4182,7 +4182,7 @@ $A8:B281 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
 $A8:B284 BC AA 0F    LDY $0FAA,x[$7E:0FEA]
 $A8:B287 B9 67 AF    LDA $AF67,y[$A8:AF6B]
 $A8:B28A 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A8:B28D 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B28D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 
 $A8:B290 60          RTS
 }
@@ -4241,7 +4241,7 @@ $A8:B2E7 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
 $A8:B2EA BC AA 0F    LDY $0FAA,x[$7E:0FEA]
 $A8:B2ED B9 67 AF    LDA $AF67,y[$A8:AF69]
 $A8:B2F0 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A8:B2F3 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B2F3 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B2F6 80 14       BRA $14    [$B30C]
 
 $A8:B2F8 A9 01 00    LDA #$0001
@@ -4275,7 +4275,7 @@ $A8:B322 BF 02 78 7E LDA $7E7802,x[$7E:7882]
 $A8:B326 D0 2A       BNE $2A    [$B352]
 $A8:B328 A9 0C AE    LDA #$AE0C
 $A8:B32B 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A8:B32E 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B32E 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B331 A9 95 B2    LDA #$B295
 $A8:B334 9D 72 0F    STA $0F72,x[$7E:0FF2]
 $A8:B337 A9 A7 B3    LDA #$B3A7
@@ -4308,7 +4308,7 @@ $A8:B374 9D AE 0F    STA $0FAE,x[$7E:102E]
 $A8:B377 A9 01 00    LDA #$0001
 $A8:B37A 9D AA 0F    STA $0FAA,x[$7E:102A]
 
-$A8:B37D 20 E5 B3    JSR $B3E5  [$A8:B3E5]
+$A8:B37D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:B380 A9 1F B3    LDA #$B31F
 $A8:B383 9D B2 0F    STA $0FB2,x[$7E:1032]
 $A8:B386 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
@@ -4366,17 +4366,17 @@ $A8:B3E4 60          RTS
 }
 
 
-;;; $B3E5:  ;;;
+;;; $B3E5: Set magdollite instruction list ;;;
 {
 $A8:B3E5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B3E8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A8:B3EB DD AC 0F    CMP $0FAC,x[$7E:0FAC]
-$A8:B3EE F0 0F       BEQ $0F    [$B3FF]
-$A8:B3F0 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A8:B3F3 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$A8:B3E8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A8:B3EB DD AC 0F    CMP $0FAC,x[$7E:0FAC]  ;} If [enemy instruction list] != [enemy new instruction list]:
+$A8:B3EE F0 0F       BEQ $0F    [$B3FF]     ;/
+$A8:B3F0 9D 92 0F    STA $0F92,x[$7E:0F92]  ; Enemy instruction list pointer = [enemy new instruction list]
+$A8:B3F3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy instruction list = [enemy new instruction list]
 $A8:B3F6 A9 01 00    LDA #$0001             ;\
 $A8:B3F9 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$A8:B3FC 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A8:B3FC 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A8:B3FF 60          RTS
 }
@@ -4391,8 +4391,8 @@ $A8:B404 80 0A       BRA $0A    [$B410]
 
 ;;; $B406: Enemy touch - enemy $E83F (magdollite) ;;;
 {
-$A8:B406 22 23 80 A8 JSL $A88023[$A8:8023]
-$A8:B40A 80 04       BRA $04    [$B410]
+$A8:B406 22 23 80 A8 JSL $A88023[$A8:8023]  ; Normal enemy touch AI
+$A8:B40A 80 04       BRA $04    [$B410]     ; Go to magdollite shared contact reaction
 }
 
 
@@ -4405,25 +4405,25 @@ $A8:B40C 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 ;;; $B410: Magdollite shared contact reaction ;;;
 {
 $A8:B410 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B413 BD 8C 0F    LDA $0F8C,x[$7E:104C]
-$A8:B416 D0 12       BNE $12    [$B42A]
-$A8:B418 BD C6 0F    LDA $0FC6,x
-$A8:B41B 09 00 02    ORA #$0200
-$A8:B41E 9D C6 0F    STA $0FC6,x
-$A8:B421 BD 06 10    LDA $1006,x
-$A8:B424 09 00 02    ORA #$0200
-$A8:B427 9D 06 10    STA $1006,x
+$A8:B413 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
+$A8:B416 D0 12       BNE $12    [$B42A]     ;} If [enemy health] = 0:
+$A8:B418 BD C6 0F    LDA $0FC6,x            ;\
+$A8:B41B 09 00 02    ORA #$0200             ;} Flag enemy ([X] + 1) for deletion
+$A8:B41E 9D C6 0F    STA $0FC6,x            ;/
+$A8:B421 BD 06 10    LDA $1006,x            ;\
+$A8:B424 09 00 02    ORA #$0200             ;} Flag enemy ([X] + 2) for deletion
+$A8:B427 9D 06 10    STA $1006,x            ;/
 
-$A8:B42A BD 9E 0F    LDA $0F9E,x[$7E:105E]
-$A8:B42D F0 18       BEQ $18    [$B447]
-$A8:B42F 9D DE 0F    STA $0FDE,x
-$A8:B432 9D 1E 10    STA $101E,x
-$A8:B435 BD CA 0F    LDA $0FCA,x
-$A8:B438 09 04 00    ORA #$0004
-$A8:B43B 9D CA 0F    STA $0FCA,x
-$A8:B43E BD 0A 10    LDA $100A,x
-$A8:B441 09 04 00    ORA #$0004
-$A8:B444 9D 0A 10    STA $100A,x
+$A8:B42A BD 9E 0F    LDA $0F9E,x[$7E:105E]  ;\
+$A8:B42D F0 18       BEQ $18    [$B447]     ;} If [enemy frozen timer] != 0:
+$A8:B42F 9D DE 0F    STA $0FDE,x            ; Enemy ([X] + 1) frozen timer = [enemy frozen timer]
+$A8:B432 9D 1E 10    STA $101E,x            ; Enemy ([X] + 2) frozen timer = [enemy frozen timer]
+$A8:B435 BD CA 0F    LDA $0FCA,x            ;\
+$A8:B438 09 04 00    ORA #$0004             ;} Set enemy ([X] + 1) frozen AI
+$A8:B43B 9D CA 0F    STA $0FCA,x            ;/
+$A8:B43E BD 0A 10    LDA $100A,x            ;\
+$A8:B441 09 04 00    ORA #$0004             ;} Set enemy ([X] + 2) frozen AI
+$A8:B444 9D 0A 10    STA $100A,x            ;/
 
 $A8:B447 6B          RTL
 }
