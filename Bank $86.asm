@@ -13689,14 +13689,14 @@ $86:DFCA             dx DED6,DF39,DE96,04,08,003C,0000,84FC ; Fune fireball. Ini
 
 ;;; $DFD8..E0ED: Lava thrown by magdollite ;;;
 {
-;;; $DFD8: Instruction list - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
+;;; $DFD8: Instruction list - lava thrown by magdollite - left ;;;
 {
 $86:DFD8             dw 0001,AB0F,
                         8159        ; Sleep
 }
 
 
-;;; $DFDE: Instruction list ;;;
+;;; $DFDE: Instruction list - lava thrown by magdollite - right ;;;
 {
 $86:DFDE             dw 0001,AB25,
                         8159        ; Sleep
@@ -13733,15 +13733,15 @@ $86:DFFF 60          RTS
 ;;     $1993: Direction. 0 = left, otherwise = right
 $86:E000 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:E003 A9 D8 DF    LDA #$DFD8             ;\
-$86:E006 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DE96 (left)
+$86:E006 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DFD8 (left)
 $86:E009 A9 50 E0    LDA #$E050             ;\
-$86:E00C 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF40 (left)
+$86:E00C 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $E050 (left)
 $86:E00F AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:E012 F0 0C       BEQ $0C    [$E020]     ;} If [enemy projectile initialisation parameter 0] != 0:
 $86:E014 A9 DE DF    LDA #$DFDE             ;\
-$86:E017 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DEA6 (right)
+$86:E017 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DFDE (right)
 $86:E01A A9 7A E0    LDA #$E07A             ;\
-$86:E01D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF6A (right)
+$86:E01D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $E07A (right)
 
 $86:E020 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $86:E023 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|

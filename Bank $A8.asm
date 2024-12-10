@@ -2034,11 +2034,11 @@ $A8:9F23 F0 1C       BEQ $1C    [$9F41]     ;} If (blue component) = (target blu
 $A8:9F25 10 06       BPL $06    [$9F2D]     ; If (blue component) < (target blue component):
 $A8:9F27 18          CLC                    ;\
 $A8:9F28 69 00 04    ADC #$0400             ;} A += 1 << Ah
-$A8:9F2B 80 04       BRA $04    [$9F31]     
-                                            
+$A8:9F2B 80 04       BRA $04    [$9F31]
+
 $A8:9F2D 38          SEC                    ;\ Else ((blue component) > (target blue component)):
 $A8:9F2E E9 00 04    SBC #$0400             ;} A += 1 << Ah
-                                            
+
 $A8:9F31 85 12       STA $12    [$7E:0012]  ;\
 $A8:9F33 BF 00 C0 7E LDA $7EC000,x[$7E:C120];|
 $A8:9F37 29 FF 83    AND #$83FF             ;} (Palette colour) = (palette colour) & ~(1Fh << Ah) | [A] (set the blue component)
@@ -3379,7 +3379,7 @@ $A8:AC7C             dw 3800,0000,0000,0000,0000,0000,0000,0000,0000, 0010,023F,
 
 ;;; $AC9C..AE11: Instruction lists - magdollite ;;;
 {
-;;; $AC9C: Instruction list -  ;;;
+;;; $AC9C: Instruction list - head - facing left - idle ;;;
 {
 $A8:AC9C             dx 000D,B448,
                         000D,B459,
@@ -3389,69 +3389,69 @@ $A8:AC9C             dx 000D,B448,
 }
 
 
-;;; $ACB0: Instruction list -  ;;;
+;;; $ACB0: Instruction list - hand - facing left - throwing lava ;;;
 {
-$A8:ACB0             dx AE12,0061,  ; Queue sound 0061h, sound library 2, max queued sounds allowed = 6
-                        AE3A,       ; ???
-                        AF44,       ; ???
+$A8:ACB0             dx AE12,0061,  ; Queue sound 61h, sound library 2, max queued sounds allowed = 6 (magdollite spit), if enemy is on-screen
+                        AE3A,       ; Set animation active flag
+                        AF44,       ; Reset cooldown timer
                         001A,B47B,
                         0008,B48C,
-                        AEE4,       ; ???
+                        AEE4,       ; Set open hand position - facing left
                         0005,B49D,
-                        AEBA,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
                         0005,B49D,
-                        AEBA,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
                         0005,B49D,
-                        AEBA,       ; ???
-                        AF18,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
+                        AF18,       ; Set closed hand position - facing left
                         0005,B4A9,
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $ACDE: Instruction list -  ;;;
+;;; $ACDE: Instruction list - head - facing left - submerge into lava ;;;
 {
-$A8:ACDE             dx AE3A,       ; ???
+$A8:ACDE             dx AE3A,       ; Set animation active flag
                         0005,B459,
-                        AE26,       ; ???
+                        AE26,       ; Move head down 2px
                         0005,B459,
                         0005,B4CF,
                         0005,B4E0,
-                        AE26,       ; ???
+                        AE26,       ; Move head down 2px
                         0005,B4E0,
-                        AE64,       ; ???
-                        8123,0018   ; Timer = 0018h
-$A8:ACFE             dx AE50,       ; ???
+                        AE64,       ; Set submerged head + arm position, make arm + hand visible
+                        8123,0018   ; Timer = 18h
+$A8:ACFE             dx AE50,       ; Move head + arm up 1px
                         0001,B4C1,
                         8110,ACFE,  ; Decrement timer and go to $ACFE if non-zero
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $AD0C: Instruction list -  ;;;
+;;; $AD0C: Instruction list - head - facing left - emerge from lava ;;;
 {
-$A8:AD0C             dx AE3A,       ; ???
-                        AE88,       ; ???
-                        8123,0018   ; Timer = 0018h
-$A8:AD14             dx AE5A,       ; ???
+$A8:AD0C             dx AE3A,       ; Set animation active flag
+                        AE88,       ; Reset head + arm position
+                        8123,0018   ; Timer = 18h
+$A8:AD14             dx AE5A,       ; Move head + arm down 1px
                         0001,B4C1,
                         8110,AD14,  ; Decrement timer and go to $AD14 if non-zero
-                        AE96,       ; ???
+                        AE96,       ; Set emerged head + arm position, make arm + hand invisible
                         0005,B4E0,
-                        AE30,       ; ???
+                        AE30,       ; Move head up 2px
                         0005,B4E0,
                         0005,B4CF,
                         0005,B459,
-                        AE30,       ; ???
+                        AE30,       ; Move head up 2px
                         0005,B459,
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $AD3C: Instruction list -  ;;;
+;;; $AD3C: Instruction list - head - facing right - idle ;;;
 {
 $A8:AD3C             dx 000D,B4F1,
                         000D,B502,
@@ -3461,125 +3461,125 @@ $A8:AD3C             dx 000D,B4F1,
 }
 
 
-;;; $AD50: Instruction list -  ;;;
+;;; $AD50: Instruction list - hand - facing right - throwing lava ;;;
 {
-$A8:AD50             dx AE12,0061,  ; Queue sound 0061h, sound library 2, max queued sounds allowed = 6
-                        AE3A,       ; ???
-                        AF44,       ; ???
+$A8:AD50             dx AE12,0061,  ; Queue sound 61h, sound library 2, max queued sounds allowed = 6 (magdollite spit), if enemy is on-screen
+                        AE3A,       ; Set animation active flag
+                        AF44,       ; Reset cooldown timer
                         001A,B524,
                         0008,B535,
-                        AECA,       ; ???
+                        AECA,       ; Set open hand position - facing right
                         0005,B546,
-                        AEBA,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
                         0005,B546,
-                        AEBA,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
                         0005,B546,
-                        AEBA,       ; ???
-                        AEFE,       ; ???
+                        AEBA,       ; Spawn magdollite lava enemy projectile
+                        AEFE,       ; Set closed hand position - facing right
                         0005,B552,
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $AD7E: Instruction list -  ;;;
+;;; $AD7E: Instruction list - head - facing right - submerge into lava ;;;
 {
-$A8:AD7E             dx AE3A,       ; ???
+$A8:AD7E             dx AE3A,       ; Set animation active flag
                         0005,B502,
-                        AE26,       ; ???
+                        AE26,       ; Move head down 2px
                         0005,B502,
                         0005,B578,
                         0005,B589,
-                        AE26,       ; ???
+                        AE26,       ; Move head down 2px
                         0005,B589,
-                        AE64,       ; ???
-                        8123,0018   ; Timer = 0018h
-$A8:AD9E             dx AE50,       ; ???
+                        AE64,       ; Set submerged head + arm position, make arm + hand visible
+                        8123,0018   ; Timer = 18h
+$A8:AD9E             dx AE50,       ; Move head + arm up 1px
                         0001,B56A,
                         8110,AD9E,  ; Decrement timer and go to $AD9E if non-zero
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $ADAC: Instruction list -  ;;;
+;;; $ADAC: Instruction list - head - facing right - emerge from lava ;;;
 {
-$A8:ADAC             dx AE3A,       ; ???
-                        AE88,       ; ???
-                        8123,0018   ; Timer = 0018h
-$A2:ADB4             dx AE5A,       ; ???
+$A8:ADAC             dx AE3A,       ; Set animation active flag
+                        AE88,       ; Reset head + arm position
+                        8123,0018   ; Timer = 18h
+$A2:ADB4             dx AE5A,       ; Move head + arm down 1px
                         0001,B56A,
                         8110,ADB4,  ; Decrement timer and go to $ADB4 if non-zero
-                        AE96,       ; ???
+                        AE96,       ; Set emerged head + arm position, make arm + hand invisible
                         0005,B589,
-                        AE30,       ; ???
+                        AE30,       ; Move head up 2px
                         0005,B589,
                         0005,B578,
                         0005,B502,
-                        AE30,       ; ???
+                        AE30,       ; Move head up 2px
                         0005,B502,
-                        AE45,       ; ???
+                        AE45,       ; Clear animation active flag
                         812F        ; Sleep
 }
 
 
-;;; $ADDC: Instruction list -  ;;;
+;;; $ADDC: Instruction list - arm - growth level 0 ;;;
 {
 $A8:ADDC             dx 0001,B59A,
                         812F        ; Sleep
 }
 
 
-;;; $ADE2: Instruction list -  ;;;
+;;; $ADE2: Instruction list - arm - growth level 1 ;;;
 {
 $A8:ADE2             dx 0001,B5A1,
                         812F        ; Sleep
 }
 
 
-;;; $ADE8: Instruction list -  ;;;
+;;; $ADE8: Instruction list - arm - growth level 2 ;;;
 {
 $A8:ADE8             dx 0001,B5AD,
                         812F        ; Sleep
 }
 
 
-;;; $ADEE: Instruction list -  ;;;
+;;; $ADEE: Instruction list - arm - growth level 3 ;;;
 {
 $A8:ADEE             dx 0001,B5BE,
                         812F        ; Sleep
 }
 
 
-;;; $ADF4: Instruction list -  ;;;
+;;; $ADF4: Instruction list - arm - growth level 4 ;;;
 {
 $A8:ADF4             dx 0001,B5D4,
                         812F        ; Sleep
 }
 
 
-;;; $ADFA: Instruction list -  ;;;
+;;; $ADFA: Instruction list - arm - growth level 5 ;;;
 {
 $A8:ADFA             dx 0001,B5EF,
                         812F        ; Sleep
 }
 
 
-;;; $AE00: Instruction list -  ;;;
+;;; $AE00: Instruction list - arm - growth level 6 ;;;
 {
 $A8:AE00             dx 0001,B60F,
                         812F        ; Sleep
 }
 
 
-;;; $AE06: Instruction list -  ;;;
+;;; $AE06: Instruction list - arm - growth level 7 ;;;
 {
 $A8:AE06             dx 0001,B634,
                         812F        ; Sleep
 }
 
 
-;;; $AE0C: Instruction list -  ;;;
+;;; $AE0C: Instruction list - hand - stub ;;;
 {
 $A8:AE0C             dx 0001,B4B5,
                         812F        ; Sleep
@@ -3595,18 +3595,18 @@ $A8:AE12 DA          PHX
 $A8:AE13 5A          PHY
 $A8:AE14 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A8:AE18 D0 07       BNE $07    [$AE21]     ;} If enemy centre is on screen:
-$A8:AE1A B9 00 00    LDA $0000,y[$A8:AD52]
-$A8:AE1D 22 CB 90 80 JSL $8090CB[$80:90CB]
+$A8:AE1A B9 00 00    LDA $0000,y[$A8:AD52]  ;\
+$A8:AE1D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound [[Y]], sound library 2, max queued sounds allowed = 6
 
 $A8:AE21 7A          PLY
 $A8:AE22 FA          PLX
-$A8:AE23 C8          INY
-$A8:AE24 C8          INY
+$A8:AE23 C8          INY                    ;\
+$A8:AE24 C8          INY                    ;} Y += 2
 $A8:AE25 6B          RTL
 }
 
 
-;;; $AE26: Instruction ;;;
+;;; $AE26: Instruction - move head down 2px ;;;
 {
 $A8:AE26 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE29 FE 7E 0F    INC $0F7E,x[$7E:0F7E]
@@ -3615,7 +3615,7 @@ $A8:AE2F 6B          RTL
 }
 
 
-;;; $AE30: Instruction ;;;
+;;; $AE30: Instruction - move head up 2px ;;;
 {
 $A8:AE30 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE33 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]
@@ -3624,7 +3624,7 @@ $A8:AE39 6B          RTL
 }
 
 
-;;; $AE3A: Instruction ;;;
+;;; $AE3A: Instruction - set animation active flag ;;;
 {
 $A8:AE3A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE3D A9 01 00    LDA #$0001
@@ -3633,7 +3633,7 @@ $A8:AE44 6B          RTL
 }
 
 
-;;; $AE45: Instruction ;;;
+;;; $AE45: Instruction - clear animation active flag ;;;
 {
 $A8:AE45 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE48 A9 00 00    LDA #$0000
@@ -3642,7 +3642,7 @@ $A8:AE4F 6B          RTL
 }
 
 
-;;; $AE50: Instruction ;;;
+;;; $AE50: Instruction - move head + arm up 1px ;;;
 {
 $A8:AE50 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE53 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]
@@ -3651,7 +3651,7 @@ $A8:AE59 6B          RTL
 }
 
 
-;;; $AE5A: Instruction ;;;
+;;; $AE5A: Instruction - move head + arm down 1px ;;;
 {
 $A8:AE5A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE5D FE 7E 0F    INC $0F7E,x[$7E:0F7E]
@@ -3660,7 +3660,7 @@ $A8:AE63 6B          RTL
 }
 
 
-;;; $AE64: Instruction ;;;
+;;; $AE64: Instruction - set submerged head + arm position, make arm + hand visible ;;;
 {
 $A8:AE64 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE67 BF 06 78 7E LDA $7E7806,x[$7E:7806]
@@ -3678,7 +3678,7 @@ $A8:AE87 6B          RTL
 }
 
 
-;;; $AE88: Instruction ;;;
+;;; $AE88: Instruction - reset head + arm position ;;;
 {
 $A8:AE88 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE8B BF 06 78 7E LDA $7E7806,x[$7E:7806]
@@ -3688,7 +3688,7 @@ $A8:AE95 6B          RTL
 }
 
 
-;;; $AE96: Instruction ;;;
+;;; $AE96: Instruction - set emerged head + arm position, make arm + hand invisible ;;;
 {
 $A8:AE96 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AE99 BF 06 78 7E LDA $7E7806,x[$7E:7806]
@@ -3706,79 +3706,79 @@ $A8:AEB9 6B          RTL
 }
 
 
-;;; $AEBA: Instruction ;;;
+;;; $AEBA: Instruction - spawn magdollite lava enemy projectile ;;;
 {
 $A8:AEBA 5A          PHY
 $A8:AEBB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AEBE A0 E0 E0    LDY #$E0E0             ;\
-$A8:AEC1 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;} Spawn magdollite lava enemy projectile
+$A8:AEC1 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;} Spawn magdollite lava enemy projectile with parameter [enemy hand direction]
 $A8:AEC4 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:AEC8 7A          PLY
 $A8:AEC9 6B          RTL
 }
 
 
-;;; $AECA: Instruction ;;;
+;;; $AECA: Instruction - set open hand position - facing right ;;;
 {
 $A8:AECA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AECD BF 24 78 7E LDA $7E7824,x[$7E:78A4]
-$A8:AED1 18          CLC
-$A8:AED2 69 08 00    ADC #$0008
-$A8:AED5 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A8:AED8 BF 26 78 7E LDA $7E7826,x[$7E:78A6]
-$A8:AEDC 18          CLC
-$A8:AEDD 69 FC FF    ADC #$FFFC
-$A8:AEE0 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
+$A8:AECD BF 24 78 7E LDA $7E7824,x[$7E:78A4];\
+$A8:AED1 18          CLC                    ;|
+$A8:AED2 69 08 00    ADC #$0008             ;} Enemy X position = [enemy throw X position] + 8
+$A8:AED5 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
+$A8:AED8 BF 26 78 7E LDA $7E7826,x[$7E:78A6];\
+$A8:AEDC 18          CLC                    ;|
+$A8:AEDD 69 FC FF    ADC #$FFFC             ;} Enemy Y position = [enemy throw Y position] - 4
+$A8:AEE0 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A8:AEE3 6B          RTL
 }
 
 
-;;; $AEE4: Instruction ;;;
+;;; $AEE4: Instruction - set open hand position - facing left ;;;
 {
 $A8:AEE4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AEE7 BF 24 78 7E LDA $7E7824,x[$7E:7A24]
-$A8:AEEB 18          CLC
-$A8:AEEC 69 F8 FF    ADC #$FFF8
-$A8:AEEF 9D 7A 0F    STA $0F7A,x[$7E:117A]
-$A8:AEF2 BF 26 78 7E LDA $7E7826,x[$7E:7A26]
-$A8:AEF6 18          CLC
-$A8:AEF7 69 FC FF    ADC #$FFFC
-$A8:AEFA 9D 7E 0F    STA $0F7E,x[$7E:117E]
+$A8:AEE7 BF 24 78 7E LDA $7E7824,x[$7E:7A24];\
+$A8:AEEB 18          CLC                    ;|
+$A8:AEEC 69 F8 FF    ADC #$FFF8             ;} Enemy X position = [enemy throw X position] - 8
+$A8:AEEF 9D 7A 0F    STA $0F7A,x[$7E:117A]  ;/
+$A8:AEF2 BF 26 78 7E LDA $7E7826,x[$7E:7A26];\
+$A8:AEF6 18          CLC                    ;|
+$A8:AEF7 69 FC FF    ADC #$FFFC             ;} Enemy Y position = [enemy throw Y position] - 4
+$A8:AEFA 9D 7E 0F    STA $0F7E,x[$7E:117E]  ;/
 $A8:AEFD 6B          RTL
 }
 
 
-;;; $AEFE: Instruction ;;;
+;;; $AEFE: Instruction - set closed hand position - facing right ;;;
 {
 $A8:AEFE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AF01 BF 24 78 7E LDA $7E7824,x[$7E:78A4]
-$A8:AF05 18          CLC
-$A8:AF06 69 08 00    ADC #$0008
-$A8:AF09 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A8:AF0C BF 26 78 7E LDA $7E7826,x[$7E:78A6]
-$A8:AF10 18          CLC
-$A8:AF11 69 F8 FF    ADC #$FFF8
-$A8:AF14 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
+$A8:AF01 BF 24 78 7E LDA $7E7824,x[$7E:78A4];\
+$A8:AF05 18          CLC                    ;|
+$A8:AF06 69 08 00    ADC #$0008             ;} Enemy X position = [enemy throw X position] + 8
+$A8:AF09 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
+$A8:AF0C BF 26 78 7E LDA $7E7826,x[$7E:78A6];\
+$A8:AF10 18          CLC                    ;|
+$A8:AF11 69 F8 FF    ADC #$FFF8             ;} Enemy Y position = [enemy throw Y position] - 8 <-- not 4?
+$A8:AF14 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A8:AF17 6B          RTL
 }
 
 
-;;; $AF18: Instruction ;;;
+;;; $AF18: Instruction - set closed hand position - facing left ;;;
 {
 $A8:AF18 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AF1B BF 24 78 7E LDA $7E7824,x[$7E:7A24]
-$A8:AF1F 18          CLC
-$A8:AF20 69 F8 FF    ADC #$FFF8
-$A8:AF23 9D 7A 0F    STA $0F7A,x[$7E:117A]
-$A8:AF26 BF 26 78 7E LDA $7E7826,x[$7E:7A26]
-$A8:AF2A 18          CLC
-$A8:AF2B 69 FC FF    ADC #$FFFC
-$A8:AF2E 9D 7E 0F    STA $0F7E,x[$7E:117E]
+$A8:AF1B BF 24 78 7E LDA $7E7824,x[$7E:7A24];\
+$A8:AF1F 18          CLC                    ;|
+$A8:AF20 69 F8 FF    ADC #$FFF8             ;} Enemy X position = [enemy throw X position] - 8
+$A8:AF23 9D 7A 0F    STA $0F7A,x[$7E:117A]  ;/
+$A8:AF26 BF 26 78 7E LDA $7E7826,x[$7E:7A26];\
+$A8:AF2A 18          CLC                    ;|
+$A8:AF2B 69 FC FF    ADC #$FFFC             ;} Enemy Y position = [enemy throw Y position] - 4
+$A8:AF2E 9D 7E 0F    STA $0F7E,x[$7E:117E]  ;/
 $A8:AF31 6B          RTL
 }
 
 
-;;; $AF32: Unused ;;;
+;;; $AF32: Unused. Set hand throw position ;;;
 {
 $A8:AF32 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AF35 BF 24 78 7E LDA $7E7824,x
@@ -3789,7 +3789,7 @@ $A8:AF43 6B          RTL
 }
 
 
-;;; $AF44: Instruction ;;;
+;;; $AF44: Instruction - reset cooldown timer ;;;
 {
 $A8:AF44 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AF47 A9 00 01    LDA #$0100
@@ -3805,11 +3805,12 @@ $A8:AF4F             dw AF9D, AFE2, B020
 }
 
 
-;;; $AF55: Magdollite constants ;;;
+;;; $AF55: Magdollite arm growth table ;;;
 {
-$A8:AF55             dw 0000, 0010, 0020, 0030, 0040, 0050, 0060, 0070, 0080
-$A8:AF67             dw ADDC, ADDC, ADE2, ADE8, ADEE, ADF4, ADFA, AE00, AE06
-$A8:AF79             dw 000C, 000C, 0014, 001C, 0024, 002C, 0034, 003C, 0044
+; Indexed by [enemy $0FAA]. First entry is unused
+$A8:AF55             dw 0000, 0010, 0020, 0030, 0040, 0050, 0060, 0070, 0080 ; Arm height threshold
+$A8:AF67             dw ADDC, ADDC, ADE2, ADE8, ADEE, ADF4, ADFA, AE00, AE06 ; Instruction list pointer
+$A8:AF79             dw 000C, 000C, 0014, 001C, 0024, 002C, 0034, 003C, 0044 ; Hand Y offset
 }
 
 
@@ -3820,7 +3821,7 @@ $A8:AF8E BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A8:AF91 0A          ASL A                  ;|
 $A8:AF92 AA          TAX                    ;} Execute [$AF4F + [enemy parameter 1] * 2]
 $A8:AF93 FC 4F AF    JSR ($AF4F,x)[$A8:AF9D];/
-$A8:AF96 20 5E B0    JSR $B05E  [$A8:B05E]  ; Execute $B05E
+$A8:AF96 20 5E B0    JSR $B05E  [$A8:B05E]  ; Set magdollite arm Y velocities
 $A8:AF99 20 88 B0    JSR $B088  [$A8:B088]  ; Set up magdollite palette cycling
 $A8:AF9C 6B          RTL
 }
@@ -3831,26 +3832,26 @@ $A8:AF9C 6B          RTL
 $A8:AF9D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AFA0 A9 00 00    LDA #$0000             ;\
 $A8:AFA3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy instruction list = 0
-$A8:AFA6 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy $7E:7800 = 0
-$A8:AFAA 9F 04 78 7E STA $7E7804,x[$7E:7804]; Enemy $7E:7804 = 0
+$A8:AFA6 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy head direction = left
+$A8:AFAA 9F 04 78 7E STA $7E7804,x[$7E:7804]; Enemy emerge not ready flag = 0 (no effect)
 $A8:AFAE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:AFB1 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [enemy Y position]
+$A8:AFB1 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy Y spawn position = [enemy Y position]
 $A8:AFB5 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
-$A8:AFB9 10 07       BPL $07    [$AFC2]     ;} If [Samus X position] < [enemy X position]:
+$A8:AFB9 10 07       BPL $07    [$AFC2]     ;} If [Samus X position] < [enemy X position]: (should be BMI >_<;)
 $A8:AFBB A9 01 00    LDA #$0001             ;\
-$A8:AFBE 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = 1
+$A8:AFBE 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy head direction = right
 
 $A8:AFC2 BF 00 78 7E LDA $7E7800,x[$7E:7800]; >_<;
 $A8:AFC6 A9 9C AC    LDA #$AC9C             ;\
-$A8:AFC9 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AC9C
+$A8:AFC9 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AC9C (facing left - idle)
 $A8:AFCC BF 00 78 7E LDA $7E7800,x[$7E:7800];\
-$A8:AFD0 D0 06       BNE $06    [$AFD8]     ;} If [enemy $7E:7800] = 0:
+$A8:AFD0 D0 06       BNE $06    [$AFD8]     ;} If [enemy head direction] = left: (should be BEQ >_<;)
 $A8:AFD2 A9 3C AD    LDA #$AD3C             ;\
-$A8:AFD5 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD3C
+$A8:AFD5 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD3C (facing right - idle)
 
 $A8:AFD8 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 $A8:AFDB A9 1A B1    LDA #$B11A             ;\
-$A8:AFDE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B11A
+$A8:AFDE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B11A (idle)
 $A8:AFE1 60          RTS
 }
 
@@ -3858,25 +3859,25 @@ $A8:AFE1 60          RTS
 ;;; $AFE2: Magdollite initialisation function - arm ;;;
 {
 $A8:AFE2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:AFE5 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:AFE8 9F 06 78 7E STA $7E7806,x[$7E:7846]
-$A8:AFEC A9 00 00    LDA #$0000
-$A8:AFEF 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-$A8:AFF2 9F 18 78 7E STA $7E7818,x[$7E:7858]
-$A8:AFF6 A9 01 00    LDA #$0001
-$A8:AFF9 9F 1A 78 7E STA $7E781A,x[$7E:785A]
-$A8:AFFD A9 DC AD    LDA #$ADDC
-$A8:B000 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+$A8:AFE5 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:AFE8 9F 06 78 7E STA $7E7806,x[$7E:7846];} Enemy Y spawn position = [enemy Y position]
+$A8:AFEC A9 00 00    LDA #$0000             ;\
+$A8:AFEF 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy instruction list = 0
+$A8:AFF2 9F 18 78 7E STA $7E7818,x[$7E:7858]; Enemy finished growing flag = 0
+$A8:AFF6 A9 01 00    LDA #$0001             ;\
+$A8:AFF9 9F 1A 78 7E STA $7E781A,x[$7E:785A];} Enemy not submerged flag = 1
+$A8:AFFD A9 DC AD    LDA #$ADDC             ;\
+$A8:B000 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy new instruction list = $ADDC
 $A8:B003 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B006 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B009 18          CLC
-$A8:B00A 69 20 00    ADC #$0020
-$A8:B00D 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:B010 A9 DD B1    LDA #$B1DD
-$A8:B013 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A8:B016 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A8:B019 09 00 01    ORA #$0100
-$A8:B01C 9D 86 0F    STA $0F86,x[$7E:0FC6]
+$A8:B006 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:B009 18          CLC                    ;|
+$A8:B00A 69 20 00    ADC #$0020             ;} Enemy Y position += 20h
+$A8:B00D 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A8:B010 A9 DD B1    LDA #$B1DD             ;\
+$A8:B013 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B1DD (wait until head submerged)
+$A8:B016 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A8:B019 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A8:B01C 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A8:B01F 60          RTS
 }
 
@@ -3884,30 +3885,30 @@ $A8:B01F 60          RTS
 ;;; $B020: Magdollite initialisation function - hand ;;;
 {
 $A8:B020 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B023 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A8:B026 9F 06 78 7E STA $7E7806,x[$7E:7886]
-$A8:B02A BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A8:B02D 9F 22 78 7E STA $7E7822,x[$7E:78A2]
-$A8:B031 A9 00 00    LDA #$0000
-$A8:B034 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A8:B037 9F 08 78 7E STA $7E7808,x[$7E:7888]
-$A8:B03B A9 0C AE    LDA #$AE0C
-$A8:B03E 9D AE 0F    STA $0FAE,x[$7E:102E]
+$A8:B023 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A8:B026 9F 06 78 7E STA $7E7806,x[$7E:7886];} Enemy Y spawn position = [enemy Y position]
+$A8:B02A BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A8:B02D 9F 22 78 7E STA $7E7822,x[$7E:78A2];} Enemy $7E:7822 = [enemy X position] (never read)
+$A8:B031 A9 00 00    LDA #$0000             ;\
+$A8:B034 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy instruction list = 0
+$A8:B037 9F 08 78 7E STA $7E7808,x[$7E:7888]; Enemy cooldown timer = 0
+$A8:B03B A9 0C AE    LDA #$AE0C             ;\
+$A8:B03E 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy new instruction list = $AE0C (stub)
 $A8:B041 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B044 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A8:B047 18          CLC
-$A8:B048 69 20 00    ADC #$0020
-$A8:B04B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A8:B04E A9 0D B3    LDA #$B30D
-$A8:B051 9D B2 0F    STA $0FB2,x[$7E:1032]
-$A8:B054 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A8:B057 09 00 01    ORA #$0100
-$A8:B05A 9D 86 0F    STA $0F86,x[$7E:1006]
+$A8:B044 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A8:B047 18          CLC                    ;|
+$A8:B048 69 20 00    ADC #$0020             ;} Enemy Y position += 20h
+$A8:B04B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A8:B04E A9 0D B3    LDA #$B30D             ;\
+$A8:B051 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $B30D (idle)
+$A8:B054 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A8:B057 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A8:B05A 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A8:B05D 60          RTS
 }
 
 
-;;; $B05E:  ;;;
+;;; $B05E: Set magdollite arm Y velocities ;;;
 {
 $A8:B05E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B061 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
@@ -3918,11 +3919,11 @@ $A8:B069 0A          ASL A                  ;|
 $A8:B06A A8          TAY                    ;/
 $A8:B06B B9 87 81    LDA $8187,y[$A8:8357]  ;\
 $A8:B06E 9F 10 78 7E STA $7E7810,x[$7E:7810];|
-$A8:B072 B9 89 81    LDA $8189,y[$A8:8359]  ;} Enemy $7E:780E = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A8:B072 B9 89 81    LDA $8189,y[$A8:8359]  ;} Enemy down velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
 $A8:B075 9F 0E 78 7E STA $7E780E,x[$7E:780E];/
 $A8:B079 B9 8B 81    LDA $818B,y[$A8:835B]  ;\
 $A8:B07C 9F 14 78 7E STA $7E7814,x[$7E:7814];|
-$A8:B080 B9 8D 81    LDA $818D,y[$A8:835D]  ;} Enemy $7E:7812 = [$8187 + [Y] + 4].[$8187 + [Y] + 8]
+$A8:B080 B9 8D 81    LDA $818D,y[$A8:835D]  ;} Enemy up velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 8]
 $A8:B083 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $A8:B087 60          RTS
 }
@@ -4000,369 +4001,382 @@ $A8:B109 6B          RTL
 {
 $A8:B10A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B10D BF 08 78 7E LDA $7E7808,x[$7E:7808];\
-$A8:B111 3A          DEC A                  ;} Decrement enemy $7E:7808
+$A8:B111 3A          DEC A                  ;} Decrement enemy cooldown timer
 $A8:B112 9F 08 78 7E STA $7E7808,x[$7E:7808];/
 $A8:B116 FC B2 0F    JSR ($0FB2,x)[$A8:B11A]; Execute [enemy function]
 $A8:B119 6B          RTL
 }
 
 
-;;; $B11A: Magdollite function -  ;;;
+;;; $B11A..DC: Head ;;;
+{
+;;; $B11A: Magdollite function - idle ;;;
 {
 $A8:B11A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B11D A9 00 00    LDA #$0000
-$A8:B120 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A8:B124 A9 9C AC    LDA #$AC9C
-$A8:B127 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:B11D A9 00 00    LDA #$0000             ;\
+$A8:B120 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy head direction = left
+$A8:B124 A9 9C AC    LDA #$AC9C             ;\
+$A8:B127 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AC9C (facing left - idle)
 $A8:B12A 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:B12E 30 0D       BMI $0D    [$B13D]     ;} If [Samus X position] >= [enemy X position]:
-$A8:B130 A9 3C AD    LDA #$AD3C
-$A8:B133 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:B136 A9 01 00    LDA #$0001
-$A8:B139 9F 00 78 7E STA $7E7800,x[$7E:7800]
+$A8:B130 A9 3C AD    LDA #$AD3C             ;\
+$A8:B133 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD3C (facing right - idle)
+$A8:B136 A9 01 00    LDA #$0001             ;\
+$A8:B139 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy head direction = right
 
 $A8:B13D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B140 BF 88 78 7E LDA $7E7888,x[$7E:7888]
-$A8:B144 10 2E       BPL $2E    [$B174]
-$A8:B146 A9 00 00    LDA #$0000
-$A8:B149 9F 88 78 7E STA $7E7888,x[$7E:7888]
+$A8:B140 BF 88 78 7E LDA $7E7888,x[$7E:7888];\
+$A8:B144 10 2E       BPL $2E    [$B174]     ;} If [enemy ([X] + 2) cooldown timer] >= 0: return
+$A8:B146 A9 00 00    LDA #$0000             ;\
+$A8:B149 9F 88 78 7E STA $7E7888,x[$7E:7888];} Enemy ([X] + 2) cooldown timer = 0
 $A8:B14D BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A8:B150 29 FF 00    AND #$00FF             ;|
-$A8:B153 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within [enemy $0FB6] pixel columns of enemy: return
+$A8:B153 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within [enemy parameter 2] pixel columns of enemy: return
 $A8:B157 F0 1B       BEQ $1B    [$B174]     ;/
-$A8:B159 A9 DE AC    LDA #$ACDE
-$A8:B15C 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:B15F BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$A8:B163 F0 06       BEQ $06    [$B16B]
-$A8:B165 A9 7E AD    LDA #$AD7E
-$A8:B168 9D AE 0F    STA $0FAE,x[$7E:112E]
+$A8:B159 A9 DE AC    LDA #$ACDE             ;\
+$A8:B15C 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $ACDE (facing left - submerge into lava)
+$A8:B15F BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$A8:B163 F0 06       BEQ $06    [$B16B]     ;} If [enemy head direction] != left:
+$A8:B165 A9 7E AD    LDA #$AD7E             ;\
+$A8:B168 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy new instruction list = $AD7E (facing right - submerge into lava)
 
 $A8:B16B 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B16E A9 75 B1    LDA #$B175
-$A8:B171 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:B16E A9 75 B1    LDA #$B175             ;\
+$A8:B171 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B175 (wait until submerged)
 
 $A8:B174 60          RTS
 }
 
 
-;;; $B175: Magdollite function -  ;;;
+;;; $B175: Magdollite function - wait until submerged ;;;
 {
 $A8:B175 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B178 BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A8:B17C D0 14       BNE $14    [$B192]
-$A8:B17E A9 01 00    LDA #$0001
-$A8:B181 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A8:B185 A9 00 00    LDA #$0000
-$A8:B188 9F 5A 78 7E STA $7E785A,x[$7E:785A]
-$A8:B18C A9 93 B1    LDA #$B193
-$A8:B18F 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:B178 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A8:B17C D0 14       BNE $14    [$B192]     ;} If [enemy animation active flag] = 0:
+$A8:B17E A9 01 00    LDA #$0001             ;\
+$A8:B181 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy emerge not ready flag = 1
+$A8:B185 A9 00 00    LDA #$0000             ;\
+$A8:B188 9F 5A 78 7E STA $7E785A,x[$7E:785A];} Enemy ([X] + 1) not submerged flag = 0
+$A8:B18C A9 93 B1    LDA #$B193             ;\
+$A8:B18F 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B193 (emerge when ready)
 
 $A8:B192 60          RTS
 }
 
 
-;;; $B193: Magdollite function -  ;;;
+;;; $B193: Magdollite function - emerge when ready ;;;
 {
 $A8:B193 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B196 BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A8:B19A D0 1B       BNE $1B    [$B1B7]
-$A8:B19C A9 0C AD    LDA #$AD0C
-$A8:B19F 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:B196 BF 04 78 7E LDA $7E7804,x[$7E:7804];\
+$A8:B19A D0 1B       BNE $1B    [$B1B7]     ;} If [enemy emerge not ready flag] != 0: return
+$A8:B19C A9 0C AD    LDA #$AD0C             ;\
+$A8:B19F 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD0C (facing left - emerge from lava)
 $A8:B1A2 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:B1A6 30 06       BMI $06    [$B1AE]     ;} If [Samus X position] >= [enemy X position]:
-$A8:B1A8 A9 AC AD    LDA #$ADAC
-$A8:B1AB 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:B1A8 A9 AC AD    LDA #$ADAC             ;\
+$A8:B1AB 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $ADAC (facing right - emerge from lava)
 
 $A8:B1AE 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B1B1 A9 B8 B1    LDA #$B1B8
-$A8:B1B4 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:B1B1 A9 B8 B1    LDA #$B1B8             ;\
+$A8:B1B4 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B1B8 (wait until emerged)
 
 $A8:B1B7 60          RTS
 }
 
 
-;;; $B1B8: Magdollite function -  ;;;
+;;; $B1B8: Magdollite function - wait until emerged ;;;
 {
 $A8:B1B8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B1BB BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A8:B1BF D0 1B       BNE $1B    [$B1DC]
-$A8:B1C1 A9 9C AC    LDA #$AC9C
-$A8:B1C4 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:B1BB BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A8:B1BF D0 1B       BNE $1B    [$B1DC]     ;} If [enemy animation active flag] != 0: return
+$A8:B1C1 A9 9C AC    LDA #$AC9C             ;\
+$A8:B1C4 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AC9C (facing left - idle)
 $A8:B1C7 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:B1CB 30 06       BMI $06    [$B1D3]     ;} If [Samus X position] >= [enemy X position]:
-$A8:B1CD A9 3C AD    LDA #$AD3C
-$A8:B1D0 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:B1CD A9 3C AD    LDA #$AD3C             ;\
+$A8:B1D0 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy new instruction list = $AD3C (facing right - idle)
 
 $A8:B1D3 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B1D6 A9 1A B1    LDA #$B11A
-$A8:B1D9 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:B1D6 A9 1A B1    LDA #$B11A             ;\
+$A8:B1D9 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B11A (idle)
 
 $A8:B1DC 60          RTS
 }
+}
 
 
-;;; $B1DD: Magdollite function -  ;;;
+;;; $B1DD..B30C: Arm ;;;
+{
+;;; $B1DD: Magdollite function - wait until head submerged ;;;
 {
 $A8:B1DD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B1E0 BF 1A 78 7E LDA $7E781A,x[$7E:785A]
-$A8:B1E4 D0 1D       BNE $1D    [$B203]
-$A8:B1E6 A9 04 B2    LDA #$B204
-$A8:B1E9 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A8:B1EC A9 00 00    LDA #$0000
-$A8:B1EF 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A8:B1F2 9F 1A 78 7E STA $7E781A,x[$7E:785A]
-$A8:B1F6 A9 02 00    LDA #$0002
-$A8:B1F9 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A8:B1FC BF 06 78 7E LDA $7E7806,x[$7E:7846]
-$A8:B200 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$A8:B1E0 BF 1A 78 7E LDA $7E781A,x[$7E:785A];\
+$A8:B1E4 D0 1D       BNE $1D    [$B203]     ;} If [enemy not submerged flag] = 0:
+$A8:B1E6 A9 04 B2    LDA #$B204             ;\
+$A8:B1E9 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B204 (growing arm)
+$A8:B1EC A9 00 00    LDA #$0000             ;\
+$A8:B1EF 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy arm height = 0
+$A8:B1F2 9F 1A 78 7E STA $7E781A,x[$7E:785A]; >_<;
+$A8:B1F6 A9 02 00    LDA #$0002             ;\
+$A8:B1F9 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy growth table index = 2
+$A8:B1FC BF 06 78 7E LDA $7E7806,x[$7E:7846];\
+$A8:B200 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy Y spawn position]
 
 $A8:B203 60          RTS
 }
 
 
-;;; $B204: Magdollite function -  ;;;
+;;; $B204: Magdollite function - growing arm ;;;
 {
 $A8:B204 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B207 18          CLC
-$A8:B208 BD 80 0F    LDA $0F80,x[$7E:0FC0]
-$A8:B20B 7F D2 77 7E ADC $7E77D2,x[$7E:7812]
-$A8:B20F 9D 80 0F    STA $0F80,x[$7E:0FC0]
-$A8:B212 90 03       BCC $03    [$B217]
-$A8:B214 FE B0 0F    INC $0FB0,x[$7E:0FF0]
-
-$A8:B217 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B21A 7F D4 77 7E ADC $7E77D4,x[$7E:7814]
-$A8:B21E 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:B221 18          CLC
-$A8:B222 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B225 7F D4 77 7E ADC $7E77D4,x[$7E:7814]
-$A8:B229 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A8:B22C 20 30 B2    JSR $B230  [$A8:B230]
+$A8:B207 18          CLC                    ;\
+$A8:B208 BD 80 0F    LDA $0F80,x[$7E:0FC0]  ;|
+$A8:B20B 7F D2 77 7E ADC $7E77D2,x[$7E:7812];|
+$A8:B20F 9D 80 0F    STA $0F80,x[$7E:0FC0]  ;|
+$A8:B212 90 03       BCC $03    [$B217]     ;|
+$A8:B214 FE B0 0F    INC $0FB0,x[$7E:0FF0]  ;|
+                                            ;} Enemy Y position += [enemy ([X] - 1) up velocity]
+$A8:B217 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} Enemy arm height += (new enemy Y position) - (old enemy Y position)
+$A8:B21A 7F D4 77 7E ADC $7E77D4,x[$7E:7814];|
+$A8:B21E 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;|
+$A8:B221 18          CLC                    ;|
+$A8:B222 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;|
+$A8:B225 7F D4 77 7E ADC $7E77D4,x[$7E:7814];|
+$A8:B229 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;/
+$A8:B22C 20 30 B2    JSR $B230  [$A8:B230]  ; Grow arm
 $A8:B22F 60          RTS
 }
 
 
-;;; $B230:  ;;;
+;;; $B230: Grow arm ;;;
 {
-$A8:B230 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B233 49 FF FF    EOR #$FFFF
-$A8:B236 1A          INC A
-$A8:B237 C9 6C 00    CMP #$006C
-$A8:B23A 10 1D       BPL $1D    [$B259]
-$A8:B23C BC AA 0F    LDY $0FAA,x[$7E:0FEA]
-$A8:B23F BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B242 38          SEC
-$A8:B243 F9 79 AF    SBC $AF79,y[$A8:AF7B]
-$A8:B246 CD FA 0A    CMP $0AFA  [$7E:0AFA]
-$A8:B249 30 0E       BMI $0E    [$B259]
-$A8:B24B BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B24E 49 FF FF    EOR #$FFFF
-$A8:B251 1A          INC A
-$A8:B252 D9 55 AF    CMP $AF55,y[$A8:AF57]
-$A8:B255 10 1D       BPL $1D    [$B274]
-$A8:B257 80 37       BRA $37    [$B290]
+$A8:B230 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A8:B233 49 FF FF    EOR #$FFFF             ;|
+$A8:B236 1A          INC A                  ;} If -[enemy arm height] < 6Ch: (whoops, we forgot to load Y before taking this branch >_<;)
+$A8:B237 C9 6C 00    CMP #$006C             ;|
+$A8:B23A 10 1D       BPL $1D    [$B259]     ;/
+$A8:B23C BC AA 0F    LDY $0FAA,x[$7E:0FEA]  ; Y = [enemy growth table index]
+$A8:B23F BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:B242 38          SEC                    ;|
+$A8:B243 F9 79 AF    SBC $AF79,y[$A8:AF7B]  ;} If [enemy Y position] - [$AF79 + [Y]] >= [Samus Y position]:
+$A8:B246 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;|
+$A8:B249 30 0E       BMI $0E    [$B259]     ;/
+$A8:B24B BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A8:B24E 49 FF FF    EOR #$FFFF             ;|
+$A8:B251 1A          INC A                  ;} If -[enemy arm height] >= [$AF55 + [Y]]: go to BRANCH_NEXT_GROWTH_LEVEL
+$A8:B252 D9 55 AF    CMP $AF55,y[$A8:AF57]  ;|
+$A8:B255 10 1D       BPL $1D    [$B274]     ;/
+$A8:B257 80 37       BRA $37    [$B290]     ; Return
 
-$A8:B259 A9 91 B2    LDA #$B291
-$A8:B25C 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A8:B25F A9 01 00    LDA #$0001
-$A8:B262 9F 18 78 7E STA $7E7818,x[$7E:7858]
-$A8:B266 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B269 49 FF FF    EOR #$FFFF
-$A8:B26C 1A          INC A
-$A8:B26D D9 55 AF    CMP $AF55,y[$A8:AF57]
-$A8:B270 10 02       BPL $02    [$B274]
-$A8:B272 80 1C       BRA $1C    [$B290]
+$A8:B259 A9 91 B2    LDA #$B291             ;\
+$A8:B25C 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = RTS
+$A8:B25F A9 01 00    LDA #$0001             ;\
+$A8:B262 9F 18 78 7E STA $7E7818,x[$7E:7858];} Enemy finished growing flag = 1
+$A8:B266 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A8:B269 49 FF FF    EOR #$FFFF             ;|
+$A8:B26C 1A          INC A                  ;} If -[enemy arm height] >= [$AF55 + [Y]]: go to BRANCH_NEXT_GROWTH_LEVEL
+$A8:B26D D9 55 AF    CMP $AF55,y[$A8:AF57]  ;|
+$A8:B270 10 02       BPL $02    [$B274]     ;/
+$A8:B272 80 1C       BRA $1C    [$B290]     ; Return
 
-$A8:B274 FE AA 0F    INC $0FAA,x[$7E:0FEA]
-$A8:B277 FE AA 0F    INC $0FAA,x[$7E:0FEA]
-$A8:B27A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B27D 18          CLC
-$A8:B27E 69 08 00    ADC #$0008
-$A8:B281 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:B284 BC AA 0F    LDY $0FAA,x[$7E:0FEA]
-$A8:B287 B9 67 AF    LDA $AF67,y[$A8:AF6B]
-$A8:B28A 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+; BRANCH_NEXT_GROWTH_LEVEL
+$A8:B274 FE AA 0F    INC $0FAA,x[$7E:0FEA]  ;\
+$A8:B277 FE AA 0F    INC $0FAA,x[$7E:0FEA]  ;} Enemy growth table index += 2
+$A8:B27A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:B27D 18          CLC                    ;|
+$A8:B27E 69 08 00    ADC #$0008             ;} Enemy Y position += 8
+$A8:B281 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A8:B284 BC AA 0F    LDY $0FAA,x[$7E:0FEA]  ;\
+$A8:B287 B9 67 AF    LDA $AF67,y[$A8:AF6B]  ;} Enemy new instruction list = [$AF67 + [enemy growth table index]]
+$A8:B28A 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A8:B28D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
 
 $A8:B290 60          RTS
 }
 
 
-;;; $B291: Magdollite function -  ;;;
+;;; $B291: RTS ;;;
 {
 $A8:B291 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B294 60          RTS
 }
 
 
-;;; $B295:  ;;;
+;;; $B295: Magdollite function - shrinking arm ;;;
 {
 $A8:B295 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B298 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B29B 18          CLC
-$A8:B29C 7F D0 77 7E ADC $7E77D0,x[$7E:7810]
-$A8:B2A0 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:B2A3 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B2A6 18          CLC
-$A8:B2A7 7F D0 77 7E ADC $7E77D0,x[$7E:7810]
-$A8:B2AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A8:B2AE BD 80 0F    LDA $0F80,x[$7E:0FC0]
-$A8:B2B1 18          CLC
-$A8:B2B2 7F CE 77 7E ADC $7E77CE,x[$7E:780E]
-$A8:B2B6 90 06       BCC $06    [$B2BE]
-$A8:B2B8 FE 7E 0F    INC $0F7E,x[$7E:0FBE]
-$A8:B2BB FE B0 0F    INC $0FB0,x[$7E:0FF0]
-
-$A8:B2BE 9D 80 0F    STA $0F80,x[$7E:0FC0]
-$A8:B2C1 20 C5 B2    JSR $B2C5  [$A8:B2C5]
+$A8:B298 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:B29B 18          CLC                    ;|
+$A8:B29C 7F D0 77 7E ADC $7E77D0,x[$7E:7810];|
+$A8:B2A0 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;|
+$A8:B2A3 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;|
+$A8:B2A6 18          CLC                    ;|
+$A8:B2A7 7F D0 77 7E ADC $7E77D0,x[$7E:7810];|
+$A8:B2AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy Y position += [enemy ([X] - 1) down velocity]
+$A8:B2AE BD 80 0F    LDA $0F80,x[$7E:0FC0]  ;} Enemy arm height += (new enemy Y position) - (old enemy Y position)
+$A8:B2B1 18          CLC                    ;|
+$A8:B2B2 7F CE 77 7E ADC $7E77CE,x[$7E:780E];|
+$A8:B2B6 90 06       BCC $06    [$B2BE]     ;|
+$A8:B2B8 FE 7E 0F    INC $0F7E,x[$7E:0FBE]  ;|
+$A8:B2BB FE B0 0F    INC $0FB0,x[$7E:0FF0]  ;|
+                                            ;|
+$A8:B2BE 9D 80 0F    STA $0F80,x[$7E:0FC0]  ;/
+$A8:B2C1 20 C5 B2    JSR $B2C5  [$A8:B2C5]  ; Shrink arm
 $A8:B2C4 60          RTS
 }
 
 
-;;; $B2C5:  ;;;
+;;; $B2C5: Shrink arm ;;;
 {
-$A8:B2C5 BC AA 0F    LDY $0FAA,x[$7E:0FEA]
-$A8:B2C8 88          DEY
-$A8:B2C9 88          DEY
-$A8:B2CA BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A8:B2CD 10 29       BPL $29    [$B2F8]
-$A8:B2CF 49 FF FF    EOR #$FFFF
-$A8:B2D2 1A          INC A
-$A8:B2D3 D9 55 AF    CMP $AF55,y[$A8:AF57]
-$A8:B2D6 30 02       BMI $02    [$B2DA]
-$A8:B2D8 80 32       BRA $32    [$B30C]
+$A8:B2C5 BC AA 0F    LDY $0FAA,x[$7E:0FEA]  ;\
+$A8:B2C8 88          DEY                    ;} Y = [enemy growth table index] - 2
+$A8:B2C9 88          DEY                    ;/
+$A8:B2CA BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A8:B2CD 10 29       BPL $29    [$B2F8]     ;} If [enemy arm height] >= 0: go to BRANCH_FINISHED
+$A8:B2CF 49 FF FF    EOR #$FFFF             ;\
+$A8:B2D2 1A          INC A                  ;|
+$A8:B2D3 D9 55 AF    CMP $AF55,y[$A8:AF57]  ;} If -[enemy arm height] >= [$AF55 + [Y]]:
+$A8:B2D6 30 02       BMI $02    [$B2DA]     ;/
+$A8:B2D8 80 32       BRA $32    [$B30C]     ; Return
 
-$A8:B2DA DE AA 0F    DEC $0FAA,x[$7E:0FEA]
-$A8:B2DD DE AA 0F    DEC $0FAA,x[$7E:0FEA]
-$A8:B2E0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:B2E3 38          SEC
-$A8:B2E4 E9 08 00    SBC #$0008
-$A8:B2E7 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:B2EA BC AA 0F    LDY $0FAA,x[$7E:0FEA]
-$A8:B2ED B9 67 AF    LDA $AF67,y[$A8:AF69]
-$A8:B2F0 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+$A8:B2DA DE AA 0F    DEC $0FAA,x[$7E:0FEA]  ;\
+$A8:B2DD DE AA 0F    DEC $0FAA,x[$7E:0FEA]  ;} Enemy growth table index = [Y]
+$A8:B2E0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:B2E3 38          SEC                    ;|
+$A8:B2E4 E9 08 00    SBC #$0008             ;} Enemy Y position -= 8
+$A8:B2E7 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A8:B2EA BC AA 0F    LDY $0FAA,x[$7E:0FEA]  ;\
+$A8:B2ED B9 67 AF    LDA $AF67,y[$A8:AF69]  ;} Enemy new instruction list = [$AF67 + [Y]]
+$A8:B2F0 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A8:B2F3 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B2F6 80 14       BRA $14    [$B30C]
+$A8:B2F6 80 14       BRA $14    [$B30C]     ; Return
 
-$A8:B2F8 A9 01 00    LDA #$0001
-$A8:B2FB 9F 1A 78 7E STA $7E781A,x[$7E:785A]
-$A8:B2FF A9 00 00    LDA #$0000
-$A8:B302 9F C4 77 7E STA $7E77C4,x[$7E:7804]
-$A8:B306 A9 DD B1    LDA #$B1DD
-$A8:B309 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+; BRANCH_FINISHED
+$A8:B2F8 A9 01 00    LDA #$0001             ;\
+$A8:B2FB 9F 1A 78 7E STA $7E781A,x[$7E:785A];} Enemy not submerged flag = 1
+$A8:B2FF A9 00 00    LDA #$0000             ;\
+$A8:B302 9F C4 77 7E STA $7E77C4,x[$7E:7804];} Enemy ([X] - 1) emerge not ready flag = 0
+$A8:B306 A9 DD B1    LDA #$B1DD             ;\
+$A8:B309 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B1DD (wait until head submerged)
 
 $A8:B30C 60          RTS
 }
+}
 
 
-;;; $B30D: Magdollite function -  ;;;
+;;; $B30D..E4: Hand ;;;
+{
+;;; $B30D: Magdollite function - idle ;;;
 {
 $A8:B30D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B310 BD 32 0F    LDA $0F32,x[$7E:0FB2]
-$A8:B313 C9 75 B1    CMP #$B175
-$A8:B316 D0 06       BNE $06    [$B31E]
-$A8:B318 A9 56 B3    LDA #$B356
-$A8:B31B 9D B2 0F    STA $0FB2,x[$7E:1032]
+$A8:B310 BD 32 0F    LDA $0F32,x[$7E:0FB2]  ;\
+$A8:B313 C9 75 B1    CMP #$B175             ;} If [enemy ([X] - 2) function] = $B175 (wait until submerged):
+$A8:B316 D0 06       BNE $06    [$B31E]     ;/
+$A8:B318 A9 56 B3    LDA #$B356             ;\
+$A8:B31B 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $B356 (wait until finished growing and throw lava)
 
 $A8:B31E 60          RTS
 }
 
 
-;;; $B31F: Magdollite function -  ;;;
+;;; $B31F: Magdollite function - wait until finished throwing lava and shrink arm ;;;
 {
 $A8:B31F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B322 BF 02 78 7E LDA $7E7802,x[$7E:7882]
-$A8:B326 D0 2A       BNE $2A    [$B352]
-$A8:B328 A9 0C AE    LDA #$AE0C
-$A8:B32B 9D AE 0F    STA $0FAE,x[$7E:102E]
+$A8:B322 BF 02 78 7E LDA $7E7802,x[$7E:7882];\
+$A8:B326 D0 2A       BNE $2A    [$B352]     ;} If [enemy animation active flag] = 0:
+$A8:B328 A9 0C AE    LDA #$AE0C             ;\
+$A8:B32B 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy new instruction list = $AE0C (stub)
 $A8:B32E 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B331 A9 95 B2    LDA #$B295
-$A8:B334 9D 72 0F    STA $0F72,x[$7E:0FF2]
-$A8:B337 A9 A7 B3    LDA #$B3A7
-$A8:B33A 9D B2 0F    STA $0FB2,x[$7E:1032]
-$A8:B33D A9 00 00    LDA #$0000
-$A8:B340 9F D8 77 7E STA $7E77D8,x[$7E:7858]
-$A8:B344 BF 24 78 7E LDA $7E7824,x[$7E:78A4]
-$A8:B348 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A8:B34B BF 26 78 7E LDA $7E7826,x[$7E:78A6]
-$A8:B34F 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
+$A8:B331 A9 95 B2    LDA #$B295             ;\
+$A8:B334 9D 72 0F    STA $0F72,x[$7E:0FF2]  ;} Enemy ([X] - 1) function = $B295 (shrinking arm)
+$A8:B337 A9 A7 B3    LDA #$B3A7             ;\
+$A8:B33A 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $B3A7 (move with shrinking arm)
+$A8:B33D A9 00 00    LDA #$0000             ;\
+$A8:B340 9F D8 77 7E STA $7E77D8,x[$7E:7858];} Enemy ([X] - 1) finished growing flag = 0
+$A8:B344 BF 24 78 7E LDA $7E7824,x[$7E:78A4];\
+$A8:B348 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [enemy throw X position]
+$A8:B34B BF 26 78 7E LDA $7E7826,x[$7E:78A6];\
+$A8:B34F 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [enemy throw Y position]
 
-$A8:B352 20 CB B3    JSR $B3CB  [$A8:B3CB]
+$A8:B352 20 CB B3    JSR $B3CB  [$A8:B3CB]  ; Update magdollite head Y radius
 $A8:B355 60          RTS
 }
 
 
-;;; $B356: Magdollite function -  ;;;
+;;; $B356: Magdollite function - wait until finished growing and throw lava ;;;
 {
 $A8:B356 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B359 BF D8 77 7E LDA $7E77D8,x[$7E:7858]
-$A8:B35D F0 37       BEQ $37    [$B396]
-$A8:B35F A9 B0 AC    LDA #$ACB0
-$A8:B362 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A8:B365 A9 00 00    LDA #$0000
-$A8:B368 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A8:B359 BF D8 77 7E LDA $7E77D8,x[$7E:7858];\
+$A8:B35D F0 37       BEQ $37    [$B396]     ;} If [enemy ([X] - 1) finished growing flag] = 0: go to BRANCH_NOT_READY
+$A8:B35F A9 B0 AC    LDA #$ACB0             ;\
+$A8:B362 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy new instruction list = $ACB0 (facing left - throwing lava)
+$A8:B365 A9 00 00    LDA #$0000             ;\
+$A8:B368 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy hand direction = left
 $A8:B36B 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:B36F 30 0C       BMI $0C    [$B37D]     ;} If [Samus X position] >= [enemy X position]:
-$A8:B371 A9 50 AD    LDA #$AD50
-$A8:B374 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A8:B377 A9 01 00    LDA #$0001
-$A8:B37A 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A8:B371 A9 50 AD    LDA #$AD50             ;\
+$A8:B374 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy new instruction list = $AD50 (facing right - throwing lava)
+$A8:B377 A9 01 00    LDA #$0001             ;\
+$A8:B37A 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy hand direction = right
 
 $A8:B37D 20 E5 B3    JSR $B3E5  [$A8:B3E5]  ; Set magdollite instruction list
-$A8:B380 A9 1F B3    LDA #$B31F
-$A8:B383 9D B2 0F    STA $0FB2,x[$7E:1032]
-$A8:B386 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A8:B389 9F 24 78 7E STA $7E7824,x[$7E:78A4]
-$A8:B38D BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A8:B390 9F 26 78 7E STA $7E7826,x[$7E:78A6]
-$A8:B394 80 0D       BRA $0D    [$B3A3]
+$A8:B380 A9 1F B3    LDA #$B31F             ;\
+$A8:B383 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $B31F (wait until finished throwing lava and shrink arm)
+$A8:B386 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A8:B389 9F 24 78 7E STA $7E7824,x[$7E:78A4];} Enemy throw X position = [enemy X position]
+$A8:B38D BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A8:B390 9F 26 78 7E STA $7E7826,x[$7E:78A6];} Enemy throw Y position = [enemy Y position]
+$A8:B394 80 0D       BRA $0D    [$B3A3]     ; Go to BRANCH_MERGE
 
-$A8:B396 BC 6A 0F    LDY $0F6A,x[$7E:0FEA]
-$A8:B399 BD 3E 0F    LDA $0F3E,x[$7E:0FBE]
-$A8:B39C 38          SEC
-$A8:B39D F9 79 AF    SBC $AF79,y[$A8:AF79]
-$A8:B3A0 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
+; BRANCH_NOT_READY
+$A8:B396 BC 6A 0F    LDY $0F6A,x[$7E:0FEA]  ;\
+$A8:B399 BD 3E 0F    LDA $0F3E,x[$7E:0FBE]  ;|
+$A8:B39C 38          SEC                    ;} Enemy Y position = [enemy ([X] - 1) Y position] - [$AF79 + [Y]]
+$A8:B39D F9 79 AF    SBC $AF79,y[$A8:AF79]  ;|
+$A8:B3A0 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 
-$A8:B3A3 20 CB B3    JSR $B3CB  [$A8:B3CB]
+; BRANCH_MERGE
+$A8:B3A3 20 CB B3    JSR $B3CB  [$A8:B3CB]  ; Update magdollite head Y radius
 $A8:B3A6 60          RTS
 }
 
 
-;;; $B3A7: Magdollite function -  ;;;
+;;; $B3A7: Magdollite function - move with shrinking arm ;;;
 {
 $A8:B3A7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:B3AA BD 32 0F    LDA $0F32,x[$7E:0FB2]
-$A8:B3AD C9 1A B1    CMP #$B11A
-$A8:B3B0 D0 08       BNE $08    [$B3BA]
-$A8:B3B2 A9 0D B3    LDA #$B30D
-$A8:B3B5 9D B2 0F    STA $0FB2,x[$7E:1032]
+$A8:B3AA BD 32 0F    LDA $0F32,x[$7E:0FB2]  ;\
+$A8:B3AD C9 1A B1    CMP #$B11A             ;} If [enemy ([X] - 2) function] = $B11A (idle):
+$A8:B3B0 D0 08       BNE $08    [$B3BA]     ;/
+$A8:B3B2 A9 0D B3    LDA #$B30D             ;\
+$A8:B3B5 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $B30D (idle)
 $A8:B3B8 80 0D       BRA $0D    [$B3C7]
 
-$A8:B3BA BC 6A 0F    LDY $0F6A,x[$7E:0FEA]
-$A8:B3BD BD 3E 0F    LDA $0F3E,x[$7E:0FBE]
-$A8:B3C0 38          SEC
-$A8:B3C1 F9 79 AF    SBC $AF79,y[$A8:AF7B]
-$A8:B3C4 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
+$A8:B3BA BC 6A 0F    LDY $0F6A,x[$7E:0FEA]  ;\ Else ([enemy ([X] - 2) function] != $B11A (idle)):
+$A8:B3BD BD 3E 0F    LDA $0F3E,x[$7E:0FBE]  ;|
+$A8:B3C0 38          SEC                    ;} Enemy Y position = [enemy ([X] - 1) Y position] - [$AF79 + [Y]]
+$A8:B3C1 F9 79 AF    SBC $AF79,y[$A8:AF7B]  ;|
+$A8:B3C4 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 
-$A8:B3C7 20 CB B3    JSR $B3CB  [$A8:B3CB]
+$A8:B3C7 20 CB B3    JSR $B3CB  [$A8:B3CB]  ; Update magdollite head Y radius
 $A8:B3CA 60          RTS
 }
 
 
-;;; $B3CB:  ;;;
+;;; $B3CB: Update magdollite head Y radius ;;;
 {
-$A8:B3CB BD FE 0E    LDA $0EFE,x[$7E:0F7E]
-$A8:B3CE 38          SEC
-$A8:B3CF FD 7E 0F    SBC $0F7E,x[$7E:0FFE]
-$A8:B3D2 18          CLC
-$A8:B3D3 69 02 00    ADC #$0002
-$A8:B3D6 9D 04 0F    STA $0F04,x[$7E:0F84]
-$A8:B3D9 C9 08 00    CMP #$0008
-$A8:B3DC 10 06       BPL $06    [$B3E4]
-$A8:B3DE A9 08 00    LDA #$0008
-$A8:B3E1 9D 04 0F    STA $0F04,x[$7E:0F84]
+$A8:B3CB BD FE 0E    LDA $0EFE,x[$7E:0F7E]  ;\
+$A8:B3CE 38          SEC                    ;|
+$A8:B3CF FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
+$A8:B3D2 18          CLC                    ;|
+$A8:B3D3 69 02 00    ADC #$0002             ;|
+$A8:B3D6 9D 04 0F    STA $0F04,x[$7E:0F84]  ;} Enemy ([X] - 2) Y radius = max(8, [enemy ([X] - 2) Y position] - [enemy Y position] + 2)
+$A8:B3D9 C9 08 00    CMP #$0008             ;|
+$A8:B3DC 10 06       BPL $06    [$B3E4]     ;|
+$A8:B3DE A9 08 00    LDA #$0008             ;|
+$A8:B3E1 9D 04 0F    STA $0F04,x[$7E:0F84]  ;/
 
 $A8:B3E4 60          RTS
+}
 }
 
 
@@ -4431,30 +4445,47 @@ $A8:B447 6B          RTL
 
 ;;; $B448: Magdollite spritemaps ;;;
 {
+; Head - facing left
 $A8:B448             dx 0003, 0004,FF,2123, 0004,F7,2122, 81F4,F7,210A
 $A8:B459             dx 0003, 0004,00,2123, 0004,F8,2122, 81F4,F8,210A
 $A8:B46A             dx 0003, 0004,01,2123, 0004,F9,2122, 81F4,F9,210A
+
+; Hand - facing left
 $A8:B47B             dx 0003, 0000,04,2121, 01F8,04,2120, 81F8,F4,2108
 $A8:B48C             dx 0003, 01FD,04,2121, 01F5,04,2120, 81F9,F5,2108
 $A8:B49D             dx 0002, 8000,FC,2106, 81F0,F9,2104
 $A8:B4A9             dx 0002, 8000,F8,2102, 81F0,F8,2100
+
+; Hand
 $A8:B4B5             dx 0002, 0000,FC,2125, 01F8,FC,2124
+
+; Head - facing left
 $A8:B4C1             dx 0001, 81F8,F8,210E
-$A8:B4C8             dx 0001, 81F8,F8,210C
+$A8:B4C8             dx 0001, 81F8,F8,210C ; Unused
 $A8:B4CF             dx 0003, 0004,FC,2128, 01FC,FC,2127, 01F4,FC,2126
 $A8:B4E0             dx 0003, 0004,FC,212B, 01FC,FC,212A, 01F4,FC,2129
+
+; Head - facing right
 $A8:B4F1             dx 0003, 01F4,FF,6123, 01F4,F7,6122, 81FC,F7,610A
 $A8:B502             dx 0003, 01F4,00,6123, 01F4,F8,6122, 81FC,F8,610A
 $A8:B513             dx 0003, 01F4,01,6123, 01F4,F9,6122, 81FC,F9,610A
+
+; Hand - facing right
 $A8:B524             dx 0003, 01F8,04,6121, 0000,04,6120, 81F8,F4,6108
 $A8:B535             dx 0003, 01FB,04,6121, 0003,04,6120, 81F7,F5,6108
 $A8:B546             dx 0002, 81F0,FC,6106, 8000,F9,6104
 $A8:B552             dx 0002, 81F0,F8,6102, 8000,F8,6100
-$A8:B55E             dx 0002, 01F8,FC,6125, 0000,FC,6124
+
+; Hand
+$A8:B55E             dx 0002, 01F8,FC,6125, 0000,FC,6124 ; Unused
+
+; Head - facing right
 $A8:B56A             dx 0001, 81F8,F8,610E
-$A8:B571             dx 0001, 81F8,F8,610C
+$A8:B571             dx 0001, 81F8,F8,610C ; Unused
 $A8:B578             dx 0003, 01F4,FC,6128, 01FC,FC,6127, 0004,FC,6126
 $A8:B589             dx 0003, 01F4,FC,612B, 01FC,FC,612A, 0004,FC,6129
+
+; Arm
 $A8:B59A             dx 0001, 81F8,F8,210C
 $A8:B5A1             dx 0002, 81F8,00,210C, 81F8,F0,210C
 $A8:B5AD             dx 0003, 81F8,08,210C, 81F8,E8,210C, 81F8,F8,210C
@@ -4485,6 +4516,8 @@ $A8:B67E             dw 4FE0, 3B20, 2A20,
 }
 
 
+;;; $B696..B74D: Instruction lists ;;;
+{
 ;;; $B696: Instruction list - crawling - facing left ;;;
 {
 $A8:B696             dw 817D        ; Disable off-screen processing
@@ -4574,6 +4607,7 @@ $A8:B73A             dw 0005,C0E3,
                         0005,C123,
                         0005,C103,
                         80ED,B73A   ; Go to $B73A
+}
 }
 
 
@@ -4694,6 +4728,8 @@ $A8:B813 6B          RTL
 }
 
 
+;;; $B814..BE2D: Beetom functions ;;;
+{
 ;;; $B814: Beetom function - decide action ;;;
 {
 $A8:B814 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -5519,6 +5555,7 @@ $A8:BE2A 9D AC 0F    STA $0FAC,x            ;} Enemy function = $B97A (start dro
 
 $A8:BE2D 60          RTS
 }
+}
 
 
 ;;; $BE2E: Enemy touch - enemy $E87F (beetom) ;;;
@@ -5636,6 +5673,8 @@ $A8:C143             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 02
 }
 
 
+;;; $C163..9E: Instruction lists ;;;
+{
 ;;; $C163: Instruction list -  ;;;
 {
 $A8:C163             dx 0005,C675,
@@ -5669,6 +5708,7 @@ $A8:C191             dx 0001,C698,
                         0006,C691,
                         00A0,C68A,
                         812F        ; Sleep
+}
 }
 
 
@@ -5704,8 +5744,8 @@ $A8:C1E4 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
 $A8:C1E7 D0 14       BNE $14    [$C1FD]
 $A8:C1E9 A9 3C 00    LDA #$003C
 $A8:C1EC 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A8:C1EF A9 83 C2    LDA #$C283
-$A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C1EF A9 83 C2    LDA #$C283             ;\
+$A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
 $A8:C1F5 A9 73 C1    LDA #$C173             ;\
 $A8:C1F8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173
 $A8:C1FB 80 1E       BRA $1E    [$C21B]
@@ -5714,8 +5754,8 @@ $A8:C1FD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A8:C200 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $A8:C203 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A8:C206 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:C209 A9 68 C5    LDA #$C568
-$A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A8:C209 A9 68 C5    LDA #$C568             ;\
+$A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C568
 $A8:C20F A9 99 C1    LDA #$C199             ;\
 $A8:C212 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $C199
 $A8:C215 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
@@ -5728,7 +5768,7 @@ $A8:C21B 6B          RTL
 ;;; $C21C: Main AI - enemy $E8BF (powamp) ;;;
 {
 $A8:C21C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:C21F 7C B2 0F    JMP ($0FB2,x)[$A8:C568]
+$A8:C21F 7C B2 0F    JMP ($0FB2,x)[$A8:C568]; Go to [enemy function]
 }
 
 
@@ -5796,7 +5836,9 @@ $A8:C27D             dw FFEC, FFF0, FFF4
 }
 
 
-;;; $C283:  ;;;
+;;; $C283..C5BD: Powamp functions ;;;
+{
+;;; $C283: Powamp function -  ;;;
 {
 $A8:C283 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
 $A8:C286 F0 02       BEQ $02    [$C28A]
@@ -5806,8 +5848,8 @@ $A8:C28A A9 01 00    LDA #$0001
 $A8:C28D 9D 54 0F    STA $0F54,x[$7E:0F94]
 $A8:C290 A9 83 C1    LDA #$C183
 $A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]
-$A8:C296 A9 A6 C2    LDA #$C2A6
-$A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C296 A9 A6 C2    LDA #$C2A6             ;\
+$A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2A6
 $A8:C29C A9 0A 00    LDA #$000A
 $A8:C29F 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 
@@ -5816,14 +5858,14 @@ $A8:C2A5 6B          RTL
 }
 
 
-;;; $C2A6:  ;;;
+;;; $C2A6: Powamp function -  ;;;
 {
 $A8:C2A6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
 $A8:C2A9 F0 02       BEQ $02    [$C2AD]
 $A8:C2AB 10 1E       BPL $1E    [$C2CB]
 
-$A8:C2AD A9 CF C2    LDA #$C2CF
-$A8:C2B0 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C2AD A9 CF C2    LDA #$C2CF             ;\
+$A8:C2B0 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2CF
 $A8:C2B3 AD C5 C1    LDA $C1C5  [$A8:C1C5]
 $A8:C2B6 9D A8 0F    STA $0FA8,x[$7E:0FE8]
 $A8:C2B9 AD C7 C1    LDA $C1C7  [$A8:C1C7]
@@ -5838,13 +5880,13 @@ $A8:C2CE 6B          RTL
 }
 
 
-;;; $C2CF:  ;;;
+;;; $C2CF: Powamp function -  ;;;
 {
 $A8:C2CF BD 8A 0F    LDA $0F8A,x[$7E:0FCA]
 $A8:C2D2 89 01 00    BIT #$0001
 $A8:C2D5 F0 09       BEQ $09    [$C2E0]
-$A8:C2D7 A9 E1 C3    LDA #$C3E1
-$A8:C2DA 9D B2 0F    STA $0FB2,x[$7E:1072]
+$A8:C2D7 A9 E1 C3    LDA #$C3E1             ;\
+$A8:C2DA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C3E1
 $A8:C2DD 4C E1 C3    JMP $C3E1  [$A8:C3E1]
 
 $A8:C2E0 DE AE 0F    DEC $0FAE,x[$7E:0FEE]
@@ -5892,12 +5934,12 @@ $A8:C33D BD AC 0F    LDA $0FAC,x[$7E:0FEC]
 $A8:C340 F0 0D       BEQ $0D    [$C34F]
 $A8:C342 C9 06 00    CMP #$0006
 $A8:C345 F0 08       BEQ $08    [$C34F]
-$A8:C347 A9 6B C3    LDA #$C36B
-$A8:C34A 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C347 A9 6B C3    LDA #$C36B             ;\
+$A8:C34A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C36B
 $A8:C34D 80 18       BRA $18    [$C367]
 
-$A8:C34F A9 00 C5    LDA #$C500
-$A8:C352 9D B2 0F    STA $0FB2,x
+$A8:C34F A9 00 C5    LDA #$C500             ;\
+$A8:C352 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
 $A8:C355 A9 0A 00    LDA #$000A
 $A8:C358 9D B0 0F    STA $0FB0,x
 $A8:C35B A9 01 00    LDA #$0001
@@ -5910,7 +5952,7 @@ $A8:C36A 6B          RTL
 }
 
 
-;;; $C36B:  ;;;
+;;; $C36B: Powamp function -  ;;;
 {
 $A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]
 $A8:C36E F0 02       BEQ $02    [$C372]
@@ -5938,8 +5980,8 @@ $A8:C39A A9 00 00    LDA #$0000
 $A8:C39D 9D AC 0F    STA $0FAC,x[$7E:0FEC]
 $A8:C3A0 80 1A       BRA $1A    [$C3BC]
 
-$A8:C3A2 A9 00 C5    LDA #$C500
-$A8:C3A5 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C3A2 A9 00 C5    LDA #$C500             ;\
+$A8:C3A5 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C500
 $A8:C3A8 A9 0A 00    LDA #$000A
 $A8:C3AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 $A8:C3AE A9 01 00    LDA #$0001
@@ -5966,13 +6008,13 @@ $A8:C3E0 6B          RTL
 }
 
 
-;;; $C3E1:  ;;;
+;;; $C3E1: Powamp function -  ;;;
 {
 $A8:C3E1 BD 8A 0F    LDA $0F8A,x[$7E:104A]
 $A8:C3E4 89 01 00    BIT #$0001
 $A8:C3E7 D0 07       BNE $07    [$C3F0]
-$A8:C3E9 A9 6B C3    LDA #$C36B
-$A8:C3EC 9D B2 0F    STA $0FB2,x
+$A8:C3E9 A9 6B C3    LDA #$C36B             ;\
+$A8:C3EC 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C36B
 $A8:C3EF 6B          RTL
 
 $A8:C3F0 DE AE 0F    DEC $0FAE,x[$7E:106E]
@@ -6020,25 +6062,25 @@ $A8:C44D BD AC 0F    LDA $0FAC,x[$7E:106C]
 $A8:C450 F0 0D       BEQ $0D    [$C45F]
 $A8:C452 C9 06 00    CMP #$0006
 $A8:C455 F0 08       BEQ $08    [$C45F]
-$A8:C457 A9 69 C4    LDA #$C469
-$A8:C45A 9D B2 0F    STA $0FB2,x[$7E:1072]
+$A8:C457 A9 69 C4    LDA #$C469             ;\
+$A8:C45A 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C469
 $A8:C45D 80 06       BRA $06    [$C465]
 
-$A8:C45F A9 DC C4    LDA #$C4DC
-$A8:C462 9D B2 0F    STA $0FB2,x
+$A8:C45F A9 DC C4    LDA #$C4DC             ;\
+$A8:C462 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
 
 $A8:C465 20 34 C2    JSR $C234  [$A8:C234]
 $A8:C468 6B          RTL
 }
 
 
-;;; $C469:  ;;;
+;;; $C469: Powamp function -  ;;;
 {
 $A8:C469 BD 8A 0F    LDA $0F8A,x[$7E:104A]
 $A8:C46C 89 01 00    BIT #$0001
 $A8:C46F D0 07       BNE $07    [$C478]
-$A8:C471 A9 6B C3    LDA #$C36B
-$A8:C474 9D B2 0F    STA $0FB2,x[$7E:1072]
+$A8:C471 A9 6B C3    LDA #$C36B             ;\
+$A8:C474 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C36B
 $A8:C477 6B          RTL
 
 $A8:C478 DE AE 0F    DEC $0FAE,x[$7E:106E]
@@ -6067,8 +6109,8 @@ $A8:C4A7 A9 00 00    LDA #$0000
 $A8:C4AA 9D AC 0F    STA $0FAC,x[$7E:106C]
 $A8:C4AD 80 08       BRA $08    [$C4B7]
 
-$A8:C4AF A9 DC C4    LDA #$C4DC
-$A8:C4B2 9D B2 0F    STA $0FB2,x
+$A8:C4AF A9 DC C4    LDA #$C4DC             ;\
+$A8:C4B2 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
 $A8:C4B5 80 21       BRA $21    [$C4D8]
 
 $A8:C4B7 BD AA 0F    LDA $0FAA,x[$7E:106A]
@@ -6089,13 +6131,13 @@ $A8:C4DB 6B          RTL
 }
 
 
-;;; $C4DC:  ;;;
+;;; $C4DC: Powamp function -  ;;;
 {
 $A8:C4DC BD 8A 0F    LDA $0F8A,x
 $A8:C4DF 89 01 00    BIT #$0001
 $A8:C4E2 D0 18       BNE $18    [$C4FC]
-$A8:C4E4 A9 00 C5    LDA #$C500
-$A8:C4E7 9D B2 0F    STA $0FB2,x
+$A8:C4E4 A9 00 C5    LDA #$C500             ;\
+$A8:C4E7 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
 $A8:C4EA A9 0A 00    LDA #$000A
 $A8:C4ED 9D B0 0F    STA $0FB0,x
 $A8:C4F0 A9 01 00    LDA #$0001
@@ -6108,14 +6150,14 @@ $A8:C4FF 6B          RTL
 }
 
 
-;;; $C500:  ;;;
+;;; $C500: Powamp function -  ;;;
 {
 $A8:C500 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
 $A8:C503 F0 02       BEQ $02    [$C507]
 $A8:C505 10 12       BPL $12    [$C519]
 
-$A8:C507 A9 1D C5    LDA #$C51D
-$A8:C50A 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C507 A9 1D C5    LDA #$C51D             ;\
+$A8:C50A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C51D
 $A8:C50D AD C1 C1    LDA $C1C1  [$A8:C1C1]
 $A8:C510 9D A8 0F    STA $0FA8,x[$7E:0FE8]
 $A8:C513 AD C3 C1    LDA $C1C3  [$A8:C1C3]
@@ -6126,7 +6168,7 @@ $A8:C51C 6B          RTL
 }
 
 
-;;; $C51D:  ;;;
+;;; $C51D: Powamp function -  ;;;
 {
 $A8:C51D BD AA 0F    LDA $0FAA,x[$7E:0FEA]
 $A8:C520 18          CLC
@@ -6145,8 +6187,8 @@ $A8:C541 DD 6A 0F    CMP $0F6A,x[$7E:0FAA]
 $A8:C544 30 1E       BMI $1E    [$C564]
 $A8:C546 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]
 $A8:C549 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:C54C A9 83 C2    LDA #$C283
-$A8:C54F 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A8:C54C A9 83 C2    LDA #$C283             ;\
+$A8:C54F 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
 $A8:C552 A9 3C 00    LDA #$003C
 $A8:C555 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 $A8:C558 A9 01 00    LDA #$0001             ;\
@@ -6165,7 +6207,7 @@ $A8:C568 6B          RTL
 }
 
 
-;;; $C569:  ;;;
+;;; $C569: Powamp function -  ;;;
 {
 $A8:C569 BD 52 0F    LDA $0F52,x
 $A8:C56C C9 91 C1    CMP #$C191
@@ -6182,8 +6224,8 @@ $A8:C580 9D 52 0F    STA $0F52,x
 $A8:C583 A9 01 00    LDA #$0001
 $A8:C586 9D 54 0F    STA $0F54,x
 
-$A8:C589 A9 9F C5    LDA #$C59F
-$A8:C58C 9D B2 0F    STA $0FB2,x
+$A8:C589 A9 9F C5    LDA #$C59F             ;\
+$A8:C58C 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C59F
 $A8:C58F A9 20 00    LDA #$0020
 $A8:C592 9D B0 0F    STA $0FB0,x
 $A8:C595 20 34 C2    JSR $C234  [$A8:C234]
@@ -6193,7 +6235,7 @@ $A8:C599             dw C18B, C187, C183
 }
 
 
-;;; $C59F:  ;;;
+;;; $C59F: Powamp function -  ;;;
 {
 $A8:C59F DE B0 0F    DEC $0FB0,x
 $A8:C5A2 F0 02       BEQ $02    [$C5A6]
@@ -6209,6 +6251,7 @@ $A8:C5B9 6B          RTL
 
 $A8:C5BA 20 34 C2    JSR $C234  [$A8:C234]
 $A8:C5BD 6B          RTL
+}
 }
 
 
@@ -6269,8 +6312,8 @@ $A8:C629 9D 4A 0F    STA $0F4A,x
 
 $A8:C62C BD 8C 0F    LDA $0F8C,x
 $A8:C62F D0 0C       BNE $0C    [$C63D]
-$A8:C631 A9 69 C5    LDA #$C569
-$A8:C634 9D B2 0F    STA $0FB2,x
+$A8:C631 A9 69 C5    LDA #$C569             ;\
+$A8:C634 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C569
 $A8:C637 A9 01 00    LDA #$0001
 $A8:C63A 9D B6 0F    STA $0FB6,x
 
