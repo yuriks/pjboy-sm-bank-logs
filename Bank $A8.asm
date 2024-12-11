@@ -5695,18 +5695,33 @@ $A8:C173             dx 0009,C675,
 
 ;;; $C183: Instruction list -  ;;;
 {
-$A8:C183             dx 0001,C68A,
-                        0006,C691,
-                        00A0,C698,
+$A8:C183             dw 0001,C68A
+}
+
+
+;;; $C187: Instruction list -  ;;;
+{
+$A8:C187             dw 0006,C691
+}
+
+
+;;; $C18B: Instruction list -  ;;;
+{
+$A8:C18B             dw 00A0,C698,
                         812F        ; Sleep
 }
 
 
 ;;; $C191: Instruction list -  ;;;
 {
-$A8:C191             dx 0001,C698,
-                        0006,C691,
-                        00A0,C68A,
+$A8:C191             dw 0001,C698,
+                        0006,C691
+}
+
+
+;;; $C199: Instruction list -  ;;;
+{
+$A8:C199             dw 00A0,C68A,
                         812F        ; Sleep
 }
 }
@@ -5718,48 +5733,46 @@ $A8:C19F             dw 0040
 
 $A8:C1A1             dw 0000, 0001, 0002, 0003, 0002, 0001, 0000, FFFF, FFFE, FFFD, FFFE, FFFF
 
-$A8:C1B9             dw 0000
-$A8:C1BB             dw 0000
+$A8:C1B9             dw 0000, 0000
 $A8:C1BD             dw 0000
 $A8:C1BF             dw 0000
 $A8:C1C1             dw 0001
 $A8:C1C3             dw 0000
-$A8:C1C5             dw FFFF
-$A8:C1C7             dw 8000
+$A8:C1C5             dw FFFF, 8000
 }
 
 
 ;;; $C1C9: Initialisation AI - enemy $E8BF (powamp) ;;;
 {
 $A8:C1C9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:C1CC BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A8:C1CF 09 00 20    ORA #$2000
-$A8:C1D2 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A8:C1D5 A9 4D 80    LDA #$804D
-$A8:C1D8 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
+$A8:C1CC BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A8:C1CF 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A8:C1D2 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A8:C1D5 A9 4D 80    LDA #$804D             ;\
+$A8:C1D8 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A8:C1DB A9 01 00    LDA #$0001             ;\
 $A8:C1DE 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$A8:C1E1 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A8:C1E4 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A8:C1E7 D0 14       BNE $14    [$C1FD]
-$A8:C1E9 A9 3C 00    LDA #$003C
-$A8:C1EC 9D B0 0F    STA $0FB0,x[$7E:0FF0]
+$A8:C1E1 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A8:C1E4 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A8:C1E7 D0 14       BNE $14    [$C1FD]     ;} If [enemy parameter 1] = 0: (body)
+$A8:C1E9 A9 3C 00    LDA #$003C             ;\
+$A8:C1EC 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C1EF A9 83 C2    LDA #$C283             ;\
 $A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
 $A8:C1F5 A9 73 C1    LDA #$C173             ;\
 $A8:C1F8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173
 $A8:C1FB 80 1E       BRA $1E    [$C21B]
 
-$A8:C1FD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A8:C200 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A8:C203 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:C206 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$A8:C1FD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\ Else ([enemy parameter 1] != 0): (balloon)
+$A8:C200 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = [enemy X position]
+$A8:C203 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:C206 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [enemy Y position]
 $A8:C209 A9 68 C5    LDA #$C568             ;\
-$A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C568
+$A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTL
 $A8:C20F A9 99 C1    LDA #$C199             ;\
 $A8:C212 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $C199
-$A8:C215 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A8:C218 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:C215 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A8:C218 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy parameter 2]
 
 $A8:C21B 6B          RTL
 }
@@ -5778,56 +5791,58 @@ $A8:C222 6B          RTL
 }
 
 
-;;; $C223:  ;;;
+;;; $C223: Spawn powamp spike enemy projectiles ;;;
 {
-$A8:C223 A0 07 00    LDY #$0007
+$A8:C223 A0 07 00    LDY #$0007             ; Y = 7
 
-$A8:C226 98          TYA
-$A8:C227 5A          PHY
-$A8:C228 A0 98 D2    LDY #$D298
-$A8:C22B 22 27 80 86 JSL $868027[$86:8027]
-$A8:C22F 7A          PLY
-$A8:C230 88          DEY
-$A8:C231 10 F3       BPL $F3    [$C226]
+; LOOP
+$A8:C226 98          TYA                    ;\
+$A8:C227 5A          PHY                    ;|
+$A8:C228 A0 98 D2    LDY #$D298             ;} Spawn powamp spike enemy projectile with parameter [Y] (direction)
+$A8:C22B 22 27 80 86 JSL $868027[$86:8027]  ;|
+$A8:C22F 7A          PLY                    ;/
+$A8:C230 88          DEY                    ; Decrement Y
+$A8:C231 10 F3       BPL $F3    [$C226]     ; If [Y] >= 0: go to LOOP
 $A8:C233 60          RTS
 }
 
 
 ;;; $C234:  ;;;
 {
-$A8:C234 BD 52 0F    LDA $0F52,x[$7E:0F92]
-$A8:C237 C9 91 C1    CMP #$C191
-$A8:C23A 10 1E       BPL $1E    [$C25A]
-$A8:C23C 38          SEC
-$A8:C23D E9 04 00    SBC #$0004
-$A8:C240 38          SEC
-$A8:C241 E9 83 C1    SBC #$C183
-$A8:C244 4A          LSR A
-$A8:C245 C9 06 00    CMP #$0006
-$A8:C248 30 03       BMI $03    [$C24D]
-$A8:C24A A9 00 00    LDA #$0000
+$A8:C234 BD 52 0F    LDA $0F52,x[$7E:0F92]  ; A = [enemy ([X] - 1) instruction list pointer]
+$A8:C237 C9 91 C1    CMP #$C191             ;\
+$A8:C23A 10 1E       BPL $1E    [$C25A]     ;} If [A] >= $C191: go to BRANCH_C25A
+$A8:C23C 38          SEC                    ;\
+$A8:C23D E9 04 00    SBC #$0004             ;|
+$A8:C240 38          SEC                    ;} A = ([A] - 4 - $C183) / 2
+$A8:C241 E9 83 C1    SBC #$C183             ;|
+$A8:C244 4A          LSR A                  ;/
+$A8:C245 C9 06 00    CMP #$0006             ;\
+$A8:C248 30 03       BMI $03    [$C24D]     ;} If [A] >= 6:
+$A8:C24A A9 00 00    LDA #$0000             ; A = 0
 
-$A8:C24D A8          TAY
-$A8:C24E BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:C251 18          CLC
-$A8:C252 79 77 C2    ADC $C277,y[$A8:C277]
-$A8:C255 9D 3E 0F    STA $0F3E,x[$7E:0F7E]
-$A8:C258 80 1C       BRA $1C    [$C276]
+$A8:C24D A8          TAY                    ;\
+$A8:C24E BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;|
+$A8:C251 18          CLC                    ;} Enemy ([X] - 1) Y position = [enemy Y position] + [$C277 + [A]]
+$A8:C252 79 77 C2    ADC $C277,y[$A8:C277]  ;|
+$A8:C255 9D 3E 0F    STA $0F3E,x[$7E:0F7E]  ;/
+$A8:C258 80 1C       BRA $1C    [$C276]     ; Return
 
-$A8:C25A 38          SEC
-$A8:C25B E9 04 00    SBC #$0004
-$A8:C25E 38          SEC
-$A8:C25F E9 91 C1    SBC #$C191
-$A8:C262 4A          LSR A
-$A8:C263 C9 06 00    CMP #$0006
-$A8:C266 30 03       BMI $03    [$C26B]
-$A8:C268 A9 00 00    LDA #$0000
+; BRANCH_C25A
+$A8:C25A 38          SEC                    ;\
+$A8:C25B E9 04 00    SBC #$0004             ;|
+$A8:C25E 38          SEC                    ;} A = ([A] - 4 - $C191) / 2
+$A8:C25F E9 91 C1    SBC #$C191             ;|
+$A8:C262 4A          LSR A                  ;/
+$A8:C263 C9 06 00    CMP #$0006             ;\
+$A8:C266 30 03       BMI $03    [$C26B]     ;} If [A] >= 6:
+$A8:C268 A9 00 00    LDA #$0000             ; A = 0
 
-$A8:C26B A8          TAY
-$A8:C26C BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:C26F 18          CLC
-$A8:C270 79 7D C2    ADC $C27D,y[$A8:C281]
-$A8:C273 9D 3E 0F    STA $0F3E,x[$7E:0F7E]
+$A8:C26B A8          TAY                    ;\
+$A8:C26C BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;|
+$A8:C26F 18          CLC                    ;} Enemy ([X] - 1) Y position = [enemy Y position] + [$C27D + [A]]
+$A8:C270 79 7D C2    ADC $C27D,y[$A8:C281]  ;|
+$A8:C273 9D 3E 0F    STA $0F3E,x[$7E:0F7E]  ;/
 
 $A8:C276 60          RTS
 
@@ -5840,36 +5855,36 @@ $A8:C27D             dw FFEC, FFF0, FFF4
 {
 ;;; $C283: Powamp function -  ;;;
 {
-$A8:C283 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A8:C286 F0 02       BEQ $02    [$C28A]
-$A8:C288 10 18       BPL $18    [$C2A2]
+$A8:C283 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
+$A8:C286 F0 02       BEQ $02    [$C28A]     ;\
+$A8:C288 10 18       BPL $18    [$C2A2]     ;} If [enemy function timer] <= 0:
 
-$A8:C28A A9 01 00    LDA #$0001
-$A8:C28D 9D 54 0F    STA $0F54,x[$7E:0F94]
-$A8:C290 A9 83 C1    LDA #$C183
-$A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]
+$A8:C28A A9 01 00    LDA #$0001             ;\
+$A8:C28D 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer = 1
+$A8:C290 A9 83 C1    LDA #$C183             ;\
+$A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C183
 $A8:C296 A9 A6 C2    LDA #$C2A6             ;\
 $A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2A6
-$A8:C29C A9 0A 00    LDA #$000A
-$A8:C29F 9D B0 0F    STA $0FB0,x[$7E:0FF0]
+$A8:C29C A9 0A 00    LDA #$000A             ;\
+$A8:C29F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
 
-$A8:C2A2 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C2A2 20 34 C2    JSR $C234  [$A8:C234]  ; Execute $C234
 $A8:C2A5 6B          RTL
 }
 
 
 ;;; $C2A6: Powamp function -  ;;;
 {
-$A8:C2A6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A8:C2A9 F0 02       BEQ $02    [$C2AD]
-$A8:C2AB 10 1E       BPL $1E    [$C2CB]
+$A8:C2A6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
+$A8:C2A9 F0 02       BEQ $02    [$C2AD]     ;\
+$A8:C2AB 10 1E       BPL $1E    [$C2CB]     ;} If [enemy function timer] <= 0:
 
 $A8:C2AD A9 CF C2    LDA #$C2CF             ;\
 $A8:C2B0 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2CF
-$A8:C2B3 AD C5 C1    LDA $C1C5  [$A8:C1C5]
-$A8:C2B6 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A8:C2B9 AD C7 C1    LDA $C1C7  [$A8:C1C7]
-$A8:C2BC 9D AA 0F    STA $0FAA,x[$7E:0FEA]
+$A8:C2B3 AD C5 C1    LDA $C1C5  [$A8:C1C5]  ;\
+$A8:C2B6 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;|
+$A8:C2B9 AD C7 C1    LDA $C1C7  [$A8:C1C7]  ;} Enemy Y velocity = -0.8000h
+$A8:C2BC 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A8:C2BF A9 01 00    LDA #$0001             ;\
 $A8:C2C2 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A8:C2C5 A9 63 C1    LDA #$C163             ;\
@@ -5889,9 +5904,9 @@ $A8:C2D7 A9 E1 C3    LDA #$C3E1             ;\
 $A8:C2DA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C3E1
 $A8:C2DD 4C E1 C3    JMP $C3E1  [$A8:C3E1]
 
-$A8:C2E0 DE AE 0F    DEC $0FAE,x[$7E:0FEE]
-$A8:C2E3 F0 02       BEQ $02    [$C2E7]
-$A8:C2E5 10 27       BPL $27    [$C30E]
+$A8:C2E0 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy $0FAE
+$A8:C2E3 F0 02       BEQ $02    [$C2E7]     ;\
+$A8:C2E5 10 27       BPL $27    [$C30E]     ;} If [enemy $0FAE] > 0: go to BRANCH_C30E
 
 $A8:C2E7 A9 05 00    LDA #$0005
 $A8:C2EA 9D AE 0F    STA $0FAE,x[$7E:0FEE]
@@ -5911,13 +5926,14 @@ $A8:C308 A9 00 00    LDA #$0000
 
 $A8:C30B 9D AC 0F    STA $0FAC,x[$7E:0FEC]
 
-$A8:C30E BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:C311 18          CLC
-$A8:C312 6D BB C1    ADC $C1BB  [$A8:C1BB]
-$A8:C315 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A8:C318 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A8:C31B 6D B9 C1    ADC $C1B9  [$A8:C1B9]
-$A8:C31E 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+; BRANCH_C30E
+$A8:C30E BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:C311 18          CLC                    ;|
+$A8:C312 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
+$A8:C315 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
+$A8:C318 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
+$A8:C31B 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
+$A8:C31E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $A8:C321 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
 $A8:C324 85 14       STA $14    [$7E:0014]  ;|
 $A8:C326 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
@@ -5940,12 +5956,12 @@ $A8:C34D 80 18       BRA $18    [$C367]
 
 $A8:C34F A9 00 C5    LDA #$C500             ;\
 $A8:C352 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
-$A8:C355 A9 0A 00    LDA #$000A
-$A8:C358 9D B0 0F    STA $0FB0,x
-$A8:C35B A9 01 00    LDA #$0001
-$A8:C35E 9D 54 0F    STA $0F54,x
-$A8:C361 A9 91 C1    LDA #$C191
-$A8:C364 9D 52 0F    STA $0F52,x
+$A8:C355 A9 0A 00    LDA #$000A             ;\
+$A8:C358 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
+$A8:C35B A9 01 00    LDA #$0001             ;\
+$A8:C35E 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
+$A8:C361 A9 91 C1    LDA #$C191             ;\
+$A8:C364 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191
 
 $A8:C367 20 34 C2    JSR $C234  [$A8:C234]
 $A8:C36A 6B          RTL
@@ -5954,9 +5970,9 @@ $A8:C36A 6B          RTL
 
 ;;; $C36B: Powamp function -  ;;;
 {
-$A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]
-$A8:C36E F0 02       BEQ $02    [$C372]
-$A8:C370 10 4A       BPL $4A    [$C3BC]
+$A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy $0FAE
+$A8:C36E F0 02       BEQ $02    [$C372]     ;\
+$A8:C370 10 4A       BPL $4A    [$C3BC]     ;} If [enemy $0FAE] > 0: go to BRANCH_C3BC
 
 $A8:C372 A9 05 00    LDA #$0005
 $A8:C375 9D AE 0F    STA $0FAE,x[$7E:0FEE]
@@ -5982,21 +5998,22 @@ $A8:C3A0 80 1A       BRA $1A    [$C3BC]
 
 $A8:C3A2 A9 00 C5    LDA #$C500             ;\
 $A8:C3A5 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C500
-$A8:C3A8 A9 0A 00    LDA #$000A
-$A8:C3AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A8:C3AE A9 01 00    LDA #$0001
-$A8:C3B1 9D 54 0F    STA $0F54,x[$7E:0F94]
-$A8:C3B4 A9 91 C1    LDA #$C191
-$A8:C3B7 9D 52 0F    STA $0F52,x[$7E:0F92]
+$A8:C3A8 A9 0A 00    LDA #$000A             ;\
+$A8:C3AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
+$A8:C3AE A9 01 00    LDA #$0001             ;\
+$A8:C3B1 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer = 1
+$A8:C3B4 A9 91 C1    LDA #$C191             ;\
+$A8:C3B7 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C191
 $A8:C3BA 80 21       BRA $21    [$C3DD]
 
-$A8:C3BC BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:C3BF 18          CLC
-$A8:C3C0 6D BB C1    ADC $C1BB  [$A8:C1BB]
-$A8:C3C3 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A8:C3C6 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A8:C3C9 6D B9 C1    ADC $C1B9  [$A8:C1B9]
-$A8:C3CC 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+; BRANCH_C3BC
+$A8:C3BC BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:C3BF 18          CLC                    ;|
+$A8:C3C0 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
+$A8:C3C3 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
+$A8:C3C6 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
+$A8:C3C9 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
+$A8:C3CC 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $A8:C3CF BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
 $A8:C3D2 85 14       STA $14    [$7E:0014]  ;|
 $A8:C3D4 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
@@ -6039,13 +6056,13 @@ $A8:C418 A9 00 00    LDA #$0000
 
 $A8:C41B 9D AC 0F    STA $0FAC,x[$7E:106C]
 
-$A8:C41E BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A8:C421 18          CLC
-$A8:C422 6D BB C1    ADC $C1BB  [$A8:C1BB]
-$A8:C425 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A8:C428 BD A8 0F    LDA $0FA8,x[$7E:1068]
-$A8:C42B 6D B9 C1    ADC $C1B9  [$A8:C1B9]
-$A8:C42E 9D A8 0F    STA $0FA8,x[$7E:1068]
+$A8:C41E BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A8:C421 18          CLC                    ;|
+$A8:C422 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
+$A8:C425 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy Y velocity += 0.0 >_<;
+$A8:C428 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;|
+$A8:C42B 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
+$A8:C42E 9D A8 0F    STA $0FA8,x[$7E:1068]  ;/
 $A8:C431 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
 $A8:C434 85 14       STA $14    [$7E:0014]  ;|
 $A8:C436 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y velocity]
@@ -6113,13 +6130,13 @@ $A8:C4AF A9 DC C4    LDA #$C4DC             ;\
 $A8:C4B2 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
 $A8:C4B5 80 21       BRA $21    [$C4D8]
 
-$A8:C4B7 BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A8:C4BA 18          CLC
-$A8:C4BB 6D BB C1    ADC $C1BB  [$A8:C1BB]
-$A8:C4BE 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A8:C4C1 BD A8 0F    LDA $0FA8,x[$7E:1068]
-$A8:C4C4 6D B9 C1    ADC $C1B9  [$A8:C1B9]
-$A8:C4C7 9D A8 0F    STA $0FA8,x[$7E:1068]
+$A8:C4B7 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A8:C4BA 18          CLC                    ;|
+$A8:C4BB 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
+$A8:C4BE 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy Y velocity += 0.0 >_<;
+$A8:C4C1 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;|
+$A8:C4C4 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
+$A8:C4C7 9D A8 0F    STA $0FA8,x[$7E:1068]  ;/
 $A8:C4CA BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
 $A8:C4CD 85 14       STA $14    [$7E:0014]  ;|
 $A8:C4CF BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y velocity]
@@ -6138,12 +6155,12 @@ $A8:C4DF 89 01 00    BIT #$0001
 $A8:C4E2 D0 18       BNE $18    [$C4FC]
 $A8:C4E4 A9 00 C5    LDA #$C500             ;\
 $A8:C4E7 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
-$A8:C4EA A9 0A 00    LDA #$000A
-$A8:C4ED 9D B0 0F    STA $0FB0,x
-$A8:C4F0 A9 01 00    LDA #$0001
-$A8:C4F3 9D 54 0F    STA $0F54,x
-$A8:C4F6 A9 91 C1    LDA #$C191
-$A8:C4F9 9D 52 0F    STA $0F52,x
+$A8:C4EA A9 0A 00    LDA #$000A             ;\
+$A8:C4ED 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
+$A8:C4F0 A9 01 00    LDA #$0001             ;\
+$A8:C4F3 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
+$A8:C4F6 A9 91 C1    LDA #$C191             ;\
+$A8:C4F9 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191
 
 $A8:C4FC 20 34 C2    JSR $C234  [$A8:C234]
 $A8:C4FF 6B          RTL
@@ -6152,9 +6169,9 @@ $A8:C4FF 6B          RTL
 
 ;;; $C500: Powamp function -  ;;;
 {
-$A8:C500 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A8:C503 F0 02       BEQ $02    [$C507]
-$A8:C505 10 12       BPL $12    [$C519]
+$A8:C500 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
+$A8:C503 F0 02       BEQ $02    [$C507]     ;\
+$A8:C505 10 12       BPL $12    [$C519]     ;} If [enemy function timer] <= 0:
 
 $A8:C507 A9 1D C5    LDA #$C51D             ;\
 $A8:C50A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C51D
@@ -6189,8 +6206,8 @@ $A8:C546 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]
 $A8:C549 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
 $A8:C54C A9 83 C2    LDA #$C283             ;\
 $A8:C54F 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
-$A8:C552 A9 3C 00    LDA #$003C
-$A8:C555 9D B0 0F    STA $0FB0,x[$7E:0FF0]
+$A8:C552 A9 3C 00    LDA #$003C             ;\
+$A8:C555 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C558 A9 01 00    LDA #$0001             ;\
 $A8:C55B 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A8:C55E A9 73 C1    LDA #$C173             ;\
@@ -6218,16 +6235,16 @@ $A8:C575 38          SEC
 $A8:C576 E9 91 C1    SBC #$C191
 $A8:C579 4A          LSR A
 $A8:C57A F0 0D       BEQ $0D    [$C589]
-$A8:C57C A8          TAY
-$A8:C57D B9 99 C5    LDA $C599,y
-$A8:C580 9D 52 0F    STA $0F52,x
-$A8:C583 A9 01 00    LDA #$0001
-$A8:C586 9D 54 0F    STA $0F54,x
+$A8:C57C A8          TAY                    ;\
+$A8:C57D B9 99 C5    LDA $C599,y            ;} Enemy ([X] - 1) instruction list pointer = [$C599 + [A]]
+$A8:C580 9D 52 0F    STA $0F52,x            ;/
+$A8:C583 A9 01 00    LDA #$0001             ;\
+$A8:C586 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
 
 $A8:C589 A9 9F C5    LDA #$C59F             ;\
 $A8:C58C 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C59F
-$A8:C58F A9 20 00    LDA #$0020
-$A8:C592 9D B0 0F    STA $0FB0,x
+$A8:C58F A9 20 00    LDA #$0020             ;\
+$A8:C592 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = 20h
 $A8:C595 20 34 C2    JSR $C234  [$A8:C234]
 $A8:C598 6B          RTL
 
@@ -6237,15 +6254,15 @@ $A8:C599             dw C18B, C187, C183
 
 ;;; $C59F: Powamp function -  ;;;
 {
-$A8:C59F DE B0 0F    DEC $0FB0,x
-$A8:C5A2 F0 02       BEQ $02    [$C5A6]
-$A8:C5A4 10 14       BPL $14    [$C5BA]
+$A8:C59F DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A8:C5A2 F0 02       BEQ $02    [$C5A6]     ;\
+$A8:C5A4 10 14       BPL $14    [$C5BA]     ;} If [enemy function timer] <= 0:
 
 $A8:C5A6 9E 4C 0F    STZ $0F4C,x
 $A8:C5A9 BD 46 0F    LDA $0F46,x
 $A8:C5AC 09 00 02    ORA #$0200
 $A8:C5AF 9D 46 0F    STA $0F46,x
-$A8:C5B2 20 23 C2    JSR $C223  [$A8:C223]
+$A8:C5B2 20 23 C2    JSR $C223  [$A8:C223]  ; Spawn powamp spike enemy projectiles
 $A8:C5B5 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A8:C5B9 6B          RTL
 
@@ -6258,25 +6275,25 @@ $A8:C5BD 6B          RTL
 ;;; $C5BE: Enemy touch - enemy $E8BF (powamp) ;;;
 {
 $A8:C5BE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:C5C1 BD B6 0F    LDA $0FB6,x[$7E:1076]
-$A8:C5C4 D0 28       BNE $28    [$C5EE]
-$A8:C5C6 BD 96 0F    LDA $0F96,x[$7E:1056]
-$A8:C5C9 48          PHA
+$A8:C5C1 BD B6 0F    LDA $0FB6,x[$7E:1076]  ;\
+$A8:C5C4 D0 28       BNE $28    [$C5EE]     ;} If [enemy parameter 2] != 0 (body): return
+$A8:C5C6 BD 96 0F    LDA $0F96,x[$7E:1056]  ;\
+$A8:C5C9 48          PHA                    ;} A = [enemy palette index]
 $A8:C5CA 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A8:C5CE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:C5D1 BD 8C 0F    LDA $0F8C,x[$7E:104C]
-$A8:C5D4 F0 02       BEQ $02    [$C5D8]
-$A8:C5D6 68          PLA
-$A8:C5D7 6B          RTL
+$A8:C5D1 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
+$A8:C5D4 F0 02       BEQ $02    [$C5D8]     ;} If [enemy health] != 0:
+$A8:C5D6 68          PLA                    ;\
+$A8:C5D7 6B          RTL                    ;} Return
 
-$A8:C5D8 BD 46 0F    LDA $0F46,x
-$A8:C5DB 09 00 02    ORA #$0200
-$A8:C5DE 9D 46 0F    STA $0F46,x
-$A8:C5E1 68          PLA
-$A8:C5E2 9D 96 0F    STA $0F96,x
-$A8:C5E5 20 23 C2    JSR $C223  [$A8:C223]
-$A8:C5E8 A9 00 0A    LDA #$0A00
-$A8:C5EB 9D 96 0F    STA $0F96,x
+$A8:C5D8 BD 46 0F    LDA $0F46,x            ;\
+$A8:C5DB 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$A8:C5DE 9D 46 0F    STA $0F46,x            ;/
+$A8:C5E1 68          PLA                    ;\
+$A8:C5E2 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [A]
+$A8:C5E5 20 23 C2    JSR $C223  [$A8:C223]  ; Spawn powamp spike enemy projectiles
+$A8:C5E8 A9 00 0A    LDA #$0A00             ;\
+$A8:C5EB 9D 96 0F    STA $0F96,x            ;} Enemy palette index = A00h (palette 5)
 
 $A8:C5EE 6B          RTL
 }
@@ -6286,36 +6303,36 @@ $A8:C5EE 6B          RTL
 {
 $A8:C5EF 8B          PHB
 $A8:C5F0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:C5F3 BD B6 0F    LDA $0FB6,x
-$A8:C5F6 F0 02       BEQ $02    [$C5FA]
+$A8:C5F3 BD B6 0F    LDA $0FB6,x            ;\
+$A8:C5F6 F0 02       BEQ $02    [$C5FA]     ;} If [enemy parameter 2] != 0 (body):
 $A8:C5F8 AB          PLB
-$A8:C5F9 6B          RTL
+$A8:C5F9 6B          RTL                    ; Return
 
 $A8:C5FA 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
-$A8:C5FE BD 8A 0F    LDA $0F8A,x
-$A8:C601 89 04 00    BIT #$0004
-$A8:C604 F0 0F       BEQ $0F    [$C615]
-$A8:C606 BD 9E 0F    LDA $0F9E,x
-$A8:C609 9D 5E 0F    STA $0F5E,x
-$A8:C60C BD 4A 0F    LDA $0F4A,x
-$A8:C60F 09 04 00    ORA #$0004
-$A8:C612 9D 4A 0F    STA $0F4A,x
+$A8:C5FE BD 8A 0F    LDA $0F8A,x            ;\
+$A8:C601 89 04 00    BIT #$0004             ;} If [enemy AI handler] & 4 (frozen AI) != 0:
+$A8:C604 F0 0F       BEQ $0F    [$C615]     ;/
+$A8:C606 BD 9E 0F    LDA $0F9E,x            ;\
+$A8:C609 9D 5E 0F    STA $0F5E,x            ;} Enemy ([X] - 1) frozen timer = [enemy frozen timer]
+$A8:C60C BD 4A 0F    LDA $0F4A,x            ;\
+$A8:C60F 09 04 00    ORA #$0004             ;} Set enemy ([X] - 1) frozen AI
+$A8:C612 9D 4A 0F    STA $0F4A,x            ;/
 
-$A8:C615 BD 8A 0F    LDA $0F8A,x
-$A8:C618 89 02 00    BIT #$0002
-$A8:C61B F0 0F       BEQ $0F    [$C62C]
-$A8:C61D BD 9C 0F    LDA $0F9C,x
-$A8:C620 9D 5C 0F    STA $0F5C,x
-$A8:C623 BD 4A 0F    LDA $0F4A,x
-$A8:C626 09 02 00    ORA #$0002
-$A8:C629 9D 4A 0F    STA $0F4A,x
+$A8:C615 BD 8A 0F    LDA $0F8A,x            ;\
+$A8:C618 89 02 00    BIT #$0002             ;} If [enemy AI handler] & 2 (hurt AI) != 0:
+$A8:C61B F0 0F       BEQ $0F    [$C62C]     ;/
+$A8:C61D BD 9C 0F    LDA $0F9C,x            ;\
+$A8:C620 9D 5C 0F    STA $0F5C,x            ;} Enemy ([X] - 1) flash timer = [enemy flash timer]
+$A8:C623 BD 4A 0F    LDA $0F4A,x            ;\
+$A8:C626 09 02 00    ORA #$0002             ;} Set enemy ([X] - 1) hurt AI
+$A8:C629 9D 4A 0F    STA $0F4A,x            ;/
 
-$A8:C62C BD 8C 0F    LDA $0F8C,x
-$A8:C62F D0 0C       BNE $0C    [$C63D]
+$A8:C62C BD 8C 0F    LDA $0F8C,x            ;\
+$A8:C62F D0 0C       BNE $0C    [$C63D]     ;} If [enemy health] = 0:
 $A8:C631 A9 69 C5    LDA #$C569             ;\
 $A8:C634 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C569
-$A8:C637 A9 01 00    LDA #$0001
-$A8:C63A 9D B6 0F    STA $0FB6,x
+$A8:C637 A9 01 00    LDA #$0001             ;\
+$A8:C63A 9D B6 0F    STA $0FB6,x            ;} Enemy parameter 2 = 1
 
 $A8:C63D AB          PLB
 $A8:C63E 6B          RTL
@@ -6324,7 +6341,6 @@ $A8:C63E 6B          RTL
 
 ;;; $C63F: Power bomb reaction - enemy $E8BF (powamp) ;;;
 {
-; TODO: This routine modifies the previous enemy... need to check if that's sane
 $A8:C63F 22 37 80 A8 JSL $A88037[$A8:8037]  ; Normal enemy power bomb AI
 $A8:C643 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:C646 BD 8C 0F    LDA $0F8C,x            ;\
