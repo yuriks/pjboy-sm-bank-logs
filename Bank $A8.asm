@@ -5675,7 +5675,7 @@ $A8:C143             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 02
 
 ;;; $C163..9E: Instruction lists ;;;
 {
-;;; $C163: Instruction list -  ;;;
+;;; $C163: Instruction list - body - fast ;;;
 {
 $A8:C163             dx 0005,C675,
                         0005,C67C,
@@ -5684,7 +5684,7 @@ $A8:C163             dx 0005,C675,
 }
 
 
-;;; $C173: Instruction list -  ;;;
+;;; $C173: Instruction list - body - slow ;;;
 {
 $A8:C173             dx 0009,C675,
                         0009,C67C,
@@ -5693,33 +5693,23 @@ $A8:C173             dx 0009,C675,
 }
 
 
-;;; $C183: Instruction list -  ;;;
+;;; $C183: Instruction list - balloon - inflate ;;;
 {
 $A8:C183             dw 0001,C68A
-}
-
-
-;;; $C187: Instruction list -  ;;;
-{
 $A8:C187             dw 0006,C691
-}
-
-
-;;; $C18B: Instruction list -  ;;;
-{
 $A8:C18B             dw 00A0,C698,
                         812F        ; Sleep
 }
 
 
-;;; $C191: Instruction list -  ;;;
+;;; $C191: Instruction list - balloon - deflate ;;;
 {
 $A8:C191             dw 0001,C698,
                         0006,C691
 }
 
 
-;;; $C199: Instruction list -  ;;;
+;;; $C199: Instruction list - balloon - initial ;;;
 {
 $A8:C199             dw 00A0,C68A,
                         812F        ; Sleep
@@ -5760,17 +5750,17 @@ $A8:C1EC 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C1EF A9 83 C2    LDA #$C283             ;\
 $A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
 $A8:C1F5 A9 73 C1    LDA #$C173             ;\
-$A8:C1F8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173
+$A8:C1F8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173 (body - slow)
 $A8:C1FB 80 1E       BRA $1E    [$C21B]
 
 $A8:C1FD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\ Else ([enemy parameter 1] != 0): (balloon)
-$A8:C200 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = [enemy X position]
+$A8:C200 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy spawn X position = [enemy X position]
 $A8:C203 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:C206 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [enemy Y position]
+$A8:C206 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy spawn Y position = [enemy Y position]
 $A8:C209 A9 68 C5    LDA #$C568             ;\
 $A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTL
 $A8:C20F A9 99 C1    LDA #$C199             ;\
-$A8:C212 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $C199
+$A8:C212 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $C199 (balloon - initial)
 $A8:C215 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A8:C218 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy parameter 2]
 
@@ -5807,14 +5797,14 @@ $A8:C233 60          RTS
 }
 
 
-;;; $C234:  ;;;
+;;; $C234: Set powamp balloon Y position ;;;
 {
 $A8:C234 BD 52 0F    LDA $0F52,x[$7E:0F92]  ; A = [enemy ([X] - 1) instruction list pointer]
 $A8:C237 C9 91 C1    CMP #$C191             ;\
-$A8:C23A 10 1E       BPL $1E    [$C25A]     ;} If [A] >= $C191: go to BRANCH_C25A
+$A8:C23A 10 1E       BPL $1E    [$C25A]     ;} If [A] >= $C191 (balloon - deflate): go to BRANCH_DEFLATE
 $A8:C23C 38          SEC                    ;\
 $A8:C23D E9 04 00    SBC #$0004             ;|
-$A8:C240 38          SEC                    ;} A = ([A] - 4 - $C183) / 2
+$A8:C240 38          SEC                    ;} A = ([A] - 4 - $C183) / 2 (animation frame into inflate instruction list * 2)
 $A8:C241 E9 83 C1    SBC #$C183             ;|
 $A8:C244 4A          LSR A                  ;/
 $A8:C245 C9 06 00    CMP #$0006             ;\
@@ -5828,10 +5818,10 @@ $A8:C252 79 77 C2    ADC $C277,y[$A8:C277]  ;|
 $A8:C255 9D 3E 0F    STA $0F3E,x[$7E:0F7E]  ;/
 $A8:C258 80 1C       BRA $1C    [$C276]     ; Return
 
-; BRANCH_C25A
+; BRANCH_DEFLATE
 $A8:C25A 38          SEC                    ;\
 $A8:C25B E9 04 00    SBC #$0004             ;|
-$A8:C25E 38          SEC                    ;} A = ([A] - 4 - $C191) / 2
+$A8:C25E 38          SEC                    ;} A = ([A] - 4 - $C191) / 2 (animation frame into deflate instruction list * 2)
 $A8:C25F E9 91 C1    SBC #$C191             ;|
 $A8:C262 4A          LSR A                  ;/
 $A8:C263 C9 06 00    CMP #$0006             ;\
@@ -5846,14 +5836,15 @@ $A8:C273 9D 3E 0F    STA $0F3E,x[$7E:0F7E]  ;/
 
 $A8:C276 60          RTS
 
-$A8:C277             dw FFF4, FFF0, FFEC
-$A8:C27D             dw FFEC, FFF0, FFF4
+; Balloon Y offsets. Indexed by animation frame into inflate/deflate instruction list
+$A8:C277             dw FFF4, FFF0, FFEC ; Inflate
+$A8:C27D             dw FFEC, FFF0, FFF4 ; Deflate
 }
 
 
 ;;; $C283..C5BD: Powamp functions ;;;
 {
-;;; $C283: Powamp function -  ;;;
+;;; $C283: Powamp function - body - deflated - resting ;;;
 {
 $A8:C283 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C286 F0 02       BEQ $02    [$C28A]     ;\
@@ -5862,18 +5853,18 @@ $A8:C288 10 18       BPL $18    [$C2A2]     ;} If [enemy function timer] <= 0:
 $A8:C28A A9 01 00    LDA #$0001             ;\
 $A8:C28D 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer = 1
 $A8:C290 A9 83 C1    LDA #$C183             ;\
-$A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C183
+$A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C183 (balloon - inflate)
 $A8:C296 A9 A6 C2    LDA #$C2A6             ;\
 $A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2A6
 $A8:C29C A9 0A 00    LDA #$000A             ;\
 $A8:C29F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
 
-$A8:C2A2 20 34 C2    JSR $C234  [$A8:C234]  ; Execute $C234
+$A8:C2A2 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C2A5 6B          RTL
 }
 
 
-;;; $C2A6: Powamp function -  ;;;
+;;; $C2A6: Powamp function - body - inflating ;;;
 {
 $A8:C2A6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C2A9 F0 02       BEQ $02    [$C2AD]     ;\
@@ -5888,14 +5879,14 @@ $A8:C2BC 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A8:C2BF A9 01 00    LDA #$0001             ;\
 $A8:C2C2 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A8:C2C5 A9 63 C1    LDA #$C163             ;\
-$A8:C2C8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C163
+$A8:C2C8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C163 (body - fast)
 
-$A8:C2CB 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C2CB 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C2CE 6B          RTL
 }
 
 
-;;; $C2CF: Powamp function -  ;;;
+;;; $C2CF: Powamp function - body - inflated -  ;;;
 {
 $A8:C2CF BD 8A 0F    LDA $0F8A,x[$7E:0FCA]
 $A8:C2D2 89 01 00    BIT #$0001
@@ -5961,14 +5952,14 @@ $A8:C358 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
 $A8:C35B A9 01 00    LDA #$0001             ;\
 $A8:C35E 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
 $A8:C361 A9 91 C1    LDA #$C191             ;\
-$A8:C364 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191
+$A8:C364 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191 (balloon - deflate)
 
-$A8:C367 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C367 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C36A 6B          RTL
 }
 
 
-;;; $C36B: Powamp function -  ;;;
+;;; $C36B: Powamp function - body - inflated -  ;;;
 {
 $A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy $0FAE
 $A8:C36E F0 02       BEQ $02    [$C372]     ;\
@@ -6003,7 +5994,7 @@ $A8:C3AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
 $A8:C3AE A9 01 00    LDA #$0001             ;\
 $A8:C3B1 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer = 1
 $A8:C3B4 A9 91 C1    LDA #$C191             ;\
-$A8:C3B7 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C191
+$A8:C3B7 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C191 (balloon - deflate)
 $A8:C3BA 80 21       BRA $21    [$C3DD]
 
 ; BRANCH_C3BC
@@ -6020,12 +6011,12 @@ $A8:C3D4 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y veloc
 $A8:C3D7 85 12       STA $12    [$7E:0012]  ;|
 $A8:C3D9 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
-$A8:C3DD 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C3DD 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C3E0 6B          RTL
 }
 
 
-;;; $C3E1: Powamp function -  ;;;
+;;; $C3E1: Powamp function - body - grappled - rising -  ;;;
 {
 $A8:C3E1 BD 8A 0F    LDA $0F8A,x[$7E:104A]
 $A8:C3E4 89 01 00    BIT #$0001
@@ -6086,12 +6077,12 @@ $A8:C45D 80 06       BRA $06    [$C465]
 $A8:C45F A9 DC C4    LDA #$C4DC             ;\
 $A8:C462 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
 
-$A8:C465 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C465 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C468 6B          RTL
 }
 
 
-;;; $C469: Powamp function -  ;;;
+;;; $C469: Powamp function - body - grappled - rising -  ;;;
 {
 $A8:C469 BD 8A 0F    LDA $0F8A,x[$7E:104A]
 $A8:C46C 89 01 00    BIT #$0001
@@ -6143,12 +6134,12 @@ $A8:C4CF BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y veloc
 $A8:C4D2 85 12       STA $12    [$7E:0012]  ;|
 $A8:C4D4 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
-$A8:C4D8 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C4D8 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C4DB 6B          RTL
 }
 
 
-;;; $C4DC: Powamp function -  ;;;
+;;; $C4DC: Powamp function - body - grappled - resting ;;;
 {
 $A8:C4DC BD 8A 0F    LDA $0F8A,x
 $A8:C4DF 89 01 00    BIT #$0001
@@ -6160,14 +6151,14 @@ $A8:C4ED 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
 $A8:C4F0 A9 01 00    LDA #$0001             ;\
 $A8:C4F3 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
 $A8:C4F6 A9 91 C1    LDA #$C191             ;\
-$A8:C4F9 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191
+$A8:C4F9 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191 (balloon - deflate)
 
-$A8:C4FC 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C4FC 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C4FF 6B          RTL
 }
 
 
-;;; $C500: Powamp function -  ;;;
+;;; $C500: Powamp function - body - deflating ;;;
 {
 $A8:C500 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C503 F0 02       BEQ $02    [$C507]     ;\
@@ -6180,12 +6171,12 @@ $A8:C510 9D A8 0F    STA $0FA8,x[$7E:0FE8]
 $A8:C513 AD C3 C1    LDA $C1C3  [$A8:C1C3]
 $A8:C516 9D AA 0F    STA $0FAA,x[$7E:0FEA]
 
-$A8:C519 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C519 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C51C 6B          RTL
 }
 
 
-;;; $C51D: Powamp function -  ;;;
+;;; $C51D: Powamp function - body - deflated - sinking ;;;
 {
 $A8:C51D BD AA 0F    LDA $0FAA,x[$7E:0FEA]
 $A8:C520 18          CLC
@@ -6211,9 +6202,9 @@ $A8:C555 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C558 A9 01 00    LDA #$0001             ;\
 $A8:C55B 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A8:C55E A9 73 C1    LDA #$C173             ;\
-$A8:C561 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173
+$A8:C561 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173 (body - slow)
 
-$A8:C564 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C564 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C567 6B          RTL
 }
 
@@ -6224,17 +6215,17 @@ $A8:C568 6B          RTL
 }
 
 
-;;; $C569: Powamp function -  ;;;
+;;; $C569: Powamp function - body - fatal damage ;;;
 {
-$A8:C569 BD 52 0F    LDA $0F52,x
-$A8:C56C C9 91 C1    CMP #$C191
-$A8:C56F 30 18       BMI $18    [$C589]
-$A8:C571 38          SEC
-$A8:C572 E9 04 00    SBC #$0004
-$A8:C575 38          SEC
-$A8:C576 E9 91 C1    SBC #$C191
-$A8:C579 4A          LSR A
-$A8:C57A F0 0D       BEQ $0D    [$C589]
+$A8:C569 BD 52 0F    LDA $0F52,x            ; A = [enemy ([X] - 1) instruction list pointer]
+$A8:C56C C9 91 C1    CMP #$C191             ;\
+$A8:C56F 30 18       BMI $18    [$C589]     ;} If [A] >= $C191 (balloon - deflate):
+$A8:C571 38          SEC                    ;\
+$A8:C572 E9 04 00    SBC #$0004             ;|
+$A8:C575 38          SEC                    ;} A = ([A] - 4 - $C191) / 2 (animation frame into deflate instruction list * 2)
+$A8:C576 E9 91 C1    SBC #$C191             ;|
+$A8:C579 4A          LSR A                  ;/
+$A8:C57A F0 0D       BEQ $0D    [$C589]     ; If [A] != 0:
 $A8:C57C A8          TAY                    ;\
 $A8:C57D B9 99 C5    LDA $C599,y            ;} Enemy ([X] - 1) instruction list pointer = [$C599 + [A]]
 $A8:C580 9D 52 0F    STA $0F52,x            ;/
@@ -6245,14 +6236,15 @@ $A8:C589 A9 9F C5    LDA #$C59F             ;\
 $A8:C58C 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C59F
 $A8:C58F A9 20 00    LDA #$0020             ;\
 $A8:C592 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = 20h
-$A8:C595 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C595 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C598 6B          RTL
 
+; Pointers to animation frames in inflate instruction list
 $A8:C599             dw C18B, C187, C183
 }
 
 
-;;; $C59F: Powamp function -  ;;;
+;;; $C59F: Powamp function - body - death sequence ;;;
 {
 $A8:C59F DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A8:C5A2 F0 02       BEQ $02    [$C5A6]     ;\
@@ -6266,7 +6258,7 @@ $A8:C5B2 20 23 C2    JSR $C223  [$A8:C223]  ; Spawn powamp spike enemy projectil
 $A8:C5B5 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A8:C5B9 6B          RTL
 
-$A8:C5BA 20 34 C2    JSR $C234  [$A8:C234]
+$A8:C5BA 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C5BD 6B          RTL
 }
 }

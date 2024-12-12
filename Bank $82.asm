@@ -5976,9 +5976,9 @@ $82:B18F 80 4D       BRA $4D    [$B1DE]     ; Return
 
 ; BRANCH_LEFT_END
 $82:B191 89 00 04    BIT #$0400             ;\
-$82:B194 D0 2D       BNE $2D    [$B1C3]     ;} If newly pressed up: go to BRANCH_UP
+$82:B194 D0 2D       BNE $2D    [$B1C3]     ;} If newly pressed down: go to BRANCH_DOWN
 $82:B196 89 00 08    BIT #$0800             ;\
-$82:B199 F0 43       BEQ $43    [$B1DE]     ;} If not newly pressed down: return
+$82:B199 F0 43       BEQ $43    [$B1DE]     ;} If not newly pressed up: return
 $82:B19B AD 55 07    LDA $0755  [$7E:0755]  ;\
 $82:B19E 29 00 FF    AND #$FF00             ;} If [equipment screen item index] != hi-jump boots:
 $82:B1A1 F0 18       BEQ $18    [$B1BB]     ;/
@@ -5998,7 +5998,7 @@ $82:B1BB A2 0A 00    LDX #$000A             ;\
 $82:B1BE 20 E6 B4    JSR $B4E6  [$82:B4E6]  ;} Move to suits/misc.
 $82:B1C1 80 1B       BRA $1B    [$B1DE]     ; Return
 
-; BRANCH_UP
+; BRANCH_DOWN
 $82:B1C3 AD 55 07    LDA $0755  [$7E:0755]  ;\
 $82:B1C6 C9 03 02    CMP #$0203             ;} If [equipment screen item index] = speed booster: return
 $82:B1C9 F0 13       BEQ $13    [$B1DE]     ;/
