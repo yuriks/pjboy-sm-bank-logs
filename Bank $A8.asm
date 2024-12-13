@@ -199,7 +199,7 @@ $A8:8826 A9 00 00    LDA #$0000             ;\
 $A8:8829 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy movement direction = up
 $A8:882D 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy instruction list = 0
 $A8:8831 A9 22 89    LDA #$8922             ;\
-$A8:8834 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy function = $8922
+$A8:8834 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy function = $8922 (handle body/arms)
 $A8:8837 6B          RTL
 }
 
@@ -452,7 +452,7 @@ $A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A26 A9 01 00    LDA #$0001             ;\
 $A8:8A29 9F 16 78 7E STA $7E7816,x[$7E:7896];} Enemy moving flag = 1
 $A8:8A2D A9 3B 8A    LDA #$8A3B             ;\
-$A8:8A30 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy function = $8A3B
+$A8:8A30 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy function = $8A3B (moving)
 
 $A8:8A33 60          RTS
 }
@@ -536,7 +536,7 @@ $A8:8AC5 9F 16 78 7E STA $7E7816,x[$7E:7896];} Enemy moving flag = 0
 $A8:8AC9 A9 01 00    LDA #$0001             ;\
 $A8:8ACC 9F 18 78 7E STA $7E7818,x[$7E:7898];} Enemy regenerating flag = 1
 $A8:8AD0 A9 78 8A    LDA #$8A78             ;\
-$A8:8AD3 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy function = $8A78
+$A8:8AD3 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy function = $8A78 (regenerating)
 $A8:8AD6 A9 01 00    LDA #$0001             ;\
 $A8:8AD9 9F 18 78 7E STA $7E7818,x[$7E:7898];} >_<;
 $A8:8ADD A9 75 87    LDA #$8775             ;\
@@ -5719,16 +5719,15 @@ $A8:C199             dw 00A0,C68A,
 
 ;;; $C19F: Powamp constants ;;;
 {
-$A8:C19F             dw 0040
+$A8:C19F             dw 0040 ; Travel distance when not grappled
 
+; Wiggle table. X offsets applied for 5 frames each in a loop
 $A8:C1A1             dw 0000, 0001, 0002, 0003, 0002, 0001, 0000, FFFF, FFFE, FFFD, FFFE, FFFF
 
-$A8:C1B9             dw 0000, 0000
-$A8:C1BD             dw 0000
-$A8:C1BF             dw 0000
-$A8:C1C1             dw 0001
-$A8:C1C3             dw 0000
-$A8:C1C5             dw FFFF, 8000
+$A8:C1B9             dw 0000, 0000 ; Y acceleration - rising
+$A8:C1BD             dw 0000, 0000 ; Y acceleration - sinking
+$A8:C1C1             dw 0001, 0000 ; Initial Y velocity - sinking
+$A8:C1C5             dw FFFF, 8000 ; Initial Y velocity - rising
 }
 
 
@@ -5748,7 +5747,7 @@ $A8:C1E7 D0 14       BNE $14    [$C1FD]     ;} If [enemy parameter 1] = 0: (body
 $A8:C1E9 A9 3C 00    LDA #$003C             ;\
 $A8:C1EC 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C1EF A9 83 C2    LDA #$C283             ;\
-$A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
+$A8:C1F2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283 (deflated - resting)
 $A8:C1F5 A9 73 C1    LDA #$C173             ;\
 $A8:C1F8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $C173 (body - slow)
 $A8:C1FB 80 1E       BRA $1E    [$C21B]
@@ -5762,7 +5761,7 @@ $A8:C20C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTL
 $A8:C20F A9 99 C1    LDA #$C199             ;\
 $A8:C212 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $C199 (balloon - initial)
 $A8:C215 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$A8:C218 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy parameter 2]
+$A8:C218 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy grapple travel distance = [enemy parameter 2]
 
 $A8:C21B 6B          RTL
 }
@@ -5855,7 +5854,7 @@ $A8:C28D 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer
 $A8:C290 A9 83 C1    LDA #$C183             ;\
 $A8:C293 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C183 (balloon - inflate)
 $A8:C296 A9 A6 C2    LDA #$C2A6             ;\
-$A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2A6
+$A8:C299 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2A6 (inflating)
 $A8:C29C A9 0A 00    LDA #$000A             ;\
 $A8:C29F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
 
@@ -5871,7 +5870,7 @@ $A8:C2A9 F0 02       BEQ $02    [$C2AD]     ;\
 $A8:C2AB 10 1E       BPL $1E    [$C2CB]     ;} If [enemy function timer] <= 0:
 
 $A8:C2AD A9 CF C2    LDA #$C2CF             ;\
-$A8:C2B0 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2CF
+$A8:C2B0 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C2CF (inflated - rise to target height)
 $A8:C2B3 AD C5 C1    LDA $C1C5  [$A8:C1C5]  ;\
 $A8:C2B6 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;|
 $A8:C2B9 AD C7 C1    LDA $C1C7  [$A8:C1C7]  ;} Enemy Y velocity = -0.8000h
@@ -5886,38 +5885,37 @@ $A8:C2CE 6B          RTL
 }
 
 
-;;; $C2CF: Powamp function - body - inflated -  ;;;
+;;; $C2CF: Powamp function - body - inflated - rise to target height ;;;
 {
-$A8:C2CF BD 8A 0F    LDA $0F8A,x[$7E:0FCA]
-$A8:C2D2 89 01 00    BIT #$0001
-$A8:C2D5 F0 09       BEQ $09    [$C2E0]
+$A8:C2CF BD 8A 0F    LDA $0F8A,x[$7E:0FCA]  ;\
+$A8:C2D2 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) != 0:
+$A8:C2D5 F0 09       BEQ $09    [$C2E0]     ;/
 $A8:C2D7 A9 E1 C3    LDA #$C3E1             ;\
-$A8:C2DA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C3E1
-$A8:C2DD 4C E1 C3    JMP $C3E1  [$A8:C3E1]
+$A8:C2DA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C3E1 (grappled - rise to target height)
+$A8:C2DD 4C E1 C3    JMP $C3E1  [$A8:C3E1]  ; Go to $C3E1 (grappled - rise to target height)
 
-$A8:C2E0 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy $0FAE
+$A8:C2E0 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy wiggle timer
 $A8:C2E3 F0 02       BEQ $02    [$C2E7]     ;\
-$A8:C2E5 10 27       BPL $27    [$C30E]     ;} If [enemy $0FAE] > 0: go to BRANCH_C30E
+$A8:C2E5 10 27       BPL $27    [$C30E]     ;} If [enemy wiggle timer] <= 0:
 
-$A8:C2E7 A9 05 00    LDA #$0005
-$A8:C2EA 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A8:C2ED BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A8:C2F0 0A          ASL A
-$A8:C2F1 A8          TAY
-$A8:C2F2 BD 68 0F    LDA $0F68,x[$7E:0FA8]
-$A8:C2F5 18          CLC
-$A8:C2F6 79 A1 C1    ADC $C1A1,y[$A8:C1A1]
-$A8:C2F9 9D 3A 0F    STA $0F3A,x[$7E:0F7A]
-$A8:C2FC 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A8:C2FF BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A8:C302 1A          INC A
-$A8:C303 C9 0C 00    CMP #$000C
-$A8:C306 30 03       BMI $03    [$C30B]
-$A8:C308 A9 00 00    LDA #$0000
+$A8:C2E7 A9 05 00    LDA #$0005             ;\
+$A8:C2EA 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy wiggle timer = 5
+$A8:C2ED BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A8:C2F0 0A          ASL A                  ;|
+$A8:C2F1 A8          TAY                    ;|
+$A8:C2F2 BD 68 0F    LDA $0F68,x[$7E:0FA8]  ;} Enemy ([X] - 1) X position = [enemy ([X] - 1) spawn X position] + [$C1A1 + [enemy wiggle index] * 2]
+$A8:C2F5 18          CLC                    ;|
+$A8:C2F6 79 A1 C1    ADC $C1A1,y[$A8:C1A1]  ;|
+$A8:C2F9 9D 3A 0F    STA $0F3A,x[$7E:0F7A]  ;/
+$A8:C2FC 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ; Enemy X position = [enemy ([X] - 1) X position]
+$A8:C2FF BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A8:C302 1A          INC A                  ;|
+$A8:C303 C9 0C 00    CMP #$000C             ;|
+$A8:C306 30 03       BMI $03    [$C30B]     ;} Enemy wiggle index = ([enemy wiggle index] + 1) % Ch
+$A8:C308 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A8:C30B 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;/
 
-$A8:C30B 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-
-; BRANCH_C30E
 $A8:C30E BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:C311 18          CLC                    ;|
 $A8:C312 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
@@ -5931,22 +5929,22 @@ $A8:C326 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y veloc
 $A8:C329 85 12       STA $12    [$7E:0012]  ;|
 $A8:C32B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:C32F B0 0C       BCS $0C    [$C33D]     ; If not collided with block:
-$A8:C331 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]
-$A8:C334 38          SEC
-$A8:C335 ED 9F C1    SBC $C19F  [$A8:C19F]
-$A8:C338 DD 7E 0F    CMP $0F7E,x[$7E:0FBE]
-$A8:C33B 30 2A       BMI $2A    [$C367]
+$A8:C331 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]  ;\
+$A8:C334 38          SEC                    ;|
+$A8:C335 ED 9F C1    SBC $C19F  [$A8:C19F]  ;} If [enemy ([X] - 1) spawn Y position] - 40h < [enemy Y position]: go to BRANCH_RETURN
+$A8:C338 DD 7E 0F    CMP $0F7E,x[$7E:0FBE]  ;|
+$A8:C33B 30 2A       BMI $2A    [$C367]     ;/
 
-$A8:C33D BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A8:C340 F0 0D       BEQ $0D    [$C34F]
-$A8:C342 C9 06 00    CMP #$0006
-$A8:C345 F0 08       BEQ $08    [$C34F]
+$A8:C33D BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A8:C340 F0 0D       BEQ $0D    [$C34F]     ;} If [enemy wiggle index] != 0:
+$A8:C342 C9 06 00    CMP #$0006             ;\
+$A8:C345 F0 08       BEQ $08    [$C34F]     ;} If [enemy wiggle index] != 6:
 $A8:C347 A9 6B C3    LDA #$C36B             ;\
-$A8:C34A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C36B
-$A8:C34D 80 18       BRA $18    [$C367]
+$A8:C34A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C36B (inflated - finish wiggle)
+$A8:C34D 80 18       BRA $18    [$C367]     ; Go to BRANCH_RETURN
 
 $A8:C34F A9 00 C5    LDA #$C500             ;\
-$A8:C352 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
+$A8:C352 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500 (deflating)
 $A8:C355 A9 0A 00    LDA #$000A             ;\
 $A8:C358 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
 $A8:C35B A9 01 00    LDA #$0001             ;\
@@ -5954,50 +5952,51 @@ $A8:C35E 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer
 $A8:C361 A9 91 C1    LDA #$C191             ;\
 $A8:C364 9D 52 0F    STA $0F52,x            ;} Enemy ([X] - 1) instruction list pointer = $C191 (balloon - deflate)
 
+; BRANCH_RETURN
 $A8:C367 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C36A 6B          RTL
 }
 
 
-;;; $C36B: Powamp function - body - inflated -  ;;;
+;;; $C36B: Powamp function - body - inflated - finish wiggle ;;;
 {
-$A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy $0FAE
+$A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy wiggle timer
 $A8:C36E F0 02       BEQ $02    [$C372]     ;\
-$A8:C370 10 4A       BPL $4A    [$C3BC]     ;} If [enemy $0FAE] > 0: go to BRANCH_C3BC
+$A8:C370 10 4A       BPL $4A    [$C3BC]     ;} If [enemy wiggle timer] > 0: go to BRANCH_CONTINUE_RISING
 
-$A8:C372 A9 05 00    LDA #$0005
-$A8:C375 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A8:C378 BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A8:C37B 0A          ASL A
-$A8:C37C A8          TAY
-$A8:C37D BD 68 0F    LDA $0F68,x[$7E:0FA8]
-$A8:C380 18          CLC
-$A8:C381 79 A1 C1    ADC $C1A1,y[$A8:C1A5]
-$A8:C384 9D 3A 0F    STA $0F3A,x[$7E:0F7A]
-$A8:C387 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A8:C38A BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A8:C38D F0 13       BEQ $13    [$C3A2]
-$A8:C38F C9 06 00    CMP #$0006
-$A8:C392 F0 0E       BEQ $0E    [$C3A2]
-$A8:C394 1A          INC A
-$A8:C395 C9 0C 00    CMP #$000C
-$A8:C398 30 03       BMI $03    [$C39D]
-$A8:C39A A9 00 00    LDA #$0000
-
-$A8:C39D 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-$A8:C3A0 80 1A       BRA $1A    [$C3BC]
+$A8:C372 A9 05 00    LDA #$0005             ;\
+$A8:C375 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy wiggle timer = 5
+$A8:C378 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A8:C37B 0A          ASL A                  ;|
+$A8:C37C A8          TAY                    ;|
+$A8:C37D BD 68 0F    LDA $0F68,x[$7E:0FA8]  ;} Enemy ([X] - 1) X position = [enemy ([X] - 1) spawn X position] + [$C1A1 + [enemy wiggle index] * 2]
+$A8:C380 18          CLC                    ;|
+$A8:C381 79 A1 C1    ADC $C1A1,y[$A8:C1A5]  ;|
+$A8:C384 9D 3A 0F    STA $0F3A,x[$7E:0F7A]  ;/
+$A8:C387 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ; Enemy X position = [enemy ([X] - 1) X position]
+$A8:C38A BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A8:C38D F0 13       BEQ $13    [$C3A2]     ;} If [enemy wiggle index] != 0:
+$A8:C38F C9 06 00    CMP #$0006             ;\
+$A8:C392 F0 0E       BEQ $0E    [$C3A2]     ;} If [enemy wiggle index] != 6:
+$A8:C394 1A          INC A                  ;\
+$A8:C395 C9 0C 00    CMP #$000C             ;|
+$A8:C398 30 03       BMI $03    [$C39D]     ;|
+$A8:C39A A9 00 00    LDA #$0000             ;} Enemy wiggle index = ([enemy wiggle index] + 1) % Ch
+                                            ;|
+$A8:C39D 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;/
+$A8:C3A0 80 1A       BRA $1A    [$C3BC]     ; Go to BRANCH_CONTINUE_RISING
 
 $A8:C3A2 A9 00 C5    LDA #$C500             ;\
-$A8:C3A5 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C500
+$A8:C3A5 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C500 (deflating)
 $A8:C3A8 A9 0A 00    LDA #$000A             ;\
 $A8:C3AB 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = Ah
 $A8:C3AE A9 01 00    LDA #$0001             ;\
 $A8:C3B1 9D 54 0F    STA $0F54,x[$7E:0F94]  ;} Enemy ([X] - 1) instruction timer = 1
 $A8:C3B4 A9 91 C1    LDA #$C191             ;\
 $A8:C3B7 9D 52 0F    STA $0F52,x[$7E:0F92]  ;} Enemy ([X] - 1) instruction list pointer = $C191 (balloon - deflate)
-$A8:C3BA 80 21       BRA $21    [$C3DD]
+$A8:C3BA 80 21       BRA $21    [$C3DD]     ; Go to BRANCH_RETURN
 
-; BRANCH_C3BC
+; BRANCH_CONTINUE_RISING
 $A8:C3BC BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:C3BF 18          CLC                    ;|
 $A8:C3C0 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
@@ -6011,41 +6010,42 @@ $A8:C3D4 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y veloc
 $A8:C3D7 85 12       STA $12    [$7E:0012]  ;|
 $A8:C3D9 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
+; BRANCH_RETURN
 $A8:C3DD 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C3E0 6B          RTL
 }
 
 
-;;; $C3E1: Powamp function - body - grappled - rising -  ;;;
+;;; $C3E1: Powamp function - body - grappled - rise to target height ;;;
 {
-$A8:C3E1 BD 8A 0F    LDA $0F8A,x[$7E:104A]
-$A8:C3E4 89 01 00    BIT #$0001
-$A8:C3E7 D0 07       BNE $07    [$C3F0]
+$A8:C3E1 BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
+$A8:C3E4 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
+$A8:C3E7 D0 07       BNE $07    [$C3F0]     ;/
 $A8:C3E9 A9 6B C3    LDA #$C36B             ;\
-$A8:C3EC 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C36B
-$A8:C3EF 6B          RTL
+$A8:C3EC 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C36B (inflated - finish wiggle)
+$A8:C3EF 6B          RTL                    ; Return
 
-$A8:C3F0 DE AE 0F    DEC $0FAE,x[$7E:106E]
-$A8:C3F3 F0 02       BEQ $02    [$C3F7]
-$A8:C3F5 10 27       BPL $27    [$C41E]
-
-$A8:C3F7 A9 05 00    LDA #$0005
-$A8:C3FA 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A8:C3FD BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A8:C400 0A          ASL A
-$A8:C401 A8          TAY
-$A8:C402 BD 68 0F    LDA $0F68,x[$7E:1028]
-$A8:C405 18          CLC
-$A8:C406 79 A1 C1    ADC $C1A1,y[$A8:C1AD]
-$A8:C409 9D 3A 0F    STA $0F3A,x[$7E:0FFA]
-$A8:C40C 9D 7A 0F    STA $0F7A,x[$7E:103A]
-$A8:C40F BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A8:C412 1A          INC A
-$A8:C413 C9 0C 00    CMP #$000C
-$A8:C416 30 03       BMI $03    [$C41B]
-$A8:C418 A9 00 00    LDA #$0000
-
-$A8:C41B 9D AC 0F    STA $0FAC,x[$7E:106C]
+$A8:C3F0 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy wiggle timer
+$A8:C3F3 F0 02       BEQ $02    [$C3F7]     ;\
+$A8:C3F5 10 27       BPL $27    [$C41E]     ;} If [enemy wiggle timer] <= 0:
+                                            
+$A8:C3F7 A9 05 00    LDA #$0005             ;\
+$A8:C3FA 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy wiggle timer = 5
+$A8:C3FD BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A8:C400 0A          ASL A                  ;|
+$A8:C401 A8          TAY                    ;|
+$A8:C402 BD 68 0F    LDA $0F68,x[$7E:1028]  ;} Enemy ([X] - 1) X position = [enemy ([X] - 1) spawn X position] + [$C1A1 + [enemy wiggle index] * 2]
+$A8:C405 18          CLC                    ;|
+$A8:C406 79 A1 C1    ADC $C1A1,y[$A8:C1AD]  ;|
+$A8:C409 9D 3A 0F    STA $0F3A,x[$7E:0FFA]  ;/
+$A8:C40C 9D 7A 0F    STA $0F7A,x[$7E:103A]  ; Enemy X position = [enemy ([X] - 1) X position]
+$A8:C40F BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A8:C412 1A          INC A                  ;|
+$A8:C413 C9 0C 00    CMP #$000C             ;|
+$A8:C416 30 03       BMI $03    [$C41B]     ;} Enemy wiggle index = ([enemy wiggle index] + 1) % Ch
+$A8:C418 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A8:C41B 9D AC 0F    STA $0FAC,x[$7E:106C]  ;/
 
 $A8:C41E BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A8:C421 18          CLC                    ;|
@@ -6060,67 +6060,69 @@ $A8:C436 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y veloc
 $A8:C439 85 12       STA $12    [$7E:0012]  ;|
 $A8:C43B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:C43F B0 0C       BCS $0C    [$C44D]     ; If not collided with block:
-$A8:C441 BD 6A 0F    LDA $0F6A,x[$7E:102A]
-$A8:C444 38          SEC
-$A8:C445 FD 6E 0F    SBC $0F6E,x[$7E:102E]
-$A8:C448 DD 7E 0F    CMP $0F7E,x[$7E:103E]
-$A8:C44B 30 18       BMI $18    [$C465]
+$A8:C441 BD 6A 0F    LDA $0F6A,x[$7E:102A]  ;\
+$A8:C444 38          SEC                    ;|
+$A8:C445 FD 6E 0F    SBC $0F6E,x[$7E:102E]  ;} If [enemy ([X] - 1) spawn Y position] - [enemy ([X] - 1) grapple travel distance] < [enemy Y position]: go to BRANCH_RETURN
+$A8:C448 DD 7E 0F    CMP $0F7E,x[$7E:103E]  ;|
+$A8:C44B 30 18       BMI $18    [$C465]     ;/
 
-$A8:C44D BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A8:C450 F0 0D       BEQ $0D    [$C45F]
-$A8:C452 C9 06 00    CMP #$0006
-$A8:C455 F0 08       BEQ $08    [$C45F]
+$A8:C44D BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A8:C450 F0 0D       BEQ $0D    [$C45F]     ;} If [enemy wiggle index] != 0:
+$A8:C452 C9 06 00    CMP #$0006             ;\
+$A8:C455 F0 08       BEQ $08    [$C45F]     ;} If [enemy wiggle index] != 6:
 $A8:C457 A9 69 C4    LDA #$C469             ;\
-$A8:C45A 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C469
-$A8:C45D 80 06       BRA $06    [$C465]
+$A8:C45A 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C469 (grappled - finish wiggle)
+$A8:C45D 80 06       BRA $06    [$C465]     ; Go to BRANCH_RETURN
 
 $A8:C45F A9 DC C4    LDA #$C4DC             ;\
-$A8:C462 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
+$A8:C462 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC (grappled - resting)
 
+; BRANCH_RETURN
 $A8:C465 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C468 6B          RTL
 }
 
 
-;;; $C469: Powamp function - body - grappled - rising -  ;;;
+;;; $C469: Powamp function - body - grappled - finish wiggle ;;;
 {
-$A8:C469 BD 8A 0F    LDA $0F8A,x[$7E:104A]
-$A8:C46C 89 01 00    BIT #$0001
-$A8:C46F D0 07       BNE $07    [$C478]
+$A8:C469 BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
+$A8:C46C 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
+$A8:C46F D0 07       BNE $07    [$C478]     ;/
 $A8:C471 A9 6B C3    LDA #$C36B             ;\
-$A8:C474 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C36B
-$A8:C477 6B          RTL
+$A8:C474 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy function = $C36B (inflated - finish wiggle)
+$A8:C477 6B          RTL                    ; Return
 
-$A8:C478 DE AE 0F    DEC $0FAE,x[$7E:106E]
-$A8:C47B F0 02       BEQ $02    [$C47F]
-$A8:C47D 10 38       BPL $38    [$C4B7]
+$A8:C478 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy wiggle timer
+$A8:C47B F0 02       BEQ $02    [$C47F]     ;\
+$A8:C47D 10 38       BPL $38    [$C4B7]     ;} If [enemy wiggle timer] > 0: go to BRANCH_CONTINUE_RISING
 
-$A8:C47F A9 05 00    LDA #$0005
-$A8:C482 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A8:C485 BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A8:C488 0A          ASL A
-$A8:C489 A8          TAY
-$A8:C48A BD 68 0F    LDA $0F68,x[$7E:1028]
-$A8:C48D 18          CLC
-$A8:C48E 79 A1 C1    ADC $C1A1,y[$A8:C1A3]
-$A8:C491 9D 3A 0F    STA $0F3A,x[$7E:0FFA]
-$A8:C494 9D 7A 0F    STA $0F7A,x[$7E:103A]
-$A8:C497 BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A8:C49A F0 13       BEQ $13    [$C4AF]
-$A8:C49C C9 06 00    CMP #$0006
-$A8:C49F F0 0E       BEQ $0E    [$C4AF]
-$A8:C4A1 1A          INC A
-$A8:C4A2 C9 0C 00    CMP #$000C
-$A8:C4A5 30 03       BMI $03    [$C4AA]
-$A8:C4A7 A9 00 00    LDA #$0000
-
-$A8:C4AA 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A8:C4AD 80 08       BRA $08    [$C4B7]
+$A8:C47F A9 05 00    LDA #$0005             ;\
+$A8:C482 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy wiggle timer = 5
+$A8:C485 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A8:C488 0A          ASL A                  ;|
+$A8:C489 A8          TAY                    ;|
+$A8:C48A BD 68 0F    LDA $0F68,x[$7E:1028]  ;} Enemy ([X] - 1) X position = [enemy ([X] - 1) spawn X position] + [$C1A1 + [enemy wiggle index] * 2]
+$A8:C48D 18          CLC                    ;|
+$A8:C48E 79 A1 C1    ADC $C1A1,y[$A8:C1A3]  ;|
+$A8:C491 9D 3A 0F    STA $0F3A,x[$7E:0FFA]  ;/
+$A8:C494 9D 7A 0F    STA $0F7A,x[$7E:103A]  ; Enemy X position = [enemy ([X] - 1) X position]
+$A8:C497 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A8:C49A F0 13       BEQ $13    [$C4AF]     ;} If [enemy wiggle index] != 0:
+$A8:C49C C9 06 00    CMP #$0006             ;\
+$A8:C49F F0 0E       BEQ $0E    [$C4AF]     ;} If [enemy wiggle index] != 6:
+$A8:C4A1 1A          INC A                  ;\
+$A8:C4A2 C9 0C 00    CMP #$000C             ;|
+$A8:C4A5 30 03       BMI $03    [$C4AA]     ;|
+$A8:C4A7 A9 00 00    LDA #$0000             ;} Enemy wiggle index = ([enemy wiggle index] + 1) % Ch
+                                            ;|
+$A8:C4AA 9D AC 0F    STA $0FAC,x[$7E:106C]  ;/
+$A8:C4AD 80 08       BRA $08    [$C4B7]     ; Go to BRANCH_CONTINUE_RISING
 
 $A8:C4AF A9 DC C4    LDA #$C4DC             ;\
-$A8:C4B2 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC
-$A8:C4B5 80 21       BRA $21    [$C4D8]
+$A8:C4B2 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C4DC (grappled - resting)
+$A8:C4B5 80 21       BRA $21    [$C4D8]     ; Go to BRANCH_RETURN
 
+; BRANCH_CONTINUE_RISING
 $A8:C4B7 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A8:C4BA 18          CLC                    ;|
 $A8:C4BB 6D BB C1    ADC $C1BB  [$A8:C1BB]  ;|
@@ -6134,6 +6136,7 @@ $A8:C4CF BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y veloc
 $A8:C4D2 85 12       STA $12    [$7E:0012]  ;|
 $A8:C4D4 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
+; BRANCH_RETURN
 $A8:C4D8 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C4DB 6B          RTL
 }
@@ -6141,11 +6144,11 @@ $A8:C4DB 6B          RTL
 
 ;;; $C4DC: Powamp function - body - grappled - resting ;;;
 {
-$A8:C4DC BD 8A 0F    LDA $0F8A,x
-$A8:C4DF 89 01 00    BIT #$0001
-$A8:C4E2 D0 18       BNE $18    [$C4FC]
+$A8:C4DC BD 8A 0F    LDA $0F8A,x            ;\
+$A8:C4DF 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
+$A8:C4E2 D0 18       BNE $18    [$C4FC]     ;/
 $A8:C4E4 A9 00 C5    LDA #$C500             ;\
-$A8:C4E7 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500
+$A8:C4E7 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C500 (deflating)
 $A8:C4EA A9 0A 00    LDA #$000A             ;\
 $A8:C4ED 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Ah
 $A8:C4F0 A9 01 00    LDA #$0001             ;\
@@ -6165,11 +6168,11 @@ $A8:C503 F0 02       BEQ $02    [$C507]     ;\
 $A8:C505 10 12       BPL $12    [$C519]     ;} If [enemy function timer] <= 0:
 
 $A8:C507 A9 1D C5    LDA #$C51D             ;\
-$A8:C50A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C51D
-$A8:C50D AD C1 C1    LDA $C1C1  [$A8:C1C1]
-$A8:C510 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A8:C513 AD C3 C1    LDA $C1C3  [$A8:C1C3]
-$A8:C516 9D AA 0F    STA $0FAA,x[$7E:0FEA]
+$A8:C50A 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C51D (deflated - sinking)
+$A8:C50D AD C1 C1    LDA $C1C1  [$A8:C1C1]  ;\
+$A8:C510 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;|
+$A8:C513 AD C3 C1    LDA $C1C3  [$A8:C1C3]  ;} Enemy Y velocity = 1.0
+$A8:C516 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 
 $A8:C519 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C51C 6B          RTL
@@ -6178,25 +6181,25 @@ $A8:C51C 6B          RTL
 
 ;;; $C51D: Powamp function - body - deflated - sinking ;;;
 {
-$A8:C51D BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A8:C520 18          CLC
-$A8:C521 6D BF C1    ADC $C1BF  [$A8:C1BF]
-$A8:C524 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A8:C527 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A8:C52A 6D BD C1    ADC $C1BD  [$A8:C1BD]
-$A8:C52D 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$A8:C51D BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A8:C520 18          CLC                    ;|
+$A8:C521 6D BF C1    ADC $C1BF  [$A8:C1BF]  ;|
+$A8:C524 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
+$A8:C527 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
+$A8:C52A 6D BD C1    ADC $C1BD  [$A8:C1BD]  ;|
+$A8:C52D 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $A8:C530 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
 $A8:C533 85 14       STA $14    [$7E:0014]  ;|
 $A8:C535 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
 $A8:C538 85 12       STA $12    [$7E:0012]  ;|
 $A8:C53A 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A8:C53E BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A8:C541 DD 6A 0F    CMP $0F6A,x[$7E:0FAA]
-$A8:C544 30 1E       BMI $1E    [$C564]
-$A8:C546 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]
-$A8:C549 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$A8:C53E BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A8:C541 DD 6A 0F    CMP $0F6A,x[$7E:0FAA]  ;} If [enemy Y position] >= [enemy ([X] - 1) spawn Y position]:
+$A8:C544 30 1E       BMI $1E    [$C564]     ;/
+$A8:C546 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]  ;\
+$A8:C549 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy ([X] - 1) spawn Y position]
 $A8:C54C A9 83 C2    LDA #$C283             ;\
-$A8:C54F 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283
+$A8:C54F 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C283 (deflated - resting)
 $A8:C552 A9 3C 00    LDA #$003C             ;\
 $A8:C555 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function timer = 60
 $A8:C558 A9 01 00    LDA #$0001             ;\
@@ -6233,7 +6236,7 @@ $A8:C583 A9 01 00    LDA #$0001             ;\
 $A8:C586 9D 54 0F    STA $0F54,x            ;} Enemy ([X] - 1) instruction timer = 1
 
 $A8:C589 A9 9F C5    LDA #$C59F             ;\
-$A8:C58C 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C59F
+$A8:C58C 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C59F (death sequence)
 $A8:C58F A9 20 00    LDA #$0020             ;\
 $A8:C592 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = 20h
 $A8:C595 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
@@ -6250,13 +6253,13 @@ $A8:C59F DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A8:C5A2 F0 02       BEQ $02    [$C5A6]     ;\
 $A8:C5A4 10 14       BPL $14    [$C5BA]     ;} If [enemy function timer] <= 0:
 
-$A8:C5A6 9E 4C 0F    STZ $0F4C,x
-$A8:C5A9 BD 46 0F    LDA $0F46,x
-$A8:C5AC 09 00 02    ORA #$0200
-$A8:C5AF 9D 46 0F    STA $0F46,x
+$A8:C5A6 9E 4C 0F    STZ $0F4C,x            ; Enemy ([X] - 1) health = 0
+$A8:C5A9 BD 46 0F    LDA $0F46,x            ;\
+$A8:C5AC 09 00 02    ORA #$0200             ;} Mark enemy ([X] - 1) for deletion
+$A8:C5AF 9D 46 0F    STA $0F46,x            ;/
 $A8:C5B2 20 23 C2    JSR $C223  [$A8:C223]  ; Spawn powamp spike enemy projectiles
 $A8:C5B5 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
-$A8:C5B9 6B          RTL
+$A8:C5B9 6B          RTL                    ; Return
 
 $A8:C5BA 20 34 C2    JSR $C234  [$A8:C234]  ; Set powamp balloon Y position
 $A8:C5BD 6B          RTL
@@ -6322,7 +6325,7 @@ $A8:C629 9D 4A 0F    STA $0F4A,x            ;/
 $A8:C62C BD 8C 0F    LDA $0F8C,x            ;\
 $A8:C62F D0 0C       BNE $0C    [$C63D]     ;} If [enemy health] = 0:
 $A8:C631 A9 69 C5    LDA #$C569             ;\
-$A8:C634 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C569
+$A8:C634 9D B2 0F    STA $0FB2,x            ;} Enemy function = $C569 (fatal damage)
 $A8:C637 A9 01 00    LDA #$0001             ;\
 $A8:C63A 9D B6 0F    STA $0FB6,x            ;} Enemy parameter 2 = 1
 
@@ -6359,9 +6362,12 @@ $A8:C674 6B          RTL
 
 ;;; $C675: Powamp spritemaps ;;;
 {
+; Body
 $A8:C675             dx 0001, 81F8,F8,2100
 $A8:C67C             dx 0001, 81F8,F8,2102
 $A8:C683             dx 0001, 81F8,F8,2104
+
+; Balloon
 $A8:C68A             dx 0001, 01FC,FC,210E
 $A8:C691             dx 0001, 81F8,F8,2106
 $A8:C698             dx 0005, 0004,04,210D, 01FC,04,210C, 01F4,04,210B, 81FC,F4,2109, 81F4,F4,2108
@@ -7764,7 +7770,7 @@ $A8:D821             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 43
 }
 
 
-;;; $D841: Instruction list -  ;;;
+;;; $D841: Instruction list - normal ;;;
 {
 $A8:D841             dx 000A,DB76,
                         000A,DB8C,
@@ -7774,15 +7780,15 @@ $A8:D841             dx 000A,DB76,
 }
 
 
-;;; $D855: Instruction list -  ;;;
+;;; $D855: Instruction list - shot ;;;
 {
-$A8:D855             dx 8123,0005   ; Timer = 0005h
+$A8:D855             dx 8123,0005   ; Timer = 5
 $A2:D859             dx 0003,DB76,
                         0003,DB8C,
                         0003,DB76,
                         0003,DBA2,
                         8110,D859,  ; Decrement timer and go to $D859 if non-zero
-                        80ED,D841   ; Go to $D841
+                        80ED,D841   ; Go to $D841 (normal)
 }
 
 
@@ -7825,8 +7831,8 @@ $A8:D8EB B9 97 D8    LDA $D897,y[$A8:D8A3]
 $A8:D8EE 9F 0C 78 7E STA $7E780C,x[$7E:788C]
 $A8:D8F2 A9 10 00    LDA #$0010
 $A8:D8F5 9D B0 0F    STA $0FB0,x[$7E:1030]
-$A8:D8F8 A9 2B D9    LDA #$D92B
-$A8:D8FB 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A8:D8F8 A9 2B D9    LDA #$D92B             ;\
+$A8:D8FB 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $D92B
 $A8:D8FE BD B6 0F    LDA $0FB6,x[$7E:1036]
 $A8:D901 0A          ASL A
 $A8:D902 A8          TAY
@@ -7853,21 +7859,21 @@ $A8:D92A 6B          RTL
 }
 
 
-;;; $D92B:  ;;;
+;;; $D92B: Bull function -  ;;;
 {
 $A8:D92B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D92E DE B0 0F    DEC $0FB0,x[$7E:1030]
 $A8:D931 D0 0C       BNE $0C    [$D93F]
 $A8:D933 A9 10 00    LDA #$0010
 $A8:D936 9D B0 0F    STA $0FB0,x[$7E:1030]
-$A8:D939 A9 40 D9    LDA #$D940
-$A8:D93C 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A8:D939 A9 40 D9    LDA #$D940             ;\
+$A8:D93C 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $D940
 
 $A8:D93F 60          RTS
 }
 
 
-;;; $D940:  ;;;
+;;; $D940: Bull function -  ;;;
 {
 $A8:D940 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D943 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
@@ -7876,15 +7882,15 @@ $A8:D948 E9 40 00    SBC #$0040
 $A8:D94B 29 FF 00    AND #$00FF
 $A8:D94E 9F 02 78 7E STA $7E7802,x[$7E:7882]
 $A8:D952 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:D956 A9 63 D9    LDA #$D963
-$A8:D959 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A8:D956 A9 63 D9    LDA #$D963             ;\
+$A8:D959 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $D963
 $A8:D95C A9 18 00    LDA #$0018
 $A8:D95F 9D AC 0F    STA $0FAC,x[$7E:102C]
 $A8:D962 60          RTS
 }
 
 
-;;; $D963:  ;;;
+;;; $D963: Bull function -  ;;;
 {
 $A8:D963 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D966 BD AE 0F    LDA $0FAE,x[$7E:102E]
@@ -7899,7 +7905,7 @@ $A8:D97B 60          RTS
 }
 
 
-;;; $D97C:  ;;;
+;;; $D97C: Bull function -  ;;;
 {
 $A8:D97C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D97F BD AE 0F    LDA $0FAE,x[$7E:102E]
@@ -7909,8 +7915,8 @@ $A8:D986 BD AA 0F    LDA $0FAA,x[$7E:102A]
 $A8:D989 F0 02       BEQ $02    [$D98D]
 $A8:D98B 10 13       BPL $13    [$D9A0]
 
-$A8:D98D A9 2B D9    LDA #$D92B
-$A8:D990 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A8:D98D A9 2B D9    LDA #$D92B             ;\
+$A8:D990 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $D92B
 $A8:D993 A9 00 00    LDA #$0000
 $A8:D996 9D AA 0F    STA $0FAA,x[$7E:102A]
 $A8:D999 9D AC 0F    STA $0FAC,x[$7E:102C]
@@ -7938,8 +7944,8 @@ $A8:D9C1 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A8:D9C5 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:D9C9 C9 30 00    CMP #$0030
 $A8:D9CC 30 0C       BMI $0C    [$D9DA]
-$A8:D9CE A9 7C D9    LDA #$D97C
-$A8:D9D1 9D A8 0F    STA $0FA8,x[$7E:1068]
+$A8:D9CE A9 7C D9    LDA #$D97C             ;\
+$A8:D9D1 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $D97C
 $A8:D9D4 A9 18 00    LDA #$0018
 $A8:D9D7 9D AC 0F    STA $0FAC,x[$7E:106C]
 
@@ -8134,7 +8140,7 @@ $A8:DB13 60          RTS
 $A8:DB14 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DB17 BD 8C 0F    LDA $0F8C,x[$7E:100C]
 $A8:DB1A 9F 00 88 7E STA $7E8800,x[$7E:8880]
-$A8:DB1E 22 2D 80 A8 JSL $A8802D[$A8:802D]
+$A8:DB1E 22 2D 80 A8 JSL $A8802D[$A8:802D]  ; Normal enemy shot AI
 $A8:DB22 BD 8C 0F    LDA $0F8C,x[$7E:100C]
 $A8:DB25 DF 00 88 7E CMP $7E8800,x[$7E:8880]
 $A8:DB29 F0 01       BEQ $01    [$DB2C]
@@ -8160,8 +8166,8 @@ $A8:DB55 A9 00 01    LDA #$0100
 $A8:DB58 9D AA 0F    STA $0FAA,x[$7E:102A]
 $A8:DB5B A9 00 06    LDA #$0600
 $A8:DB5E 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A8:DB61 A9 7C D9    LDA #$D97C
-$A8:DB64 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A8:DB61 A9 7C D9    LDA #$D97C             ;\
+$A8:DB64 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $D97C
 $A8:DB67 A9 30 00    LDA #$0030
 $A8:DB6A 9F 0E 78 7E STA $7E780E,x[$7E:788E]
 $A8:DB6E A9 01 00    LDA #$0001
@@ -8309,8 +8315,8 @@ $A8:DCE7 09 00 20    ORA #$2000
 $A8:DCEA 9D 86 0F    STA $0F86,x[$7E:1046]
 $A8:DCED A9 E7 DB    LDA #$DBE7             ;\
 $A8:DCF0 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $DBE7
-$A8:DCF3 A9 71 DD    LDA #$DD71
-$A8:DCF6 9D A8 0F    STA $0FA8,x[$7E:1068]
+$A8:DCF3 A9 71 DD    LDA #$DD71             ;\
+$A8:DCF6 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $DD71
 $A8:DCF9 20 37 DD    JSR $DD37  [$A8:DD37]
 
 $A8:DCFC BD AC 0F    LDA $0FAC,x[$7E:106C]
@@ -8409,8 +8415,8 @@ $A8:DDAC 98          TYA
 $A8:DDAD 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:DDB0 A9 01 00    LDA #$0001             ;\
 $A8:DDB3 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:DDB6 A9 C6 DD    LDA #$DDC6
-$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]
+$A8:DDB6 A9 C6 DD    LDA #$DDC6             ;\
+$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DDC6
 $A8:DDBC A9 5E 00    LDA #$005E             ;\
 $A8:DDBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (alcoon spawns)
 
@@ -8433,8 +8439,8 @@ $A8:DDD6 9D 7E 0F    STA $0F7E,x[$7E:10BE]
 $A8:DDD9 20 55 DD    JSR $DD55  [$A8:DD55]
 $A8:DDDC 30 1B       BMI $1B    [$DDF9]
 
-$A8:DDDE A9 05 DE    LDA #$DE05
-$A8:DDE1 9D A8 0F    STA $0FA8,x[$7E:10E8]
+$A8:DDDE A9 05 DE    LDA #$DE05             ;\
+$A8:DDE1 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE05
 $A8:DDE4 A0 51 DC    LDY #$DC51
 $A8:DDE7 BD AE 0F    LDA $0FAE,x[$7E:10EE]
 $A8:DDEA 30 03       BMI $03    [$DDEF]
@@ -8485,8 +8491,8 @@ $A8:DE33 98          TYA
 $A8:DE34 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:DE37 A9 01 00    LDA #$0001             ;\
 $A8:DE3A 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:DE3D A9 4B DE    LDA #$DE4B
-$A8:DE40 9D A8 0F    STA $0FA8,x[$7E:10E8]
+$A8:DE3D A9 4B DE    LDA #$DE4B             ;\
+$A8:DE40 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B
 $A8:DE43 A9 01 00    LDA #$0001
 $A8:DE46 9F 08 78 7E STA $7E7808,x[$7E:7948]
 $A8:DE4A 6B          RTL
@@ -8536,13 +8542,13 @@ $A8:DE93 98          TYA
 $A8:DE94 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:DE97 A9 01 00    LDA #$0001             ;\
 $A8:DE9A 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:DE9D A9 CC DE    LDA #$DECC
-$A8:DEA0 9D A8 0F    STA $0FA8,x[$7E:10E8]
+$A8:DE9D A9 CC DE    LDA #$DECC             ;\
+$A8:DEA0 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DECC
 
 $A8:DEA3 6B          RTL
 
-$A8:DEA4 A9 CD DE    LDA #$DECD
-$A8:DEA7 9D A8 0F    STA $0FA8,x
+$A8:DEA4 A9 CD DE    LDA #$DECD             ;\
+$A8:DEA7 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DECD
 $A8:DEAA A9 FC FF    LDA #$FFFC
 $A8:DEAD 9D AA 0F    STA $0FAA,x
 $A8:DEB0 A9 00 00    LDA #$0000
@@ -8577,8 +8583,8 @@ $A8:DEDA 7D 7E 0F    ADC $0F7E,x
 $A8:DEDD 9D 7E 0F    STA $0F7E,x
 $A8:DEE0 20 55 DD    JSR $DD55  [$A8:DD55]
 $A8:DEE3 30 06       BMI $06    [$DEEB]
-$A8:DEE5 A9 EC DE    LDA #$DEEC
-$A8:DEE8 9D A8 0F    STA $0FA8,x
+$A8:DEE5 A9 EC DE    LDA #$DEEC             ;\
+$A8:DEE8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DEEC
 
 $A8:DEEB 6B          RTL
 }
@@ -8602,8 +8608,8 @@ $A8:DF08 BD B2 0F    LDA $0FB2,x
 $A8:DF0B 9D 7E 0F    STA $0F7E,x
 $A8:DF0E BF 04 78 7E LDA $7E7804,x
 $A8:DF12 9D 7A 0F    STA $0F7A,x
-$A8:DF15 A9 71 DD    LDA #$DD71
-$A8:DF18 9D A8 0F    STA $0FA8,x
+$A8:DF15 A9 71 DD    LDA #$DD71             ;\
+$A8:DF18 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DD71
 $A8:DF1B 6B          RTL
 }
 
@@ -8644,8 +8650,8 @@ $A8:DF3D 80 E1       BRA $E1    [$DF20]
 ;;; $DF3F: Instruction ;;;
 {
 $A8:DF3F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:DF42 A9 4B DE    LDA #$DE4B
-$A8:DF45 9D A8 0F    STA $0FA8,x[$7E:10E8]
+$A8:DF42 A9 4B DE    LDA #$DE4B             ;\
+$A8:DF45 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B
 $A8:DF48 AD E5 05    LDA $05E5  [$7E:05E5]
 $A8:DF4B 29 03 00    AND #$0003
 $A8:DF4E D0 03       BNE $03    [$DF53]
@@ -9128,8 +9134,8 @@ $A8:E699 F0 04       BEQ $04    [$E69F]
 $A8:E69B 9D B2 0F    STA $0FB2,x[$7E:10F2]
 $A8:E69E 6B          RTL
 
-$A8:E69F A9 B7 E6    LDA #$E6B7
-$A8:E6A2 9D AA 0F    STA $0FAA,x[$7E:10EA]
+$A8:E69F A9 B7 E6    LDA #$E6B7             ;\
+$A8:E6A2 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E6B7
 $A8:E6A5 A9 A7 E5    LDA #$E5A7             ;\
 $A8:E6A8 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5A7
 $A8:E6AB A9 01 00    LDA #$0001             ;\
@@ -9148,8 +9154,8 @@ $A8:E6BB F0 04       BEQ $04    [$E6C1]
 $A8:E6BD 9D B2 0F    STA $0FB2,x[$7E:10F2]
 $A8:E6C0 6B          RTL
 
-$A8:E6C1 A9 95 E6    LDA #$E695
-$A8:E6C4 9D AA 0F    STA $0FAA,x[$7E:10EA]
+$A8:E6C1 A9 95 E6    LDA #$E695             ;\
+$A8:E6C4 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E695
 $A8:E6C7 A9 E5 E5    LDA #$E5E5             ;\
 $A8:E6CA 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5E5
 $A8:E6CD A9 01 00    LDA #$0001             ;\
