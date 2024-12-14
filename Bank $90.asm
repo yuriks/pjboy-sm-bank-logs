@@ -2473,7 +2473,7 @@ $90:8ED5 30 04       BMI $04    [$8EDB]     ;} If [$12] >= 0:
 $90:8ED7 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:8EDA 60          RTS                    ; Return
 
-$90:8EDB 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
+$90:8EDB 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by -[$12].[$14]
 $90:8EDE 60          RTS
 }
 
@@ -2510,7 +2510,7 @@ $90:8F0F 30 05       BMI $05    [$8F16]     ;} If [$12] >= 0:
 $90:8F11 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:8F14 80 03       BRA $03    [$8F19]     ; Return
 
-$90:8F16 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
+$90:8F16 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by -[$12].[$14]
 
 $90:8F19 28          PLP
 $90:8F1A 60          RTS
@@ -2570,7 +2570,7 @@ $90:8F7A 30 05       BMI $05    [$8F81]     ;} If [$12] >= 0:
 $90:8F7C 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:8F7F 80 03       BRA $03    [$8F84]     ; Return
 
-$90:8F81 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
+$90:8F81 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by -[$12].[$14]
 
 $90:8F84 28          PLP
 $90:8F85 60          RTS
@@ -2823,7 +2823,7 @@ $90:915C 30 05       BMI $05    [$9163]     ; If [$12] >= 0:
 $90:915E 20 40 94    JSR $9440  [$90:9440]  ; Move Samus down by [$12].[$14]
 $90:9161 80 03       BRA $03    [$9166]     ; Return
 
-$90:9163 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by [$12].[$14]
+$90:9163 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by -[$12].[$14]
 
 $90:9166 28          PLP
 $90:9167 60          RTS
@@ -2932,7 +2932,7 @@ $90:922B E6 12       INC $12    [$7E:0012]  ; $12.$14 += 1.0
 $90:922D 20 40 94    JSR $9440  [$90:9440]  ; Move Samus down by [$12].[$14]
 $90:9230 80 0B       BRA $0B    [$923D]     ; Return
 
-$90:9232 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by [$12].[$14]
+$90:9232 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by -[$12].[$14]
 $90:9235 80 06       BRA $06    [$923D]     ; Return
 
 ; BRANCH_NO_EXTRA_DISPLACEMENT
@@ -2989,7 +2989,7 @@ $90:927E 20 40 94    JSR $9440  [$90:9440]  ; Move Samus down by [$12].[$14]
 $90:9281 80 03       BRA $03    [$9286]     ; Return
 
 ; BRANCH_MOVE_UP
-$90:9283 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by [$12].[$14]
+$90:9283 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by -[$12].[$14]
 
 $90:9286 28          PLP
 $90:9287 60          RTS
@@ -3021,7 +3021,7 @@ $90:92AC E6 12       INC $12    [$7E:0012]  ; $12.$14 += 1.0
 $90:92AE 20 40 94    JSR $9440  [$90:9440]  ; Move Samus down by [$12].[$14]
 $90:92B1 80 03       BRA $03    [$92B6]     ; Return
 
-$90:92B3 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by [$12].[$14]
+$90:92B3 20 EC 93    JSR $93EC  [$90:93EC]  ; Move Samus up by -[$12].[$14]
 
 $90:92B6 28          PLP
 $90:92B7 60          RTS
@@ -3116,7 +3116,7 @@ $90:931B 30 05       BMI $05    [$9322]     ;} If [$12] >= 0:
 $90:931D 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:9320 80 03       BRA $03    [$9325]
                                             ; Else ([$12] < 0):
-$90:9322 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
+$90:9322 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by -[$12].[$14]
 
 $90:9325 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
 $90:9328 D0 1C       BNE $1C    [$9346]     ;} If solid collision: return
@@ -3147,7 +3147,7 @@ $90:934F 60          RTS
 }
 
 
-;;; $9350: Move Samus left by [$12].[$14] ;;;
+;;; $9350: Move Samus left by -[$12].[$14] ;;;
 {
 $90:9350 08          PHP
 $90:9351 C2 30       REP #$30
@@ -3229,7 +3229,7 @@ $90:93EB 60          RTS
 }
 
 
-;;; $93EC: Move Samus up by [$12].[$14] ;;;
+;;; $93EC: Move Samus up by -[$12].[$14] ;;;
 {
 $90:93EC 08          PHP
 $90:93ED C2 30       REP #$30

@@ -5696,11 +5696,15 @@ $A3:BEBD 60          RTS
 ;;; $BEBE: $1E.$1C = -[$18].[$16] ;;;
 {
 ; The devs *really* struggled with multi-word negation >_<;
-; Actual result is as follows
-; If [$16] != 0:
-;     $1E.$1C = -[$18].[$16]
-; Else ([$16] = 0):
-;     $1E.$1C = -1 - [$18].[$16]
+
+; Actual result is as follows:
+;     If [$18].[$16] = 0.0:
+;        Return
+;     
+;     If [$16] != 0:
+;         $1E.$1C = -[$18].[$16]
+;     Else ([$16] = 0):
+;         $1E.$1C = -1 - [$18].[$16]
 $A3:BEBE A5 16       LDA $16    [$7E:0016]  ;\
 $A3:BEC0 D0 06       BNE $06    [$BEC8]     ;|
 $A3:BEC2 A5 18       LDA $18    [$7E:0018]  ;} If [$18].[$16] = 0.0:
