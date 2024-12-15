@@ -4744,7 +4744,7 @@ $86:9EC9 38          SEC                    ;|
 $86:9ECA E9 10 00    SBC #$0010             ;} Enemy projectile X position = [enemy X position] - 10h
 $86:9ECD 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 $86:9ED0 BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
-$86:9ED3 30 10       BMI $10    [$9EE5]     ;} If [enemy $0FAE] >= 0:
+$86:9ED3 30 10       BMI $10    [$9EE5]     ;} If [enemy X velocity] >= 0:
 $86:9ED5 A9 00 04    LDA #$0400             ;\
 $86:9ED8 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 400h
 $86:9EDB BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\

@@ -8230,96 +8230,106 @@ $A8:DBC7             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 5A
 
 ;;; $DBE7..DCC6: Instruction lists ;;;
 {
-;;; $DBE7: Instruction list -  ;;;
+;;; $DBE7: Instruction list - facing left - walking ;;;
 {
-$A8:DBE7             dx DF71,       ; ???
+$A8:DBE7             dx DF71,       ; Move horizontally
                         000A,DFA2,
-                        DF71,       ; ???
+                        DF71,       ; Move horizontally
                         000A,DFC2,
-                        DF71,       ; ???
+                        DF71,       ; Move horizontally
                         000A,DFE2,
-                        DF63,       ; ???
+                        DF63,       ; Decrement step counter and move horizontally
                         000A,E007,
                         80ED,DBE7   ; Go to $DBE7
 }
 
 
-;;; $DC03: Instruction list -  ;;;
+;;; $DC03: Instruction list - facing left - spawn fireballs ;;;
 {
 $A8:DC03             dx 0014,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF33,       ; ???
+                        DF33,       ; Spawn alcoon fireball with Y velocity index 2
                         000A,E09B,
                         000A,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF1C,       ; ???
+                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0
                         000A,E09B,
                         000A,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF39,       ; ???
+                        DF39,       ; Spawn alcoon fireball with Y velocity index 4
                         0028,E09B,
-                        DF3F,       ; ???
-                        0001,E09B,
-                        7FFF,E0BB,
+                        DF3F,       ; Start walking
+                        0001,E09B
+}
+
+
+;;; $DC4B: Instruction list - facing left - airborne - looking up ;;;
+{
+$A8:DC4B             dx 7FFF,E0BB,
                         812F        ; Sleep
 }
 
 
-;;; $DC51: Instruction list -  ;;;
+;;; $DC51: Instruction list - facing left - airborne - looking forward ;;;
 {
 $A8:DC51             dx 7FFF,E007,
                         812F        ; Sleep
 }
 
 
-;;; $DC57: Instruction list -  ;;;
+;;; $DC57: Instruction list - facing right - walking ;;;
 {
-$A8:DC57             dx DF71,       ; ???
+$A8:DC57             dx DF71,       ; Move horizontally
                         000A,E0DB,
-                        DF71,       ; ???
+                        DF71,       ; Move horizontally
                         000A,E0FB,
-                        DF71,       ; ???
+                        DF71,       ; Move horizontally
                         000A,E11B,
-                        DF63,       ; ???
+                        DF63,       ; Decrement step counter and move horizontally
                         000A,E140,
                         80ED,DC57   ; Go to $DC57
 }
 
 
-;;; $DC73: Instruction list -  ;;;
+;;; $DC73: Instruction list - facing right - spawn fireballs ;;;
 {
 $A8:DC73             dx 0014,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF33,       ; ???
+                        DF33,       ; Spawn alcoon fireball with Y velocity index 2
                         000A,E1D4,
                         000A,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF1C,       ; ???
+                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0
                         000A,E1D4,
                         000A,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF39,       ; ???
+                        DF39,       ; Spawn alcoon fireball with Y velocity index 4
                         0028,E1D4,
-                        DF3F,       ; ???
-                        0001,E1D4,
-                        7FFF,E1F4,
+                        DF3F,       ; Start walking
+                        0001,E1D4
+}
+
+
+;;; $DCBB: Instruction list - facing right - airborne - looking up ;;;
+{
+$A8:DCBB             dx 7FFF,E1F4,
                         812F        ; Sleep
 }
 
 
-;;; $DCC1: Instruction list -  ;;;
+;;; $DCC1: Instruction list - facing right - airborne - looking forward ;;;
 {
 $A8:DCC1             dx 7FFF,E140,
                         812F        ; Sleep
@@ -8329,9 +8339,9 @@ $A8:DCC1             dx 7FFF,E140,
 
 ;;; $DCC7: Alcoon constants ;;;
 {
-$A8:DCC7             dw 0050
-$A8:DCC9             dw 0040
-$A8:DCCB             dw 0070
+$A8:DCC7             dw 0050 ; X threshold to emerge
+$A8:DCC9             dw 0040 ; Unused
+$A8:DCCB             dw 0070 ; X threshold to hide
 }
 
 
@@ -8339,19 +8349,19 @@ $A8:DCCB             dw 0070
 {
 $A8:DCCD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DCD0 A9 00 00    LDA #$0000             ;\
-$A8:DCD3 9F 08 78 7E STA $7E7808,x[$7E:78C8];} Enemy $7E:7808 = 0
+$A8:DCD3 9F 08 78 7E STA $7E7808,x[$7E:78C8];} Enemy step counter = 0
 $A8:DCD7 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
-$A8:DCDA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy $0FB2 = [enemy Y position]
+$A8:DCDA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy spawn Y position = [enemy Y position]
 $A8:DCDD BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
-$A8:DCE0 9F 04 78 7E STA $7E7804,x[$7E:78C4];} Enemy $7E:7804 = [enemy X position]
+$A8:DCE0 9F 04 78 7E STA $7E7804,x[$7E:78C4];} Enemy spawn X position = [enemy X position]
 $A8:DCE4 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
 $A8:DCE7 09 00 20    ORA #$2000             ;} Set enemies to process instructions
 $A8:DCEA 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $A8:DCED A9 E7 DB    LDA #$DBE7             ;\
-$A8:DCF0 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $DBE7
+$A8:DCF0 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $DBE7 (facing left - walking)
 $A8:DCF3 A9 71 DD    LDA #$DD71             ;\
-$A8:DCF6 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $DD71
-$A8:DCF9 20 37 DD    JSR $DD37  [$A8:DD37]  ; Execute $DD37
+$A8:DCF6 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $DD71 (wait for Samus to get near)
+$A8:DCF9 20 37 DD    JSR $DD37  [$A8:DD37]  ; Set up jump movement
 
 ; LOOP_RISING
 $A8:DCFC BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
@@ -8361,7 +8371,7 @@ $A8:DD03 9D 80 0F    STA $0F80,x[$7E:1040]  ;} Enemy Y position += [enemy Y velo
 $A8:DD06 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;|
 $A8:DD09 7D 7E 0F    ADC $0F7E,x[$7E:103E]  ;|
 $A8:DD0C 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
-$A8:DD0F 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
+$A8:DD0F 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
 $A8:DD12 30 E8       BMI $E8    [$DCFC]     ; If [enemy Y velocity] < 0: go to LOOP_RISING
 
 ; LOOP_FALLING
@@ -8371,25 +8381,25 @@ $A8:DD19 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y veloc
 $A8:DD1C 85 14       STA $14    [$7E:0014]  ;|
 $A8:DD1E 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:DD22 B0 05       BCS $05    [$DD29]     ; If not collided with block:
-$A8:DD24 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
+$A8:DD24 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
 $A8:DD27 80 EB       BRA $EB    [$DD14]     ; Go to LOOP_FALLING
 
 $A8:DD29 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
-$A8:DD2C 9F 06 78 7E STA $7E7806,x[$7E:78C6];} Enemy $7E:7806 = [enemy Y position]
+$A8:DD2C 9F 06 78 7E STA $7E7806,x[$7E:78C6];} Enemy landing Y position = [enemy Y position]
 $A8:DD30 BD B2 0F    LDA $0FB2,x[$7E:1072]  ;\
-$A8:DD33 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;} Enemy Y position = [enemy $0FB2]
+$A8:DD33 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;} Enemy Y position = [enemy spawn Y position]
 $A8:DD36 6B          RTL
 }
 
 
-;;; $DD37:  ;;;
+;;; $DD37: Set up jump movement ;;;
 {
 $A8:DD37 A9 F4 FF    LDA #$FFF4             ;\
 $A8:DD3A 9D AA 0F    STA $0FAA,x[$7E:106A]  ;|
 $A8:DD3D A9 00 00    LDA #$0000             ;} Enemy Y velocity = -C.0h
 $A8:DD40 9D AC 0F    STA $0FAC,x[$7E:106C]  ;/
-$A8:DD43 9D AE 0F    STA $0FAE,x[$7E:106E]  ; Enemy $0FAE = 0
-$A8:DD46 9D B0 0F    STA $0FB0,x[$7E:1070]  ; Enemy $0FB0 = 0
+$A8:DD43 9D AE 0F    STA $0FAE,x[$7E:106E]  ; Enemy X velocity = 0
+$A8:DD46 9D B0 0F    STA $0FB0,x[$7E:1070]  ; Enemy $0FB0 = 0 (never read)
 $A8:DD49 9F 00 78 7E STA $7E7800,x[$7E:78C0];\
 $A8:DD4D A9 00 80    LDA #$8000             ;} Enemy Y acceleration = 0.8000h
 $A8:DD50 9F 02 78 7E STA $7E7802,x[$7E:78C2];/
@@ -8397,7 +8407,7 @@ $A8:DD54 60          RTS
 }
 
 
-;;; $DD55: Accelerate alcoon ;;;
+;;; $DD55: Alcoon Y acceleration ;;;
 {
 $A8:DD55 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A8:DD58 18          CLC                    ;|
@@ -8417,34 +8427,34 @@ $A8:DD6E 7C A8 0F    JMP ($0FA8,x)[$A8:DD71]; Go to [enemy function]
 }
 
 
-;;; $DD71: Alcoon function -  ;;;
+;;; $DD71: Alcoon function - wait for Samus to get near ;;;
 {
-$A8:DD71 BF 06 78 7E LDA $7E7806,x[$7E:78C6]
-$A8:DD75 38          SEC
-$A8:DD76 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A8:DD79 10 04       BPL $04    [$DD7F]
-$A8:DD7B 49 FF FF    EOR #$FFFF
-$A8:DD7E 1A          INC A
-
-$A8:DD7F C9 20 00    CMP #$0020
-$A8:DD82 10 3F       BPL $3F    [$DDC3]
-$A8:DD84 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:DD87 38          SEC
-$A8:DD88 FD 7A 0F    SBC $0F7A,x[$7E:10BA]
-$A8:DD8B 08          PHP
-$A8:DD8C 10 04       BPL $04    [$DD92]
-$A8:DD8E 49 FF FF    EOR #$FFFF
-$A8:DD91 1A          INC A
-
-$A8:DD92 CD C7 DC    CMP $DCC7  [$A8:DCC7]
-$A8:DD95 10 2D       BPL $2D    [$DDC4]
-$A8:DD97 20 37 DD    JSR $DD37  [$A8:DD37]
-$A8:DD9A A0 4B DC    LDY #$DC4B
-$A8:DD9D A9 FE FF    LDA #$FFFE
-$A8:DDA0 28          PLP
-$A8:DDA1 30 06       BMI $06    [$DDA9]
-$A8:DDA3 A0 BB DC    LDY #$DCBB
-$A8:DDA6 A9 02 00    LDA #$0002
+$A8:DD71 BF 06 78 7E LDA $7E7806,x[$7E:78C6];\
+$A8:DD75 38          SEC                    ;|
+$A8:DD76 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$A8:DD79 10 04       BPL $04    [$DD7F]     ;|
+$A8:DD7B 49 FF FF    EOR #$FFFF             ;} If |[enemy landing Y position] - [Samus Y position]| >= 20h: return
+$A8:DD7E 1A          INC A                  ;|
+                                            ;|
+$A8:DD7F C9 20 00    CMP #$0020             ;|
+$A8:DD82 10 3F       BPL $3F    [$DDC3]     ;/
+$A8:DD84 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:DD87 38          SEC                    ;|
+$A8:DD88 FD 7A 0F    SBC $0F7A,x[$7E:10BA]  ;|
+$A8:DD8B 08          PHP                    ;|
+$A8:DD8C 10 04       BPL $04    [$DD92]     ;|
+$A8:DD8E 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] - [enemy X position]| >= 50h: return
+$A8:DD91 1A          INC A                  ;|
+                                            ;|
+$A8:DD92 CD C7 DC    CMP $DCC7  [$A8:DCC7]  ;|
+$A8:DD95 10 2D       BPL $2D    [$DDC4]     ;/
+$A8:DD97 20 37 DD    JSR $DD37  [$A8:DD37]  ; Set up jump movement
+$A8:DD9A A0 4B DC    LDY #$DC4B             ; Enemy instruction list pointer = $DC4B (facing left - airborne - looking up)
+$A8:DD9D A9 FE FF    LDA #$FFFE             ; Enemy X velocity = -2
+$A8:DDA0 28          PLP                    ;\
+$A8:DDA1 30 06       BMI $06    [$DDA9]     ;} If [Samus X position] >= [enemy X position]:
+$A8:DDA3 A0 BB DC    LDY #$DCBB             ; Enemy instruction list pointer = $DCBB (airborne - looking up)
+$A8:DDA6 A9 02 00    LDA #$0002             ; Enemy X velocity = 2
 
 $A8:DDA9 9D AE 0F    STA $0FAE,x[$7E:10EE]
 $A8:DDAC 98          TYA
@@ -8452,7 +8462,7 @@ $A8:DDAD 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:DDB0 A9 01 00    LDA #$0001             ;\
 $A8:DDB3 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A8:DDB6 A9 C6 DD    LDA #$DDC6             ;\
-$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DDC6
+$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DDC6 (emerging - rising)
 $A8:DDBC A9 5E 00    LDA #$005E             ;\
 $A8:DDBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (alcoon spawns)
 
@@ -8463,24 +8473,25 @@ $A8:DDC5 6B          RTL
 }
 
 
-;;; $DDC6: Alcoon function -  ;;;
+;;; $DDC6: Alcoon function - emerging - rising ;;;
 {
-$A8:DDC6 BD AC 0F    LDA $0FAC,x[$7E:10EC]
-$A8:DDC9 18          CLC
-$A8:DDCA 7D 80 0F    ADC $0F80,x[$7E:10C0]
-$A8:DDCD 9D 80 0F    STA $0F80,x[$7E:10C0]
-$A8:DDD0 BD AA 0F    LDA $0FAA,x[$7E:10EA]
-$A8:DDD3 7D 7E 0F    ADC $0F7E,x[$7E:10BE]
-$A8:DDD6 9D 7E 0F    STA $0F7E,x[$7E:10BE]
-$A8:DDD9 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
-$A8:DDDC 30 1B       BMI $1B    [$DDF9]
+$A8:DDC6 BD AC 0F    LDA $0FAC,x[$7E:10EC]  ;\
+$A8:DDC9 18          CLC                    ;|
+$A8:DDCA 7D 80 0F    ADC $0F80,x[$7E:10C0]  ;|
+$A8:DDCD 9D 80 0F    STA $0F80,x[$7E:10C0]  ;} Enemy Y position += [enemy Y velocity]
+$A8:DDD0 BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;|
+$A8:DDD3 7D 7E 0F    ADC $0F7E,x[$7E:10BE]  ;|
+$A8:DDD6 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;/
+$A8:DDD9 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
+$A8:DDDC 30 1B       BMI $1B    [$DDF9]     ; If [enemy Y velocity] < 0: return
 
+; BRANCH_FALLING
 $A8:DDDE A9 05 DE    LDA #$DE05             ;\
-$A8:DDE1 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE05
-$A8:DDE4 A0 51 DC    LDY #$DC51
-$A8:DDE7 BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A8:DDEA 30 03       BMI $03    [$DDEF]
-$A8:DDEC A0 C1 DC    LDY #$DCC1
+$A8:DDE1 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE05 (falling)
+$A8:DDE4 A0 51 DC    LDY #$DC51             ; Enemy instruction list pointer = $DC51 (facing left - airborne - looking forward)
+$A8:DDE7 BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A8:DDEA 30 03       BMI $03    [$DDEF]     ;} If [enemy X velocity] >= 0:
+$A8:DDEC A0 C1 DC    LDY #$DCC1             ; Enemy instruction list pointer = $DCC1 (facing right - airborne - looking forward)
 
 $A8:DDEF 98          TYA
 $A8:DDF0 9D 92 0F    STA $0F92,x[$7E:10D2]
@@ -8488,19 +8499,16 @@ $A8:DDF3 A9 01 00    LDA #$0001             ;\
 $A8:DDF6 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 
 $A8:DDF9 6B          RTL
+
+; Nothing points here
+$A8:DDFA A9 00 00    LDA #$0000             ;\
+$A8:DDFD 9D AA 0F    STA $0FAA,x            ;} Enemy Y velocity = 0.0
+$A8:DE00 9D AC 0F    STA $0FAC,x            ;/
+$A8:DE03 80 D9       BRA $D9    [$DDDE]     ; Go to BRANCH_FALLING
 }
 
 
-;;; $DDFA:  ;;;
-{
-$A8:DDFA A9 00 00    LDA #$0000
-$A8:DDFD 9D AA 0F    STA $0FAA,x
-$A8:DE00 9D AC 0F    STA $0FAC,x
-$A8:DE03 80 D9       BRA $D9    [$DDDE]
-}
-
-
-;;; $DE05: Alcoon function -  ;;;
+;;; $DE05: Alcoon function - emerging - falling ;;;
 {
 $A8:DE05 BD AC 0F    LDA $0FAC,x[$7E:10EC]  ;\
 $A8:DE08 85 12       STA $12    [$7E:0012]  ;|
@@ -8508,19 +8516,19 @@ $A8:DE0A BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;} Move enemy down by [enemy Y veloc
 $A8:DE0D 85 14       STA $14    [$7E:0014]  ;|
 $A8:DE0F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:DE13 B0 04       BCS $04    [$DE19]     ; If not collided with block:
-$A8:DE15 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
-$A8:DE18 6B          RTL
+$A8:DE15 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
+$A8:DE18 6B          RTL                    ; Return
 
-$A8:DE19 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:DE1C 38          SEC
-$A8:DE1D FD 7A 0F    SBC $0F7A,x[$7E:10BA]
+$A8:DE19 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:DE1C 38          SEC                    ;} A = [Samus X position] - [enemy X position]
+$A8:DE1D FD 7A 0F    SBC $0F7A,x[$7E:10BA]  ;/
 $A8:DE20 08          PHP
-$A8:DE21 A0 E7 DB    LDY #$DBE7
-$A8:DE24 A9 FE FF    LDA #$FFFE
+$A8:DE21 A0 E7 DB    LDY #$DBE7             ; Enemy instruction list pointer = $DBE7 (facing left - walking)
+$A8:DE24 A9 FE FF    LDA #$FFFE             ; Enemy X velocity = -2
 $A8:DE27 28          PLP
-$A8:DE28 30 06       BMI $06    [$DE30]
-$A8:DE2A A9 02 00    LDA #$0002
-$A8:DE2D A0 57 DC    LDY #$DC57
+$A8:DE28 30 06       BMI $06    [$DE30]     ; If [Samus X position] >= [enemy X position]:
+$A8:DE2A A9 02 00    LDA #$0002             ; Enemy X velocity = 2
+$A8:DE2D A0 57 DC    LDY #$DC57             ; Enemy instruction list pointer = $DC57 (facing right - walking)
 
 $A8:DE30 9D AE 0F    STA $0FAE,x[$7E:10EE]
 $A8:DE33 98          TYA
@@ -8529,70 +8537,73 @@ $A8:DE37 A9 01 00    LDA #$0001             ;\
 $A8:DE3A 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A8:DE3D A9 4B DE    LDA #$DE4B             ;\
 $A8:DE40 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B
-$A8:DE43 A9 01 00    LDA #$0001
-$A8:DE46 9F 08 78 7E STA $7E7808,x[$7E:7948]
+$A8:DE43 A9 01 00    LDA #$0001             ;\
+$A8:DE46 9F 08 78 7E STA $7E7808,x[$7E:7948];} Enemy step counter = 1
 $A8:DE4A 6B          RTL
 }
 
 
-;;; $DE4B: Alcoon function -  ;;;
+;;; $DE4B: Alcoon function - emerged ;;;
 {
 $A8:DE4B 64 12       STZ $12    [$7E:0012]  ;\
 $A8:DE4D A9 02 00    LDA #$0002             ;|
 $A8:DE50 85 14       STA $14    [$7E:0014]  ;} Move enemy down by 2.0
 $A8:DE52 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A8:DE56 BF 04 78 7E LDA $7E7804,x[$7E:7944]
-$A8:DE5A 38          SEC
-$A8:DE5B FD 7A 0F    SBC $0F7A,x[$7E:10BA]
-$A8:DE5E 10 04       BPL $04    [$DE64]
-$A8:DE60 49 FF FF    EOR #$FFFF
-$A8:DE63 1A          INC A
-
-$A8:DE64 CD CB DC    CMP $DCCB  [$A8:DCCB]
-$A8:DE67 10 3B       BPL $3B    [$DEA4]
-$A8:DE69 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:DE6C 38          SEC
-$A8:DE6D FD 7A 0F    SBC $0F7A,x[$7E:10BA]
+$A8:DE56 BF 04 78 7E LDA $7E7804,x[$7E:7944];\
+$A8:DE5A 38          SEC                    ;|
+$A8:DE5B FD 7A 0F    SBC $0F7A,x[$7E:10BA]  ;|
+$A8:DE5E 10 04       BPL $04    [$DE64]     ;|
+$A8:DE60 49 FF FF    EOR #$FFFF             ;} If |[enemy spawn X position] - [enemy X position]| >= 70h: go to BRANCH_FAR_AWAY
+$A8:DE63 1A          INC A                  ;|
+                                            ;|
+$A8:DE64 CD CB DC    CMP $DCCB  [$A8:DCCB]  ;|
+$A8:DE67 10 3B       BPL $3B    [$DEA4]     ;/
+$A8:DE69 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:DE6C 38          SEC                    ;} A = [Samus X position] - [enemy X position]
+$A8:DE6D FD 7A 0F    SBC $0F7A,x[$7E:10BA]  ;/
 $A8:DE70 08          PHP
-$A8:DE71 10 04       BPL $04    [$DE77]
-$A8:DE73 49 FF FF    EOR #$FFFF
-$A8:DE76 1A          INC A
+$A8:DE71 10 04       BPL $04    [$DE77]     ;\
+$A8:DE73 49 FF FF    EOR #$FFFF             ;} >_<;
+$A8:DE76 1A          INC A                  ;/
 
-$A8:DE77 BF 08 78 7E LDA $7E7808,x[$7E:7948]
-$A8:DE7B D0 0C       BNE $0C    [$DE89]
+$A8:DE77 BF 08 78 7E LDA $7E7808,x[$7E:7948];\
+$A8:DE7B D0 0C       BNE $0C    [$DE89]     ;} If [enemy step counter] != 0: return
 $A8:DE7D 28          PLP
-$A8:DE7E 30 0B       BMI $0B    [$DE8B]
-$A8:DE80 A0 73 DC    LDY #$DC73
-$A8:DE83 BD AE 0F    LDA $0FAE,x[$7E:10AE]
-$A8:DE86 10 0B       BPL $0B    [$DE93]
-$A8:DE88 6B          RTL
+$A8:DE7E 30 0B       BMI $0B    [$DE8B]     ; If [Samus X position] < [enemy X position]: go to BRANCH_LEFT
+$A8:DE80 A0 73 DC    LDY #$DC73             ; Y = $DC73 (facing right - spawn fireballs)
+$A8:DE83 BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;\
+$A8:DE86 10 0B       BPL $0B    [$DE93]     ;} If [enemy X velocity] >= 0: go to BRANCH_FIREBALLS
+$A8:DE88 6B          RTL                    ; Return
 
 $A8:DE89 28          PLP
 $A8:DE8A 6B          RTL
 
-$A8:DE8B A0 03 DC    LDY #$DC03
-$A8:DE8E BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A8:DE91 10 10       BPL $10    [$DEA3]
+; BRANCH_LEFT
+$A8:DE8B A0 03 DC    LDY #$DC03             ; Y = $DC03 (facing left - spawn fireballs)
+$A8:DE8E BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A8:DE91 10 10       BPL $10    [$DEA3]     ;} If [enemy X velocity] >= 0: return
 
-$A8:DE93 98          TYA
-$A8:DE94 9D 92 0F    STA $0F92,x[$7E:10D2]
+; BRANCH_FIREBALLS
+$A8:DE93 98          TYA                    ;\
+$A8:DE94 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = [Y]
 $A8:DE97 A9 01 00    LDA #$0001             ;\
 $A8:DE9A 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A8:DE9D A9 CC DE    LDA #$DECC             ;\
 $A8:DEA0 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = RTL
 
-$A8:DEA3 6B          RTL
+$A8:DEA3 6B          RTL                    ; Return
 
+; BRANCH_FAR_AWAY
 $A8:DEA4 A9 CD DE    LDA #$DECD             ;\
-$A8:DEA7 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DECD
-$A8:DEAA A9 FC FF    LDA #$FFFC
-$A8:DEAD 9D AA 0F    STA $0FAA,x
-$A8:DEB0 A9 00 00    LDA #$0000
-$A8:DEB3 9D AC 0F    STA $0FAC,x
-$A8:DEB6 A0 51 DC    LDY #$DC51
-$A8:DEB9 BD AE 0F    LDA $0FAE,x
-$A8:DEBC 30 03       BMI $03    [$DEC1]
-$A8:DEBE A0 C1 DC    LDY #$DCC1
+$A8:DEA7 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DECD (hiding - rising)
+$A8:DEAA A9 FC FF    LDA #$FFFC             ;\
+$A8:DEAD 9D AA 0F    STA $0FAA,x            ;|
+$A8:DEB0 A9 00 00    LDA #$0000             ;} Enemy Y velocity = -4.0
+$A8:DEB3 9D AC 0F    STA $0FAC,x            ;/
+$A8:DEB6 A0 51 DC    LDY #$DC51             ; Enemy instruction list pointer = $DC51 (facing left - airborne - looking forward)
+$A8:DEB9 BD AE 0F    LDA $0FAE,x            ;\
+$A8:DEBC 30 03       BMI $03    [$DEC1]     ;} If [enemy X velocity] >= 0:
+$A8:DEBE A0 C1 DC    LDY #$DCC1             ; Enemy instruction list pointer = $DCC1 (facing right - airborne - looking forward)
 
 $A8:DEC1 98          TYA
 $A8:DEC2 9D 92 0F    STA $0F92,x
@@ -8608,55 +8619,63 @@ $A8:DECC 6B          RTL
 }
 
 
-;;; $DECD: Alcoon function -  ;;;
+;;; $DECD: Alcoon function - hiding - rising ;;;
 {
-$A8:DECD BD AC 0F    LDA $0FAC,x
-$A8:DED0 18          CLC
-$A8:DED1 7D 80 0F    ADC $0F80,x
-$A8:DED4 9D 80 0F    STA $0F80,x
-$A8:DED7 BD AA 0F    LDA $0FAA,x
-$A8:DEDA 7D 7E 0F    ADC $0F7E,x
-$A8:DEDD 9D 7E 0F    STA $0F7E,x
-$A8:DEE0 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
-$A8:DEE3 30 06       BMI $06    [$DEEB]
+$A8:DECD BD AC 0F    LDA $0FAC,x            ;\
+$A8:DED0 18          CLC                    ;|
+$A8:DED1 7D 80 0F    ADC $0F80,x            ;|
+$A8:DED4 9D 80 0F    STA $0F80,x            ;} Enemy Y position += [enemy Y velocity]
+$A8:DED7 BD AA 0F    LDA $0FAA,x            ;|
+$A8:DEDA 7D 7E 0F    ADC $0F7E,x            ;|
+$A8:DEDD 9D 7E 0F    STA $0F7E,x            ;/
+$A8:DEE0 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
+$A8:DEE3 30 06       BMI $06    [$DEEB]     ; If [enemy Y velocity] >= 0:
 $A8:DEE5 A9 EC DE    LDA #$DEEC             ;\
-$A8:DEE8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DEEC
+$A8:DEE8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DEEC (falling)
 
 $A8:DEEB 6B          RTL
 }
 
 
-;;; $DEEC: Alcoon function -  ;;;
+;;; $DEEC: Alcoon function - hiding - falling ;;;
 {
-$A8:DEEC BD AC 0F    LDA $0FAC,x
-$A8:DEEF 18          CLC
-$A8:DEF0 7D 80 0F    ADC $0F80,x
-$A8:DEF3 9D 80 0F    STA $0F80,x
-$A8:DEF6 BD AA 0F    LDA $0FAA,x
-$A8:DEF9 7D 7E 0F    ADC $0F7E,x
-$A8:DEFC 9D 7E 0F    STA $0F7E,x
-$A8:DEFF DD B2 0F    CMP $0FB2,x
-$A8:DF02 10 04       BPL $04    [$DF08]
-$A8:DF04 20 55 DD    JSR $DD55  [$A8:DD55]  ; Accelerate alcoon
-$A8:DF07 6B          RTL
+$A8:DEEC BD AC 0F    LDA $0FAC,x            ;\
+$A8:DEEF 18          CLC                    ;|
+$A8:DEF0 7D 80 0F    ADC $0F80,x            ;|
+$A8:DEF3 9D 80 0F    STA $0F80,x            ;} Enemy Y position += [enemy Y velocity]
+$A8:DEF6 BD AA 0F    LDA $0FAA,x            ;|
+$A8:DEF9 7D 7E 0F    ADC $0F7E,x            ;|
+$A8:DEFC 9D 7E 0F    STA $0F7E,x            ;/
+$A8:DEFF DD B2 0F    CMP $0FB2,x            ;\
+$A8:DF02 10 04       BPL $04    [$DF08]     ;} If [enemy Y position] < [enemy spawn Y position]:
+$A8:DF04 20 55 DD    JSR $DD55  [$A8:DD55]  ; Alcoon Y acceleration
+$A8:DF07 6B          RTL                    ; Return
 
-$A8:DF08 BD B2 0F    LDA $0FB2,x
-$A8:DF0B 9D 7E 0F    STA $0F7E,x
-$A8:DF0E BF 04 78 7E LDA $7E7804,x
-$A8:DF12 9D 7A 0F    STA $0F7A,x
+$A8:DF08 BD B2 0F    LDA $0FB2,x            ;\
+$A8:DF0B 9D 7E 0F    STA $0F7E,x            ;} Enemy Y position = [enemy spawn Y position]
+$A8:DF0E BF 04 78 7E LDA $7E7804,x          ;\
+$A8:DF12 9D 7A 0F    STA $0F7A,x            ;} Enemy X position = [enemy spawn X position]
 $A8:DF15 A9 71 DD    LDA #$DD71             ;\
-$A8:DF18 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DD71
+$A8:DF18 9D A8 0F    STA $0FA8,x            ;} Enemy function = $DD71 (wait for Samus to get near)
 $A8:DF1B 6B          RTL
 }
 
 
 ;;; $DF1C..9B: Instructions ;;;
 {
-;;; $DF1C: Instruction ;;;
+;;; $DF1C: Instruction - spawn alcoon fireball with Y velocity index 0 ;;;
 {
 $A8:DF1C 5A          PHY
-$A8:DF1D A9 00 00    LDA #$0000
+$A8:DF1D A9 00 00    LDA #$0000             ; A = 0 (Y velocity index)
+}
 
+
+;;; $DF20: Spawn alcoon fireball with Y velocity index [A] ;;;
+{
+;; Parameters:
+;;     A: Y velocity index
+
+; Expects a pushed Y
 $A8:DF20 A0 90 9E    LDY #$9E90             ;\
 $A8:DF23 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn alcoon fireball enemy projectile
 $A8:DF26 22 27 80 86 JSL $868027[$86:8027]  ;/
@@ -8667,53 +8686,53 @@ $A8:DF32 6B          RTL
 }
 
 
-;;; $DF33: Instruction ;;;
+;;; $DF33: Instruction - spawn alcoon fireball with Y velocity index 2 ;;;
 {
 $A8:DF33 5A          PHY
-$A8:DF34 A9 02 00    LDA #$0002
-$A8:DF37 80 E7       BRA $E7    [$DF20]
+$A8:DF34 A9 02 00    LDA #$0002             ; A = 2 (Y velocity index)
+$A8:DF37 80 E7       BRA $E7    [$DF20]     ; Go to spawn alcoon fireball
 }
 
 
-;;; $DF39: Instruction ;;;
+;;; $DF39: Instruction - spawn alcoon fireball with Y velocity index 4 ;;;
 {
 $A8:DF39 5A          PHY
-$A8:DF3A A9 04 00    LDA #$0004
-$A8:DF3D 80 E1       BRA $E1    [$DF20]
+$A8:DF3A A9 04 00    LDA #$0004             ; A = 4 (Y velocity index)
+$A8:DF3D 80 E1       BRA $E1    [$DF20]     ; Go to spawn alcoon fireball
 }
 
 
-;;; $DF3F: Instruction ;;;
+;;; $DF3F: Instruction - start walking ;;;
 {
 $A8:DF3F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DF42 A9 4B DE    LDA #$DE4B             ;\
-$A8:DF45 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B
-$A8:DF48 AD E5 05    LDA $05E5  [$7E:05E5]
-$A8:DF4B 29 03 00    AND #$0003
-$A8:DF4E D0 03       BNE $03    [$DF53]
-$A8:DF50 A9 02 00    LDA #$0002
+$A8:DF45 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B (emerged)
+$A8:DF48 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A8:DF4B 29 03 00    AND #$0003             ;} A = [random number] % 4
+$A8:DF4E D0 03       BNE $03    [$DF53]     ; If [A] = 0:
+$A8:DF50 A9 02 00    LDA #$0002             ; A = 2
 
-$A8:DF53 9F 08 78 7E STA $7E7808,x[$7E:7948]
-$A8:DF57 A0 E7 DB    LDY #$DBE7
-$A8:DF5A BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A8:DF5D 30 03       BMI $03    [$DF62]
-$A8:DF5F A0 57 DC    LDY #$DC57
+$A8:DF53 9F 08 78 7E STA $7E7808,x[$7E:7948]; Enemy step counter = [A]
+$A8:DF57 A0 E7 DB    LDY #$DBE7             ; Y = $DBE7 (facing left - walking)
+$A8:DF5A BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A8:DF5D 30 03       BMI $03    [$DF62]     ;} If [enemy X velocity] >= 0:
+$A8:DF5F A0 57 DC    LDY #$DC57             ; Y = $DC57 (facing right - walking)
 
 $A8:DF62 6B          RTL
 }
 
 
-;;; $DF63: Instruction ;;;
+;;; $DF63: Instruction - decrement step counter and move horizontally ;;;
 {
 $A8:DF63 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:DF66 BF 08 78 7E LDA $7E7808,x[$7E:78C8]
-$A8:DF6A F0 05       BEQ $05    [$DF71]
-$A8:DF6C 3A          DEC A
-$A8:DF6D 9F 08 78 7E STA $7E7808,x[$7E:7948]
+$A8:DF66 BF 08 78 7E LDA $7E7808,x[$7E:78C8];\
+$A8:DF6A F0 05       BEQ $05    [$DF71]     ;} If [enemy step counter] != 0:
+$A8:DF6C 3A          DEC A                  ;\
+$A8:DF6D 9F 08 78 7E STA $7E7808,x[$7E:7948];} Decrement step counter
 }
 
 
-;;; $DF71: Instruction ;;;
+;;; $DF71: Instruction - move horizontally ;;;
 {
 $A8:DF71 5A          PHY
 $A8:DF72 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -8724,17 +8743,17 @@ $A8:DF7C 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A8:DF80 B0 06       BCS $06    [$DF88]     ; If not collided with wall:
 $A8:DF82 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A8:DF86 7A          PLY
-$A8:DF87 6B          RTL
+$A8:DF87 6B          RTL                    ; Return
 
 $A8:DF88 7A          PLY
-$A8:DF89 A0 E9 DB    LDY #$DBE9
-$A8:DF8C BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A8:DF8F 10 03       BPL $03    [$DF94]
-$A8:DF91 A0 59 DC    LDY #$DC59
+$A8:DF89 A0 E9 DB    LDY #$DBE9             ; Y = $DBE9
+$A8:DF8C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A8:DF8F 10 03       BPL $03    [$DF94]     ;} If [enemy X velocity] < 0:
+$A8:DF91 A0 59 DC    LDY #$DC59             ; Y = $DC59
 
-$A8:DF94 49 FF FF    EOR #$FFFF
-$A8:DF97 1A          INC A
-$A8:DF98 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A8:DF94 49 FF FF    EOR #$FFFF             ;\
+$A8:DF97 1A          INC A                  ;} Negate enemy X velocity
+$A8:DF98 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 $A8:DF9B 6B          RTL
 }
 }
@@ -8774,7 +8793,7 @@ $A8:E1A5             dx 0009, 01F8,F0,613B, 01FA,FB,613D, 01FA,F3,613C, 81EB,FC,
 $A8:E1D4             dx 0006, 81F3,F3,6124, 81EC,FC,6122, 000A,F0,612B, 81F8,08,6106, 81F8,F8,610A, 81FA,E8,6100
 $A8:E1F4             dx 0006, 81F3,F3,6124, 01FE,E4,213A, 81F6,EC,6128, 81EC,FC,6122, 81F8,08,6108, 81F8,F8,610A
 
-; Unused
+; Unused. X flipped version of the alcoon fireball enemy projectile
 $A8:E214             dx 0001, 01FC,FC,612C
 $A8:E21B             dx 0001, 01FC,FC,E12D
 $A8:E222             dx 0001, 01FC,FC,A12C
@@ -8804,7 +8823,7 @@ $A8:E2F0             dw 3800,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 
 ;;; $E310..7F: Instruction lists - atomic ;;;
 {
-;;; $E310: Instruction list -  ;;;
+;;; $E310: Instruction list - spinning up-right ;;;
 {
 $A8:E310             dx 0008,E489,
                         0008,E49F,
@@ -8816,7 +8835,7 @@ $A8:E310             dx 0008,E489,
 }
 
 
-;;; $E32C: Instruction list -  ;;;
+;;; $E32C: Instruction list - spinning up-left ;;;
 {
 $A8:E32C             dx 0008,E508,
                         0008,E51E,
@@ -8828,7 +8847,7 @@ $A8:E32C             dx 0008,E508,
 }
 
 
-;;; $E348: Instruction list -  ;;;
+;;; $E348: Instruction list - spinning down-left ;;;
 {
 $A8:E348             dx 0008,E4F2,
                         0008,E4E1,
@@ -8840,7 +8859,7 @@ $A8:E348             dx 0008,E4F2,
 }
 
 
-;;; $E364: Instruction list -  ;;;
+;;; $E364: Instruction list - spinning down-right ;;;
 {
 $A8:E364             dx 0008,E571,
                         0008,E560,
@@ -8855,6 +8874,7 @@ $A8:E364             dx 0008,E571,
 
 ;;; $E380: Atomic instruction list pointers ;;;
 {
+; Indexed by [enemy parameter 1] * 2
 $A8:E380             dw E310, E32C, E348, E364
 }
 
@@ -8865,24 +8885,24 @@ $A8:E388 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E38B A9 01 00    LDA #$0001             ;\
 $A8:E38E 9D 94 0F    STA $0F94,x[$7E:16D4]  ;} Enemy instruction timer = 1
 $A8:E391 9E 90 0F    STZ $0F90,x[$7E:16D0]  ; Enemy timer = 0
-$A8:E394 BD B4 0F    LDA $0FB4,x[$7E:16F4]
-$A8:E397 0A          ASL A
-$A8:E398 A8          TAY
-$A8:E399 B9 80 E3    LDA $E380,y[$A8:E380]
-$A8:E39C 9D 92 0F    STA $0F92,x[$7E:16D2]
-$A8:E39F BD B6 0F    LDA $0FB6,x[$7E:16F6]
-$A8:E3A2 0A          ASL A
-$A8:E3A3 0A          ASL A
-$A8:E3A4 0A          ASL A
-$A8:E3A5 A8          TAY
-$A8:E3A6 B9 87 81    LDA $8187,y[$A8:8187]
-$A8:E3A9 9F 02 78 7E STA $7E7802,x[$7E:7F42]
-$A8:E3AD B9 89 81    LDA $8189,y[$A8:8189]
-$A8:E3B0 9F 00 78 7E STA $7E7800,x[$7E:7F40]
-$A8:E3B4 B9 8B 81    LDA $818B,y[$A8:818B]
-$A8:E3B7 9F 06 78 7E STA $7E7806,x[$7E:7F46]
-$A8:E3BB B9 8D 81    LDA $818D,y[$A8:818D]
-$A8:E3BE 9F 04 78 7E STA $7E7804,x[$7E:7F44]
+$A8:E394 BD B4 0F    LDA $0FB4,x[$7E:16F4]  ;\
+$A8:E397 0A          ASL A                  ;|
+$A8:E398 A8          TAY                    ;} Enemy instruction list pointer = [$E380 + [enemy parameter 1] * 2]
+$A8:E399 B9 80 E3    LDA $E380,y[$A8:E380]  ;|
+$A8:E39C 9D 92 0F    STA $0F92,x[$7E:16D2]  ;/
+$A8:E39F BD B6 0F    LDA $0FB6,x[$7E:16F6]  ;\
+$A8:E3A2 0A          ASL A                  ;|
+$A8:E3A3 0A          ASL A                  ;} Y = [enemy parameter 2] * 8 (linear speed table index)
+$A8:E3A4 0A          ASL A                  ;|
+$A8:E3A5 A8          TAY                    ;/
+$A8:E3A6 B9 87 81    LDA $8187,y[$A8:8187]  ;\
+$A8:E3A9 9F 02 78 7E STA $7E7802,x[$7E:7F42];|
+$A8:E3AD B9 89 81    LDA $8189,y[$A8:8189]  ;} Enemy speed = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A8:E3B0 9F 00 78 7E STA $7E7800,x[$7E:7F40];/
+$A8:E3B4 B9 8B 81    LDA $818B,y[$A8:818B]  ;\
+$A8:E3B7 9F 06 78 7E STA $7E7806,x[$7E:7F46];|
+$A8:E3BB B9 8D 81    LDA $818D,y[$A8:818D]  ;} Enemy negated speed = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A8:E3BE 9F 04 78 7E STA $7E7804,x[$7E:7F44];/
 $A8:E3C2 6B          RTL
 }
 
@@ -8890,124 +8910,124 @@ $A8:E3C2 6B          RTL
 ;;; $E3C3: Main AI - enemy $E9FF (atomic) ;;;
 {
 $A8:E3C3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E3C6 20 D9 E3    JSR $E3D9  [$A8:E3D9]
-$A8:E3C9 20 EF E3    JSR $E3EF  [$A8:E3EF]
+$A8:E3C6 20 D9 E3    JSR $E3D9  [$A8:E3D9]  ; Set atomic Y movement function
+$A8:E3C9 20 EF E3    JSR $E3EF  [$A8:E3EF]  ; Set atomic X movement function
 $A8:E3CC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E3CF FC A8 0F    JSR ($0FA8,x)[$A8:E405]
+$A8:E3CF FC A8 0F    JSR ($0FA8,x)[$A8:E405]; Execute [enemy Y movement function]
 $A8:E3D2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E3D5 FC AA 0F    JSR ($0FAA,x)[$A8:E462]
+$A8:E3D5 FC AA 0F    JSR ($0FAA,x)[$A8:E462]; Execute [enemy X movement function]
 $A8:E3D8 6B          RTL
 }
 
 
-;;; $E3D9:  ;;;
+;;; $E3D9: Set atomic Y movement function ;;;
 {
 $A8:E3D9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E3DC A9 05 E4    LDA #$E405
-$A8:E3DF 9D A8 0F    STA $0FA8,x[$7E:16E8]
+$A8:E3DC A9 05 E4    LDA #$E405             ;\
+$A8:E3DF 9D A8 0F    STA $0FA8,x[$7E:16E8]  ;} Enemy Y movement function = $E405 (move up)
 $A8:E3E2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $A8:E3E6 30 06       BMI $06    [$E3EE]     ;} If [Samus Y position] >= [enemy Y position]:
-$A8:E3E8 A9 24 E4    LDA #$E424
-$A8:E3EB 9D A8 0F    STA $0FA8,x[$7E:16E8]
+$A8:E3E8 A9 24 E4    LDA #$E424             ;\
+$A8:E3EB 9D A8 0F    STA $0FA8,x[$7E:16E8]  ;} Enemy Y movement function = $E424 (move down)
 
 $A8:E3EE 60          RTS
 }
 
 
-;;; $E3EF:  ;;;
+;;; $E3EF: Set atomic X movement function ;;;
 {
 $A8:E3EF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E3F2 A9 43 E4    LDA #$E443
-$A8:E3F5 9D AA 0F    STA $0FAA,x[$7E:16EA]
+$A8:E3F2 A9 43 E4    LDA #$E443             ;\
+$A8:E3F5 9D AA 0F    STA $0FAA,x[$7E:16EA]  ;} Enemy X movement function = $E443 (move left)
 $A8:E3F8 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A8:E3FC 30 06       BMI $06    [$E404]     ;} If [Samus X position] >= [enemy X position]:
-$A8:E3FE A9 62 E4    LDA #$E462
-$A8:E401 9D AA 0F    STA $0FAA,x[$7E:16EA]
+$A8:E3FE A9 62 E4    LDA #$E462             ;\
+$A8:E401 9D AA 0F    STA $0FAA,x[$7E:16EA]  ;} Enemy X movement function = $E462 (move right)
 
 $A8:E404 60          RTS
 }
 
 
-;;; $E405:  ;;;
+;;; $E405: Atomic Y movement function - move up ;;;
 {
 $A8:E405 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E408 BD 7E 0F    LDA $0F7E,x[$7E:16BE]
-$A8:E40B 18          CLC
-$A8:E40C 7F 06 78 7E ADC $7E7806,x[$7E:7F46]
-$A8:E410 9D 7E 0F    STA $0F7E,x[$7E:16BE]
-$A8:E413 BD 80 0F    LDA $0F80,x[$7E:16C0]
-$A8:E416 18          CLC
-$A8:E417 7F 04 78 7E ADC $7E7804,x[$7E:7F44]
-$A8:E41B 90 03       BCC $03    [$E420]
-$A8:E41D FE 7E 0F    INC $0F7E,x[$7E:103E]
-
-$A8:E420 9D 80 0F    STA $0F80,x[$7E:16C0]
+$A8:E408 BD 7E 0F    LDA $0F7E,x[$7E:16BE]  ;\
+$A8:E40B 18          CLC                    ;|
+$A8:E40C 7F 06 78 7E ADC $7E7806,x[$7E:7F46];|
+$A8:E410 9D 7E 0F    STA $0F7E,x[$7E:16BE]  ;|
+$A8:E413 BD 80 0F    LDA $0F80,x[$7E:16C0]  ;|
+$A8:E416 18          CLC                    ;} Enemy Y position += [enemy negated speed]
+$A8:E417 7F 04 78 7E ADC $7E7804,x[$7E:7F44];|
+$A8:E41B 90 03       BCC $03    [$E420]     ;|
+$A8:E41D FE 7E 0F    INC $0F7E,x[$7E:103E]  ;|
+                                            ;|
+$A8:E420 9D 80 0F    STA $0F80,x[$7E:16C0]  ;/
 $A8:E423 60          RTS
 }
 
 
-;;; $E424:  ;;;
+;;; $E424: Atomic Y movement function - move down ;;;
 {
 $A8:E424 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E427 BD 7E 0F    LDA $0F7E,x[$7E:16BE]
-$A8:E42A 18          CLC
-$A8:E42B 7F 02 78 7E ADC $7E7802,x[$7E:7F42]
-$A8:E42F 9D 7E 0F    STA $0F7E,x[$7E:16BE]
-$A8:E432 BD 80 0F    LDA $0F80,x[$7E:16C0]
-$A8:E435 18          CLC
-$A8:E436 7F 00 78 7E ADC $7E7800,x[$7E:7F40]
-$A8:E43A 90 03       BCC $03    [$E43F]
-$A8:E43C FE 7E 0F    INC $0F7E,x[$7E:107E]
-
-$A8:E43F 9D 80 0F    STA $0F80,x[$7E:16C0]
+$A8:E427 BD 7E 0F    LDA $0F7E,x[$7E:16BE]  ;\
+$A8:E42A 18          CLC                    ;|
+$A8:E42B 7F 02 78 7E ADC $7E7802,x[$7E:7F42];|
+$A8:E42F 9D 7E 0F    STA $0F7E,x[$7E:16BE]  ;|
+$A8:E432 BD 80 0F    LDA $0F80,x[$7E:16C0]  ;|
+$A8:E435 18          CLC                    ;} Enemy Y position += [enemy speed]
+$A8:E436 7F 00 78 7E ADC $7E7800,x[$7E:7F40];|
+$A8:E43A 90 03       BCC $03    [$E43F]     ;|
+$A8:E43C FE 7E 0F    INC $0F7E,x[$7E:107E]  ;|
+                                            ;|
+$A8:E43F 9D 80 0F    STA $0F80,x[$7E:16C0]  ;/
 $A8:E442 60          RTS
 }
 
 
-;;; $E443:  ;;;
+;;; $E443: Atomic X movement function - move left ;;;
 {
 $A8:E443 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E446 BD 7A 0F    LDA $0F7A,x[$7E:16FA]
-$A8:E449 18          CLC
-$A8:E44A 7F 06 78 7E ADC $7E7806,x[$7E:7F86]
-$A8:E44E 9D 7A 0F    STA $0F7A,x[$7E:16FA]
-$A8:E451 BD 7C 0F    LDA $0F7C,x[$7E:16FC]
-$A8:E454 18          CLC
-$A8:E455 7F 04 78 7E ADC $7E7804,x[$7E:7F84]
-$A8:E459 90 03       BCC $03    [$E45E]
-$A8:E45B FE 7A 0F    INC $0F7A,x[$7E:107A]
-
-$A8:E45E 9D 7C 0F    STA $0F7C,x[$7E:16FC]
+$A8:E446 BD 7A 0F    LDA $0F7A,x[$7E:16FA]  ;\
+$A8:E449 18          CLC                    ;|
+$A8:E44A 7F 06 78 7E ADC $7E7806,x[$7E:7F86];|
+$A8:E44E 9D 7A 0F    STA $0F7A,x[$7E:16FA]  ;|
+$A8:E451 BD 7C 0F    LDA $0F7C,x[$7E:16FC]  ;|
+$A8:E454 18          CLC                    ;} Enemy X position += [enemy negated speed]
+$A8:E455 7F 04 78 7E ADC $7E7804,x[$7E:7F84];|
+$A8:E459 90 03       BCC $03    [$E45E]     ;|
+$A8:E45B FE 7A 0F    INC $0F7A,x[$7E:107A]  ;|
+                                            ;|
+$A8:E45E 9D 7C 0F    STA $0F7C,x[$7E:16FC]  ;/
 $A8:E461 60          RTS
 }
 
 
-;;; $E462:  ;;;
+;;; $E462: Atomic X movement function - move right ;;;
 {
 $A8:E462 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E465 BD 7A 0F    LDA $0F7A,x[$7E:16BA]
-$A8:E468 18          CLC
-$A8:E469 7F 02 78 7E ADC $7E7802,x[$7E:7F42]
-$A8:E46D 9D 7A 0F    STA $0F7A,x[$7E:16BA]
-$A8:E470 BD 7C 0F    LDA $0F7C,x[$7E:16BC]
-$A8:E473 18          CLC
-$A8:E474 7F 00 78 7E ADC $7E7800,x[$7E:7F40]
-$A8:E478 90 03       BCC $03    [$E47D]
-$A8:E47A FE 7A 0F    INC $0F7A,x[$7E:107A]
-
-$A8:E47D 9D 7C 0F    STA $0F7C,x[$7E:16BC]
+$A8:E465 BD 7A 0F    LDA $0F7A,x[$7E:16BA]  ;\
+$A8:E468 18          CLC                    ;|
+$A8:E469 7F 02 78 7E ADC $7E7802,x[$7E:7F42];|
+$A8:E46D 9D 7A 0F    STA $0F7A,x[$7E:16BA]  ;|
+$A8:E470 BD 7C 0F    LDA $0F7C,x[$7E:16BC]  ;|
+$A8:E473 18          CLC                    ;} Enemy X position += [enemy speed]
+$A8:E474 7F 00 78 7E ADC $7E7800,x[$7E:7F40];|
+$A8:E478 90 03       BCC $03    [$E47D]     ;|
+$A8:E47A FE 7A 0F    INC $0F7A,x[$7E:107A]  ;|
+                                            ;|
+$A8:E47D 9D 7C 0F    STA $0F7C,x[$7E:16BC]  ;/
 $A8:E480 60          RTS
 }
 
 
-;;; $E481:  ;;;
+;;; $E481: Unused. RTL ;;;
 {
 $A8:E481 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E484 6B          RTL
 }
 
 
-;;; $E485:  ;;;
+;;; $E485: Unused. RTL ;;;
 {
 $A8:E485 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E488 6B          RTL
@@ -9042,7 +9062,7 @@ $A8:E587             dw 3800, 7FFF, 3BE0, 2680, 1580, 6BFA, 4BF2, 2BEA, 03E0, 00
 
 ;;; $E5A7..E61C: Wrecked Ship spark instruction lists ;;;
 {
-;;; $E5A7: Instruction list ;;;
+;;; $E5A7: Instruction list - activate ;;;
 {
 $A8:E5A7             dx E62A,       ; Set enemy as tangible
                         0001,E74F,
@@ -9058,7 +9078,7 @@ $A8:E5A7             dx E62A,       ; Set enemy as tangible
 }
 
 
-;;; $E5D1: Instruction list - initial - parameter 1 = 0/1 ;;;
+;;; $E5D1: Instruction list - active ;;;
 {
 $A8:E5D1             dx 0003,E71F,
                         0003,E72B,
@@ -9068,7 +9088,7 @@ $A8:E5D1             dx 0003,E71F,
 }
 
 
-;;; $E5E5: Instruction list ;;;
+;;; $E5E5: Instruction list - deactivate ;;;
 {
 $A8:E5E5             dx 0001,E74F,
                         0001,E74F,
@@ -9083,7 +9103,7 @@ $A8:E5E5             dx 0001,E74F,
 }
 
 
-;;; $E609: Instruction list - initial - parameter 1 = 2 ;;;
+;;; $E609: Instruction list - emit falling sparks ;;;
 {
 $A8:E609             dx 0003,E74F,
                         0003,E76A,
@@ -9117,123 +9137,125 @@ $A8:E636 6B          RTL
 ;;; $E637: Initialisation AI - enemy $EA3F (Wrecked Ship spark) ;;;
 {
 $A8:E637 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E63A BD B4 0F    LDA $0FB4,x[$7E:10F4]
-$A8:E63D 29 03 00    AND #$0003
-$A8:E640 0A          ASL A
-$A8:E641 A8          TAY
-$A8:E642 B9 88 E6    LDA $E688,y[$A8:E68A]
-$A8:E645 9D AA 0F    STA $0FAA,x[$7E:10EA]
-$A8:E648 BD B6 0F    LDA $0FB6,x[$7E:10F6]
-$A8:E64B 9D B0 0F    STA $0FB0,x[$7E:10F0]
-$A8:E64E 64 12       STZ $12    [$7E:0012]
-$A8:E650 20 F6 E6    JSR $E6F6  [$A8:E6F6]
+$A8:E63A BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
+$A8:E63D 29 03 00    AND #$0003             ;|
+$A8:E640 0A          ASL A                  ;} Y = [enemy parameter 1] % 4 * 2
+$A8:E641 A8          TAY                    ;/
+$A8:E642 B9 88 E6    LDA $E688,y[$A8:E68A]  ;\
+$A8:E645 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = [$E688 + [Y]]
+$A8:E648 BD B6 0F    LDA $0FB6,x[$7E:10F6]  ;\
+$A8:E64B 9D B0 0F    STA $0FB0,x[$7E:10F0]  ;} Enemy base function time = [enemy parameter 2]
+$A8:E64E 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A8:E650 20 F6 E6    JSR $E6F6  [$A8:E6F6]  ; Set Wrecked Ship spark function timer
 $A8:E653 A9 01 00    LDA #$0001             ;\
 $A8:E656 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:E659 B9 82 E6    LDA $E682,y[$A8:E684]
-$A8:E65C 9D 92 0F    STA $0F92,x[$7E:10D2]
+$A8:E659 B9 82 E6    LDA $E682,y[$A8:E684]  ;\
+$A8:E65C 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = [$E682 + [Y]]
 $A8:E65F 9E 90 0F    STZ $0F90,x[$7E:10D0]  ; Enemy timer = 0
 $A8:E662 A9 01 00    LDA #$0001             ;\
 $A8:E665 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} >_<;
-$A8:E668 AE 9F 07    LDX $079F  [$7E:079F]
-$A8:E66B BF 28 D8 7E LDA $7ED828,x[$7E:D82B]
-$A8:E66F 29 01 00    AND #$0001
-$A8:E672 F0 01       BEQ $01    [$E675]
-$A8:E674 6B          RTL
+$A8:E668 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A8:E66B BF 28 D8 7E LDA $7ED828,x[$7E:D82B];|
+$A8:E66F 29 01 00    AND #$0001             ;} If area boss is dead:
+$A8:E672 F0 01       BEQ $01    [$E675]     ;/
+$A8:E674 6B          RTL                    ; Return
 
 $A8:E675 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E678 BD 86 0F    LDA $0F86,x
-$A8:E67B 0D 00 01    ORA $0100  [$7E:0100]  ; Bug (non-immediate mode)
-$A8:E67E 9D 86 0F    STA $0F86,x
+$A8:E678 BD 86 0F    LDA $0F86,x            ;\
+$A8:E67B 0D 00 01    ORA $0100  [$7E:0100]  ;} Enemy properties |= [$0100] <-- bug (should be 100h to make enemy invisible)
+$A8:E67E 9D 86 0F    STA $0F86,x            ;/
 $A8:E681 6B          RTL
 
-$A8:E682             dw E5D1, E5D1, E609    ; Instruction list pointers
-$A8:E688             dw E694, E6B7, E6DC    ; Wrecked Ship spark functions
+$A8:E682             dw E5D1, E5D1, E609 ; Instruction list pointers
+$A8:E688             dw E694, E6B7, E6DC ; Function pointers
 }
 
 
 ;;; $E68E: Main AI - enemy $EA3F (Wrecked Ship spark) ;;;
 {
 $A8:E68E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E691 7C AA 0F    JMP ($0FAA,x)[$A8:E6B7]
+$A8:E691 7C AA 0F    JMP ($0FAA,x)[$A8:E6B7]; Go to [enemy function]
 }
 
 
-;;; $E694: RTL. Wrecked Ship spark function - parameter 1 = 0 ;;;
+;;; $E694: RTL. Wrecked Ship spark function - always active ;;;
 {
 $A8:E694 6B          RTL
 }
 
 
-;;; $E695: Wrecked Ship spark function ;;;
+;;; $E695: Wrecked Ship spark function - intermittent - inactive ;;;
 {
-$A8:E695 BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:E698 3A          DEC A
-$A8:E699 F0 04       BEQ $04    [$E69F]
-$A8:E69B 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A8:E69E 6B          RTL
+$A8:E695 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
+$A8:E698 3A          DEC A                  ;} If [enemy function timer] != 1:
+$A8:E699 F0 04       BEQ $04    [$E69F]     ;/
+$A8:E69B 9D B2 0F    STA $0FB2,x[$7E:10F2]  ; Decrement enemy function timer
+$A8:E69E 6B          RTL                    ; Return
 
 $A8:E69F A9 B7 E6    LDA #$E6B7             ;\
-$A8:E6A2 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E6B7
+$A8:E6A2 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E6B7 (active)
 $A8:E6A5 A9 A7 E5    LDA #$E5A7             ;\
-$A8:E6A8 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5A7
+$A8:E6A8 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5A7 (activate)
 $A8:E6AB A9 01 00    LDA #$0001             ;\
 $A8:E6AE 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:E6B1 64 12       STZ $12    [$7E:0012]
-$A8:E6B3 20 F6 E6    JSR $E6F6  [$A8:E6F6]
+$A8:E6B1 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A8:E6B3 20 F6 E6    JSR $E6F6  [$A8:E6F6]  ; Set Wrecked Ship spark function timer
 $A8:E6B6 6B          RTL
 }
 
-
-;;; $E6B7: Wrecked Ship spark function - parameter 1 = 1 ;;;
+ 
+;;; $E6B7: Wrecked Ship spark function - intermittent - active ;;;
 {
-$A8:E6B7 BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:E6BA 3A          DEC A
-$A8:E6BB F0 04       BEQ $04    [$E6C1]
-$A8:E6BD 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A8:E6C0 6B          RTL
+$A8:E6B7 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
+$A8:E6BA 3A          DEC A                  ;} If [enemy function timer] != 1:
+$A8:E6BB F0 04       BEQ $04    [$E6C1]     ;/
+$A8:E6BD 9D B2 0F    STA $0FB2,x[$7E:10F2]  ; Decrement enemy function timer
+$A8:E6C0 6B          RTL                    ; Return
 
 $A8:E6C1 A9 95 E6    LDA #$E695             ;\
-$A8:E6C4 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E695
+$A8:E6C4 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy function = $E695 (inactive)
 $A8:E6C7 A9 E5 E5    LDA #$E5E5             ;\
-$A8:E6CA 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5E5
+$A8:E6CA 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $E5E5 (deactivate)
 $A8:E6CD A9 01 00    LDA #$0001             ;\
 $A8:E6D0 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:E6D3 A9 08 00    LDA #$0008
-$A8:E6D6 85 12       STA $12    [$7E:0012]
-$A8:E6D8 20 F6 E6    JSR $E6F6  [$A8:E6F6]
+$A8:E6D3 A9 08 00    LDA #$0008             ;\
+$A8:E6D6 85 12       STA $12    [$7E:0012]  ;} $12 = 8
+$A8:E6D8 20 F6 E6    JSR $E6F6  [$A8:E6F6]  ; Set Wrecked Ship spark function timer
 $A8:E6DB 6B          RTL
 }
 
 
-;;; $E6DC: Wrecked Ship spark function - parameter 1 = 2 ;;;
+;;; $E6DC: Wrecked Ship spark function - emit falling sparks ;;;
 {
-$A8:E6DC BD B2 0F    LDA $0FB2,x[$7E:1132]
-$A8:E6DF 3A          DEC A
-$A8:E6E0 F0 04       BEQ $04    [$E6E6]
-$A8:E6E2 9D B2 0F    STA $0FB2,x[$7E:1132]
-$A8:E6E5 6B          RTL
+$A8:E6DC BD B2 0F    LDA $0FB2,x[$7E:1132]  ;\
+$A8:E6DF 3A          DEC A                  ;} If [enemy function timer] != 1:
+$A8:E6E0 F0 04       BEQ $04    [$E6E6]     ;/
+$A8:E6E2 9D B2 0F    STA $0FB2,x[$7E:1132]  ; Decrement enemy function timer
+$A8:E6E5 6B          RTL                    ; Return
 
 $A8:E6E6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E6E9 A0 98 F4    LDY #$F498             ;\
 $A8:E6EC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn falling spark enemy projectile
-$A8:E6F0 64 12       STZ $12    [$7E:0012]
-$A8:E6F2 20 F6 E6    JSR $E6F6  [$A8:E6F6]
+$A8:E6F0 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A8:E6F2 20 F6 E6    JSR $E6F6  [$A8:E6F6]  ; Set Wrecked Ship spark function timer
 $A8:E6F5 6B          RTL
 }
 
 
-;;; $E6F6:  ;;;
+;;; $E6F6: Set Wrecked Ship spark function timer ;;;
 {
-$A8:E6F6 BD B0 0F    LDA $0FB0,x[$7E:10F0]
-$A8:E6F9 10 0B       BPL $0B    [$E706]
-$A8:E6FB 22 11 81 80 JSL $808111[$80:8111]
-$A8:E6FF 29 3F 00    AND #$003F
-$A8:E702 18          CLC
-$A8:E703 69 04 00    ADC #$0004
+;; Parameters:
+;;     $12: Additional function time
+$A8:E6F6 BD B0 0F    LDA $0FB0,x[$7E:10F0]  ; A = [enemy base function time]
+$A8:E6F9 10 0B       BPL $0B    [$E706]     ; If [A] < 0:
+$A8:E6FB 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A8:E6FF 29 3F 00    AND #$003F             ;\
+$A8:E702 18          CLC                    ;} A = [random number] % 40h + 4
+$A8:E703 69 04 00    ADC #$0004             ;/
 
-$A8:E706 18          CLC
-$A8:E707 65 12       ADC $12    [$7E:0012]
-$A8:E709 9D B2 0F    STA $0FB2,x[$7E:10F2]
+$A8:E706 18          CLC                    ;\
+$A8:E707 65 12       ADC $12    [$7E:0012]  ;} Enemy function timer = [A] + [$12]
+$A8:E709 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;/
 $A8:E70C 60          RTS
 }
 
@@ -9250,9 +9272,9 @@ $A8:E70E DA          PHX
 $A8:E70F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A8:E712 0A          ASL A                  ;} X = [collided projectile index] * 2
 $A8:E713 AA          TAX                    ;/
-$A8:E714 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$A8:E717 29 EF FF    AND #$FFEF
-$A8:E71A 9D 04 0C    STA $0C04,x[$7E:0C04]
+$A8:E714 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$A8:E717 29 EF FF    AND #$FFEF             ;} Unflag projectile for deletion
+$A8:E71A 9D 04 0C    STA $0C04,x[$7E:0C04]  ;/
 $A8:E71D FA          PLX
 $A8:E71E 6B          RTL
 }
@@ -9260,10 +9282,13 @@ $A8:E71E 6B          RTL
 
 ;;; $E71F: Spritemaps - Wrecked Ship spark ;;;
 {
+; Active
 $A8:E71F             dx 0002, 01FC,01,3103, 01FC,FC,3100
 $A8:E72B             dx 0002, 01FC,06,7104, 01FC,FC,3101
 $A8:E737             dx 0002, 01FC,08,3105, 01FC,FC,3102
 $A8:E743             dx 0002, 01FC,0A,3106, 01FC,FC,7101
+
+; Activate / deactivate / emit falling sparks
 $A8:E74F             dx 0005, 0002,FE,3109, 01F6,FC,3108, 0000,F8,3107, 01FC,03,3103, 01FC,FC,3100
 $A8:E76A             dx 0005, 01F4,FC,3109, 0004,00,310A, 0002,F6,3108, 01FC,06,7104, 01FC,FC,3101
 $A8:E785             dx 0004, 01F4,FC,310A, 0004,F4,3109, 01FC,09,3105, 01FC,FC,3102
@@ -9293,7 +9318,7 @@ $A8:E7CC             dw 001F,0012,000A,002B,
 }
 
 
-;;; $E80C: Instruction list -  ;;;
+;;; $E80C: Instruction list - turning left ;;;
 {
 $A8:E80C             dx 0030,E92C,
                         0010,E942,
@@ -9302,7 +9327,7 @@ $A8:E80C             dx 0030,E92C,
 }
 
 
-;;; $E81A: Instruction list -  ;;;
+;;; $E81A: Instruction list - turning right ;;;
 {
 $A8:E81A             dx 0030,E92C,
                         0010,E96E,
@@ -9311,7 +9336,7 @@ $A8:E81A             dx 0030,E92C,
 }
 
 
-;;; $E828: Instruction list -  ;;;
+;;; $E828: Instruction list - facing forward ;;;
 {
 $A8:E828             dx 0001,E92C,
                         812F        ; Sleep
@@ -9323,30 +9348,30 @@ $A8:E828             dx 0001,E92C,
 $A8:E82E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E831 A9 28 E8    LDA #$E828             ;\
 $A8:E834 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E828
-$A8:E837 A0 6E E8    LDY #$E86E
-$A8:E83A AD A4 09    LDA $09A4  [$7E:09A4]
-$A8:E83D 89 04 00    BIT #$0004
-$A8:E840 D0 03       BNE $03    [$E845]
-$A8:E842 A0 4C 80    LDY #$804C
+$A8:E837 A0 6E E8    LDY #$E86E             ; Enemy graphics drawn hook = $E86E
+$A8:E83A AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$A8:E83D 89 04 00    BIT #$0004             ;} If morph ball not collected:
+$A8:E840 D0 03       BNE $03    [$E845]     ;/
+$A8:E842 A0 4C 80    LDY #$804C             ; Enemy graphics drawn hook = RTL
 
 $A8:E845 8C 8C 17    STY $178C  [$7E:178C]
-$A8:E848 A9 A8 00    LDA #$00A8
-$A8:E84B 8D 8E 17    STA $178E  [$7E:178E]
-$A8:E84E BD 96 0F    LDA $0F96,x[$7E:1056]
-$A8:E851 0A          ASL A
-$A8:E852 0A          ASL A
-$A8:E853 0A          ASL A
-$A8:E854 0A          ASL A
-$A8:E855 29 00 FF    AND #$FF00
-$A8:E858 EB          XBA
-$A8:E859 8D 94 17    STA $1794  [$7E:1794]
-$A8:E85C A9 10 00    LDA #$0010
-$A8:E85F 8D 98 17    STA $1798  [$7E:1798]
-$A8:E862 BD B6 0F    LDA $0FB6,x[$7E:1076]
-$A8:E865 29 01 00    AND #$0001
-$A8:E868 6A          ROR A
-$A8:E869 6A          ROR A
-$A8:E86A 9D B6 0F    STA $0FB6,x[$7E:1076]
+$A8:E848 A9 A8 00    LDA #$00A8             ;\
+$A8:E84B 8D 8E 17    STA $178E  [$7E:178E]  ;} Enemy graphics drawn hook bank = $A8
+$A8:E84E BD 96 0F    LDA $0F96,x[$7E:1056]  ;\
+$A8:E851 0A          ASL A                  ;|
+$A8:E852 0A          ASL A                  ;|
+$A8:E853 0A          ASL A                  ;|
+$A8:E854 0A          ASL A                  ;} Enemy palette cycle enemy palette index = [enemy palette index] / 10h
+$A8:E855 29 00 FF    AND #$FF00             ;|
+$A8:E858 EB          XBA                    ;|
+$A8:E859 8D 94 17    STA $1794  [$7E:1794]  ;/
+$A8:E85C A9 10 00    LDA #$0010             ;\
+$A8:E85F 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 10h
+$A8:E862 BD B6 0F    LDA $0FB6,x[$7E:1076]  ;\
+$A8:E865 29 01 00    AND #$0001             ;|
+$A8:E868 6A          ROR A                  ;} Enemy direction to not turn = [enemy parameter 2] % 2 * 8000h
+$A8:E869 6A          ROR A                  ;|
+$A8:E86A 9D B6 0F    STA $0FB6,x[$7E:1076]  ;/
 $A8:E86D 6B          RTL
 }
 
@@ -9394,47 +9419,47 @@ $A8:E8AD 6B          RTL
 ;;; $E8AE: Main AI - enemy $EA7F (blue Brinstar face block) ;;;
 {
 $A8:E8AE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:E8B1 AD A4 09    LDA $09A4  [$7E:09A4]
-$A8:E8B4 89 04 00    BIT #$0004
-$A8:E8B7 F0 62       BEQ $62    [$E91B]
-$A8:E8B9 A0 6E E8    LDY #$E86E
-$A8:E8BC 8C 8C 17    STY $178C  [$7E:178C]
-$A8:E8BF BD 96 0F    LDA $0F96,x[$7E:10D6]
-$A8:E8C2 0A          ASL A
-$A8:E8C3 0A          ASL A
-$A8:E8C4 0A          ASL A
-$A8:E8C5 0A          ASL A
-$A8:E8C6 29 00 FF    AND #$FF00
-$A8:E8C9 EB          XBA
-$A8:E8CA 8D 94 17    STA $1794  [$7E:1794]
-$A8:E8CD BD A8 0F    LDA $0FA8,x[$7E:10E8]
-$A8:E8D0 D0 49       BNE $49    [$E91B]
-$A8:E8D2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ; A = [Samus Y position] - [enemy Y position]
-$A8:E8D6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
-$A8:E8DA DD B4 0F    CMP $0FB4,x[$7E:10F4]
-$A8:E8DD 10 3C       BPL $3C    [$E91B]
+$A8:E8B1 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$A8:E8B4 89 04 00    BIT #$0004             ;} If morph ball not collected: return
+$A8:E8B7 F0 62       BEQ $62    [$E91B]     ;/
+$A8:E8B9 A0 6E E8    LDY #$E86E             ;\
+$A8:E8BC 8C 8C 17    STY $178C  [$7E:178C]  ;} Enemy graphics drawn hook = $E86E
+$A8:E8BF BD 96 0F    LDA $0F96,x[$7E:10D6]  ;\
+$A8:E8C2 0A          ASL A                  ;|
+$A8:E8C3 0A          ASL A                  ;|
+$A8:E8C4 0A          ASL A                  ;|
+$A8:E8C5 0A          ASL A                  ;} Enemy palette cycle enemy palette index = [enemy palette index] / 10h
+$A8:E8C6 29 00 FF    AND #$FF00             ;|
+$A8:E8C9 EB          XBA                    ;|
+$A8:E8CA 8D 94 17    STA $1794  [$7E:1794]  ;/
+$A8:E8CD BD A8 0F    LDA $0FA8,x[$7E:10E8]  ;\
+$A8:E8D0 D0 49       BNE $49    [$E91B]     ;} If [enemy activated flag] != 0: return
+$A8:E8D2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
+$A8:E8D6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
+$A8:E8DA DD B4 0F    CMP $0FB4,x[$7E:10F4]  ;} If |[Samus Y position] - [enemy Y position]| >= [enemy parameter 1]: return
+$A8:E8DD 10 3C       BPL $3C    [$E91B]     ;/
 $A8:E8DF 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
-$A8:E8E3 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy $0FAA = [Samus X position] - [enemy X position]
-$A8:E8E6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
-$A8:E8EA DD B4 0F    CMP $0FB4,x[$7E:10F4]
-$A8:E8ED 10 2C       BPL $2C    [$E91B]
-$A8:E8EF BD AA 0F    LDA $0FAA,x[$7E:10EA]
-$A8:E8F2 29 00 80    AND #$8000
-$A8:E8F5 DD B6 0F    CMP $0FB6,x[$7E:10F6]
-$A8:E8F8 F0 21       BEQ $21    [$E91B]
-$A8:E8FA A0 0C E8    LDY #$E80C
-$A8:E8FD BD AA 0F    LDA $0FAA,x[$7E:10EA]
-$A8:E900 30 03       BMI $03    [$E905]
-$A8:E902 A0 1A E8    LDY #$E81A
+$A8:E8E3 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy direction to Samus = [Samus X position] - [enemy X position]
+$A8:E8E6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\
+$A8:E8EA DD B4 0F    CMP $0FB4,x[$7E:10F4]  ;} If |[Samus X position] - [enemy X position]| >= [enemy parameter 1]: return
+$A8:E8ED 10 2C       BPL $2C    [$E91B]     ;/
+$A8:E8EF BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;\
+$A8:E8F2 29 00 80    AND #$8000             ;|
+$A8:E8F5 DD B6 0F    CMP $0FB6,x[$7E:10F6]  ;} If [enemy direction to Samus] & 8000h = [enemy direction to not turn]: return
+$A8:E8F8 F0 21       BEQ $21    [$E91B]     ;/
+$A8:E8FA A0 0C E8    LDY #$E80C             ; Enemy instruction list pointer = $E80C (turning left)
+$A8:E8FD BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;\
+$A8:E900 30 03       BMI $03    [$E905]     ;} If [direction to Samus] = right:
+$A8:E902 A0 1A E8    LDY #$E81A             ; Enemy instruction list pointer = $E81A (turning right)
 
 $A8:E905 98          TYA
 $A8:E906 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:E909 A9 01 00    LDA #$0001             ;\
 $A8:E90C 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A8:E90F A9 01 00    LDA #$0001
-$A8:E912 9D A8 0F    STA $0FA8,x[$7E:10E8]
-$A8:E915 A9 10 00    LDA #$0010
-$A8:E918 8D 98 17    STA $1798  [$7E:1798]
+$A8:E90F A9 01 00    LDA #$0001             ;\
+$A8:E912 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy activated flag = 1
+$A8:E915 A9 10 00    LDA #$0010             ;\
+$A8:E918 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 10h
 
 $A8:E91B 6B          RTL
 }
@@ -9452,18 +9477,23 @@ $A8:E91C 6B          RTL
 $A8:E91D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A8:E920 0A          ASL A                  ;} X = [collided projectile index] * 2
 $A8:E921 AA          TAX                    ;/
-$A8:E922 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$A8:E925 29 EF FF    AND #$FFEF
-$A8:E928 9D 04 0C    STA $0C04,x[$7E:0C04]
+$A8:E922 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$A8:E925 29 EF FF    AND #$FFEF             ;} Unflag projectile for deletion
+$A8:E928 9D 04 0C    STA $0C04,x[$7E:0C04]  ;/
 $A8:E92B 6B          RTL
 }
 
 
 ;;; $E92C: Blue Brinstar face block spritemaps ;;;
 {
+; Facing forward
 $A8:E92C             dx 0004, 0000,00,3107, 01F8,00,3106, 0000,F8,3101, 01F8,F8,3100
+
+; Turning left
 $A8:E942             dx 0004, 0000,00,3109, 01F8,00,3108, 0000,F8,3103, 01F8,F8,3102
 $A8:E958             dx 0004, 0000,00,310B, 01F8,00,310A, 0000,F8,3105, 01F8,F8,3104
+
+; Turning right
 $A8:E96E             dx 0004, 01F8,00,7109, 0000,00,7108, 01F8,F8,7103, 0000,F8,7102
 $A8:E984             dx 0004, 01F8,00,710B, 0000,00,710A, 01F8,F8,7105, 0000,F8,7104
 }

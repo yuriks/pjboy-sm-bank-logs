@@ -3434,7 +3434,7 @@ $A3:A93B 60          RTS
 
 ;;; $A93C: Set mochtroid instruction list ;;;
 {
-; Mocktroid respawn crash: if mochtroid is set to respawn,
+; Mochtroid respawn crash: if mochtroid is set to respawn,
 ; then [enemy $7E:7802] is likely already set to [A],
 ; so the enemy instruction list pointer never gets set,
 ; meaning it will be 0 when enemy instruction processing takes place,
