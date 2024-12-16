@@ -2845,7 +2845,7 @@ $B3:9DDD A5 12       LDA $12    [$7E:0012]  ;\
 $B3:9DDF D0 07       BNE $07    [$9DE8]     ;} If [$12] = 0:
 $B3:9DE1 A5 14       LDA $14    [$7E:0014]  ;\
 $B3:9DE3 D0 03       BNE $03    [$9DE8]     ;} If [$14] = 0:
-$B3:9DE5 4C 38 9E    JMP $9E38  [$B3:9E38]  ; Go to BRANCH_9E38
+$B3:9DE5 4C 38 9E    JMP $9E38  [$B3:9E38]  ; Go to BRANCH_NO_HEAD_UPDATE
 
 $B3:9DE8 BF 26 80 7E LDA $7E8026,x[$7E:8026];\
 $B3:9DEC F0 19       BEQ $19    [$9E07]     ;} If [enemy head hidden flag] != 0:
@@ -2883,7 +2883,7 @@ $B3:9E2F A9 01 00    LDA #$0001             ;\
 $B3:9E32 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B3:9E35 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
-; BRANCH_9E38
+; BRANCH_NO_HEAD_UPDATE
 $B3:9E38 BF 28 88 7E LDA $7E8828,x[$7E:8828];\
 $B3:9E3C 9F 2C 88 7E STA $7E882C,x[$7E:882C];} Enemy X position 4 frames ago = [enemy X position 3 frames ago]
 $B3:9E40 BF 2A 88 7E LDA $7E882A,x[$7E:882A];\

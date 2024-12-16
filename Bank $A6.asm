@@ -3593,46 +3593,46 @@ $A6:AC5B 08          PHP
 $A6:AC5C C2 20       REP #$20
 $A6:AC5E E2 10       SEP #$10
 $A6:AC60 A6 26       LDX $26    [$7E:0026]
-$A6:AC62 8E 02 42    STX $4202  [$7E:4202]
+$A6:AC62 8E 02 42    STX $4202            
 $A6:AC65 A6 28       LDX $28    [$7E:0028]
-$A6:AC67 8E 03 42    STX $4203  [$7E:4203]
+$A6:AC67 8E 03 42    STX $4203            
 $A6:AC6A EA          NOP
 $A6:AC6B EA          NOP
 $A6:AC6C EA          NOP
-$A6:AC6D AD 16 42    LDA $4216  [$7E:4216]
+$A6:AC6D AD 16 42    LDA $4216            
 $A6:AC70 85 2A       STA $2A    [$7E:002A]
 $A6:AC72 A6 27       LDX $27    [$7E:0027]
-$A6:AC74 8E 02 42    STX $4202  [$7E:4202]
+$A6:AC74 8E 02 42    STX $4202            
 $A6:AC77 A6 29       LDX $29    [$7E:0029]
-$A6:AC79 8E 03 42    STX $4203  [$7E:4203]
+$A6:AC79 8E 03 42    STX $4203            
 $A6:AC7C EA          NOP
 $A6:AC7D EA          NOP
 $A6:AC7E EA          NOP
-$A6:AC7F AE 16 42    LDX $4216  [$7E:4216]
+$A6:AC7F AE 16 42    LDX $4216            
 $A6:AC82 86 2C       STX $2C    [$7E:002C]
-$A6:AC84 AC 17 42    LDY $4217  [$7E:4217]
+$A6:AC84 AC 17 42    LDY $4217            
 $A6:AC87 A6 27       LDX $27    [$7E:0027]
-$A6:AC89 8E 02 42    STX $4202  [$7E:4202]
+$A6:AC89 8E 02 42    STX $4202            
 $A6:AC8C A6 28       LDX $28    [$7E:0028]
-$A6:AC8E 8E 03 42    STX $4203  [$7E:4203]
+$A6:AC8E 8E 03 42    STX $4203            
 $A6:AC91 EA          NOP
 $A6:AC92 EA          NOP
 $A6:AC93 A5 2B       LDA $2B    [$7E:002B]
 $A6:AC95 18          CLC
-$A6:AC96 6D 16 42    ADC $4216  [$7E:4216]
+$A6:AC96 6D 16 42    ADC $4216            
 $A6:AC99 85 2B       STA $2B    [$7E:002B]
 $A6:AC9B 90 01       BCC $01    [$AC9E]
 $A6:AC9D C8          INY
 
 $A6:AC9E A6 26       LDX $26    [$7E:0026]
-$A6:ACA0 8E 02 42    STX $4202  [$7E:4202]
+$A6:ACA0 8E 02 42    STX $4202            
 $A6:ACA3 A6 29       LDX $29    [$7E:0029]
-$A6:ACA5 8E 03 42    STX $4203  [$7E:4203]
+$A6:ACA5 8E 03 42    STX $4203            
 $A6:ACA8 EA          NOP
 $A6:ACA9 EA          NOP
 $A6:ACAA A5 2B       LDA $2B    [$7E:002B]
 $A6:ACAC 18          CLC
-$A6:ACAD 6D 16 42    ADC $4216  [$7E:4216]
+$A6:ACAD 6D 16 42    ADC $4216            
 $A6:ACB0 85 2B       STA $2B    [$7E:002B]
 $A6:ACB2 90 01       BCC $01    [$ACB5]
 $A6:ACB4 C8          INY
@@ -8165,9 +8165,9 @@ $A6:D4FB 4A          LSR A
 $A6:D4FC 4A          LSR A
 $A6:D4FD 4A          LSR A
 $A6:D4FE E2 20       SEP #$20
-$A6:D500 8D 02 42    STA $4202  [$7E:4202]
+$A6:D500 8D 02 42    STA $4202            
 $A6:D503 AD A5 07    LDA $07A5  [$7E:07A5]
-$A6:D506 8D 03 42    STA $4203  [$7E:4203]
+$A6:D506 8D 03 42    STA $4203            
 $A6:D509 C2 20       REP #$20
 $A6:D50B 8A          TXA
 $A6:D50C 4A          LSR A
@@ -8175,7 +8175,7 @@ $A6:D50D 4A          LSR A
 $A6:D50E 4A          LSR A
 $A6:D50F 4A          LSR A
 $A6:D510 18          CLC
-$A6:D511 6D 16 42    ADC $4216  [$7E:4216]
+$A6:D511 6D 16 42    ADC $4216            
 $A6:D514 0A          ASL A
 $A6:D515 AA          TAX
 $A6:D516 BF 02 00 7F LDA $7F0002,x[$7F:0102]
@@ -8213,16 +8213,16 @@ $A6:D539 F0 39       BEQ $39    [$D574]
 $A6:D53B 10 38       BPL $38    [$D575]
 $A6:D53D 49 FF FF    EOR #$FFFF
 $A6:D540 1A          INC A
-$A6:D541 8D 04 42    STA $4204  [$7E:4204]
+$A6:D541 8D 04 42    STA $4204            
 $A6:D544 E2 20       SEP #$20
 $A6:D546 A5 18       LDA $18    [$7E:0018]
-$A6:D548 8D 06 42    STA $4206  [$7E:4206]
+$A6:D548 8D 06 42    STA $4206            
 $A6:D54B C2 20       REP #$20
 $A6:D54D EB          XBA
 $A6:D54E EB          XBA
 $A6:D54F EA          NOP
 $A6:D550 EA          NOP
-$A6:D551 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D551 AD 14 42    LDA $4214            
 $A6:D554 D0 01       BNE $01    [$D557]
 $A6:D556 1A          INC A
 
@@ -8244,16 +8244,16 @@ $A6:D571 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 
 $A6:D574 60          RTS
 
-$A6:D575 8D 04 42    STA $4204  [$7E:4204]
+$A6:D575 8D 04 42    STA $4204            
 $A6:D578 E2 20       SEP #$20
 $A6:D57A A5 18       LDA $18    [$7E:0018]
-$A6:D57C 8D 06 42    STA $4206  [$7E:4206]
+$A6:D57C 8D 06 42    STA $4206            
 $A6:D57F C2 20       REP #$20
 $A6:D581 EB          XBA
 $A6:D582 EB          XBA
 $A6:D583 EA          NOP
 $A6:D584 EA          NOP
-$A6:D585 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D585 AD 14 42    LDA $4214            
 $A6:D588 D0 01       BNE $01    [$D58B]
 $A6:D58A 1A          INC A
 
@@ -8287,16 +8287,16 @@ $A6:D5AF F0 39       BEQ $39    [$D5EA]
 $A6:D5B1 10 38       BPL $38    [$D5EB]
 $A6:D5B3 49 FF FF    EOR #$FFFF
 $A6:D5B6 1A          INC A
-$A6:D5B7 8D 04 42    STA $4204  [$7E:4204]
+$A6:D5B7 8D 04 42    STA $4204            
 $A6:D5BA E2 20       SEP #$20
 $A6:D5BC A5 18       LDA $18    [$7E:0018]
-$A6:D5BE 8D 06 42    STA $4206  [$7E:4206]
+$A6:D5BE 8D 06 42    STA $4206            
 $A6:D5C1 C2 20       REP #$20
 $A6:D5C3 EB          XBA
 $A6:D5C4 EB          XBA
 $A6:D5C5 EA          NOP
 $A6:D5C6 EA          NOP
-$A6:D5C7 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D5C7 AD 14 42    LDA $4214            
 $A6:D5CA D0 01       BNE $01    [$D5CD]
 $A6:D5CC 1A          INC A
 
@@ -8318,16 +8318,16 @@ $A6:D5E7 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
 $A6:D5EA 60          RTS
 
-$A6:D5EB 8D 04 42    STA $4204  [$7E:4204]
+$A6:D5EB 8D 04 42    STA $4204            
 $A6:D5EE E2 20       SEP #$20
 $A6:D5F0 A5 18       LDA $18    [$7E:0018]
-$A6:D5F2 8D 06 42    STA $4206  [$7E:4206]
+$A6:D5F2 8D 06 42    STA $4206            
 $A6:D5F5 C2 20       REP #$20
 $A6:D5F7 EB          XBA
 $A6:D5F8 EB          XBA
 $A6:D5F9 EA          NOP
 $A6:D5FA EA          NOP
-$A6:D5FB AD 14 42    LDA $4214  [$7E:4214]
+$A6:D5FB AD 14 42    LDA $4214            
 $A6:D5FE D0 01       BNE $01    [$D601]
 $A6:D600 1A          INC A
 
@@ -8369,16 +8369,16 @@ $A6:D640 F0 34       BEQ $34    [$D676]
 $A6:D642 10 33       BPL $33    [$D677]
 $A6:D644 49 FF FF    EOR #$FFFF
 $A6:D647 1A          INC A
-$A6:D648 8D 04 42    STA $4204  [$7E:4204]
+$A6:D648 8D 04 42    STA $4204            
 $A6:D64B E2 20       SEP #$20
 $A6:D64D A5 18       LDA $18    [$7E:0018]
-$A6:D64F 8D 06 42    STA $4206  [$7E:4206]
+$A6:D64F 8D 06 42    STA $4206            
 $A6:D652 C2 20       REP #$20
 $A6:D654 EB          XBA
 $A6:D655 EB          XBA
 $A6:D656 EA          NOP
 $A6:D657 EA          NOP
-$A6:D658 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D658 AD 14 42    LDA $4214            
 $A6:D65B D0 01       BNE $01    [$D65E]
 $A6:D65D 1A          INC A
 
@@ -8397,16 +8397,16 @@ $A6:D673 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 
 $A6:D676 60          RTS
 
-$A6:D677 8D 04 42    STA $4204  [$7E:4204]
+$A6:D677 8D 04 42    STA $4204            
 $A6:D67A E2 20       SEP #$20
 $A6:D67C A5 18       LDA $18    [$7E:0018]
-$A6:D67E 8D 06 42    STA $4206  [$7E:4206]
+$A6:D67E 8D 06 42    STA $4206            
 $A6:D681 C2 20       REP #$20
 $A6:D683 EB          XBA
 $A6:D684 EB          XBA
 $A6:D685 EA          NOP
 $A6:D686 EA          NOP
-$A6:D687 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D687 AD 14 42    LDA $4214            
 $A6:D68A D0 01       BNE $01    [$D68D]
 $A6:D68C 1A          INC A
 
@@ -8435,16 +8435,16 @@ $A6:D6AC F0 34       BEQ $34    [$D6E2]
 $A6:D6AE 10 33       BPL $33    [$D6E3]
 $A6:D6B0 49 FF FF    EOR #$FFFF
 $A6:D6B3 1A          INC A
-$A6:D6B4 8D 04 42    STA $4204  [$7E:4204]
+$A6:D6B4 8D 04 42    STA $4204            
 $A6:D6B7 E2 20       SEP #$20
 $A6:D6B9 A5 18       LDA $18    [$7E:0018]
-$A6:D6BB 8D 06 42    STA $4206  [$7E:4206]
+$A6:D6BB 8D 06 42    STA $4206            
 $A6:D6BE C2 20       REP #$20
 $A6:D6C0 EB          XBA
 $A6:D6C1 EB          XBA
 $A6:D6C2 EA          NOP
 $A6:D6C3 EA          NOP
-$A6:D6C4 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D6C4 AD 14 42    LDA $4214            
 $A6:D6C7 D0 01       BNE $01    [$D6CA]
 $A6:D6C9 1A          INC A
 
@@ -8463,16 +8463,16 @@ $A6:D6DF 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
 $A6:D6E2 60          RTS
 
-$A6:D6E3 8D 04 42    STA $4204  [$7E:4204]
+$A6:D6E3 8D 04 42    STA $4204            
 $A6:D6E6 E2 20       SEP #$20
 $A6:D6E8 A5 18       LDA $18    [$7E:0018]
-$A6:D6EA 8D 06 42    STA $4206  [$7E:4206]
+$A6:D6EA 8D 06 42    STA $4206            
 $A6:D6ED C2 20       REP #$20
 $A6:D6EF EB          XBA
 $A6:D6F0 EB          XBA
 $A6:D6F1 EA          NOP
 $A6:D6F2 EA          NOP
-$A6:D6F3 AD 14 42    LDA $4214  [$7E:4214]
+$A6:D6F3 AD 14 42    LDA $4214            
 $A6:D6F6 D0 01       BNE $01    [$D6F9]
 $A6:D6F8 1A          INC A
 

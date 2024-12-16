@@ -4307,9 +4307,9 @@ $8F:C15A 4A          LSR A                  ;|
 $8F:C15B E2 20       SEP #$20               ;|
 $8F:C15D 48          PHA                    ;|
 $8F:C15E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$8F:C161 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8F:C161 8D 02 42    STA $4202              ;|
 $8F:C164 68          PLA                    ;|
-$8F:C165 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8F:C165 8D 03 42    STA $4203              ;|
 $8F:C168 C2 20       REP #$20               ;} X = ([$14] / 10h * [room width in blocks] + [$12] / 10h) * 2 (block index)
 $8F:C16A A5 12       LDA $12    [$7E:0012]  ;|
 $8F:C16C 4A          LSR A                  ;|
@@ -4317,7 +4317,7 @@ $8F:C16D 4A          LSR A                  ;|
 $8F:C16E 4A          LSR A                  ;|
 $8F:C16F 4A          LSR A                  ;|
 $8F:C170 18          CLC                    ;|
-$8F:C171 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$8F:C171 6D 16 42    ADC $4216              ;|
 $8F:C174 0A          ASL A                  ;|
 $8F:C175 AA          TAX                    ;/
 $8F:C176 BF 02 00 7F LDA $7F0002,x[$7F:31FE];\
@@ -6956,7 +6956,7 @@ $8F:E4DF 60          RTS
 $8F:E4E0 E2 20       SEP #$20
 $8F:E4E2 A9 07       LDA #$07               ;\
 $8F:E4E4 85 56       STA $56    [$7E:0056]  ;} Fake mode = 7
-$8F:E4E6 8D 05 21    STA $2105  [$7E:2105]  ; BG mode = 7
+$8F:E4E6 8D 05 21    STA $2105              ; BG mode = 7
 $8F:E4E9 C2 20       REP #$20
 $8F:E4EB A9 00 01    LDA #$0100             ;\
 $8F:E4EE 85 78       STA $78    [$7E:0078]  ;|
@@ -7458,21 +7458,21 @@ $8F:E8D5 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $8F:E8D8 C9 40 00    CMP #$0040             ;} If [Crocomire death sequence index] = 40h (behind wall - rumbling): go to BRANCH_BEHIND_WALL_RUMBLING
 $8F:E8DB F0 65       BEQ $65    [$E942]     ;/
 $8F:E8DD AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$8F:E8E0 89 00 04    BIT #$0400             ;} If [$0FAA] & 400h = 0 (always true): go to BRANCH_E916
+$8F:E8E0 89 00 04    BIT #$0400             ;} If [Crocomire fight flags] & 400h = 0 (always true): go to BRANCH_E916
 $8F:E8E3 F0 31       BEQ $31    [$E916]     ;/
 $8F:E8E5 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
-$8F:E8E8 3A          DEC A                  ;} Decrement $0FEE
+$8F:E8E8 3A          DEC A                  ;} Decrement Crocomire rumbling Y offset
 $8F:E8E9 8D EE 0F    STA $0FEE  [$7E:0FEE]  ;/
 $8F:E8EC C9 F9 FF    CMP #$FFF9             ;\
-$8F:E8EF 30 05       BMI $05    [$E8F6]     ;} If [$0FEE] >= -7:
-$8F:E8F1 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ; $12 = [$0FEE]
+$8F:E8EF 30 05       BMI $05    [$E8F6]     ;} If [Crocomire rumbling Y offset] >= -7:
+$8F:E8F1 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ; $12 = [Crocomire rumbling Y offset]
 $8F:E8F4 80 10       BRA $10    [$E906]
 
-$8F:E8F6 A9 07 00    LDA #$0007             ;\ Else ([$0FEE] < -7):
+$8F:E8F6 A9 07 00    LDA #$0007             ;\ Else ([Crocomire rumbling Y offset] < -7):
 $8F:E8F9 18          CLC                    ;|
 $8F:E8FA 6D EE 0F    ADC $0FEE  [$7E:0FEE]  ;|
 $8F:E8FD 0A          ASL A                  ;|
-$8F:E8FE 85 12       STA $12    [$7E:0012]  ;} $12 = -14 - [$0FEE]
+$8F:E8FE 85 12       STA $12    [$7E:0012]  ;} $12 = -Eh - [Crocomire rumbling Y offset]
 $8F:E900 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;|
 $8F:E903 38          SEC                    ;|
 $8F:E904 E5 12       SBC $12    [$7E:0012]  ;/

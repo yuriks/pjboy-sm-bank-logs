@@ -1672,45 +1672,45 @@ $81:8DDA 60          RTS
 $81:8DDB 08          PHP
 $81:8DDC E2 30       SEP #$30
 $81:8DDE A9 00       LDA #$00               ;\
-$81:8DE0 8D 16 21    STA $2116  [$7E:2116]  ;|
+$81:8DE0 8D 16 21    STA $2116              ;|
 $81:8DE3 A9 00       LDA #$00               ;|
-$81:8DE5 8D 17 21    STA $2117  [$7E:2117]  ;|
+$81:8DE5 8D 17 21    STA $2117              ;|
 $81:8DE8 A9 80       LDA #$80               ;|
-$81:8DEA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..2AFF = [$8E:8000..D5FF] (menu tiles)
+$81:8DEA 8D 15 21    STA $2115              ;} VRAM $0000..2AFF = [$8E:8000..D5FF] (menu tiles)
 $81:8DED 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8DF1             dx 01,01,18,8E8000,5600;|
 $81:8DF9 A9 02       LDA #$02               ;|
-$81:8DFB 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$81:8DFB 8D 0B 42    STA $420B              ;/
 $81:8DFE A9 00       LDA #$00               ;\
-$81:8E00 8D 16 21    STA $2116  [$7E:2116]  ;|
+$81:8E00 8D 16 21    STA $2116              ;|
 $81:8E03 A9 30       LDA #$30               ;|
-$81:8E05 8D 17 21    STA $2117  [$7E:2117]  ;|
+$81:8E05 8D 17 21    STA $2117              ;|
 $81:8E08 A9 80       LDA #$80               ;|
-$81:8E0A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $3000..3FFF = [$B6:8000..9FFF] (first half of pause screen BG1/2 tiles)
+$81:8E0A 8D 15 21    STA $2115              ;} VRAM $3000..3FFF = [$B6:8000..9FFF] (first half of pause screen BG1/2 tiles)
 $81:8E0D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8E11             dx 01,01,18,B68000,2000;|
 $81:8E19 A9 02       LDA #$02               ;|
-$81:8E1B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$81:8E1B 8D 0B 42    STA $420B              ;/
 $81:8E1E A9 00       LDA #$00               ;\
-$81:8E20 8D 16 21    STA $2116  [$7E:2116]  ;|
+$81:8E20 8D 16 21    STA $2116              ;|
 $81:8E23 A9 60       LDA #$60               ;|
-$81:8E25 8D 17 21    STA $2117  [$7E:2117]  ;|
+$81:8E25 8D 17 21    STA $2117              ;|
 $81:8E28 A9 80       LDA #$80               ;|
-$81:8E2A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..6FFF = [$B6:C000..DFFF] (menu / pause screen sprite tiles)
+$81:8E2A 8D 15 21    STA $2115              ;} VRAM $6000..6FFF = [$B6:C000..DFFF] (menu / pause screen sprite tiles)
 $81:8E2D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8E31             dx 01,01,18,B6C000,2000;|
 $81:8E39 A9 02       LDA #$02               ;|
-$81:8E3B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$81:8E3B 8D 0B 42    STA $420B              ;/
 $81:8E3E A9 00       LDA #$00               ;\
-$81:8E40 8D 16 21    STA $2116  [$7E:2116]  ;|
+$81:8E40 8D 16 21    STA $2116              ;|
 $81:8E43 A9 40       LDA #$40               ;|
-$81:8E45 8D 17 21    STA $2117  [$7E:2117]  ;|
+$81:8E45 8D 17 21    STA $2117              ;|
 $81:8E48 A9 80       LDA #$80               ;|
-$81:8E4A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..42FF = [$8E:D600..DBFF] (beta minimap tiles)
+$81:8E4A 8D 15 21    STA $2115              ;} VRAM $4000..42FF = [$8E:D600..DBFF] (beta minimap tiles)
 $81:8E4D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8E51             dx 01,01,18,8ED600,0600;|
 $81:8E59 A9 02       LDA #$02               ;|
-$81:8E5B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$81:8E5B 8D 0B 42    STA $420B              ;/
 $81:8E5E 28          PLP
 $81:8E5F 60          RTS
 }
@@ -1896,15 +1896,15 @@ $81:907D 60          RTS
 {
 $81:907E E2 30       SEP #$30
 $81:9080 A9 00       LDA #$00               ;\
-$81:9082 8D 16 21    STA $2116  [$7E:2116]  ;|
+$81:9082 8D 16 21    STA $2116              ;|
 $81:9085 A9 40       LDA #$40               ;|
-$81:9087 8D 17 21    STA $2117  [$7E:2117]  ;|
+$81:9087 8D 17 21    STA $2117              ;|
 $81:908A A9 80       LDA #$80               ;|
-$81:908C 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF] (standard BG3 tiles, clear BG2)
+$81:908C 8D 15 21    STA $2115              ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF] (standard BG3 tiles, clear BG2)
 $81:908F 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:9093             dx 01,01,18,9AB200,2000;|
 $81:909B A9 02       LDA #$02               ;|
-$81:909D 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$81:909D 8D 0B 42    STA $420B              ;/
 $81:90A0 C2 30       REP #$30
 $81:90A2 A9 10 00    LDA #$0010             ;\
 $81:90A5 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 10h (unpausing, loading normal gameplay)
@@ -3827,30 +3827,30 @@ $81:A0A3 18          CLC                    ;|
 $81:A0A4 69 08 00    ADC #$0008             ;} X = [$1A] + 8 (4 columns right)
 $81:A0A7 AA          TAX                    ;/
 $81:A0A8 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
-$81:A0AB 8D 04 42    STA $4204  [$7E:4204]  ;|
+$81:A0AB 8D 04 42    STA $4204              ;|
 $81:A0AE E2 20       SEP #$20               ;|
 $81:A0B0 A9 64       LDA #$64               ;|
-$81:A0B2 8D 06 42    STA $4206  [$7E:4206]  ;|
+$81:A0B2 8D 06 42    STA $4206              ;|
 $81:A0B5 48          PHA                    ;|
 $81:A0B6 68          PLA                    ;} $14 = number of whole energy tanks
 $81:A0B7 48          PHA                    ;} $12 = sub-tank energy
 $81:A0B8 68          PLA                    ;|
 $81:A0B9 C2 20       REP #$20               ;|
-$81:A0BB AD 14 42    LDA $4214  [$7E:4214]  ;|
+$81:A0BB AD 14 42    LDA $4214              ;|
 $81:A0BE 85 14       STA $14    [$7E:0014]  ;|
-$81:A0C0 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$81:A0C0 AD 16 42    LDA $4216              ;|
 $81:A0C3 85 12       STA $12    [$7E:0012]  ;/
 $81:A0C5 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
-$81:A0C8 8D 04 42    STA $4204  [$7E:4204]  ;|
+$81:A0C8 8D 04 42    STA $4204              ;|
 $81:A0CB E2 20       SEP #$20               ;|
 $81:A0CD A9 64       LDA #$64               ;|
-$81:A0CF 8D 06 42    STA $4206  [$7E:4206]  ;|
+$81:A0CF 8D 06 42    STA $4206              ;|
 $81:A0D2 48          PHA                    ;|
 $81:A0D3 68          PLA                    ;} $16 = number of collected energy tanks
 $81:A0D4 48          PHA                    ;|
 $81:A0D5 68          PLA                    ;|
 $81:A0D6 C2 20       REP #$20               ;|
-$81:A0D8 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$81:A0D8 AD 14 42    LDA $4214              ;|
 $81:A0DB 85 16       STA $16    [$7E:0016]  ;/
 $81:A0DD A9 07 00    LDA #$0007             ;\
 $81:A0E0 85 18       STA $18    [$7E:0018]  ;} $18 = 7 (max energy tanks per row)
@@ -3886,18 +3886,18 @@ $81:A111 80 D5       BRA $D5    [$A0E8]     ; Go to LOOP
 ; BRANCH_ETANKS_DRAWN
 $81:A113 A6 1A       LDX $1A    [$7E:001A]  ; X = [$1A]
 $81:A115 A5 12       LDA $12    [$7E:0012]  ;\
-$81:A117 8D 04 42    STA $4204  [$7E:4204]  ;|
+$81:A117 8D 04 42    STA $4204              ;|
 $81:A11A E2 20       SEP #$20               ;|
 $81:A11C A9 0A       LDA #$0A               ;|
-$81:A11E 8D 06 42    STA $4206  [$7E:4206]  ;|
+$81:A11E 8D 06 42    STA $4206              ;|
 $81:A121 48          PHA                    ;|
 $81:A122 68          PLA                    ;} $14 = (sub-tank energy) / 10
 $81:A123 48          PHA                    ;} $12 = (sub-tank energy) % 10
 $81:A124 68          PLA                    ;|
 $81:A125 C2 20       REP #$20               ;|
-$81:A127 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$81:A127 AD 14 42    LDA $4214              ;|
 $81:A12A 85 14       STA $14    [$7E:0014]  ;|
-$81:A12C AD 16 42    LDA $4216  [$7E:4216]  ;|
+$81:A12C AD 16 42    LDA $4216              ;|
 $81:A12F 85 12       STA $12    [$7E:0012]  ;/
 $81:A131 A6 1A       LDX $1A    [$7E:001A]  ;\
 $81:A133 A5 12       LDA $12    [$7E:0012]  ;} >_<;
@@ -3922,22 +3922,22 @@ $81:A14D 60          RTS
 $81:A14E D0 71       BNE $71    [$A1C1]     ; If zero clear: return
 $81:A150 86 1A       STX $1A    [$7E:001A]  ; $1A = [X]
 $81:A152 AD E0 09    LDA $09E0  [$7E:09E0]  ;\
-$81:A155 8D 04 42    STA $4204  [$7E:4204]  ;|
+$81:A155 8D 04 42    STA $4204              ;|
 $81:A158 E2 20       SEP #$20               ;|
 $81:A15A A9 0A       LDA #$0A               ;|
-$81:A15C 8D 06 42    STA $4206  [$7E:4206]  ;} $4214 = [game time, hours] / 10
+$81:A15C 8D 06 42    STA $4206              ;} $4214 = [game time, hours] / 10
 $81:A15F 48          PHA                    ;} $4216 = [game time, hours] % 10
 $81:A160 68          PLA                    ;|
 $81:A161 48          PHA                    ;|
 $81:A162 68          PLA                    ;|
 $81:A163 C2 20       REP #$20               ;/
 $81:A165 A6 1A       LDX $1A    [$7E:001A]  ; X = [$1A]
-$81:A167 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$81:A167 AD 16 42    LDA $4216              ;\
 $81:A16A 18          CLC                    ;|
 $81:A16B 69 60 20    ADC #$2060             ;} $7E:3600 + [X] + 2 = 2060h + [$4216] | [enemy 0 palette index] (units)
 $81:A16E 0D 96 0F    ORA $0F96  [$7E:0F96]  ;|
 $81:A171 9F 02 36 7E STA $7E3602,x[$7E:37B6];/
-$81:A175 AD 14 42    LDA $4214  [$7E:4214]  ;\
+$81:A175 AD 14 42    LDA $4214              ;\
 $81:A178 18          CLC                    ;|
 $81:A179 69 60 20    ADC #$2060             ;} $7E:3600 + [X] = 2060h + [$4214] | [enemy 0 palette index] (tens)
 $81:A17C 0D 96 0F    ORA $0F96  [$7E:0F96]  ;|
@@ -3949,22 +3949,22 @@ $81:A189 AA          TAX                    ;/
 $81:A18A A0 A8 B4    LDY #$B4A8             ;\
 $81:A18D 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;} Load menu tilemap $B4A8 to ([X] / 2 % 20h, [X] / 40h) (:)
 $81:A190 AD DE 09    LDA $09DE  [$7E:09DE]  ;\
-$81:A193 8D 04 42    STA $4204  [$7E:4204]  ;|
+$81:A193 8D 04 42    STA $4204              ;|
 $81:A196 E2 20       SEP #$20               ;|
 $81:A198 A9 0A       LDA #$0A               ;|
-$81:A19A 8D 06 42    STA $4206  [$7E:4206]  ;} $4214 = [game time, minutes] / 10
+$81:A19A 8D 06 42    STA $4206              ;} $4214 = [game time, minutes] / 10
 $81:A19D 48          PHA                    ;} $4216 = [game time, minutes] % 10
 $81:A19E 68          PLA                    ;|
 $81:A19F 48          PHA                    ;|
 $81:A1A0 68          PLA                    ;|
 $81:A1A1 C2 20       REP #$20               ;/
 $81:A1A3 A6 1A       LDX $1A    [$7E:001A]  ; X = [$1A]
-$81:A1A5 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$81:A1A5 AD 16 42    LDA $4216              ;\
 $81:A1A8 18          CLC                    ;|
 $81:A1A9 69 60 20    ADC #$2060             ;} $7E:3600 + [X] + 8 = 2060h + [$4216] | [enemy 0 palette index] (units)
 $81:A1AC 0D 96 0F    ORA $0F96  [$7E:0F96]  ;|
 $81:A1AF 9F 08 36 7E STA $7E3608,x[$7E:37BC];/
-$81:A1B3 AD 14 42    LDA $4214  [$7E:4214]  ;\
+$81:A1B3 AD 14 42    LDA $4214              ;\
 $81:A1B6 18          CLC                    ;|
 $81:A1B7 69 60 20    ADC #$2060             ;} $7E:3600 + [X] + 6 = 2060h + [$4214] | [enemy 0 palette index] (tens)
 $81:A1BA 0D 96 0F    ORA $0F96  [$7E:0F96]  ;|
@@ -4458,16 +4458,16 @@ $81:A5B2 60          RTS
 $81:A5B3 E2 20       SEP #$20
 $81:A5B5 A9 04       LDA #$04               ;\
 $81:A5B7 85 6B       STA $6B    [$7E:006B]  ;} Subscreen layers = BG3
-$81:A5B9 8D 2D 21    STA $212D  [$7E:212D]  ;/
+$81:A5B9 8D 2D 21    STA $212D              ;/
 $81:A5BC A9 04       LDA #$04               ; >_<
 $81:A5BE 85 6D       STA $6D    [$7E:006D]  ;\
-$81:A5C0 8D 2F 21    STA $212F  [$7E:212F]  ;} Disable BG3 in window area subscreen
+$81:A5C0 8D 2F 21    STA $212F              ;} Disable BG3 in window area subscreen
 $81:A5C3 A9 02       LDA #$02               ;\
 $81:A5C5 85 6F       STA $6F    [$7E:006F]  ;} Enable subscreen layers
-$81:A5C7 8D 30 21    STA $2130  [$7E:2130]  ;/
+$81:A5C7 8D 30 21    STA $2130              ;/
 $81:A5CA A9 25       LDA #$25               ;\
 $81:A5CC 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG1/BG3/backdrop
-$81:A5CE 8D 31 21    STA $2131  [$7E:2131]  ;/
+$81:A5CE 8D 31 21    STA $2131              ;/
 $81:A5D1 A9 80       LDA #$80               ;\
 $81:A5D3 85 76       STA $76    [$7E:0076]  ;|
 $81:A5D5 A9 40       LDA #$40               ;|
@@ -4477,7 +4477,7 @@ $81:A5DB 85 74       STA $74    [$7E:0074]  ;/
 $81:A5DD 20 1C A6    JSR $A61C  [$81:A61C]  ; Set up initial expanding square transition HDMA
 $81:A5E0 A9 0C       LDA #$0C               ;\
 $81:A5E2 85 85       STA $85    [$7E:0085]  ;} Enable HDMA channels 2/3
-$81:A5E4 8D 0C 42    STA $420C  [$7E:420C]  ;/
+$81:A5E4 8D 0C 42    STA $420C              ;/
 $81:A5E7 20 F6 A5    JSR $A5F6  [$81:A5F6]  ; Configure window 1 for expanding square transition
 $81:A5EA 9C B0 18    STZ $18B0  [$7E:18B0]  ;\
 $81:A5ED 9C B1 18    STZ $18B1  [$7E:18B1]  ;} Disable HDMA objects
@@ -4492,19 +4492,19 @@ $81:A5F5 60          RTS
 $81:A5F6 E2 20       SEP #$20
 $81:A5F8 A9 13       LDA #$13               ;\
 $81:A5FA 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/BG2/sprites
-$81:A5FC 8D 2C 21    STA $212C  [$7E:212C]  ;/
+$81:A5FC 8D 2C 21    STA $212C              ;/
 $81:A5FF A9 13       LDA #$13               ; >_<
 $81:A601 85 6C       STA $6C    [$7E:006C]  ;\
-$81:A603 8D 2E 21    STA $212E  [$7E:212E]  ;} Disable BG1/BG2/sprites in window area subscreen
+$81:A603 8D 2E 21    STA $212E              ;} Disable BG1/BG2/sprites in window area subscreen
 $81:A606 A9 23       LDA #$23               ;\
 $81:A608 85 60       STA $60    [$7E:0060]  ;} Enable BG1 window 1 exclusive mask and BG2 window 1 inclusive mask
-$81:A60A 8D 23 21    STA $2123  [$7E:2123]  ;/
+$81:A60A 8D 23 21    STA $2123              ;/
 $81:A60D A9 03       LDA #$03               ;\
 $81:A60F 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 1 exclusive mask
-$81:A611 8D 24 21    STA $2124  [$7E:2124]  ;/
+$81:A611 8D 24 21    STA $2124              ;/
 $81:A614 A9 23       LDA #$23               ;\
 $81:A616 85 62       STA $62    [$7E:0062]  ;} Enable sprites window 1 exclusive mask and colour math window 1 inclusive mask
-$81:A618 8D 25 21    STA $2125  [$7E:2125]  ;/
+$81:A618 8D 25 21    STA $2125              ;/
 $81:A61B 60          RTS
 }
 
@@ -4547,21 +4547,21 @@ $81:A67B 8F 0A 9E 7E STA $7E9E0A[$7E:9E0A]  ;|
 $81:A67F A9 9E       LDA #$9E               ;|
 $81:A681 8F 0B 9E 7E STA $7E9E0B[$7E:9E0B]  ;/
 $81:A685 A9 40       LDA #$40               ;\
-$81:A687 8D 20 43    STA $4320  [$7E:4320]  ;|
+$81:A687 8D 20 43    STA $4320              ;|
 $81:A68A A9 26       LDA #$26               ;|
-$81:A68C 8D 21 43    STA $4321  [$7E:4321]  ;|
+$81:A68C 8D 21 43    STA $4321              ;|
 $81:A68F A9 00       LDA #$00               ;|
-$81:A691 8D 22 43    STA $4322  [$7E:4322]  ;} Set up DMA channel 2 for 8-bit HDMA to window 1 left position with indirect table $7E:9E00 and data table bank $7E
+$81:A691 8D 22 43    STA $4322              ;} Set up DMA channel 2 for 8-bit HDMA to window 1 left position with indirect table $7E:9E00 and data table bank $7E
 $81:A694 A9 9E       LDA #$9E               ;|
-$81:A696 8D 23 43    STA $4323  [$7E:4323]  ;|
+$81:A696 8D 23 43    STA $4323              ;|
 $81:A699 A9 7E       LDA #$7E               ;|
-$81:A69B 8D 24 43    STA $4324  [$7E:4324]  ;|
-$81:A69E 8D 27 43    STA $4327  [$7E:4327]  ;/
-$81:A6A1 9C 25 43    STZ $4325  [$7E:4325]
-$81:A6A4 9C 26 43    STZ $4326  [$7E:4326]
-$81:A6A7 9C 28 43    STZ $4328  [$7E:4328]
-$81:A6AA 9C 29 43    STZ $4329  [$7E:4329]
-$81:A6AD 9C 2A 43    STZ $432A  [$7E:432A]
+$81:A69B 8D 24 43    STA $4324              ;|
+$81:A69E 8D 27 43    STA $4327              ;/
+$81:A6A1 9C 25 43    STZ $4325            
+$81:A6A4 9C 26 43    STZ $4326            
+$81:A6A7 9C 28 43    STZ $4328            
+$81:A6AA 9C 29 43    STZ $4329            
+$81:A6AD 9C 2A 43    STZ $432A            
 $81:A6B0 A9 6F       LDA #$6F               ;\
 $81:A6B2 8F 10 9E 7E STA $7E9E10[$7E:9E10]  ;|
 $81:A6B6 A9 20       LDA #$20               ;|
@@ -4587,21 +4587,21 @@ $81:A6EE 8F 1A 9E 7E STA $7E9E1A[$7E:9E1A]  ;|
 $81:A6F2 A9 9E       LDA #$9E               ;|
 $81:A6F4 8F 1B 9E 7E STA $7E9E1B[$7E:9E1B]  ;/
 $81:A6F8 A9 40       LDA #$40               ;\
-$81:A6FA 8D 30 43    STA $4330  [$7E:4330]  ;|
+$81:A6FA 8D 30 43    STA $4330              ;|
 $81:A6FD A9 27       LDA #$27               ;|
-$81:A6FF 8D 31 43    STA $4331  [$7E:4331]  ;|
+$81:A6FF 8D 31 43    STA $4331              ;|
 $81:A702 A9 10       LDA #$10               ;|
-$81:A704 8D 32 43    STA $4332  [$7E:4332]  ;} Set up DMA channel 3 for 8-bit HDMA to window 1 right position with indirect table $7E:9E10 and data table bank $7E
+$81:A704 8D 32 43    STA $4332              ;} Set up DMA channel 3 for 8-bit HDMA to window 1 right position with indirect table $7E:9E10 and data table bank $7E
 $81:A707 A9 9E       LDA #$9E               ;|
-$81:A709 8D 33 43    STA $4333  [$7E:4333]  ;|
+$81:A709 8D 33 43    STA $4333              ;|
 $81:A70C A9 7E       LDA #$7E               ;|
-$81:A70E 8D 34 43    STA $4334  [$7E:4334]  ;|
-$81:A711 8D 37 43    STA $4337  [$7E:4337]  ;/
-$81:A714 9C 35 43    STZ $4335  [$7E:4335]
-$81:A717 9C 36 43    STZ $4336  [$7E:4336]
-$81:A71A 9C 38 43    STZ $4338  [$7E:4338]
-$81:A71D 9C 39 43    STZ $4339  [$7E:4339]
-$81:A720 9C 3A 43    STZ $433A  [$7E:433A]
+$81:A70E 8D 34 43    STA $4334              ;|
+$81:A711 8D 37 43    STA $4337              ;/
+$81:A714 9C 35 43    STZ $4335            
+$81:A717 9C 36 43    STZ $4336            
+$81:A71A 9C 38 43    STZ $4338            
+$81:A71D 9C 39 43    STZ $4339            
+$81:A720 9C 3A 43    STZ $433A            
 $81:A723 60          RTS
 }
 
@@ -5105,16 +5105,16 @@ $81:AABA A9 13       LDA #$13               ;\
 $81:AABC 85 6C       STA $6C    [$7E:006C]  ;} Disable BG1/BG2/sprites in window area main screen
 $81:AABE A9 32       LDA #$32               ;\
 $81:AAC0 85 60       STA $60    [$7E:0060]  ;} Enable BG1 window 1 inclusive mask and BG2 window 1 exclusive mask
-$81:AAC2 8D 23 21    STA $2123  [$7E:2123]  ;/
+$81:AAC2 8D 23 21    STA $2123              ;/
 $81:AAC5 A9 02       LDA #$02               ;\
 $81:AAC7 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 1 inclusive mask
-$81:AAC9 8D 24 21    STA $2124  [$7E:2124]  ;/
+$81:AAC9 8D 24 21    STA $2124              ;/
 $81:AACC A9 05       LDA #$05               ;\
 $81:AACE 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG1/BG3
-$81:AAD0 8D 31 21    STA $2131  [$7E:2131]  ;/
+$81:AAD0 8D 31 21    STA $2131              ;/
 $81:AAD3 A9 22       LDA #$22               ;\
 $81:AAD5 85 62       STA $62    [$7E:0062]  ;} Enable sprite window 1 inclusive mask and colour math window 1 inclusive mask
-$81:AAD7 8D 25 21    STA $2125  [$7E:2125]  ;/
+$81:AAD7 8D 25 21    STA $2125              ;/
 $81:AADA A9 30       LDA #$30               ;\
 $81:AADC 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = $0000, BG2 tiles base address = $3000
 $81:AADE A9 00       LDA #$00               ; A = 0 (terminator)
@@ -5184,7 +5184,7 @@ $81:AB8E E2 20       SEP #$20
 $81:AB90 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up file select map expanding square transition HDMA
 $81:AB93 A9 0C       LDA #$0C               ;\
 $81:AB95 85 85       STA $85    [$7E:0085]  ;} Enable HDMA channels 2/3
-$81:AB97 8D 0C 42    STA $420C  [$7E:420C]  ;/
+$81:AB97 8D 0C 42    STA $420C              ;/
 $81:AB9A C2 20       REP #$20
 $81:AB9C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 8 (expanding square transition)
 $81:AB9F A9 3B 00    LDA #$003B             ;\
@@ -5844,13 +5844,13 @@ $81:B084 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 15h (contracting squa
 $81:B087 E2 20       SEP #$20
 $81:B089 A9 0C       LDA #$0C               ;\
 $81:B08B 85 85       STA $85    [$7E:0085]  ;} Enable HDMA channels 2/3
-$81:B08D 8D 0C 42    STA $420C  [$7E:420C]  ;/
+$81:B08D 8D 0C 42    STA $420C              ;/
 $81:B090 A9 32       LDA #$32               ;\
 $81:B092 85 60       STA $60    [$7E:0060]  ;} Enable BG1 window 1 inclusive mask and BG2 window 1 exclusive mask
-$81:B094 8D 23 21    STA $2123  [$7E:2123]  ;/
+$81:B094 8D 23 21    STA $2123              ;/
 $81:B097 A9 02       LDA #$02               ;\
 $81:B099 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 1 inclusive mask
-$81:B09B 8D 24 21    STA $2124  [$7E:2124]  ;/
+$81:B09B 8D 24 21    STA $2124              ;/
 $81:B09E A9 30       LDA #$30               ;\
 $81:B0A0 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = $0000, BG2 tiles base address = $3000
 $81:B0A2 A9 22       LDA #$22               ;\

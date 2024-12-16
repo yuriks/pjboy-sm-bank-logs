@@ -7495,14 +7495,14 @@ $91:CC6A 4A          LSR A                  ;|
 $91:CC6B 4A          LSR A                  ;|
 $91:CC6C EB          XBA                    ;|
 $91:CC6D 0D A5 07    ORA $07A5  [$7E:07A5]  ;|
-$91:CC70 8D 02 42    STA $4202  [$7E:4202]  ;|
+$91:CC70 8D 02 42    STA $4202              ;|
 $91:CC73 AD 11 09    LDA $0911  [$7E:0911]  ;} $22 = [layer 1 Y position] / 10h * [room width in blocks] + [layer 1 X position] / 10h (block index)
 $91:CC76 4A          LSR A                  ;|
 $91:CC77 4A          LSR A                  ;|
 $91:CC78 4A          LSR A                  ;|
 $91:CC79 4A          LSR A                  ;|
 $91:CC7A 18          CLC                    ;|
-$91:CC7B 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$91:CC7B 6D 16 42    ADC $4216              ;|
 $91:CC7E 85 22       STA $22    [$7E:0022]  ;/
 $91:CC80 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (x-ray BG2 tilemap index)
 $91:CC82 A9 10 00    LDA #$0010             ;\
@@ -7787,11 +7787,11 @@ $91:CE2B 60          RTS
 ; $2A = [$24] % [room width in blocks]
 $91:CE2C E2 20       SEP #$20
 $91:CE2E A5 24       LDA $24    [$7E:0024]
-$91:CE30 8D 04 42    STA $4204  [$7E:4204]
+$91:CE30 8D 04 42    STA $4204            
 $91:CE33 A5 25       LDA $25    [$7E:0025]
-$91:CE35 8D 05 42    STA $4205  [$7E:4205]
+$91:CE35 8D 05 42    STA $4205            
 $91:CE38 AD A5 07    LDA $07A5  [$7E:07A5]
-$91:CE3B 8D 06 42    STA $4206  [$7E:4206]
+$91:CE3B 8D 06 42    STA $4206            
 $91:CE3E C2 20       REP #$20
 $91:CE40 EA          NOP
 $91:CE41 EA          NOP
@@ -7799,9 +7799,9 @@ $91:CE42 EA          NOP
 $91:CE43 EA          NOP
 $91:CE44 EA          NOP
 $91:CE45 EA          NOP
-$91:CE46 AD 14 42    LDA $4214  [$7E:4214]
+$91:CE46 AD 14 42    LDA $4214            
 $91:CE49 85 2C       STA $2C    [$7E:002C]
-$91:CE4B AD 16 42    LDA $4216  [$7E:4216]
+$91:CE4B AD 16 42    LDA $4216            
 $91:CE4E 85 2A       STA $2A    [$7E:002A]
 $91:CE50 60          RTS
 }
@@ -7818,12 +7818,12 @@ $91:CE50 60          RTS
 $91:CE51 A5 2C       LDA $2C    [$7E:002C]  ;\
 $91:CE53 EB          XBA                    ;|
 $91:CE54 0D A5 07    ORA $07A5  [$7E:07A5]  ;|
-$91:CE57 8D 02 42    STA $4202  [$7E:4202]  ;|
+$91:CE57 8D 02 42    STA $4202              ;|
 $91:CE5A EA          NOP                    ;|
 $91:CE5B EA          NOP                    ;} X = [$2A] + [$2C] * [room width in blocks] (block index)
 $91:CE5C A5 2A       LDA $2A    [$7E:002A]  ;|
 $91:CE5E 18          CLC                    ;|
-$91:CE5F 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$91:CE5F 6D 16 42    ADC $4216              ;|
 $91:CE62 AA          TAX                    ;/
 $91:CE63 BF 02 64 7F LDA $7F6402,x[$7F:6671];\
 $91:CE67 29 FF 00    AND #$00FF             ;} $2E = (block BTS)
@@ -9422,7 +9422,7 @@ $91:D9F7 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $91:D9FA 89 08 00    BIT #$0008             ;} If screw attack not equipped: go to BRANCH_NOT_SCREW_ATTACKING
 $91:D9FD F0 EB       BEQ $EB    [$D9EA]     ;/
 $91:D9FF AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$91:DA02 F0 3F       BEQ $3F    [$DA43]     ;} If [Samus animation frame] = 0: go to BRANCH_DA43
+$91:DA02 F0 3F       BEQ $3F    [$DA43]     ;} If [Samus animation frame] = 0: go to BRANCH_NO_PALETTE_UPDATE
 $91:DA04 C9 1B 00    CMP #$001B             ;\
 $91:DA07 10 3F       BPL $3F    [$DA48]     ;} If [Samus animation frame] >= 1Bh (wall jump eligible): return carry clear
 $91:DA09 80 10       BRA $10    [$DA1B]     ; Go to BRANCH_MERGE
@@ -9432,7 +9432,7 @@ $91:DA0B AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $91:DA0E 89 08 00    BIT #$0008             ;} If screw attack not equipped: return carry set
 $91:DA11 F0 33       BEQ $33    [$DA46]     ;/
 $91:DA13 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$91:DA16 C9 03 00    CMP #$0003             ;} If [Samus animation frame] < 3: go to BRANCH_DA43
+$91:DA16 C9 03 00    CMP #$0003             ;} If [Samus animation frame] < 3: go to BRANCH_NO_PALETTE_UPDATE
 $91:DA19 30 28       BMI $28    [$DA43]     ;/
 
 ; BRANCH_MERGE
@@ -9457,7 +9457,7 @@ $91:DA3E 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
 $91:DA41 38          SEC                    ;\
 $91:DA42 60          RTS                    ;} Return carry set
 
-; BRANCH_DA43
+; BRANCH_NO_PALETTE_UPDATE
 $91:DA43 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 
 $91:DA46 38          SEC                    ;\

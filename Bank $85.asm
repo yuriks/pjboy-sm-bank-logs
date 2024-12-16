@@ -160,17 +160,17 @@ $85:8143 C2 20       REP #$20
 $85:8145 9C F9 05    STZ $05F9  [$7E:05F9]  ; Save confirmation selection = Yes
 $85:8148 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:814B E2 20       SEP #$20
-$85:814D 9C 0C 42    STZ $420C  [$7E:420C]  ; Clear HDMA enable flags
+$85:814D 9C 0C 42    STZ $420C              ; Clear HDMA enable flags
 $85:8150 A9 19       LDA #$19               ;\
-$85:8152 8D 21 21    STA $2121  [$7E:2121]  ;|
+$85:8152 8D 21 21    STA $2121              ;|
 $85:8155 A9 B1       LDA #$B1               ;|
-$85:8157 8D 22 21    STA $2122  [$7E:2122]  ;} CGRAM BG3 palette 6 colour 1 = 0BB1h (green for Y button)
+$85:8157 8D 22 21    STA $2122              ;} CGRAM BG3 palette 6 colour 1 = 0BB1h (green for Y button)
 $85:815A A9 0B       LDA #$0B               ;| 
-$85:815C 8D 22 21    STA $2122  [$7E:2122]  ;/
+$85:815C 8D 22 21    STA $2122              ;/
 $85:815F A9 1F       LDA #$1F               ;\
-$85:8161 8D 22 21    STA $2122  [$7E:2122]  ;|
+$85:8161 8D 22 21    STA $2122              ;|
 $85:8164 A9 00       LDA #$00               ;} CGRAM BG3 palette 6 colour 2 = 001Fh (red for save dialog option select arrow)
-$85:8166 8D 22 21    STA $2122  [$7E:2122]  ;/
+$85:8166 8D 22 21    STA $2122              ;/
 $85:8169 A5 85       LDA $85    [$7E:0085]  ;\
 $85:816B 8F EA 33 7E STA $7E33EA[$7E:33EA]  ;} $7E:33EA = [HDMA channels to enable]
 $85:816F A5 5B       LDA $5B    [$7E:005B]  ;\
@@ -182,17 +182,17 @@ $85:817B 85 6A       STA $6A    [$7E:006A]  ;} Gameplay main screen layers = BG1
 $85:817D 64 70       STZ $70    [$7E:0070]  ; Gameplay colour math control register A = 0
 $85:817F 64 73       STZ $73    [$7E:0073]  ; Gameplay colour math control register B = 0
 $85:8181 A9 20       LDA #$20               ;\
-$85:8183 8D 32 21    STA $2132  [$7E:2132]  ;|
+$85:8183 8D 32 21    STA $2132              ;|
 $85:8186 A9 40       LDA #$40               ;|
-$85:8188 8D 32 21    STA $2132  [$7E:2132]  ;} Colour math subscreen backdrop colour = (0, 0, 0) (transparent)
+$85:8188 8D 32 21    STA $2132              ;} Colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $85:818B A9 80       LDA #$80               ;|
-$85:818D 8D 32 21    STA $2132  [$7E:2132]  ;/
-$85:8190 AD 11 21    LDA $2111  [$7E:2111]  ; Okay? We'll just read this write-only register for no reason
-$85:8193 9C 11 21    STZ $2111  [$7E:2111]  ;\
-$85:8196 9C 11 21    STZ $2111  [$7E:2111]  ;} BG3 X scroll = 0
-$85:8199 AD 12 21    LDA $2112  [$7E:2112]  ; >_< !!!
-$85:819C 9C 12 21    STZ $2112  [$7E:2112]  ;\
-$85:819F 9C 12 21    STZ $2112  [$7E:2112]  ;} BG3 Y scroll = 0
+$85:818D 8D 32 21    STA $2132              ;/
+$85:8190 AD 11 21    LDA $2111              ; Okay? We'll just read this write-only register for no reason
+$85:8193 9C 11 21    STZ $2111              ;\
+$85:8196 9C 11 21    STZ $2111              ;} BG3 X scroll = 0
+$85:8199 AD 12 21    LDA $2112              ; >_< !!!
+$85:819C 9C 12 21    STZ $2112              ;\
+$85:819F 9C 12 21    STZ $2112              ;} BG3 Y scroll = 0
 $85:81A2 C2 30       REP #$30
 $85:81A4 A2 80 00    LDX #$0080             ;\
 $85:81A7 A9 00 00    LDA #$0000             ;|
@@ -204,23 +204,23 @@ $85:81B0 10 F8       BPL $F8    [$81AA]     ;/
 $85:81B2 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:81B5 C2 20       REP #$20
 $85:81B7 A9 80 58    LDA #$5880             ;\
-$85:81BA 8D 16 21    STA $2116  [$7E:2116]  ;|
-$85:81BD AD 39 21    LDA $2139  [$7E:2139]  ;|
+$85:81BA 8D 16 21    STA $2116              ;|
+$85:81BD AD 39 21    LDA $2139              ;|
 $85:81C0 A9 81 39    LDA #$3981             ;| (8-bit transfer looks wrong, bug?)
-$85:81C3 8D 10 43    STA $4310  [$7E:4310]  ;|
+$85:81C3 8D 10 43    STA $4310              ;|
 $85:81C6 A9 00 41    LDA #$4100             ;|
-$85:81C9 8D 12 43    STA $4312  [$7E:4312]  ;|
+$85:81C9 8D 12 43    STA $4312              ;|
 $85:81CC A9 7E 00    LDA #$007E             ;|
-$85:81CF 8D 14 43    STA $4314  [$7E:4314]  ;|
+$85:81CF 8D 14 43    STA $4314              ;|
 $85:81D2 A9 00 07    LDA #$0700             ;} $7E:4100..47FF = [VRAM $5880..5BFF]
-$85:81D5 8D 15 43    STA $4315  [$7E:4315]  ;|
-$85:81D8 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$85:81DB 9C 19 43    STZ $4319  [$7E:4319]  ;|
+$85:81D5 8D 15 43    STA $4315              ;|
+$85:81D8 9C 17 43    STZ $4317              ;|
+$85:81DB 9C 19 43    STZ $4319              ;|
 $85:81DE E2 20       SEP #$20               ;|
 $85:81E0 A9 80       LDA #$80               ;|
-$85:81E2 8D 15 21    STA $2115  [$7E:2115]  ;|
+$85:81E2 8D 15 21    STA $2115              ;|
 $85:81E5 A9 02       LDA #$02               ;|
-$85:81E7 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$85:81E7 8D 0B 42    STA $420B              ;/
 $85:81EA 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music queue
 $85:81EE 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
 $85:81F2 60          RTS
@@ -239,22 +239,22 @@ $85:8200 CA          DEX                    ;|
 $85:8201 10 F8       BPL $F8    [$81FB]     ;/
 $85:8203 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:8206 A9 80 58    LDA #$5880             ;\
-$85:8209 8D 16 21    STA $2116  [$7E:2116]  ;|
+$85:8209 8D 16 21    STA $2116              ;|
 $85:820C A9 01 18    LDA #$1801             ;|
-$85:820F 8D 10 43    STA $4310  [$7E:4310]  ;|
+$85:820F 8D 10 43    STA $4310              ;|
 $85:8212 A9 00 38    LDA #$3800             ;|
-$85:8215 8D 12 43    STA $4312  [$7E:4312]  ;|
+$85:8215 8D 12 43    STA $4312              ;|
 $85:8218 A9 7E 00    LDA #$007E             ;|
-$85:821B 8D 14 43    STA $4314  [$7E:4314]  ;|
+$85:821B 8D 14 43    STA $4314              ;|
 $85:821E A9 00 07    LDA #$0700             ;} VRAM $5880..5BFF = [$7E:3800..3EFF]
-$85:8221 8D 15 43    STA $4315  [$7E:4315]  ;|
-$85:8224 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$85:8227 9C 19 43    STZ $4319  [$7E:4319]  ;|
+$85:8221 8D 15 43    STA $4315              ;|
+$85:8224 9C 17 43    STZ $4317              ;|
+$85:8227 9C 19 43    STZ $4319              ;|
 $85:822A E2 20       SEP #$20               ;|
 $85:822C A9 80       LDA #$80               ;|
-$85:822E 8D 15 21    STA $2115  [$7E:2115]  ;|
+$85:822E 8D 15 21    STA $2115              ;|
 $85:8231 A9 02       LDA #$02               ;|
-$85:8233 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$85:8233 8D 0B 42    STA $420B              ;/
 $85:8236 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music queue
 $85:823A 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
 $85:823E 60          RTS
@@ -411,22 +411,22 @@ $85:8326 A9 00 58    LDA #$5800             ;\
 $85:8329 18          CLC                    ;|
 $85:832A 65 34       ADC $34    [$7E:0034]  ;|
 $85:832C 85 34       STA $34    [$7E:0034]  ;|
-$85:832E 8D 16 21    STA $2116  [$7E:2116]  ;|
+$85:832E 8D 16 21    STA $2116              ;|
 $85:8331 A9 01 18    LDA #$1801             ;|
-$85:8334 8D 10 43    STA $4310  [$7E:4310]  ;|
+$85:8334 8D 10 43    STA $4310              ;|
 $85:8337 A9 00 32    LDA #$3200             ;|
-$85:833A 8D 12 43    STA $4312  [$7E:4312]  ;|
+$85:833A 8D 12 43    STA $4312              ;|
 $85:833D A9 7E 00    LDA #$007E             ;} Transfer [$09] bytes from $7E:3200 to VRAM $5800 + [$34]
-$85:8340 8D 14 43    STA $4314  [$7E:4314]  ;|
+$85:8340 8D 14 43    STA $4314              ;|
 $85:8343 A5 09       LDA $09    [$7E:0009]  ;|
-$85:8345 8D 15 43    STA $4315  [$7E:4315]  ;|
-$85:8348 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$85:834B 9C 19 43    STZ $4319  [$7E:4319]  ;|
+$85:8345 8D 15 43    STA $4315              ;|
+$85:8348 9C 17 43    STZ $4317              ;|
+$85:834B 9C 19 43    STZ $4319              ;|
 $85:834E E2 20       SEP #$20               ;|
 $85:8350 A9 80       LDA #$80               ;|
-$85:8352 8D 15 21    STA $2115  [$7E:2115]  ;|
+$85:8352 8D 15 21    STA $2115              ;|
 $85:8355 A9 02       LDA #$02               ;|
-$85:8357 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$85:8357 8D 0B 42    STA $420B              ;/
 $85:835A 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music queue
 $85:835E 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
 $85:8362 60          RTS
@@ -451,25 +451,25 @@ $85:8385 8F 85 33 7E STA $7E3385[$7E:3385]  ;|
 $85:8389 A9 00       LDA #$00               ;|
 $85:838B 8F 86 33 7E STA $7E3386[$7E:3386]  ;/
 $85:838F A9 42       LDA #$42               ;\
-$85:8391 8D 60 43    STA $4360  [$7E:4360]  ;|
+$85:8391 8D 60 43    STA $4360              ;|
 $85:8394 A9 12       LDA #$12               ;|
-$85:8396 8D 61 43    STA $4361  [$7E:4361]  ;|
+$85:8396 8D 61 43    STA $4361              ;|
 $85:8399 A9 80       LDA #$80               ;|
-$85:839B 8D 62 43    STA $4362  [$7E:4362]  ;|
-$85:839E 8D 65 43    STA $4365  [$7E:4365]  ;|
+$85:839B 8D 62 43    STA $4362              ;|
+$85:839E 8D 65 43    STA $4365              ;|
 $85:83A1 A9 33       LDA #$33               ;|
-$85:83A3 8D 63 43    STA $4363  [$7E:4363]  ;} Set up indirect HDMA from $7E:3380 to BG3 Y scroll on HDMA channel 6
-$85:83A6 8D 66 43    STA $4366  [$7E:4366]  ;|
+$85:83A3 8D 63 43    STA $4363              ;} Set up indirect HDMA from $7E:3380 to BG3 Y scroll on HDMA channel 6
+$85:83A6 8D 66 43    STA $4366              ;|
 $85:83A9 A9 7E       LDA #$7E               ;|
-$85:83AB 8D 64 43    STA $4364  [$7E:4364]  ;|
-$85:83AE 8D 67 43    STA $4367  [$7E:4367]  ;|
-$85:83B1 9C 68 43    STZ $4368  [$7E:4368]  ;|
-$85:83B4 9C 69 43    STZ $4369  [$7E:4369]  ;|
-$85:83B7 9C 6A 43    STZ $436A  [$7E:436A]  ;/
+$85:83AB 8D 64 43    STA $4364              ;|
+$85:83AE 8D 67 43    STA $4367              ;|
+$85:83B1 9C 68 43    STZ $4368              ;|
+$85:83B4 9C 69 43    STZ $4369              ;|
+$85:83B7 9C 6A 43    STZ $436A              ;/
 $85:83BA 20 9B 85    JSR $859B  [$85:859B]  ; Write message box BG3 Y scroll HDMA data table
 $85:83BD E2 20       SEP #$20
 $85:83BF A9 40       LDA #$40               ;\
-$85:83C1 8D 0C 42    STA $420C  [$7E:420C]  ;} Enable HDMA channel 6
+$85:83C1 8D 0C 42    STA $420C              ;} Enable HDMA channel 6
 $85:83C4 60          RTS
 }
 
@@ -609,12 +609,12 @@ $85:84A0 CA          DEX                    ;|
 $85:84A1 D0 F0       BNE $F0    [$8493]     ;/
 
 ; LOOP_INPUT
-$85:84A3 AD 12 42    LDA $4212  [$7E:4212]  ;\
+$85:84A3 AD 12 42    LDA $4212              ;\
 $85:84A6 89 01       BIT #$01               ;} Wait for auto-joypad-read busy flag to be clear
 $85:84A8 D0 F9       BNE $F9    [$84A3]     ;/
-$85:84AA AD 18 42    LDA $4218  [$7E:4218]  ;\
+$85:84AA AD 18 42    LDA $4218              ;\
 $85:84AD D0 05       BNE $05    [$84B4]     ;|
-$85:84AF AD 19 42    LDA $4219  [$7E:4219]  ;} If no IO controller 1 input: go to LOOP_INPUT
+$85:84AF AD 19 42    LDA $4219              ;} If no IO controller 1 input: go to LOOP_INPUT
 $85:84B2 F0 EF       BEQ $EF    [$84A3]     ;/
 
 $85:84B4 60          RTS                    ; Return
@@ -691,22 +691,22 @@ $85:8535 C2 20       REP #$20
 $85:8537 A9 A0 59    LDA #$59A0             ;\
 $85:853A 85 34       STA $34    [$7E:0034]  ;} >_<
 $85:853C A5 34       LDA $34    [$7E:0034]  ;/
-$85:853E 8D 16 21    STA $2116  [$7E:2116]  ;\
+$85:853E 8D 16 21    STA $2116              ;\
 $85:8541 A9 01 18    LDA #$1801             ;|
-$85:8544 8D 10 43    STA $4310  [$7E:4310]  ;|
+$85:8544 8D 10 43    STA $4310              ;|
 $85:8547 A9 00 32    LDA #$3200             ;|
-$85:854A 8D 12 43    STA $4312  [$7E:4312]  ;|
+$85:854A 8D 12 43    STA $4312              ;|
 $85:854D A9 7E 00    LDA #$007E             ;|
-$85:8550 8D 14 43    STA $4314  [$7E:4314]  ;|
+$85:8550 8D 14 43    STA $4314              ;|
 $85:8553 A9 80 01    LDA #$0180             ;|
-$85:8556 8D 15 43    STA $4315  [$7E:4315]  ;} VRAM $59A0..5B1F = [$7E:3200..337F]
-$85:8559 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$85:855C 9C 19 43    STZ $4319  [$7E:4319]  ;|
+$85:8556 8D 15 43    STA $4315              ;} VRAM $59A0..5B1F = [$7E:3200..337F]
+$85:8559 9C 17 43    STZ $4317              ;|
+$85:855C 9C 19 43    STZ $4319              ;|
 $85:855F E2 20       SEP #$20               ;|
 $85:8561 A9 80       LDA #$80               ;|
-$85:8563 8D 15 21    STA $2115  [$7E:2115]  ;|
+$85:8563 8D 15 21    STA $2115              ;|
 $85:8566 A9 02       LDA #$02               ;|
-$85:8568 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$85:8568 8D 0B 42    STA $420B              ;/
 $85:856B 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music
 $85:856F 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
 $85:8573 60          RTS
@@ -830,27 +830,27 @@ $85:861A C2 20       REP #$20
 $85:861C 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:861F C2 20       REP #$20
 $85:8621 A9 80 58    LDA #$5880             ;\
-$85:8624 8D 16 21    STA $2116  [$7E:2116]  ;|
+$85:8624 8D 16 21    STA $2116              ;|
 $85:8627 A9 01 18    LDA #$1801             ;|
-$85:862A 8D 10 43    STA $4310  [$7E:4310]  ;|
+$85:862A 8D 10 43    STA $4310              ;|
 $85:862D A9 00 41    LDA #$4100             ;|
-$85:8630 8D 12 43    STA $4312  [$7E:4312]  ;|
+$85:8630 8D 12 43    STA $4312              ;|
 $85:8633 A9 7E 00    LDA #$007E             ;|
-$85:8636 8D 14 43    STA $4314  [$7E:4314]  ;|
+$85:8636 8D 14 43    STA $4314              ;|
 $85:8639 A9 00 07    LDA #$0700             ;} VRAM $5880..5BFF = [$7E:4100..47FF]
-$85:863C 8D 15 43    STA $4315  [$7E:4315]  ;|
-$85:863F 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$85:8642 9C 19 43    STZ $4319  [$7E:4319]  ;|
+$85:863C 8D 15 43    STA $4315              ;|
+$85:863F 9C 17 43    STZ $4317              ;|
+$85:8642 9C 19 43    STZ $4319              ;|
 $85:8645 E2 20       SEP #$20               ;|
 $85:8647 A9 80       LDA #$80               ;|
-$85:8649 8D 15 21    STA $2115  [$7E:2115]  ;|
+$85:8649 8D 15 21    STA $2115              ;|
 $85:864C A9 02       LDA #$02               ;|
-$85:864E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$85:864E 8D 0B 42    STA $420B              ;/
 $85:8651 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:8654 E2 20       SEP #$20
 $85:8656 AF EA 33 7E LDA $7E33EA[$7E:33EA]  ;\
 $85:865A 85 85       STA $85    [$7E:0085]  ;} HDMA channels to enable = [$7E:33EA]
-$85:865C 8D 0C 42    STA $420C  [$7E:420C]  ;/
+$85:865C 8D 0C 42    STA $420C              ;/
 $85:865F AF EB 33 7E LDA $7E33EB[$7E:33EB]  ;\
 $85:8663 85 5B       STA $5B    [$7E:005B]  ;} BG3 tilemap base address and size = [$7E:33EB]
 $85:8665 A5 69       LDA $69    [$7E:0069]  ;\
@@ -860,15 +860,15 @@ $85:866B 85 70       STA $70    [$7E:0070]  ;} Gameplay colour math control regi
 $85:866D A5 71       LDA $71    [$7E:0071]  ;\
 $85:866F 85 73       STA $73    [$7E:0073]  ;} Gameplay colour math control register B = [next gameplay colour math control register B]
 $85:8671 A9 19       LDA #$19               ;\
-$85:8673 8D 21 21    STA $2121  [$7E:2121]  ;|
+$85:8673 8D 21 21    STA $2121              ;|
 $85:8676 AF 32 C0 7E LDA $7EC032[$7E:C032]  ;|
-$85:867A 8D 22 21    STA $2122  [$7E:2122]  ;} CGRAM BG3 palette 6 colour 1 = [BG3 palette 6 colour 1] (palette blend colour 0)
+$85:867A 8D 22 21    STA $2122              ;} CGRAM BG3 palette 6 colour 1 = [BG3 palette 6 colour 1] (palette blend colour 0)
 $85:867D AF 33 C0 7E LDA $7EC033[$7E:C033]  ;| 
-$85:8681 8D 22 21    STA $2122  [$7E:2122]  ;/
+$85:8681 8D 22 21    STA $2122              ;/
 $85:8684 AF 34 C0 7E LDA $7EC034[$7E:C034]  ;\
-$85:8688 8D 22 21    STA $2122  [$7E:2122]  ;|
+$85:8688 8D 22 21    STA $2122              ;|
 $85:868B AF 35 C0 7E LDA $7EC035[$7E:C035]  ;} CGRAM BG3 palette 6 colour 2 = [BG3 palette 6 colour 2] (palette blend colour 1)
-$85:868F 8D 22 21    STA $2122  [$7E:2122]  ;/
+$85:868F 8D 22 21    STA $2122              ;/
 $85:8692 22 B9 84 88 JSL $8884B9[$88:84B9]  ; HDMA object handler (also handle music queue)
 $85:8696 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
 $85:869A 60          RTS

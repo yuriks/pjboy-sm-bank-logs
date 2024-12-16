@@ -1362,17 +1362,17 @@ $86:8753 10 03       BPL $03    [$8758]     ;} If (enemy projectile Y velocity) 
 $86:8755 4C CC 87    JMP $87CC  [$86:87CC]  ; Go to BRANCH_UP
 
 $86:8758 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$86:875B 8E 04 42    STX $4204  [$7E:4204]  ;|
+$86:875B 8E 04 42    STX $4204              ;|
 $86:875E E2 20       SEP #$20               ;|
 $86:8760 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$86:8763 8D 06 42    STA $4206  [$7E:4206]  ;|
+$86:8763 8D 06 42    STA $4206              ;|
 $86:8766 C2 20       REP #$20               ;|
 $86:8768 B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ;} If [current block index] % [room width in blocks] != [enemy projectile X position] / 10h (enemy projectile centre isn't in block):
 $86:876B 4A          LSR A                  ;|
 $86:876C 4A          LSR A                  ;|
 $86:876D 4A          LSR A                  ;|
 $86:876E 4A          LSR A                  ;|
-$86:876F CD 16 42    CMP $4216  [$7E:4216]  ;|
+$86:876F CD 16 42    CMP $4216              ;|
 $86:8772 F0 02       BEQ $02    [$8776]     ;/
 $86:8774 18          CLC                    ;\
 $86:8775 60          RTS                    ;} Return carry clear
@@ -1425,17 +1425,17 @@ $86:87CB 60          RTS
 
 ; BRANCH_UP
 $86:87CC AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$86:87CF 8E 04 42    STX $4204  [$7E:4204]  ;|
+$86:87CF 8E 04 42    STX $4204              ;|
 $86:87D2 E2 20       SEP #$20               ;|
 $86:87D4 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$86:87D7 8D 06 42    STA $4206  [$7E:4206]  ;|
+$86:87D7 8D 06 42    STA $4206              ;|
 $86:87DA C2 20       REP #$20               ;|
 $86:87DC B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ;} If [current block index] % [room width in blocks] != [enemy projectile X position] / 10h (enemy projectile centre isn't in block):
 $86:87DF 4A          LSR A                  ;|
 $86:87E0 4A          LSR A                  ;|
 $86:87E1 4A          LSR A                  ;|
 $86:87E2 4A          LSR A                  ;|
-$86:87E3 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$86:87E3 CD 16 42    CMP $4216              ;|
 $86:87E6 F0 02       BEQ $02    [$87EA]     ;/
 $86:87E8 18          CLC                    ;\
 $86:87E9 60          RTS                    ;} Return carry clear
@@ -1638,9 +1638,9 @@ $86:88F8 4A          LSR A                  ;|
 $86:88F9 4A          LSR A                  ;|
 $86:88FA 4A          LSR A                  ;} Calculate (enemy projectile top boundary) / 10h * [room width in blocks] (target row block index)
 $86:88FB E2 20       SEP #$20               ;|
-$86:88FD 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:88FD 8D 02 42    STA $4202              ;|
 $86:8900 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$86:8903 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:8903 8D 03 42    STA $4203              ;|
 $86:8906 C2 20       REP #$20               ;/
 $86:8908 BD 27 1A    LDA $1A27,x[$7E:1A49]  ;\
 $86:890B 18          CLC                    ;|
@@ -1665,7 +1665,7 @@ $86:8927 4A          LSR A                  ;|
 $86:8928 4A          LSR A                  ;|
 $86:8929 4A          LSR A                  ;|
 $86:892A 18          CLC                    ;} X = ((target row block index) + (target front boundary) / 10h) * 2 (index of top block to check)
-$86:892B 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$86:892B 6D 16 42    ADC $4216              ;|
 $86:892E 0A          ASL A                  ;|
 $86:892F AA          TAX                    ;/
 
@@ -1782,9 +1782,9 @@ $86:89D5 4A          LSR A                  ;|
 $86:89D6 4A          LSR A                  ;|
 $86:89D7 4A          LSR A                  ;|
 $86:89D8 E2 20       SEP #$20               ;|
-$86:89DA 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:89DA 8D 02 42    STA $4202              ;|
 $86:89DD AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$86:89E0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:89E0 8D 03 42    STA $4203              ;|
 $86:89E3 C2 20       REP #$20               ;|
 $86:89E5 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
 $86:89E8 38          SEC                    ;} X = ((enemy projectile front boundary) / 10h * [room width] + (enemy projectile left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -1794,7 +1794,7 @@ $86:89EC 4A          LSR A                  ;|
 $86:89ED 4A          LSR A                  ;|
 $86:89EE 4A          LSR A                  ;|
 $86:89EF 18          CLC                    ;|
-$86:89F0 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$86:89F0 6D 16 42    ADC $4216              ;|
 $86:89F3 0A          ASL A                  ;|
 $86:89F4 AA          TAX                    ;/
 
@@ -4307,27 +4307,27 @@ $86:9BF2 60          RTS
 ; Clone of $8B:8EA3
 $86:9BF3 E2 20       SEP #$20               ;\
 $86:9BF5 BF 43 B4 A0 LDA $A0B443,x[$A0:B443];|
-$86:9BF9 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:9BF9 8D 02 42    STA $4202              ;|
 $86:9BFC A5 18       LDA $18    [$7E:0018]  ;|
-$86:9BFE 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:9BFE 8D 03 42    STA $4203              ;|
 $86:9C01 EA          NOP                    ;|
 $86:9C02 EA          NOP                    ;} $12 = [$18] * (sin([X] / 2 * pi / 80h) * 100h low byte) / 100h
 $86:9C03 EA          NOP                    ;|
 $86:9C04 C2 20       REP #$20               ;|
-$86:9C06 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$86:9C06 AD 16 42    LDA $4216              ;|
 $86:9C09 EB          XBA                    ;|
 $86:9C0A 29 FF 00    AND #$00FF             ;|
 $86:9C0D 85 12       STA $12    [$7E:0012]  ;/
 $86:9C0F E2 20       SEP #$20               ;\
 $86:9C11 BF 44 B4 A0 LDA $A0B444,x[$A0:B444];|
-$86:9C15 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:9C15 8D 02 42    STA $4202              ;|
 $86:9C18 A5 18       LDA $18    [$7E:0018]  ;|
-$86:9C1A 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:9C1A 8D 03 42    STA $4203              ;|
 $86:9C1D EA          NOP                    ;|
 $86:9C1E EA          NOP                    ;} $12 += [$18] * (sin([X] / 2 * pi / 80h) * 100h high byte)
 $86:9C1F EA          NOP                    ;|
 $86:9C20 C2 20       REP #$20               ;|
-$86:9C22 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$86:9C22 AD 16 42    LDA $4216              ;|
 $86:9C25 18          CLC                    ;|
 $86:9C26 65 12       ADC $12    [$7E:0012]  ;/
 $86:9C28 60          RTS
@@ -9781,40 +9781,40 @@ $86:C29A 6B          RTL
 $86:C29B C2 20       REP #$20
 $86:C29D E2 10       SEP #$10
 $86:C29F A6 26       LDX $26    [$7E:0026]  ;\
-$86:C2A1 8E 02 42    STX $4202  [$7E:4202]  ;|
+$86:C2A1 8E 02 42    STX $4202              ;|
 $86:C2A4 A6 28       LDX $28    [$7E:0028]  ;|
-$86:C2A6 8E 03 42    STX $4203  [$7E:4203]  ;|
+$86:C2A6 8E 03 42    STX $4203              ;|
 $86:C2A9 EB          XBA                    ;} Result = ac
 $86:C2AA EA          NOP                    ;|
-$86:C2AB AD 16 42    LDA $4216  [$7E:4216]  ;|
+$86:C2AB AD 16 42    LDA $4216              ;|
 $86:C2AE 85 2A       STA $2A    [$7E:002A]  ;/
 $86:C2B0 A6 27       LDX $27    [$7E:0027]  ;\
-$86:C2B2 8E 02 42    STX $4202  [$7E:4202]  ;|
+$86:C2B2 8E 02 42    STX $4202              ;|
 $86:C2B5 A6 29       LDX $29    [$7E:0029]  ;|
-$86:C2B7 8E 03 42    STX $4203  [$7E:4203]  ;|
+$86:C2B7 8E 03 42    STX $4203              ;|
 $86:C2BA EB          XBA                    ;} Result += bd * 10000h
 $86:C2BB EA          NOP                    ;|
-$86:C2BC AE 16 42    LDX $4216  [$7E:4216]  ;|
+$86:C2BC AE 16 42    LDX $4216              ;|
 $86:C2BF 86 2C       STX $2C    [$7E:002C]  ;|
-$86:C2C1 AC 17 42    LDY $4217  [$7E:4217]  ;/
+$86:C2C1 AC 17 42    LDY $4217              ;/
 $86:C2C4 A6 27       LDX $27    [$7E:0027]  ;\
-$86:C2C6 8E 02 42    STX $4202  [$7E:4202]  ;|
+$86:C2C6 8E 02 42    STX $4202              ;|
 $86:C2C9 A6 28       LDX $28    [$7E:0028]  ;|
-$86:C2CB 8E 03 42    STX $4203  [$7E:4203]  ;|
+$86:C2CB 8E 03 42    STX $4203              ;|
 $86:C2CE A5 2B       LDA $2B    [$7E:002B]  ;} Result += bc * 100h
 $86:C2D0 18          CLC                    ;|
-$86:C2D1 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$86:C2D1 6D 16 42    ADC $4216              ;|
 $86:C2D4 85 2B       STA $2B    [$7E:002B]  ;/
 $86:C2D6 90 01       BCC $01    [$C2D9]     ;\
 $86:C2D8 C8          INY                    ;} Propagate carry
 
 $86:C2D9 A6 26       LDX $26    [$7E:0026]  ;\
-$86:C2DB 8E 02 42    STX $4202  [$7E:4202]  ;|
+$86:C2DB 8E 02 42    STX $4202              ;|
 $86:C2DE A6 29       LDX $29    [$7E:0029]  ;|
-$86:C2E0 8E 03 42    STX $4203  [$7E:4203]  ;|
+$86:C2E0 8E 03 42    STX $4203              ;|
 $86:C2E3 A5 2B       LDA $2B    [$7E:002B]  ;} Result += ad * 100h
 $86:C2E5 18          CLC                    ;|
-$86:C2E6 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$86:C2E6 6D 16 42    ADC $4216              ;|
 $86:C2E9 85 2B       STA $2B    [$7E:002B]  ;/
 $86:C2EB 90 01       BCC $01    [$C2EE]     ;\
 $86:C2ED C8          INY                    ;} Propagate carry
@@ -16365,22 +16365,22 @@ $86:F1E6 F0 37       BEQ $37    [$F21F]     ;} If [pooled minor item drop chance
 $86:F1E8 46 16       LSR $16    [$7E:0016]  ; Enabled drops >>= 1
 $86:F1EA 90 2A       BCC $2A    [$F216]     ; If carry clear: go to BRANCH_NEXT_MINOR_DROP
 $86:F1EC A5 14       LDA $14    [$7E:0014]  ;\
-$86:F1EE 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:F1EE 8D 02 42    STA $4202              ;|
 $86:F1F1 BF 00 00 B4 LDA $B40000,x[$B4:F2AA];|
-$86:F1F5 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:F1F5 8D 03 42    STA $4203              ;|
 $86:F1F8 5A          PHY                    ;|
 $86:F1F9 EA          NOP                    ;|
 $86:F1FA EA          NOP                    ;|
-$86:F1FB AC 16 42    LDY $4216  [$7E:4216]  ;|
-$86:F1FE 8C 04 42    STY $4204  [$7E:4204]  ;} Drop chance accumulator += (drop chance) * [pooled major item drop chance complement] / [pooled minor item drop chance]
+$86:F1FB AC 16 42    LDY $4216              ;|
+$86:F1FE 8C 04 42    STY $4204              ;} Drop chance accumulator += (drop chance) * [pooled major item drop chance complement] / [pooled minor item drop chance]
 $86:F201 A5 12       LDA $12    [$7E:0012]  ;|
-$86:F203 8D 06 42    STA $4206  [$7E:4206]  ;|
+$86:F203 8D 06 42    STA $4206              ;|
 $86:F206 7A          PLY                    ;|
 $86:F207 EA          NOP                    ;|
 $86:F208 C2 20       REP #$20               ;|
 $86:F20A A5 18       LDA $18    [$7E:0018]  ;|
 $86:F20C 18          CLC                    ;|
-$86:F20D 6D 14 42    ADC $4214  [$7E:4214]  ;/
+$86:F20D 6D 14 42    ADC $4214              ;/
 $86:F210 C5 1A       CMP $1A    [$7E:001A]  ;\
 $86:F212 B0 3C       BCS $3C    [$F250]     ;} If [drop chance accumulator] >= [random target]: go to BRANCH_RETURN
 $86:F214 85 18       STA $18    [$7E:0018]

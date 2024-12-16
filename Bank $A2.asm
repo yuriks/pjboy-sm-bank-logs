@@ -96,14 +96,14 @@ $A2:875E C0 17 00    CPY #$0017             ;\
 $A2:8761 30 02       BMI $02    [$8765]     ;} If [enemy speed table index] >= 17h:
 $A2:8763 A9 FF       LDA #$FF               ; A = FFh
 
-$A2:8765 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8765 8D 02 42    STA $4202              ;\
 $A2:8768 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
-$A2:876B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:876B 8D 03 42    STA $4203              ;|
 $A2:876E EA          NOP                    ;|
 $A2:876F EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:8770 EA          NOP                    ;|
 $A2:8771 C2 20       REP #$20               ;|
-$A2:8773 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8773 AD 16 42    LDA $4216              ;|
 $A2:8776 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A2:8779 18          CLC                    ;\
 $A2:877A 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy distance accumulator += [enemy speed]
@@ -178,14 +178,14 @@ $A2:880F C0 17 00    CPY #$0017             ;\
 $A2:8812 30 02       BMI $02    [$8816]     ;} If [enemy speed table index] >= 17h:
 $A2:8814 A9 FF       LDA #$FF               ; A = FFh
 
-$A2:8816 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8816 8D 02 42    STA $4202              ;\
 $A2:8819 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
-$A2:881C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:881C 8D 03 42    STA $4203              ;|
 $A2:881F EA          NOP                    ;|
 $A2:8820 EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:8821 EA          NOP                    ;|
 $A2:8822 C2 20       REP #$20               ;|
-$A2:8824 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8824 AD 16 42    LDA $4216              ;|
 $A2:8827 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A2:882A EB          XBA                    ;\
 $A2:882B 29 FF 00    AND #$00FF             ;|
@@ -215,14 +215,14 @@ $A2:885B C0 17 00    CPY #$0017             ;\
 $A2:885E 30 02       BMI $02    [$8862]     ;} If [enemy speed table index] >= 17h:
 $A2:8860 A9 FF       LDA #$FF               ; A = FFh
 
-$A2:8862 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8862 8D 02 42    STA $4202              ;\
 $A2:8865 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
-$A2:8868 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:8868 8D 03 42    STA $4203              ;|
 $A2:886B EA          NOP                    ;|
 $A2:886C EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:886D EA          NOP                    ;|
 $A2:886E C2 20       REP #$20               ;|
-$A2:8870 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8870 AD 16 42    LDA $4216              ;|
 $A2:8873 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A2:8876 EB          XBA                    ;\
 $A2:8877 29 FF 00    AND #$00FF             ;|
@@ -2098,9 +2098,9 @@ $A2:9AD2 9F 08 78 7E STA $7E7808,x[$7E:7988];} Enemy invert direction flag = 0
 $A2:9AD6 20 06 9B    JSR $9B06  [$A2:9B06]  ; $1C = random number in 0..7
 $A2:9AD9 BF 00 78 7E LDA $7E7800,x[$7E:7980]; A = [enemy hop type]
 $A2:9ADD C9 03 00    CMP #$0003             ;\
-$A2:9AE0 10 16       BPL $16    [$9AF8]     ;} If [enemy hop type] >= 3: go to BRANCH_9AF8
+$A2:9AE0 10 16       BPL $16    [$9AF8]     ;} If [enemy hop type] >= 3: go to BRANCH_HOP_DETERMINED
 $A2:9AE2 C9 00 00    CMP #$0000             ;\
-$A2:9AE5 D0 07       BNE $07    [$9AEE]     ;} If [enemy hop type] = 0:
+$A2:9AE5 D0 07       BNE $07    [$9AEE]     ;} If [enemy hop type] = 0 (normal - Samus not in proximity):
 $A2:9AE7 A5 1C       LDA $1C    [$7E:001C]  ;\
 $A2:9AE9 29 01 00    AND #$0001             ;} $1C %= 2
 $A2:9AEC 85 1C       STA $1C    [$7E:001C]  ;/
@@ -2110,7 +2110,7 @@ $A2:9AF0 C9 02 00    CMP #$0002             ;|
 $A2:9AF3 30 03       BMI $03    [$9AF8]     ;} A = min(2, [$1C]) (pointless)
 $A2:9AF5 A9 02 00    LDA #$0002             ;/
 
-; BRANCH_9AF8
+; BRANCH_HOP_DETERMINED
 $A2:9AF8 0A          ASL A                  ;\
 $A2:9AF9 0A          ASL A                  ;|
 $A2:9AFA 0A          ASL A                  ;} Enemy hop table index = [A] * 8
@@ -7972,14 +7972,14 @@ $A2:DFCD 6B          RTL
 $A2:DFCE 08          PHP
 $A2:DFCF E2 20       SEP #$20
 $A2:DFD1 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:DFD4 8D 02 42    STA $4202  [$7E:4202]
+$A2:DFD4 8D 02 42    STA $4202            
 $A2:DFD7 BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A2:DFDA 8D 03 42    STA $4203  [$7E:4203]
+$A2:DFDA 8D 03 42    STA $4203            
 $A2:DFDD EA          NOP
 $A2:DFDE EA          NOP
 $A2:DFDF EA          NOP
 $A2:DFE0 C2 20       REP #$20
-$A2:DFE2 AD 16 42    LDA $4216  [$7E:4216]
+$A2:DFE2 AD 16 42    LDA $4216            
 $A2:DFE5 85 12       STA $12    [$7E:0012]
 $A2:DFE7 28          PLP
 $A2:DFE8 60          RTS

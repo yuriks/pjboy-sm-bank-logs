@@ -204,23 +204,23 @@ $82:81A3 60          RTS
 $82:81A4 08          PHP
 $82:81A5 E2 30       SEP #$30
 $82:81A7 A9 01       LDA #$01               ;\
-$82:81A9 8D 00 42    STA $4200  [$7E:4200]  ;} Enable joypad auto-read, disable interrupts
+$82:81A9 8D 00 42    STA $4200              ;} Enable joypad auto-read, disable interrupts
 $82:81AC 85 84       STA $84    [$7E:0084]  ;/
-$82:81AE 9C 01 42    STZ $4201  [$7E:4201]  ; Joypad programmable IO port = 0
-$82:81B1 9C 02 42    STZ $4202  [$7E:4202]  ; Multiplicand = 0
-$82:81B4 9C 03 42    STZ $4203  [$7E:4203]  ; Multiplier = 0
-$82:81B7 9C 04 42    STZ $4204  [$7E:4204]  ;\
-$82:81BA 9C 05 42    STZ $4205  [$7E:4205]  ;} Dividend = 0
-$82:81BD 9C 06 42    STZ $4206  [$7E:4206]  ; Divisor = 0
-$82:81C0 9C 07 42    STZ $4207  [$7E:4207]  ;\
-$82:81C3 9C 08 42    STZ $4208  [$7E:4208]  ;} Horizontal timer = 0
-$82:81C6 9C 09 42    STZ $4209  [$7E:4209]  ;\
-$82:81C9 9C 0A 42    STZ $420A  [$7E:420A]  ;} Vertical timer = 0
-$82:81CC 9C 0B 42    STZ $420B  [$7E:420B]  ; Disable DMAs
-$82:81CF 9C 0C 42    STZ $420C  [$7E:420C]  ;\
+$82:81AE 9C 01 42    STZ $4201              ; Joypad programmable IO port = 0
+$82:81B1 9C 02 42    STZ $4202              ; Multiplicand = 0
+$82:81B4 9C 03 42    STZ $4203              ; Multiplier = 0
+$82:81B7 9C 04 42    STZ $4204              ;\
+$82:81BA 9C 05 42    STZ $4205              ;} Dividend = 0
+$82:81BD 9C 06 42    STZ $4206              ; Divisor = 0
+$82:81C0 9C 07 42    STZ $4207              ;\
+$82:81C3 9C 08 42    STZ $4208              ;} Horizontal timer = 0
+$82:81C6 9C 09 42    STZ $4209              ;\
+$82:81C9 9C 0A 42    STZ $420A              ;} Vertical timer = 0
+$82:81CC 9C 0B 42    STZ $420B              ; Disable DMAs
+$82:81CF 9C 0C 42    STZ $420C              ;\
 $82:81D2 64 85       STZ $85    [$7E:0085]  ;} Disable HDMAs
 $82:81D4 A9 01       LDA #$01               ;\
-$82:81D6 8D 0D 42    STA $420D  [$7E:420D]  ;} Set fast ROM
+$82:81D6 8D 0D 42    STA $420D              ;} Set fast ROM
 $82:81D9 85 86       STA $86    [$7E:0086]  ;/
 $82:81DB 28          PLP
 $82:81DC 60          RTS
@@ -232,79 +232,79 @@ $82:81DC 60          RTS
 $82:81DD 08          PHP
 $82:81DE E2 30       SEP #$30
 $82:81E0 A9 80       LDA #$80               ;\
-$82:81E2 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$82:81E2 8D 00 21    STA $2100              ;} Enable forced blank
 $82:81E5 85 51       STA $51    [$7E:0051]  ;/
 $82:81E7 A9 03       LDA #$03               ;\
-$82:81E9 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$82:81E9 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $82:81EC 85 52       STA $52    [$7E:0052]  ;/
-$82:81EE 9C 02 21    STZ $2102  [$7E:2102]  ;\
+$82:81EE 9C 02 21    STZ $2102              ;\
 $82:81F1 64 53       STZ $53    [$7E:0053]  ;|
 $82:81F3 A9 80       LDA #$80               ;} Top priority sprite number = $00
-$82:81F5 8D 03 21    STA $2103  [$7E:2103]  ;|
+$82:81F5 8D 03 21    STA $2103              ;|
 $82:81F8 85 54       STA $54    [$7E:0054]  ;/
-$82:81FA 9C 04 21    STZ $2104  [$7E:2104]  ;\
-$82:81FD 9C 04 21    STZ $2104  [$7E:2104]  ;} OAM write address = $0000
+$82:81FA 9C 04 21    STZ $2104              ;\
+$82:81FD 9C 04 21    STZ $2104              ;} OAM write address = $0000
 $82:8200 A9 09       LDA #$09               ;\
-$82:8202 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:8202 8D 05 21    STA $2105              ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:8205 85 55       STA $55    [$7E:0055]  ;/
-$82:8207 9C 06 21    STZ $2106  [$7E:2106]  ;\
+$82:8207 9C 06 21    STZ $2106              ;\
 $82:820A 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
 $82:820C 64 5D       STZ $5D    [$7E:005D]  ;\
-$82:820E 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$82:820E 9C 0B 21    STZ $210B              ;|
 $82:8211 A9 04       LDA #$04               ;} BG1/2/4 tiles base address = $0000, BG3 tiles base address = $4000
 $82:8213 85 5E       STA $5E    [$7E:005E]  ;|
-$82:8215 8D 0C 21    STA $210C  [$7E:210C]  ;/
+$82:8215 8D 0C 21    STA $210C              ;/
 $82:8218 A9 51       LDA #$51               ;\
 $82:821A 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5000, size = 64x32
-$82:821C 8D 07 21    STA $2107  [$7E:2107]  ;/
+$82:821C 8D 07 21    STA $2107              ;/
 $82:821F A9 49       LDA #$49               ;\
 $82:8221 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 64x32
-$82:8223 8D 08 21    STA $2108  [$7E:2108]  ;/
+$82:8223 8D 08 21    STA $2108              ;/
 $82:8226 A9 5A       LDA #$5A               ;\
 $82:8228 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $5800, size = 32x64
-$82:822A 8D 09 21    STA $2109  [$7E:2109]  ;/
+$82:822A 8D 09 21    STA $2109              ;/
 $82:822D A9 00       LDA #$00               ;\
 $82:822F 85 5C       STA $5C    [$7E:005C]  ;} BG4 tilemap base address = $0000, size = 32x32
-$82:8231 8D 0A 21    STA $210A  [$7E:210A]  ;/
-$82:8234 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$82:8237 9C 23 21    STZ $2123  [$7E:2123]  ;\
+$82:8231 8D 0A 21    STA $210A              ;/
+$82:8234 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$82:8237 9C 23 21    STZ $2123              ;\
 $82:823A 64 60       STZ $60    [$7E:0060]  ;} Disable BG1/2 windowing
-$82:823C 9C 23 21    STZ $2123  [$7E:2123]
+$82:823C 9C 23 21    STZ $2123            
 $82:823F 64 60       STZ $60    [$7E:0060]
-$82:8241 9C 24 21    STZ $2124  [$7E:2124]  ;\
+$82:8241 9C 24 21    STZ $2124              ;\
 $82:8244 64 61       STZ $61    [$7E:0061]  ;} Disable BG3/4 windowing
-$82:8246 9C 25 21    STZ $2125  [$7E:2125]  ;\
+$82:8246 9C 25 21    STZ $2125              ;\
 $82:8249 64 62       STZ $62    [$7E:0062]  ;} Disable sprite/colour windowing
-$82:824B 9C 26 21    STZ $2126  [$7E:2126]  ;\
+$82:824B 9C 26 21    STZ $2126              ;\
 $82:824E 64 63       STZ $63    [$7E:0063]  ;} Window 1 left position = 0
-$82:8250 9C 27 21    STZ $2127  [$7E:2127]  ;\
+$82:8250 9C 27 21    STZ $2127              ;\
 $82:8253 64 64       STZ $64    [$7E:0064]  ;} Window 1 right position = 0
-$82:8255 9C 28 21    STZ $2128  [$7E:2128]  ;\
+$82:8255 9C 28 21    STZ $2128              ;\
 $82:8258 64 65       STZ $65    [$7E:0065]  ;} Window 2 left position = 0
-$82:825A 9C 29 21    STZ $2129  [$7E:2129]  ;\
+$82:825A 9C 29 21    STZ $2129              ;\
 $82:825D 64 66       STZ $66    [$7E:0066]  ;} Window 2 right position = 0
-$82:825F 9C 2A 21    STZ $212A  [$7E:212A]  ;\
+$82:825F 9C 2A 21    STZ $212A              ;\
 $82:8262 64 67       STZ $67    [$7E:0067]  ;} Windowed background combining logic = OR
-$82:8264 9C 2B 21    STZ $212B  [$7E:212B]  ;\
+$82:8264 9C 2B 21    STZ $212B              ;\
 $82:8267 64 68       STZ $68    [$7E:0068]  ;} Windowed sprite/colour combining logic = OR
 $82:8269 A9 17       LDA #$17               ;\
-$82:826B 8D 2C 21    STA $212C  [$7E:212C]  ;} Enable BG1/2/3 and sprites
+$82:826B 8D 2C 21    STA $212C              ;} Enable BG1/2/3 and sprites
 $82:826E 85 69       STA $69    [$7E:0069]  ;/
-$82:8270 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$82:8270 9C 2E 21    STZ $212E              ;\
 $82:8273 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
 $82:8275 A9 00       LDA #$00               ;\
-$82:8277 8D 2D 21    STA $212D  [$7E:212D]  ;} Disable all subscreen layers
+$82:8277 8D 2D 21    STA $212D              ;} Disable all subscreen layers
 $82:827A 85 6B       STA $6B    [$7E:006B]  ;/
-$82:827C 9C 2F 21    STZ $212F  [$7E:212F]  ;\
+$82:827C 9C 2F 21    STZ $212F              ;\
 $82:827F 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area subscreen
-$82:8281 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$82:8281 9C 30 21    STZ $2130              ;\
 $82:8284 64 6E       STZ $6E    [$7E:006E]  ;|
-$82:8286 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$82:8286 9C 31 21    STZ $2131              ;} Disable colour math
 $82:8289 64 71       STZ $71    [$7E:0071]  ;/
 $82:828B A9 E0       LDA #$E0               ;\
-$82:828D 8D 32 21    STA $2132  [$7E:2132]  ;} Colour math subscreen backdrop colour = 0
+$82:828D 8D 32 21    STA $2132              ;} Colour math subscreen backdrop colour = 0
 $82:8290 A9 00       LDA #$00               ;\
-$82:8292 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$82:8292 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $82:8295 85 77       STA $77    [$7E:0077]  ;/
 $82:8297 C2 30       REP #$30
 $82:8299 9C 90 05    STZ $0590  [$7E:0590]  ; OAM data index = 0
@@ -354,45 +354,45 @@ $82:82E1 60          RTS
 $82:82E2 08          PHP
 $82:82E3 E2 30       SEP #$30
 $82:82E5 A9 00       LDA #$00               ;\
-$82:82E7 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:82E7 8D 16 21    STA $2116              ;|
 $82:82EA A9 40       LDA #$40               ;|
-$82:82EC 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:82EC 8D 17 21    STA $2117              ;|
 $82:82EF A9 80       LDA #$80               ;|
-$82:82F1 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF]
+$82:82F1 8D 15 21    STA $2115              ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF]
 $82:82F4 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:82F8             dx 01,01,18,9AB200,2000;|
 $82:8300 A9 02       LDA #$02               ;|
-$82:8302 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8302 8D 0B 42    STA $420B              ;/
 $82:8305 A9 00       LDA #$00               ;\
-$82:8307 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8307 8D 16 21    STA $2116              ;|
 $82:830A A9 60       LDA #$60               ;|
-$82:830C 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:830C 8D 17 21    STA $2117              ;|
 $82:830F A9 80       LDA #$80               ;|
-$82:8311 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF (sprite tiles) = [$9A:D200..11FF] (size is completely wrong, goes through free space and wraps into RAM)
+$82:8311 8D 15 21    STA $2115              ;} VRAM $6000..7FFF (sprite tiles) = [$9A:D200..11FF] (size is completely wrong, goes through free space and wraps into RAM)
 $82:8314 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8318             dx 01,01,18,9AD200,4000;|
 $82:8320 A9 02       LDA #$02               ;|
-$82:8322 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8322 8D 0B 42    STA $420B              ;/
 $82:8325 A9 00       LDA #$00               ;\
-$82:8327 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8327 8D 16 21    STA $2116              ;|
 $82:832A A9 50       LDA #$50               ;|
-$82:832C 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:832C 8D 17 21    STA $2117              ;|
 $82:832F A9 80       LDA #$80               ;|
-$82:8331 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5000..57FF (BG1 tilemap) = [$7E:4000..4FFF] (see $82A9)
+$82:8331 8D 15 21    STA $2115              ;} VRAM $5000..57FF (BG1 tilemap) = [$7E:4000..4FFF] (see $82A9)
 $82:8334 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8338             dx 01,01,18,7E4000,1000;|
 $82:8340 A9 02       LDA #$02               ;|
-$82:8342 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8342 8D 0B 42    STA $420B              ;/
 $82:8345 A9 00       LDA #$00               ;\
-$82:8347 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8347 8D 16 21    STA $2116              ;|
 $82:834A A9 58       LDA #$58               ;|
-$82:834C 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:834C 8D 17 21    STA $2117              ;|
 $82:834F A9 80       LDA #$80               ;|
-$82:8351 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5800..5BFF (BG3 tilemap) = [$7E:4000..47FF] (see $82A9)
+$82:8351 8D 15 21    STA $2115              ;} VRAM $5800..5BFF (BG3 tilemap) = [$7E:4000..47FF] (see $82A9)
 $82:8354 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8358             dx 01,01,18,7E4000,0800;|
 $82:8360 A9 02       LDA #$02               ;|
-$82:8362 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8362 8D 0B 42    STA $420B              ;/
 $82:8365 28          PLP
 $82:8366 60          RTS
 }
@@ -1088,11 +1088,11 @@ $82:8A0A 6B          RTL                    ; Return
 
 ; BRANCH_DOWNTIME
 $82:8A0B 8D 86 06    STA $0686  [$7E:0686]  ; Decrement sound handler downtime
-$82:8A0E 9C 41 21    STZ $2141  [$7E:2141]  ;\
+$82:8A0E 9C 41 21    STZ $2141              ;\
 $82:8A11 9C 4D 06    STZ $064D  [$7E:064D]  ;} APU IO 1 = current sound 1 = 0
-$82:8A14 9C 42 21    STZ $2142  [$7E:2142]  ;\
+$82:8A14 9C 42 21    STZ $2142              ;\
 $82:8A17 9C 4E 06    STZ $064E  [$7E:064E]  ;} APU IO 2 = current sound 2 = 0
-$82:8A1A 9C 43 21    STZ $2143  [$7E:2143]  ;\
+$82:8A1A 9C 43 21    STZ $2143              ;\
 $82:8A1D 9C 4F 06    STZ $064F  [$7E:064F]  ;} APU IO 3 = current sound 3 = 0
 $82:8A20 28          PLP
 $82:8A21 6B          RTL
@@ -1114,7 +1114,7 @@ $82:8A39 18          CLC                    ;|
 $82:8A3A 7D 43 06    ADC $0643,x[$7E:0645]  ;|
 $82:8A3D A8          TAY                    ;} APU IO 1 + [Y] = current sound = [sound queue + [sound queue start index]]
 $82:8A3E B9 56 06    LDA $0656,y[$7E:0676]  ;|
-$82:8A41 9D 41 21    STA $2141,x[$7E:2143]  ;|
+$82:8A41 9D 41 21    STA $2141,x            ;|
 $82:8A44 9D 4D 06    STA $064D,x[$7E:064F]  ;/
 $82:8A47 C8          INY                    ;\
 $82:8A48 98          TYA                    ;|
@@ -1134,9 +1134,9 @@ $82:8A52             db 00, 10, 20
 ;;     Y: Sound library index to process queue of
 $82:8A55 BB          TYX
 $82:8A56 BD 4D 06    LDA $064D,x[$7E:064F]  ;\
-$82:8A59 DD 41 21    CMP $2141,x[$7E:2143]  ;} If [APU IO 1 + [Y]] != [current sound]:
+$82:8A59 DD 41 21    CMP $2141,x            ;} If [APU IO 1 + [Y]] != [current sound]:
 $82:8A5C F0 05       BEQ $05    [$8A63]     ;/
-$82:8A5E 9D 41 21    STA $2141,x[$7E:2143]  ; APU IO 1 + [Y] = [current sound]
+$82:8A5E 9D 41 21    STA $2141,x            ; APU IO 1 + [Y] = [current sound]
 $82:8A61 80 08       BRA $08    [$8A6B]     ; Return
 
 $82:8A63 FE 49 06    INC $0649,x[$7E:064B]  ; Sound state = 2
@@ -1156,7 +1156,7 @@ $82:8A6B 60          RTS
 $82:8A6C BB          TYX
 $82:8A6D DE 50 06    DEC $0650,x[$7E:0652]  ; Decrement delay before clearing sound
 $82:8A70 D0 09       BNE $09    [$8A7B]     ; If [delay before clearing sound] = 0:
-$82:8A72 9E 41 21    STZ $2141,x[$7E:2143]  ; APU IO 1 + [Y] = 0
+$82:8A72 9E 41 21    STZ $2141,x            ; APU IO 1 + [Y] = 0
 $82:8A75 9E 4D 06    STZ $064D,x[$7E:064F]  ; Current sound = 0
 $82:8A78 FE 49 06    INC $0649,x[$7E:064B]  ; Sound state = 3
 
@@ -1170,9 +1170,9 @@ $82:8A7B 60          RTS
 ;;     Y: Sound library index to process queue of
 $82:8A7C BB          TYX
 $82:8A7D BD 4D 06    LDA $064D,x[$7E:064F]  ;\
-$82:8A80 DD 41 21    CMP $2141,x[$7E:2143]  ;} If [APU IO 1 + [Y]] != [current sound]:
+$82:8A80 DD 41 21    CMP $2141,x            ;} If [APU IO 1 + [Y]] != [current sound]:
 $82:8A83 F0 05       BEQ $05    [$8A8A]     ;/
-$82:8A85 9D 41 21    STA $2141,x[$7E:2143]  ; APU IO 1 + [Y] = [current sound]
+$82:8A85 9D 41 21    STA $2141,x            ; APU IO 1 + [Y] = [current sound]
 $82:8A88 80 05       BRA $05    [$8A8F]     ; Return
 
 $82:8A8A 9E 49 06    STZ $0649,x[$7E:064B]  ; Sound state = 0
@@ -1233,7 +1233,7 @@ $82:8AD0 E2 20       SEP #$20
 $82:8AD2 A5 51       LDA $51    [$7E:0051]  ;\
 $82:8AD4 29 F0       AND #$F0               ;|
 $82:8AD6 09 05       ORA #$05               ;} Brightness = 6 / 10h
-$82:8AD8 8D 00 21    STA $2100  [$7E:2100]  ;/
+$82:8AD8 8D 00 21    STA $2100              ;/
 $82:8ADB C2 20       REP #$20
 
 $82:8ADD A5 8B       LDA $8B    [$7E:008B]  ;\
@@ -1642,7 +1642,7 @@ $82:8CF5 22 93 82 88 JSL $888293[$88:8293]  ; Disable HDMA objects
 $82:8CF9 E2 20       SEP #$20               ;\
 $82:8CFB A9 00       LDA #$00               ;|
 $82:8CFD 85 85       STA $85    [$7E:0085]  ;} Disable HDMA
-$82:8CFF 8D 0C 42    STA $420C  [$7E:420C]  ;|
+$82:8CFF 8D 0C 42    STA $420C              ;|
 $82:8D02 C2 20       REP #$20               ;/
 $82:8D04 22 0B 80 87 JSL $87800B[$87:800B]  ; Disable animated tiles objects
 $82:8D08 20 51 8D    JSR $8D51  [$82:8D51]  ; Back up BG2 tilemap for pause menu
@@ -1685,30 +1685,30 @@ $82:8D50 60          RTS
 $82:8D51 08          PHP
 $82:8D52 E2 20       SEP #$20
 $82:8D54 A9 01       LDA #$01               ;\
-$82:8D56 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8D56 8D 16 21    STA $2116              ;|
 $82:8D59 A5 59       LDA $59    [$7E:0059]  ;|
 $82:8D5B 29 FC       AND #$FC               ;|
-$82:8D5D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8D5D 8D 17 21    STA $2117              ;|
 $82:8D60 A9 81       LDA #$81               ;|
-$82:8D62 8D 10 43    STA $4310  [$7E:4310]  ;|
+$82:8D62 8D 10 43    STA $4310              ;|
 $82:8D65 A9 39       LDA #$39               ;|
-$82:8D67 8D 11 43    STA $4311  [$7E:4311]  ;|
+$82:8D67 8D 11 43    STA $4311              ;|
 $82:8D6A A9 5C       LDA #$5C               ;|
-$82:8D6C 8D 12 43    STA $4312  [$7E:4312]  ;|
+$82:8D6C 8D 12 43    STA $4312              ;|
 $82:8D6F A9 DF       LDA #$DF               ;|
-$82:8D71 8D 13 43    STA $4313  [$7E:4313]  ;} $7E:DF5C..EF5B = VRAM BG2 tilemap
+$82:8D71 8D 13 43    STA $4313              ;} $7E:DF5C..EF5B = VRAM BG2 tilemap
 $82:8D74 A9 7E       LDA #$7E               ;|
-$82:8D76 8D 14 43    STA $4314  [$7E:4314]  ;|
+$82:8D76 8D 14 43    STA $4314              ;|
 $82:8D79 A9 00       LDA #$00               ;|
-$82:8D7B 8D 15 43    STA $4315  [$7E:4315]  ;|
+$82:8D7B 8D 15 43    STA $4315              ;|
 $82:8D7E A9 10       LDA #$10               ;|
-$82:8D80 8D 16 43    STA $4316  [$7E:4316]  ;|
-$82:8D83 9C 17 43    STZ $4317  [$7E:4317]  ;|
-$82:8D86 9C 18 43    STZ $4318  [$7E:4318]  ;|
-$82:8D89 9C 19 43    STZ $4319  [$7E:4319]  ;|
-$82:8D8C 9C 1A 43    STZ $431A  [$7E:431A]  ;|
+$82:8D80 8D 16 43    STA $4316              ;|
+$82:8D83 9C 17 43    STZ $4317              ;|
+$82:8D86 9C 18 43    STZ $4318              ;|
+$82:8D89 9C 19 43    STZ $4319              ;|
+$82:8D8C 9C 1A 43    STZ $431A              ;|
 $82:8D8F A9 02       LDA #$02               ;|
-$82:8D91 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8D91 8D 0B 42    STA $420B              ;/
 $82:8D94 28          PLP
 $82:8D95 60          RTS
 }
@@ -1719,16 +1719,16 @@ $82:8D95 60          RTS
 $82:8D96 08          PHP
 $82:8D97 E2 20       SEP #$20
 $82:8D99 A9 00       LDA #$00               ;\
-$82:8D9B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8D9B 8D 16 21    STA $2116              ;|
 $82:8D9E A5 59       LDA $59    [$7E:0059]  ;|
 $82:8DA0 29 FC       AND #$FC               ;|
-$82:8DA2 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8DA2 8D 17 21    STA $2117              ;|
 $82:8DA5 A9 80       LDA #$80               ;} VRAM BG2 tilemap = [$7E:DF5C..EF5B]
-$82:8DA7 8D 15 21    STA $2115  [$7E:2115]  ;|
+$82:8DA7 8D 15 21    STA $2115              ;|
 $82:8DAA 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8DAE             dx 01,01,18,7EDF5C,1000;|
 $82:8DB6 A9 02       LDA #$02               ;|
-$82:8DB8 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8DB8 8D 0B 42    STA $420B              ;/
 $82:8DBB 28          PLP
 $82:8DBC 60          RTS
 }
@@ -1828,35 +1828,35 @@ $82:8E74 60          RTS
 $82:8E75 08          PHP
 $82:8E76 E2 30       SEP #$30
 $82:8E78 A9 00       LDA #$00               ;\
-$82:8E7A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8E7A 8D 16 21    STA $2116              ;|
 $82:8E7D A9 00       LDA #$00               ;|
-$82:8E7F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8E7F 8D 17 21    STA $2117              ;|
 $82:8E82 A9 80       LDA #$80               ;|
-$82:8E84 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$B6:8000..BFFF] (pause menu BG1/2 tiles)
+$82:8E84 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$B6:8000..BFFF] (pause menu BG1/2 tiles)
 $82:8E87 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8E8B             dx 01,01,18,B68000,4000;|
 $82:8E93 A9 02       LDA #$02               ;|
-$82:8E95 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8E95 8D 0B 42    STA $420B              ;/
 $82:8E98 A9 00       LDA #$00               ;\
-$82:8E9A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8E9A 8D 16 21    STA $2116              ;|
 $82:8E9D A9 20       LDA #$20               ;|
-$82:8E9F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8E9F 8D 17 21    STA $2117              ;|
 $82:8EA2 A9 80       LDA #$80               ;|
-$82:8EA4 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..2FFF = [$B6:C000..DFFF] (pause menu sprite tiles)
+$82:8EA4 8D 15 21    STA $2115              ;} VRAM $2000..2FFF = [$B6:C000..DFFF] (pause menu sprite tiles)
 $82:8EA7 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8EAB             dx 01,01,18,B6C000,2000;|
 $82:8EB3 A9 02       LDA #$02               ;|
-$82:8EB5 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8EB5 8D 0B 42    STA $420B              ;/
 $82:8EB8 A9 00       LDA #$00               ;\
-$82:8EBA 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8EBA 8D 16 21    STA $2116              ;|
 $82:8EBD A9 40       LDA #$40               ;|
-$82:8EBF 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8EBF 8D 17 21    STA $2117              ;|
 $82:8EC2 A9 80       LDA #$80               ;|
-$82:8EC4 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..47FF = [$9A:B200..C1FF] (standard BG3 tiles), VRAM $4800..4FFF = 0
+$82:8EC4 8D 15 21    STA $2115              ;} VRAM $4000..47FF = [$9A:B200..C1FF] (standard BG3 tiles), VRAM $4800..4FFF = 0
 $82:8EC7 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8ECB             dx 01,01,18,9AB200,2000;|
 $82:8ED3 A9 02       LDA #$02               ;|
-$82:8ED5 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8ED5 8D 0B 42    STA $420B              ;/
 $82:8ED8 28          PLP
 $82:8ED9 6B          RTL
 }
@@ -1869,35 +1869,35 @@ $82:8ED9 6B          RTL
 $82:8EDA 08          PHP
 $82:8EDB E2 30       SEP #$30
 $82:8EDD A9 00       LDA #$00               ;\
-$82:8EDF 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:8EDF 8D 16 21    STA $2116              ;|
 $82:8EE2 A9 38       LDA #$38               ;|
-$82:8EE4 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:8EE4 8D 17 21    STA $2117              ;|
 $82:8EE7 A9 80       LDA #$80               ;|
-$82:8EE9 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $3800..3BFF = [$B6:E000..E7FF] (pause menu map BG2 tilemap)
+$82:8EE9 8D 15 21    STA $2115              ;} VRAM $3800..3BFF = [$B6:E000..E7FF] (pause menu map BG2 tilemap)
 $82:8EEC 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8EF0             dx 01,01,18,B6E000,0800;|
 $82:8EF8 A9 02       LDA #$02               ;|
-$82:8EFA 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8EFA 8D 0B 42    STA $420B              ;/
 $82:8EFD A9 00       LDA #$00               ;\
-$82:8EFF 8D 81 21    STA $2181  [$7E:2181]  ;|
+$82:8EFF 8D 81 21    STA $2181              ;|
 $82:8F02 A9 34       LDA #$34               ;|
-$82:8F04 8D 82 21    STA $2182  [$7E:2182]  ;|
+$82:8F04 8D 82 21    STA $2182              ;|
 $82:8F07 A9 7E       LDA #$7E               ;|
-$82:8F09 8D 83 21    STA $2183  [$7E:2183]  ;} $7E:3400..37FF = [$B6:E400..E7FF] (the lower half of the map BG2 tilemap)
+$82:8F09 8D 83 21    STA $2183              ;} $7E:3400..37FF = [$B6:E400..E7FF] (the lower half of the map BG2 tilemap)
 $82:8F0C 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8F10             dx 01,00,80,B6E400,0400;|
 $82:8F18 A9 02       LDA #$02               ;|
-$82:8F1A 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8F1A 8D 0B 42    STA $420B              ;/
 $82:8F1D A9 00       LDA #$00               ;\
-$82:8F1F 8D 81 21    STA $2181  [$7E:2181]  ;|
+$82:8F1F 8D 81 21    STA $2181              ;|
 $82:8F22 A9 38       LDA #$38               ;|
-$82:8F24 8D 82 21    STA $2182  [$7E:2182]  ;|
+$82:8F24 8D 82 21    STA $2182              ;|
 $82:8F27 A9 7E       LDA #$7E               ;|
-$82:8F29 8D 83 21    STA $2183  [$7E:2183]  ;} $7E:3800..3FFF = [$B6:E800..EFFF] (equipment screen tilemap)
+$82:8F29 8D 83 21    STA $2183              ;} $7E:3800..3FFF = [$B6:E800..EFFF] (equipment screen tilemap)
 $82:8F2C 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:8F30             dx 01,00,80,B6E800,0800;|
 $82:8F38 A9 02       LDA #$02               ;|
-$82:8F3A 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:8F3A 8D 0B 42    STA $420B              ;/
 $82:8F3D C2 30       REP #$30
 $82:8F3F A0 39 C6    LDY #$C639             ; Y = $C639 (dummy Samus wireframe tilemap)
 $82:8F42 A2 D8 01    LDX #$01D8             ; X = 1D8h (tilemap destination offset)
@@ -1937,10 +1937,10 @@ $82:8F71 C2 30       REP #$30
 $82:8F73 AD D4 09    LDA $09D4  [$7E:09D4]  ;\
 $82:8F76 F0 5A       BEQ $5A    [$8FD2]     ;} If [Samus max reserve health] = 0: return
 $82:8F78 AD D6 09    LDA $09D6  [$7E:09D6]  ;\
-$82:8F7B 8D 04 42    STA $4204  [$7E:4204]  ;|
+$82:8F7B 8D 04 42    STA $4204              ;|
 $82:8F7E E2 20       SEP #$20               ;|
 $82:8F80 A9 64       LDA #$64               ;|
-$82:8F82 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:8F82 8D 06 42    STA $4206              ;|
 $82:8F85 EA          NOP                    ;|
 $82:8F86 EA          NOP                    ;|
 $82:8F87 EA          NOP                    ;|
@@ -1950,16 +1950,16 @@ $82:8F8A EA          NOP                    ;|
 $82:8F8B EA          NOP                    ;|
 $82:8F8C EA          NOP                    ;|
 $82:8F8D EA          NOP                    ;|
-$82:8F8E AD 14 42    LDA $4214  [$7E:4214]  ;|
+$82:8F8E AD 14 42    LDA $4214              ;|
 $82:8F91 85 2A       STA $2A    [$7E:002A]  ;|
-$82:8F93 AD 15 42    LDA $4215  [$7E:4215]  ;|
+$82:8F93 AD 15 42    LDA $4215              ;|
 $82:8F96 85 2B       STA $2B    [$7E:002B]  ;/
-$82:8F98 AD 16 42    LDA $4216  [$7E:4216]  ;\
-$82:8F9B 8D 04 42    STA $4204  [$7E:4204]  ;|
-$82:8F9E AD 17 42    LDA $4217  [$7E:4217]  ;|
-$82:8FA1 8D 05 42    STA $4205  [$7E:4205]  ;|
+$82:8F98 AD 16 42    LDA $4216              ;\
+$82:8F9B 8D 04 42    STA $4204              ;|
+$82:8F9E AD 17 42    LDA $4217              ;|
+$82:8FA1 8D 05 42    STA $4205              ;|
 $82:8FA4 A9 0A       LDA #$0A               ;|
-$82:8FA6 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:8FA6 8D 06 42    STA $4206              ;|
 $82:8FA9 C2 20       REP #$20               ;|
 $82:8FAB EA          NOP                    ;|
 $82:8FAC EA          NOP                    ;|
@@ -1968,11 +1968,11 @@ $82:8FAE EA          NOP                    ;|
 $82:8FAF EA          NOP                    ;|
 $82:8FB0 EA          NOP                    ;|
 $82:8FB1 EA          NOP                    ;|
-$82:8FB2 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$82:8FB2 AD 16 42    LDA $4216              ;|
 $82:8FB5 18          CLC                    ;|
 $82:8FB6 69 04 08    ADC #$0804             ;|
 $82:8FB9 8F 14 3B 7E STA $7E3B14[$7E:3B14]  ;/
-$82:8FBD AD 14 42    LDA $4214  [$7E:4214]  ;\
+$82:8FBD AD 14 42    LDA $4214              ;\
 $82:8FC0 18          CLC                    ;|
 $82:8FC1 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap tile (9, Ch) = 4 + [Samus reserve health] % 100 / 10
 $82:8FC4 8F 12 3B 7E STA $7E3B12[$7E:3B12]  ;/
@@ -2568,30 +2568,30 @@ $82:93CD A5 BF       LDA $BF    [$7E:00BF]  ;\
 $82:93CF 85 B3       STA $B3    [$7E:00B3]  ;} BG1 Y scroll = [BG4 Y scroll]
 $82:93D1 E2 30       SEP #$30
 $82:93D3 A9 00       LDA #$00               ;\
-$82:93D5 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:93D5 8D 16 21    STA $2116              ;|
 $82:93D8 A9 30       LDA #$30               ;} VRAM address = $3000
-$82:93DA 8D 17 21    STA $2117  [$7E:2117]  ;/
+$82:93DA 8D 17 21    STA $2117              ;/
 $82:93DD A9 80       LDA #$80               ;\
-$82:93DF 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$82:93DF 8D 15 21    STA $2115              ;} VRAM address increment mode = 16-bit access
 $82:93E2 20 3D 94    JSR $943D  [$82:943D]  ; Load pause menu map tilemap
 $82:93E5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;\
 $82:93E9             dx 01,01,18,7E4000,1000;|
 $82:93F1 A9 02       LDA #$02               ;} VRAM $3000..37FF = [$7E:4000..4FFF] (BG1 tilemap)
-$82:93F3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:93F3 8D 0B 42    STA $420B              ;/
 $82:93F6 A9 AA       LDA #$AA               ;\
-$82:93F8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:93F8 8D 16 21    STA $2116              ;|
 $82:93FB A9 38       LDA #$38               ;} VRAM address = $38AA (BG2 tilemap, tile (15h, 2))
-$82:93FD 8D 17 21    STA $2117  [$7E:2117]  ;/
+$82:93FD 8D 17 21    STA $2117              ;/
 $82:9400 A9 80       LDA #$80               ;\
-$82:9402 8D 15 21    STA $2115  [$7E:2115]  ;} >_<;
+$82:9402 8D 15 21    STA $2115              ;} >_<;
 $82:9405 A9 01       LDA #$01               ;\
-$82:9407 8D 10 43    STA $4310  [$7E:4310]  ;} DMA 1 control = 16-bit write
+$82:9407 8D 10 43    STA $4310              ;} DMA 1 control = 16-bit write
 $82:940A A9 18       LDA #$18               ;\
-$82:940C 8D 11 43    STA $4311  [$7E:4311]  ;} DMA 1 target = VRAM
+$82:940C 8D 11 43    STA $4311              ;} DMA 1 target = VRAM
 $82:940F A9 18       LDA #$18               ;\
-$82:9411 8D 15 43    STA $4315  [$7E:4315]  ;|
+$82:9411 8D 15 43    STA $4315              ;|
 $82:9414 A9 00       LDA #$00               ;} DMA 1 size = 18h
-$82:9416 8D 16 43    STA $4316  [$7E:4316]  ;/
+$82:9416 8D 16 43    STA $4316              ;/
 $82:9419 C2 30       REP #$30
 $82:941B AD 9F 07    LDA $079F  [$7E:079F]  ; A = [area index]
 $82:941E C9 07 00    CMP #$0007             ;\
@@ -2601,12 +2601,12 @@ $82:9423 A9 00 00    LDA #$0000             ; A = 0
 $82:9426 0A          ASL A                  ;\
 $82:9427 AA          TAX                    ;|
 $82:9428 BD 5F 96    LDA $965F,x[$82:9661]  ;} DMA 1 source address = [$965F + [A] * 2] (area label tilemap)
-$82:942B 8D 12 43    STA $4312  [$7E:4312]  ;/
+$82:942B 8D 12 43    STA $4312              ;/
 $82:942E E2 20       SEP #$20
 $82:9430 A9 82       LDA #$82               ;\
-$82:9432 8D 14 43    STA $4314  [$7E:4314]  ;} DMA 1 source bank = $82
+$82:9432 8D 14 43    STA $4314              ;} DMA 1 source bank = $82
 $82:9435 A9 02       LDA #$02               ;\
-$82:9437 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$82:9437 8D 0B 42    STA $420B              ;} Execute DMA 1
 $82:943A AB          PLB
 $82:943B 28          PLP
 $82:943C 6B          RTL
@@ -3838,33 +3838,33 @@ $82:A099 60          RTS
 {
 $82:A09A E2 30       SEP #$30
 $82:A09C A9 01       LDA #$01               ;\
-$82:A09E 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $2000, sprite sizes = 8x8 / 16x16
+$82:A09E 8D 01 21    STA $2101              ;} Sprite tiles base address = $2000, sprite sizes = 8x8 / 16x16
 $82:A0A1 85 52       STA $52    [$7E:0052]  ;/
 $82:A0A3 A9 09       LDA #$09               ;\
-$82:A0A5 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:A0A5 8D 05 21    STA $2105              ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:A0A8 85 55       STA $55    [$7E:0055]  ;/
 $82:A0AA 64 5D       STZ $5D    [$7E:005D]  ;\
-$82:A0AC 9C 0B 21    STZ $210B  [$7E:210B]  ;} BG1/2 tiles base address = $0000
+$82:A0AC 9C 0B 21    STZ $210B              ;} BG1/2 tiles base address = $0000
 $82:A0AF A9 04       LDA #$04               ;\
 $82:A0B1 85 5E       STA $5E    [$7E:005E]  ;} BG3 tiles base address = $4000
-$82:A0B3 8D 0C 21    STA $210C  [$7E:210C]  ;/
+$82:A0B3 8D 0C 21    STA $210C              ;/
 $82:A0B6 A9 31       LDA #$31               ;\
 $82:A0B8 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $3000, size = 64x32
-$82:A0BA 8D 07 21    STA $2107  [$7E:2107]  ;/
+$82:A0BA 8D 07 21    STA $2107              ;/
 $82:A0BD A9 38       LDA #$38               ;\
 $82:A0BF 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $3800, size = 32x32
-$82:A0C1 8D 08 21    STA $2108  [$7E:2108]  ;/
+$82:A0C1 8D 08 21    STA $2108              ;/
 $82:A0C4 A9 58       LDA #$58               ;\
 $82:A0C6 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $5800, size = 32x32
-$82:A0C8 8D 09 21    STA $2109  [$7E:2109]  ;/
+$82:A0C8 8D 09 21    STA $2109              ;/
 $82:A0CB A9 00       LDA #$00               ;\
 $82:A0CD 85 5C       STA $5C    [$7E:005C]  ;} BG4 tilemap base address = $0000, size = 32x32
-$82:A0CF 8D 0A 21    STA $210A  [$7E:210A]  ;/
+$82:A0CF 8D 0A 21    STA $210A              ;/
 $82:A0D2 A9 17       LDA #$17               ;\
-$82:A0D4 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1/BG2/BG3/sprites
+$82:A0D4 8D 2C 21    STA $212C              ;} Main screen layers = BG1/BG2/BG3/sprites
 $82:A0D7 85 69       STA $69    [$7E:0069]  ;/
 $82:A0D9 A9 00       LDA #$00               ;\
-$82:A0DB 8D 06 21    STA $2106  [$7E:2106]  ;} Disable mosaic
+$82:A0DB 8D 06 21    STA $2106              ;} Disable mosaic
 $82:A0DE 85 57       STA $57    [$7E:0057]  ;/
 $82:A0E0 A5 74       LDA $74    [$7E:0074]  ;\
 $82:A0E2 29 E0       AND #$E0               ;|
@@ -4125,15 +4125,15 @@ $82:A2BD 60          RTS
 $82:A2BE 08          PHP
 $82:A2BF E2 30       SEP #$30
 $82:A2C1 A9 00       LDA #$00
-$82:A2C3 8D 16 21    STA $2116  [$7E:2116]
+$82:A2C3 8D 16 21    STA $2116            
 $82:A2C6 A9 60       LDA #$60
-$82:A2C8 8D 17 21    STA $2117  [$7E:2117]
+$82:A2C8 8D 17 21    STA $2117            
 $82:A2CB A9 80       LDA #$80
-$82:A2CD 8D 15 21    STA $2115  [$7E:2115]
+$82:A2CD 8D 15 21    STA $2115            
 $82:A2D0 22 A9 91 80 JSL $8091A9[$80:91A9]  ; Set up a (H)DMA transfer
 $82:A2D4             dx 01,01,18,9AD200,1000
 $82:A2DC A9 02       LDA #$02
-$82:A2DE 8D 0B 42    STA $420B  [$7E:420B]
+$82:A2DE 8D 0B 42    STA $420B            
 $82:A2E1 28          PLP
 $82:A2E2 60          RTS
 }
@@ -4172,28 +4172,28 @@ $82:A312 60          RTS
 $82:A313 08          PHP
 $82:A314 E2 30       SEP #$30
 $82:A316 A9 03       LDA #$03               ;\
-$82:A318 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$82:A318 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $82:A31B 85 52       STA $52    [$7E:0052]  ;/
 $82:A31D A9 09       LDA #$09               ;\
-$82:A31F 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:A31F 8D 05 21    STA $2105              ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:A322 85 55       STA $55    [$7E:0055]  ;/
 $82:A324 64 5D       STZ $5D    [$7E:005D]  ;\
-$82:A326 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$82:A326 9C 0B 21    STZ $210B              ;|
 $82:A329 A9 04       LDA #$04               ;} BG1/2/4 tiles base address = $0000
 $82:A32B 85 5E       STA $5E    [$7E:005E]  ;} BG3 tiles base address = $4000
-$82:A32D 8D 0C 21    STA $210C  [$7E:210C]  ;/
+$82:A32D 8D 0C 21    STA $210C              ;/
 $82:A330 A9 51       LDA #$51               ;\
 $82:A332 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5000, size = 64x32
-$82:A334 8D 07 21    STA $2107  [$7E:2107]  ;/
+$82:A334 8D 07 21    STA $2107              ;/
 $82:A337 A9 49       LDA #$49               ;\
 $82:A339 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 64x32
-$82:A33B 8D 08 21    STA $2108  [$7E:2108]  ;/
+$82:A33B 8D 08 21    STA $2108              ;/
 $82:A33E A9 5A       LDA #$5A               ;\
 $82:A340 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $5800, size = 32x64
-$82:A342 8D 09 21    STA $2109  [$7E:2109]  ;/
+$82:A342 8D 09 21    STA $2109              ;/
 $82:A345 A9 00       LDA #$00               ;\
 $82:A347 85 5C       STA $5C    [$7E:005C]  ;} BG3 tilemap base address = $0000, size = 32x32
-$82:A349 8D 0A 21    STA $210A  [$7E:210A]  ;/
+$82:A349 8D 0A 21    STA $210A              ;/
 $82:A34C 28          PLP
 $82:A34D 60          RTS
 }
@@ -5272,15 +5272,15 @@ $82:AC24 4B          PHK
 $82:AC25 AB          PLB
 $82:AC26 E2 30       SEP #$30
 $82:AC28 A9 00       LDA #$00               ;\
-$82:AC2A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:AC2A 8D 16 21    STA $2116              ;|
 $82:AC2D A9 30       LDA #$30               ;|
-$82:AC2F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:AC2F 8D 17 21    STA $2117              ;|
 $82:AC32 A9 80       LDA #$80               ;|
-$82:AC34 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $3000..33FF = [$7E:3800..3FFF]
+$82:AC34 8D 15 21    STA $2115              ;} VRAM $3000..33FF = [$7E:3800..3FFF]
 $82:AC37 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:AC3B             dx 01,01,18,7E3800,0800;|
 $82:AC43 A9 02       LDA #$02               ;|
-$82:AC45 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:AC45 8D 0B 42    STA $420B              ;/
 $82:AC48 64 B3       STZ $B3    [$7E:00B3]  ;\
 $82:AC4A 64 B4       STZ $B4    [$7E:00B4]  ;} BG1 Y scroll = 0
 $82:AC4C AB          PLB
@@ -6162,10 +6162,10 @@ $82:B2B7 D0 02       BNE $02    [$B2BB]     ;} If [Samus max reserve health] = 0
 $82:B2B9 28          PLP
 $82:B2BA 60          RTS                    ; Return
 
-$82:B2BB 8D 04 42    STA $4204  [$7E:4204]  ;\
+$82:B2BB 8D 04 42    STA $4204              ;\
 $82:B2BE E2 20       SEP #$20               ;|
 $82:B2C0 A9 64       LDA #$64               ;|
-$82:B2C2 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:B2C2 8D 06 42    STA $4206              ;|
 $82:B2C5 C2 20       REP #$20               ;|
 $82:B2C7 EA          NOP                    ;|
 $82:B2C8 EA          NOP                    ;|
@@ -6174,13 +6174,13 @@ $82:B2CA EA          NOP                    ;|
 $82:B2CB EA          NOP                    ;|
 $82:B2CC EA          NOP                    ;|
 $82:B2CD EA          NOP                    ;|
-$82:B2CE AD 14 42    LDA $4214  [$7E:4214]  ;|
+$82:B2CE AD 14 42    LDA $4214              ;|
 $82:B2D1 85 2C       STA $2C    [$7E:002C]  ;/
 $82:B2D3 AD D6 09    LDA $09D6  [$7E:09D6]  ;\
-$82:B2D6 8D 04 42    STA $4204  [$7E:4204]  ;|
+$82:B2D6 8D 04 42    STA $4204              ;|
 $82:B2D9 E2 20       SEP #$20               ;|
 $82:B2DB A9 64       LDA #$64               ;|
-$82:B2DD 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:B2DD 8D 06 42    STA $4206              ;|
 $82:B2E0 C2 20       REP #$20               ;|
 $82:B2E2 EA          NOP                    ;|
 $82:B2E3 EA          NOP                    ;} $32 = [Samus reserve health] % 100 (sub-tank reserve health)
@@ -6189,9 +6189,9 @@ $82:B2E5 EA          NOP                    ;|
 $82:B2E6 EA          NOP                    ;|
 $82:B2E7 EA          NOP                    ;|
 $82:B2E8 EA          NOP                    ;|
-$82:B2E9 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$82:B2E9 AD 16 42    LDA $4216              ;|
 $82:B2EC 85 32       STA $32    [$7E:0032]  ;/
-$82:B2EE AD 14 42    LDA $4214  [$7E:4214]  ;\
+$82:B2EE AD 14 42    LDA $4214              ;\
 $82:B2F1 85 2A       STA $2A    [$7E:002A]  ;} $2A = [Samus reserve health] / 100 (number of full reserve tanks)
 $82:B2F3 85 30       STA $30    [$7E:0030]  ; $30 = [$2A]
 $82:B2F5 85 2E       STA $2E    [$7E:002E]  ; $2E = [$2A]
@@ -6214,12 +6214,12 @@ $82:B311 D0 E9       BNE $E9    [$B2FC]     ; If [$2E] != 0: go to LOOP_FULL_TAN
 $82:B313 84 34       STY $34    [$7E:0034]  ; $34 = [Y]
 
 ; BRANCH_EMPTY
-$82:B315 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$82:B315 AD 16 42    LDA $4216              ;\
 $82:B318 F0 53       BEQ $53    [$B36D]     ;} If (sub-tank reserve health) = 0: go to BRANCH_NO_PARTIAL_TANK
-$82:B31A 8D 04 42    STA $4204  [$7E:4204]  ;\
+$82:B31A 8D 04 42    STA $4204              ;\
 $82:B31D E2 20       SEP #$20               ;|
 $82:B31F A9 0E       LDA #$0E               ;|
-$82:B321 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:B321 8D 06 42    STA $4206              ;|
 $82:B324 C2 20       REP #$20               ;|
 $82:B326 EA          NOP                    ;|
 $82:B327 EA          NOP                    ;|
@@ -6228,12 +6228,12 @@ $82:B329 EA          NOP                    ;|
 $82:B32A EA          NOP                    ;|
 $82:B32B EA          NOP                    ;|
 $82:B32C EA          NOP                    ;|
-$82:B32D AD 14 42    LDA $4214  [$7E:4214]  ;|
+$82:B32D AD 14 42    LDA $4214              ;|
 $82:B330 0A          ASL A                  ;|
 $82:B331 AA          TAX                    ;/
 $82:B332 C9 07 00    CMP #$0007             ;\
 $82:B335 10 0F       BPL $0F    [$B346]     ;} If [X] < 7:
-$82:B337 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$82:B337 AD 16 42    LDA $4216              ;\
 $82:B33A F0 0A       BEQ $0A    [$B346]     ;} If (sub-tank reserve health) % 14 != 0:
 $82:B33C AD B5 05    LDA $05B5  [$7E:05B5]  ;\
 $82:B33F 89 04 00    BIT #$0004             ;} If [frame counter] / 4 % 2 = 0:
@@ -6288,11 +6288,11 @@ $82:B396 A9 1F 00    LDA #$001F             ; A = 1Fh (end of reserve health bar
 $82:B399 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
 $82:B39D E2 20       SEP #$20               ;\
 $82:B39F A5 32       LDA $32    [$7E:0032]  ;|
-$82:B3A1 8D 04 42    STA $4204  [$7E:4204]  ;|
+$82:B3A1 8D 04 42    STA $4204              ;|
 $82:B3A4 A5 33       LDA $33    [$7E:0033]  ;|
-$82:B3A6 8D 05 42    STA $4205  [$7E:4205]  ;|
+$82:B3A6 8D 05 42    STA $4205              ;|
 $82:B3A9 A9 0A       LDA #$0A               ;|
-$82:B3AB 8D 06 42    STA $4206  [$7E:4206]  ;|
+$82:B3AB 8D 06 42    STA $4206              ;|
 $82:B3AE C2 20       REP #$20               ;|
 $82:B3B0 EA          NOP                    ;|
 $82:B3B1 EA          NOP                    ;} Equipment screen BG1 tilemap (Ah, Ch) = 804h + (sub-tank reserve health) % 10
@@ -6301,11 +6301,11 @@ $82:B3B3 EA          NOP                    ;|
 $82:B3B4 EA          NOP                    ;|
 $82:B3B5 EA          NOP                    ;|
 $82:B3B6 EA          NOP                    ;|
-$82:B3B7 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$82:B3B7 AD 16 42    LDA $4216              ;|
 $82:B3BA 18          CLC                    ;|
 $82:B3BB 69 04 08    ADC #$0804             ;|
 $82:B3BE 8F 14 3B 7E STA $7E3B14[$7E:3B14]  ;/
-$82:B3C2 AD 14 42    LDA $4214  [$7E:4214]  ;\
+$82:B3C2 AD 14 42    LDA $4214              ;\
 $82:B3C5 18          CLC                    ;|
 $82:B3C6 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap (9, Ch) = 804h + (sub-tank reserve health) / 10
 $82:B3C9 8F 12 3B 7E STA $7E3B12[$7E:3B12]  ;/
@@ -9125,18 +9125,18 @@ $82:DAC4 1A          INC A                  ;|
                                             ;|
 $82:DAC5 EB          XBA                    ;|
 $82:DAC6 29 00 FF    AND #$FF00             ;|
-$82:DAC9 8F 04 42 00 STA $004204[$7E:4204]  ;|
+$82:DAC9 8F 04 42 00 STA $004204            ;|
 $82:DACD E2 21       SEP #$21               ;|
 $82:DACF AD 02 C4    LDA $C402  [$7E:C402]  ;|
 $82:DAD2 E5 14       SBC $14    [$7E:0014]  ;} $12 = ([Y] - [X]) * 100h / ([palette change denominator] + 1 - [A])
 $82:DAD4 1A          INC A                  ;|
-$82:DAD5 8F 06 42 00 STA $004206[$7E:4206]  ;|
+$82:DAD5 8F 06 42 00 STA $004206            ;|
 $82:DAD9 C2 20       REP #$20               ;|
 $82:DADB EB          XBA                    ;|
 $82:DADC EB          XBA                    ;|
 $82:DADD EA          NOP                    ;|
 $82:DADE EA          NOP                    ;|
-$82:DADF AF 14 42 00 LDA $004214[$7E:4214]  ;|
+$82:DADF AF 14 42 00 LDA $004214            ;|
 $82:DAE3 24 12       BIT $12    [$7E:0012]  ;|
 $82:DAE5 10 04       BPL $04    [$DAEB]     ;|
 $82:DAE7 49 FF FF    EOR #$FFFF             ;|
@@ -9748,14 +9748,14 @@ $82:DED0 8D B5 07    STA $07B5  [$7E:07B5]  ;} Door list pointer = [[X] + 9]
 $82:DED3 22 D2 E5 8F JSL $8FE5D2[$8F:E5D2]  ; Room state checking handler
 $82:DED7 E2 20       SEP #$20               ;\
 $82:DED9 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$82:DEDC 8D 02 42    STA $4202  [$7E:4202]  ;|
+$82:DEDC 8D 02 42    STA $4202              ;|
 $82:DEDF AD A7 07    LDA $07A7  [$7E:07A7]  ;|
-$82:DEE2 8D 03 42    STA $4203  [$7E:4203]  ;|
+$82:DEE2 8D 03 42    STA $4203              ;|
 $82:DEE5 C2 20       REP #$20               ;|
 $82:DEE7 EA          NOP                    ;} Level data size = [room width in blocks] * [room height in blocks] * 2
 $82:DEE8 EA          NOP                    ;|
 $82:DEE9 EA          NOP                    ;|
-$82:DEEA AD 16 42    LDA $4216  [$7E:4216]  ;|
+$82:DEEA AD 16 42    LDA $4216              ;|
 $82:DEED 0A          ASL A                  ;|
 $82:DEEE 8D B9 07    STA $07B9  [$7E:07B9]  ;/
 $82:DEF1 60          RTS
@@ -10989,7 +10989,7 @@ $82:E78B AB          PLB                    ;/
 {
 $82:E78C 9C 16 0E    STZ $0E16  [$7E:0E16]  ; Elevator properties = 0
 $82:E78F A9 80 00    LDA #$0080             ;\
-$82:E792 8D 15 21    STA $2115  [$7E:2115]  ;|
+$82:E792 8D 15 21    STA $2115              ;|
 $82:E795 A9 00 B9    LDA #$B900             ;|
 $82:E798 85 48       STA $48    [$7E:0048]  ;|
 $82:E79A A9 00 80    LDA #$8000             ;|
@@ -10997,13 +10997,13 @@ $82:E79D 85 47       STA $47    [$7E:0047]  ;} Decompress $B9:8000 to VRAM $2800
 $82:E79F A9 00 50    LDA #$5000             ;|
 $82:E7A2 85 4C       STA $4C    [$7E:004C]  ;|
 $82:E7A4 4A          LSR A                  ;|
-$82:E7A5 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:E7A5 8D 16 21    STA $2116              ;|
 $82:E7A8 22 71 B2 80 JSL $80B271[$80:B271]  ;/
 $82:E7AC AD C4 07    LDA $07C4  [$7E:07C4]  ;\
 $82:E7AF 85 48       STA $48    [$7E:0048]  ;|
 $82:E7B1 AD C3 07    LDA $07C3  [$7E:07C3]  ;|
 $82:E7B4 85 47       STA $47    [$7E:0047]  ;} Decompress [tileset tiles pointer] to VRAM $0000
-$82:E7B6 9C 16 21    STZ $2116  [$7E:2116]  ;|
+$82:E7B6 9C 16 21    STZ $2116              ;|
 $82:E7B9 64 4C       STZ $4C    [$7E:004C]  ;|
 $82:E7BB 22 71 B2 80 JSL $80B271[$80:B271]  ;/
 $82:E7BF AD C7 07    LDA $07C7  [$7E:07C7]  ;\
@@ -11225,14 +11225,14 @@ $82:E91C AE 8D 07    LDX $078D  [$7E:078D]  ; X = [door pointer]
 $82:E91F 78          SEI                    ; Disable IRQ
 $82:E920 E2 20       SEP #$20
 $82:E922 BF 05 00 83 LDA $830005,x[$83:AB51];\
-$82:E926 8D 02 42    STA $4202  [$7E:4202]  ;|
+$82:E926 8D 02 42    STA $4202              ;|
 $82:E929 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$82:E92C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$82:E92C 8D 03 42    STA $4203              ;|
 $82:E92F BF 04 00 83 LDA $830004,x[$83:AB50];|
 $82:E933 C2 20       REP #$20               ;} A = [$83:0000 + [X] + 5] * [room width] + [$83:8000 + [X] + 4]
 $82:E935 29 FF 00    AND #$00FF             ;|
 $82:E938 18          CLC                    ;|
-$82:E939 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$82:E939 6D 16 42    ADC $4216              ;|
 $82:E93C 0A          ASL A                  ;/
 $82:E93D 58          CLI                    ; Enable IRQ
 $82:E93E A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
@@ -11287,20 +11287,20 @@ $82:E97E C2 30       REP #$30
 $82:E980 22 9C A2 80 JSL $80A29C[$80:A29C]  ; Clear FX tilemap
 $82:E984 AD 64 19    LDA $1964  [$7E:1964]  ;\
 $82:E987 F0 30       BEQ $30    [$E9B9]     ;} [FX tilemap pointer] != 0:
-$82:E989 8D 12 43    STA $4312  [$7E:4312]  ;\
+$82:E989 8D 12 43    STA $4312              ;\
 $82:E98C A9 E0 5B    LDA #$5BE0             ;|
-$82:E98F 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:E98F 8D 16 21    STA $2116              ;|
 $82:E992 A9 01 18    LDA #$1801             ;|
-$82:E995 8D 10 43    STA $4310  [$7E:4310]  ;|
+$82:E995 8D 10 43    STA $4310              ;|
 $82:E998 A9 8A 00    LDA #$008A             ;|
-$82:E99B 8D 14 43    STA $4314  [$7E:4314]  ;|
+$82:E99B 8D 14 43    STA $4314              ;|
 $82:E99E A9 40 08    LDA #$0840             ;} Transfer 840h bytes from [$8A:0000 + [FX tilemap pointer]] to VRAM $5BE0
-$82:E9A1 8D 15 43    STA $4315  [$7E:4315]  ;|
+$82:E9A1 8D 15 43    STA $4315              ;|
 $82:E9A4 E2 20       SEP #$20               ;|
 $82:E9A6 A9 80       LDA #$80               ;|
-$82:E9A8 8D 15 21    STA $2115  [$7E:2115]  ;|
+$82:E9A8 8D 15 21    STA $2115              ;|
 $82:E9AB A9 02       LDA #$02               ;|
-$82:E9AD 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:E9AD 8D 0B 42    STA $420B              ;/
 $82:E9B0 C2 20       REP #$20
 $82:E9B2 98          TYA                    ;\
 $82:E9B3 18          CLC                    ;|
@@ -11359,20 +11359,20 @@ $82:E9F8 C8          INY                    ;} Y += 2
 ;;; $E9F9: Load library background - command 2: transfer to VRAM ;;;
 {
 $82:E9F9 B9 03 00    LDA $0003,y[$8F:B79D]  ;\
-$82:E9FC 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:E9FC 8D 16 21    STA $2116              ;|
 $82:E9FF A9 01 18    LDA #$1801             ;|
-$82:EA02 8D 10 43    STA $4310  [$7E:4310]  ;|
+$82:EA02 8D 10 43    STA $4310              ;|
 $82:EA05 B9 00 00    LDA $0000,y[$8F:B79A]  ;|
-$82:EA08 8D 12 43    STA $4312  [$7E:4312]  ;|
+$82:EA08 8D 12 43    STA $4312              ;|
 $82:EA0B B9 02 00    LDA $0002,y[$8F:B79C]  ;|
-$82:EA0E 8D 14 43    STA $4314  [$7E:4314]  ;} Transfer [[Y] + 5] bytes from [[Y]] to VRAM [[Y] + 3]
+$82:EA0E 8D 14 43    STA $4314              ;} Transfer [[Y] + 5] bytes from [[Y]] to VRAM [[Y] + 3]
 $82:EA11 B9 05 00    LDA $0005,y[$8F:B79F]  ;|
-$82:EA14 8D 15 43    STA $4315  [$7E:4315]  ;|
+$82:EA14 8D 15 43    STA $4315              ;|
 $82:EA17 E2 20       SEP #$20               ;|
 $82:EA19 A9 80       LDA #$80               ;|
-$82:EA1B 8D 15 21    STA $2115  [$7E:2115]  ;|
+$82:EA1B 8D 15 21    STA $2115              ;|
 $82:EA1E A9 02       LDA #$02               ;|
-$82:EA20 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:EA20 8D 0B 42    STA $420B              ;/
 $82:EA23 C2 20       REP #$20
 $82:EA25 98          TYA                    ;\
 $82:EA26 18          CLC                    ;|
@@ -11724,15 +11724,15 @@ $82:EC24 64 71       STZ $71    [$7E:0071]  ;|
 $82:EC26 64 6F       STZ $6F    [$7E:006F]  ;} Disable colour math
 $82:EC28 64 72       STZ $72    [$7E:0072]  ;/
 $82:EC2A A9 00       LDA #$00               ;\
-$82:EC2C 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:EC2C 8D 16 21    STA $2116              ;|
 $82:EC2F A9 58       LDA #$58               ;|
-$82:EC31 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:EC31 8D 17 21    STA $2117              ;|
 $82:EC34 A9 80       LDA #$80               ;|
-$82:EC36 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5800..5BFF = [$8E:DC00..E3FF] (Zebes and stars tilemap)
+$82:EC36 8D 15 21    STA $2115              ;} VRAM $5800..5BFF = [$8E:DC00..E3FF] (Zebes and stars tilemap)
 $82:EC39 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $82:EC3D             dx 01,01,18,8EDC00,0800;|
 $82:EC45 A9 02       LDA #$02               ;|
-$82:EC47 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$82:EC47 8D 0B 42    STA $420B              ;/
 $82:EC4A C2 30       REP #$30
 $82:EC4C 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
 $82:EC4E 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0

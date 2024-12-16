@@ -342,10 +342,10 @@ $A3:89AB 6B          RTL
 $A3:89AC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A3:89AF 38          SEC                    ;|
 $A3:89B0 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
-$A3:89B3 8D 04 42    STA $4204  [$7E:4204]  ;|
+$A3:89B3 8D 04 42    STA $4204              ;|
 $A3:89B6 E2 20       SEP #$20               ;|
 $A3:89B8 A9 18       LDA #$18               ;|
-$A3:89BA 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A3:89BA 8D 06 42    STA $4206              ;|
 $A3:89BD C2 20       REP #$20               ;|
 $A3:89BF EA          NOP                    ;|
 $A3:89C0 EA          NOP                    ;|
@@ -354,7 +354,7 @@ $A3:89C2 EA          NOP                    ;|
 $A3:89C3 EA          NOP                    ;|
 $A3:89C4 EA          NOP                    ;|
 $A3:89C5 EA          NOP                    ;|
-$A3:89C6 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A3:89C6 AD 14 42    LDA $4214              ;|
 $A3:89C9 29 FF 00    AND #$00FF             ;|
 $A3:89CC 18          CLC                    ;|
 $A3:89CD 69 04 00    ADC #$0004             ;|
@@ -5657,29 +5657,29 @@ $A3:BE7A 60          RTS
 $A3:BE7B 08          PHP
 $A3:BE7C E2 20       SEP #$20               ;\
 $A3:BE7E A5 16       LDA $16    [$7E:0016]  ;|
-$A3:BE80 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A3:BE80 8D 02 42    STA $4202              ;|
 $A3:BE83 A5 18       LDA $18    [$7E:0018]  ;|
-$A3:BE85 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A3:BE85 8D 03 42    STA $4203              ;|
 $A3:BE88 EA          NOP                    ;} $1C = [$16] * [$18 low]
 $A3:BE89 EA          NOP                    ;|
 $A3:BE8A EA          NOP                    ;|
 $A3:BE8B C2 20       REP #$20               ;|
-$A3:BE8D AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A3:BE8D AD 16 42    LDA $4216              ;|
 $A3:BE90 85 1C       STA $1C    [$7E:001C]  ;/
 $A3:BE92 E2 20       SEP #$20               ;\
 $A3:BE94 A5 16       LDA $16    [$7E:0016]  ;|
-$A3:BE96 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A3:BE96 8D 02 42    STA $4202              ;|
 $A3:BE99 A5 19       LDA $19    [$7E:0019]  ;|
-$A3:BE9B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A3:BE9B 8D 03 42    STA $4203              ;|
 $A3:BE9E EA          NOP                    ;|
 $A3:BE9F EA          NOP                    ;} $1E = [$16] * [$18 high] / 100h
 $A3:BEA0 EA          NOP                    ;|
 $A3:BEA1 C2 20       REP #$20               ;|
-$A3:BEA3 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A3:BEA3 AD 16 42    LDA $4216              ;|
 $A3:BEA6 29 00 FF    AND #$FF00             ;|
 $A3:BEA9 EB          XBA                    ;|
 $A3:BEAA 85 1E       STA $1E    [$7E:001E]  ;/
-$A3:BEAC AD 16 42    LDA $4216  [$7E:4216]  ;\
+$A3:BEAC AD 16 42    LDA $4216              ;\
 $A3:BEAF 29 FF 00    AND #$00FF             ;|
 $A3:BEB2 EB          XBA                    ;|
 $A3:BEB3 18          CLC                    ;|

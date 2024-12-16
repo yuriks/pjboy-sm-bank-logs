@@ -16,17 +16,17 @@ $94:8006 4C 73 80    JMP $8073  [$94:8073]  ; Go to BRANCH_RIGHT
 
 ; BRANCH_LEFT
 $94:8009 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:800C 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:800C 8D 04 42    STA $4204              ;|
 $94:800F E2 20       SEP #$20               ;|
 $94:8011 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:8014 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8014 8D 06 42    STA $4206              ;|
 $94:8017 C2 20       REP #$20               ;|
 $94:8019 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:801C 4A          LSR A                  ;|
 $94:801D 4A          LSR A                  ;|
 $94:801E 4A          LSR A                  ;|
 $94:801F 4A          LSR A                  ;|
-$94:8020 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8020 CD 16 42    CMP $4216              ;|
 $94:8023 F0 02       BEQ $02    [$8027]     ;/
 $94:8025 18          CLC                    ;\
 $94:8026 60          RTS                    ;} Return carry clear
@@ -74,17 +74,17 @@ $94:8070 4C BE 82    JMP $82BE  [$94:82BE]
 
 ; BRANCH_RIGHT
 $94:8073 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:8076 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8076 8D 04 42    STA $4204              ;|
 $94:8079 E2 20       SEP #$20               ;|
 $94:807B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:807E 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:807E 8D 06 42    STA $4206              ;|
 $94:8081 C2 20       REP #$20               ;|
 $94:8083 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:8086 4A          LSR A                  ;|
 $94:8087 4A          LSR A                  ;|
 $94:8088 4A          LSR A                  ;|
 $94:8089 4A          LSR A                  ;|
-$94:808A CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:808A CD 16 42    CMP $4216              ;|
 $94:808D F0 02       BEQ $02    [$8091]     ;/
 $94:808F 18          CLC                    ;\
 $94:8090 60          RTS                    ;} Return carry clear
@@ -148,17 +148,17 @@ $94:80E4 90 03       BCC $03    [$80E9]     ;/
 $94:80E6 4C 4F 81    JMP $814F  [$94:814F]  ; Go to BRANCH_DOWN
 
 $94:80E9 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:80EC 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:80EC 8D 04 42    STA $4204              ;|
 $94:80EF E2 20       SEP #$20               ;|
 $94:80F1 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:80F4 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:80F4 8D 06 42    STA $4206              ;|
 $94:80F7 C2 20       REP #$20               ;|
 $94:80F9 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h:
 $94:80FC 4A          LSR A                  ;|
 $94:80FD 4A          LSR A                  ;|
 $94:80FE 4A          LSR A                  ;|
 $94:80FF 4A          LSR A                  ;|
-$94:8100 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8100 CD 16 42    CMP $4216              ;|
 $94:8103 F0 02       BEQ $02    [$8107]     ;/
 $94:8105 18          CLC                    ;\
 $94:8106 60          RTS                    ;} Return carry clear
@@ -205,17 +205,17 @@ $94:814C 4C DA 82    JMP $82DA  [$94:82DA]
 
 ; BRANCH_DOWN
 $94:814F AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:8152 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8152 8D 04 42    STA $4204              ;|
 $94:8155 E2 20       SEP #$20               ;|
 $94:8157 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:815A 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:815A 8D 06 42    STA $4206              ;|
 $94:815D C2 20       REP #$20               ;|
 $94:815F AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h:
 $94:8162 4A          LSR A                  ;|
 $94:8163 4A          LSR A                  ;|
 $94:8164 4A          LSR A                  ;|
 $94:8165 4A          LSR A                  ;|
-$94:8166 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8166 CD 16 42    CMP $4216              ;|
 $94:8169 F0 02       BEQ $02    [$816D]     ;/
 $94:816B 18          CLC                    ;\
 $94:816C 60          RTS                    ;} Return carry clear
@@ -610,9 +610,9 @@ $94:8366 4A          LSR A                  ;|
 $94:8367 4A          LSR A                  ;} Calculate block index of the row of Samus top boundary
 $94:8368 4A          LSR A                  ;|
 $94:8369 E2 20       SEP #$20               ;|
-$94:836B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:836B 8D 02 42    STA $4202              ;|
 $94:836E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:8371 8D 03 42    STA $4203  [$7E:4203]  ;/
+$94:8371 8D 03 42    STA $4203              ;/
 $94:8374 C2 20       REP #$20
 $94:8376 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $94:8379 85 16       STA $16    [$7E:0016]  ;|
@@ -627,7 +627,7 @@ $94:8388 4A          LSR A                  ;|
 $94:8389 4A          LSR A                  ;|
 $94:838A 4A          LSR A                  ;} Current block index = (Samus top-right corner)
 $94:838B 18          CLC                    ;|
-$94:838C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:838C 6D 16 42    ADC $4216              ;|
 $94:838F 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:8392 0A          ASL A                  ;\
 $94:8393 AA          TAX                    ;} X = [current block index] * 2
@@ -668,9 +668,9 @@ $94:83C5 4A          LSR A                  ;|
 $94:83C6 4A          LSR A                  ;} Calculate block index of the row of Samus top boundary
 $94:83C7 4A          LSR A                  ;|
 $94:83C8 E2 20       SEP #$20               ;|
-$94:83CA 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:83CA 8D 02 42    STA $4202              ;|
 $94:83CD AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:83D0 8D 03 42    STA $4203  [$7E:4203]  ;/
+$94:83D0 8D 03 42    STA $4203              ;/
 $94:83D3 C2 20       REP #$20
 $94:83D5 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $94:83D8 85 16       STA $16    [$7E:0016]  ;|
@@ -684,7 +684,7 @@ $94:83E6 4A          LSR A                  ;|
 $94:83E7 4A          LSR A                  ;|
 $94:83E8 4A          LSR A                  ;} Current block index = Samus top-left corner
 $94:83E9 18          CLC                    ;|
-$94:83EA 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:83EA 6D 16 42    ADC $4216              ;|
 $94:83ED 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:83F0 0A          ASL A                  ;\
 $94:83F1 AA          TAX                    ;} X = [current block index] * 2
@@ -731,9 +731,9 @@ $94:8430 4A          LSR A                  ;|
 $94:8431 4A          LSR A                  ;|
 $94:8432 4A          LSR A                  ;|
 $94:8433 E2 20       SEP #$20               ;|
-$94:8435 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:8435 8D 02 42    STA $4202              ;|
 $94:8438 AD A5 07    LDA $07A5  [$7E:07A5]  ;} Calculate Samus left boundary column block index
-$94:843B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:843B 8D 03 42    STA $4203              ;|
 $94:843E C2 20       REP #$20               ;|
 $94:8440 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
 $94:8443 38          SEC                    ;|
@@ -743,7 +743,7 @@ $94:8448 4A          LSR A                  ;|
 $94:8449 4A          LSR A                  ;|
 $94:844A 4A          LSR A                  ;} Current block index = (Samus bottom-left corner)
 $94:844B 18          CLC                    ;|
-$94:844C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:844C 6D 16 42    ADC $4216              ;|
 $94:844F 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:8452 0A          ASL A                  ;\
 $94:8453 AA          TAX                    ;} X = [current block index] * 2
@@ -786,9 +786,9 @@ $94:848A 4A          LSR A                  ;|
 $94:848B 4A          LSR A                  ;|
 $94:848C 4A          LSR A                  ;|
 $94:848D E2 20       SEP #$20               ;|
-$94:848F 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:848F 8D 02 42    STA $4202              ;|
 $94:8492 AD A5 07    LDA $07A5  [$7E:07A5]  ;} Calculate Samus left boundary column block index
-$94:8495 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:8495 8D 03 42    STA $4203              ;|
 $94:8498 C2 20       REP #$20               ;|
 $94:849A AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
 $94:849D 38          SEC                    ;|
@@ -798,7 +798,7 @@ $94:84A2 4A          LSR A                  ;|
 $94:84A3 4A          LSR A                  ;|
 $94:84A4 4A          LSR A                  ;} Current block index = (Samus top-left corner)
 $94:84A5 18          CLC                    ;|
-$94:84A6 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:84A6 6D 16 42    ADC $4216              ;|
 $94:84A9 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:84AC 0A          ASL A                  ;\
 $94:84AD AA          TAX                    ;} X = [current block index] * 2
@@ -996,17 +996,17 @@ $94:8586             dw 0000,0100,
 ; Looking at $86FE, I assume there's supposed to be a collision direction check here to branch to BRANCH_RIGHT
 
 $94:8606 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:8609 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8609 8D 04 42    STA $4204              ;|
 $94:860C E2 20       SEP #$20               ;|
 $94:860E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:8611 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8611 8D 06 42    STA $4206              ;|
 $94:8614 C2 20       REP #$20               ;|
 $94:8616 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:8619 4A          LSR A                  ;|
 $94:861A 4A          LSR A                  ;|
 $94:861B 4A          LSR A                  ;|
 $94:861C 4A          LSR A                  ;|
-$94:861D CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:861D CD 16 42    CMP $4216              ;|
 $94:8620 F0 02       BEQ $02    [$8624]     ;/
 $94:8622 18          CLC                    ;\
 $94:8623 60          RTS                    ;} Return carry clear
@@ -1064,17 +1064,17 @@ $94:8680 4C 49 8F    JMP $8F49  [$94:8F49]
 
 ; BRANCH_RIGHT
 $94:8683 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:8686 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8686 8D 04 42    STA $4204              ;|
 $94:8689 E2 20       SEP #$20               ;|
 $94:868B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:868E 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:868E 8D 06 42    STA $4206              ;|
 $94:8691 C2 20       REP #$20               ;|
 $94:8693 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:8696 4A          LSR A                  ;|
 $94:8697 4A          LSR A                  ;|
 $94:8698 4A          LSR A                  ;|
 $94:8699 4A          LSR A                  ;|
-$94:869A CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:869A CD 16 42    CMP $4216              ;|
 $94:869D F0 02       BEQ $02    [$86A1]     ;/
 $94:869F 18          CLC                    ;\
 $94:86A0 60          RTS                    ;} Return carry clear
@@ -1147,17 +1147,17 @@ $94:8702 90 03       BCC $03    [$8707]     ;/
 $94:8704 4C 80 87    JMP $8780  [$94:8780]  ; Go to BRANCH_DOWN
 
 $94:8707 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:870A 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:870A 8D 04 42    STA $4204              ;|
 $94:870D E2 20       SEP #$20               ;|
 $94:870F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:8712 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8712 8D 06 42    STA $4206              ;|
 $94:8715 C2 20       REP #$20               ;|
 $94:8717 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:871A 4A          LSR A                  ;|
 $94:871B 4A          LSR A                  ;|
 $94:871C 4A          LSR A                  ;|
 $94:871D 4A          LSR A                  ;|
-$94:871E CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:871E CD 16 42    CMP $4216              ;|
 $94:8721 F0 02       BEQ $02    [$8725]     ;/
 $94:8723 18          CLC                    ;\
 $94:8724 60          RTS                    ;} Return carry clear
@@ -1214,17 +1214,17 @@ $94:877D 4C 7B 87    JMP $877B  [$94:877B]
 
 ; BRANCH_DOWN
 $94:8780 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:8783 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8783 8D 04 42    STA $4204              ;|
 $94:8786 E2 20       SEP #$20               ;|
 $94:8788 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:878B 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:878B 8D 06 42    STA $4206              ;|
 $94:878E C2 20       REP #$20               ;|
 $94:8790 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
 $94:8793 4A          LSR A                  ;|
 $94:8794 4A          LSR A                  ;|
 $94:8795 4A          LSR A                  ;|
 $94:8796 4A          LSR A                  ;|
-$94:8797 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8797 CD 16 42    CMP $4216              ;|
 $94:879A F0 02       BEQ $02    [$879E]     ;/
 $94:879C 18          CLC                    ;\
 $94:879D 60          RTS                    ;} Return carry clear
@@ -2700,9 +2700,9 @@ $94:954E 4A          LSR A                  ;|
 $94:954F 4A          LSR A                  ;} Calculate block index of the row of Samus top boundary
 $94:9550 4A          LSR A                  ;|
 $94:9551 E2 20       SEP #$20               ;|
-$94:9553 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:9553 8D 02 42    STA $4202              ;|
 $94:9556 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:9559 8D 03 42    STA $4203  [$7E:4203]  ;/
+$94:9559 8D 03 42    STA $4203              ;/
 $94:955C C2 20       REP #$20
 $94:955E AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $94:9561 18          CLC                    ;|
@@ -2727,7 +2727,7 @@ $94:957F 4A          LSR A                  ;|
 $94:9580 4A          LSR A                  ;|
 $94:9581 4A          LSR A                  ;|
 $94:9582 18          CLC                    ;} X = [$20] / 10h + (block index of the row of Samus top boundary)
-$94:9583 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:9583 6D 16 42    ADC $4216              ;|
 $94:9586 0A          ASL A                  ;|
 $94:9587 AA          TAX                    ;/
 
@@ -2781,9 +2781,9 @@ $94:95C2 4A          LSR A                  ;|
 $94:95C3 4A          LSR A                  ;|
 $94:95C4 4A          LSR A                  ;|
 $94:95C5 E2 20       SEP #$20               ;|
-$94:95C7 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:95C7 8D 02 42    STA $4202              ;|
 $94:95CA AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:95CD 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:95CD 8D 03 42    STA $4203              ;|
 $94:95D0 C2 20       REP #$20               ;|
 $94:95D2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} Current block index = [$20] / 10h * [room width] + (Samus left boundary position) / 10h
 $94:95D5 38          SEC                    ;|
@@ -2793,7 +2793,7 @@ $94:95DA 4A          LSR A                  ;|
 $94:95DB 4A          LSR A                  ;|
 $94:95DC 4A          LSR A                  ;|
 $94:95DD 18          CLC                    ;|
-$94:95DE 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:95DE 6D 16 42    ADC $4216              ;|
 $94:95E1 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:95E4 0A          ASL A                  ;\
 $94:95E5 AA          TAX                    ;} X = [current block index] * 2
@@ -2846,9 +2846,9 @@ $94:961B 4A          LSR A                  ;|
 $94:961C 4A          LSR A                  ;|
 $94:961D 4A          LSR A                  ;|
 $94:961E E2 20       SEP #$20               ;|
-$94:9620 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:9620 8D 02 42    STA $4202              ;|
 $94:9623 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:9626 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:9626 8D 03 42    STA $4203              ;|
 $94:9629 C2 20       REP #$20               ;|
 $94:962B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} Current block index = [$20] / 10h * [room width] + (Samus right boundary position) / 10h
 $94:962E 18          CLC                    ;|
@@ -2859,7 +2859,7 @@ $94:9634 4A          LSR A                  ;|
 $94:9635 4A          LSR A                  ;|
 $94:9636 4A          LSR A                  ;|
 $94:9637 18          CLC                    ;|
-$94:9638 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:9638 6D 16 42    ADC $4216              ;|
 $94:963B 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:963E 0A          ASL A                  ;\
 $94:963F AA          TAX                    ;} X = [current block index] * 2
@@ -3655,13 +3655,13 @@ $94:9C4A F0 16       BEQ $16    [$9C62]     ;|
 $94:9C4C A2 00 00    LDX #$0000             ;|
 $94:9C4F E2 20       SEP #$20               ;|
 $94:9C51 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:9C54 8D 02 42    STA $4202  [$7E:4202]  ;|
-$94:9C57 8C 03 42    STY $4203  [$7E:4203]  ;|
+$94:9C54 8D 02 42    STA $4202              ;|
+$94:9C57 8C 03 42    STY $4203              ;|
 $94:9C5A EA          NOP                    ;|
 $94:9C5B EA          NOP                    ;} Current block index = [A] * [room width] + [$0DD4]
 $94:9C5C EA          NOP                    ;|
 $94:9C5D C2 20       REP #$20               ;|
-$94:9C5F AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:9C5F AD 16 42    LDA $4216              ;|
                                             ;|
 $94:9C62 18          CLC                    ;|
 $94:9C63 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;|
@@ -4218,13 +4218,13 @@ $94:A0F3 60          RTS
 ;;     $16: Power bomb left boundary
 ;;     $18: Power bomb right boundary
 $94:A0F4 E2 20       SEP #$20               ;\
-$94:A0F6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A0F6 8D 02 42    STA $4202              ;|
 $94:A0F9 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A0FC 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A0FC 8D 03 42    STA $4203              ;|
 $94:A0FF A9 00       LDA #$00               ;|
 $94:A101 EB          XBA                    ;} X = ((origin Y block) * [room width in blocks] + (origin X block)) * 2
 $94:A102 C2 31       REP #$31               ;|
-$94:A104 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A104 6D 16 42    ADC $4216              ;|
 $94:A107 0A          ASL A                  ;|
 $94:A108 AA          TAX                    ;/
 $94:A109 A5 18       LDA $18    [$7E:0018]  ;\
@@ -4252,13 +4252,13 @@ $94:A119 60          RTS
 ;;     $1A: Power bomb top boundary
 ;;     $1C: Power bomb bottom boundary
 $94:A11A E2 20       SEP #$20               ;\
-$94:A11C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A11C 8D 02 42    STA $4202              ;|
 $94:A11F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A122 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A122 8D 03 42    STA $4203              ;|
 $94:A125 A9 00       LDA #$00               ;|
 $94:A127 EB          XBA                    ;} X = ((origin Y block) * [room width in blocks] + (origin X block)) * 2
 $94:A128 C2 31       REP #$31               ;|
-$94:A12A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A12A 6D 16 42    ADC $4216              ;|
 $94:A12D 0A          ASL A                  ;|
 $94:A12E AA          TAX                    ;/
 $94:A12F A5 1C       LDA $1C    [$7E:001C]  ;\
@@ -4541,9 +4541,9 @@ $94:A259 4A          LSR A                  ;|
 $94:A25A 4A          LSR A                  ;|
 $94:A25B 4A          LSR A                  ;} Calculate block index of row of projectile top boundary
 $94:A25C E2 20       SEP #$20               ;|
-$94:A25E 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A25E 8D 02 42    STA $4202              ;|
 $94:A261 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A264 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A264 8D 03 42    STA $4203              ;|
 $94:A267 C2 20       REP #$20               ;/
 $94:A269 BD 8C 0B    LDA $0B8C,x[$7E:0B8C]  ;\
 $94:A26C 18          CLC                    ;|
@@ -4570,7 +4570,7 @@ $94:A290 4A          LSR A                  ;|
 $94:A291 4A          LSR A                  ;|
 $94:A292 4A          LSR A                  ;|
 $94:A293 18          CLC                    ;} X = ((block index of row of projectile top boundary) + [$1C] / 10h) * 2 (index of top block to check)
-$94:A294 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A294 6D 16 42    ADC $4216              ;|
 $94:A297 0A          ASL A                  ;|
 $94:A298 AA          TAX                    ;/
 $94:A299 A5 26       LDA $26    [$7E:0026]  ;\
@@ -4651,9 +4651,9 @@ $94:A307 4A          LSR A                  ;|
 $94:A308 4A          LSR A                  ;|
 $94:A309 4A          LSR A                  ;|
 $94:A30A E2 20       SEP #$20               ;|
-$94:A30C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A30C 8D 02 42    STA $4202              ;|
 $94:A30F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A312 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A312 8D 03 42    STA $4203              ;|
 $94:A315 C2 20       REP #$20               ;|
 $94:A317 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;|
 $94:A31A 38          SEC                    ;} X = ([$1C] / 10h * [room width in blocks] + (projectile left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -4663,7 +4663,7 @@ $94:A31F 4A          LSR A                  ;|
 $94:A320 4A          LSR A                  ;|
 $94:A321 4A          LSR A                  ;|
 $94:A322 18          CLC                    ;|
-$94:A323 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A323 6D 16 42    ADC $4216              ;|
 $94:A326 0A          ASL A                  ;|
 $94:A327 AA          TAX                    ;/
 $94:A328 A5 26       LDA $26    [$7E:0026]  ;\
@@ -4724,9 +4724,9 @@ $94:A370 4A          LSR A                  ;|
 $94:A371 4A          LSR A                  ;|
 $94:A372 4A          LSR A                  ;} Calculate block index of row of projectile top boundary
 $94:A373 E2 20       SEP #$20               ;|
-$94:A375 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A375 8D 02 42    STA $4202              ;|
 $94:A378 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A37B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A37B 8D 03 42    STA $4203              ;|
 $94:A37E C2 20       REP #$20               ;/
 $94:A380 BD 8C 0B    LDA $0B8C,x[$7E:0B8C]  ;\
 $94:A383 18          CLC                    ;|
@@ -4753,7 +4753,7 @@ $94:A3A7 4A          LSR A                  ;|
 $94:A3A8 4A          LSR A                  ;|
 $94:A3A9 4A          LSR A                  ;|
 $94:A3AA 18          CLC                    ;} Y = ((block index of row of projectile top boundary) + [$1C] / 10h) * 2 (index of top block to check)
-$94:A3AB 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A3AB 6D 16 42    ADC $4216              ;|
 $94:A3AE 0A          ASL A                  ;|
 $94:A3AF A8          TAY                    ;/
 $94:A3B0 A5 26       LDA $26    [$7E:0026]  ;\
@@ -4832,9 +4832,9 @@ $94:A421 4A          LSR A                  ;|
 $94:A422 4A          LSR A                  ;|
 $94:A423 4A          LSR A                  ;|
 $94:A424 E2 20       SEP #$20               ;|
-$94:A426 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A426 8D 02 42    STA $4202              ;|
 $94:A429 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A42C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A42C 8D 03 42    STA $4203              ;|
 $94:A42F C2 20       REP #$20               ;|
 $94:A431 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;|
 $94:A434 38          SEC                    ;} Y = ([$1C] / 10h * [room width in blocks] + (projectile left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -4844,7 +4844,7 @@ $94:A439 4A          LSR A                  ;|
 $94:A43A 4A          LSR A                  ;|
 $94:A43B 4A          LSR A                  ;|
 $94:A43C 18          CLC                    ;|
-$94:A43D 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A43D 6D 16 42    ADC $4216              ;|
 $94:A440 0A          ASL A                  ;|
 $94:A441 A8          TAY                    ;/
 $94:A442 A5 26       LDA $26    [$7E:0026]  ;\
@@ -4903,9 +4903,9 @@ $94:A48D 4A          LSR A                  ;|
 $94:A48E 4A          LSR A                  ;|
 $94:A48F 4A          LSR A                  ;|
 $94:A490 E2 20       SEP #$20               ;} Calculate block index of row of projectile
-$94:A492 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A492 8D 02 42    STA $4202              ;|
 $94:A495 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A498 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A498 8D 03 42    STA $4203              ;|
 $94:A49B C2 20       REP #$20               ;/
 $94:A49D BD 8C 0B    LDA $0B8C,x[$7E:0B8C]  ;\
 $94:A4A0 18          CLC                    ;|
@@ -4922,7 +4922,7 @@ $94:A4B5 4A          LSR A                  ;|
 $94:A4B6 4A          LSR A                  ;|
 $94:A4B7 4A          LSR A                  ;|
 $94:A4B8 18          CLC                    ;} X = ((block index of row of projectile) + [$1C] / 10h) * 2 (index of block to check)
-$94:A4B9 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A4B9 6D 16 42    ADC $4216              ;|
 $94:A4BC 0A          ASL A                  ;|
 $94:A4BD AA          TAX                    ;/
 $94:A4BE A5 19       LDA $19    [$7E:0019]  ;\
@@ -4982,9 +4982,9 @@ $94:A50B 4A          LSR A                  ;|
 $94:A50C 4A          LSR A                  ;|
 $94:A50D 4A          LSR A                  ;|
 $94:A50E E2 20       SEP #$20               ;|
-$94:A510 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A510 8D 02 42    STA $4202              ;|
 $94:A513 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A516 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A516 8D 03 42    STA $4203              ;|
 $94:A519 C2 20       REP #$20               ;|
 $94:A51B BD 64 0B    LDA $0B64,x[$7E:0B64]  ;} X = ([$1C] / 10h * [room width in blocks] + [projectile X position] / 10h) * 2 (index of block to check)
 $94:A51E 4A          LSR A                  ;|
@@ -4992,7 +4992,7 @@ $94:A51F 4A          LSR A                  ;|
 $94:A520 4A          LSR A                  ;|
 $94:A521 4A          LSR A                  ;|
 $94:A522 18          CLC                    ;|
-$94:A523 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A523 6D 16 42    ADC $4216              ;|
 $94:A526 0A          ASL A                  ;|
 $94:A527 AA          TAX                    ;/
 $94:A528 A5 19       LDA $19    [$7E:0019]  ;\
@@ -5031,17 +5031,17 @@ $94:A543 C2 20       REP #$20
 $94:A545 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ; X = [current block index]
 $94:A548 AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
 $94:A54B AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:A54E 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:A54E 8D 04 42    STA $4204              ;|
 $94:A551 E2 20       SEP #$20               ;|
 $94:A553 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A556 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:A556 8D 06 42    STA $4206              ;|
 $94:A559 C2 20       REP #$20               ;|
 $94:A55B B9 78 0B    LDA $0B78,y[$7E:0B78]  ;} If [projectile Y position] / 10h = [current block index] / [room width in blocks] (projectile centre is in block): go to block shot reaction - slope - non-square
 $94:A55E 4A          LSR A                  ;|
 $94:A55F 4A          LSR A                  ;|
 $94:A560 4A          LSR A                  ;|
 $94:A561 4A          LSR A                  ;|
-$94:A562 CD 14 42    CMP $4214  [$7E:4214]  ;|
+$94:A562 CD 14 42    CMP $4214              ;|
 $94:A565 F0 28       BEQ $28    [$A58F]     ;/
 $94:A567 18          CLC                    ;\
 $94:A568 60          RTS                    ;} Return carry clear
@@ -5061,17 +5061,17 @@ $94:A569 C2 20       REP #$20
 $94:A56B AE C4 0D    LDX $0DC4  [$7E:0DC4]  ; X = [current block index]
 $94:A56E AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
 $94:A571 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$94:A574 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:A574 8D 04 42    STA $4204              ;|
 $94:A577 E2 20       SEP #$20               ;|
 $94:A579 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A57C 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:A57C 8D 06 42    STA $4206              ;|
 $94:A57F C2 20       REP #$20               ;|
 $94:A581 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;} If [projectile X position] / 10h = [current block index] % [room width in blocks] (projectile centre is in block): go to block shot reaction - slope - non-square
 $94:A584 4A          LSR A                  ;|
 $94:A585 4A          LSR A                  ;|
 $94:A586 4A          LSR A                  ;|
 $94:A587 4A          LSR A                  ;|
-$94:A588 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:A588 CD 16 42    CMP $4216              ;|
 $94:A58B F0 02       BEQ $02    [$A58F]     ;/
 $94:A58D 18          CLC                    ;\
 $94:A58E 60          RTS                    ;} Return carry clear
@@ -5669,9 +5669,9 @@ $94:A926 4A          LSR A                  ;|
 $94:A927 4A          LSR A                  ;|
 $94:A928 4A          LSR A                  ;|
 $94:A929 E2 20       SEP #$20               ;|
-$94:A92B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A92B 8D 02 42    STA $4202              ;|
 $94:A92E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:A931 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A931 8D 03 42    STA $4203              ;|
 $94:A934 C2 20       REP #$20               ;} Current block index = [grapple beam end Y position] / 10h * [room width in blocks] + [grapple beam end X position] / 10h
 $94:A936 AD 08 0D    LDA $0D08  [$7E:0D08]  ;|
 $94:A939 4A          LSR A                  ;|
@@ -5679,7 +5679,7 @@ $94:A93A 4A          LSR A                  ;|
 $94:A93B 4A          LSR A                  ;|
 $94:A93C 4A          LSR A                  ;|
 $94:A93D 18          CLC                    ;|
-$94:A93E 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A93E 6D 16 42    ADC $4216              ;|
 $94:A941 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:A944 0A          ASL A                  ;\
 $94:A945 AA          TAX                    ;|
@@ -5741,7 +5741,7 @@ $94:A996 8D 0C 0D    STA $0D0C  [$7E:0D0C]
 ; BRANCH_GRAPPLING_ENEMY
 $94:A999 E2 20       SEP #$20               ;\
 $94:A99B AD 84 0D    LDA $0D84  [$7E:0D84]  ;|
-$94:A99E 8D 02 42    STA $4202  [$7E:4202]  ;} Multiplicand = [distance from grapple beam end]
+$94:A99E 8D 02 42    STA $4202              ;} Multiplicand = [distance from grapple beam end]
 $94:A9A1 C2 20       REP #$20               ;/
 $94:A9A3 BF 43 B4 A0 LDA $A0B443,x[$A0:B56D];\
 $94:A9A7 30 24       BMI $24    [$A9CD]     ;|
@@ -5753,11 +5753,11 @@ $94:A9B2 6D 84 0D    ADC $0D84  [$7E:0D84]  ;|
 $94:A9B5 80 3F       BRA $3F    [$A9F6]     ;|
                                             ;|
 $94:A9B7 E2 20       SEP #$20               ;|
-$94:A9B9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A9B9 8D 03 42    STA $4203              ;|
 $94:A9BC C2 20       REP #$20               ;|
 $94:A9BE EA          NOP                    ;|
 $94:A9BF EA          NOP                    ;|
-$94:A9C0 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:A9C0 AD 16 42    LDA $4216              ;|
 $94:A9C3 29 00 FF    AND #$FF00             ;|
 $94:A9C6 EB          XBA                    ;|
 $94:A9C7 18          CLC                    ;|
@@ -5774,11 +5774,11 @@ $94:A9D9 80 1B       BRA $1B    [$A9F6]     ;|
 $94:A9DB E2 20       SEP #$20               ;|
 $94:A9DD 49 FF       EOR #$FF               ;|
 $94:A9DF 1A          INC A                  ;|
-$94:A9E0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A9E0 8D 03 42    STA $4203              ;|
 $94:A9E3 C2 20       REP #$20               ;|
 $94:A9E5 EA          NOP                    ;|
 $94:A9E6 EA          NOP                    ;|
-$94:A9E7 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:A9E7 AD 16 42    LDA $4216              ;|
 $94:A9EA 29 00 FF    AND #$FF00             ;|
 $94:A9ED EB          XBA                    ;|
 $94:A9EE 49 FF FF    EOR #$FFFF             ;|
@@ -5803,11 +5803,11 @@ $94:AA12 6D 84 0D    ADC $0D84  [$7E:0D84]  ;|
 $94:AA15 80 3F       BRA $3F    [$AA56]     ;|
                                             ;|
 $94:AA17 E2 20       SEP #$20               ;|
-$94:AA19 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA19 8D 03 42    STA $4203              ;|
 $94:AA1C C2 20       REP #$20               ;|
 $94:AA1E EA          NOP                    ;|
 $94:AA1F EA          NOP                    ;|
-$94:AA20 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:AA20 AD 16 42    LDA $4216              ;|
 $94:AA23 29 00 FF    AND #$FF00             ;|
 $94:AA26 EB          XBA                    ;|
 $94:AA27 18          CLC                    ;|
@@ -5824,11 +5824,11 @@ $94:AA39 80 1B       BRA $1B    [$AA56]     ;|
 $94:AA3B E2 20       SEP #$20               ;|
 $94:AA3D 49 FF       EOR #$FF               ;|
 $94:AA3F 1A          INC A                  ;|
-$94:AA40 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA40 8D 03 42    STA $4203              ;|
 $94:AA43 C2 20       REP #$20               ;|
 $94:AA45 EA          NOP                    ;|
 $94:AA46 EA          NOP                    ;|
-$94:AA47 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:AA47 AD 16 42    LDA $4216              ;|
 $94:AA4A 29 00 FF    AND #$FF00             ;|
 $94:AA4D EB          XBA                    ;|
 $94:AA4E 49 FF FF    EOR #$FFFF             ;|
@@ -5856,12 +5856,12 @@ $94:AA63 60          RTS
 ;;     Carry: set if collision, clear otherwise
 $94:AA64 E2 20       SEP #$20
 $94:AA66 AD 96 0D    LDA $0D96  [$7E:0D96]  ;\
-$94:AA69 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:AA69 8D 02 42    STA $4202              ;|
 $94:AA6C AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:AA6F 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA6F 8D 03 42    STA $4203              ;|
 $94:AA72 C2 21       REP #$21               ;} Current block index = [$0D96] * [room width in blocks] + [$0D94]
 $94:AA74 AD 94 0D    LDA $0D94  [$7E:0D94]  ;|
-$94:AA77 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:AA77 6D 16 42    ADC $4216              ;|
 $94:AA7A 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:AA7D 0A          ASL A                  ;\
 $94:AA7E AA          TAX                    ;|
@@ -5999,12 +5999,12 @@ $94:AB90             dw AA9A, ;  0: Air
 ; Clone of $AA64
 $94:ABB0 E2 20       SEP #$20
 $94:ABB2 AD 96 0D    LDA $0D96  [$7E:0D96]
-$94:ABB5 8D 02 42    STA $4202  [$7E:4202]
+$94:ABB5 8D 02 42    STA $4202            
 $94:ABB8 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:ABBB 8D 03 42    STA $4203  [$7E:4203]
+$94:ABBB 8D 03 42    STA $4203            
 $94:ABBE C2 21       REP #$21
 $94:ABC0 AD 94 0D    LDA $0D94  [$7E:0D94]
-$94:ABC3 6D 16 42    ADC $4216  [$7E:4216]
+$94:ABC3 6D 16 42    ADC $4216            
 $94:ABC6 8D C4 0D    STA $0DC4  [$7E:0DC4]
 $94:ABC9 0A          ASL A
 $94:ABCA AA          TAX
@@ -6518,16 +6518,16 @@ $94:AF3B 6D 96 0D    ADC $0D96  [$7E:0D96]  ;} $0D96 += 100h * -cos([X] / 2 * pi
 $94:AF3E 8D 96 0D    STA $0D96  [$7E:0D96]  ;/
 $94:AF41 EB          XBA                    ;\
 $94:AF42 E2 20       SEP #$20               ;|
-$94:AF44 8D 02 42    STA $4202  [$7E:4202]  ;} Calculate [$0D96] / 100h * [room width in blocks]
+$94:AF44 8D 02 42    STA $4202              ;} Calculate [$0D96] / 100h * [room width in blocks]
 $94:AF47 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$94:AF4A 8D 03 42    STA $4203  [$7E:4203]  ;/
+$94:AF4A 8D 03 42    STA $4203              ;/
 $94:AF4D C2 21       REP #$21               ;\
 $94:AF4F BF 43 B4 A0 LDA $A0B443,x          ;|
 $94:AF53 6D 94 0D    ADC $0D94  [$7E:0D94]  ;} $0D94 += 100h * sin([X] / 2 * pi / 80h)
 $94:AF56 8D 94 0D    STA $0D94  [$7E:0D94]  ;/
 $94:AF59 29 00 FF    AND #$FF00             ;\
 $94:AF5C EB          XBA                    ;|
-$94:AF5D 6D 16 42    ADC $4216  [$7E:4216]  ;} Current block index = [$0D96] / 100h * [room width in blocks] + [$0D94] / 100h
+$94:AF5D 6D 16 42    ADC $4216              ;} Current block index = [$0D96] / 100h * [room width in blocks] + [$0D94] / 100h
 $94:AF60 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $94:AF63 0A          ASL A                  ;\
 $94:AF64 AA          TAX                    ;|
@@ -6657,10 +6657,10 @@ $94:B028 85 18       STA $18    [$7E:0018]  ;/
 $94:B02A 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (Y subposition)
 $94:B02C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $94:B02F 30 77       BMI $77    [$B0A8]     ;} If [grapple beam length] < 0: return
-$94:B031 8D 04 42    STA $4204  [$7E:4204]  ;\
+$94:B031 8D 04 42    STA $4204              ;\
 $94:B034 E2 20       SEP #$20               ;|
 $94:B036 A9 08       LDA #$08               ;|
-$94:B038 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:B038 8D 06 42    STA $4206              ;|
 $94:B03B C2 20       REP #$20               ;|
 $94:B03D EA          NOP                    ;|
 $94:B03E EA          NOP                    ;} A = [grapple beam length] / 8
@@ -6668,7 +6668,7 @@ $94:B03F EA          NOP                    ;|
 $94:B040 EA          NOP                    ;|
 $94:B041 EA          NOP                    ;|
 $94:B042 EA          NOP                    ;|
-$94:B043 AD 14 42    LDA $4214  [$7E:4214]  ;/
+$94:B043 AD 14 42    LDA $4214              ;/
 $94:B046 30 60       BMI $60    [$B0A8]     ; >_<;
 $94:B048 29 0F 00    AND #$000F             ;\
 $94:B04B 38          SEC                    ;|

@@ -3645,7 +3645,7 @@ $A0:9E9C 5A          PHY
 $A0:9E9D A9 0D 00    LDA #$000D             ;\
 $A0:9EA0 22 84 F0 90 JSL $90F084[$90:F084]  ;} If grapple beam is inactive:
 $A0:9EA4 D0 03       BNE $03    [$9EA9]     ;/
-$A0:9EA6 4C 44 9F    JMP $9F44  [$A0:9F44]  ; Go to BRANCH_9F44 (fortunately this branch is never taken)
+$A0:9EA6 4C 44 9F    JMP $9F44  [$A0:9F44]  ; Go to BRANCH_GRAPPLE_INDEX_DETERMINED (fortunately this branch is never taken)
 
 $A0:9EA9 9C A6 18    STZ $18A6  [$7E:18A6]  ; Collision index = 0 (never read)
 $A0:9EAC 9C AA 17    STZ $17AA  [$7E:17AA]  ; Interactive enemy indices index = 0
@@ -6432,16 +6432,16 @@ $A0:B0E8 A8          TAY                    ;|
 $A0:B0E9 B9 43 B1    LDA $B143,y[$A0:B18D]  ;|
 $A0:B0EC 29 FF 00    AND #$00FF             ;|
 $A0:B0EF E2 20       SEP #$20               ;|
-$A0:B0F1 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:B0F1 8D 02 42    STA $4202              ;|
 $A0:B0F4 AD 32 0E    LDA $0E32  [$7E:0E32]  ;|
-$A0:B0F7 8D 03 42    STA $4203  [$7E:4203]  ;} A = [$B143 + |[$0E34]|] * [$0E32]
+$A0:B0F7 8D 03 42    STA $4203              ;} A = [$B143 + |[$0E34]|] * [$0E32]
 $A0:B0FA EA          NOP                    ;|
 $A0:B0FB EA          NOP                    ;|
 $A0:B0FC EA          NOP                    ;|
 $A0:B0FD EA          NOP                    ;|
 $A0:B0FE EA          NOP                    ;|
 $A0:B0FF C2 20       REP #$20               ;|
-$A0:B101 AD 16 42    LDA $4216  [$7E:4216]  ;/
+$A0:B101 AD 16 42    LDA $4216              ;/
 $A0:B104 EB          XBA                    ;\
 $A0:B105 48          PHA                    ;|
 $A0:B106 29 FF 00    AND #$00FF             ;|
@@ -6645,46 +6645,46 @@ $A0:B701 08          PHP
 $A0:B702 C2 20       REP #$20
 $A0:B704 E2 10       SEP #$10
 $A0:B706 A6 26       LDX $26    [$7E:0026]  ;\
-$A0:B708 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B708 8E 02 42    STX $4202              ;|
 $A0:B70B A6 28       LDX $28    [$7E:0028]  ;|
-$A0:B70D 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B70D 8E 03 42    STX $4203              ;|
 $A0:B710 EA          NOP                    ;} Result = ac
 $A0:B711 EA          NOP                    ;|
 $A0:B712 EA          NOP                    ;|
-$A0:B713 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A0:B713 AD 16 42    LDA $4216              ;|
 $A0:B716 85 2A       STA $2A    [$7E:002A]  ;/
 $A0:B718 A6 27       LDX $27    [$7E:0027]  ;\
-$A0:B71A 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B71A 8E 02 42    STX $4202              ;|
 $A0:B71D A6 29       LDX $29    [$7E:0029]  ;|
-$A0:B71F 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B71F 8E 03 42    STX $4203              ;|
 $A0:B722 EA          NOP                    ;} Result += bd % 100h * 10000h
 $A0:B723 EA          NOP                    ;|
 $A0:B724 EA          NOP                    ;|
-$A0:B725 AE 16 42    LDX $4216  [$7E:4216]  ;|
+$A0:B725 AE 16 42    LDX $4216              ;|
 $A0:B728 86 2C       STX $2C    [$7E:002C]  ;/
-$A0:B72A AC 17 42    LDY $4217  [$7E:4217]  ; Y = bd / 100h
+$A0:B72A AC 17 42    LDY $4217              ; Y = bd / 100h
 $A0:B72D A6 27       LDX $27    [$7E:0027]  ;\
-$A0:B72F 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B72F 8E 02 42    STX $4202              ;|
 $A0:B732 A6 28       LDX $28    [$7E:0028]  ;|
-$A0:B734 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B734 8E 03 42    STX $4203              ;|
 $A0:B737 EA          NOP                    ;|
 $A0:B738 EA          NOP                    ;} Result += bc * 100h
 $A0:B739 A5 2B       LDA $2B    [$7E:002B]  ;|
 $A0:B73B 18          CLC                    ;|
-$A0:B73C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:B73C 6D 16 42    ADC $4216              ;|
 $A0:B73F 85 2B       STA $2B    [$7E:002B]  ;/
 $A0:B741 90 01       BCC $01    [$B744]     ; If carry set:
 $A0:B743 C8          INY                    ; Y += 1
 
 $A0:B744 A6 26       LDX $26    [$7E:0026]  ;\
-$A0:B746 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B746 8E 02 42    STX $4202              ;|
 $A0:B749 A6 29       LDX $29    [$7E:0029]  ;|
-$A0:B74B 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B74B 8E 03 42    STX $4203              ;|
 $A0:B74E EA          NOP                    ;|
 $A0:B74F EA          NOP                    ;} Result += ad * 100h
 $A0:B750 A5 2B       LDA $2B    [$7E:002B]  ;|
 $A0:B752 18          CLC                    ;|
-$A0:B753 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:B753 6D 16 42    ADC $4216              ;|
 $A0:B756 85 2B       STA $2B    [$7E:002B]  ;/
 $A0:B758 90 01       BCC $01    [$B75B]     ; If carry set:
 $A0:B75A C8          INY                    ; Y += 1
@@ -7217,9 +7217,9 @@ $A0:BB73 4A          LSR A                  ;|
 $A0:BB74 4A          LSR A                  ;|
 $A0:BB75 4A          LSR A                  ;|
 $A0:BB76 E2 20       SEP #$20               ;|
-$A0:BB78 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BB78 8D 02 42    STA $4202              ;|
 $A0:BB7B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BB7E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BB7E 8D 03 42    STA $4203              ;|
 $A0:BB81 C2 20       REP #$20               ;} Current block index = [[S] + 4] / 10h * [room width in blocks] + [[S] + 6] / 10h
 $A0:BB83 A3 06       LDA $06,s  [$7E:1FED]  ;|
 $A0:BB85 4A          LSR A                  ;|
@@ -7227,7 +7227,7 @@ $A0:BB86 4A          LSR A                  ;|
 $A0:BB87 4A          LSR A                  ;|
 $A0:BB88 4A          LSR A                  ;|
 $A0:BB89 18          CLC                    ;|
-$A0:BB8A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BB8A 6D 16 42    ADC $4216              ;|
 $A0:BB8D 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $A0:BB90 A3 02       LDA $02,s  [$7E:1FE9]  ;\
 $A0:BB92 83 06       STA $06,s  [$7E:1FED]  ;|
@@ -7315,9 +7315,9 @@ $A0:BBEE 4A          LSR A                  ;|
 $A0:BBEF 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
 $A0:BBF0 4A          LSR A                  ;|
 $A0:BBF1 E2 20       SEP #$20               ;|
-$A0:BBF3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BBF3 8D 02 42    STA $4202              ;|
 $A0:BBF6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BBF9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BBF9 8D 03 42    STA $4203              ;|
 $A0:BBFC C2 20       REP #$20               ;/
 $A0:BBFE BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
 $A0:BC01 18          CLC                    ;|
@@ -7342,7 +7342,7 @@ $A0:BC1F 4A          LSR A                  ;|
 $A0:BC20 4A          LSR A                  ;|
 $A0:BC21 4A          LSR A                  ;|
 $A0:BC22 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
-$A0:BC23 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BC23 6D 16 42    ADC $4216              ;|
 $A0:BC26 0A          ASL A                  ;|
 $A0:BC27 AA          TAX                    ;/
 
@@ -7450,9 +7450,9 @@ $A0:BCBE 4A          LSR A                  ;|
 $A0:BCBF 4A          LSR A                  ;|
 $A0:BCC0 4A          LSR A                  ;|
 $A0:BCC1 E2 20       SEP #$20               ;|
-$A0:BCC3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BCC3 8D 02 42    STA $4202              ;|
 $A0:BCC6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BCC9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BCC9 8D 03 42    STA $4203              ;|
 $A0:BCCC C2 20       REP #$20               ;|
 $A0:BCCE BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;|
 $A0:BCD1 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -7462,7 +7462,7 @@ $A0:BCD6 4A          LSR A                  ;|
 $A0:BCD7 4A          LSR A                  ;|
 $A0:BCD8 4A          LSR A                  ;|
 $A0:BCD9 18          CLC                    ;|
-$A0:BCDA 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BCDA 6D 16 42    ADC $4216              ;|
 $A0:BCDD 0A          ASL A                  ;|
 $A0:BCDE AA          TAX                    ;/
 
@@ -7554,9 +7554,9 @@ $A0:BD57 4A          LSR A                  ;|
 $A0:BD58 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
 $A0:BD59 4A          LSR A                  ;|
 $A0:BD5A E2 20       SEP #$20               ;|
-$A0:BD5C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BD5C 8D 02 42    STA $4202              ;|
 $A0:BD5F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BD62 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BD62 8D 03 42    STA $4203              ;|
 $A0:BD65 C2 20       REP #$20               ;/
 $A0:BD67 A5 1C       LDA $1C    [$7E:001C]  ;\
 $A0:BD69 4A          LSR A                  ;} If [$1C] & 1 != 0:
@@ -7589,7 +7589,7 @@ $A0:BD98 4A          LSR A                  ;|
 $A0:BD99 4A          LSR A                  ;|
 $A0:BD9A 4A          LSR A                  ;|
 $A0:BD9B 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
-$A0:BD9C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BD9C 6D 16 42    ADC $4216              ;|
 $A0:BD9F 0A          ASL A                  ;|
 $A0:BDA0 AA          TAX                    ;/
 
@@ -7710,9 +7710,9 @@ $A0:BE50 4A          LSR A                  ;|
 $A0:BE51 4A          LSR A                  ;|
 $A0:BE52 4A          LSR A                  ;|
 $A0:BE53 E2 20       SEP #$20               ;|
-$A0:BE55 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BE55 8D 02 42    STA $4202              ;|
 $A0:BE58 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BE5B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BE5B 8D 03 42    STA $4203              ;|
 $A0:BE5E C2 20       REP #$20               ;|
 $A0:BE60 BD 7A 0F    LDA $0F7A,x            ;|
 $A0:BE63 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -7722,7 +7722,7 @@ $A0:BE68 4A          LSR A                  ;|
 $A0:BE69 4A          LSR A                  ;|
 $A0:BE6A 4A          LSR A                  ;|
 $A0:BE6B 18          CLC                    ;|
-$A0:BE6C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BE6C 6D 16 42    ADC $4216              ;|
 $A0:BE6F 0A          ASL A                  ;|
 $A0:BE70 AA          TAX                    ;/
 
@@ -7817,9 +7817,9 @@ $A0:BEF0 4A          LSR A                  ;|
 $A0:BEF1 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
 $A0:BEF2 4A          LSR A                  ;|
 $A0:BEF3 E2 20       SEP #$20               ;|
-$A0:BEF5 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BEF5 8D 02 42    STA $4202              ;|
 $A0:BEF8 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BEFB 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BEFB 8D 03 42    STA $4203              ;|
 $A0:BEFE C2 20       REP #$20               ;/
 $A0:BF00 A5 1C       LDA $1C    [$7E:001C]  ;\
 $A0:BF02 4A          LSR A                  ;} If [$1C] & 1 != 0:
@@ -7852,7 +7852,7 @@ $A0:BF31 4A          LSR A                  ;|
 $A0:BF32 4A          LSR A                  ;|
 $A0:BF33 4A          LSR A                  ;|
 $A0:BF34 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
-$A0:BF35 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BF35 6D 16 42    ADC $4216              ;|
 $A0:BF38 0A          ASL A                  ;|
 $A0:BF39 AA          TAX                    ;/
 
@@ -7974,9 +7974,9 @@ $A0:BFE4 4A          LSR A                  ;|
 $A0:BFE5 4A          LSR A                  ;|
 $A0:BFE6 4A          LSR A                  ;|
 $A0:BFE7 E2 20       SEP #$20               ;|
-$A0:BFE9 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BFE9 8D 02 42    STA $4202              ;|
 $A0:BFEC AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:BFEF 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BFEF 8D 03 42    STA $4203              ;|
 $A0:BFF2 C2 20       REP #$20               ;|
 $A0:BFF4 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
 $A0:BFF7 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -7986,7 +7986,7 @@ $A0:BFFC 4A          LSR A                  ;|
 $A0:BFFD 4A          LSR A                  ;|
 $A0:BFFE 4A          LSR A                  ;|
 $A0:BFFF 18          CLC                    ;|
-$A0:C000 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:C000 6D 16 42    ADC $4216              ;|
 $A0:C003 0A          ASL A                  ;|
 $A0:C004 AA          TAX                    ;/
 
@@ -8241,11 +8241,11 @@ $A0:C0CC 85 14       STA $14    [$7E:0014]
 $A0:C0CE C5 12       CMP $12    [$7E:0012]  ;\
 $A0:C0D0 90 20       BCC $20    [$C0F2]     ;} If [$14] < [$12]: go to BRANCH_LOWER_OCTANT
 $A0:C0D2 E2 20       SEP #$20               ;\
-$A0:C0D4 9C 04 42    STZ $4204  [$7E:4204]  ;|
+$A0:C0D4 9C 04 42    STZ $4204              ;|
 $A0:C0D7 A5 12       LDA $12    [$7E:0012]  ;|
-$A0:C0D9 8D 05 42    STA $4205  [$7E:4205]  ;|
+$A0:C0D9 8D 05 42    STA $4205              ;|
 $A0:C0DC A5 14       LDA $14    [$7E:0014]  ;} Quotient = [$12] * 100h / [$14]
-$A0:C0DE 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C0DE 8D 06 42    STA $4206              ;|
 $A0:C0E1 EA          NOP                    ;|
 $A0:C0E2 C2 20       REP #$20               ;/
 $A0:C0E4 FC EA C0    JSR ($C0EA,x)[$A0:C120]; Execute [$C0EA + [X]]
@@ -8257,11 +8257,11 @@ $A0:C0EA             dw C120, C132, C14E, C17C
 
 ; BRANCH_LOWER_OCTANT
 $A0:C0F2 E2 20       SEP #$20               ;\
-$A0:C0F4 9C 04 42    STZ $4204  [$7E:4204]  ;|
+$A0:C0F4 9C 04 42    STZ $4204              ;|
 $A0:C0F7 A5 14       LDA $14    [$7E:0014]  ;|
-$A0:C0F9 8D 05 42    STA $4205  [$7E:4205]  ;|
+$A0:C0F9 8D 05 42    STA $4205              ;|
 $A0:C0FC A5 12       LDA $12    [$7E:0012]  ;} Quotient = [$14] * 100h / [$12]
-$A0:C0FE 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C0FE 8D 06 42    STA $4206              ;|
 $A0:C101 EA          NOP                    ;|
 $A0:C102 C2 20       REP #$20               ;/
 $A0:C104 FC 0A C1    JSR ($C10A,x)[$A0:C112]; Execute [$C10A + [X]]
@@ -8276,7 +8276,7 @@ $A0:C10A             dw C112, C13C, C15C, C16E
 ;;; $C112: Calculate angle of (x, y) offset - bottom right upper octant ;;;
 {
 ; A = 40h + quotient / 8
-$A0:C112 AD 14 42    LDA $4214  [$7E:4214]
+$A0:C112 AD 14 42    LDA $4214            
 $A0:C115 4A          LSR A
 $A0:C116 4A          LSR A
 $A0:C117 4A          LSR A
@@ -8290,7 +8290,7 @@ $A0:C11F 60          RTS
 ;;; $C120: Calculate angle of (x, y) offset - bottom right lower octant ;;;
 {
 ; A = 80h - quotient / 8
-$A0:C120 AD 14 42    LDA $4214  [$7E:4214]
+$A0:C120 AD 14 42    LDA $4214            
 $A0:C123 4A          LSR A
 $A0:C124 4A          LSR A
 $A0:C125 4A          LSR A
@@ -8306,7 +8306,7 @@ $A0:C131 60          RTS
 ;;; $C132: Calculate angle of (x, y) offset - top right upper octant ;;;
 {
 ; A = quotient / 8
-$A0:C132 AD 14 42    LDA $4214  [$7E:4214]
+$A0:C132 AD 14 42    LDA $4214            
 $A0:C135 4A          LSR A
 $A0:C136 4A          LSR A
 $A0:C137 4A          LSR A
@@ -8318,7 +8318,7 @@ $A0:C13B 60          RTS
 ;;; $C13C: Calculate angle of (x, y) offset - top right lower octant ;;;
 {
 ; A = 40h - quotient / 8
-$A0:C13C AD 14 42    LDA $4214  [$7E:4214]
+$A0:C13C AD 14 42    LDA $4214            
 $A0:C13F 4A          LSR A
 $A0:C140 4A          LSR A
 $A0:C141 4A          LSR A
@@ -8334,7 +8334,7 @@ $A0:C14D 60          RTS
 ;;; $C14E: Calculate angle of (x, y) offset - bottom left lower octant ;;;
 {
 ; A = 80h + quotient / 8
-$A0:C14E AD 14 42    LDA $4214  [$7E:4214]
+$A0:C14E AD 14 42    LDA $4214            
 $A0:C151 4A          LSR A
 $A0:C152 4A          LSR A
 $A0:C153 4A          LSR A
@@ -8348,7 +8348,7 @@ $A0:C15B 60          RTS
 ;;; $C15C: Calculate angle of (x, y) offset - bottom left upper octant ;;;
 {
 ; A = C0h - quotient / 8
-$A0:C15C AD 14 42    LDA $4214  [$7E:4214]
+$A0:C15C AD 14 42    LDA $4214            
 $A0:C15F 4A          LSR A
 $A0:C160 4A          LSR A
 $A0:C161 4A          LSR A
@@ -8364,7 +8364,7 @@ $A0:C16D 60          RTS
 ;;; $C16E: Calculate angle of (x, y) offset - top left lower octant ;;;
 {
 ; A = C0h + quotient / 8
-$A0:C16E AD 14 42    LDA $4214  [$7E:4214]
+$A0:C16E AD 14 42    LDA $4214            
 $A0:C171 4A          LSR A
 $A0:C172 4A          LSR A
 $A0:C173 4A          LSR A
@@ -8378,7 +8378,7 @@ $A0:C17B 60          RTS
 ;;; $C17C: Calculate angle of (x, y) offset - top left upper octant ;;;
 {
 ; A = 100h - quotient / 8
-$A0:C17C AD 14 42    LDA $4214  [$7E:4214]
+$A0:C17C AD 14 42    LDA $4214            
 $A0:C17F 4A          LSR A
 $A0:C180 4A          LSR A
 $A0:C181 4A          LSR A
@@ -8452,15 +8452,15 @@ $A0:C1D3 6B          RTL                    ;} Return carry set
 {
 ; ?
 $A0:C1D4 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
-$A0:C1D7 8D 04 42    STA $4204  [$7E:4204]  ;|
+$A0:C1D7 8D 04 42    STA $4204              ;|
 $A0:C1DA E2 20       SEP #$20               ;|
 $A0:C1DC A9 03       LDA #$03               ;|
-$A0:C1DE 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C1DE 8D 06 42    STA $4206              ;|
 $A0:C1E1 C2 20       REP #$20               ;|
 $A0:C1E3 EA          NOP                    ;|
 $A0:C1E4 EA          NOP                    ;|
 $A0:C1E5 EA          NOP                    ;|
-$A0:C1E6 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A0:C1E6 AD 14 42    LDA $4214              ;|
 $A0:C1E9 CD C2 09    CMP $09C2  [$7E:09C2]  ;|
 $A0:C1EC 90 05       BCC $05    [$C1F3]     ;|
 $A0:C1EE A9 01 00    LDA #$0001             ;} $12 = ([Samus health] * 3 - 1) / [Samus max health] + 1 (roughly the number of thirds of Samus health she has)
@@ -8972,17 +8972,17 @@ $A0:C524 10 03       BPL $03    [$C529]     ;} If [$14] < 0:
 $A0:C526 4C 9E C5    JMP $C59E  [$A0:C59E]  ; Go to BRANCH_UP
 
 $A0:C529 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$A0:C52C 8E 04 42    STX $4204  [$7E:4204]  ;|
+$A0:C52C 8E 04 42    STX $4204              ;|
 $A0:C52F E2 20       SEP #$20               ;|
 $A0:C531 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:C534 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C534 8D 06 42    STA $4206              ;|
 $A0:C537 C2 20       REP #$20               ;|
 $A0:C539 B9 7A 0F    LDA $0F7A,y[$7E:107A]  ;} If [current block index] % [room width in blocks] != [enemy X position] / 10h (enemy centre isn't in block):
 $A0:C53C 4A          LSR A                  ;|
 $A0:C53D 4A          LSR A                  ;|
 $A0:C53E 4A          LSR A                  ;|
 $A0:C53F 4A          LSR A                  ;|
-$A0:C540 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$A0:C540 CD 16 42    CMP $4216              ;|
 $A0:C543 F0 02       BEQ $02    [$C547]     ;/
 $A0:C545 18          CLC                    ;\
 $A0:C546 60          RTS                    ;} Return carry clear
@@ -9035,17 +9035,17 @@ $A0:C59D 60          RTS
 
 ; BRANCH_UP
 $A0:C59E AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$A0:C5A1 8E 04 42    STX $4204  [$7E:4204]  ;|
+$A0:C5A1 8E 04 42    STX $4204              ;|
 $A0:C5A4 E2 20       SEP #$20               ;|
 $A0:C5A6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:C5A9 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C5A9 8D 06 42    STA $4206              ;|
 $A0:C5AC C2 20       REP #$20               ;|
 $A0:C5AE B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;} If [current block index] % [room width in blocks] != [enemy X position] / 10h (enemy centre isn't in block):
 $A0:C5B1 4A          LSR A                  ;|
 $A0:C5B2 4A          LSR A                  ;|
 $A0:C5B3 4A          LSR A                  ;|
 $A0:C5B4 4A          LSR A                  ;|
-$A0:C5B5 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$A0:C5B5 CD 16 42    CMP $4216              ;|
 $A0:C5B8 F0 02       BEQ $02    [$C5BC]     ;/
 $A0:C5BA 18          CLC                    ;\
 $A0:C5BB 60          RTS                    ;} Return carry clear
@@ -9283,9 +9283,9 @@ $A0:C6DD 4A          LSR A                  ;|
 $A0:C6DE 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
 $A0:C6DF 4A          LSR A                  ;|
 $A0:C6E0 E2 20       SEP #$20               ;|
-$A0:C6E2 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:C6E2 8D 02 42    STA $4202              ;|
 $A0:C6E5 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:C6E8 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:C6E8 8D 03 42    STA $4203              ;|
 $A0:C6EB C2 20       REP #$20               ;/
 $A0:C6ED BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;\
 $A0:C6F0 18          CLC                    ;|
@@ -9310,7 +9310,7 @@ $A0:C70E 4A          LSR A                  ;|
 $A0:C70F 4A          LSR A                  ;|
 $A0:C710 4A          LSR A                  ;|
 $A0:C711 18          CLC                    ;} X = ((target row block index) + [$1A] / 10h) * 2 (index of top block to check)
-$A0:C712 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:C712 6D 16 42    ADC $4216              ;|
 $A0:C715 0A          ASL A                  ;|
 $A0:C716 AA          TAX                    ;/
 
@@ -9474,9 +9474,9 @@ $A0:C7D1 4A          LSR A                  ;|
 $A0:C7D2 4A          LSR A                  ;|
 $A0:C7D3 4A          LSR A                  ;|
 $A0:C7D4 E2 20       SEP #$20               ;|
-$A0:C7D6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:C7D6 8D 02 42    STA $4202              ;|
 $A0:C7D9 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$A0:C7DC 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:C7DC 8D 03 42    STA $4203              ;|
 $A0:C7DF C2 20       REP #$20               ;|
 $A0:C7E1 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
 $A0:C7E4 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
@@ -9486,7 +9486,7 @@ $A0:C7E9 4A          LSR A                  ;|
 $A0:C7EA 4A          LSR A                  ;|
 $A0:C7EB 4A          LSR A                  ;|
 $A0:C7EC 18          CLC                    ;|
-$A0:C7ED 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:C7ED 6D 16 42    ADC $4216              ;|
 $A0:C7F0 0A          ASL A                  ;|
 $A0:C7F1 AA          TAX                    ;/
 

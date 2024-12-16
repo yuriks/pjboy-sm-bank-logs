@@ -673,8 +673,8 @@ $88:829D 6B          RTL
 $88:829E 08          PHP
 $88:829F E2 20       SEP #$20
 $88:82A1 22 C5 82 80 JSL $8082C5[$80:82C5]  ; Wait until the end of a v-blank
-$88:82A5 9C 0B 42    STZ $420B  [$7E:420B]  ;\
-$88:82A8 9C 0C 42    STZ $420C  [$7E:420C]  ;} Clear (H)DMA enable flags
+$88:82A5 9C 0B 42    STZ $420B              ;\
+$88:82A8 9C 0C 42    STZ $420C              ;} Clear (H)DMA enable flags
 $88:82AB 28          PLP
 }
 
@@ -729,16 +729,16 @@ $88:82F3 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $88:82F6 E2 30       SEP #$30
 $88:82F8 A2 20       LDX #$20               ;\
                                             ;|
-$88:82FA 9E 00 43    STZ $4300,x[$7E:4320]  ;|
+$88:82FA 9E 00 43    STZ $4300,x            ;|
 $88:82FD A9 13       LDA #$13               ;|
-$88:82FF 9D 01 43    STA $4301,x[$7E:4321]  ;|
-$88:8302 9E 02 43    STZ $4302,x[$7E:4322]  ;|
-$88:8305 9E 03 43    STZ $4303,x[$7E:4323]  ;|
-$88:8308 9E 04 43    STZ $4304,x[$7E:4324]  ;|
-$88:830B 9E 05 43    STZ $4305,x[$7E:4325]  ;|
-$88:830E 9E 06 43    STZ $4306,x[$7E:4326]  ;} Clear (H)DMA registers. Sets PPU addresses to $2113 (BG4 X scroll) for no particular reason
-$88:8311 9E 08 43    STZ $4308,x[$7E:4328]  ;|
-$88:8314 9E 09 43    STZ $4309,x[$7E:4329]  ;|
+$88:82FF 9D 01 43    STA $4301,x            ;|
+$88:8302 9E 02 43    STZ $4302,x            ;|
+$88:8305 9E 03 43    STZ $4303,x            ;|
+$88:8308 9E 04 43    STZ $4304,x            ;|
+$88:830B 9E 05 43    STZ $4305,x            ;|
+$88:830E 9E 06 43    STZ $4306,x            ;} Clear (H)DMA registers. Sets PPU addresses to $2113 (BG4 X scroll) for no particular reason
+$88:8311 9E 08 43    STZ $4308,x            ;|
+$88:8314 9E 09 43    STZ $4309,x            ;|
 $88:8317 8A          TXA                    ;|
 $88:8318 18          CLC                    ;|
 $88:8319 69 10       ADC #$10               ;|
@@ -792,11 +792,11 @@ $88:83A1 8D 01 06    STA $0601  [$7E:0601]  ;|
 $88:83A4 8D 04 06    STA $0604  [$7E:0604]  ;/
 $88:83A7 E2 20       SEP #$20               ;\
 $88:83A9 A9 F0       LDA #$F0               ;|
-$88:83AB 8D 81 21    STA $2181  [$7E:2181]  ;|
+$88:83AB 8D 81 21    STA $2181              ;|
 $88:83AE A9 FF       LDA #$FF               ;} WRAM address = $7F:FFF0 (for no particular reason)
-$88:83B0 8D 82 21    STA $2182  [$7E:2182]  ;|
+$88:83B0 8D 82 21    STA $2182              ;|
 $88:83B3 A9 01       LDA #$01               ;|
-$88:83B5 8D 83 21    STA $2183  [$7E:2183]  ;/
+$88:83B5 8D 83 21    STA $2183              ;/
 $88:83B8 64 85       STZ $85    [$7E:0085]  ; HDMA channels to enable = 0
 $88:83BA A9 20       LDA #$20               ;\
 $88:83BC 85 74       STA $74    [$7E:0074]  ;|
@@ -1004,7 +1004,7 @@ $88:84A8 9D C0 18    STA $18C0,x[$7E:18C0]  ;/
 $88:84AB DA          PHX
 $88:84AC A6 14       LDX $14    [$7E:0014]  ;\
 $88:84AE B9 00 00    LDA $0000,y[$88:EB63]  ;} HDMA control / target = [(return address) + 1] / [(return address) + 2]
-$88:84B1 9D 00 43    STA $4300,x[$7E:4320]  ;/
+$88:84B1 9D 00 43    STA $4300,x            ;/
 $88:84B4 68          PLA                    ; A = (HDMA object index)
 $88:84B5 AB          PLB
 $88:84B6 28          PLP
@@ -1344,7 +1344,7 @@ $88:8659 29 FF 00    AND #$00FF
 $88:865C AA          TAX
 $88:865D E2 20       SEP #$20
 $88:865F B9 00 00    LDA $0000,y[$88:EB75]
-$88:8662 9D 04 43    STA $4304,x[$7E:4324]
+$88:8662 9D 04 43    STA $4304,x          
 $88:8665 C2 20       REP #$20
 $88:8667 FA          PLX
 $88:8668 C8          INY
@@ -1360,7 +1360,7 @@ $88:866E 29 FF 00    AND #$00FF
 $88:8671 AA          TAX
 $88:8672 E2 20       SEP #$20
 $88:8674 B9 00 00    LDA $0000,y[$88:DED8]
-$88:8677 9D 07 43    STA $4307,x[$7E:4327]
+$88:8677 9D 07 43    STA $4307,x          
 $88:867A C2 20       REP #$20
 $88:867C FA          PLX
 $88:867D C8          INY
@@ -2323,18 +2323,18 @@ $88:8CC5 6B          RTL
 
 ; LOOP_SHAPE_DEFINITION_TABLE
 $88:8CC6 B9 26 A2    LDA $A226,y            ;\
-$88:8CC9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:8CC9 8D 03 42    STA $4203              ;|
 $88:8CCC EA          NOP                    ;|
 $88:8CCD EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8CCE EA          NOP                    ;|
-$88:8CCF AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:8CCF AD 17 42    LDA $4217              ;|
 $88:8CD2 85 14       STA $14    [$7E:0014]  ;/
 $88:8CD4 B9 06 A2    LDA $A206,y            ;\
-$88:8CD7 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8CD7 8D 03 42    STA $4203              ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
 $88:8CDA EA          NOP                    ;/
 $88:8CDB AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8CDE 18          CLC                    ;|
-$88:8CDF 6D 17 42    ADC $4217  [$7E:4217]  ;} If (X position of power bomb on screen) + (shape width) < 0:
+$88:8CDF 6D 17 42    ADC $4217              ;} If (X position of power bomb on screen) + (shape width) < 0:
 $88:8CE2 B0 07       BCS $07    [$8CEB]     ;/
 $88:8CE4 A9 00       LDA #$00               ;\
 $88:8CE6 EB          XBA                    ;} A high = 0
@@ -2375,25 +2375,25 @@ $88:8D03 60          RTS
 
 ; LOOP_SHAPE_DEFINITION_TABLE
 $88:8D04 B9 26 A2    LDA $A226,y[$88:A286]  ;\
-$88:8D07 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:8D07 8D 03 42    STA $4203              ;|
 $88:8D0A EA          NOP                    ;|
 $88:8D0B EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8D0C EA          NOP                    ;|
-$88:8D0D AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:8D0D AD 17 42    LDA $4217              ;|
 $88:8D10 85 14       STA $14    [$7E:0014]  ;/
 $88:8D12 B9 06 A2    LDA $A206,y[$88:A266]  ;\
-$88:8D15 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8D15 8D 03 42    STA $4203              ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
 $88:8D18 EA          NOP                    ;/
 $88:8D19 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D1C 18          CLC                    ;|
-$88:8D1D 6D 17 42    ADC $4217  [$7E:4217]  ;|
+$88:8D1D 6D 17 42    ADC $4217              ;|
 $88:8D20 90 02       BCC $02    [$8D24]     ;} A high = min(FFh, (power bomb X position on screen) + (shape width))
 $88:8D22 A9 FF       LDA #$FF               ;|
                                             ;|
 $88:8D24 EB          XBA                    ;/
 $88:8D25 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D28 38          SEC                    ;|
-$88:8D29 ED 17 42    SBC $4217  [$7E:4217]  ;} A low = max(0, (power bomb X position on screen) - (shape width))
+$88:8D29 ED 17 42    SBC $4217              ;} A low = max(0, (power bomb X position on screen) - (shape width))
 $88:8D2C B0 02       BCS $02    [$8D30]     ;|
 $88:8D2E A9 00       LDA #$00               ;/
 
@@ -2428,18 +2428,18 @@ $88:8D45 60          RTS
 
 ; LOOP_SHAPE_DEFINITION_TABLE
 $88:8D46 B9 26 A2    LDA $A226,y[$88:A286]  ;\
-$88:8D49 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:8D49 8D 03 42    STA $4203              ;|
 $88:8D4C EA          NOP                    ;|
 $88:8D4D EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8D4E EA          NOP                    ;|
-$88:8D4F AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:8D4F AD 17 42    LDA $4217              ;|
 $88:8D52 85 14       STA $14    [$7E:0014]  ;/
 $88:8D54 B9 06 A2    LDA $A206,y[$88:A266]  ;\
-$88:8D57 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8D57 8D 03 42    STA $4203              ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
 $88:8D5A EA          NOP                    ;/
 $88:8D5B AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D5E 38          SEC                    ;|
-$88:8D5F ED 17 42    SBC $4217  [$7E:4217]  ;} If (X position of power bomb on screen) - (shape width) >= 100h:
+$88:8D5F ED 17 42    SBC $4217              ;} If (X position of power bomb on screen) - (shape width) >= 100h:
 $88:8D62 90 07       BCC $07    [$8D6B]     ;/
 $88:8D64 A9 FF       LDA #$FF               ;\
 $88:8D66 EB          XBA                    ;} A low = FFh
@@ -2542,13 +2542,13 @@ $88:8E00 A9 00       LDA #$00               ;\
 $88:8E02 EB          XBA                    ;} Clear A high
 $88:8E03 A0 60       LDY #$60               ; Y = 60h
 $88:8E05 AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
-$88:8E08 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:8E08 8D 02 42    STA $4202              ;|
 $88:8E0B AD 86 A2    LDA $A286  [$88:A286]  ;|
-$88:8E0E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:8E0E 8D 03 42    STA $4203              ;|
 $88:8E11 EA          NOP                    ;} $12 = [power bomb explosion radius] * BFh / 10000h (power bomb explosion Y radius in pixels)
 $88:8E12 EA          NOP                    ;|
 $88:8E13 EA          NOP                    ;|
-$88:8E14 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:8E14 AD 17 42    LDA $4217              ;|
 $88:8E17 85 12       STA $12    [$7E:0012]  ;/
 $88:8E19 AA          TAX                    ; X = (power bomb explosion Y radius in pixels)
 $88:8E1A F4 2F 8E    PEA $8E2F              ; Push RETURN - 1
@@ -2792,18 +2792,18 @@ $88:8FB9 6B          RTL
 ; Clone of $8CC6
 
 $88:8FBA B9 26 A2    LDA $A226,y
-$88:8FBD 8D 03 42    STA $4203  [$7E:4203]
+$88:8FBD 8D 03 42    STA $4203            
 $88:8FC0 EA          NOP
 $88:8FC1 EA          NOP
 $88:8FC2 EA          NOP
-$88:8FC3 AD 17 42    LDA $4217  [$7E:4217]
+$88:8FC3 AD 17 42    LDA $4217            
 $88:8FC6 85 14       STA $14    [$7E:0014]
 $88:8FC8 B9 06 A2    LDA $A206,y
-$88:8FCB 8D 03 42    STA $4203  [$7E:4203]
+$88:8FCB 8D 03 42    STA $4203            
 $88:8FCE EA          NOP
 $88:8FCF AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:8FD2 18          CLC
-$88:8FD3 6D 17 42    ADC $4217  [$7E:4217]
+$88:8FD3 6D 17 42    ADC $4217            
 $88:8FD6 B0 07       BCS $07    [$8FDF]
 $88:8FD8 A9 00       LDA #$00
 $88:8FDA EB          XBA
@@ -2833,25 +2833,25 @@ $88:8FF7 60          RTS
 ; Clone of $8D04
 
 $88:8FF8 B9 26 A2    LDA $A226,y
-$88:8FFB 8D 03 42    STA $4203  [$7E:4203]
+$88:8FFB 8D 03 42    STA $4203            
 $88:8FFE EA          NOP
 $88:8FFF EA          NOP
 $88:9000 EA          NOP
-$88:9001 AD 17 42    LDA $4217  [$7E:4217]
+$88:9001 AD 17 42    LDA $4217            
 $88:9004 85 14       STA $14    [$7E:0014]
 $88:9006 B9 06 A2    LDA $A206,y
-$88:9009 8D 03 42    STA $4203  [$7E:4203]
+$88:9009 8D 03 42    STA $4203            
 $88:900C EA          NOP
 $88:900D AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:9010 18          CLC
-$88:9011 6D 17 42    ADC $4217  [$7E:4217]
+$88:9011 6D 17 42    ADC $4217            
 $88:9014 90 02       BCC $02    [$9018]
 $88:9016 A9 FF       LDA #$FF
 
 $88:9018 EB          XBA
 $88:9019 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:901C 38          SEC
-$88:901D ED 17 42    SBC $4217  [$7E:4217]
+$88:901D ED 17 42    SBC $4217            
 $88:9020 B0 02       BCS $02    [$9024]
 $88:9022 A9 00       LDA #$00
 
@@ -2875,18 +2875,18 @@ $88:9039 60          RTS
 ; Clone of $8D46
 
 $88:903A B9 26 A2    LDA $A226,y
-$88:903D 8D 03 42    STA $4203  [$7E:4203]
+$88:903D 8D 03 42    STA $4203            
 $88:9040 EA          NOP
 $88:9041 EA          NOP
 $88:9042 EA          NOP
-$88:9043 AD 17 42    LDA $4217  [$7E:4217]
+$88:9043 AD 17 42    LDA $4217            
 $88:9046 85 14       STA $14    [$7E:0014]
 $88:9048 B9 06 A2    LDA $A206,y
-$88:904B 8D 03 42    STA $4203  [$7E:4203]
+$88:904B 8D 03 42    STA $4203            
 $88:904E EA          NOP
 $88:904F AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:9052 38          SEC
-$88:9053 ED 17 42    SBC $4217  [$7E:4217]
+$88:9053 ED 17 42    SBC $4217            
 $88:9056 90 07       BCC $07    [$905F]
 $88:9058 A9 FF       LDA #$FF
 $88:905A EB          XBA
@@ -3002,13 +3002,13 @@ $88:90F6 A9 00       LDA #$00               ;\
 $88:90F8 EB          XBA                    ;} Clear A high
 $88:90F9 A0 60       LDY #$60               ; Y = 60h
 $88:90FB AD ED 0C    LDA $0CED  [$7E:0CED]  ;\
-$88:90FE 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:90FE 8D 02 42    STA $4202              ;|
 $88:9101 AD 86 A2    LDA $A286  [$88:A286]  ;|
-$88:9104 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:9104 8D 03 42    STA $4203              ;|
 $88:9107 EA          NOP                    ;} $12 = [power bomb pre-explosion radius] * BFh / 10000h (power bomb pre-explosion Y radius in pixels)
 $88:9108 EA          NOP                    ;|
 $88:9109 EA          NOP                    ;|
-$88:910A AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:910A AD 17 42    LDA $4217              ;|
 $88:910D 85 12       STA $12    [$7E:0012]  ;/
 $88:910F AA          TAX                    ; X = power bomb pre-explosion Y radius in pixels
 $88:9110 F4 25 91    PEA $9125              ; Push RETURN - 1
@@ -3540,18 +3540,18 @@ $88:A492 6B          RTL
 ; Clone of $8CC6
 
 $88:A493 B9 26 A2    LDA $A226,y
-$88:A496 8D 03 42    STA $4203  [$7E:4203]
+$88:A496 8D 03 42    STA $4203            
 $88:A499 EA          NOP
 $88:A49A EA          NOP
 $88:A49B EA          NOP
-$88:A49C AD 17 42    LDA $4217  [$7E:4217]
+$88:A49C AD 17 42    LDA $4217            
 $88:A49F 85 14       STA $14    [$7E:0014]
 $88:A4A1 B9 06 A2    LDA $A206,y
-$88:A4A4 8D 03 42    STA $4203  [$7E:4203]
+$88:A4A4 8D 03 42    STA $4203            
 $88:A4A7 EA          NOP
 $88:A4A8 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4AB 18          CLC
-$88:A4AC 6D 17 42    ADC $4217  [$7E:4217]
+$88:A4AC 6D 17 42    ADC $4217            
 $88:A4AF B0 07       BCS $07    [$A4B8]
 $88:A4B1 A9 00       LDA #$00
 $88:A4B3 EB          XBA
@@ -3581,25 +3581,25 @@ $88:A4D0 60          RTS
 ; Clone of $8D04
 
 $88:A4D1 B9 26 A2    LDA $A226,y[$88:A286]
-$88:A4D4 8D 03 42    STA $4203  [$7E:4203]
+$88:A4D4 8D 03 42    STA $4203            
 $88:A4D7 EA          NOP
 $88:A4D8 EA          NOP
 $88:A4D9 EA          NOP
-$88:A4DA AD 17 42    LDA $4217  [$7E:4217]
+$88:A4DA AD 17 42    LDA $4217            
 $88:A4DD 85 14       STA $14    [$7E:0014]
 $88:A4DF B9 06 A2    LDA $A206,y[$88:A266]
-$88:A4E2 8D 03 42    STA $4203  [$7E:4203]
+$88:A4E2 8D 03 42    STA $4203            
 $88:A4E5 EA          NOP
 $88:A4E6 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4E9 18          CLC
-$88:A4EA 6D 17 42    ADC $4217  [$7E:4217]
+$88:A4EA 6D 17 42    ADC $4217            
 $88:A4ED 90 02       BCC $02    [$A4F1]
 $88:A4EF A9 FF       LDA #$FF
 
 $88:A4F1 EB          XBA
 $88:A4F2 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4F5 38          SEC
-$88:A4F6 ED 17 42    SBC $4217  [$7E:4217]
+$88:A4F6 ED 17 42    SBC $4217            
 $88:A4F9 B0 02       BCS $02    [$A4FD]
 $88:A4FB A9 00       LDA #$00
 
@@ -3623,18 +3623,18 @@ $88:A512 60          RTS
 ; Clone of $8D46
 
 $88:A513 B9 26 A2    LDA $A226,y
-$88:A516 8D 03 42    STA $4203  [$7E:4203]
+$88:A516 8D 03 42    STA $4203            
 $88:A519 EA          NOP
 $88:A51A EA          NOP
 $88:A51B EA          NOP
-$88:A51C AD 17 42    LDA $4217  [$7E:4217]
+$88:A51C AD 17 42    LDA $4217            
 $88:A51F 85 14       STA $14    [$7E:0014]
 $88:A521 B9 06 A2    LDA $A206,y
-$88:A524 8D 03 42    STA $4203  [$7E:4203]
+$88:A524 8D 03 42    STA $4203            
 $88:A527 EA          NOP
 $88:A528 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A52B 38          SEC
-$88:A52C ED 17 42    SBC $4217  [$7E:4217]
+$88:A52C ED 17 42    SBC $4217            
 $88:A52F 90 07       BCC $07    [$A538]
 $88:A531 A9 FF       LDA #$FF
 $88:A533 EB          XBA
@@ -3682,13 +3682,13 @@ $88:A569 A9 00       LDA #$00               ;\
 $88:A56B EB          XBA                    ;} Clear A high
 $88:A56C A0 60       LDY #$60               ; Y = 60h
 $88:A56E AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
-$88:A571 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:A571 8D 02 42    STA $4202              ;|
 $88:A574 AD 86 A2    LDA $A286  [$88:A286]  ;|
-$88:A577 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:A577 8D 03 42    STA $4203              ;|
 $88:A57A EA          NOP                    ;} $12 = [power bomb explosion radius] * BFh / 10000h (power bomb explosion Y radius in pixels)
 $88:A57B EA          NOP                    ;|
 $88:A57C EA          NOP                    ;|
-$88:A57D AD 17 42    LDA $4217  [$7E:4217]  ;|
+$88:A57D AD 17 42    LDA $4217              ;|
 $88:A580 85 12       STA $12    [$7E:0012]  ;/
 $88:A582 AA          TAX                    ; X = (power bomb explosion Y radius in pixels)
 $88:A583 F4 98 A5    PEA $A598              ; Push RETURN - 1
@@ -5367,7 +5367,7 @@ $88:B51C 6B          RTL
 $88:B51D E2 20       SEP #$20               ;\
 $88:B51F BC C0 18    LDY $18C0,x[$7E:18C2]  ;|
 $88:B522 A9 10       LDA #$10               ;} HDMA target = BG2 Y scroll ($2110)
-$88:B524 99 01 43    STA $4301,y[$7E:4331]  ;|
+$88:B524 99 01 43    STA $4301,y            ;|
 $88:B527 C2 20       REP #$20               ;/
 $88:B529 DA          PHX                    ;\
 $88:B52A A2 1E       LDX #$1E               ;|
@@ -5439,7 +5439,7 @@ $88:B589             dw 0000,0000,0001,0001,0001,0001,0000,0000,
 $88:B5A9 E2 20       SEP #$20               ;\
 $88:B5AB BC C0 18    LDY $18C0,x[$7E:18C2]  ;|
 $88:B5AE A9 10       LDA #$10               ;} HDMA target = BG2 Y scroll ($2110)
-$88:B5B0 99 01 43    STA $4301,y[$7E:4331]  ;|
+$88:B5B0 99 01 43    STA $4301,y            ;|
 $88:B5B3 C2 20       REP #$20               ;/
 $88:B5B5 DE 20 19    DEC $1920,x[$7E:1922]  ; Decrement HDMA object phase decrease timer
 $88:B5B8 D0 11       BNE $11    [$B5CB]     ; If [HDMA object phase decrease timer] = 0:
@@ -8108,52 +8108,52 @@ $88:E5CC 4C 56 E6    JMP $E656  [$88:E656]  ; Go to BRANCH_NEGATIVE
 
 $88:E5CF 85 12       STA $12    [$7E:0012]  ; $12 = sin([$14] / 2 * pi / 80h) * 100h
 $88:E5D1 E2 20       SEP #$20               ;\
-$88:E5D3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E5D3 8D 02 42    STA $4202              ;|
 $88:E5D6 AD 6E 10    LDA $106E  [$7E:106E]  ;|
-$88:E5D9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E5D9 8D 03 42    STA $4203              ;|
 $88:E5DC EA          NOP                    ;|
 $88:E5DD EA          NOP                    ;} A = [wavy Phantoon amplitude low] * [$12 low] / 100h
 $88:E5DE EA          NOP                    ;|
 $88:E5DF C2 20       REP #$20               ;|
-$88:E5E1 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:E5E1 AD 16 42    LDA $4216              ;|
 $88:E5E4 EB          XBA                    ;|
 $88:E5E5 29 FF 00    AND #$00FF             ;/
 $88:E5E8 85 16       STA $16    [$7E:0016]  ;\
 $88:E5EA E2 20       SEP #$20               ;|
 $88:E5EC A5 13       LDA $13    [$7E:0013]  ;|
-$88:E5EE 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E5EE 8D 02 42    STA $4202              ;|
 $88:E5F1 AD 6E 10    LDA $106E  [$7E:106E]  ;|
-$88:E5F4 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E5F4 8D 03 42    STA $4203              ;|
 $88:E5F7 EA          NOP                    ;} A += [wavy Phantoon amplitude low] * [$12 high]
 $88:E5F8 EA          NOP                    ;|
 $88:E5F9 EA          NOP                    ;|
 $88:E5FA C2 20       REP #$20               ;|
-$88:E5FC AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:E5FC AD 16 42    LDA $4216              ;|
 $88:E5FF 18          CLC                    ;|
 $88:E600 65 16       ADC $16    [$7E:0016]  ;/
 $88:E602 85 16       STA $16    [$7E:0016]  ;\
 $88:E604 E2 20       SEP #$20               ;|
 $88:E606 A5 12       LDA $12    [$7E:0012]  ;|
-$88:E608 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E608 8D 02 42    STA $4202              ;|
 $88:E60B AD 6F 10    LDA $106F  [$7E:106F]  ;|
-$88:E60E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E60E 8D 03 42    STA $4203              ;|
 $88:E611 EA          NOP                    ;|
 $88:E612 EA          NOP                    ;|
 $88:E613 EA          NOP                    ;|
 $88:E614 C2 20       REP #$20               ;|
-$88:E616 AD 16 42    LDA $4216  [$7E:4216]  ;} A += [wavy Phantoon amplitude high] * [$12 low]
+$88:E616 AD 16 42    LDA $4216              ;} A += [wavy Phantoon amplitude high] * [$12 low]
 $88:E619 85 18       STA $18    [$7E:0018]  ;|
 $88:E61B E2 20       SEP #$20               ;|
 $88:E61D A5 13       LDA $13    [$7E:0013]  ;|
-$88:E61F 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E61F 8D 02 42    STA $4202              ;|
 $88:E622 AD 6F 10    LDA $106F  [$7E:106F]  ;|
-$88:E625 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E625 8D 03 42    STA $4203              ;|
 $88:E628 C2 20       REP #$20               ;|
 $88:E62A A5 16       LDA $16    [$7E:0016]  ;|
 $88:E62C 18          CLC                    ;|
 $88:E62D 65 18       ADC $18    [$7E:0018]  ;/
 $88:E62F 85 16       STA $16    [$7E:0016]  ;\
-$88:E631 AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:E631 AD 15 42    LDA $4215              ;|
 $88:E634 29 00 FF    AND #$FF00             ;} A += [wavy Phantoon amplitude high] * [$12 high] * 100h (whoops, carry isn't being propagated)
 $88:E637 18          CLC                    ;|
 $88:E638 65 16       ADC $16    [$7E:0016]  ;/
@@ -8177,52 +8177,52 @@ $88:E656 49 FF FF    EOR #$FFFF             ;\
 $88:E659 1A          INC A                  ;} $12 = -sin([$14] / 2 * pi / 80h) * 100h
 $88:E65A 85 12       STA $12    [$7E:0012]  ;/
 $88:E65C E2 20       SEP #$20               ;\
-$88:E65E 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E65E 8D 02 42    STA $4202              ;|
 $88:E661 AD 6E 10    LDA $106E  [$7E:106E]  ;|
-$88:E664 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E664 8D 03 42    STA $4203              ;|
 $88:E667 EA          NOP                    ;|
 $88:E668 EA          NOP                    ;|
 $88:E669 EA          NOP                    ;|
 $88:E66A C2 20       REP #$20               ;|
-$88:E66C AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:E66C AD 16 42    LDA $4216              ;|
 $88:E66F EB          XBA                    ;|
 $88:E670 29 FF 00    AND #$00FF             ;|
 $88:E673 85 16       STA $16    [$7E:0016]  ;|
 $88:E675 E2 20       SEP #$20               ;|
 $88:E677 A5 13       LDA $13    [$7E:0013]  ;|
-$88:E679 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E679 8D 02 42    STA $4202              ;|
 $88:E67C AD 6E 10    LDA $106E  [$7E:106E]  ;|
-$88:E67F 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E67F 8D 03 42    STA $4203              ;|
 $88:E682 EA          NOP                    ;|
 $88:E683 EA          NOP                    ;|
 $88:E684 EA          NOP                    ;|
 $88:E685 C2 20       REP #$20               ;|
-$88:E687 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:E687 AD 16 42    LDA $4216              ;|
 $88:E68A 18          CLC                    ;|
 $88:E68B 65 16       ADC $16    [$7E:0016]  ;|
 $88:E68D 85 16       STA $16    [$7E:0016]  ;|
 $88:E68F E2 20       SEP #$20               ;|
 $88:E691 A5 12       LDA $12    [$7E:0012]  ;} Same as above: $12 = [wavy Phantoon amplitude] * [$12] / 10000h (possibly off-by-1)
-$88:E693 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E693 8D 02 42    STA $4202              ;|
 $88:E696 AD 6F 10    LDA $106F  [$7E:106F]  ;|
-$88:E699 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E699 8D 03 42    STA $4203              ;|
 $88:E69C EA          NOP                    ;|
 $88:E69D EA          NOP                    ;|
 $88:E69E EA          NOP                    ;|
 $88:E69F C2 20       REP #$20               ;|
-$88:E6A1 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:E6A1 AD 16 42    LDA $4216              ;|
 $88:E6A4 85 18       STA $18    [$7E:0018]  ;|
 $88:E6A6 E2 20       SEP #$20               ;|
 $88:E6A8 A5 13       LDA $13    [$7E:0013]  ;|
-$88:E6AA 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:E6AA 8D 02 42    STA $4202              ;|
 $88:E6AD AD 6F 10    LDA $106F  [$7E:106F]  ;|
-$88:E6B0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:E6B0 8D 03 42    STA $4203              ;|
 $88:E6B3 C2 20       REP #$20               ;|
 $88:E6B5 A5 16       LDA $16    [$7E:0016]  ;|
 $88:E6B7 18          CLC                    ;|
 $88:E6B8 65 18       ADC $18    [$7E:0018]  ;|
 $88:E6BA 85 16       STA $16    [$7E:0016]  ;|
-$88:E6BC AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:E6BC AD 15 42    LDA $4215              ;|
 $88:E6BF 29 00 FF    AND #$FF00             ;|
 $88:E6C2 18          CLC                    ;|
 $88:E6C3 65 16       ADC $16    [$7E:0016]  ;|
@@ -9048,52 +9048,52 @@ $88:ECFF 4C 89 ED    JMP $ED89  [$88:ED89]  ; Go to BRANCH_NEGATIVE
 
 $88:ED02 85 12       STA $12    [$7E:0012]  ; $12 = sin([$14] / 2 * pi / 80h) * 100h
 $88:ED04 E2 20       SEP #$20               ;\
-$88:ED06 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED06 8D 02 42    STA $4202              ;|
 $88:ED09 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
-$88:ED0C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED0C 8D 03 42    STA $4203              ;|
 $88:ED0F EA          NOP                    ;|
 $88:ED10 EA          NOP                    ;} A = [wavy Samus amplitude low] * [$12 low] / 100h
 $88:ED11 EA          NOP                    ;|
 $88:ED12 C2 20       REP #$20               ;|
-$88:ED14 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:ED14 AD 16 42    LDA $4216              ;|
 $88:ED17 EB          XBA                    ;|
 $88:ED18 29 FF 00    AND #$00FF             ;/
 $88:ED1B 85 16       STA $16    [$7E:0016]  ;\
 $88:ED1D E2 20       SEP #$20               ;|
 $88:ED1F A5 13       LDA $13    [$7E:0013]  ;|
-$88:ED21 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED21 8D 02 42    STA $4202              ;|
 $88:ED24 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
-$88:ED27 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED27 8D 03 42    STA $4203              ;|
 $88:ED2A EA          NOP                    ;} A += [wavy Samus amplitude low] * [$12 high]
 $88:ED2B EA          NOP                    ;|
 $88:ED2C EA          NOP                    ;|
 $88:ED2D C2 20       REP #$20               ;|
-$88:ED2F AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:ED2F AD 16 42    LDA $4216              ;|
 $88:ED32 18          CLC                    ;|
 $88:ED33 65 16       ADC $16    [$7E:0016]  ;/
 $88:ED35 85 16       STA $16    [$7E:0016]  ;\
 $88:ED37 E2 20       SEP #$20               ;|
 $88:ED39 A5 12       LDA $12    [$7E:0012]  ;|
-$88:ED3B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED3B 8D 02 42    STA $4202              ;|
 $88:ED3E AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
-$88:ED41 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED41 8D 03 42    STA $4203              ;|
 $88:ED44 EA          NOP                    ;|
 $88:ED45 EA          NOP                    ;|
 $88:ED46 EA          NOP                    ;|
 $88:ED47 C2 20       REP #$20               ;|
-$88:ED49 AD 16 42    LDA $4216  [$7E:4216]  ;} A += [wavy Samus amplitude high] * [$12 low]
+$88:ED49 AD 16 42    LDA $4216              ;} A += [wavy Samus amplitude high] * [$12 low]
 $88:ED4C 85 18       STA $18    [$7E:0018]  ;|
 $88:ED4E E2 20       SEP #$20               ;|
 $88:ED50 A5 13       LDA $13    [$7E:0013]  ;|
-$88:ED52 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED52 8D 02 42    STA $4202              ;|
 $88:ED55 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
-$88:ED58 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED58 8D 03 42    STA $4203              ;|
 $88:ED5B C2 20       REP #$20               ;|
 $88:ED5D A5 16       LDA $16    [$7E:0016]  ;|
 $88:ED5F 18          CLC                    ;|
 $88:ED60 65 18       ADC $18    [$7E:0018]  ;/
 $88:ED62 85 16       STA $16    [$7E:0016]  ;\
-$88:ED64 AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:ED64 AD 15 42    LDA $4215              ;|
 $88:ED67 29 00 FF    AND #$FF00             ;} A += [wavy Samus amplitude high] * [$12 high] * 100h (whoops, carry isn't being propagated)
 $88:ED6A 18          CLC                    ;|
 $88:ED6B 65 16       ADC $16    [$7E:0016]  ;/
@@ -9117,52 +9117,52 @@ $88:ED89 49 FF FF    EOR #$FFFF             ;\
 $88:ED8C 1A          INC A                  ;} $12 = -sin([$14] / 2 * pi / 80h) * 100h
 $88:ED8D 85 12       STA $12    [$7E:0012]  ;/
 $88:ED8F E2 20       SEP #$20               ;\
-$88:ED91 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED91 8D 02 42    STA $4202              ;|
 $88:ED94 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
-$88:ED97 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED97 8D 03 42    STA $4203              ;|
 $88:ED9A EA          NOP                    ;|
 $88:ED9B EA          NOP                    ;|
 $88:ED9C EA          NOP                    ;|
 $88:ED9D C2 20       REP #$20               ;|
-$88:ED9F AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:ED9F AD 16 42    LDA $4216              ;|
 $88:EDA2 EB          XBA                    ;|
 $88:EDA3 29 FF 00    AND #$00FF             ;|
 $88:EDA6 85 16       STA $16    [$7E:0016]  ;|
 $88:EDA8 E2 20       SEP #$20               ;|
 $88:EDAA A5 13       LDA $13    [$7E:0013]  ;|
-$88:EDAC 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDAC 8D 02 42    STA $4202              ;|
 $88:EDAF AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
-$88:EDB2 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDB2 8D 03 42    STA $4203              ;|
 $88:EDB5 EA          NOP                    ;|
 $88:EDB6 EA          NOP                    ;|
 $88:EDB7 EA          NOP                    ;|
 $88:EDB8 C2 20       REP #$20               ;|
-$88:EDBA AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:EDBA AD 16 42    LDA $4216              ;|
 $88:EDBD 18          CLC                    ;|
 $88:EDBE 65 16       ADC $16    [$7E:0016]  ;|
 $88:EDC0 85 16       STA $16    [$7E:0016]  ;|
 $88:EDC2 E2 20       SEP #$20               ;|
 $88:EDC4 A5 12       LDA $12    [$7E:0012]  ;} Same as above: $12 = [wavy Samus amplitude] * [$12] / 10000h (possibly off-by-1)
-$88:EDC6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDC6 8D 02 42    STA $4202              ;|
 $88:EDC9 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
-$88:EDCC 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDCC 8D 03 42    STA $4203              ;|
 $88:EDCF EA          NOP                    ;|
 $88:EDD0 EA          NOP                    ;|
 $88:EDD1 EA          NOP                    ;|
 $88:EDD2 C2 20       REP #$20               ;|
-$88:EDD4 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:EDD4 AD 16 42    LDA $4216              ;|
 $88:EDD7 85 18       STA $18    [$7E:0018]  ;|
 $88:EDD9 E2 20       SEP #$20               ;|
 $88:EDDB A5 13       LDA $13    [$7E:0013]  ;|
-$88:EDDD 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDDD 8D 02 42    STA $4202              ;|
 $88:EDE0 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
-$88:EDE3 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDE3 8D 03 42    STA $4203              ;|
 $88:EDE6 C2 20       REP #$20               ;|
 $88:EDE8 A5 16       LDA $16    [$7E:0016]  ;|
 $88:EDEA 18          CLC                    ;|
 $88:EDEB 65 18       ADC $18    [$7E:0018]  ;|
 $88:EDED 85 16       STA $16    [$7E:0016]  ;|
-$88:EDEF AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:EDEF AD 15 42    LDA $4215              ;|
 $88:EDF2 29 00 FF    AND #$FF00             ;|
 $88:EDF5 18          CLC                    ;|
 $88:EDF6 65 16       ADC $16    [$7E:0016]  ;|

@@ -2310,17 +2310,17 @@ $A7:B2DD 8D 32 0E    STA $0E32  [$7E:0E32]
 $A7:B2E0 F0 52       BEQ $52    [$B334]     ; If [$0E32] = 0: return
 $A7:B2E2 AD 7A 18    LDA $187A  [$7E:187A]  ;\
 $A7:B2E5 4A          LSR A                  ;|
-$A7:B2E6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A7:B2E6 8D 02 42    STA $4202              ;|
 $A7:B2E9 E2 20       SEP #$20               ;|
 $A7:B2EB AD 32 0E    LDA $0E32  [$7E:0E32]  ;|
-$A7:B2EE 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A7:B2EE 8D 03 42    STA $4203              ;|
 $A7:B2F1 EA          NOP                    ;} A = [projectile damage] * [$0E32] / 2
 $A7:B2F2 EA          NOP                    ;|
 $A7:B2F3 EA          NOP                    ;|
 $A7:B2F4 EA          NOP                    ;|
 $A7:B2F5 EA          NOP                    ;|
 $A7:B2F6 C2 20       REP #$20               ;|
-$A7:B2F8 AD 16 42    LDA $4216  [$7E:4216]  ;/
+$A7:B2F8 AD 16 42    LDA $4216              ;/
 $A7:B2FB F0 37       BEQ $37    [$B334]     ; If [A] = 0: return
 $A7:B2FD 8D 7A 18    STA $187A  [$7E:187A]  ; $187A = [A]
 $A7:B300 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
@@ -3998,17 +3998,17 @@ $A7:C217 8D 15 21    STA $2115  [$80:2115]  ;|
 $A7:C21A 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C21E             dx 01,01,18,A7A716,0200;|
 $A7:C226 A9 02       LDA #$02               ;|
-$A7:C228 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$A7:C228 8D 0B 42    STA $420B              ;/
 $A7:C22B A9 00       LDA #$00               ;\
-$A7:C22D 8D 16 21    STA $2116  [$7E:2116]  ;|
+$A7:C22D 8D 16 21    STA $2116              ;|
 $A7:C230 A9 40       LDA #$40               ;|
-$A7:C232 8D 17 21    STA $2117  [$7E:2117]  ;|
+$A7:C232 8D 17 21    STA $2117              ;|
 $A7:C235 A9 80       LDA #$80               ;|
-$A7:C237 8D 15 21    STA $2115  [$7E:2115]  ;} Transfer standard BG3 tiles to VRAM $4000..47FF
+$A7:C237 8D 15 21    STA $2115              ;} Transfer standard BG3 tiles to VRAM $4000..47FF
 $A7:C23A 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C23E             dx 01,01,18,9AB200,0800;|
 $A7:C246 A9 02       LDA #$02               ;|
-$A7:C248 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$A7:C248 8D 0B 42    STA $420B              ;/
 $A7:C24B 4C 78 C2    JMP $C278  [$A7:C278]  ; Go to transfer Kraid top half tilemap to VRAM
 }
 
@@ -4020,33 +4020,33 @@ $A7:C24E 08          PHP
 $A7:C24F E2 20       SEP #$20
 $A7:C251 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI
 $A7:C255 A9 00       LDA #$00               ;\
-$A7:C257 8D 16 21    STA $2116  [$7E:2116]  ;|
+$A7:C257 8D 16 21    STA $2116              ;|
 $A7:C25A A5 5D       LDA $5D    [$7E:005D]  ;|
 $A7:C25C 18          CLC                    ;|
 $A7:C25D 69 3E       ADC #$3E               ;|
-$A7:C25F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$A7:C25F 8D 17 21    STA $2117              ;|
 $A7:C262 A9 80       LDA #$80               ;} Transfer $7E:5000..53FF to VRAM BG2 tiles base + $3E00
-$A7:C264 8D 15 21    STA $2115  [$7E:2115]  ;|
+$A7:C264 8D 15 21    STA $2115              ;|
 $A7:C267 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C26B             dx 01,01,18,7E5000,0400;|
 $A7:C273 A9 02       LDA #$02               ;|
-$A7:C275 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$A7:C275 8D 0B 42    STA $420B              ;/
 }
 
 
 ;;; $C278: Transfer Kraid top half tilemap to VRAM ;;;
 {
 $A7:C278 A9 00       LDA #$00               ;\
-$A7:C27A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$A7:C27A 8D 16 21    STA $2116              ;|
 $A7:C27D A5 59       LDA $59    [$7E:0059]  ;|
 $A7:C27F 29 FC       AND #$FC               ;|
-$A7:C281 8D 17 21    STA $2117  [$7E:2117]  ;|
+$A7:C281 8D 17 21    STA $2117              ;|
 $A7:C284 A9 80       LDA #$80               ;} Transfer $7E:2000..27FF to VRAM BG2 tilemap base (Kraid top half)
-$A7:C286 8D 15 21    STA $2115  [$7E:2115]  ;|
+$A7:C286 8D 15 21    STA $2115              ;|
 $A7:C289 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C28D             dx 01,01,18,7E2000,0800;|
 $A7:C295 A9 02       LDA #$02               ;|
-$A7:C297 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$A7:C297 8D 0B 42    STA $420B              ;/
 $A7:C29A 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
 $A7:C29E 28          PLP
 $A7:C29F 6B          RTL
@@ -4065,17 +4065,17 @@ $A7:C2A0 08          PHP
 $A7:C2A1 E2 20       SEP #$20
 $A7:C2A3 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI
 $A7:C2A7 A9 00       LDA #$00               ;\
-$A7:C2A9 8D 16 21    STA $2116  [$7E:2116]  ;|
+$A7:C2A9 8D 16 21    STA $2116              ;|
 $A7:C2AC A5 5D       LDA $5D    [$7E:005D]  ;|
 $A7:C2AE 18          CLC                    ;|
 $A7:C2AF 69 3E       ADC #$3E               ;|
-$A7:C2B1 8D 17 21    STA $2117  [$7E:2117]  ;|
+$A7:C2B1 8D 17 21    STA $2117              ;|
 $A7:C2B4 A9 80       LDA #$80               ;} Transfer $7E:5000..53FF to VRAM BG2 tiles base
-$A7:C2B6 8D 15 21    STA $2115  [$7E:2115]  ;|
+$A7:C2B6 8D 15 21    STA $2115              ;|
 $A7:C2B9 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C2BD             dx 01,01,18,7E5000,0400;|
 $A7:C2C5 A9 02       LDA #$02               ;|
-$A7:C2C7 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$A7:C2C7 8D 0B 42    STA $420B              ;/
 $A7:C2CA C2 30       REP #$30
 $A7:C2CC 8B          PHB
 $A7:C2CD 4B          PHK                    ;\
@@ -7483,19 +7483,19 @@ $A7:DD0C 49 FF FF    EOR #$FFFF
 $A7:DD0F 1A          INC A
 
 $A7:DD10 E2 21       SEP #$21
-$A7:DD12 9C 04 42    STZ $4204  [$7E:4204]
-$A7:DD15 8D 05 42    STA $4205  [$7E:4205]
+$A7:DD12 9C 04 42    STZ $4204            
+$A7:DD15 8D 05 42    STA $4205            
 $A7:DD18 AD EE 0F    LDA $0FEE  [$7E:0FEE]
 $A7:DD1B E5 14       SBC $14    [$7E:0014]
 $A7:DD1D 1A          INC A
-$A7:DD1E 8D 06 42    STA $4206  [$7E:4206]
+$A7:DD1E 8D 06 42    STA $4206            
 $A7:DD21 C2 20       REP #$20
 $A7:DD23 EA          NOP
 $A7:DD24 EA          NOP
 $A7:DD25 EA          NOP
 $A7:DD26 EA          NOP
 $A7:DD27 EA          NOP
-$A7:DD28 AD 14 42    LDA $4214  [$7E:4214]
+$A7:DD28 AD 14 42    LDA $4214            
 $A7:DD2B 24 12       BIT $12    [$7E:0012]
 $A7:DD2D 10 04       BPL $04    [$DD33]
 $A7:DD2F 49 FF FF    EOR #$FFFF

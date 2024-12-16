@@ -6559,13 +6559,13 @@ $A9:C46E 29 FE 01    AND #$01FE
 $A9:C471 AA          TAX
 $A9:C472 BF 43 B4 A0 LDA $A0B443,x[$A0:B641]
 $A9:C476 E2 20       SEP #$20
-$A9:C478 8F 1B 21 00 STA $00211B[$7E:211B]
+$A9:C478 8F 1B 21 00 STA $00211B          
 $A9:C47C EB          XBA
-$A9:C47D 8F 1B 21 00 STA $00211B[$7E:211B]
+$A9:C47D 8F 1B 21 00 STA $00211B          
 $A9:C481 98          TYA
-$A9:C482 8F 1C 21 00 STA $00211C[$7E:211C]
+$A9:C482 8F 1C 21 00 STA $00211C          
 $A9:C486 C2 20       REP #$20
-$A9:C488 AF 35 21 00 LDA $002135[$7E:2135]
+$A9:C488 AF 35 21 00 LDA $002135          
 $A9:C48C FA          PLX
 $A9:C48D 6B          RTL
 }
@@ -12238,15 +12238,15 @@ $A9:EE86             dx 000B, 0010,0C,6172, 0008,0C,6173, 01F0,0C,2173, 01E8,0C,
 
 ;;; $EEBF: Unused. A = [Y] / [A] ;;;
 {
-$A9:EEBF 8C 04 42    STY $4204  [$7E:4204]
+$A9:EEBF 8C 04 42    STY $4204            
 $A9:EEC2 E2 20       SEP #$20
-$A9:EEC4 8D 06 42    STA $4206  [$7E:4206]
+$A9:EEC4 8D 06 42    STA $4206            
 $A9:EEC7 C2 20       REP #$20
 $A9:EEC9 EB          XBA
 $A9:EECA EB          XBA
 $A9:EECB EA          NOP
 $A9:EECC EA          NOP
-$A9:EECD AD 14 42    LDA $4214  [$7E:4214]
+$A9:EECD AD 14 42    LDA $4214            
 $A9:EED0 60          RTS
 }
 
@@ -13049,16 +13049,16 @@ $A9:F47C F0 36       BEQ $36    [$F4B4]     ;/
 $A9:F47E 10 35       BPL $35    [$F4B5]     ; If [enemy Y position] > [$14]: go to BRANCH_UP
 $A9:F480 49 FF FF    EOR #$FFFF             ;\
 $A9:F483 1A          INC A                  ;|
-$A9:F484 8D 04 42    STA $4204  [$7E:4204]  ;|
+$A9:F484 8D 04 42    STA $4204              ;|
 $A9:F487 E2 20       SEP #$20               ;|
 $A9:F489 A5 18       LDA $18    [$7E:0018]  ;|
-$A9:F48B 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A9:F48B 8D 06 42    STA $4206              ;|
 $A9:F48E C2 20       REP #$20               ;|
 $A9:F490 EB          XBA                    ;|
 $A9:F491 EB          XBA                    ;} $16 = max(1, ([$14] - [enemy Y position]) / [$18])
 $A9:F492 EA          NOP                    ;|
 $A9:F493 EA          NOP                    ;|
-$A9:F494 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A9:F494 AD 14 42    LDA $4214              ;|
 $A9:F497 D0 01       BNE $01    [$F49A]     ;|
 $A9:F499 1A          INC A                  ;|
                                             ;|
@@ -13080,16 +13080,16 @@ $A9:F4B1 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 $A9:F4B4 60          RTS                    ; Return
 
 ; BRANCH_UP
-$A9:F4B5 8D 04 42    STA $4204  [$7E:4204]  ;\
+$A9:F4B5 8D 04 42    STA $4204              ;\
 $A9:F4B8 E2 20       SEP #$20               ;|
 $A9:F4BA A5 18       LDA $18    [$7E:0018]  ;|
-$A9:F4BC 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A9:F4BC 8D 06 42    STA $4206              ;|
 $A9:F4BF C2 20       REP #$20               ;|
 $A9:F4C1 EB          XBA                    ;|
 $A9:F4C2 EB          XBA                    ;|
 $A9:F4C3 EA          NOP                    ;} $16 = max(1, ([enemy Y position] - [$14]) / [$18])
 $A9:F4C4 EA          NOP                    ;|
-$A9:F4C5 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A9:F4C5 AD 14 42    LDA $4214              ;|
 $A9:F4C8 D0 01       BNE $01    [$F4CB]     ;|
 $A9:F4CA 1A          INC A                  ;|
                                             ;|
@@ -13134,16 +13134,16 @@ $A9:F4EC F0 40       BEQ $40    [$F52E]     ;/
 $A9:F4EE 10 3F       BPL $3F    [$F52F]     ; If [$12] < [enemy X position]: go to BRANCH_LEFT
 $A9:F4F0 49 FF FF    EOR #$FFFF             ;\
 $A9:F4F3 1A          INC A                  ;|
-$A9:F4F4 8D 04 42    STA $4204  [$7E:4204]  ;|
+$A9:F4F4 8D 04 42    STA $4204              ;|
 $A9:F4F7 E2 20       SEP #$20               ;|
 $A9:F4F9 A5 18       LDA $18    [$7E:0018]  ;|
-$A9:F4FB 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A9:F4FB 8D 06 42    STA $4206              ;|
 $A9:F4FE C2 20       REP #$20               ;|
 $A9:F500 EB          XBA                    ;|
 $A9:F501 EB          XBA                    ;} $16 = max(1, ([$12] - [enemy X position]) / [$18])
 $A9:F502 EA          NOP                    ;|
 $A9:F503 EA          NOP                    ;|
-$A9:F504 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A9:F504 AD 14 42    LDA $4214              ;|
 $A9:F507 D0 01       BNE $01    [$F50A]     ;|
 $A9:F509 1A          INC A                  ;|
                                             ;|
@@ -13171,16 +13171,16 @@ $A9:F52B 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $A9:F52E 60          RTS                    ; Return
 
 ; BRANCH_LEFT
-$A9:F52F 8D 04 42    STA $4204  [$7E:4204]  ;\
+$A9:F52F 8D 04 42    STA $4204              ;\
 $A9:F532 E2 20       SEP #$20               ;|
 $A9:F534 A5 18       LDA $18    [$7E:0018]  ;|
-$A9:F536 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A9:F536 8D 06 42    STA $4206              ;|
 $A9:F539 C2 20       REP #$20               ;|
 $A9:F53B EB          XBA                    ;|
 $A9:F53C EB          XBA                    ;|
 $A9:F53D EA          NOP                    ;} $16 = max(1, ([enemy X position] - [$12]) / [$18])
 $A9:F53E EA          NOP                    ;|
-$A9:F53F AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A9:F53F AD 14 42    LDA $4214              ;|
 $A9:F542 D0 01       BNE $01    [$F545]     ;|
 $A9:F544 1A          INC A                  ;|
                                             ;|

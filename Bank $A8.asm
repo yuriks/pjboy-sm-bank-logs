@@ -3022,22 +3022,22 @@ $A8:A75E E6 14       INC $14    [$7E:0014]  ; $14 = 1
 $A8:A760 29 00 FF    AND #$FF00             ;\
 $A8:A763 EB          XBA                    ;|
 $A8:A764 E2 20       SEP #$20               ;} $4202 = [A] / 100h
-$A8:A766 8D 02 42    STA $4202  [$7E:4202]  ;/
+$A8:A766 8D 02 42    STA $4202              ;/
 $A8:A769 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
 $A8:A76C F0 24       BEQ $24    [$A792]     ;} If [$0E32] != 0:
-$A8:A76E 8D 03 42    STA $4203  [$7E:4203]  ;\
+$A8:A76E 8D 03 42    STA $4203              ;\
 $A8:A771 EA          NOP                    ;|
 $A8:A772 EA          NOP                    ;|
 $A8:A773 EA          NOP                    ;|
 $A8:A774 C2 20       REP #$20               ;|
-$A8:A776 AD 16 42    LDA $4216  [$7E:4216]  ;} $16 = [$4202] * [$0E32] / 100h * 2
+$A8:A776 AD 16 42    LDA $4216              ;} $16 = [$4202] * [$0E32] / 100h * 2
 $A8:A779 29 00 FF    AND #$FF00             ;|
 $A8:A77C EB          XBA                    ;|
 $A8:A77D 0A          ASL A                  ;|
 $A8:A77E 85 16       STA $16    [$7E:0016]  ;/
 $A8:A780 A5 14       LDA $14    [$7E:0014]  ;\
 $A8:A782 F0 0E       BEQ $0E    [$A792]     ;} If [$14] != 0:
-$A8:A784 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$A8:A784 AD 16 42    LDA $4216              ;\
 $A8:A787 49 FF FF    EOR #$FFFF             ;|
 $A8:A78A 1A          INC A                  ;|
 $A8:A78B EB          XBA                    ;} Negate $16
@@ -7933,7 +7933,7 @@ $A8:D97F BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
 $A8:D982 F0 09       BEQ $09    [$D98D]     ;} If [enemy speed] > 0:
 $A8:D984 30 07       BMI $07    [$D98D]     ;/
 $A8:D986 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
-$A8:D989 F0 02       BEQ $02    [$D98D]     ;} If [enemy acceleration] > 0: go to BRANCH_D9A0
+$A8:D989 F0 02       BEQ $02    [$D98D]     ;} If [enemy acceleration] > 0: go to BRANCH_DECELERATE
 $A8:D98B 10 13       BPL $13    [$D9A0]     ;/
 
 $A8:D98D A9 2B D9    LDA #$D92B             ;\
@@ -7944,7 +7944,7 @@ $A8:D999 9D AC 0F    STA $0FAC,x[$7E:102C]  ; Enemy acceleration delta = 0
 $A8:D99C 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy speed = 0
 $A8:D99F 60          RTS                    ; Return
 
-; BRANCH_D9A0
+; BRANCH_DECELERATE
 $A8:D9A0 20 DB D9    JSR $D9DB  [$A8:D9DB]  ; Bull X movement
 $A8:D9A3 20 28 DA    JSR $DA28  [$A8:DA28]  ; Bull Y movement
 $A8:D9A6 20 92 DA    JSR $DA92  [$A8:DA92]  ; Decelerate bull
@@ -8101,29 +8101,29 @@ $A8:DAB2 60          RTS
 $A8:DAB3 08          PHP
 $A8:DAB4 E2 20       SEP #$20               ;\
 $A8:DAB6 A5 16       LDA $16    [$7E:0016]  ;|
-$A8:DAB8 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A8:DAB8 8D 02 42    STA $4202              ;|
 $A8:DABB A5 18       LDA $18    [$7E:0018]  ;|
-$A8:DABD 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A8:DABD 8D 03 42    STA $4203              ;|
 $A8:DAC0 EA          NOP                    ;} $1C = ab
 $A8:DAC1 EA          NOP                    ;|
 $A8:DAC2 EA          NOP                    ;|
 $A8:DAC3 C2 20       REP #$20               ;|
-$A8:DAC5 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A8:DAC5 AD 16 42    LDA $4216              ;|
 $A8:DAC8 85 1C       STA $1C    [$7E:001C]  ;/
 $A8:DACA E2 20       SEP #$20               ;\
 $A8:DACC A5 16       LDA $16    [$7E:0016]  ;|
-$A8:DACE 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A8:DACE 8D 02 42    STA $4202              ;|
 $A8:DAD1 A5 19       LDA $19    [$7E:0019]  ;|
-$A8:DAD3 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A8:DAD3 8D 03 42    STA $4203              ;|
 $A8:DAD6 EA          NOP                    ;|
 $A8:DAD7 EA          NOP                    ;} $1E = ac / 100h
 $A8:DAD8 EA          NOP                    ;|
 $A8:DAD9 C2 20       REP #$20               ;|
-$A8:DADB AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A8:DADB AD 16 42    LDA $4216              ;|
 $A8:DADE 29 00 FF    AND #$FF00             ;|
 $A8:DAE1 EB          XBA                    ;|
 $A8:DAE2 85 1E       STA $1E    [$7E:001E]  ;/
-$A8:DAE4 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$A8:DAE4 AD 16 42    LDA $4216              ;\
 $A8:DAE7 29 FF 00    AND #$00FF             ;|
 $A8:DAEA EB          XBA                    ;|
 $A8:DAEB 18          CLC                    ;|

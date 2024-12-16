@@ -4,46 +4,46 @@
 $8B:8000 08          PHP
 $8B:8001 E2 30       SEP #$30
 $8B:8003 A9 80       LDA #$80               ;\
-$8B:8005 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:8005 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:8008 85 51       STA $51    [$7E:0051]  ;/
 $8B:800A A9 03       LDA #$03               ;\
-$8B:800C 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$8B:800C 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $8B:800F 85 52       STA $52    [$7E:0052]  ;/
 $8B:8011 A9 07       LDA #$07               ;\
-$8B:8013 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 7
+$8B:8013 8D 05 21    STA $2105              ;} BG mode = 7
 $8B:8016 85 55       STA $55    [$7E:0055]  ;/
 $8B:8018 A9 80       LDA #$80               ;\
-$8B:801A 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
+$8B:801A 8D 1A 21    STA $211A              ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
 $8B:801D 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:801F A9 00       LDA #$00               ;\
 $8B:8021 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
-$8B:8023 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:8023 8D 07 21    STA $2107              ;/
 $8B:8026 64 59       STZ $59    [$7E:0059]  ;\
-$8B:8028 9C 08 21    STZ $2108  [$7E:2108]  ;} BG2 tilemap base address = $0000, size = 32x32
+$8B:8028 9C 08 21    STZ $2108              ;} BG2 tilemap base address = $0000, size = 32x32
 $8B:802B 64 5A       STZ $5A    [$7E:005A]  ;\
-$8B:802D 9C 09 21    STZ $2109  [$7E:2109]  ;} BG3 tilemap base address = $0000, size = 32x32
+$8B:802D 9C 09 21    STZ $2109              ;} BG3 tilemap base address = $0000, size = 32x32
 $8B:8030 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:8032 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:8032 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:8035 64 5D       STZ $5D    [$7E:005D]  ;\
-$8B:8037 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$8B:8037 9C 0B 21    STZ $210B              ;|
 $8B:803A 64 5E       STZ $5E    [$7E:005E]  ;} BG tiles base address = $0000
-$8B:803C 9C 0C 21    STZ $210C  [$7E:210C]  ;/
+$8B:803C 9C 0C 21    STZ $210C              ;/
 $8B:803F A9 10       LDA #$10               ;\
-$8B:8041 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = sprites
+$8B:8041 8D 2C 21    STA $212C              ;} Main screen layers = sprites
 $8B:8044 85 69       STA $69    [$7E:0069]  ;/
-$8B:8046 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:8046 9C 2D 21    STZ $212D              ;\
 $8B:8049 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
-$8B:804B 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:804B 9C 2E 21    STZ $212E              ;\
 $8B:804E 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:8050 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:8053 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:8050 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:8053 9C 30 21    STZ $2130              ;\
 $8B:8056 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:8058 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$8B:8058 9C 31 21    STZ $2131              ;} Disable colour math
 $8B:805B 64 71       STZ $71    [$7E:0071]  ;/
 $8B:805D A9 E0       LDA #$E0               ;\
-$8B:805F 8D 32 21    STA $2132  [$7E:2132]  ;} Colour math subscreen backdrop colour = (0, 0, 0) (transparent)
+$8B:805F 8D 32 21    STA $2132              ;} Colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:8062 A9 00       LDA #$00               ;\
-$8B:8064 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$8B:8064 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $8B:8067 85 77       STA $77    [$7E:0077]  ;/
 $8B:8069 C2 30       REP #$30
 $8B:806B A9 00 00    LDA #$0000             ;\
@@ -92,49 +92,49 @@ $8B:80D9 60          RTS
 $8B:80DA 08          PHP
 $8B:80DB E2 30       SEP #$30
 $8B:80DD A9 80       LDA #$80               ;\
-$8B:80DF 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:80DF 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:80E2 85 51       STA $51    [$7E:0051]  ;/
 $8B:80E4 A9 03       LDA #$03               ;\
-$8B:80E6 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$8B:80E6 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $8B:80E9 85 52       STA $52    [$7E:0052]  ;/
 $8B:80EB A9 09       LDA #$09               ;\
-$8B:80ED 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$8B:80ED 8D 05 21    STA $2105              ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $8B:80F0 85 55       STA $55    [$7E:0055]  ;/
 $8B:80F2 A9 00       LDA #$00               ;\
-$8B:80F4 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
+$8B:80F4 8D 1A 21    STA $211A              ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:80F7 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:80F9 A9 50       LDA #$50               ;\
 $8B:80FB 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5000, size = 32x32
-$8B:80FD 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:80FD 8D 07 21    STA $2107              ;/
 $8B:8100 A9 48       LDA #$48               ;\
 $8B:8102 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 32x32
-$8B:8104 8D 08 21    STA $2108  [$7E:2108]  ;/
+$8B:8104 8D 08 21    STA $2108              ;/
 $8B:8107 A9 4C       LDA #$4C               ;\
 $8B:8109 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $4C00, size = 32x32
-$8B:810B 8D 09 21    STA $2109  [$7E:2109]  ;/
+$8B:810B 8D 09 21    STA $2109              ;/
 $8B:810E 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:8110 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:8110 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:8113 64 5D       STZ $5D    [$7E:005D]  ;\
-$8B:8115 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$8B:8115 9C 0B 21    STZ $210B              ;|
 $8B:8118 A9 04       LDA #$04               ;} BG1/2/4 tiles base address = $0000, BG3 tiles base address = $4000
 $8B:811A 85 5E       STA $5E    [$7E:005E]  ;|
-$8B:811C 8D 0C 21    STA $210C  [$7E:210C]  ;/
+$8B:811C 8D 0C 21    STA $210C              ;/
 $8B:811F A9 04       LDA #$04               ;\
-$8B:8121 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
+$8B:8121 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $8B:8124 85 69       STA $69    [$7E:0069]  ;/
-$8B:8126 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:8126 9C 2D 21    STZ $212D              ;\
 $8B:8129 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
-$8B:812B 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:812B 9C 2E 21    STZ $212E              ;\
 $8B:812E 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:8130 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:8133 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:8130 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:8133 9C 30 21    STZ $2130              ;\
 $8B:8136 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:8138 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable PPU colour math
+$8B:8138 9C 31 21    STZ $2131              ;} Disable PPU colour math
 $8B:813B 64 71       STZ $71    [$7E:0071]  ;/
 $8B:813D A9 E0       LDA #$E0               ;\
-$8B:813F 8D 32 21    STA $2132  [$7E:2132]  ;} PPU colour math subscreen backdrop colour = (0, 0, 0) (transparent)
+$8B:813F 8D 32 21    STA $2132              ;} PPU colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:8142 A9 00       LDA #$00               ;\
-$8B:8144 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$8B:8144 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $8B:8147 85 77       STA $77    [$7E:0077]  ;/
 $8B:8149 64 6F       STZ $6F    [$7E:006F]  ;\
 $8B:814B 64 72       STZ $72    [$7E:0072]  ;} Disable colour math
@@ -177,45 +177,45 @@ $8B:819A 60          RTS
 $8B:819B 08          PHP
 $8B:819C E2 30       SEP #$30
 $8B:819E A9 80       LDA #$80               ;\
-$8B:81A0 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:81A0 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:81A3 85 51       STA $51    [$7E:0051]  ;/
 $8B:81A5 A9 03       LDA #$03               ;\
-$8B:81A7 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$8B:81A7 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $8B:81AA 85 52       STA $52    [$7E:0052]  ;/
 $8B:81AC A9 07       LDA #$07               ;\
-$8B:81AE 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 7
+$8B:81AE 8D 05 21    STA $2105              ;} BG mode = 7
 $8B:81B1 85 55       STA $55    [$7E:0055]  ;/
 $8B:81B3 A9 80       LDA #$80               ;\
-$8B:81B5 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
+$8B:81B5 8D 1A 21    STA $211A              ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
 $8B:81B8 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:81BA A9 00       LDA #$00               ;\
 $8B:81BC 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
-$8B:81BE 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:81BE 8D 07 21    STA $2107              ;/
 $8B:81C1 64 59       STZ $59    [$7E:0059]  ;\
-$8B:81C3 9C 08 21    STZ $2108  [$7E:2108]  ;} BG2 tilemap base address = $0000, size = 32x32
+$8B:81C3 9C 08 21    STZ $2108              ;} BG2 tilemap base address = $0000, size = 32x32
 $8B:81C6 64 5A       STZ $5A    [$7E:005A]  ;\
-$8B:81C8 9C 09 21    STZ $2109  [$7E:2109]  ;} BG3 tilemap base address = $0000, size = 32x32
+$8B:81C8 9C 09 21    STZ $2109              ;} BG3 tilemap base address = $0000, size = 32x32
 $8B:81CB 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:81CD 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:81CD 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:81D0 64 5D       STZ $5D    [$7E:005D]  ;\
-$8B:81D2 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$8B:81D2 9C 0B 21    STZ $210B              ;|
 $8B:81D5 64 5E       STZ $5E    [$7E:005E]  ;} BG tiles base address = $0000
-$8B:81D7 9C 0C 21    STZ $210C  [$7E:210C]  ;/
+$8B:81D7 9C 0C 21    STZ $210C              ;/
 $8B:81DA A9 11       LDA #$11               ;\
-$8B:81DC 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1/sprites
+$8B:81DC 8D 2C 21    STA $212C              ;} Main screen layers = BG1/sprites
 $8B:81DF 85 69       STA $69    [$7E:0069]  ;/
 $8B:81E1 A9 00       LDA #$00               ;\
-$8B:81E3 8D 2D 21    STA $212D  [$7E:212D]  ;} Disable all subscreen layers
+$8B:81E3 8D 2D 21    STA $212D              ;} Disable all subscreen layers
 $8B:81E6 85 6B       STA $6B    [$7E:006B]  ;/
-$8B:81E8 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:81E8 9C 2E 21    STZ $212E              ;\
 $8B:81EB 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:81ED 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:81F0 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:81ED 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:81F0 9C 30 21    STZ $2130              ;\
 $8B:81F3 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:81F5 9C 31 21    STZ $2131  [$7E:2131]  ;|
+$8B:81F5 9C 31 21    STZ $2131              ;|
 $8B:81F8 64 71       STZ $71    [$7E:0071]  ;|
 $8B:81FA A9 E0       LDA #$E0               ;|
-$8B:81FC 8D 32 21    STA $2132  [$7E:2132]  ;|
+$8B:81FC 8D 32 21    STA $2132              ;|
 $8B:81FF 64 6F       STZ $6F    [$7E:006F]  ;|
 $8B:8201 64 72       STZ $72    [$7E:0072]  ;} Disable colour math, colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:8203 A9 20       LDA #$20               ;|
@@ -245,35 +245,35 @@ $8B:822F 60          RTS
 $8B:8230 08          PHP
 $8B:8231 E2 30       SEP #$30
 $8B:8233 A9 80       LDA #$80               ;\
-$8B:8235 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:8235 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:8238 85 51       STA $51    [$7E:0051]  ;/
 $8B:823A A9 03       LDA #$03               ;\
-$8B:823C 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$8B:823C 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $8B:823F 85 52       STA $52    [$7E:0052]  ;/
 $8B:8241 A9 01       LDA #$01               ;\
-$8B:8243 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:8243 8D 05 21    STA $2105              ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
 $8B:8246 85 55       STA $55    [$7E:0055]  ;/
 $8B:8248 A9 00       LDA #$00               ;\
-$8B:824A 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
+$8B:824A 8D 1A 21    STA $211A              ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:824D 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:824F A9 5C       LDA #$5C               ;\
 $8B:8251 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5C00, size = 32x32
-$8B:8253 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:8253 8D 07 21    STA $2107              ;/
 $8B:8256 64 59       STZ $59    [$7E:0059]  ;\
-$8B:8258 9C 08 21    STZ $2108  [$7E:2108]  ;} BG2 tilemap base address = $0000, size = 32x32
+$8B:8258 9C 08 21    STZ $2108              ;} BG2 tilemap base address = $0000, size = 32x32
 $8B:825B 64 5A       STZ $5A    [$7E:005A]  ;\
-$8B:825D 9C 09 21    STZ $2109  [$7E:2109]  ;} BG3 tilemap base address = $0000, size = 32x32
+$8B:825D 9C 09 21    STZ $2109              ;} BG3 tilemap base address = $0000, size = 32x32
 $8B:8260 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:8262 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:8262 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:8265 A9 06       LDA #$06               ;\
 $8B:8267 85 5D       STA $5D    [$7E:005D]  ;|
-$8B:8269 8D 0B 21    STA $210B  [$7E:210B]  ;} BG1 tiles base address = $6000, BG2/3/4 tiles base address = $0000
+$8B:8269 8D 0B 21    STA $210B              ;} BG1 tiles base address = $6000, BG2/3/4 tiles base address = $0000
 $8B:826C 64 5E       STZ $5E    [$7E:005E]  ;|
-$8B:826E 9C 0C 21    STZ $210C  [$7E:210C]  ;/
+$8B:826E 9C 0C 21    STZ $210C              ;/
 $8B:8271 A9 11       LDA #$11               ;\
-$8B:8273 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1/sprites
+$8B:8273 8D 2C 21    STA $212C              ;} Main screen layers = BG1/sprites
 $8B:8276 85 69       STA $69    [$7E:0069]  ;/
-$8B:8278 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:8278 9C 2D 21    STZ $212D              ;\
 $8B:827B 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
 $8B:827D 64 60       STZ $60    [$7E:0060]  ;\
 $8B:827F 64 61       STZ $61    [$7E:0061]  ;} Disable all window masks
@@ -295,48 +295,48 @@ $8B:8292 60          RTS
 $8B:8293 08          PHP
 $8B:8294 E2 30       SEP #$30
 $8B:8296 A9 80       LDA #$80               ;\
-$8B:8298 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:8298 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:829B 85 51       STA $51    [$7E:0051]  ;/
 $8B:829D A9 A3       LDA #$A3               ;\
-$8B:829F 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 32x32 / 64x64
+$8B:829F 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 32x32 / 64x64
 $8B:82A2 85 52       STA $52    [$7E:0052]  ;/
 $8B:82A4 A9 07       LDA #$07               ;\
-$8B:82A6 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 7
+$8B:82A6 8D 05 21    STA $2105              ;} BG mode = 7
 $8B:82A9 85 55       STA $55    [$7E:0055]  ;/
 $8B:82AB A9 00       LDA #$00               ;\
-$8B:82AD 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
+$8B:82AD 8D 1A 21    STA $211A              ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:82B0 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:82B2 A9 00       LDA #$00               ;\
 $8B:82B4 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
-$8B:82B6 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:82B6 8D 07 21    STA $2107              ;/
 $8B:82B9 64 59       STZ $59    [$7E:0059]  ;\
-$8B:82BB 9C 08 21    STZ $2108  [$7E:2108]  ;} BG2 tilemap base address = $0000, size = 32x32
+$8B:82BB 9C 08 21    STZ $2108              ;} BG2 tilemap base address = $0000, size = 32x32
 $8B:82BE 64 5A       STZ $5A    [$7E:005A]  ;\
-$8B:82C0 9C 09 21    STZ $2109  [$7E:2109]  ;} BG3 tilemap base address = $0000, size = 32x32
+$8B:82C0 9C 09 21    STZ $2109              ;} BG3 tilemap base address = $0000, size = 32x32
 $8B:82C3 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:82C5 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:82C5 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:82C8 64 5D       STZ $5D    [$7E:005D]  ;\
-$8B:82CA 9C 0B 21    STZ $210B  [$7E:210B]  ;|
+$8B:82CA 9C 0B 21    STZ $210B              ;|
 $8B:82CD 64 5E       STZ $5E    [$7E:005E]  ;} BG tiles base address = $0000
-$8B:82CF 9C 0C 21    STZ $210C  [$7E:210C]  ;/
+$8B:82CF 9C 0C 21    STZ $210C              ;/
 $8B:82D2 A9 11       LDA #$11               ;\
-$8B:82D4 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1/sprites
+$8B:82D4 8D 2C 21    STA $212C              ;} Main screen layers = BG1/sprites
 $8B:82D7 85 69       STA $69    [$7E:0069]  ;/
-$8B:82D9 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:82D9 9C 2D 21    STZ $212D              ;\
 $8B:82DC 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
-$8B:82DE 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:82DE 9C 2E 21    STZ $212E              ;\
 $8B:82E1 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:82E3 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:82E6 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:82E3 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:82E6 9C 30 21    STZ $2130              ;\
 $8B:82E9 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:82EB 9C 31 21    STZ $2131  [$7E:2131]  ;|
+$8B:82EB 9C 31 21    STZ $2131              ;|
 $8B:82EE 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
 $8B:82F0 64 6F       STZ $6F    [$7E:006F]  ;|
 $8B:82F2 64 72       STZ $72    [$7E:0072]  ;/
 $8B:82F4 A9 E0       LDA #$E0               ;\
-$8B:82F6 8D 32 21    STA $2132  [$7E:2132]  ;} PPU colour math subscreen backdrop colour = (0, 0, 0) (transparent)
+$8B:82F6 8D 32 21    STA $2132              ;} PPU colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:82F9 A9 00       LDA #$00               ;\
-$8B:82FB 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$8B:82FB 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $8B:82FE 85 77       STA $77    [$7E:0077]  ;/
 $8B:8300 A9 20       LDA #$20               ;\
 $8B:8302 85 74       STA $74    [$7E:0074]  ;|
@@ -371,45 +371,45 @@ $8B:8339 60          RTS
 $8B:833A 08          PHP
 $8B:833B E2 30       SEP #$30
 $8B:833D A9 80       LDA #$80               ;\
-$8B:833F 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:833F 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:8342 85 51       STA $51    [$7E:0051]  ;/
 $8B:8344 A9 02       LDA #$02               ;\
-$8B:8346 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $4000, sprite sizes = 8x8 / 16x16
+$8B:8346 8D 01 21    STA $2101              ;} Sprite tiles base address = $4000, sprite sizes = 8x8 / 16x16
 $8B:8349 85 52       STA $52    [$7E:0052]  ;/
 $8B:834B A9 01       LDA #$01               ;\
-$8B:834D 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:834D 8D 05 21    STA $2105              ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
 $8B:8350 85 55       STA $55    [$7E:0055]  ;/
-$8B:8352 9C 1A 21    STZ $211A  [$7E:211A]  ;\
+$8B:8352 9C 1A 21    STZ $211A              ;\
 $8B:8355 64 5F       STZ $5F    [$7E:005F]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:8357 A9 70       LDA #$70               ;\
 $8B:8359 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $7000, size = 32x32
-$8B:835B 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:835B 8D 07 21    STA $2107              ;/
 $8B:835E A9 78       LDA #$78               ;\
 $8B:8360 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $7800, size = 32x32
-$8B:8362 8D 08 21    STA $2108  [$7E:2108]  ;/
+$8B:8362 8D 08 21    STA $2108              ;/
 $8B:8365 64 5A       STZ $5A    [$7E:005A]  ;\
-$8B:8367 9C 09 21    STZ $2109  [$7E:2109]  ;} BG3 tilemap base address = $0000, size = 32x32
+$8B:8367 9C 09 21    STZ $2109              ;} BG3 tilemap base address = $0000, size = 32x32
 $8B:836A 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:836C 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:836C 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:836F A9 44       LDA #$44               ;\
 $8B:8371 85 5D       STA $5D    [$7E:005D]  ;|
-$8B:8373 8D 0B 21    STA $210B  [$7E:210B]  ;} BG1/2 tiles base address = $4000, BG3/4 tiles base address = $0000
+$8B:8373 8D 0B 21    STA $210B              ;} BG1/2 tiles base address = $4000, BG3/4 tiles base address = $0000
 $8B:8376 64 5E       STZ $5E    [$7E:005E]  ;|
-$8B:8378 9C 0C 21    STZ $210C  [$7E:210C]  ;/
+$8B:8378 9C 0C 21    STZ $210C              ;/
 $8B:837B A9 10       LDA #$10               ;\
-$8B:837D 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = sprites
+$8B:837D 8D 2C 21    STA $212C              ;} Main screen layers = sprites
 $8B:8380 85 69       STA $69    [$7E:0069]  ;/
-$8B:8382 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:8382 9C 2D 21    STZ $212D              ;\
 $8B:8385 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
-$8B:8387 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:8387 9C 2E 21    STZ $212E              ;\
 $8B:838A 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:838C 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:838F 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:838C 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:838F 9C 30 21    STZ $2130              ;\
 $8B:8392 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:8394 9C 31 21    STZ $2131  [$7E:2131]  ;|
+$8B:8394 9C 31 21    STZ $2131              ;|
 $8B:8397 64 71       STZ $71    [$7E:0071]  ;|
 $8B:8399 A9 E0       LDA #$E0               ;|
-$8B:839B 8D 32 21    STA $2132  [$7E:2132]  ;|
+$8B:839B 8D 32 21    STA $2132              ;|
 $8B:839E 64 6F       STZ $6F    [$7E:006F]  ;|
 $8B:83A0 64 72       STZ $72    [$7E:0072]  ;} Disable colour math, colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:83A2 A9 20       LDA #$20               ;|
@@ -441,38 +441,38 @@ $8B:83D2 60          RTS
 $8B:83D3 08          PHP
 $8B:83D4 E2 30       SEP #$30
 $8B:83D6 A9 80       LDA #$80               ;\
-$8B:83D8 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank, brightness = 0
+$8B:83D8 8D 00 21    STA $2100              ;} Enable forced blank, brightness = 0
 $8B:83DB 85 51       STA $51    [$7E:0051]  ;/
 $8B:83DD A9 00       LDA #$00               ;\
-$8B:83DF 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $0000, sprite sizes = 8x8 / 16x16
+$8B:83DF 8D 01 21    STA $2101              ;} Sprite tiles base address = $0000, sprite sizes = 8x8 / 16x16
 $8B:83E2 85 52       STA $52    [$7E:0052]  ;/
 $8B:83E4 A9 01       LDA #$01               ;\
-$8B:83E6 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:83E6 8D 05 21    STA $2105              ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
 $8B:83E9 85 55       STA $55    [$7E:0055]  ;/
 $8B:83EB A9 00       LDA #$00               ;\
-$8B:83ED 8D 1A 21    STA $211A  [$7E:211A]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
+$8B:83ED 8D 1A 21    STA $211A              ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:83F0 85 5F       STA $5F    [$7E:005F]  ;/
 $8B:83F2 A9 48       LDA #$48               ;\
 $8B:83F4 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $4800, size = 32x32
-$8B:83F6 8D 07 21    STA $2107  [$7E:2107]  ;/
+$8B:83F6 8D 07 21    STA $2107              ;/
 $8B:83F9 A9 4C       LDA #$4C               ;\
 $8B:83FB 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4C00, size = 32x32
-$8B:83FD 8D 08 21    STA $2108  [$7E:2108]  ;/
+$8B:83FD 8D 08 21    STA $2108              ;/
 $8B:8400 A9 24       LDA #$24               ;\
 $8B:8402 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $2400, size = 32x32
-$8B:8404 8D 09 21    STA $2109  [$7E:2109]  ;/
+$8B:8404 8D 09 21    STA $2109              ;/
 $8B:8407 64 5C       STZ $5C    [$7E:005C]  ;\
-$8B:8409 9C 0A 21    STZ $210A  [$7E:210A]  ;} BG4 tilemap base address = $0000, size = 32x32
+$8B:8409 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:840C A9 54       LDA #$54               ;\
 $8B:840E 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = $4000, BG2 tiles base address = $5000
-$8B:8410 8D 0B 21    STA $210B  [$7E:210B]  ;/
+$8B:8410 8D 0B 21    STA $210B              ;/
 $8B:8413 A9 02       LDA #$02               ;\
 $8B:8415 85 5E       STA $5E    [$7E:005E]  ;} BG3 tiles base address = $2000, BG4 tiles base address = $0000
-$8B:8417 8D 0C 21    STA $210C  [$7E:210C]  ;/
+$8B:8417 8D 0C 21    STA $210C              ;/
 $8B:841A A9 01       LDA #$01               ;\
-$8B:841C 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1
+$8B:841C 8D 2C 21    STA $212C              ;} Main screen layers = BG1
 $8B:841F 85 69       STA $69    [$7E:0069]  ;/
-$8B:8421 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:8421 9C 2D 21    STZ $212D              ;\
 $8B:8424 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
 $8B:8426 64 60       STZ $60    [$7E:0060]  ;\
 $8B:8428 64 61       STZ $61    [$7E:0061]  ;} Disable all window masks
@@ -490,18 +490,18 @@ $8B:843E 85 76       STA $76    [$7E:0076]  ;/
 $8B:8440 C2 30       REP #$30
 $8B:8442 9C 90 05    STZ $0590  [$7E:0590]  ; OAM data index = 0
 $8B:8445 A9 00 01    LDA #$0100             ;\
-$8B:8448 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:8448 8D 1B 21    STA $211B              ;|
 $8B:844B 85 78       STA $78    [$7E:0078]  ;|
-$8B:844D 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:844D 9C 1C 21    STZ $211C              ;|
 $8B:8450 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:8452 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:8452 9C 1D 21    STZ $211D              ;|
 $8B:8455 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:8457 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:8457 8D 1E 21    STA $211E              ;|
 $8B:845A 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:845C A9 80 00    LDA #$0080             ;\
-$8B:845F 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:845F 8D 1F 21    STA $211F              ;|
 $8B:8462 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
-$8B:8464 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:8464 8D 20 21    STA $2120              ;|
 $8B:8467 85 82       STA $82    [$7E:0082]  ;/
 $8B:8469 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
 $8B:846C A9 01 00    LDA #$0001             ;\
@@ -735,47 +735,47 @@ $8B:85ED 60          RTS
 $8B:85EE 08          PHP
 $8B:85EF E2 30       SEP #$30
 $8B:85F1 A5 26       LDA $26    [$7E:0026]  ;\
-$8B:85F3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:85F3 8D 02 42    STA $4202              ;|
 $8B:85F6 A5 28       LDA $28    [$7E:0028]  ;|
-$8B:85F8 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:85F8 8D 03 42    STA $4203              ;|
 $8B:85FB EA          NOP                    ;|
 $8B:85FC EA          NOP                    ;} $2C = ac
 $8B:85FD EA          NOP                    ;|
-$8B:85FE AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:85FE AD 16 42    LDA $4216              ;|
 $8B:8601 85 2C       STA $2C    [$7E:002C]  ;|
-$8B:8603 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$8B:8603 AD 17 42    LDA $4217              ;|
 $8B:8606 85 2D       STA $2D    [$7E:002D]  ;/
 $8B:8608 A5 27       LDA $27    [$7E:0027]  ;\
-$8B:860A 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:860A 8D 02 42    STA $4202              ;|
 $8B:860D A5 28       LDA $28    [$7E:0028]  ;|
-$8B:860F 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:860F 8D 03 42    STA $4203              ;|
 $8B:8612 EA          NOP                    ;|
 $8B:8613 EA          NOP                    ;} $2E = bc
 $8B:8614 EA          NOP                    ;|
-$8B:8615 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:8615 AD 16 42    LDA $4216              ;|
 $8B:8618 85 2E       STA $2E    [$7E:002E]  ;|
-$8B:861A AD 17 42    LDA $4217  [$7E:4217]  ;|
+$8B:861A AD 17 42    LDA $4217              ;|
 $8B:861D 85 2F       STA $2F    [$7E:002F]  ;/
 $8B:861F A5 26       LDA $26    [$7E:0026]  ;\
-$8B:8621 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:8621 8D 02 42    STA $4202              ;|
 $8B:8624 A5 29       LDA $29    [$7E:0029]  ;|
-$8B:8626 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:8626 8D 03 42    STA $4203              ;|
 $8B:8629 EA          NOP                    ;|
 $8B:862A EA          NOP                    ;} $30 = ad
 $8B:862B EA          NOP                    ;|
-$8B:862C AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:862C AD 16 42    LDA $4216              ;|
 $8B:862F 85 30       STA $30    [$7E:0030]  ;|
-$8B:8631 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$8B:8631 AD 17 42    LDA $4217              ;|
 $8B:8634 85 31       STA $31    [$7E:0031]  ;/
 $8B:8636 A5 27       LDA $27    [$7E:0027]  ;\
-$8B:8638 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:8638 8D 02 42    STA $4202              ;|
 $8B:863B A5 29       LDA $29    [$7E:0029]  ;|
-$8B:863D 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:863D 8D 03 42    STA $4203              ;|
 $8B:8640 EA          NOP                    ;|
 $8B:8641 EA          NOP                    ;} $2A = bd
 $8B:8642 EA          NOP                    ;|
 $8B:8643 C2 20       REP #$20               ;|
-$8B:8645 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:8645 AD 16 42    LDA $4216              ;|
 $8B:8648 85 2A       STA $2A    [$7E:002A]  ;/
 $8B:864A A5 2E       LDA $2E    [$7E:002E]  ;\
 $8B:864C 18          CLC                    ;|
@@ -1246,14 +1246,14 @@ $8B:8949 0A          ASL A
 $8B:894A 8D 14 00    STA $0014  [$7E:0014]
 $8B:894D E2 20       SEP #$20
 $8B:894F A9 40       LDA #$40
-$8B:8951 8D 02 42    STA $4202  [$7E:4202]
+$8B:8951 8D 02 42    STA $4202            
 $8B:8954 AD 13 00    LDA $0013  [$7E:0013]
-$8B:8957 8D 03 42    STA $4203  [$7E:4203]
+$8B:8957 8D 03 42    STA $4203            
 $8B:895A EA          NOP
 $8B:895B EA          NOP
 $8B:895C EA          NOP
 $8B:895D C2 20       REP #$20
-$8B:895F AD 16 42    LDA $4216  [$7E:4216]
+$8B:895F AD 16 42    LDA $4216            
 $8B:8962 18          CLC
 $8B:8963 6D 14 00    ADC $0014  [$7E:0014]
 $8B:8966 8D 16 00    STA $0016  [$7E:0016]
@@ -1373,14 +1373,14 @@ $8B:8A2F 29 FF 00    AND #$00FF
 $8B:8A32 8D 14 00    STA $0014  [$7E:0014]
 $8B:8A35 E2 20       SEP #$20
 $8B:8A37 A9 80       LDA #$80
-$8B:8A39 8D 02 42    STA $4202  [$7E:4202]
+$8B:8A39 8D 02 42    STA $4202            
 $8B:8A3C AD 13 00    LDA $0013  [$7E:0013]
-$8B:8A3F 8D 03 42    STA $4203  [$7E:4203]
+$8B:8A3F 8D 03 42    STA $4203            
 $8B:8A42 EA          NOP
 $8B:8A43 EA          NOP
 $8B:8A44 EA          NOP
 $8B:8A45 C2 20       REP #$20
-$8B:8A47 AD 16 42    LDA $4216  [$7E:4216]
+$8B:8A47 AD 16 42    LDA $4216            
 $8B:8A4A 18          CLC
 $8B:8A4B 6D 14 00    ADC $0014  [$7E:0014]
 $8B:8A4E 8D 16 00    STA $0016  [$7E:0016]
@@ -2092,27 +2092,27 @@ $8B:8EA2 60          RTS
 ; Only called by unused routine
 $8B:8EA3 E2 20       SEP #$20               ;\
 $8B:8EA5 BF 43 B4 A0 LDA $A0B443,x          ;|
-$8B:8EA9 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:8EA9 8D 02 42    STA $4202              ;|
 $8B:8EAC A5 18       LDA $18    [$7E:0018]  ;|
-$8B:8EAE 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:8EAE 8D 03 42    STA $4203              ;|
 $8B:8EB1 EA          NOP                    ;|
 $8B:8EB2 EA          NOP                    ;} $12 = [$18] * (sin([X] / 2 * pi / 80h) * 100h low byte) / 100h
 $8B:8EB3 EA          NOP                    ;|
 $8B:8EB4 C2 20       REP #$20               ;|
-$8B:8EB6 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:8EB6 AD 16 42    LDA $4216              ;|
 $8B:8EB9 EB          XBA                    ;|
 $8B:8EBA 29 FF 00    AND #$00FF             ;|
 $8B:8EBD 85 12       STA $12    [$7E:0012]  ;/
 $8B:8EBF E2 20       SEP #$20               ;\
 $8B:8EC1 BF 44 B4 A0 LDA $A0B444,x          ;|
-$8B:8EC5 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:8EC5 8D 02 42    STA $4202              ;|
 $8B:8EC8 A5 18       LDA $18    [$7E:0018]  ;|
-$8B:8ECA 8D 03 42    STA $4203  [$7E:4203]  ;|
+$8B:8ECA 8D 03 42    STA $4203              ;|
 $8B:8ECD EA          NOP                    ;|
 $8B:8ECE EA          NOP                    ;} $12 += [$18] * (sin([X] / 2 * pi / 80h) * 100h high byte)
 $8B:8ECF EA          NOP                    ;|
 $8B:8ED0 C2 20       REP #$20               ;|
-$8B:8ED2 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:8ED2 AD 16 42    LDA $4216              ;|
 $8B:8ED5 18          CLC                    ;|
 $8B:8ED6 65 12       ADC $12    [$7E:0012]  ;/
 $8B:8ED8 60          RTS
@@ -2447,7 +2447,7 @@ $8B:9148 4B          PHK                    ;\
 $8B:9149 AB          PLB                    ;} DB = $8B
 $8B:914A E2 30       SEP #$30
 $8B:914C A9 8F       LDA #$8F               ;\
-$8B:914E 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank and max screen brightness
+$8B:914E 8D 00 21    STA $2100              ;} Enable forced blank and max screen brightness
 $8B:9151 85 51       STA $51    [$7E:0051]  ;/
 $8B:9153 C2 30       REP #$30
 $8B:9155 9C 90 05    STZ $0590  [$7E:0590]  ; OAM stack pointer = 0
@@ -2458,109 +2458,109 @@ $8B:9163 9C 1F 07    STZ $071F  [$7E:071F]  ; Samus top half tiles definition = 
 $8B:9166 9C 21 07    STZ $0721  [$7E:0721]  ; Samus bottom half tiles definition = 0
 $8B:9169 E2 20       SEP #$20
 $8B:916B A9 01       LDA #$01               ;\
-$8B:916D 8D 00 42    STA $4200  [$7E:4200]  ;} Enable auto-joypad read
+$8B:916D 8D 00 42    STA $4200              ;} Enable auto-joypad read
 $8B:9170 85 84       STA $84    [$7E:0084]  ;/
-$8B:9172 9C 01 42    STZ $4201  [$7E:4201]  ; Joypad programmable IO port = 0
-$8B:9175 9C 02 42    STZ $4202  [$7E:4202]  ;\
-$8B:9178 9C 03 42    STZ $4203  [$7E:4203]  ;} Multiplication operands = 0
-$8B:917B 9C 04 42    STZ $4204  [$7E:4204]  ;\
-$8B:917E 9C 05 42    STZ $4205  [$7E:4205]  ;} Division operands = 0 (causes harmless division by zero)
-$8B:9181 9C 06 42    STZ $4206  [$7E:4206]  ;/
-$8B:9184 9C 07 42    STZ $4207  [$7E:4207]  ;\
-$8B:9187 9C 08 42    STZ $4208  [$7E:4208]  ;} IRQ h-counter target = 0
-$8B:918A 9C 09 42    STZ $4209  [$7E:4209]  ;\
-$8B:918D 9C 0A 42    STZ $420A  [$7E:420A]  ;} IRQ v-counter target = 0
-$8B:9190 9C 0B 42    STZ $420B  [$7E:420B]  ; Disable all DMA channels
-$8B:9193 9C 0C 42    STZ $420C  [$7E:420C]  ;\
+$8B:9172 9C 01 42    STZ $4201              ; Joypad programmable IO port = 0
+$8B:9175 9C 02 42    STZ $4202              ;\
+$8B:9178 9C 03 42    STZ $4203              ;} Multiplication operands = 0
+$8B:917B 9C 04 42    STZ $4204              ;\
+$8B:917E 9C 05 42    STZ $4205              ;} Division operands = 0 (causes harmless division by zero)
+$8B:9181 9C 06 42    STZ $4206              ;/
+$8B:9184 9C 07 42    STZ $4207              ;\
+$8B:9187 9C 08 42    STZ $4208              ;} IRQ h-counter target = 0
+$8B:918A 9C 09 42    STZ $4209              ;\
+$8B:918D 9C 0A 42    STZ $420A              ;} IRQ v-counter target = 0
+$8B:9190 9C 0B 42    STZ $420B              ; Disable all DMA channels
+$8B:9193 9C 0C 42    STZ $420C              ;\
 $8B:9196 64 85       STZ $85    [$7E:0085]  ;} Disable all HDMA channels
 $8B:9198 A9 01       LDA #$01               ;\
-$8B:919A 8D 0D 42    STA $420D  [$7E:420D]  ;} Enable FastROM
+$8B:919A 8D 0D 42    STA $420D              ;} Enable FastROM
 $8B:919D 85 86       STA $86    [$7E:0086]  ;/
 $8B:919F A9 03       LDA #$03               ;\
-$8B:91A1 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$8B:91A1 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $8B:91A4 85 52       STA $52    [$7E:0052]  ;/
-$8B:91A6 9C 02 21    STZ $2102  [$7E:2102]  ;\
+$8B:91A6 9C 02 21    STZ $2102              ;\
 $8B:91A9 64 53       STZ $53    [$7E:0053]  ;|
 $8B:91AB A9 80       LDA #$80               ;} OAM address = $0000, priority sprite index = 0
-$8B:91AD 8D 03 21    STA $2103  [$7E:2103]  ;|
+$8B:91AD 8D 03 21    STA $2103              ;|
 $8B:91B0 85 54       STA $54    [$7E:0054]  ;/
-$8B:91B2 9C 04 21    STZ $2104  [$7E:2104]  ;\
-$8B:91B5 9C 04 21    STZ $2104  [$7E:2104]  ;} OAM $0000 = 0
+$8B:91B2 9C 04 21    STZ $2104              ;\
+$8B:91B5 9C 04 21    STZ $2104              ;} OAM $0000 = 0
 $8B:91B8 A9 01       LDA #$01               ;\
-$8B:91BA 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:91BA 8D 05 21    STA $2105              ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
 $8B:91BD 85 55       STA $55    [$7E:0055]  ;/
-$8B:91BF 9C 06 21    STZ $2106  [$7E:2106]  ;\
+$8B:91BF 9C 06 21    STZ $2106              ;\
 $8B:91C2 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
-$8B:91C4 9C 07 21    STZ $2107  [$7E:2107]  ;\
+$8B:91C4 9C 07 21    STZ $2107              ;\
 $8B:91C7 64 58       STZ $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
-$8B:91C9 9C 08 21    STZ $2108  [$7E:2108]  ;\
+$8B:91C9 9C 08 21    STZ $2108              ;\
 $8B:91CC 64 59       STZ $59    [$7E:0059]  ;} BG2 tilemap base address = $0000, size = 32x32
-$8B:91CE 9C 09 21    STZ $2109  [$7E:2109]  ;\
+$8B:91CE 9C 09 21    STZ $2109              ;\
 $8B:91D1 64 5A       STZ $5A    [$7E:005A]  ;} BG3 tilemap base address = $0000, size = 32x32
-$8B:91D3 9C 0A 21    STZ $210A  [$7E:210A]  ;\
+$8B:91D3 9C 0A 21    STZ $210A              ;\
 $8B:91D6 64 5C       STZ $5C    [$7E:005C]  ;} BG4 tilemap base address = $0000, size = 32x32
-$8B:91D8 9C 0B 21    STZ $210B  [$7E:210B]  ;\
+$8B:91D8 9C 0B 21    STZ $210B              ;\
 $8B:91DB 64 5D       STZ $5D    [$7E:005D]  ;|
-$8B:91DD 9C 0C 21    STZ $210C  [$7E:210C]  ;} BG tiles base address = $0000
+$8B:91DD 9C 0C 21    STZ $210C              ;} BG tiles base address = $0000
 $8B:91E0 64 5E       STZ $5E    [$7E:005E]  ;/
-$8B:91E2 9C 0D 21    STZ $210D  [$7E:210D]  ;\
-$8B:91E5 9C 0D 21    STZ $210D  [$7E:210D]  ;} BG1 X scroll = 0
-$8B:91E8 9C 0E 21    STZ $210E  [$7E:210E]  ;\
-$8B:91EB 9C 0E 21    STZ $210E  [$7E:210E]  ;} BG1 Y scroll = 0
-$8B:91EE 9C 0F 21    STZ $210F  [$7E:210F]  ;\
-$8B:91F1 9C 0F 21    STZ $210F  [$7E:210F]  ;} BG2 X scroll = 0
-$8B:91F4 9C 10 21    STZ $2110  [$7E:2110]  ;\
-$8B:91F7 9C 10 21    STZ $2110  [$7E:2110]  ;} BG2 Y scroll = 0
-$8B:91FA 9C 11 21    STZ $2111  [$7E:2111]  ;\
-$8B:91FD 9C 11 21    STZ $2111  [$7E:2111]  ;} BG3 X scroll = 0
-$8B:9200 9C 12 21    STZ $2112  [$7E:2112]  ;\
-$8B:9203 9C 12 21    STZ $2112  [$7E:2112]  ;} BG3 Y scroll = 0
-$8B:9206 9C 13 21    STZ $2113  [$7E:2113]  ;\
-$8B:9209 9C 13 21    STZ $2113  [$7E:2113]  ;} BG4 X scroll = 0
-$8B:920C 9C 14 21    STZ $2114  [$7E:2114]  ;\
-$8B:920F 9C 14 21    STZ $2114  [$7E:2114]  ;} BG4 Y scroll = 0
-$8B:9212 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit access
-$8B:9215 9C 1A 21    STZ $211A  [$7E:211A]  ;\
+$8B:91E2 9C 0D 21    STZ $210D              ;\
+$8B:91E5 9C 0D 21    STZ $210D              ;} BG1 X scroll = 0
+$8B:91E8 9C 0E 21    STZ $210E              ;\
+$8B:91EB 9C 0E 21    STZ $210E              ;} BG1 Y scroll = 0
+$8B:91EE 9C 0F 21    STZ $210F              ;\
+$8B:91F1 9C 0F 21    STZ $210F              ;} BG2 X scroll = 0
+$8B:91F4 9C 10 21    STZ $2110              ;\
+$8B:91F7 9C 10 21    STZ $2110              ;} BG2 Y scroll = 0
+$8B:91FA 9C 11 21    STZ $2111              ;\
+$8B:91FD 9C 11 21    STZ $2111              ;} BG3 X scroll = 0
+$8B:9200 9C 12 21    STZ $2112              ;\
+$8B:9203 9C 12 21    STZ $2112              ;} BG3 Y scroll = 0
+$8B:9206 9C 13 21    STZ $2113              ;\
+$8B:9209 9C 13 21    STZ $2113              ;} BG4 X scroll = 0
+$8B:920C 9C 14 21    STZ $2114              ;\
+$8B:920F 9C 14 21    STZ $2114              ;} BG4 Y scroll = 0
+$8B:9212 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
+$8B:9215 9C 1A 21    STZ $211A              ;\
 $8B:9218 64 5F       STZ $5F    [$7E:005F]  ;} Mode 7 settings = 0
-$8B:921A 9C 1B 21    STZ $211B  [$7E:211B]  ;\
-$8B:921D 9C 1C 21    STZ $211C  [$7E:211C]  ;|
-$8B:9220 9C 1D 21    STZ $211D  [$7E:211D]  ;} Mode 7 transformation matrix = 0
-$8B:9223 9C 1E 21    STZ $211E  [$7E:211E]  ;/
-$8B:9226 9C 1F 21    STZ $211F  [$7E:211F]  ;\
-$8B:9229 9C 20 21    STZ $2120  [$7E:2120]  ;} Mode 7 transformation origin = (0, 0)
-$8B:922C 9C 23 21    STZ $2123  [$7E:2123]  ;\
+$8B:921A 9C 1B 21    STZ $211B              ;\
+$8B:921D 9C 1C 21    STZ $211C              ;|
+$8B:9220 9C 1D 21    STZ $211D              ;} Mode 7 transformation matrix = 0
+$8B:9223 9C 1E 21    STZ $211E              ;/
+$8B:9226 9C 1F 21    STZ $211F              ;\
+$8B:9229 9C 20 21    STZ $2120              ;} Mode 7 transformation origin = (0, 0)
+$8B:922C 9C 23 21    STZ $2123              ;\
 $8B:922F 64 60       STZ $60    [$7E:0060]  ;|
-$8B:9231 9C 24 21    STZ $2124  [$7E:2124]  ;|
+$8B:9231 9C 24 21    STZ $2124              ;|
 $8B:9234 64 61       STZ $61    [$7E:0061]  ;} Disable all window masks
-$8B:9236 9C 25 21    STZ $2125  [$7E:2125]  ;|
+$8B:9236 9C 25 21    STZ $2125              ;|
 $8B:9239 64 62       STZ $62    [$7E:0062]  ;/
-$8B:923B 9C 26 21    STZ $2126  [$7E:2126]  ;\
+$8B:923B 9C 26 21    STZ $2126              ;\
 $8B:923E 64 63       STZ $63    [$7E:0063]  ;} Window 1 left position = 0
-$8B:9240 9C 27 21    STZ $2127  [$7E:2127]  ;\
+$8B:9240 9C 27 21    STZ $2127              ;\
 $8B:9243 64 64       STZ $64    [$7E:0064]  ;} Window 1 right position = 0
-$8B:9245 9C 28 21    STZ $2128  [$7E:2128]  ;\
+$8B:9245 9C 28 21    STZ $2128              ;\
 $8B:9248 64 65       STZ $65    [$7E:0065]  ;} Window 2 left position = 0
-$8B:924A 9C 29 21    STZ $2129  [$7E:2129]  ;\
+$8B:924A 9C 29 21    STZ $2129              ;\
 $8B:924D 64 66       STZ $66    [$7E:0066]  ;} Window 2 right position = 0
-$8B:924F 9C 2A 21    STZ $212A  [$7E:212A]  ;\
+$8B:924F 9C 2A 21    STZ $212A              ;\
 $8B:9252 64 67       STZ $67    [$7E:0067]  ;|
-$8B:9254 9C 2B 21    STZ $212B  [$7E:212B]  ;} Window 1/2 mask logic = OR
+$8B:9254 9C 2B 21    STZ $212B              ;} Window 1/2 mask logic = OR
 $8B:9257 64 68       STZ $68    [$7E:0068]  ;/
 $8B:9259 A9 10       LDA #$10               ;\
-$8B:925B 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = sprites
+$8B:925B 8D 2C 21    STA $212C              ;} Main screen layers = sprites
 $8B:925E 85 69       STA $69    [$7E:0069]  ;/
-$8B:9260 9C 2E 21    STZ $212E  [$7E:212E]  ;\
+$8B:9260 9C 2E 21    STZ $212E              ;\
 $8B:9263 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
-$8B:9265 9C 2D 21    STZ $212D  [$7E:212D]  ;\
+$8B:9265 9C 2D 21    STZ $212D              ;\
 $8B:9268 64 6B       STZ $6B    [$7E:006B]  ;} Disable all subscreen layers
-$8B:926A 9C 2F 21    STZ $212F  [$7E:212F]  ;\
+$8B:926A 9C 2F 21    STZ $212F              ;\
 $8B:926D 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area subscreen
-$8B:926F 9C 30 21    STZ $2130  [$7E:2130]  ;\
+$8B:926F 9C 30 21    STZ $2130              ;\
 $8B:9272 64 6E       STZ $6E    [$7E:006E]  ;|
-$8B:9274 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$8B:9274 9C 31 21    STZ $2131              ;} Disable colour math
 $8B:9277 64 71       STZ $71    [$7E:0071]  ;/
 $8B:9279 A9 E0       LDA #$E0               ;\
-$8B:927B 8D 32 21    STA $2132  [$7E:2132]  ;|
+$8B:927B 8D 32 21    STA $2132              ;|
 $8B:927E A9 20       LDA #$20               ;|
 $8B:9280 85 74       STA $74    [$7E:0074]  ;|
 $8B:9282 A9 40       LDA #$40               ;} Colour math subscreen backdrop colour = (0, 0, 0) (transparent)
@@ -2568,7 +2568,7 @@ $8B:9284 85 75       STA $75    [$7E:0075]  ;|
 $8B:9286 A9 80       LDA #$80               ;|
 $8B:9288 85 76       STA $76    [$7E:0076]  ;/
 $8B:928A A9 00       LDA #$00               ;\
-$8B:928C 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$8B:928C 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $8B:928F 85 77       STA $77    [$7E:0077]  ;/
 $8B:9291 C2 20       REP #$20
 $8B:9293 A9 00 95    LDA #$9500             ;\
@@ -2579,15 +2579,15 @@ $8B:929D 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:92A1             dl 7F5000              ;/
 $8B:92A4 E2 30       SEP #$30
 $8B:92A6 A9 00       LDA #$00               ;\
-$8B:92A8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:92A8 8D 16 21    STA $2116              ;|
 $8B:92AB A9 60       LDA #$60               ;|
-$8B:92AD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:92AD 8D 17 21    STA $2117              ;|
 $8B:92B0 A9 80       LDA #$80               ;|
-$8B:92B2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (title sprite tiles)
+$8B:92B2 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (title sprite tiles)
 $8B:92B5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:92B9             dx 01,01,18,7F5000,4000;|
 $8B:92C1 A9 02       LDA #$02               ;|
-$8B:92C3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:92C3 8D 0B 42    STA $420B              ;/
 $8B:92C6 A9 80       LDA #$80               ;\
 $8B:92C8 85 51       STA $51    [$7E:0051]  ;} Enable forced blank and zero brightness
 $8B:92CA C2 30       REP #$30
@@ -2649,7 +2649,7 @@ $8B:9355 22 6E 89 80 JSL $80896E[$80:896E]  ; Finalise OAM
 $8B:9359 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $8B:935D E2 30       SEP #$30
 $8B:935F A9 8F       LDA #$8F               ;\
-$8B:9361 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank and max screen brightness
+$8B:9361 8D 00 21    STA $2100              ;} Enable forced blank and max screen brightness
 $8B:9364 85 51       STA $51    [$7E:0051]  ;/
 $8B:9366 C2 30       REP #$30
 $8B:9368 AB          PLB
@@ -3659,14 +3659,14 @@ $8B:9860 0A          ASL A                  ;|
 $8B:9861 8D 14 00    STA $0014  [$7E:0014]  ;|
 $8B:9864 E2 20       SEP #$20               ;|
 $8B:9866 A9 40       LDA #$40               ;|
-$8B:9868 8D 02 42    STA $4202  [$7E:4202]  ;|
+$8B:9868 8D 02 42    STA $4202              ;|
 $8B:986B BD 27 1A    LDA $1A27,x[$7E:1A35]  ;|
-$8B:986E 8D 03 42    STA $4203  [$7E:4203]  ;} $16 = ([text glow object Y position] * 20h + [text glow object X position]) * 2
+$8B:986E 8D 03 42    STA $4203              ;} $16 = ([text glow object Y position] * 20h + [text glow object X position]) * 2
 $8B:9871 EA          NOP                    ;|
 $8B:9872 EA          NOP                    ;|
 $8B:9873 EA          NOP                    ;|
 $8B:9874 C2 20       REP #$20               ;|
-$8B:9876 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:9876 AD 16 42    LDA $4216              ;|
 $8B:9879 18          CLC                    ;|
 $8B:987A 6D 14 00    ADC $0014  [$7E:0014]  ;|
 $8B:987D 8D 16 00    STA $0016  [$7E:0016]  ;/
@@ -3872,14 +3872,14 @@ $8B:99C9 64 00       STZ $00    [$7E:0000]
 $8B:99CB 5A          PHY
 $8B:99CC E2 20       SEP #$20
 $8B:99CE A9 40       LDA #$40
-$8B:99D0 8D 02 42    STA $4202  [$7E:4202]
+$8B:99D0 8D 02 42    STA $4202            
 $8B:99D3 AD 01 1A    LDA $1A01  [$7E:1A01]
-$8B:99D6 8D 03 42    STA $4203  [$7E:4203]
+$8B:99D6 8D 03 42    STA $4203            
 $8B:99D9 EA          NOP
 $8B:99DA EA          NOP
 $8B:99DB EA          NOP
 $8B:99DC C2 20       REP #$20
-$8B:99DE AD 16 42    LDA $4216  [$7E:4216]
+$8B:99DE AD 16 42    LDA $4216            
 $8B:99E1 AA          TAX
 $8B:99E2 A9 1F 00    LDA #$001F
 $8B:99E5 8D 14 00    STA $0014  [$7E:0014]
@@ -4186,60 +4186,60 @@ $8B:9BE3 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:9BE7             dl 7F9000              ;/
 $8B:9BEA E2 30       SEP #$30
 $8B:9BEC A9 00       LDA #$00               ;\
-$8B:9BEE 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9BEE 8D 16 21    STA $2116              ;|
 $8B:9BF1 A9 00       LDA #$00               ;|
-$8B:9BF3 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9BF3 8D 17 21    STA $2117              ;|
 $8B:9BF6 A9 80       LDA #$80               ;|
-$8B:9BF8 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (title BG tiles)
+$8B:9BF8 8D 15 21    STA $2115              ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (title BG tiles)
 $8B:9BFB 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:9BFF             dx 01,00,19,7F0000,4000;|
 $8B:9C07 A9 02       LDA #$02               ;|
-$8B:9C09 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:9C09 8D 0B 42    STA $420B              ;/
 $8B:9C0C C2 10       REP #$10
-$8B:9C0E 9C 15 21    STZ $2115  [$7E:2115]  ;\
-$8B:9C11 9C 16 21    STZ $2116  [$7E:2116]  ;|
-$8B:9C14 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$8B:9C0E 9C 15 21    STZ $2115              ;\
+$8B:9C11 9C 16 21    STZ $2116              ;|
+$8B:9C14 9C 17 21    STZ $2117              ;|
 $8B:9C17 A2 00 40    LDX #$4000             ;|
 $8B:9C1A A9 FF       LDA #$FF               ;} VRAM $0000..3FFF low bytes = FFh
                                             ;|
-$8B:9C1C 8D 18 21    STA $2118  [$7E:2118]  ;|
+$8B:9C1C 8D 18 21    STA $2118              ;|
 $8B:9C1F CA          DEX                    ;|
 $8B:9C20 D0 FA       BNE $FA    [$9C1C]     ;/
 $8B:9C22 E2 10       SEP #$10
 $8B:9C24 A9 00       LDA #$00               ;\
-$8B:9C26 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9C26 8D 16 21    STA $2116              ;|
 $8B:9C29 A9 00       LDA #$00               ;|
-$8B:9C2B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9C2B 8D 17 21    STA $2117              ;|
 $8B:9C2E A9 00       LDA #$00               ;|
-$8B:9C30 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..0FFF low bytes = [$7F:4000..4FFF] (title tilemap)
+$8B:9C30 8D 15 21    STA $2115              ;} VRAM $0000..0FFF low bytes = [$7F:4000..4FFF] (title tilemap)
 $8B:9C33 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:9C37             dx 01,00,18,7F4000,1000;|
 $8B:9C3F A9 02       LDA #$02               ;|
-$8B:9C41 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:9C41 8D 0B 42    STA $420B              ;/
 $8B:9C44 A9 00       LDA #$00               ;\
-$8B:9C46 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9C46 8D 16 21    STA $2116              ;|
 $8B:9C49 A9 60       LDA #$60               ;|
-$8B:9C4B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9C4B 8D 17 21    STA $2117              ;|
 $8B:9C4E A9 80       LDA #$80               ;|
-$8B:9C50 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (title sprite tiles)
+$8B:9C50 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (title sprite tiles)
 $8B:9C53 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:9C57             dx 01,01,18,7F5000,4000;|
 $8B:9C5F A9 02       LDA #$02               ;|
-$8B:9C61 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:9C61 8D 0B 42    STA $420B              ;/
 $8B:9C64 C2 30       REP #$30
 $8B:9C66 A9 00 01    LDA #$0100             ;\
-$8B:9C69 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:9C69 8D 1B 21    STA $211B              ;|
 $8B:9C6C 85 78       STA $78    [$7E:0078]  ;|
-$8B:9C6E 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:9C6E 9C 1C 21    STZ $211C              ;|
 $8B:9C71 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:9C73 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:9C73 9C 1D 21    STZ $211D              ;|
 $8B:9C76 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:9C78 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:9C78 8D 1E 21    STA $211E              ;|
 $8B:9C7B 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:9C7D A9 80 00    LDA #$0080             ;\
-$8B:9C80 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:9C80 8D 1F 21    STA $211F              ;|
 $8B:9C83 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
-$8B:9C85 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:9C85 8D 20 21    STA $2120              ;|
 $8B:9C88 85 82       STA $82    [$7E:0082]  ;/
 $8B:9C8A 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:9C8E A9 01 00    LDA #$0001             ;\
@@ -5266,75 +5266,75 @@ $8B:A44D 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:A451             dl 7FE000              ;/
 $8B:A454 E2 30       SEP #$30
 $8B:A456 A9 00       LDA #$00               ;\
-$8B:A458 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A458 8D 16 21    STA $2116              ;|
 $8B:A45B A9 00       LDA #$00               ;|
-$8B:A45D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A45D 8D 17 21    STA $2117              ;|
 $8B:A460 A9 80       LDA #$80               ;|
-$8B:A462 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF = [$7F:0000..7FFF] (BG1/2 tiles)
+$8B:A462 8D 15 21    STA $2115              ;} VRAM $0000..3FFF = [$7F:0000..7FFF] (BG1/2 tiles)
 $8B:A465 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A469             dx 01,01,18,7F0000,8000;|
 $8B:A471 A9 02       LDA #$02               ;|
-$8B:A473 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A473 8D 0B 42    STA $420B              ;/
 $8B:A476 A9 00       LDA #$00               ;\
-$8B:A478 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A478 8D 16 21    STA $2116              ;|
 $8B:A47B A9 40       LDA #$40               ;|
-$8B:A47D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A47D 8D 17 21    STA $2117              ;|
 $8B:A480 A9 80       LDA #$80               ;|
-$8B:A482 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..447F = [$7F:8000..88FF] (font 1 tiles)
+$8B:A482 8D 15 21    STA $2115              ;} VRAM $4000..447F = [$7F:8000..88FF] (font 1 tiles)
 $8B:A485 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A489             dx 01,01,18,7F8000,0900;|
 $8B:A491 A9 02       LDA #$02               ;|
-$8B:A493 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A493 8D 0B 42    STA $420B              ;/
 $8B:A496 A9 00       LDA #$00               ;\
-$8B:A498 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A498 8D 16 21    STA $2116              ;|
 $8B:A49B A9 48       LDA #$48               ;|
-$8B:A49D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A49D 8D 17 21    STA $2117              ;|
 $8B:A4A0 A9 80       LDA #$80               ;|
-$8B:A4A2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4800..4BFF = [$7F:9000..97FF] (BG2 tilemap - Samus head)
+$8B:A4A2 8D 15 21    STA $2115              ;} VRAM $4800..4BFF = [$7F:9000..97FF] (BG2 tilemap - Samus head)
 $8B:A4A5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A4A9             dx 01,01,18,7F9000,0800;|
 $8B:A4B1 A9 02       LDA #$02               ;|
-$8B:A4B3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A4B3 8D 0B 42    STA $420B              ;/
 $8B:A4B6 A9 00       LDA #$00               ;\
-$8B:A4B8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A4B8 8D 16 21    STA $2116              ;|
 $8B:A4BB A9 4C       LDA #$4C               ;|
-$8B:A4BD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A4BD 8D 17 21    STA $2117              ;|
 $8B:A4C0 A9 80       LDA #$80               ;|
-$8B:A4C2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4C00..4FFF = [$7F:E000..E7FF] (BG3 tilemap - the last Metroid is in captivity)
+$8B:A4C2 8D 15 21    STA $2115              ;} VRAM $4C00..4FFF = [$7F:E000..E7FF] (BG3 tilemap - the last Metroid is in captivity)
 $8B:A4C5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A4C9             dx 01,01,18,7FE000,0800;|
 $8B:A4D1 A9 02       LDA #$02               ;|
-$8B:A4D3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A4D3 8D 0B 42    STA $420B              ;/
 $8B:A4D6 A9 00       LDA #$00               ;\
-$8B:A4D8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A4D8 8D 16 21    STA $2116              ;|
 $8B:A4DB A9 50       LDA #$50               ;|
-$8B:A4DD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A4DD 8D 17 21    STA $2117              ;|
 $8B:A4E0 A9 80       LDA #$80               ;|
-$8B:A4E2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5000..5FFF = [$7F:9800..B7FF] (BG1 tilemap - Mother Brain's room)
+$8B:A4E2 8D 15 21    STA $2115              ;} VRAM $5000..5FFF = [$7F:9800..B7FF] (BG1 tilemap - Mother Brain's room)
 $8B:A4E5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A4E9             dx 01,01,18,7F9800,2000;|
 $8B:A4F1 A9 02       LDA #$02               ;|
-$8B:A4F3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A4F3 8D 0B 42    STA $420B              ;/
 $8B:A4F6 A9 00       LDA #$00               ;\
-$8B:A4F8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A4F8 8D 16 21    STA $2116              ;|
 $8B:A4FB A9 60       LDA #$60               ;|
-$8B:A4FD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A4FD 8D 17 21    STA $2117              ;|
 $8B:A500 A9 80       LDA #$80               ;|
-$8B:A502 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..6FFF = [$9A:D200..F1FF] (standard sprite tiles)
+$8B:A502 8D 15 21    STA $2115              ;} VRAM $6000..6FFF = [$9A:D200..F1FF] (standard sprite tiles)
 $8B:A505 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A509             dx 01,01,18,9AD200,2000;|
 $8B:A511 A9 02       LDA #$02               ;|
-$8B:A513 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A513 8D 0B 42    STA $420B              ;/
 $8B:A516 A9 00       LDA #$00               ;\
-$8B:A518 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A518 8D 16 21    STA $2116              ;|
 $8B:A51B A9 6E       LDA #$6E               ;|
-$8B:A51D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A51D 8D 17 21    STA $2117              ;|
 $8B:A520 A9 80       LDA #$80               ;|
-$8B:A522 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6E00..7FFF = [$7F:B800..DBFF] (intro sprite tiles)
+$8B:A522 8D 15 21    STA $2115              ;} VRAM $6E00..7FFF = [$7F:B800..DBFF] (intro sprite tiles)
 $8B:A525 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A529             dx 01,01,18,7FB800,2400;|
 $8B:A531 A9 02       LDA #$02               ;|
-$8B:A533 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A533 8D 0B 42    STA $420B              ;/
 $8B:A536 C2 30       REP #$30
 $8B:A538 A9 00 95    LDA #$9500             ;\
 $8B:A53B 85 48       STA $48    [$7E:0048]  ;|
@@ -5510,17 +5510,17 @@ $8B:A66F C2 30       REP #$30
 $8B:A671 20 6A A8    JSR $A86A  [$8B:A86A]  ; Blank out Japanese text tiles
 $8B:A674 E2 30       SEP #$30
 $8B:A676 A9 80       LDA #$80               ;\
-$8B:A678 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:A678 8D 16 21    STA $2116              ;|
 $8B:A67B A9 41       LDA #$41               ;|
-$8B:A67D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:A67D 8D 17 21    STA $2117              ;|
 $8B:A680 A9 80       LDA #$80               ;|
-$8B:A682 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4180..447F = [$7E:4000..45FF] (Japanese tiles)
+$8B:A682 8D 15 21    STA $2115              ;} VRAM $4180..447F = [$7E:4000..45FF] (Japanese tiles)
 $8B:A685 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A689             dx 01,01,18,7E4000,0600;|
 $8B:A691 A9 02       LDA #$02               ;|
-$8B:A693 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:A693 8D 0B 42    STA $420B              ;/
 $8B:A696 A9 16       LDA #$16               ;\
-$8B:A698 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG2/BG3/sprites
+$8B:A698 8D 2C 21    STA $212C              ;} Main screen layers = BG2/BG3/sprites
 $8B:A69B 85 69       STA $69    [$7E:0069]  ;/
 $8B:A69D C2 30       REP #$30
 $8B:A69F A9 2F 00    LDA #$002F             ;\
@@ -8042,61 +8042,61 @@ $8B:BCE8 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:BCEC             dl 7F5000              ;/
 $8B:BCEF E2 30       SEP #$30
 $8B:BCF1 A9 00       LDA #$00               ;\
-$8B:BCF3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BCF3 8D 16 21    STA $2116              ;|
 $8B:BCF6 A9 00       LDA #$00               ;|
-$8B:BCF8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BCF8 8D 17 21    STA $2117              ;|
 $8B:BCFB A9 80       LDA #$80               ;|
-$8B:BCFD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (gunship/Ceres BG tiles)
+$8B:BCFD 8D 15 21    STA $2115              ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (gunship/Ceres BG tiles)
 $8B:BD00 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:BD04             dx 01,00,19,7F0000,4000;|
 $8B:BD0C A9 02       LDA #$02               ;|
-$8B:BD0E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:BD0E 8D 0B 42    STA $420B              ;/
 $8B:BD11 C2 10       REP #$10
-$8B:BD13 9C 15 21    STZ $2115  [$7E:2115]  ;\
-$8B:BD16 9C 16 21    STZ $2116  [$7E:2116]  ;|
-$8B:BD19 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$8B:BD13 9C 15 21    STZ $2115              ;\
+$8B:BD16 9C 16 21    STZ $2116              ;|
+$8B:BD19 9C 17 21    STZ $2117              ;|
 $8B:BD1C A2 00 40    LDX #$4000             ;|
 $8B:BD1F A9 8C       LDA #$8C               ;} VRAM $0000..3FFF low bytes = 8Ch
                                             ;|
-$8B:BD21 8D 18 21    STA $2118  [$7E:2118]  ;|
+$8B:BD21 8D 18 21    STA $2118              ;|
 $8B:BD24 CA          DEX                    ;|
 $8B:BD25 D0 FA       BNE $FA    [$BD21]     ;/
 $8B:BD27 E2 10       SEP #$10
 $8B:BD29 A9 00       LDA #$00               ;\
-$8B:BD2B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BD2B 8D 16 21    STA $2116              ;|
 $8B:BD2E A9 00       LDA #$00               ;|
-$8B:BD30 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BD30 8D 17 21    STA $2117              ;|
 $8B:BD33 A9 00       LDA #$00               ;|
-$8B:BD35 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..02FF low bytes = [$7F:4000..42FF] (gunship front tilemap)
+$8B:BD35 8D 15 21    STA $2115              ;} VRAM $0000..02FF low bytes = [$7F:4000..42FF] (gunship front tilemap)
 $8B:BD38 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:BD3C             dx 01,00,18,7F4000,0300;|
 $8B:BD44 A9 02       LDA #$02               ;|
-$8B:BD46 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:BD46 8D 0B 42    STA $420B              ;/
 $8B:BD49 A9 00       LDA #$00               ;\
-$8B:BD4B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BD4B 8D 16 21    STA $2116              ;|
 $8B:BD4E A9 60       LDA #$60               ;|
-$8B:BD50 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BD50 8D 17 21    STA $2117              ;|
 $8B:BD53 A9 80       LDA #$80               ;|
-$8B:BD55 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (space/Ceres sprite tiles)
+$8B:BD55 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (space/Ceres sprite tiles)
 $8B:BD58 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:BD5C             dx 01,01,18,7F5000,4000;|
 $8B:BD64 A9 02       LDA #$02               ;|
-$8B:BD66 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:BD66 8D 0B 42    STA $420B              ;/
 $8B:BD69 C2 30       REP #$30
 $8B:BD6B A9 00 01    LDA #$0100             ;\
-$8B:BD6E 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:BD6E 8D 1B 21    STA $211B              ;|
 $8B:BD71 85 78       STA $78    [$7E:0078]  ;|
-$8B:BD73 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:BD73 9C 1C 21    STZ $211C              ;|
 $8B:BD76 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:BD78 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:BD78 9C 1D 21    STZ $211D              ;|
 $8B:BD7B 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:BD7D 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:BD7D 8D 1E 21    STA $211E              ;|
 $8B:BD80 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:BD82 A9 38 00    LDA #$0038             ;\
-$8B:BD85 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:BD85 8D 1F 21    STA $211F              ;|
 $8B:BD88 85 80       STA $80    [$7E:0080]  ;|
 $8B:BD8A A9 18 00    LDA #$0018             ;} Mode 7 transformation origin = (38h, 18h)
-$8B:BD8D 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:BD8D 8D 20 21    STA $2120              ;|
 $8B:BD90 85 82       STA $82    [$7E:0082]  ;/
 $8B:BD92 A9 B8 FF    LDA #$FFB8             ;\
 $8B:BD95 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = -48h
@@ -8628,71 +8628,71 @@ $8B:C180 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:C184             dl 7F5000              ;/
 $8B:C187 E2 30       SEP #$30
 $8B:C189 A9 00       LDA #$00               ;\
-$8B:C18B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C18B 8D 16 21    STA $2116              ;|
 $8B:C18E A9 00       LDA #$00               ;|
-$8B:C190 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C190 8D 17 21    STA $2117              ;|
 $8B:C193 A9 80       LDA #$80               ;|
-$8B:C195 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (gunship/Ceres BG tiles)
+$8B:C195 8D 15 21    STA $2115              ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (gunship/Ceres BG tiles)
 $8B:C198 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C19C             dx 01,00,19,7F0000,4000;|
 $8B:C1A4 A9 02       LDA #$02               ;|
-$8B:C1A6 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C1A6 8D 0B 42    STA $420B              ;/
 $8B:C1A9 C2 10       REP #$10
-$8B:C1AB 9C 15 21    STZ $2115  [$7E:2115]  ;\
-$8B:C1AE 9C 16 21    STZ $2116  [$7E:2116]  ;|
-$8B:C1B1 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$8B:C1AB 9C 15 21    STZ $2115              ;\
+$8B:C1AE 9C 16 21    STZ $2116              ;|
+$8B:C1B1 9C 17 21    STZ $2117              ;|
 $8B:C1B4 A2 00 40    LDX #$4000             ;|
 $8B:C1B7 A9 8C       LDA #$8C               ;} VRAM $0000..3FFF low bytes = 8Ch
                                             ;|
-$8B:C1B9 8D 18 21    STA $2118  [$7E:2118]  ;|
+$8B:C1B9 8D 18 21    STA $2118              ;|
 $8B:C1BC CA          DEX                    ;|
 $8B:C1BD D0 FA       BNE $FA    [$C1B9]     ;/
 $8B:C1BF E2 10       SEP #$10
 $8B:C1C1 A9 00       LDA #$00               ;\
-$8B:C1C3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C1C3 8D 16 21    STA $2116              ;|
 $8B:C1C6 A9 00       LDA #$00               ;|
-$8B:C1C8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C1C8 8D 17 21    STA $2117              ;|
 $8B:C1CB A9 00       LDA #$00               ;|
-$8B:C1CD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..05FF low bytes = [$7F:4600..4BFF] (Ceres tilemap)
+$8B:C1CD 8D 15 21    STA $2115              ;} VRAM $0000..05FF low bytes = [$7F:4600..4BFF] (Ceres tilemap)
 $8B:C1D0 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C1D4             dx 01,00,18,7F4600,0600;|
 $8B:C1DC A9 02       LDA #$02               ;|
-$8B:C1DE 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C1DE 8D 0B 42    STA $420B              ;/
 $8B:C1E1 A9 00       LDA #$00               ;\
-$8B:C1E3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C1E3 8D 16 21    STA $2116              ;|
 $8B:C1E6 A9 60       LDA #$60               ;|
-$8B:C1E8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C1E8 8D 17 21    STA $2117              ;|
 $8B:C1EB A9 80       LDA #$80               ;|
-$8B:C1ED 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (space/Ceres sprite tiles)
+$8B:C1ED 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (space/Ceres sprite tiles)
 $8B:C1F0 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C1F4             dx 01,01,18,7F5000,4000;|
 $8B:C1FC A9 02       LDA #$02               ;|
-$8B:C1FE 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C1FE 8D 0B 42    STA $420B              ;/
 $8B:C201 A9 00       LDA #$00               ;\
-$8B:C203 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C203 8D 16 21    STA $2116              ;|
 $8B:C206 A9 60       LDA #$60               ;|
-$8B:C208 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C208 8D 17 21    STA $2117              ;|
 $8B:C20B A9 80       LDA #$80               ;|
-$8B:C20D 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..6CFF = [$9A:D200..EBFF] (standard sprite tiles)
+$8B:C20D 8D 15 21    STA $2115              ;} VRAM $6000..6CFF = [$9A:D200..EBFF] (standard sprite tiles)
 $8B:C210 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C214             dx 01,01,18,9AD200,1A00;|
 $8B:C21C A9 02       LDA #$02               ;|
-$8B:C21E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C21E 8D 0B 42    STA $420B              ;/
 $8B:C221 C2 30       REP #$30
 $8B:C223 A9 00 01    LDA #$0100             ;\
-$8B:C226 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:C226 8D 1B 21    STA $211B              ;|
 $8B:C229 85 78       STA $78    [$7E:0078]  ;|
-$8B:C22B 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:C22B 9C 1C 21    STZ $211C              ;|
 $8B:C22E 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:C230 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:C230 9C 1D 21    STZ $211D              ;|
 $8B:C233 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:C235 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:C235 8D 1E 21    STA $211E              ;|
 $8B:C238 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:C23A A9 34 00    LDA #$0034             ;\
-$8B:C23D 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:C23D 8D 1F 21    STA $211F              ;|
 $8B:C240 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (34h, 30h)
 $8B:C242 A9 30 00    LDA #$0030             ;} >_<; (fails to write to IO mode 7 centre co-ordinates registers and sets IO CGRAM address = 0)
-$8B:C245 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:C245 8D 20 21    STA $2120              ;|
 $8B:C248 85 82       STA $82    [$7E:0082]  ;/
 $8B:C24A A9 D4 FF    LDA #$FFD4             ;\
 $8B:C24D 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = -2Ch
@@ -9245,50 +9245,50 @@ $8B:C6C8 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:C6CC             dl 7F5000              ;/
 $8B:C6CF E2 30       SEP #$30
 $8B:C6D1 A9 00       LDA #$00               ;\
-$8B:C6D3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C6D3 8D 16 21    STA $2116              ;|
 $8B:C6D6 A9 00       LDA #$00               ;|
-$8B:C6D8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C6D8 8D 17 21    STA $2117              ;|
 $8B:C6DB A9 00       LDA #$00               ;|
-$8B:C6DD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..02FF low bytes = [$7F:4300..45FF] (gunship back tilemap)
+$8B:C6DD 8D 15 21    STA $2115              ;} VRAM $0000..02FF low bytes = [$7F:4300..45FF] (gunship back tilemap)
 $8B:C6E0 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C6E4             dx 01,00,18,7F4300,0300;|
 $8B:C6EC A9 02       LDA #$02               ;|
-$8B:C6EE 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C6EE 8D 0B 42    STA $420B              ;/
 $8B:C6F1 A9 00       LDA #$00               ;\
-$8B:C6F3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C6F3 8D 16 21    STA $2116              ;|
 $8B:C6F6 A9 5C       LDA #$5C               ;|
-$8B:C6F8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C6F8 8D 17 21    STA $2117              ;|
 $8B:C6FB A9 80       LDA #$80               ;|
-$8B:C6FD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5C00..5FFF = [$7F:9000..97FF] (Zebes tilemap)
+$8B:C6FD 8D 15 21    STA $2115              ;} VRAM $5C00..5FFF = [$7F:9000..97FF] (Zebes tilemap)
 $8B:C700 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C704             dx 01,01,18,7F9000,0800;|
 $8B:C70C A9 02       LDA #$02               ;|
-$8B:C70E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C70E 8D 0B 42    STA $420B              ;/
 $8B:C711 A9 00       LDA #$00               ;\
-$8B:C713 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C713 8D 16 21    STA $2116              ;|
 $8B:C716 A9 60       LDA #$60               ;|
-$8B:C718 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C718 8D 17 21    STA $2117              ;|
 $8B:C71B A9 80       LDA #$80               ;|
-$8B:C71D 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (Zebes sprite tiles)
+$8B:C71D 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (Zebes sprite tiles)
 $8B:C720 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:C724             dx 01,01,18,7F5000,4000;|
 $8B:C72C A9 02       LDA #$02               ;|
-$8B:C72E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C72E 8D 0B 42    STA $420B              ;/
 $8B:C731 C2 30       REP #$30
 $8B:C733 A9 00 01    LDA #$0100             ;\
-$8B:C736 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:C736 8D 1B 21    STA $211B              ;|
 $8B:C739 85 78       STA $78    [$7E:0078]  ;|
-$8B:C73B 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:C73B 9C 1C 21    STZ $211C              ;|
 $8B:C73E 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:C740 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:C740 9C 1D 21    STZ $211D              ;|
 $8B:C743 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:C745 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:C745 8D 1E 21    STA $211E              ;|
 $8B:C748 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:C74A A9 38 00    LDA #$0038             ;\
-$8B:C74D 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:C74D 8D 1F 21    STA $211F              ;|
 $8B:C750 85 80       STA $80    [$7E:0080]  ;|
 $8B:C752 A9 18 00    LDA #$0018             ;} Mode 7 transformation origin = (38h, 18h)
-$8B:C755 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:C755 8D 20 21    STA $2120              ;|
 $8B:C758 85 82       STA $82    [$7E:0082]  ;/
 $8B:C75A 9C 93 19    STZ $1993  [$7E:1993]  ; Cinematic BG1 X position = 0
 $8B:C75D 9C 97 19    STZ $1997  [$7E:1997]  ; Cinematic BG1 Y position = 0
@@ -10954,45 +10954,45 @@ $8B:D4E0 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D4E4             dl 7F8000              ;/
 $8B:D4E7 E2 30       SEP #$30
 $8B:D4E9 A9 00       LDA #$00               ;\
-$8B:D4EB 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D4EB 8D 16 21    STA $2116              ;|
 $8B:D4EE A9 00       LDA #$00               ;|
-$8B:D4F0 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D4F0 8D 17 21    STA $2117              ;|
 $8B:D4F3 A9 80       LDA #$80               ;|
-$8B:D4F5 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
+$8B:D4F5 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
 $8B:D4F8 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D4FC             dx 01,01,18,7F8000,4000;|
 $8B:D504 A9 02       LDA #$02               ;|
-$8B:D506 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D506 8D 0B 42    STA $420B              ;/
 $8B:D509 A9 00       LDA #$00               ;\
-$8B:D50B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D50B 8D 16 21    STA $2116              ;|
 $8B:D50E A9 20       LDA #$20               ;|
-$8B:D510 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D510 8D 17 21    STA $2117              ;|
 $8B:D513 A9 80       LDA #$80               ;|
-$8B:D515 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
+$8B:D515 8D 15 21    STA $2115              ;} VRAM $2000..3FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
 $8B:D518 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D51C             dx 01,01,18,7F8000,4000;|
 $8B:D524 A9 02       LDA #$02               ;|
-$8B:D526 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D526 8D 0B 42    STA $420B              ;/
 $8B:D529 A9 00       LDA #$00               ;\
-$8B:D52B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D52B 8D 16 21    STA $2116              ;|
 $8B:D52E A9 60       LDA #$60               ;|
-$8B:D530 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D530 8D 17 21    STA $2117              ;|
 $8B:D533 A9 80       LDA #$80               ;|
-$8B:D535 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:4000..7FFF] (yellow clouds sprite tiles)
+$8B:D535 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:4000..7FFF] (yellow clouds sprite tiles)
 $8B:D538 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D53C             dx 01,01,18,7F4000,4000;|
 $8B:D544 A9 02       LDA #$02               ;|
-$8B:D546 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D546 8D 0B 42    STA $420B              ;/
 $8B:D549 A9 00       LDA #$00               ;\
-$8B:D54B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D54B 8D 16 21    STA $2116              ;|
 $8B:D54E A9 00       LDA #$00               ;|
-$8B:D550 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D550 8D 17 21    STA $2117              ;|
 $8B:D553 A9 80       LDA #$80               ;|
-$8B:D555 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (Zebes being zoomed out BG tiles)
+$8B:D555 8D 15 21    STA $2115              ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (Zebes being zoomed out BG tiles)
 $8B:D558 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D55C             dx 01,00,19,7F0000,4000;|
 $8B:D564 A9 02       LDA #$02               ;|
-$8B:D566 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D566 8D 0B 42    STA $420B              ;/
 $8B:D569 C2 30       REP #$30
 $8B:D56B A9 00 98    LDA #$9800             ;\
 $8B:D56E 85 48       STA $48    [$7E:0048]  ;|
@@ -11063,18 +11063,18 @@ $8B:D61D 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D932 (big Zebes du
 $8B:D61F 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D623             dl 7E6000              ;/
 $8B:D626 A9 00 01    LDA #$0100             ;\
-$8B:D629 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:D629 8D 1B 21    STA $211B              ;|
 $8B:D62C 85 78       STA $78    [$7E:0078]  ;|
-$8B:D62E 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:D62E 9C 1C 21    STZ $211C              ;|
 $8B:D631 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:D633 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:D633 9C 1D 21    STZ $211D              ;|
 $8B:D636 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:D638 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:D638 8D 1E 21    STA $211E              ;|
 $8B:D63B 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:D63D A9 80 00    LDA #$0080             ;\
-$8B:D640 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:D640 8D 1F 21    STA $211F              ;|
 $8B:D643 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
-$8B:D645 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:D645 8D 20 21    STA $2120              ;|
 $8B:D648 85 82       STA $82    [$7E:0082]  ;/
 $8B:D64A A9 20 00    LDA #$0020             ;\
 $8B:D64D 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
@@ -11185,25 +11185,25 @@ $8B:D730 60          RTS
 {
 $8B:D731 E2 30       SEP #$30
 $8B:D733 A9 00       LDA #$00               ;\
-$8B:D735 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D735 8D 16 21    STA $2116              ;|
 $8B:D738 A9 00       LDA #$00               ;|
-$8B:D73A 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D73A 8D 17 21    STA $2117              ;|
 $8B:D73D A9 80       LDA #$80               ;|
-$8B:D73F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap)
+$8B:D73F 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap)
 $8B:D742 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D746             dx 01,01,18,7E2000,4000;|
 $8B:D74E A9 02       LDA #$02               ;|
-$8B:D750 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D750 8D 0B 42    STA $420B              ;/
 $8B:D753 A9 00       LDA #$00               ;\
-$8B:D755 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D755 8D 16 21    STA $2116              ;|
 $8B:D758 A9 20       LDA #$20               ;|
-$8B:D75A 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D75A 8D 17 21    STA $2117              ;|
 $8B:D75D A9 80       LDA #$80               ;|
-$8B:D75F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap)
+$8B:D75F 8D 15 21    STA $2115              ;} VRAM $2000..3FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap)
 $8B:D762 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D766             dx 01,01,18,7E2000,4000;|
 $8B:D76E A9 02       LDA #$02               ;|
-$8B:D770 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D770 8D 0B 42    STA $420B              ;/
 $8B:D773 C2 30       REP #$30
 $8B:D775 A9 00 98    LDA #$9800             ;\
 $8B:D778 85 48       STA $48    [$7E:0048]  ;|
@@ -11213,15 +11213,15 @@ $8B:D77F 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D783             dl 7E2000              ;/
 $8B:D786 E2 30       SEP #$30               ;\
 $8B:D788 A9 00       LDA #$00               ;|
-$8B:D78A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D78A 8D 16 21    STA $2116              ;|
 $8B:D78D A9 00       LDA #$00               ;|
-$8B:D78F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D78F 8D 17 21    STA $2117              ;|
 $8B:D792 A9 80       LDA #$80               ;|
-$8B:D794 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7E:2000..5FFF] (grey clouds BG tiles)
+$8B:D794 8D 15 21    STA $2115              ;} VRAM $0000..3FFF high bytes = [$7E:2000..5FFF] (grey clouds BG tiles)
 $8B:D797 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D79B             dx 01,00,19,7E2000,4000;|
 $8B:D7A3 A9 02       LDA #$02               ;|
-$8B:D7A5 8D 0B 42    STA $420B  [$7E:420B]  ;|
+$8B:D7A5 8D 0B 42    STA $420B              ;|
 $8B:D7A8 C2 30       REP #$30               ;/
 $8B:D7AA 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $8B:D7AE 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
@@ -11294,25 +11294,25 @@ $8B:D836 60          RTS
 {
 $8B:D837 E2 30       SEP #$30
 $8B:D839 A9 00       LDA #$00               ;\
-$8B:D83B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D83B 8D 16 21    STA $2116              ;|
 $8B:D83E A9 00       LDA #$00               ;|
-$8B:D840 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D840 8D 17 21    STA $2117              ;|
 $8B:D843 A9 80       LDA #$80               ;|
-$8B:D845 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
+$8B:D845 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
 $8B:D848 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D84C             dx 01,01,18,7E6000,4000;|
 $8B:D854 A9 02       LDA #$02               ;|
-$8B:D856 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D856 8D 0B 42    STA $420B              ;/
 $8B:D859 A9 00       LDA #$00               ;\
-$8B:D85B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D85B 8D 16 21    STA $2116              ;|
 $8B:D85E A9 20       LDA #$20               ;|
-$8B:D860 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D860 8D 17 21    STA $2117              ;|
 $8B:D863 A9 80       LDA #$80               ;|
-$8B:D865 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
+$8B:D865 8D 15 21    STA $2115              ;} VRAM $2000..3FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
 $8B:D868 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D86C             dx 01,01,18,7E6000,4000;|
 $8B:D874 A9 02       LDA #$02               ;|
-$8B:D876 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D876 8D 0B 42    STA $420B              ;/
 $8B:D879 C2 30       REP #$30               ;\
 $8B:D87B A9 00 99    LDA #$9900             ;|
 $8B:D87E 85 48       STA $48    [$7E:0048]  ;|
@@ -11322,75 +11322,75 @@ $8B:D885 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D889             dl 7E6000              ;|
 $8B:D88C E2 30       SEP #$30               ;/
 $8B:D88E A9 00       LDA #$00               ;\
-$8B:D890 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D890 8D 16 21    STA $2116              ;|
 $8B:D893 A9 00       LDA #$00               ;|
-$8B:D895 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D895 8D 17 21    STA $2117              ;|
 $8B:D898 A9 80       LDA #$80               ;|
-$8B:D89A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (big Zebes tiles)
+$8B:D89A 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (big Zebes tiles)
 $8B:D89D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D8A1             dx 01,00,19,7E6000,4000;|
 $8B:D8A9 A9 02       LDA #$02               ;|
-$8B:D8AB 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D8AB 8D 0B 42    STA $420B              ;/
 $8B:D8AE A9 00       LDA #$00               ;\
-$8B:D8B0 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D8B0 8D 16 21    STA $2116              ;|
 $8B:D8B3 A9 40       LDA #$40               ;|
-$8B:D8B5 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D8B5 8D 17 21    STA $2117              ;|
 $8B:D8B8 A9 80       LDA #$80               ;|
-$8B:D8BA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..6FFF = [$7F:8000..DFFF] (Zebes explosion tiles)
+$8B:D8BA 8D 15 21    STA $2115              ;} VRAM $4000..6FFF = [$7F:8000..DFFF] (Zebes explosion tiles)
 $8B:D8BD 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D8C1             dx 01,01,18,7F8000,6000;|
 $8B:D8C9 A9 02       LDA #$02               ;|
-$8B:D8CB 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D8CB 8D 0B 42    STA $420B              ;/
 $8B:D8CE A9 00       LDA #$00               ;\
-$8B:D8D0 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D8D0 8D 16 21    STA $2116              ;|
 $8B:D8D3 A9 70       LDA #$70               ;|
-$8B:D8D5 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D8D5 8D 17 21    STA $2117              ;|
 $8B:D8D8 A9 80       LDA #$80               ;|
-$8B:D8DA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $7000..73FF = [$7F:E000..E7FF] (wide part of Zebes explosion tilemap)
+$8B:D8DA 8D 15 21    STA $2115              ;} VRAM $7000..73FF = [$7F:E000..E7FF] (wide part of Zebes explosion tilemap)
 $8B:D8DD 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D8E1             dx 01,01,18,7FE000,0800;|
 $8B:D8E9 A9 02       LDA #$02               ;|
-$8B:D8EB 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D8EB 8D 0B 42    STA $420B              ;/
 $8B:D8EE A9 00       LDA #$00               ;\
-$8B:D8F0 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D8F0 8D 16 21    STA $2116              ;|
 $8B:D8F3 A9 74       LDA #$74               ;|
-$8B:D8F5 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D8F5 8D 17 21    STA $2117              ;|
 $8B:D8F8 A9 80       LDA #$80               ;|
-$8B:D8FA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $7400..77FF = [$7F:E800..EFFF] (concentric wide part of Zebes explosion tilemap)
+$8B:D8FA 8D 15 21    STA $2115              ;} VRAM $7400..77FF = [$7F:E800..EFFF] (concentric wide part of Zebes explosion tilemap)
 $8B:D8FD 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D901             dx 01,01,18,7FE800,0800;|
 $8B:D909 A9 02       LDA #$02               ;|
-$8B:D90B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D90B 8D 0B 42    STA $420B              ;/
 $8B:D90E A9 00       LDA #$00               ;\
-$8B:D910 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D910 8D 16 21    STA $2116              ;|
 $8B:D913 A9 78       LDA #$78               ;|
-$8B:D915 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D915 8D 17 21    STA $2117              ;|
 $8B:D918 A9 80       LDA #$80               ;|
-$8B:D91A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $7800..7BFF = [$7F:F000..F7FF] (eclipse of Zebes during explosion tilemap)
+$8B:D91A 8D 15 21    STA $2115              ;} VRAM $7800..7BFF = [$7F:F000..F7FF] (eclipse of Zebes during explosion tilemap)
 $8B:D91D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D921             dx 01,01,18,7FF000,0800;|
 $8B:D929 A9 02       LDA #$02               ;|
-$8B:D92B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D92B 8D 0B 42    STA $420B              ;/
 $8B:D92E A9 00       LDA #$00               ;\
-$8B:D930 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D930 8D 16 21    STA $2116              ;|
 $8B:D933 A9 7C       LDA #$7C               ;|
-$8B:D935 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D935 8D 17 21    STA $2117              ;|
 $8B:D938 A9 80       LDA #$80               ;|
-$8B:D93A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $7C00..7FFF = [$7F:F800..FFFF] (blank tilemap)
+$8B:D93A 8D 15 21    STA $2115              ;} VRAM $7C00..7FFF = [$7F:F800..FFFF] (blank tilemap)
 $8B:D93D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D941             dx 01,01,18,7FF800,0800;|
 $8B:D949 A9 02       LDA #$02               ;|
-$8B:D94B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D94B 8D 0B 42    STA $420B              ;/
 $8B:D94E A9 00       LDA #$00               ;\
-$8B:D950 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:D950 8D 16 21    STA $2116              ;|
 $8B:D953 A9 50       LDA #$50               ;|
-$8B:D955 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:D955 8D 17 21    STA $2117              ;|
 $8B:D958 A9 80       LDA #$80               ;|
-$8B:D95A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5000..57FF = [$7E:A000..AFFF] (font 3 tiles)
+$8B:D95A 8D 15 21    STA $2115              ;} VRAM $5000..57FF = [$7E:A000..AFFF] (font 3 tiles)
 $8B:D95D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D961             dx 01,01,18,7EA000,1000;|
 $8B:D969 A9 02       LDA #$02               ;|
-$8B:D96B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:D96B 8D 0B 42    STA $420B              ;/
 $8B:D96E A9 02       LDA #$02               ;\
 $8B:D970 85 52       STA $52    [$7E:0052]  ;} Sprite tiles base address = $4000, sprite sizes = 8x8 / 16x16
 $8B:D972 C2 30       REP #$30
@@ -11520,7 +11520,7 @@ $8B:DA86 64 71       STZ $71    [$7E:0071]  ;|
 $8B:DA88 64 6F       STZ $6F    [$7E:006F]  ;|
 $8B:DA8A 64 72       STZ $72    [$7E:0072]  ;|
 $8B:DA8C A9 E0       LDA #$E0               ;|
-$8B:DA8E 8D 32 21    STA $2132  [$7E:2132]  ;|
+$8B:DA8E 8D 32 21    STA $2132              ;|
 $8B:DA91 A9 20       LDA #$20               ;} Disable colour math, colour math subscreen backdrop colour = (0, 0, 0) (transparent)
 $8B:DA93 85 74       STA $74    [$7E:0074]  ;|
 $8B:DA95 A9 40       LDA #$40               ;|
@@ -12006,65 +12006,65 @@ $8B:DF1D 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:DF21             dl 7FF000              ;/
 $8B:DF24 E2 30       SEP #$30
 $8B:DF26 A9 00       LDA #$00               ;\
-$8B:DF28 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DF28 8D 16 21    STA $2116              ;|
 $8B:DF2B A9 20       LDA #$20               ;|
-$8B:DF2D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DF2D 8D 17 21    STA $2117              ;|
 $8B:DF30 A9 80       LDA #$80               ;|
-$8B:DF32 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..207F = [$7F:E800..E8FF] (post-credits Samus transformation effect BG tiles)
+$8B:DF32 8D 15 21    STA $2115              ;} VRAM $2000..207F = [$7F:E800..E8FF] (post-credits Samus transformation effect BG tiles)
 $8B:DF35 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DF39             dx 01,01,18,7FE800,0100;|
 $8B:DF41 A9 02       LDA #$02               ;|
-$8B:DF43 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DF43 8D 0B 42    STA $420B              ;/
 $8B:DF46 A9 00       LDA #$00               ;\
-$8B:DF48 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DF48 8D 16 21    STA $2116              ;|
 $8B:DF4B A9 24       LDA #$24               ;|
-$8B:DF4D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DF4D 8D 17 21    STA $2117              ;|
 $8B:DF50 A9 80       LDA #$80               ;|
-$8B:DF52 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2400..27FF = [$7F:F000..F7FF] (post-credits Samus transformation effect tilemap)
+$8B:DF52 8D 15 21    STA $2115              ;} VRAM $2400..27FF = [$7F:F000..F7FF] (post-credits Samus transformation effect tilemap)
 $8B:DF55 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DF59             dx 01,01,18,7FF000,0800;|
 $8B:DF61 A9 02       LDA #$02               ;|
-$8B:DF63 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DF63 8D 0B 42    STA $420B              ;/
 $8B:DF66 A9 00       LDA #$00               ;\
-$8B:DF68 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DF68 8D 16 21    STA $2116              ;|
 $8B:DF6B A9 40       LDA #$40               ;|
-$8B:DF6D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DF6D 8D 17 21    STA $2117              ;|
 $8B:DF70 A9 80       LDA #$80               ;|
-$8B:DF72 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..47FF = [$7F:C000..CFFF] (font 3 BG tiles)
+$8B:DF72 8D 15 21    STA $2115              ;} VRAM $4000..47FF = [$7F:C000..CFFF] (font 3 BG tiles)
 $8B:DF75 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DF79             dx 01,01,18,7FC000,1000;|
 $8B:DF81 A9 02       LDA #$02               ;|
-$8B:DF83 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DF83 8D 0B 42    STA $420B              ;/
 $8B:DF86 A9 00       LDA #$00               ;\
-$8B:DF88 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DF88 8D 16 21    STA $2116              ;|
 $8B:DF8B A9 60       LDA #$60               ;|
-$8B:DF8D 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DF8D 8D 17 21    STA $2117              ;|
 $8B:DF90 A9 80       LDA #$80               ;|
-$8B:DF92 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:6000..9FFF] (post-credits Samus shooting the screen sprite tiles)
+$8B:DF92 8D 15 21    STA $2115              ;} VRAM $6000..7FFF = [$7F:6000..9FFF] (post-credits Samus shooting the screen sprite tiles)
 $8B:DF95 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DF99             dx 01,01,18,7E6000,4000;|
 $8B:DFA1 A9 02       LDA #$02               ;|
-$8B:DFA3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DFA3 8D 0B 42    STA $420B              ;/
 $8B:DFA6 A9 00       LDA #$00               ;\
-$8B:DFA8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DFA8 8D 16 21    STA $2116              ;|
 $8B:DFAB A9 50       LDA #$50               ;|
-$8B:DFAD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DFAD 8D 17 21    STA $2117              ;|
 $8B:DFB0 A9 80       LDA #$80               ;|
-$8B:DFB2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5000..5FFF = [$7F:0000..1FFF] (Samus waiting for the credits to end BG tiles)
+$8B:DFB2 8D 15 21    STA $2115              ;} VRAM $5000..5FFF = [$7F:0000..1FFF] (Samus waiting for the credits to end BG tiles)
 $8B:DFB5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DFB9             dx 01,01,18,7F0000,2000;|
 $8B:DFC1 A9 02       LDA #$02               ;|
-$8B:DFC3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DFC3 8D 0B 42    STA $420B              ;/
 $8B:DFC6 A9 00       LDA #$00               ;\
-$8B:DFC8 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:DFC8 8D 16 21    STA $2116              ;|
 $8B:DFCB A9 4C       LDA #$4C               ;|
-$8B:DFCD 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:DFCD 8D 17 21    STA $2117              ;|
 $8B:DFD0 A9 80       LDA #$80               ;|
-$8B:DFD2 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4C00..4FFF = [$7F:E000..E7FF] (Samus waiting for the credits to end tilemap)
+$8B:DFD2 8D 15 21    STA $2115              ;} VRAM $4C00..4FFF = [$7F:E000..E7FF] (Samus waiting for the credits to end tilemap)
 $8B:DFD5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:DFD9             dx 01,01,18,7FE000,0800;|
 $8B:DFE1 A9 02       LDA #$02               ;|
-$8B:DFE3 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:DFE3 8D 0B 42    STA $420B              ;/
 $8B:DFE6 C2 30       REP #$30
 $8B:DFE8 A9 00 99    LDA #$9900             ;\
 $8B:DFEB 85 48       STA $48    [$7E:0048]  ;|
@@ -12083,44 +12083,44 @@ $8B:E00D C9 03 00    CMP #$0003             ;} If [game time hours] < 3:
 $8B:E010 10 24       BPL $24    [$E036]     ;/
 $8B:E012 E2 30       SEP #$30
 $8B:E014 A9 00       LDA #$00               ;\
-$8B:E016 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:E016 8D 16 21    STA $2116              ;|
 $8B:E019 A9 00       LDA #$00               ;|
-$8B:E01B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:E01B 8D 17 21    STA $2117              ;|
 $8B:E01E A9 80       LDA #$80               ;|
-$8B:E020 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (post-credits suitless Samus BG tiles)
+$8B:E020 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (post-credits suitless Samus BG tiles)
 $8B:E023 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:E027             dx 01,01,18,7E2000,4000;|
 $8B:E02F A9 02       LDA #$02               ;|
-$8B:E031 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:E031 8D 0B 42    STA $420B              ;/
 $8B:E034 80 22       BRA $22    [$E058]
 
 $8B:E036 E2 30       SEP #$30
 $8B:E038 A9 00       LDA #$00               ;\ Else ([game time hours] >= 3):
-$8B:E03A 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:E03A 8D 16 21    STA $2116              ;|
 $8B:E03D A9 00       LDA #$00               ;|
-$8B:E03F 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:E03F 8D 17 21    STA $2117              ;|
 $8B:E042 A9 80       LDA #$80               ;|
-$8B:E044 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:0000..3FFF] (Samus waiting for the credits to end BG tiles)
+$8B:E044 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$7F:0000..3FFF] (Samus waiting for the credits to end BG tiles)
 $8B:E047 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:E04B             dx 01,01,18,7F0000,4000;|
 $8B:E053 A9 02       LDA #$02               ;|
-$8B:E055 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:E055 8D 0B 42    STA $420B              ;/
 
 $8B:E058 C2 30       REP #$30
 $8B:E05A A9 00 01    LDA #$0100             ;\
-$8B:E05D 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:E05D 8D 1B 21    STA $211B              ;|
 $8B:E060 85 78       STA $78    [$7E:0078]  ;|
-$8B:E062 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:E062 9C 1C 21    STZ $211C              ;|
 $8B:E065 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
-$8B:E067 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:E067 9C 1D 21    STZ $211D              ;|
 $8B:E06A 64 7C       STZ $7C    [$7E:007C]  ;|
-$8B:E06C 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:E06C 8D 1E 21    STA $211E              ;|
 $8B:E06F 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:E071 A9 68 00    LDA #$0068             ;\
-$8B:E074 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:E074 8D 1F 21    STA $211F              ;|
 $8B:E077 85 80       STA $80    [$7E:0080]  ;|
 $8B:E079 A9 70 00    LDA #$0070             ;} Mode 7 transformation origin = (68h, 70h)
-$8B:E07C 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:E07C 8D 20 21    STA $2120              ;|
 $8B:E07F 85 82       STA $82    [$7E:0082]  ;/
 $8B:E081 A9 F8 FF    LDA #$FFF8             ;\
 $8B:E084 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = -8
@@ -12861,10 +12861,10 @@ $8B:E632 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (percentage)
 $8B:E634 BD 0D E7    LDA $E70D,x[$8B:E715]  ;\
 $8B:E637 A8          TAY                    ;|
 $8B:E638 B9 00 00    LDA $0000,y[$7E:09D0]  ;|
-$8B:E63B 8D 04 42    STA $4204  [$7E:4204]  ;|
+$8B:E63B 8D 04 42    STA $4204              ;|
 $8B:E63E E2 20       SEP #$20               ;|
 $8B:E640 BD 17 E7    LDA $E717,x[$8B:E71F]  ;|
-$8B:E643 8D 06 42    STA $4206  [$7E:4206]  ;|
+$8B:E643 8D 06 42    STA $4206              ;|
 $8B:E646 EA          NOP                    ;|
 $8B:E647 EA          NOP                    ;|
 $8B:E648 EA          NOP                    ;} $12 += [[$E70D + [X]]] / [$E717 + [X]]
@@ -12873,7 +12873,7 @@ $8B:E64A EA          NOP                    ;|
 $8B:E64B EA          NOP                    ;|
 $8B:E64C EA          NOP                    ;|
 $8B:E64D C2 20       REP #$20               ;|
-$8B:E64F AD 14 42    LDA $4214  [$7E:4214]  ;|
+$8B:E64F AD 14 42    LDA $4214              ;|
 $8B:E652 18          CLC                    ;|
 $8B:E653 65 12       ADC $12    [$7E:0012]  ;|
 $8B:E655 85 12       STA $12    [$7E:0012]  ;/
@@ -12903,10 +12903,10 @@ $8B:E679 CA          DEX                    ;\
 $8B:E67A CA          DEX                    ;} X -= 2
 $8B:E67B 10 F2       BPL $F2    [$E66F]     ; If [X] >= 0: go to LOOP_BEAMS
 $8B:E67D A5 12       LDA $12    [$7E:0012]  ;\
-$8B:E67F 8D 04 42    STA $4204  [$7E:4204]  ;|
+$8B:E67F 8D 04 42    STA $4204              ;|
 $8B:E682 E2 20       SEP #$20               ;|
 $8B:E684 A9 0A       LDA #$0A               ;|
-$8B:E686 8D 06 42    STA $4206  [$7E:4206]  ;|
+$8B:E686 8D 06 42    STA $4206              ;|
 $8B:E689 EA          NOP                    ;|
 $8B:E68A EA          NOP                    ;|
 $8B:E68B EA          NOP                    ;|
@@ -12915,13 +12915,13 @@ $8B:E68D EA          NOP                    ;|
 $8B:E68E EA          NOP                    ;|
 $8B:E68F EA          NOP                    ;|
 $8B:E690 C2 20       REP #$20               ;|
-$8B:E692 AD 14 42    LDA $4214  [$7E:4214]  ;|
-$8B:E695 8D 04 42    STA $4204  [$7E:4204]  ;|
-$8B:E698 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:E692 AD 14 42    LDA $4214              ;|
+$8B:E695 8D 04 42    STA $4204              ;|
+$8B:E698 AD 16 42    LDA $4216              ;|
 $8B:E69B 85 16       STA $16    [$7E:0016]  ;/
 $8B:E69D E2 20       SEP #$20
 $8B:E69F A9 0A       LDA #$0A               ;\
-$8B:E6A1 8D 06 42    STA $4206  [$7E:4206]  ;|
+$8B:E6A1 8D 06 42    STA $4206              ;|
 $8B:E6A4 EA          NOP                    ;|
 $8B:E6A5 EA          NOP                    ;|
 $8B:E6A6 EA          NOP                    ;|
@@ -12930,9 +12930,9 @@ $8B:E6A8 EA          NOP                    ;} $12 = [$12] / 100 (hundreds)
 $8B:E6A9 EA          NOP                    ;|
 $8B:E6AA EA          NOP                    ;|
 $8B:E6AB C2 20       REP #$20               ;|
-$8B:E6AD AD 14 42    LDA $4214  [$7E:4214]  ;|
+$8B:E6AD AD 14 42    LDA $4214              ;|
 $8B:E6B0 85 12       STA $12    [$7E:0012]  ;/
-$8B:E6B2 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$8B:E6B2 AD 16 42    LDA $4216              ;\
 $8B:E6B5 85 14       STA $14    [$7E:0014]  ;} $14 = [$12] / 10 % 10 (tens)
 $8B:E6B7 A5 12       LDA $12    [$7E:0012]  ;\
 $8B:E6B9 F0 11       BEQ $11    [$E6CC]     ;} If [$12] != 0: (display hundreds)
@@ -14587,10 +14587,10 @@ $8B:F3CE 5A          PHY
 $8B:F3CF A0 FD EE    LDY #$EEFD             ;\
 $8B:F3D2 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EEFD (clear time)
 $8B:F3D5 AD E0 09    LDA $09E0  [$7E:09E0]  ;\
-$8B:F3D8 8D 04 42    STA $4204  [$7E:4204]  ;|
+$8B:F3D8 8D 04 42    STA $4204              ;|
 $8B:F3DB E2 20       SEP #$20               ;|
 $8B:F3DD A9 0A       LDA #$0A               ;|
-$8B:F3DF 8D 06 42    STA $4206  [$7E:4206]  ;|
+$8B:F3DF 8D 06 42    STA $4206              ;|
 $8B:F3E2 EA          NOP                    ;|
 $8B:F3E3 EA          NOP                    ;|
 $8B:F3E4 EA          NOP                    ;|
@@ -14599,15 +14599,15 @@ $8B:F3E6 EA          NOP                    ;} Hours units digit = [game time, h
 $8B:F3E7 EA          NOP                    ;|
 $8B:F3E8 EA          NOP                    ;|
 $8B:F3E9 C2 20       REP #$20               ;|
-$8B:F3EB AD 14 42    LDA $4214  [$7E:4214]  ;|
+$8B:F3EB AD 14 42    LDA $4214              ;|
 $8B:F3EE 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;|
-$8B:F3F1 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:F3F1 AD 16 42    LDA $4216              ;|
 $8B:F3F4 8D EE 0D    STA $0DEE  [$7E:0DEE]  ;/
 $8B:F3F7 AD DE 09    LDA $09DE  [$7E:09DE]  ;\
-$8B:F3FA 8D 04 42    STA $4204  [$7E:4204]  ;|
+$8B:F3FA 8D 04 42    STA $4204              ;|
 $8B:F3FD E2 20       SEP #$20               ;|
 $8B:F3FF A9 0A       LDA #$0A               ;|
-$8B:F401 8D 06 42    STA $4206  [$7E:4206]  ;|
+$8B:F401 8D 06 42    STA $4206              ;|
 $8B:F404 EA          NOP                    ;|
 $8B:F405 EA          NOP                    ;|
 $8B:F406 EA          NOP                    ;|
@@ -14616,9 +14616,9 @@ $8B:F408 EA          NOP                    ;} Minutes units digit = [game time,
 $8B:F409 EA          NOP                    ;|
 $8B:F40A EA          NOP                    ;|
 $8B:F40B C2 20       REP #$20               ;|
-$8B:F40D AD 14 42    LDA $4214  [$7E:4214]  ;|
+$8B:F40D AD 14 42    LDA $4214              ;|
 $8B:F410 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;|
-$8B:F413 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$8B:F413 AD 16 42    LDA $4216              ;|
 $8B:F416 8D F2 0D    STA $0DF2  [$7E:0DF2]  ;/
 $8B:F419 7A          PLY
 $8B:F41A 60          RTS

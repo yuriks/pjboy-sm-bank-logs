@@ -4191,23 +4191,23 @@ $90:9AB8 80 E6       BRA $E6    [$9AA0]     ; Go to BRANCH_CAP_X_SPEED
 $90:9ABA E2 20       SEP #$20
 $90:9ABC AD 4C 0B    LDA $0B4C  [$7E:0B4C]  ;\
 $90:9ABF F0 2A       BEQ $2A    [$9AEB]     ;} If [Samus X deceleration multiplier] != 0:
-$90:9AC1 8D 02 42    STA $4202  [$7E:4202]  ;\
+$90:9AC1 8D 02 42    STA $4202              ;\
 $90:9AC4 BD 0B 00    LDA $000B,x            ;|
-$90:9AC7 8D 03 42    STA $4203  [$7E:4203]  ;|
+$90:9AC7 8D 03 42    STA $4203              ;|
 $90:9ACA EA          NOP                    ;|
 $90:9ACB EA          NOP                    ;|
 $90:9ACC EA          NOP                    ;|
 $90:9ACD C2 20       REP #$20               ;|
-$90:9ACF AD 16 42    LDA $4216  [$7E:4216]  ;|
+$90:9ACF AD 16 42    LDA $4216              ;|
 $90:9AD2 85 14       STA $14    [$7E:0014]  ;|
 $90:9AD4 E2 20       SEP #$20               ;} $12.$14 = [[X] + 8].[[X] + Ah] * [Samus X deceleration multiplier] / 100h
 $90:9AD6 BD 08 00    LDA $0008,x            ;|
-$90:9AD9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$90:9AD9 8D 03 42    STA $4203              ;|
 $90:9ADC EA          NOP                    ;|
 $90:9ADD EA          NOP                    ;|
 $90:9ADE EA          NOP                    ;|
 $90:9ADF C2 20       REP #$20               ;|
-$90:9AE1 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$90:9AE1 AD 17 42    LDA $4217              ;|
 $90:9AE4 29 FF 00    AND #$00FF             ;|
 $90:9AE7 85 12       STA $12    [$7E:0012]  ;/
 $90:9AE9 80 0C       BRA $0C    [$9AF7]
@@ -4285,23 +4285,23 @@ $90:9B5C 80 E6       BRA $E6    [$9B44]     ; Go to BRANCH_CAP_X_SPEED
 $90:9B5E E2 20       SEP #$20
 $90:9B60 AD 4C 0B    LDA $0B4C  [$7E:0B4C]  ;\
 $90:9B63 F0 2A       BEQ $2A    [$9B8F]     ;} If [Samus X deceleration multiplier] != 0:
-$90:9B65 8D 02 42    STA $4202  [$7E:4202]  ;\
+$90:9B65 8D 02 42    STA $4202              ;\
 $90:9B68 BD 0B 00    LDA $000B,x            ;|
-$90:9B6B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$90:9B6B 8D 03 42    STA $4203              ;|
 $90:9B6E EA          NOP                    ;|
 $90:9B6F EA          NOP                    ;|
 $90:9B70 EA          NOP                    ;|
 $90:9B71 C2 20       REP #$20               ;|
-$90:9B73 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$90:9B73 AD 16 42    LDA $4216              ;|
 $90:9B76 85 14       STA $14    [$7E:0014]  ;|
 $90:9B78 E2 20       SEP #$20               ;} $12.$14 = [[X] + 8].[[X] + Ah] * [Samus X deceleration multiplier] / 100h
 $90:9B7A BD 08 00    LDA $0008,x            ;|
-$90:9B7D 8D 03 42    STA $4203  [$7E:4203]  ;|
+$90:9B7D 8D 03 42    STA $4203              ;|
 $90:9B80 EA          NOP                    ;|
 $90:9B81 EA          NOP                    ;|
 $90:9B82 EA          NOP                    ;|
 $90:9B83 C2 20       REP #$20               ;|
-$90:9B85 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$90:9B85 AD 17 42    LDA $4217              ;|
 $90:9B88 29 FF 00    AND #$00FF             ;|
 $90:9B8B 85 12       STA $12    [$7E:0012]  ;/
 $90:9B8D 80 0C       BRA $0C    [$9B9B]
@@ -10803,27 +10803,27 @@ $90:CC89 60          RTS
 ; Angle [X] / 2 must be less than 80h, as this routine does unsigned multiplication
 $90:CC8A E2 20       SEP #$20
 $90:CC8C BF 43 B4 A0 LDA $A0B443,x[$A0:B503]
-$90:CC90 8D 02 42    STA $4202  [$7E:4202]
+$90:CC90 8D 02 42    STA $4202            
 $90:CC93 A5 18       LDA $18    [$7E:0018]
-$90:CC95 8D 03 42    STA $4203  [$7E:4203]
+$90:CC95 8D 03 42    STA $4203            
 $90:CC98 EA          NOP
 $90:CC99 EA          NOP
 $90:CC9A EA          NOP
 $90:CC9B C2 20       REP #$20
-$90:CC9D AD 16 42    LDA $4216  [$7E:4216]
+$90:CC9D AD 16 42    LDA $4216            
 $90:CCA0 EB          XBA
 $90:CCA1 29 FF 00    AND #$00FF
 $90:CCA4 85 12       STA $12    [$7E:0012]
 $90:CCA6 E2 20       SEP #$20
 $90:CCA8 BF 44 B4 A0 LDA $A0B444,x[$A0:B504]
-$90:CCAC 8D 02 42    STA $4202  [$7E:4202]
+$90:CCAC 8D 02 42    STA $4202            
 $90:CCAF A5 18       LDA $18    [$7E:0018]
-$90:CCB1 8D 03 42    STA $4203  [$7E:4203]
+$90:CCB1 8D 03 42    STA $4203            
 $90:CCB4 EA          NOP
 $90:CCB5 EA          NOP
 $90:CCB6 EA          NOP
 $90:CCB7 C2 20       REP #$20
-$90:CCB9 AD 16 42    LDA $4216  [$7E:4216]
+$90:CCB9 AD 16 42    LDA $4216            
 $90:CCBC 18          CLC
 $90:CCBD 65 12       ADC $12    [$7E:0012]
 $90:CCBF 60          RTS
@@ -13100,7 +13100,7 @@ $90:DE3F 60          RTS                    ; Return
 
 $90:DE40 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:DE43 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = [Samus pose]
-$90:DE46 80 28       BRA $28    [$DE70]     ; Go to BRANCH_DE70
+$90:DE46 80 28       BRA $28    [$DE70]     ; Go to BRANCH_KNOCKBACK_FINISHED
 
 ; BRANCH_KNOCKBACK_MOVEMENT
 $90:DE48 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
@@ -13120,7 +13120,7 @@ $90:DE68 80 06       BRA $06    [$DE70]
 $90:DE6A A9 2A 00    LDA #$002A             ;\ Else (facing left):
 $90:DE6D 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - falling
 
-; BRANCH_DE70
+; BRANCH_KNOCKBACK_FINISHED
 $90:DE70 A9 01 00    LDA #$0001             ;\
 $90:DE73 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = knockback finished
 $90:DE76 28          PLP
@@ -14661,13 +14661,13 @@ $90:E793 F0 0B       BEQ $0B    [$E7A0]     ;} If Samus placement mode disabled:
 $90:E795 A9 0E E9    LDA #$E90E             ;\
 $90:E798 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = RTS
 $90:E79B 9C E6 09    STZ $09E6  [$7E:09E6]  ; Enable Samus placement mode
-$90:E79E 80 30       BRA $30    [$E7D0]
+$90:E79E 80 30       BRA $30    [$E7D0]     ; Return
 
 $90:E7A0 A9 01 00    LDA #$0001             ;\ Else (Samus placement mode enabled):
 $90:E7A3 8D E6 09    STA $09E6  [$7E:09E6]  ;} Disable Samus placement mode
 $90:E7A6 A9 52 EB    LDA #$EB52             ;\
 $90:E7A9 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
-$90:E7AC 80 22       BRA $22    [$E7D0]
+$90:E7AC 80 22       BRA $22    [$E7D0]     ; Return
 
 $90:E7AE AD E6 09    LDA $09E6  [$7E:09E6]  ;\ Else (controller 2 not newly pressed B)
 $90:E7B1 D0 1D       BNE $1D    [$E7D0]     ;} If Samus placement mode enabled:

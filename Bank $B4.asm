@@ -3383,18 +3383,18 @@ $B4:99E9 60          RTS                    ;} Return A = 0
 ; BRANCH_SELECT_L_A
 $B4:99EA E2 20       SEP #$20
 $B4:99EC A9 80       LDA #$80               ;\
-$B4:99EE 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$B4:99EE 8D 00 21    STA $2100              ;} Enable forced blank
 $B4:99F1 A9 00       LDA #$00               ;\
-$B4:99F3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$B4:99F3 8D 16 21    STA $2116              ;|
 $B4:99F6 A9 70       LDA #$70               ;|
-$B4:99F8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$B4:99F8 8D 17 21    STA $2117              ;|
 $B4:99FB A9 80       LDA #$80               ;|
-$B4:99FD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $7000..77FF = [$B0:8000..8FFF] (palette viewer tiles)
+$B4:99FD 8D 15 21    STA $2115              ;} VRAM $7000..77FF = [$B0:8000..8FFF] (palette viewer tiles)
 $B4:9A00 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $B4:9A04             dx 01,01,18,B08000,1000;|
 $B4:9A0C A9 02       LDA #$02               ;|
-$B4:9A0E 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$B4:9A11 9C 00 21    STZ $2100  [$7E:2100]  ; Disable forced blank
+$B4:9A0E 8D 0B 42    STA $420B              ;/
+$B4:9A11 9C 00 21    STZ $2100              ; Disable forced blank
 $B4:9A14 C2 20       REP #$20
 $B4:9A16 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 1
 $B4:9A19 A9 01 00    LDA #$0001             ;\
@@ -3408,18 +3408,18 @@ $B4:9A1C 60          RTS                    ;} Return A = 1
 ;;     A: Non-zero to skip processing frame
 $B4:9A1D E2 20       SEP #$20
 $B4:9A1F A9 80       LDA #$80               ;\
-$B4:9A21 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$B4:9A21 8D 00 21    STA $2100              ;} Enable forced blank
 $B4:9A24 A9 00       LDA #$00               ;\
-$B4:9A26 8D 16 21    STA $2116  [$7E:2116]  ;|
+$B4:9A26 8D 16 21    STA $2116              ;|
 $B4:9A29 A9 6B       LDA #$6B               ;|
-$B4:9A2B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$B4:9A2B 8D 17 21    STA $2117              ;|
 $B4:9A2E A9 80       LDA #$80               ;|
-$B4:9A30 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6B00..6FFF = [$AB:EA00..F3FF] (debugger font)
+$B4:9A30 8D 15 21    STA $2115              ;} VRAM $6B00..6FFF = [$AB:EA00..F3FF] (debugger font)
 $B4:9A33 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $B4:9A37             dx 01,01,18,ABEA00,0A00;|
 $B4:9A3F A9 02       LDA #$02               ;|
-$B4:9A41 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$B4:9A44 9C 00 21    STZ $2100  [$7E:2100]  ; Disable forced blank
+$B4:9A41 8D 0B 42    STA $420B              ;/
+$B4:9A44 9C 00 21    STZ $2100              ; Disable forced blank
 $B4:9A47 C2 20       REP #$20
 $B4:9A49 A9 C0 00    LDA #$00C0             ;\
 $B4:9A4C 8D 60 18    STA $1860  [$7E:1860]  ;} Text cursor X position = C0h

@@ -142,10 +142,10 @@ $84:828F 6B          RTL
 ;;     X: PLM index
 $84:8290 BD 87 1C    LDA $1C87,x[$7E:1CD3]  ;\
 $84:8293 4A          LSR A                  ;|
-$84:8294 8D 04 42    STA $4204  [$7E:4204]  ;|
+$84:8294 8D 04 42    STA $4204              ;|
 $84:8297 E2 20       SEP #$20               ;|
 $84:8299 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$84:829C 8D 06 42    STA $4206  [$7E:4206]  ;|
+$84:829C 8D 06 42    STA $4206              ;|
 $84:829F C2 20       REP #$20               ;|
 $84:82A1 EA          NOP                    ;} PLM Y block = [PLM block index] / 2 / [room width in blocks]
 $84:82A2 EA          NOP                    ;|
@@ -153,9 +153,9 @@ $84:82A3 EA          NOP                    ;|
 $84:82A4 EA          NOP                    ;|
 $84:82A5 EA          NOP                    ;|
 $84:82A6 EA          NOP                    ;|
-$84:82A7 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$84:82A7 AD 14 42    LDA $4214              ;|
 $84:82AA 8D 2B 1C    STA $1C2B  [$7E:1C2B]  ;/
-$84:82AD AD 16 42    LDA $4216  [$7E:4216]  ;\
+$84:82AD AD 16 42    LDA $4216              ;\
 $84:82B0 8D 29 1C    STA $1C29  [$7E:1C29]  ;} PLM X block = [PLM block index] / 2 % [room width in blocks]
 $84:82B3 6B          RTL
 }
@@ -411,15 +411,15 @@ $84:83FA AB          PLB                    ;/
 $84:83FB BB          TYX                    ;\
 $84:83FC A0 02 00    LDY #$0002             ;|
 $84:83FF B3 06       LDA ($06,s),y[$80:A11F];|
-$84:8401 8D 02 42    STA $4202  [$7E:4202]  ;|
+$84:8401 8D 02 42    STA $4202              ;|
 $84:8404 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$84:8407 8D 03 42    STA $4203  [$7E:4203]  ;|
+$84:8407 8D 03 42    STA $4203              ;|
 $84:840A A0 01 00    LDY #$0001             ;|
 $84:840D B3 06       LDA ($06,s),y[$80:A11E];} PLM block index = ([(return address) + 1] * [room width] + [(return address) + 2]) * 2
 $84:840F C2 20       REP #$20               ;|
 $84:8411 29 FF 00    AND #$00FF             ;|
 $84:8414 18          CLC                    ;|
-$84:8415 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:8415 6D 16 42    ADC $4216              ;|
 $84:8418 0A          ASL A                  ;|
 $84:8419 9D 87 1C    STA $1C87,x[$7E:1CD5]  ;/
 $84:841C A0 03 00    LDY #$0003             ;\
@@ -496,14 +496,14 @@ $84:8481 6B          RTL                    ;} Return carry set
 ; BRANCH_FOUND
 $84:8482 E2 20       SEP #$20
 $84:8484 BF 03 00 8F LDA $8F0003,x[$8F:8003];\
-$84:8488 8D 02 42    STA $4202  [$7E:4202]  ;|
+$84:8488 8D 02 42    STA $4202              ;|
 $84:848B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$84:848E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$84:848E 8D 03 42    STA $4203              ;|
 $84:8491 BF 02 00 8F LDA $8F0002,x[$8F:8002];|
 $84:8495 C2 20       REP #$20               ;} PLM block index = [$8F:0003 + [X]] * [room width] + [$8F:8002 + [X]]
 $84:8497 29 FF 00    AND #$00FF             ;|
 $84:849A 18          CLC                    ;|
-$84:849B 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:849B 6D 16 42    ADC $4216              ;|
 $84:849E 0A          ASL A                  ;|
 $84:849F 99 87 1C    STA $1C87,y[$7E:1CD5]  ;/
 $84:84A2 BF 04 00 8F LDA $8F0004,x[$8F:8004];\
@@ -627,9 +627,9 @@ $84:855A 4A          LSR A                  ;|
 $84:855B 4A          LSR A                  ;|
 $84:855C 4A          LSR A                  ;|
 $84:855D E2 20       SEP #$20               ;|
-$84:855F 8D 02 42    STA $4202  [$7E:4202]  ;|
+$84:855F 8D 02 42    STA $4202              ;|
 $84:8562 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$84:8565 8D 03 42    STA $4203  [$7E:4203]  ;|
+$84:8565 8D 03 42    STA $4203              ;|
 $84:8568 C2 20       REP #$20               ;} PLM block index = [enemy Y position] / 10h * [room width] + [enemy X position] / 10h
 $84:856A B9 7A 0F    LDA $0F7A,y            ;|
 $84:856D 4A          LSR A                  ;|
@@ -637,7 +637,7 @@ $84:856E 4A          LSR A                  ;|
 $84:856F 4A          LSR A                  ;|
 $84:8570 4A          LSR A                  ;|
 $84:8571 18          CLC                    ;|
-$84:8572 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:8572 6D 16 42    ADC $4216              ;|
 $84:8575 0A          ASL A                  ;|
 $84:8576 9D 87 1C    STA $1C87,x            ;/
 $84:8579 68          PLA
@@ -2202,7 +2202,7 @@ $84:8E5D 30 F0       BMI $F0    [$8E4F]     ;/
 $84:8E5F A5 1A       LDA $1A    [$7E:001A]  ;\
 $84:8E61 29 0F 00    AND #$000F             ;|
 $84:8E64 09 00 40    ORA #$4000             ;} Calculate ([PLM draw Y block] & Fh) * 40h
-$84:8E67 8D 02 42    STA $4202  [$7E:4202]  ;/
+$84:8E67 8D 02 42    STA $4202              ;/
 $84:8E6A A5 18       LDA $18    [$7E:0018]  ;\
 $84:8E6C 29 1F 00    AND #$001F             ;|
 $84:8E6F C9 10 00    CMP #$0010             ;} If [PLM draw X block] & 1Fh < 10h:
@@ -2210,7 +2210,7 @@ $84:8E72 B0 18       BCS $18    [$8E8C]     ;/
 $84:8E74 0A          ASL A                  ;\
 $84:8E75 18          CLC                    ;|
 $84:8E76 65 09       ADC $09    [$7E:0009]  ;} PLM draw tilemap VRAM destination = ([PLM draw X block] & 1Fh) * 2 + VRAM map 1st screen base address + ([PLM draw Y block] & Fh) * 40h
-$84:8E78 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:8E78 6D 16 42    ADC $4216              ;|
 $84:8E7B 48          PHA                    ;/
 $84:8E7C AD 1D 09    LDA $091D  [$7E:091D]  ;\
 $84:8E7F 29 00 01    AND #$0100             ;} If [BG1 X scroll offset] & 100h != 0:
@@ -2224,7 +2224,7 @@ $84:8E8A 80 16       BRA $16    [$8EA2]
 $84:8E8C 0A          ASL A                  ;\ Else ([PLM draw X block] & 1Fh >= 10h):
 $84:8E8D 18          CLC                    ;|
 $84:8E8E 65 0C       ADC $0C    [$7E:000C]  ;} PLM draw tilemap VRAM destination = ([PLM draw X block] & 1Fh) * 2 - 20h + VRAM map 2nd screen base address + ([PLM draw Y block] & Fh) * 40h
-$84:8E90 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:8E90 6D 16 42    ADC $4216              ;|
 $84:8E93 48          PHA                    ;/
 $84:8E94 AD 1D 09    LDA $091D  [$7E:091D]  ;\
 $84:8E97 29 00 01    AND #$0100             ;} If [BG1 X scroll offset] & 100h != 0:
@@ -2679,7 +2679,7 @@ $84:91D9 4C C5 8D    JMP $8DC5  [$84:8DC5]  ; Go to LOOP_DRAW_ENTRY
 $84:91DC A5 1A       LDA $1A    [$7E:001A]  ;\
 $84:91DE 29 0F 00    AND #$000F             ;|
 $84:91E1 09 00 40    ORA #$4000             ;} Calculate ([PLM draw Y block] & Fh) * 40h
-$84:91E4 8D 02 42    STA $4202  [$7E:4202]  ;/
+$84:91E4 8D 02 42    STA $4202              ;/
 $84:91E7 A5 18       LDA $18    [$7E:0018]  ;\
 $84:91E9 29 1F 00    AND #$001F             ;|
 $84:91EC C9 10 00    CMP #$0010             ;} If [PLM draw X block] & 1Fh < 10h:
@@ -2687,7 +2687,7 @@ $84:91EF B0 18       BCS $18    [$9209]     ;/
 $84:91F1 0A          ASL A                  ;\
 $84:91F2 18          CLC                    ;|
 $84:91F3 65 09       ADC $09    [$7E:0009]  ;} PLM draw tilemap VRAM destination = ([PLM draw X block] & 1Fh) * 2 + VRAM map 1st screen base address + ([PLM draw Y block] & Fh) * 40h
-$84:91F5 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:91F5 6D 16 42    ADC $4216              ;|
 $84:91F8 48          PHA                    ;/
 $84:91F9 AD 1D 09    LDA $091D  [$7E:091D]  ;\
 $84:91FC 29 00 01    AND #$0100             ;} If [BG1 X scroll offset] & 100h != 0:
@@ -2701,7 +2701,7 @@ $84:9207 80 16       BRA $16    [$921F]
 $84:9209 0A          ASL A                  ;\ Else ([PLM draw X block] & 1Fh >= 10h):
 $84:920A 18          CLC                    ;|
 $84:920B 65 0C       ADC $0C    [$7E:000C]  ;} PLM draw tilemap VRAM destination = ([PLM draw X block] & 1Fh) * 2 - 20h + VRAM map 2nd screen base address + ([PLM draw Y block] & Fh) * 40h
-$84:920D 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:920D 6D 16 42    ADC $4216              ;|
 $84:9210 48          PHA                    ;/
 $84:9211 AD 1D 09    LDA $091D  [$7E:091D]  ;\
 $84:9214 29 00 01    AND #$0100             ;} If [BG1 X scroll offset] & 100h != 0:
@@ -10892,14 +10892,14 @@ $84:D15B 60          RTS
 $84:D15C DA          PHX
 $84:D15D E2 20       SEP #$20               ;\
 $84:D15F A9 08       LDA #$08               ;|
-$84:D161 8D 02 42    STA $4202  [$7E:4202]  ;|
+$84:D161 8D 02 42    STA $4202              ;|
 $84:D164 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$84:D167 8D 03 42    STA $4203  [$7E:4203]  ;|
+$84:D167 8D 03 42    STA $4203              ;|
 $84:D16A A9 04       LDA #$04               ;|
 $84:D16C C2 20       REP #$20               ;|
 $84:D16E 29 FF 00    AND #$00FF             ;} If block (4, 8) is not a blank air block: return
 $84:D171 18          CLC                    ;|
-$84:D172 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$84:D172 6D 16 42    ADC $4216              ;|
 $84:D175 0A          ASL A                  ;|
 $84:D176 AA          TAX                    ;|
 $84:D177 BF 02 00 7F LDA $7F0002,x[$7F:030A];|

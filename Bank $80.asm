@@ -3,7 +3,7 @@
 $80:8000             dw 0000 ; Skip NTSC/PAL and SRAM mapping check ($85F6)
 $80:8002             dw 0000 ; Demo recorder ($90:E759)
 $80:8004             dw 0000 ; Debug mode, written to $05D1 on boot
-$80:8006             dw 0000 ; Debug scrolling ($82:8B44: game state 8 - main gameplay)
+$80:8006             dw 0000 ; Debug scrolling ($82:8B44)
 $80:8008             dw 0000 ; Disable audio ($80:8024)
 }
 
@@ -17,14 +17,23 @@ $80:800C 85 04       STA $04    [$7E:0004]  ;|
 $80:800E A3 01       LDA $01,s  [$7E:1FFD]  ;} $03 = (return address)
 $80:8010 85 03       STA $03    [$7E:0003]  ;/
 $80:8012 18          CLC                    ;\
-$80:8013 69 03 00    ADC #$0003             ;} Adjust return address
+$80:8013 69 03 00    ADC #$0003             ;} (Return address) += 3
 $80:8016 83 01       STA $01,s  [$7E:1FFD]  ;/
 $80:8018 A0 01 00    LDY #$0001             ;\
 $80:801B B7 03       LDA [$03],y[$80:845D]  ;|
 $80:801D 85 00       STA $00    [$7E:0000]  ;|
-$80:801F C8          INY                    ;} $00 = [(return address) + 1] (parameter address)
+$80:801F C8          INY                    ;} $00 = [[$03] + 1] (APU data pointer)
 $80:8020 B7 03       LDA [$03],y[$80:845E]  ;|
 $80:8022 85 01       STA $01    [$7E:0001]  ;/
+}
+
+
+;;; $8024: Upload to APU (from [$00]) (external) ;;;
+{
+;; Parameter
+;;     $00: APU data pointer
+$80:8024 20 28 80    JSR $8028  [$80:8028]  ; Upload to APU
+$80:8027 6B          RTL
 }
 
 
@@ -32,9 +41,6 @@ $80:8022 85 01       STA $01    [$7E:0001]  ;/
 {
 ;; Parameter
 ;;     $00: APU data pointer
-$80:8024 20 28 80    JSR $8028  [$80:8028]
-$80:8027 6B          RTL
-
 $80:8028 AF 08 80 80 LDA $808008[$80:8008]  ;\
 $80:802C F0 01       BEQ $01    [$802F]     ;} If [$80:8008] != 0:
 $80:802E 60          RTS                    ; Return
@@ -43,19 +49,19 @@ $80:802F 08          PHP
 $80:8030 8B          PHB
 $80:8031 C2 30       REP #$30
 $80:8033 A9 FF FF    LDA #$FFFF             ;\
-$80:8036 8F 17 06 00 STA $000617[$7E:0617]  ;} Set uploading to APU flag
+$80:8036 8F 17 06 00 STA $000617[$7E:0617]  ;} Uploading to APU flag = FFFFh
 $80:803A E2 20       SEP #$20
 $80:803C C2 10       REP #$10
 $80:803E A9 FF       LDA #$FF               ;\
-$80:8040 8F 40 21 00 STA $002140[$7E:2140]  ;} APU IO 0 = FFh (request APU upload)
-$80:8044 A4 00       LDY $00    [$7E:0000]  ; Y = parameter short address
-$80:8046 A5 02       LDA $02    [$7E:0002]  ;\
-$80:8048 48          PHA                    ;} Set DB to parameter bank
+$80:8040 8F 40 21 00 STA $002140            ;} APU IO 0 = FFh (request APU upload)
+$80:8044 A4 00       LDY $00    [$7E:0000]  ;\
+$80:8046 A5 02       LDA $02    [$7E:0002]  ;|
+$80:8048 48          PHA                    ;} DB:Y = (APU data pointer)
 $80:8049 AB          PLB                    ;/
 $80:804A C2 30       REP #$30
 $80:804C 20 59 80    JSR $8059  [$80:8059]  ; Send APU data
 $80:804F A9 00 00    LDA #$0000             ;\
-$80:8052 8F 17 06 00 STA $000617[$7E:0617]  ;} Clear uploading to APU flag
+$80:8052 8F 17 06 00 STA $000617[$7E:0617]  ;} Uploading to APU flag = 0
 $80:8056 AB          PLB
 $80:8057 28          PLP
 $80:8058 60          RTS
@@ -65,8 +71,7 @@ $80:8058 60          RTS
 ;;; $8059: Send APU data ;;;
 {
 ;; Parameters:
-;;     Y: Address of data
-;;     DB: Bank of data
+;;     DB:Y: APU data pointer
 
 ; Data format:
 ;     ssss dddd [xx xx...] (data block 0)
@@ -107,7 +112,7 @@ $80:805C A9 00 30    LDA #$3000             ;\
 $80:805F 8F 41 06 00 STA $000641[$7E:0641]  ;|
                                             ;|
 $80:8063 A9 AA BB    LDA #$BBAA             ;|
-$80:8066 CF 40 21 00 CMP $002140[$7E:2140]  ;|
+$80:8066 CF 40 21 00 CMP $002140            ;|
 $80:806A F0 0D       BEQ $0D    [$8079]     ;} Wait until [APU IO 0..1] = AAh BBh
 $80:806C AF 41 06 00 LDA $000641[$7E:0641]  ;|
 $80:8070 3A          DEC A                  ;|
@@ -133,18 +138,18 @@ $80:808B B9 00 00    LDA $0000,y[$CF:8005]  ;|
 $80:808E 20 03 81    JSR $8103  [$80:8103]  ;} Data = [[Y++]]
 $80:8091 EB          XBA                    ;/
 
-$80:8092 CF 40 21 00 CMP $002140[$7E:2140]  ;\
+$80:8092 CF 40 21 00 CMP $002140            ;\
 $80:8096 D0 FA       BNE $FA    [$8092]     ;} Wait until APU IO 0 echoes
 $80:8098 1A          INC A                  ; Increment index
 
 ; BRANCH_UPLOAD_DATA
 $80:8099 C2 20       REP #$20
-$80:809B 8F 40 21 00 STA $002140[$7E:2140]  ; APU IO 0..1 = [index] [data]
+$80:809B 8F 40 21 00 STA $002140            ; APU IO 0..1 = [index] [data]
 $80:809F E2 20       SEP #$20
 $80:80A1 CA          DEX                    ; Decrement X (block size)
 $80:80A2 D0 E6       BNE $E6    [$808A]     ; If [X] != 0: go to LOOP_NEXT_DATA
 
-$80:80A4 CF 40 21 00 CMP $002140[$7E:2140]  ;\
+$80:80A4 CF 40 21 00 CMP $002140            ;\
 $80:80A8 D0 FA       BNE $FA    [$80A4]     ;} Wait until APU IO 0 echoes
 
 $80:80AA 69 03       ADC #$03               ; Kick = [index] + 4
@@ -158,21 +163,21 @@ $80:80B4 20 00 81    JSR $8100  [$80:8100]  ;} X = [[Y]] (block size)
 $80:80B7 AA          TAX                    ;} Y += 2
 $80:80B8 B9 00 00    LDA $0000,y[$CF:8002]  ;\
 $80:80BB 20 00 81    JSR $8100  [$80:8100]  ;} APU IO 2..3 = [[Y]] (destination address)
-$80:80BE 8F 42 21 00 STA $002142[$7E:2142]  ;} Y += 2
+$80:80BE 8F 42 21 00 STA $002142            ;} Y += 2
 $80:80C2 E2 20       SEP #$20
 $80:80C4 E0 01 00    CPX #$0001             ;\
 $80:80C7 A9 00       LDA #$00               ;|
 $80:80C9 2A          ROL A                  ;} If block size = 0: APU IO 1 = 0 (EOF), else APU IO 1 = 1 (arbitrary non-zero value)
-$80:80CA 8F 41 21 00 STA $002141[$7E:2141]  ;/
+$80:80CA 8F 41 21 00 STA $002141            ;/
 $80:80CE 69 7F       ADC #$7F               ; Set overflow if block size != 0, else clear overflow
 $80:80D0 68          PLA                    ;\
-$80:80D1 8F 40 21 00 STA $002140[$7E:2140]  ;} APU IO 0 = kick
+$80:80D1 8F 40 21 00 STA $002140            ;} APU IO 0 = kick
 $80:80D5 DA          PHX
 $80:80D6 A2 00 10    LDX #$1000             ;\
                                             ;|
 $80:80D9 CA          DEX                    ;} Wait until APU IO 0 echoes
 $80:80DA F0 16       BEQ $16    [$80F2]     ;} If exceeded 1000h attempts: return
-$80:80DC CF 40 21 00 CMP $002140[$7E:2140]  ;|
+$80:80DC CF 40 21 00 CMP $002140            ;|
 $80:80E0 D0 F7       BNE $F7    [$80D9]     ;/
 $80:80E2 FA          PLX
 $80:80E3 70 9A       BVS $9A    [$807F]     ; If block size != 0: go to BRANCH_UPLOAD_DATA_BLOCK
@@ -195,18 +200,40 @@ $80:80FF 60          RTS
 
 ;;; $8100: Increment Y twice, bank overflow check ;;;
 {
-; Only increments Y once if overflows bank first time (which is a bug scenario)
-$80:8100 C8          INY
-$80:8101 F0 04       BEQ $04    [$8107]
+;; Parameters:
+;;     DB:Y: Pointer
+;;     $02: Bank mirror
+;; Returns:
+;;     DB:Y: Pointer incremented twice (Y wraps around from $8000 if bank overflows)
+;;     $02: Bank mirror incremented if needed
+
+; Fails to increment Y a second time if the first increment overflows the bank
+$80:8100 C8          INY                    ; Increment Y
+$80:8101 F0 04       BEQ $04    [$8107]     ; If [Y] = 0: go to handle bank overflow
 }
 
 
 ;;; $8103: Increment Y, bank overflow check ;;;
 {
-$80:8103 C8          INY
-$80:8104 F0 01       BEQ $01    [$8107]
+;; Parameters:
+;;     DB:Y: Pointer
+;;     $02: Bank mirror
+;; Returns:
+;;     DB:Y: Pointer incremented twice (Y wraps around from $8000 if bank overflows)
+;;     $02: Bank mirror incremented if needed
+$80:8103 C8          INY                    ; Increment Y
+$80:8104 F0 01       BEQ $01    [$8107]     ; If [Y] = 0: go to handle bank overflow
 $80:8106 60          RTS
+}
 
+
+;;; $8107: Handle bank overflow ;;;
+{
+;; Parameters:
+;;     $02: Bank
+;; Returns:
+;;     Y: $8000
+;;     DB/$02: Incremented bank
 $80:8107 E6 02       INC $02    [$7E:0002]  ; Increment $02
 $80:8109 D4 01       PEI ($01)  [$D080]     ;\
 $80:810B AB          PLB                    ;} DB = [$02]
@@ -224,21 +251,21 @@ $80:8110 60          RTS
 ; r(t+1) = r(t) * 5 + 0x111 (roughly; if the adding of x * 100h causes overflow, then a further 1 is added)
 $80:8111 E2 20       SEP #$20
 $80:8113 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
-$80:8116 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:8116 8D 02 42    STA $4202              ;|
 $80:8119 A9 05       LDA #$05               ;|
-$80:811B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:811B 8D 03 42    STA $4203              ;|
 $80:811E EA          NOP                    ;} A = [random number low] * 5
 $80:811F C2 20       REP #$20               ;|
-$80:8121 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$80:8121 AD 16 42    LDA $4216              ;|
 $80:8124 48          PHA                    ;/
 $80:8125 E2 20       SEP #$20
 $80:8127 AD E6 05    LDA $05E6  [$7E:05E6]  ;\
-$80:812A 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:812A 8D 02 42    STA $4202              ;|
 $80:812D A9 05       LDA #$05               ;|
-$80:812F 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:812F 8D 03 42    STA $4203              ;|
 $80:8132 EB          XBA                    ;|
 $80:8133 EA          NOP                    ;|
-$80:8134 AD 16 42    LDA $4216  [$7E:4216]  ;} A += ([random number high] * 5 + 1) * 100h
+$80:8134 AD 16 42    LDA $4216              ;} A += ([random number high] * 5 + 1) * 100h
 $80:8137 38          SEC                    ;|
 $80:8138 63 02       ADC $02,s  [$7E:1FFB]  ;|
 $80:813A 83 02       STA $02,s  [$7E:1FFB]  ;|
@@ -263,8 +290,8 @@ $80:8146 08          PHP
 $80:8147 8B          PHB
 $80:8148 C2 30       REP #$30
 $80:814A DA          PHX
-$80:814B 4B          PHK
-$80:814C AB          PLB
+$80:814B 4B          PHK                    ;\
+$80:814C AB          PLB                    ;} DB = $80
 $80:814D 8D DD 05    STA $05DD  [$7E:05DD]  ; Timed held input timer reset value = [A]
 $80:8150 A5 8B       LDA $8B    [$7E:008B]  ;\
 $80:8152 85 12       STA $12    [$7E:0012]  ;|
@@ -304,29 +331,29 @@ $80:818D 6B          RTL
 ;;; $818E: Change bit index to byte index and bitmask ;;;
 {
 ;; Parameter:
-;;     A: Bit index, bit 15 is forbidden (why?)
+;;     A: Bit index, 8000h bit is forbidden
 ;; Returns:
 ;;     A/X: Byte index ([A] >> 3)
 ;;     $05E7: Bitmask (1 << ([A] & 7))
 
 ; Called mostly by PLMs
-$80:818E AA          TAX
-$80:818F 10 01       BPL $01    [$8192]
-$80:8191 00          BRK
+$80:818E AA          TAX                    ;\
+$80:818F 10 01       BPL $01    [$8192]     ;} If [A] & 8000h != 0:
+$80:8191 00          BRK                    ; Crash
 
-$80:8192 9C E7 05    STZ $05E7  [$7E:05E7]
-$80:8195 48          PHA
-$80:8196 29 07 00    AND #$0007
-$80:8199 38          SEC
-
-$80:819A 2E E7 05    ROL $05E7  [$7E:05E7]
-$80:819D 3A          DEC A
-$80:819E 10 FA       BPL $FA    [$819A]
-$80:81A0 68          PLA
-$80:81A1 4A          LSR A
-$80:81A2 4A          LSR A
-$80:81A3 4A          LSR A
-$80:81A4 AA          TAX
+$80:8192 9C E7 05    STZ $05E7  [$7E:05E7]  ;\
+$80:8195 48          PHA                    ;|
+$80:8196 29 07 00    AND #$0007             ;|
+$80:8199 38          SEC                    ;|
+                                            ;} Bitmask = 1 << ([A] & 7)
+$80:819A 2E E7 05    ROL $05E7  [$7E:05E7]  ;|
+$80:819D 3A          DEC A                  ;|
+$80:819E 10 FA       BPL $FA    [$819A]     ;|
+$80:81A0 68          PLA                    ;/
+$80:81A1 4A          LSR A                  ;\
+$80:81A2 4A          LSR A                  ;|
+$80:81A3 4A          LSR A                  ;} X = A = [A] >> 3
+$80:81A4 AA          TAX                    ;/
 $80:81A5 6B          RTL
 }
 
@@ -416,30 +443,28 @@ $80:81F9 6B          RTL
 {
 ;; Parameter:
 ;;     A: Event number
-       {
-;;         0   - Zebes is awake
-;;         1   - Shitroid ate sidehopper
-;;         2   - Mother Brain's glass is destroyed
-;;         3   - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
-;;         4   - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
-;;         5   - zebetite destroyed bit 2 (true if all 4 zebetites are destroyed)
-;;         6   - Phantoon statue is grey
-;;         7   - Ridley statue is grey
-;;         8   - Draygon statue is grey
-;;         9   - Kraid statue is grey
-;;         Ah  - entrance to Tourian is unlocked
-;;         Bh  - Maridia noobtube is broken
-;;         Ch  - Lower Norfair chozo has lowered the acid
-;;         Dh  - Shaktool cleared a path
-;;         Eh  - Zebes timebomb set
-;;         Fh  - critters escaped
-;;         10h - 1st metroid hall cleared
-;;         11h - 1st metroid shaft cleared
-;;         12h - 2nd metroid hall cleared
-;;         13h - 2nd metroid shaft cleared
-;;         14h - unused
-;;         15h - outran speed booster lavaquake
-       }
+;;         0: Zebes is awake
+;;         1: Shitroid ate sidehopper
+;;         2: Mother Brain's glass is destroyed
+;;         3: Zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
+;;         4: Zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
+;;         5: Zebetite destroyed bit 2 (true if all 4 zebetites are destroyed)
+;;         6: Phantoon statue is grey
+;;         7: Ridley statue is grey
+;;         8: Draygon statue is grey
+;;         9: Kraid statue is grey
+;;         Ah: Entrance to Tourian is unlocked
+;;         Bh: Maridia noobtube is broken
+;;         Ch: Lower Norfair chozo has lowered the acid
+;;         Dh: Shaktool cleared a path
+;;         Eh: Zebes timebomb set
+;;         Fh: Critters escaped
+;;         10h: 1st metroid hall cleared
+;;         11h: 1st metroid shaft cleared
+;;         12h: 2nd metroid hall cleared
+;;         13h: 2nd metroid shaft cleared
+;;         14h: Unused
+;;         15h: Outran speed booster lavaquake
 
 $80:81FA DA          PHX
 $80:81FB 5A          PHY
@@ -456,7 +481,7 @@ $80:8211 6B          RTL
 }
 
 
-;;; $8212: Unmark a event [A] ;;;
+;;; $8212: Unmark event [A] ;;;
 {
 ;; Parameter:
 ;;     A: Event number
@@ -581,10 +606,10 @@ $80:82C5 48          PHA
 $80:82C6 08          PHP
 $80:82C7 E2 20       SEP #$20
 
-$80:82C9 AD 12 42    LDA $4212  [$7E:4212]  ;\
+$80:82C9 AD 12 42    LDA $4212              ;\
 $80:82CC 10 FB       BPL $FB    [$82C9]     ;} Wait until v-blank is active
 
-$80:82CE AD 12 42    LDA $4212  [$7E:4212]  ;\
+$80:82CE AD 12 42    LDA $4212              ;\
 $80:82D1 30 FB       BMI $FB    [$82CE]     ;} Wait until v-blank has finished
 $80:82D3 28          PLP
 $80:82D4 68          PLA
@@ -626,37 +651,37 @@ $80:82DD 9C F1 05    STZ $05F1  [$7E:05F1]  ;\
 $80:82E0 9C F3 05    STZ $05F3  [$7E:05F3]  ;} Result = 0
 $80:82E3 E2 10       SEP #$10
 $80:82E5 AC EB 05    LDY $05EB  [$7E:05EB]  ;\
-$80:82E8 8C 02 42    STY $4202  [$7E:4202]  ;|
+$80:82E8 8C 02 42    STY $4202              ;|
 $80:82EB AC E9 05    LDY $05E9  [$7E:05E9]  ;|
-$80:82EE 8C 03 42    STY $4203  [$7E:4203]  ;|
+$80:82EE 8C 03 42    STY $4203              ;|
 $80:82F1 EA          NOP                    ;} Result = ac
 $80:82F2 EA          NOP                    ;|
 $80:82F3 EA          NOP                    ;|
-$80:82F4 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$80:82F4 AD 16 42    LDA $4216              ;|
 $80:82F7 8D F1 05    STA $05F1  [$7E:05F1]  ;/
 $80:82FA AC EA 05    LDY $05EA  [$7E:05EA]  ;\
-$80:82FD 8C 03 42    STY $4203  [$7E:4203]  ;|
+$80:82FD 8C 03 42    STY $4203              ;|
 $80:8300 EA          NOP                    ;|
 $80:8301 AD F2 05    LDA $05F2  [$7E:05F2]  ;} Result += bc * 100h
 $80:8304 18          CLC                    ;|
-$80:8305 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:8305 6D 16 42    ADC $4216              ;|
 $80:8308 8D F2 05    STA $05F2  [$7E:05F2]  ;/
 $80:830B AC EC 05    LDY $05EC  [$7E:05EC]  ;\
-$80:830E 8C 02 42    STY $4202  [$7E:4202]  ;|
+$80:830E 8C 02 42    STY $4202              ;|
 $80:8311 AC E9 05    LDY $05E9  [$7E:05E9]  ;|
-$80:8314 8C 03 42    STY $4203  [$7E:4203]  ;|
+$80:8314 8C 03 42    STY $4203              ;|
 $80:8317 EA          NOP                    ;} Result += ad * 100h
 $80:8318 AD F2 05    LDA $05F2  [$7E:05F2]  ;|
 $80:831B 18          CLC                    ;|
-$80:831C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:831C 6D 16 42    ADC $4216              ;|
 $80:831F 8D F2 05    STA $05F2  [$7E:05F2]  ;/
 $80:8322 AC EA 05    LDY $05EA  [$7E:05EA]  ;\
-$80:8325 8C 03 42    STY $4203  [$7E:4203]  ;|
+$80:8325 8C 03 42    STY $4203              ;|
 $80:8328 EA          NOP                    ;|
 $80:8329 EA          NOP                    ;|
 $80:832A AD F3 05    LDA $05F3  [$7E:05F3]  ;} Result += bd * 10000h
 $80:832D 18          CLC                    ;|
-$80:832E 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:832E 6D 16 42    ADC $4216              ;|
 $80:8331 8D F3 05    STA $05F3  [$7E:05F3]  ;/
 $80:8334 C2 30       REP #$30
 $80:8336 FA          PLX
@@ -691,7 +716,7 @@ $80:834E AB          PLB
 $80:834F E2 20       SEP #$20
 $80:8351 A5 84       LDA $84    [$7E:0084]
 $80:8353 09 80       ORA #$80
-$80:8355 8D 00 42    STA $4200  [$7E:4200]
+$80:8355 8D 00 42    STA $4200            
 $80:8358 85 84       STA $84    [$7E:0084]
 $80:835A AB          PLB
 $80:835B 28          PLP
@@ -708,7 +733,7 @@ $80:8360 AB          PLB
 $80:8361 E2 20       SEP #$20
 $80:8363 A5 84       LDA $84    [$7E:0084]
 $80:8365 29 7F       AND #$7F
-$80:8367 8D 00 42    STA $4200  [$7E:4200]
+$80:8367 8D 00 42    STA $4200            
 $80:836A 85 84       STA $84    [$7E:0084]
 $80:836C AB          PLB
 $80:836D 28          PLP
@@ -775,17 +800,17 @@ $80:8395 08          PHP
 $80:8396 E2 10       SEP #$10
 $80:8398 C2 20       REP #$20
 $80:839A A9 00 22    LDA #$2200
-$80:839D 8D 10 43    STA $4310  [$7E:4310]
+$80:839D 8D 10 43    STA $4310            
 $80:83A0 A9 00 C0    LDA #$C000
-$80:83A3 8D 12 43    STA $4312  [$7E:4312]
+$80:83A3 8D 12 43    STA $4312            
 $80:83A6 A2 7E       LDX #$7E
-$80:83A8 8E 14 43    STX $4314  [$7E:4314]
+$80:83A8 8E 14 43    STX $4314            
 $80:83AB A9 00 02    LDA #$0200
-$80:83AE 8D 15 43    STA $4315  [$7E:4315]
+$80:83AE 8D 15 43    STA $4315            
 $80:83B1 A2 00       LDX #$00
-$80:83B3 8E 21 21    STX $2121  [$7E:2121]
+$80:83B3 8E 21 21    STX $2121            
 $80:83B6 A2 02       LDX #$02
-$80:83B8 8E 0B 42    STX $420B  [$7E:420B]
+$80:83B8 8E 0B 42    STX $420B            
 $80:83BB 28          PLP
 $80:83BC 6B          RTL
 }
@@ -907,7 +932,7 @@ $80:841E FB          XCE                    ;} Enable native mode
 $80:841F 5C 23 84 80 JML $808423[$80:8423]  ; Execute in bank $80 (FastROM)
 $80:8423 E2 20       SEP #$20
 $80:8425 A9 01       LDA #$01               ;\
-$80:8427 8D 0D 42    STA $420D  [$7E:420D]  ;} Enable FastROM
+$80:8427 8D 0D 42    STA $420D              ;} Enable FastROM
 $80:842A 85 86       STA $86    [$7E:0086]  ;/
 $80:842C C2 30       REP #$30
 $80:842E A2 FF 1F    LDX #$1FFF             ;\
@@ -919,10 +944,10 @@ $80:8437 AB          PLB                    ;} DB = $80
 $80:8438 E2 30       SEP #$30
 $80:843A A2 04       LDX #$04               ;\
                                             ;|
-$80:843C AD 12 42    LDA $4212  [$7E:4212]  ;|
+$80:843C AD 12 42    LDA $4212              ;|
 $80:843F 10 FB       BPL $FB    [$843C]     ;|
                                             ;} Wait the remainder of this frame and 3 more frames (???)
-$80:8441 AD 12 42    LDA $4212  [$7E:4212]  ;|
+$80:8441 AD 12 42    LDA $4212              ;|
 $80:8444 30 FB       BMI $FB    [$8441]     ;|
 $80:8446 CA          DEX                    ;|
 $80:8447 D0 F3       BNE $F3    [$843C]     ;/
@@ -976,7 +1001,7 @@ $80:8480 D0 F3       BNE $F3    [$8475]     ;/
 {
 $80:8482 E2 20       SEP #$20
 $80:8484 A9 8F       LDA #$8F               ;\
-$80:8486 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$80:8486 8D 00 21    STA $2100              ;} Enable forced blank
 $80:8489 C2 30       REP #$30
 $80:848B F4 00 7E    PEA $7E00              ;\
 $80:848E AB          PLB                    ;|
@@ -997,7 +1022,7 @@ $80:84AD 10 E4       BPL $E4    [$8493]     ;|
 $80:84AF 4B          PHK                    ;|
 $80:84B0 AB          PLB                    ;/
 $80:84B1 E2 30       SEP #$30
-$80:84B3 9C 00 42    STZ $4200  [$7E:4200]  ;\
+$80:84B3 9C 00 42    STZ $4200              ;\
 $80:84B6 64 84       STZ $84    [$7E:0084]  ;} Disable NMI and auto-joypad read
 $80:84B8 A9 8F       LDA #$8F               ;\
 $80:84BA 85 51       STA $51    [$7E:0051]  ;} Set forced blank
@@ -1033,15 +1058,15 @@ $80:850F 9C 1F 07    STZ $071F  [$7E:071F]  ; Samus top half tiles definition = 
 $80:8512 9C 21 07    STZ $0721  [$7E:0721]  ; Samus bottom half tiles definition = 0
 $80:8515 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $80:8519 C2 30       REP #$30
-$80:851B 9C 40 21    STZ $2140  [$7E:2140]  ;\
-$80:851E 9C 42 21    STZ $2142  [$7E:2142]  ;} Clear APU IO registers (harmless 16-bit write bug)
+$80:851B 9C 40 21    STZ $2140              ;\
+$80:851E 9C 42 21    STZ $2142              ;} Clear APU IO registers (harmless 16-bit write bug)
 $80:8521 E2 30       SEP #$30
 $80:8523 A2 04       LDX #$04               ;\
                                             ;|
-$80:8525 AD 12 42    LDA $4212  [$7E:4212]  ;|
+$80:8525 AD 12 42    LDA $4212              ;|
 $80:8528 10 FB       BPL $FB    [$8525]     ;|
                                             ;} Wait the remainder of this frame and 3 more frames (???)
-$80:852A AD 12 42    LDA $4212  [$7E:4212]  ;|
+$80:852A AD 12 42    LDA $4212              ;|
 $80:852D 30 FB       BMI $FB    [$852A]     ;|
 $80:852F CA          DEX                    ;|
 $80:8530 D0 F3       BNE $F3    [$8525]     ;/
@@ -1183,54 +1208,54 @@ $80:85FF 4C E1 86    JMP $86E1  [$80:86E1]  ; Return
 $80:8602 AF D9 FF 00 LDA $00FFD9[$00:FFD9]  ;\
 $80:8606 C9 00       CMP #$00               ;} If country code != Japan:
 $80:8608 F0 0A       BEQ $0A    [$8614]     ;/
-$80:860A AD 3F 21    LDA $213F  [$7E:213F]  ;\
+$80:860A AD 3F 21    LDA $213F              ;\
 $80:860D 89 10       BIT #$10               ;} If PPU set to PAL:
 $80:860F F0 0A       BEQ $0A    [$861B]     ;/
 $80:8611 4C 93 86    JMP $8693  [$80:8693]  ; Go to BRANCH_SRAM_CHECK
 
-$80:8614 AD 3F 21    LDA $213F  [$7E:213F]  ;\ Else (country code = Japan):
+$80:8614 AD 3F 21    LDA $213F              ;\ Else (country code = Japan):
 $80:8617 89 10       BIT #$10               ;} If PPU set to NTSC: go to BRANCH_SRAM_CHECK
 $80:8619 F0 78       BEQ $78    [$8693]     ;/
 
 ; Failed region check
 $80:861B A9 8F       LDA #$8F               ;\
-$80:861D 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
-$80:8620 9C 00 42    STZ $4200  [$7E:4200]  ; Disable all interrupts
+$80:861D 8D 00 21    STA $2100              ;} Enable forced blank
+$80:8620 9C 00 42    STZ $4200              ; Disable all interrupts
 $80:8623 A9 00       LDA #$00               ;\
-$80:8625 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8625 8D 16 21    STA $2116              ;|
 $80:8628 A9 00       LDA #$00               ;|
-$80:862A 8D 17 21    STA $2117  [$7E:2117]  ;|
+$80:862A 8D 17 21    STA $2117              ;|
 $80:862D A9 80       LDA #$80               ;|
-$80:862F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$8E:8000..BFFF] (BG1 tiles)
+$80:862F 8D 15 21    STA $2115              ;} VRAM $0000..1FFF = [$8E:8000..BFFF] (BG1 tiles)
 $80:8632 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $80:8636             dx 01,01,18,8E8000,4000;|
 $80:863E A9 02       LDA #$02               ;|
-$80:8640 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8640 8D 0B 42    STA $420B              ;/
 $80:8643 A9 00       LDA #$00               ;\
-$80:8645 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8645 8D 16 21    STA $2116              ;|
 $80:8648 A9 40       LDA #$40               ;|
-$80:864A 8D 17 21    STA $2117  [$7E:2117]  ;|
+$80:864A 8D 17 21    STA $2117              ;|
 $80:864D A9 80       LDA #$80               ;|
-$80:864F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..47FF = [$80:B437..C436] (BG1 tilemap)
+$80:864F 8D 15 21    STA $2115              ;} VRAM $4000..47FF = [$80:B437..C436] (BG1 tilemap)
 $80:8652 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $80:8656             dx 01,01,18,80B437,1000;|
 $80:865E A9 02       LDA #$02               ;|
-$80:8660 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$80:8663 9C 21 21    STZ $2121  [$7E:2121]  ;\
+$80:8660 8D 0B 42    STA $420B              ;/
+$80:8663 9C 21 21    STZ $2121              ;\
 $80:8666 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $80:866A             dx 01,00,22,8EE400,0200;} CGRAM = [$8E:E400..E5FF] (menu palettes)
 $80:8672 A9 02       LDA #$02               ;|
-$80:8674 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$80:8677 9C 31 21    STZ $2131  [$7E:2131]  ; Disable colour math
-$80:867A 9C 2D 21    STZ $212D  [$7E:212D]  ; Disable subscreen
+$80:8674 8D 0B 42    STA $420B              ;/
+$80:8677 9C 31 21    STZ $2131              ; Disable colour math
+$80:867A 9C 2D 21    STZ $212D              ; Disable subscreen
 $80:867D A9 01       LDA #$01               ;\
-$80:867F 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1
+$80:867F 8D 2C 21    STA $212C              ;} Main screen layers = BG1
 $80:8682 A9 0F       LDA #$0F               ;\
-$80:8684 8D 00 21    STA $2100  [$7E:2100]  ;} Disable forced blank
+$80:8684 8D 00 21    STA $2100              ;} Disable forced blank
 $80:8687 A9 00       LDA #$00               ;\
-$80:8689 8D 0B 21    STA $210B  [$7E:210B]  ;} BG1 tiles base address = $0000
+$80:8689 8D 0B 21    STA $210B              ;} BG1 tiles base address = $0000
 $80:868C A9 40       LDA #$40               ;\
-$80:868E 8D 07 21    STA $2107  [$7E:2107]  ;} BG1 tilemap base address = $4000
+$80:868E 8D 07 21    STA $2107              ;} BG1 tilemap base address = $4000
 
 $80:8691 80 FE       BRA $FE    [$8691]     ; Crash
 
@@ -1326,23 +1351,23 @@ $80:875B 80 FE       BRA $FE    [$875B]     ; Crash
 ;;; $875D: Initialise CPU IO registers ;;;
 {
 $80:875D A9 01       LDA #$01               ;\
-$80:875F 8D 00 42    STA $4200  [$7E:4200]  ;} Enable auto-joypad read
+$80:875F 8D 00 42    STA $4200              ;} Enable auto-joypad read
 $80:8762 85 84       STA $84    [$7E:0084]  ;/
-$80:8764 9C 01 42    STZ $4201  [$7E:4201]  ; Joypad programmable IO port = 0
-$80:8767 9C 02 42    STZ $4202  [$7E:4202]  ;\
-$80:876A 9C 03 42    STZ $4203  [$7E:4203]  ;} Multiplication operands = 0
-$80:876D 9C 04 42    STZ $4204  [$7E:4204]  ;\
-$80:8770 9C 05 42    STZ $4205  [$7E:4205]  ;} Division operands = 0 (causes harmless division by zero)
-$80:8773 9C 06 42    STZ $4206  [$7E:4206]  ;/
-$80:8776 9C 07 42    STZ $4207  [$7E:4207]  ;\
-$80:8779 9C 08 42    STZ $4208  [$7E:4208]  ;} IRQ h-counter target = 0
-$80:877C 9C 09 42    STZ $4209  [$7E:4209]  ;\
-$80:877F 9C 0A 42    STZ $420A  [$7E:420A]  ;} IRQ v-counter target = 0
-$80:8782 9C 0B 42    STZ $420B  [$7E:420B]  ; Disable all DMA channels
-$80:8785 9C 0C 42    STZ $420C  [$7E:420C]  ;\
+$80:8764 9C 01 42    STZ $4201              ; Joypad programmable IO port = 0
+$80:8767 9C 02 42    STZ $4202              ;\
+$80:876A 9C 03 42    STZ $4203              ;} Multiplication operands = 0
+$80:876D 9C 04 42    STZ $4204              ;\
+$80:8770 9C 05 42    STZ $4205              ;} Division operands = 0 (causes harmless division by zero)
+$80:8773 9C 06 42    STZ $4206              ;/
+$80:8776 9C 07 42    STZ $4207              ;\
+$80:8779 9C 08 42    STZ $4208              ;} IRQ h-counter target = 0
+$80:877C 9C 09 42    STZ $4209              ;\
+$80:877F 9C 0A 42    STZ $420A              ;} IRQ v-counter target = 0
+$80:8782 9C 0B 42    STZ $420B              ; Disable all DMA channels
+$80:8785 9C 0C 42    STZ $420C              ;\
 $80:8788 64 85       STZ $85    [$7E:0085]  ;} Disable all HDMA channels
 $80:878A A9 01       LDA #$01               ;\
-$80:878C 8D 0D 42    STA $420D  [$7E:420D]  ;} Enable FastROM
+$80:878C 8D 0D 42    STA $420D              ;} Enable FastROM
 $80:878F 85 86       STA $86    [$7E:0086]  ;/
 $80:8791 60          RTS
 }
@@ -1351,119 +1376,119 @@ $80:8791 60          RTS
 ;;; $8792: Initialise PPU registers ;;;
 {
 $80:8792 A9 8F       LDA #$8F               ;\
-$80:8794 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$80:8794 8D 00 21    STA $2100              ;} Enable forced blank
 $80:8797 85 51       STA $51    [$7E:0051]  ;/
 $80:8799 A9 03       LDA #$03               ;\
-$80:879B 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
+$80:879B 8D 01 21    STA $2101              ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $80:879E 85 52       STA $52    [$7E:0052]  ;/
-$80:87A0 9C 02 21    STZ $2102  [$7E:2102]  ;\
+$80:87A0 9C 02 21    STZ $2102              ;\
 $80:87A3 64 53       STZ $53    [$7E:0053]  ;|
 $80:87A5 A9 80       LDA #$80               ;} OAM address = $0000, priority sprite index = 0
-$80:87A7 8D 03 21    STA $2103  [$7E:2103]  ;|
+$80:87A7 8D 03 21    STA $2103              ;|
 $80:87AA 85 54       STA $54    [$7E:0054]  ;/
-$80:87AC 9C 04 21    STZ $2104  [$7E:2104]  ;\
-$80:87AF 9C 04 21    STZ $2104  [$7E:2104]  ;} OAM $0000 = 0
+$80:87AC 9C 04 21    STZ $2104              ;\
+$80:87AF 9C 04 21    STZ $2104              ;} OAM $0000 = 0
 $80:87B2 A9 09       LDA #$09               ;\
-$80:87B4 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$80:87B4 8D 05 21    STA $2105              ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $80:87B7 85 55       STA $55    [$7E:0055]  ;/
-$80:87B9 9C 06 21    STZ $2106  [$7E:2106]  ;\
+$80:87B9 9C 06 21    STZ $2106              ;\
 $80:87BC 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
 $80:87BE A9 40       LDA #$40               ;\
-$80:87C0 8D 07 21    STA $2107  [$7E:2107]  ;} BG1 tilemap base address = $4000, size = 32x32
+$80:87C0 8D 07 21    STA $2107              ;} BG1 tilemap base address = $4000, size = 32x32
 $80:87C3 85 58       STA $58    [$7E:0058]  ;/
 $80:87C5 A9 44       LDA #$44               ;\
-$80:87C7 8D 08 21    STA $2108  [$7E:2108]  ;} BG2 tilemap base address = $4400, size = 32x32
+$80:87C7 8D 08 21    STA $2108              ;} BG2 tilemap base address = $4400, size = 32x32
 $80:87CA 85 59       STA $59    [$7E:0059]  ;/
 $80:87CC A9 48       LDA #$48               ;\
-$80:87CE 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address = $4800, size = 32x32
+$80:87CE 8D 09 21    STA $2109              ;} BG3 tilemap base address = $4800, size = 32x32
 $80:87D1 85 5A       STA $5A    [$7E:005A]  ;/
 $80:87D3 A9 48       LDA #$48               ; >_<
-$80:87D5 9C 0A 21    STZ $210A  [$7E:210A]  ;\
+$80:87D5 9C 0A 21    STZ $210A              ;\
 $80:87D8 64 5C       STZ $5C    [$7E:005C]  ;} BG4 tilemap base address = $0000, size = 32x32
 $80:87DA A9 00       LDA #$00               ;\
-$80:87DC 8D 0B 21    STA $210B  [$7E:210B]  ;|
+$80:87DC 8D 0B 21    STA $210B              ;|
 $80:87DF 85 5D       STA $5D    [$7E:005D]  ;} BG1/2/4 tiles base address = $0000
 $80:87E1 A9 05       LDA #$05               ;} BG3 tiles base address = $5000
-$80:87E3 8D 0C 21    STA $210C  [$7E:210C]  ;|
+$80:87E3 8D 0C 21    STA $210C              ;|
 $80:87E6 85 5E       STA $5E    [$7E:005E]  ;/
-$80:87E8 9C 0D 21    STZ $210D  [$7E:210D]  ;\
-$80:87EB 9C 0D 21    STZ $210D  [$7E:210D]  ;} BG1 X scroll = 0
-$80:87EE 9C 0E 21    STZ $210E  [$7E:210E]  ;\
-$80:87F1 9C 0E 21    STZ $210E  [$7E:210E]  ;} BG1 Y scroll = 0
-$80:87F4 9C 0F 21    STZ $210F  [$7E:210F]  ;\
-$80:87F7 9C 0F 21    STZ $210F  [$7E:210F]  ;} BG2 X scroll = 0
-$80:87FA 9C 10 21    STZ $2110  [$7E:2110]  ;\
-$80:87FD 9C 10 21    STZ $2110  [$7E:2110]  ;} BG2 Y scroll = 0
-$80:8800 9C 11 21    STZ $2111  [$7E:2111]  ;\
-$80:8803 9C 11 21    STZ $2111  [$7E:2111]  ;} BG3 X scroll = 0
-$80:8806 9C 12 21    STZ $2112  [$7E:2112]  ;\
-$80:8809 9C 12 21    STZ $2112  [$7E:2112]  ;} BG3 Y scroll = 0
-$80:880C 9C 13 21    STZ $2113  [$7E:2113]  ;\
-$80:880F 9C 13 21    STZ $2113  [$7E:2113]  ;} BG4 X scroll = 0
-$80:8812 9C 14 21    STZ $2114  [$7E:2114]  ;\
-$80:8815 9C 14 21    STZ $2114  [$7E:2114]  ;} BG4 Y scroll = 0
-$80:8818 9C 15 21    STZ $2115  [$7E:2115]  ; VRAM address increment mode = 8-bit
-$80:881B 9C 1A 21    STZ $211A  [$7E:211A]  ;\
+$80:87E8 9C 0D 21    STZ $210D              ;\
+$80:87EB 9C 0D 21    STZ $210D              ;} BG1 X scroll = 0
+$80:87EE 9C 0E 21    STZ $210E              ;\
+$80:87F1 9C 0E 21    STZ $210E              ;} BG1 Y scroll = 0
+$80:87F4 9C 0F 21    STZ $210F              ;\
+$80:87F7 9C 0F 21    STZ $210F              ;} BG2 X scroll = 0
+$80:87FA 9C 10 21    STZ $2110              ;\
+$80:87FD 9C 10 21    STZ $2110              ;} BG2 Y scroll = 0
+$80:8800 9C 11 21    STZ $2111              ;\
+$80:8803 9C 11 21    STZ $2111              ;} BG3 X scroll = 0
+$80:8806 9C 12 21    STZ $2112              ;\
+$80:8809 9C 12 21    STZ $2112              ;} BG3 Y scroll = 0
+$80:880C 9C 13 21    STZ $2113              ;\
+$80:880F 9C 13 21    STZ $2113              ;} BG4 X scroll = 0
+$80:8812 9C 14 21    STZ $2114              ;\
+$80:8815 9C 14 21    STZ $2114              ;} BG4 Y scroll = 0
+$80:8818 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit
+$80:881B 9C 1A 21    STZ $211A              ;\
 $80:881E 64 5F       STZ $5F    [$7E:005F]  ;} Mode 7 settings = 0
-$80:8820 9C 1B 21    STZ $211B  [$7E:211B]  ;\
-$80:8823 9C 1C 21    STZ $211C  [$7E:211C]  ;|
-$80:8826 9C 1D 21    STZ $211D  [$7E:211D]  ;} Mode 7 transformation matrix = {{0, 0}, {0, 0}}
-$80:8829 9C 1E 21    STZ $211E  [$7E:211E]  ;/
-$80:882C 9C 1F 21    STZ $211F  [$7E:211F]  ; Mode 7 transformation origin co-ordinate X = 0
-$80:882F 9C 20 21    STZ $2120  [$7E:2120]  ; Mode 7 transformation origin co-ordinate Y = 0
+$80:8820 9C 1B 21    STZ $211B              ;\
+$80:8823 9C 1C 21    STZ $211C              ;|
+$80:8826 9C 1D 21    STZ $211D              ;} Mode 7 transformation matrix = {{0, 0}, {0, 0}}
+$80:8829 9C 1E 21    STZ $211E              ;/
+$80:882C 9C 1F 21    STZ $211F              ; Mode 7 transformation origin co-ordinate X = 0
+$80:882F 9C 20 21    STZ $2120              ; Mode 7 transformation origin co-ordinate Y = 0
 $80:8832 A9 00       LDA #$00               ;\
-$80:8834 8D 23 21    STA $2123  [$7E:2123]  ;|
+$80:8834 8D 23 21    STA $2123              ;|
 $80:8837 85 60       STA $60    [$7E:0060]  ;|
 $80:8839 A9 00       LDA #$00               ;|
-$80:883B 8D 24 21    STA $2124  [$7E:2124]  ;} Disable all window masks
+$80:883B 8D 24 21    STA $2124              ;} Disable all window masks
 $80:883E 85 61       STA $61    [$7E:0061]  ;|
-$80:8840 9C 25 21    STZ $2125  [$7E:2125]  ;|
+$80:8840 9C 25 21    STZ $2125              ;|
 $80:8843 64 62       STZ $62    [$7E:0062]  ;/
 $80:8845 A9 00       LDA #$00               ;\
-$80:8847 8D 26 21    STA $2126  [$7E:2126]  ;} Window 1 left position = 0
+$80:8847 8D 26 21    STA $2126              ;} Window 1 left position = 0
 $80:884A 85 63       STA $63    [$7E:0063]  ;/
 $80:884C A9 F8       LDA #$F8               ;\
-$80:884E 8D 27 21    STA $2127  [$7E:2127]  ;} Window 1 right position = F8h
+$80:884E 8D 27 21    STA $2127              ;} Window 1 right position = F8h
 $80:8851 85 64       STA $64    [$7E:0064]  ;/
-$80:8853 9C 28 21    STZ $2128  [$7E:2128]  ;\
+$80:8853 9C 28 21    STZ $2128              ;\
 $80:8856 64 65       STZ $65    [$7E:0065]  ;} Window 2 left position = 0
-$80:8858 9C 29 21    STZ $2129  [$7E:2129]  ;\
+$80:8858 9C 29 21    STZ $2129              ;\
 $80:885B 64 66       STZ $66    [$7E:0066]  ;} Window 2 right position = 0
-$80:885D 9C 2A 21    STZ $212A  [$7E:212A]  ;\
+$80:885D 9C 2A 21    STZ $212A              ;\
 $80:8860 64 67       STZ $67    [$7E:0067]  ;|
-$80:8862 9C 2B 21    STZ $212B  [$7E:212B]  ;} Window 1/2 mask logic = OR
+$80:8862 9C 2B 21    STZ $212B              ;} Window 1/2 mask logic = OR
 $80:8865 64 68       STZ $68    [$7E:0068]  ;/
 $80:8867 A9 11       LDA #$11               ;\
-$80:8869 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG1/sprites
+$80:8869 8D 2C 21    STA $212C              ;} Main screen layers = BG1/sprites
 $80:886C 85 69       STA $69    [$7E:0069]  ;/
-$80:886E 8D 2E 21    STA $212E  [$7E:212E]  ;\
+$80:886E 8D 2E 21    STA $212E              ;\
 $80:8871 85 6C       STA $6C    [$7E:006C]  ;} Disable BG1/sprites in window area main screen
 $80:8873 A9 02       LDA #$02               ;\
-$80:8875 8D 2D 21    STA $212D  [$7E:212D]  ;} Subscreen layers = BG2
+$80:8875 8D 2D 21    STA $212D              ;} Subscreen layers = BG2
 $80:8878 85 6B       STA $6B    [$7E:006B]  ;/
-$80:887A 8D 2F 21    STA $212F  [$7E:212F]  ;\
+$80:887A 8D 2F 21    STA $212F              ;\
 $80:887D 85 6D       STA $6D    [$7E:006D]  ;} Disable BG2 in window area subscreen
 $80:887F A9 02       LDA #$02               ;\
-$80:8881 8D 30 21    STA $2130  [$7E:2130]  ;} Enable colour math subscreen layers
+$80:8881 8D 30 21    STA $2130              ;} Enable colour math subscreen layers
 $80:8884 85 6E       STA $6E    [$7E:006E]  ;/
 $80:8886 A9 A1       LDA #$A1               ;\
-$80:8888 8D 31 21    STA $2131  [$7E:2131]  ;} Enable subtractive colour math on BG1/backdrop
+$80:8888 8D 31 21    STA $2131              ;} Enable subtractive colour math on BG1/backdrop
 $80:888B 85 71       STA $71    [$7E:0071]  ;/
 $80:888D A9 E0       LDA #$E0               ;\
-$80:888F 8D 32 21    STA $2132  [$7E:2132]  ;|
+$80:888F 8D 32 21    STA $2132              ;|
 $80:8892 A9 E0       LDA #$E0               ;} >_<;
-$80:8894 8D 32 21    STA $2132  [$7E:2132]  ;/
+$80:8894 8D 32 21    STA $2132              ;/
 $80:8897 A9 80       LDA #$80               ;\
-$80:8899 8D 32 21    STA $2132  [$7E:2132]  ;|
+$80:8899 8D 32 21    STA $2132              ;|
 $80:889C 85 74       STA $74    [$7E:0074]  ;|
 $80:889E A9 40       LDA #$40               ;|
-$80:88A0 8D 32 21    STA $2132  [$7E:2132]  ;} Colour math subscreen backdrop colour = (0, 0, 0)
+$80:88A0 8D 32 21    STA $2132              ;} Colour math subscreen backdrop colour = (0, 0, 0)
 $80:88A3 85 75       STA $75    [$7E:0075]  ;|
 $80:88A5 A9 20       LDA #$20               ;|
-$80:88A7 8D 32 21    STA $2132  [$7E:2132]  ;|
+$80:88A7 8D 32 21    STA $2132              ;|
 $80:88AA 85 76       STA $76    [$7E:0076]  ;/
 $80:88AC A9 00       LDA #$00               ;\
-$80:88AE 8D 33 21    STA $2133  [$7E:2133]  ;} Use standard NTSC resolution
+$80:88AE 8D 33 21    STA $2133              ;} Use standard NTSC resolution
 $80:88B1 85 77       STA $77    [$7E:0077]  ;/
 $80:88B3 60          RTS
 }
@@ -1926,19 +1951,19 @@ $80:8BDF 6B          RTL                    ; Return
 ; BRANCH_CGRAM
 $80:8BE0 4A          LSR A                  ;\
 $80:8BE1 29 1F       AND #$1F               ;} DMA 1 control = [[X]] & 1Fh
-$80:8BE3 8D 10 43    STA $4310  [$7E:4310]  ;/
+$80:8BE3 8D 10 43    STA $4310              ;/
 $80:8BE6 BC 01 00    LDY $0001,x            ;\
-$80:8BE9 8C 12 43    STY $4312  [$7E:4312]  ;|
+$80:8BE9 8C 12 43    STY $4312              ;|
 $80:8BEC BD 03 00    LDA $0003,x            ;} DMA 1 source = [[X] + 1]
-$80:8BEF 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:8BEF 8D 14 43    STA $4314              ;/
 $80:8BF2 BC 04 00    LDY $0004,x            ;\
-$80:8BF5 8C 15 43    STY $4315  [$7E:4315]  ;} DMA 1 size = [[X] + 4]
+$80:8BF5 8C 15 43    STY $4315              ;} DMA 1 size = [[X] + 4]
 $80:8BF8 A9 22       LDA #$22               ;\
-$80:8BFA 8D 11 43    STA $4311  [$7E:4311]  ;} DMA 1 destination = CGRAM data write
+$80:8BFA 8D 11 43    STA $4311              ;} DMA 1 destination = CGRAM data write
 $80:8BFD BD 06 00    LDA $0006,x            ;\
-$80:8C00 8D 21 21    STA $2121  [$7E:2121]  ;} CGRAM address = [[X] + 6]
+$80:8C00 8D 21 21    STA $2121              ;} CGRAM address = [[X] + 6]
 $80:8C03 A9 02       LDA #$02               ;\
-$80:8C05 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$80:8C05 8D 0B 42    STA $420B              ;} Execute DMA 1
 $80:8C08 C2 21       REP #$21               ;\
 $80:8C0A 8A          TXA                    ;|
 $80:8C0B 69 07 00    ADC #$0007             ;} X += 7
@@ -1951,21 +1976,21 @@ $80:8C12 30 37       BMI $37    [$8C4B]     ;} If [[X]] & 40h != 0: go to BRANCH
 ; VRAM tilemap
 $80:8C14 4A          LSR A                  ;\
 $80:8C15 29 1F       AND #$1F               ;} DMA 1 control = [[X]] & 1Fh
-$80:8C17 8D 10 43    STA $4310  [$7E:4310]  ;/
+$80:8C17 8D 10 43    STA $4310              ;/
 $80:8C1A BC 01 00    LDY $0001,x[$7E:02D1]  ;\
-$80:8C1D 8C 12 43    STY $4312  [$7E:4312]  ;|
+$80:8C1D 8C 12 43    STY $4312              ;|
 $80:8C20 BD 03 00    LDA $0003,x[$7E:02D3]  ;} DMA 1 source = [[X] + 1]
-$80:8C23 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:8C23 8D 14 43    STA $4314              ;/
 $80:8C26 BC 04 00    LDY $0004,x[$7E:02D4]  ;\
-$80:8C29 8C 15 43    STY $4315  [$7E:4315]  ;} DMA 1 size = [[X] + 4]
+$80:8C29 8C 15 43    STY $4315              ;} DMA 1 size = [[X] + 4]
 $80:8C2C A9 18       LDA #$18               ;\
-$80:8C2E 8D 11 43    STA $4311  [$7E:4311]  ;} DMA 1 destination = VRAM data write low
+$80:8C2E 8D 11 43    STA $4311              ;} DMA 1 destination = VRAM data write low
 $80:8C31 BC 06 00    LDY $0006,x[$7E:02D6]  ;\
-$80:8C34 8C 16 21    STY $2116  [$7E:2116]  ;} VRAM address = [[X] + 6]
+$80:8C34 8C 16 21    STY $2116              ;} VRAM address = [[X] + 6]
 $80:8C37 BD 08 00    LDA $0008,x[$7E:02D8]  ;\
-$80:8C3A 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = [[X] + 8]
+$80:8C3A 8D 15 21    STA $2115              ;} VRAM address increment mode = [[X] + 8]
 $80:8C3D A9 02       LDA #$02               ;\
-$80:8C3F 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$80:8C3F 8D 0B 42    STA $420B              ;} Execute DMA 1
 $80:8C42 C2 21       REP #$21               ;\
 $80:8C44 8A          TXA                    ;|
 $80:8C45 69 09 00    ADC #$0009             ;} X += 9
@@ -1975,21 +2000,21 @@ $80:8C49 80 89       BRA $89    [$8BD4]     ; Go to LOOP
 ; BRANCH_VRAM_TILES
 $80:8C4B 4A          LSR A                  ;\ Else ([[X]] & 40h = 0):
 $80:8C4C 29 1F       AND #$1F               ;} DMA 1 control = [[X]] & 1Fh
-$80:8C4E 8D 10 43    STA $4310  [$7E:4310]  ;/
+$80:8C4E 8D 10 43    STA $4310              ;/
 $80:8C51 BC 01 00    LDY $0001,x[$7E:02D1]  ;\
-$80:8C54 8C 12 43    STY $4312  [$7E:4312]  ;|
+$80:8C54 8C 12 43    STY $4312              ;|
 $80:8C57 BD 03 00    LDA $0003,x[$7E:02D3]  ;} DMA 1 source = [[X] + 1]
-$80:8C5A 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:8C5A 8D 14 43    STA $4314              ;/
 $80:8C5D BC 04 00    LDY $0004,x[$7E:02D4]  ;\
-$80:8C60 8C 15 43    STY $4315  [$7E:4315]  ;} DMA 1 size = [[X] + 4]
+$80:8C60 8C 15 43    STY $4315              ;} DMA 1 size = [[X] + 4]
 $80:8C63 A9 19       LDA #$19               ;\
-$80:8C65 8D 11 43    STA $4311  [$7E:4311]  ;} DMA 1 destination = VRAM data write high
+$80:8C65 8D 11 43    STA $4311              ;} DMA 1 destination = VRAM data write high
 $80:8C68 BC 06 00    LDY $0006,x[$7E:02D6]  ;\
-$80:8C6B 8C 16 21    STY $2116  [$7E:2116]  ;} VRAM address = [[X] + 6]
+$80:8C6B 8C 16 21    STY $2116              ;} VRAM address = [[X] + 6]
 $80:8C6E BD 08 00    LDA $0008,x[$7E:02D8]  ;\
-$80:8C71 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = [[X] + 8]
+$80:8C71 8D 15 21    STA $2115              ;} VRAM address increment mode = [[X] + 8]
 $80:8C74 A9 02       LDA #$02               ;\
-$80:8C76 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$80:8C76 8D 0B 42    STA $420B              ;} Execute DMA 1
 $80:8C79 C2 21       REP #$21               ;\
 $80:8C7B 8A          TXA                    ;|
 $80:8C7C 69 09 00    ADC #$0009             ;} X += 9
@@ -2006,27 +2031,27 @@ $80:8C86 AE 30 03    LDX $0330  [$7E:0330]  ;\
 $80:8C89 F0 3E       BEQ $3E    [$8CC9]     ;} If [VRAM write table stack pointer] = 0: go to BRANCH_DONE
 $80:8C8B 74 D0       STZ $D0,x  [$7E:00D7]  ; $D0 + [VRAM write table stack pointer] = 0 (table terminator)
 $80:8C8D A9 01 18    LDA #$1801             ;\
-$80:8C90 8D 10 43    STA $4310  [$7E:4310]  ;} DMA 1 control / target = 16-bit VRAM data write
+$80:8C90 8D 10 43    STA $4310              ;} DMA 1 control / target = 16-bit VRAM data write
 $80:8C93 A0 00 00    LDY #$0000             ; Y = 0 (VRAM write table index)
 
 ; LOOP
 $80:8C96 B9 D0 00    LDA $00D0,y[$7E:00D0]  ;\
 $80:8C99 F0 2E       BEQ $2E    [$8CC9]     ;} If [VRAM write table entry size] = 0: go to BRANCH_DONE
-$80:8C9B 8D 15 43    STA $4315  [$7E:4315]  ; DMA 1 size = [VRAM write table entry size]
+$80:8C9B 8D 15 43    STA $4315              ; DMA 1 size = [VRAM write table entry size]
 $80:8C9E B9 D2 00    LDA $00D2,y[$7E:00D2]  ;\
-$80:8CA1 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:8CA1 8D 12 43    STA $4312              ;|
 $80:8CA4 B9 D3 00    LDA $00D3,y[$7E:00D3]  ;} DMA 1 source address = [VRAM write table entry source address]
-$80:8CA7 8D 13 43    STA $4313  [$7E:4313]  ;/
+$80:8CA7 8D 13 43    STA $4313              ;/
 $80:8CAA A9 80 00    LDA #$0080             ; VRAM address increment mode = 1-byte increment for 16-bit transfers
 $80:8CAD B6 D5       LDX $D5,y  [$7E:00D5]  ;\
 $80:8CAF 10 01       BPL $01    [$8CB2]     ;} If [VRAM write table entry destination address] & 8000h:
 $80:8CB1 1A          INC A                  ; Use 32-byte VRAM address increment
 
-$80:8CB2 8D 15 21    STA $2115  [$7E:2115]
-$80:8CB5 8E 16 21    STX $2116  [$7E:2116]  ; VRAM address = [VRAM write table entry destination address]
+$80:8CB2 8D 15 21    STA $2115            
+$80:8CB5 8E 16 21    STX $2116              ; VRAM address = [VRAM write table entry destination address]
 $80:8CB8 E2 20       SEP #$20
 $80:8CBA A9 02       LDA #$02               ;\
-$80:8CBC 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$80:8CBC 8D 0B 42    STA $420B              ;} Execute DMA 1
 $80:8CBF C2 20       REP #$20
 $80:8CC1 98          TYA                    ;\
 $80:8CC2 18          CLC                    ;|
@@ -2048,84 +2073,84 @@ $80:8CD7 6B          RTL
 ;;; $8CD8: Execute horizontal scrolling DMAs ;;;
 {
 $80:8CD8 A9 81       LDA #$81               ;\
-$80:8CDA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access, 20h-byte increment
+$80:8CDA 8D 15 21    STA $2115              ;} VRAM address increment mode = 16-bit access, 20h-byte increment
 $80:8CDD AD 62 09    LDA $0962  [$7E:0962]  ;\
 $80:8CE0 F0 62       BEQ $62    [$8D44]     ;} If BG1 VRAM tilemap column update:
 $80:8CE2 9C 62 09    STZ $0962  [$7E:0962]  ; Clear BG1 VRAM tilemap column update flag
 $80:8CE5 AC 5A 09    LDY $095A  [$7E:095A]  ;\
-$80:8CE8 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8CE8 8C 16 21    STY $2116              ;|
 $80:8CEB A2 01 18    LDX #$1801             ;|
-$80:8CEE 8E 10 43    STX $4310  [$7E:4310]  ;|
+$80:8CEE 8E 10 43    STX $4310              ;|
 $80:8CF1 A2 C8 C8    LDX #$C8C8             ;|
-$80:8CF4 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8CF4 8E 12 43    STX $4312              ;|
 $80:8CF7 A9 7E       LDA #$7E               ;} DMA [$0956] bytes from $7E:C8C8 to VRAM [$095A] (BG1 column update unwrapped tilemap left halves)
-$80:8CF9 8D 14 43    STA $4314  [$7E:4314]  ;|
+$80:8CF9 8D 14 43    STA $4314              ;|
 $80:8CFC AE 56 09    LDX $0956  [$7E:0956]  ;|
-$80:8CFF 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8CFF 8E 15 43    STX $4315              ;|
 $80:8D02 A9 02       LDA #$02               ;|
-$80:8D04 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D04 8D 0B 42    STA $420B              ;/
 $80:8D07 C8          INY                    ;\
-$80:8D08 8C 16 21    STY $2116  [$7E:2116]  ;|
-$80:8D0B 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D08 8C 16 21    STY $2116              ;|
+$80:8D0B 8E 15 43    STX $4315              ;|
 $80:8D0E A2 08 C9    LDX #$C908             ;} DMA [$0956] bytes from $7E:C908 to VRAM [$095A] + 1 (BG1 column update unwrapped tilemap right halves)
-$80:8D11 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D11 8E 12 43    STX $4312              ;|
 $80:8D14 A9 02       LDA #$02               ;|
-$80:8D16 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D16 8D 0B 42    STA $420B              ;/
 $80:8D19 AE 5E 09    LDX $095E  [$7E:095E]  ;\
-$80:8D1C 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D1C 8E 12 43    STX $4312              ;|
 $80:8D1F AE 58 09    LDX $0958  [$7E:0958]  ; \
 $80:8D22 F0 20       BEQ $20    [$8D44]     ; } If [$0958] != 0:
-$80:8D24 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D24 8E 15 43    STX $4315              ;|
 $80:8D27 AC 5C 09    LDY $095C  [$7E:095C]  ;} DMA [$0958] bytes from $7E:[$095E] to VRAM [$095C] (BG1 column update wrapped tilemap left halves)
-$80:8D2A 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8D2A 8C 16 21    STY $2116              ;|
 $80:8D2D A9 02       LDA #$02               ;|
-$80:8D2F 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D2F 8D 0B 42    STA $420B              ;/
 $80:8D32 C8          INY                    ;\
-$80:8D33 8C 16 21    STY $2116  [$7E:2116]  ;|
-$80:8D36 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D33 8C 16 21    STY $2116              ;|
+$80:8D36 8E 15 43    STX $4315              ;|
 $80:8D39 AE 60 09    LDX $0960  [$7E:0960]  ;} DMA [$0958] bytes from $7E:[$0960] to VRAM [$095C] + 1 (BG1 column update wrapped tilemap right halves)
-$80:8D3C 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D3C 8E 12 43    STX $4312              ;|
 $80:8D3F A9 02       LDA #$02               ;|
-$80:8D41 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D41 8D 0B 42    STA $420B              ;/
 
 $80:8D44 AD 7E 09    LDA $097E  [$7E:097E]  ;\
 $80:8D47 F0 62       BEQ $62    [$8DAB]     ;} If not BG2 VRAM tilemap column update: return
 $80:8D49 9C 7E 09    STZ $097E  [$7E:097E]  ; Clear BG2 VRAM tilemap column update flag
 $80:8D4C AC 76 09    LDY $0976  [$7E:0976]  ;\
-$80:8D4F 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8D4F 8C 16 21    STY $2116              ;|
 $80:8D52 A2 01 18    LDX #$1801             ;|
-$80:8D55 8E 10 43    STX $4310  [$7E:4310]  ;|
+$80:8D55 8E 10 43    STX $4310              ;|
 $80:8D58 A2 D0 C9    LDX #$C9D0             ;|
-$80:8D5B 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D5B 8E 12 43    STX $4312              ;|
 $80:8D5E A9 7E       LDA #$7E               ;} DMA [$0972] bytes from $7E:C9D0 to VRAM [$0976] (BG2 column update unwrapped tilemap left halves)
-$80:8D60 8D 14 43    STA $4314  [$7E:4314]  ;|
+$80:8D60 8D 14 43    STA $4314              ;|
 $80:8D63 AE 72 09    LDX $0972  [$7E:0972]  ;|
-$80:8D66 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D66 8E 15 43    STX $4315              ;|
 $80:8D69 A9 02       LDA #$02               ;|
-$80:8D6B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D6B 8D 0B 42    STA $420B              ;/
 $80:8D6E C8          INY                    ;\
-$80:8D6F 8C 16 21    STY $2116  [$7E:2116]  ;|
-$80:8D72 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D6F 8C 16 21    STY $2116              ;|
+$80:8D72 8E 15 43    STX $4315              ;|
 $80:8D75 A2 10 CA    LDX #$CA10             ;} DMA [$0972] bytes from $7E:CA10 to VRAM [$0976] + 1 (BG2 column update unwrapped tilemap right halves)
-$80:8D78 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D78 8E 12 43    STX $4312              ;|
 $80:8D7B A9 02       LDA #$02               ;|
-$80:8D7D 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D7D 8D 0B 42    STA $420B              ;/
 $80:8D80 AE 7A 09    LDX $097A  [$7E:097A]  ;\
-$80:8D83 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8D83 8E 12 43    STX $4312              ;|
 $80:8D86 AE 74 09    LDX $0974  [$7E:0974]  ; \
 $80:8D89 F0 20       BEQ $20    [$8DAB]     ; } If [$0974] = 0: return
-$80:8D8B 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D8B 8E 15 43    STX $4315              ;|
 $80:8D8E AC 78 09    LDY $0978  [$7E:0978]  ;} DMA [$0974] bytes from $7E:[$097A] to VRAM [$0978] (BG2 column update wrapped tilemap left halves)
-$80:8D91 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8D91 8C 16 21    STY $2116              ;|
 $80:8D94 A9 02       LDA #$02               ;|
-$80:8D96 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8D96 8D 0B 42    STA $420B              ;/
 $80:8D99 C8          INY                    ;\
-$80:8D9A 8C 16 21    STY $2116  [$7E:2116]  ;|
-$80:8D9D 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8D9A 8C 16 21    STY $2116              ;|
+$80:8D9D 8E 15 43    STX $4315              ;|
 $80:8DA0 AE 7C 09    LDX $097C  [$7E:097C]  ;} DMA [$0974] bytes from $7E:[$097C] to VRAM [$0978] + 1 (BG2 column update wrapped tilemap right halves)
-$80:8DA3 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8DA3 8E 12 43    STX $4312              ;|
 $80:8DA6 A9 02       LDA #$02               ;|
-$80:8DA8 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8DA8 8D 0B 42    STA $420B              ;/
 
 $80:8DAB 60          RTS
 }
@@ -2134,86 +2159,86 @@ $80:8DAB 60          RTS
 ;;; $8DAC: Execute vertical scrolling DMAs ;;;
 {
 $80:8DAC A9 80       LDA #$80               ;\
-$80:8DAE 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$80:8DAE 8D 15 21    STA $2115              ;} VRAM address increment mode = 16-bit access
 $80:8DB1 AD 70 09    LDA $0970  [$7E:0970]  ;\
 $80:8DB4 F0 70       BEQ $70    [$8E26]     ;} If BG1 VRAM tilemap row update:
 $80:8DB6 9C 70 09    STZ $0970  [$7E:0970]  ; Clear BG1 VRAM tilemap row update flag
 $80:8DB9 AC 68 09    LDY $0968  [$7E:0968]  ;\
-$80:8DBC 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8DBC 8C 16 21    STY $2116              ;|
 $80:8DBF A2 01 18    LDX #$1801             ;|
-$80:8DC2 8E 10 43    STX $4310  [$7E:4310]  ;|
+$80:8DC2 8E 10 43    STX $4310              ;|
 $80:8DC5 A2 48 C9    LDX #$C948             ;|
-$80:8DC8 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8DC8 8E 12 43    STX $4312              ;|
 $80:8DCB A9 7E       LDA #$7E               ;} DMA [$0964] bytes from $7E:C948 vertical scroll top tilemap to [$0968] VRAM (BG1 row update unwrapped tilemap left halves)
-$80:8DCD 8D 14 43    STA $4314  [$7E:4314]  ;|
+$80:8DCD 8D 14 43    STA $4314              ;|
 $80:8DD0 AE 64 09    LDX $0964  [$7E:0964]  ;|
-$80:8DD3 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8DD3 8E 15 43    STX $4315              ;|
 $80:8DD6 A9 02       LDA #$02               ;|
-$80:8DD8 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8DD8 8D 0B 42    STA $420B              ;/
 $80:8DDB C2 20       REP #$20               ;\
 $80:8DDD 98          TYA                    ;|
 $80:8DDE 09 20 00    ORA #$0020             ;|
-$80:8DE1 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8DE1 8D 16 21    STA $2116              ;|
 $80:8DE4 E2 20       SEP #$20               ;|
-$80:8DE6 8E 15 43    STX $4315  [$7E:4315]  ;} DMA [$0964] bytes from $7E:C98C vertical scroll bottom tilemap to [$0968] | 20h VRAM (BG1 row update unwrapped tilemap right halves)
+$80:8DE6 8E 15 43    STX $4315              ;} DMA [$0964] bytes from $7E:C98C vertical scroll bottom tilemap to [$0968] | 20h VRAM (BG1 row update unwrapped tilemap right halves)
 $80:8DE9 A2 8C C9    LDX #$C98C             ;|
-$80:8DEC 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8DEC 8E 12 43    STX $4312              ;|
 $80:8DEF A9 02       LDA #$02               ;|
-$80:8DF1 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8DF1 8D 0B 42    STA $420B              ;/
 $80:8DF4 AE 6C 09    LDX $096C  [$7E:096C]  ;\
-$80:8DF7 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8DF7 8E 12 43    STX $4312              ;|
 $80:8DFA AE 66 09    LDX $0966  [$7E:0966]  ; \
 $80:8DFD F0 27       BEQ $27    [$8E26]     ; } If [$0966]:
-$80:8DFF 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8DFF 8E 15 43    STX $4315              ;|
 $80:8E02 AC 6A 09    LDY $096A  [$7E:096A]  ;} DMA [$0966] bytes from $7E:[$096C] to [$096A] VRAM (BG1 row update wrapped tilemap left halves)
-$80:8E05 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8E05 8C 16 21    STY $2116              ;|
 $80:8E08 A9 02       LDA #$02               ;|
-$80:8E0A 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E0A 8D 0B 42    STA $420B              ;/
 $80:8E0D C2 20       REP #$20               ;\
 $80:8E0F 98          TYA                    ;|
 $80:8E10 09 20 00    ORA #$0020             ;|
-$80:8E13 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8E13 8D 16 21    STA $2116              ;|
 $80:8E16 E2 20       SEP #$20               ;|
-$80:8E18 8E 15 43    STX $4315  [$7E:4315]  ;} DMA [$0966] bytes from $7E:[$096E] to [$096A] | 20h VRAM (BG1 row update wrapped tilemap right halves)
+$80:8E18 8E 15 43    STX $4315              ;} DMA [$0966] bytes from $7E:[$096E] to [$096A] | 20h VRAM (BG1 row update wrapped tilemap right halves)
 $80:8E1B AE 6E 09    LDX $096E  [$7E:096E]  ;|
-$80:8E1E 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8E1E 8E 12 43    STX $4312              ;|
 $80:8E21 A9 02       LDA #$02               ;|
-$80:8E23 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E23 8D 0B 42    STA $420B              ;/
 
 $80:8E26 AD 8C 09    LDA $098C  [$7E:098C]  ;\
 $80:8E29 F0 76       BEQ $76    [$8EA1]     ;} If not BG2 VRAM tilemap row update: return
 $80:8E2B 9C 8C 09    STZ $098C  [$7E:098C]  ; Clear BG2 VRAM tilemap row update flag
 $80:8E2E AC 84 09    LDY $0984  [$7E:0984]  ;\
-$80:8E31 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8E31 8C 16 21    STY $2116              ;|
 $80:8E34 A2 01 18    LDX #$1801             ;|
-$80:8E37 8E 10 43    STX $4310  [$7E:4310]  ;|
+$80:8E37 8E 10 43    STX $4310              ;|
 $80:8E3A A2 50 CA    LDX #$CA50             ;|
-$80:8E3D 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8E3D 8E 12 43    STX $4312              ;|
 $80:8E40 A9 7E       LDA #$7E               ;} DMA [$0980] bytes from $7E:CA50 to [$0984] VRAM (BG2 row update unwrapped tilemap left halves)
-$80:8E42 8D 14 43    STA $4314  [$7E:4314]  ;|
+$80:8E42 8D 14 43    STA $4314              ;|
 $80:8E45 AE 80 09    LDX $0980  [$7E:0980]  ;|
-$80:8E48 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8E48 8E 15 43    STX $4315              ;|
 $80:8E4B A9 02       LDA #$02               ;|
-$80:8E4D 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E4D 8D 0B 42    STA $420B              ;/
 $80:8E50 C2 20       REP #$20               ;\
 $80:8E52 98          TYA                    ;|
 $80:8E53 09 20 00    ORA #$0020             ;|
-$80:8E56 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8E56 8D 16 21    STA $2116              ;|
 $80:8E59 E2 20       SEP #$20               ;|
-$80:8E5B 8E 15 43    STX $4315  [$7E:4315]  ;} DMA [$0980] bytes from $7E:CA94 to [$0984] | 20h VRAM (BG2 row update unwrapped tilemap right halves)
+$80:8E5B 8E 15 43    STX $4315              ;} DMA [$0980] bytes from $7E:CA94 to [$0984] | 20h VRAM (BG2 row update unwrapped tilemap right halves)
 $80:8E5E A2 94 CA    LDX #$CA94             ;|
-$80:8E61 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8E61 8E 12 43    STX $4312              ;|
 $80:8E64 A9 02       LDA #$02               ;|
-$80:8E66 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E66 8D 0B 42    STA $420B              ;/
 $80:8E69 AE 88 09    LDX $0988  [$7E:0988]  ;\
-$80:8E6C 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8E6C 8E 12 43    STX $4312              ;|
 $80:8E6F AE 82 09    LDX $0982  [$7E:0982]  ; \
 $80:8E72 F0 2D       BEQ $2D    [$8EA1]     ; } If [$0982] = 0: return
-$80:8E74 8E 15 43    STX $4315  [$7E:4315]  ;|
+$80:8E74 8E 15 43    STX $4315              ;|
 $80:8E77 AC 86 09    LDY $0986  [$7E:0986]  ;} DMA [$0982] bytes from $7E:[$0988] to [$0986] VRAM (BG2 row update wrapped tilemap left halves)
-$80:8E7A 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:8E7A 8C 16 21    STY $2116              ;|
 $80:8E7D A9 02       LDA #$02               ;|
-$80:8E7F 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E7F 8D 0B 42    STA $420B              ;/
 $80:8E82 E2 02       SEP #$02               ;\
 $80:8E84 F0 02       BEQ $02    [$8E88]     ;} Strange unconditional jump o_O
 
@@ -2222,13 +2247,13 @@ $80:8E86 80 FE       BRA $FE    [$8E86]     ; Crash
 $80:8E88 C2 20       REP #$20               ;\
 $80:8E8A 98          TYA                    ;|
 $80:8E8B 09 20 00    ORA #$0020             ;|
-$80:8E8E 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:8E8E 8D 16 21    STA $2116              ;|
 $80:8E91 E2 20       SEP #$20               ;|
-$80:8E93 8E 15 43    STX $4315  [$7E:4315]  ;} DMA [$0982] bytes from $7E:[$098A] to [$0986] | 20h VRAM (BG2 row update wrapped tilemap right halves)
+$80:8E93 8E 15 43    STX $4315              ;} DMA [$0982] bytes from $7E:[$098A] to [$0986] | 20h VRAM (BG2 row update wrapped tilemap right halves)
 $80:8E96 AE 8A 09    LDX $098A  [$7E:098A]  ;|
-$80:8E99 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:8E99 8E 12 43    STX $4312              ;|
 $80:8E9C A9 02       LDA #$02               ;|
-$80:8E9E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:8E9E 8D 0B 42    STA $420B              ;/
 
 $80:8EA1 60          RTS
 }
@@ -2248,27 +2273,27 @@ $80:8EAB 6B          RTL                    ; Return
 $80:8EAC 9E 40 03    STZ $0340,x[$7E:0349]  ; $0340 + [VRAM read table stack pointer] = 0 (table terminator)
 $80:8EAF A2 00       LDX #$00               ; X = 0 (VRAM read table index)
 $80:8EB1 A9 80       LDA #$80               ;\
-$80:8EB3 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$80:8EB3 8D 15 21    STA $2115              ;} VRAM address increment mode = 16-bit access
 
 ; LOOP
 $80:8EB6 C2 20       REP #$20
 $80:8EB8 BD 40 03    LDA $0340,x[$7E:0340]  ;\
 $80:8EBB F0 32       BEQ $32    [$8EEF]     ;} If [VRAM write table entry source address] = 0: go to BRANCH_DONE
-$80:8EBD 8D 16 21    STA $2116  [$7E:2116]  ; VRAM address = [VRAM read table entry source address]
-$80:8EC0 AD 39 21    LDA $2139  [$7E:2139]  ; Dummy VRAM read due to prefetch glitch
+$80:8EBD 8D 16 21    STA $2116              ; VRAM address = [VRAM read table entry source address]
+$80:8EC0 AD 39 21    LDA $2139              ; Dummy VRAM read due to prefetch glitch
 $80:8EC3 BD 42 03    LDA $0342,x[$7E:0342]  ;\
-$80:8EC6 8D 10 43    STA $4310  [$7E:4310]  ;} DMA 1 control / target = [VRAM read table entry DMA control / target]
+$80:8EC6 8D 10 43    STA $4310              ;} DMA 1 control / target = [VRAM read table entry DMA control / target]
 $80:8EC9 BD 44 03    LDA $0344,x[$7E:0344]  ;\
-$80:8ECC 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:8ECC 8D 12 43    STA $4312              ;|
 $80:8ECF BD 45 03    LDA $0345,x[$7E:0345]  ;} DMA 1 source address = [VRAM read table entry destination address]
-$80:8ED2 8D 13 43    STA $4313  [$7E:4313]  ;/
+$80:8ED2 8D 13 43    STA $4313              ;/
 $80:8ED5 BD 47 03    LDA $0347,x[$7E:0347]  ;\
-$80:8ED8 8D 15 43    STA $4315  [$7E:4315]  ;} DMA 1 size = [VRAM write table entry size]
-$80:8EDB 9C 17 43    STZ $4317  [$7E:4317]  ;\
-$80:8EDE 9C 19 43    STZ $4319  [$7E:4319]  ;} Clear DMA 1 HDMA registers
+$80:8ED8 8D 15 43    STA $4315              ;} DMA 1 size = [VRAM write table entry size]
+$80:8EDB 9C 17 43    STZ $4317              ;\
+$80:8EDE 9C 19 43    STZ $4319              ;} Clear DMA 1 HDMA registers
 $80:8EE1 E2 20       SEP #$20
 $80:8EE3 A9 02       LDA #$02               ;\
-$80:8EE5 8D 0B 42    STA $420B  [$7E:420B]  ;} Enable DMA 1
+$80:8EE5 8D 0B 42    STA $420B              ;} Enable DMA 1
 $80:8EE8 8A          TXA                    ;\
 $80:8EE9 18          CLC                    ;|
 $80:8EEA 69 09       ADC #$09               ;} X += 9 (next VRAM read table entry)
@@ -2342,7 +2367,7 @@ $80:8F1D E2 20       SEP #$20
 $80:8F1F 29 7F       AND #$7F               ;\
 $80:8F21 8D F5 07    STA $07F5  [$7E:07F5]  ;} Music track index = [music entry] & 7Fh
 $80:8F24 9C F6 07    STZ $07F6  [$7E:07F6]  ;/
-$80:8F27 8D 40 21    STA $2140  [$7E:2140]  ; APU IO 0 = [music track index]
+$80:8F27 8D 40 21    STA $2140              ; APU IO 0 = [music track index]
 $80:8F2A 8D 4C 06    STA $064C  [$7E:064C]  ; Current music track = [music track index]
 $80:8F2D C2 20       REP #$20
 $80:8F2F A9 08 00    LDA #$0008             ;\
@@ -2887,13 +2912,13 @@ $80:91BC BF E6 91 80 LDA $8091E6,x[$80:91E7];|
 $80:91C0 29 FF 00    AND #$00FF             ;/
 $80:91C3 AA          TAX
 $80:91C4 B9 02 00    LDA $0002,y[$8B:92BA]  ;\
-$80:91C7 9D 00 43    STA $4300,x[$7E:4310]  ;|
+$80:91C7 9D 00 43    STA $4300,x            ;|
 $80:91CA B9 04 00    LDA $0004,y[$8B:92BC]  ;|
-$80:91CD 9D 02 43    STA $4302,x[$7E:4312]  ;|
+$80:91CD 9D 02 43    STA $4302,x            ;|
 $80:91D0 B9 06 00    LDA $0006,y[$8B:92BE]  ;} Copy 7 bytes from (return address) + 2 to $4300 + [X]
-$80:91D3 9D 04 43    STA $4304,x[$7E:4314]  ;|
+$80:91D3 9D 04 43    STA $4304,x            ;|
 $80:91D6 B9 07 00    LDA $0007,y[$8B:92BF]  ;|
-$80:91D9 9D 05 43    STA $4305,x[$7E:4315]  ;/
+$80:91D9 9D 05 43    STA $4305,x            ;/
 $80:91DC 98          TYA                    ;\
 $80:91DD 18          CLC                    ;|
 $80:91DE 69 08 00    ADC #$0008             ;} (Return address) += 8
@@ -2909,104 +2934,104 @@ $80:91E6             db 00, 10, 20, 30, 40, 50, 60, 70
 ;;; $91EE: Update IO registers ;;;
 {
 $80:91EE A6 84       LDX $84    [$7E:0084]  ;\
-$80:91F0 8E 00 42    STX $4200  [$7E:4200]  ;} Interrupt and auto-joypad enable
+$80:91F0 8E 00 42    STX $4200              ;} Interrupt and auto-joypad enable
 $80:91F3 A6 51       LDX $51    [$7E:0051]  ;\
-$80:91F5 8E 00 21    STX $2100  [$7E:2100]  ;} Forced blank and brightness
+$80:91F5 8E 00 21    STX $2100              ;} Forced blank and brightness
 $80:91F8 A6 52       LDX $52    [$7E:0052]  ;\
-$80:91FA 8E 01 21    STX $2101  [$7E:2101]  ;} Sprite size and sprite tiles base address
+$80:91FA 8E 01 21    STX $2101              ;} Sprite size and sprite tiles base address
 $80:91FD A6 55       LDX $55    [$7E:0055]  ;\
-$80:91FF 8E 05 21    STX $2105  [$7E:2105]  ;} Mode and BG tile size
+$80:91FF 8E 05 21    STX $2105              ;} Mode and BG tile size
 $80:9202 A6 57       LDX $57    [$7E:0057]  ;\
-$80:9204 8E 06 21    STX $2106  [$7E:2106]  ;} Mosaic size and enable
+$80:9204 8E 06 21    STX $2106              ;} Mosaic size and enable
 $80:9207 A6 58       LDX $58    [$7E:0058]  ;\
-$80:9209 8E 07 21    STX $2107  [$7E:2107]  ;} BG1 tilemap base address and size
+$80:9209 8E 07 21    STX $2107              ;} BG1 tilemap base address and size
 $80:920C A6 59       LDX $59    [$7E:0059]  ;\
-$80:920E 8E 08 21    STX $2108  [$7E:2108]  ;} BG2 tilemap base address and size
+$80:920E 8E 08 21    STX $2108              ;} BG2 tilemap base address and size
 $80:9211 A6 5A       LDX $5A    [$7E:005A]  ;\
-$80:9213 8E 09 21    STX $2109  [$7E:2109]  ;} BG3 tilemap base address and size
+$80:9213 8E 09 21    STX $2109              ;} BG3 tilemap base address and size
 $80:9216 A6 5C       LDX $5C    [$7E:005C]  ;\
-$80:9218 8E 0A 21    STX $210A  [$7E:210A]  ;} BG4 tilemap base address and size
+$80:9218 8E 0A 21    STX $210A              ;} BG4 tilemap base address and size
 $80:921B A6 5D       LDX $5D    [$7E:005D]  ;\
-$80:921D 8E 0B 21    STX $210B  [$7E:210B]  ;|
+$80:921D 8E 0B 21    STX $210B              ;|
 $80:9220 A6 5E       LDX $5E    [$7E:005E]  ;} BG tiles base address
-$80:9222 8E 0C 21    STX $210C  [$7E:210C]  ;/
+$80:9222 8E 0C 21    STX $210C              ;/
 $80:9225 A6 5F       LDX $5F    [$7E:005F]  ;\
-$80:9227 8E 1A 21    STX $211A  [$7E:211A]  ;} Mode 7 settings
+$80:9227 8E 1A 21    STX $211A              ;} Mode 7 settings
 $80:922A A6 60       LDX $60    [$7E:0060]  ;\
-$80:922C 8E 23 21    STX $2123  [$7E:2123]  ;} Window BG1/2 mask settings
+$80:922C 8E 23 21    STX $2123              ;} Window BG1/2 mask settings
 $80:922F A6 61       LDX $61    [$7E:0061]  ;\
-$80:9231 8E 24 21    STX $2124  [$7E:2124]  ;} Window BG3/4 mask settings
+$80:9231 8E 24 21    STX $2124              ;} Window BG3/4 mask settings
 $80:9234 A6 62       LDX $62    [$7E:0062]  ;\
-$80:9236 8E 25 21    STX $2125  [$7E:2125]  ;} Window sprites/math mask settings
+$80:9236 8E 25 21    STX $2125              ;} Window sprites/math mask settings
 $80:9239 A6 63       LDX $63    [$7E:0063]  ;\
-$80:923B 8E 26 21    STX $2126  [$7E:2126]  ;} Window 1 left position
+$80:923B 8E 26 21    STX $2126              ;} Window 1 left position
 $80:923E A6 64       LDX $64    [$7E:0064]  ;\
-$80:9240 8E 27 21    STX $2127  [$7E:2127]  ;} Window 1 right position
+$80:9240 8E 27 21    STX $2127              ;} Window 1 right position
 $80:9243 A6 65       LDX $65    [$7E:0065]  ;\
-$80:9245 8E 28 21    STX $2128  [$7E:2128]  ;} Window 2 left position
+$80:9245 8E 28 21    STX $2128              ;} Window 2 left position
 $80:9248 A6 66       LDX $66    [$7E:0066]  ;\
-$80:924A 8E 29 21    STX $2129  [$7E:2129]  ;} Window 2 right position
+$80:924A 8E 29 21    STX $2129              ;} Window 2 right position
 $80:924D A6 67       LDX $67    [$7E:0067]  ;\
-$80:924F 8E 2A 21    STX $212A  [$7E:212A]  ;} Window 1/2 BG mask logic
+$80:924F 8E 2A 21    STX $212A              ;} Window 1/2 BG mask logic
 $80:9252 A6 68       LDX $68    [$7E:0068]  ;\
-$80:9254 8E 2B 21    STX $212B  [$7E:212B]  ;} Window 1/2 sprites/colour math mask logic
+$80:9254 8E 2B 21    STX $212B              ;} Window 1/2 sprites/colour math mask logic
 $80:9257 A6 69       LDX $69    [$7E:0069]  ;\
 $80:9259 86 6A       STX $6A    [$7E:006A]  ;} Main screen layers
-$80:925B 8E 2C 21    STX $212C  [$7E:212C]  ;/
+$80:925B 8E 2C 21    STX $212C              ;/
 $80:925E A6 6C       LDX $6C    [$7E:006C]  ;\
-$80:9260 8E 2E 21    STX $212E  [$7E:212E]  ;} Window area main screen disable
+$80:9260 8E 2E 21    STX $212E              ;} Window area main screen disable
 $80:9263 A6 6B       LDX $6B    [$7E:006B]  ;\
-$80:9265 8E 2D 21    STX $212D  [$7E:212D]  ;} Subscreen layers
+$80:9265 8E 2D 21    STX $212D              ;} Subscreen layers
 $80:9268 A6 6D       LDX $6D    [$7E:006D]  ;\
-$80:926A 8E 2F 21    STX $212F  [$7E:212F]  ;} Window area subscreen disable
+$80:926A 8E 2F 21    STX $212F              ;} Window area subscreen disable
 $80:926D A6 6F       LDX $6F    [$7E:006F]  ;\
-$80:926F 8E 30 21    STX $2130  [$7E:2130]  ;} Colour math control register A
+$80:926F 8E 30 21    STX $2130              ;} Colour math control register A
 $80:9272 A6 72       LDX $72    [$7E:0072]  ;\
-$80:9274 8E 31 21    STX $2131  [$7E:2131]  ;} Colour math control register B
+$80:9274 8E 31 21    STX $2131              ;} Colour math control register B
 $80:9277 A6 6E       LDX $6E    [$7E:006E]  ;\
 $80:9279 86 70       STX $70    [$7E:0070]  ;} Next gameplay colour math control register A
 $80:927B A6 71       LDX $71    [$7E:0071]  ;\
 $80:927D 86 73       STX $73    [$7E:0073]  ;} Next gameplay colour math control register B
 $80:927F A6 74       LDX $74    [$7E:0074]  ;\
-$80:9281 8E 32 21    STX $2132  [$7E:2132]  ;|
+$80:9281 8E 32 21    STX $2132              ;|
 $80:9284 A6 75       LDX $75    [$7E:0075]  ;|
-$80:9286 8E 32 21    STX $2132  [$7E:2132]  ;} Colour math subscreen backdrop colour
+$80:9286 8E 32 21    STX $2132              ;} Colour math subscreen backdrop colour
 $80:9289 A6 76       LDX $76    [$7E:0076]  ;|
-$80:928B 8E 32 21    STX $2132  [$7E:2132]  ;/
+$80:928B 8E 32 21    STX $2132              ;/
 $80:928E A6 77       LDX $77    [$7E:0077]  ;\
-$80:9290 8E 33 21    STX $2133  [$7E:2133]  ;} Display resolution
+$80:9290 8E 33 21    STX $2133              ;} Display resolution
 $80:9293 A6 B1       LDX $B1    [$7E:00B1]  ;\
-$80:9295 8E 0D 21    STX $210D  [$7E:210D]  ;|
+$80:9295 8E 0D 21    STX $210D              ;|
 $80:9298 A6 B2       LDX $B2    [$7E:00B2]  ;} BG1 X scroll
-$80:929A 8E 0D 21    STX $210D  [$7E:210D]  ;/
+$80:929A 8E 0D 21    STX $210D              ;/
 $80:929D A6 B3       LDX $B3    [$7E:00B3]  ;\
-$80:929F 8E 0E 21    STX $210E  [$7E:210E]  ;|
+$80:929F 8E 0E 21    STX $210E              ;|
 $80:92A2 A6 B4       LDX $B4    [$7E:00B4]  ;} BG1 Y scroll
-$80:92A4 8E 0E 21    STX $210E  [$7E:210E]  ;/
+$80:92A4 8E 0E 21    STX $210E              ;/
 $80:92A7 A6 B5       LDX $B5    [$7E:00B5]  ;\
-$80:92A9 8E 0F 21    STX $210F  [$7E:210F]  ;|
+$80:92A9 8E 0F 21    STX $210F              ;|
 $80:92AC A6 B6       LDX $B6    [$7E:00B6]  ;} BG2 X scroll
-$80:92AE 8E 0F 21    STX $210F  [$7E:210F]  ;/
+$80:92AE 8E 0F 21    STX $210F              ;/
 $80:92B1 A6 B7       LDX $B7    [$7E:00B7]  ;\
-$80:92B3 8E 10 21    STX $2110  [$7E:2110]  ;|
+$80:92B3 8E 10 21    STX $2110              ;|
 $80:92B6 A6 B8       LDX $B8    [$7E:00B8]  ;} BG2 Y scroll
-$80:92B8 8E 10 21    STX $2110  [$7E:2110]  ;/
+$80:92B8 8E 10 21    STX $2110              ;/
 $80:92BB A6 B9       LDX $B9    [$7E:00B9]  ;\
-$80:92BD 8E 11 21    STX $2111  [$7E:2111]  ;|
+$80:92BD 8E 11 21    STX $2111              ;|
 $80:92C0 A6 BA       LDX $BA    [$7E:00BA]  ;} BG3 X scroll
-$80:92C2 8E 11 21    STX $2111  [$7E:2111]  ;/
+$80:92C2 8E 11 21    STX $2111              ;/
 $80:92C5 A6 BB       LDX $BB    [$7E:00BB]  ;\
-$80:92C7 8E 12 21    STX $2112  [$7E:2112]  ;|
+$80:92C7 8E 12 21    STX $2112              ;|
 $80:92CA A6 BC       LDX $BC    [$7E:00BC]  ;} BG3 Y scroll
-$80:92CC 8E 12 21    STX $2112  [$7E:2112]  ;/
+$80:92CC 8E 12 21    STX $2112              ;/
 $80:92CF A6 BD       LDX $BD    [$7E:00BD]  ;\
-$80:92D1 8E 13 21    STX $2113  [$7E:2113]  ;|
+$80:92D1 8E 13 21    STX $2113              ;|
 $80:92D4 A6 BE       LDX $BE    [$7E:00BE]  ;} BG4 X scroll
-$80:92D6 8E 13 21    STX $2113  [$7E:2113]  ;/
+$80:92D6 8E 13 21    STX $2113              ;/
 $80:92D9 A6 BF       LDX $BF    [$7E:00BF]  ;\
-$80:92DB 8E 14 21    STX $2114  [$7E:2114]  ;|
+$80:92DB 8E 14 21    STX $2114              ;|
 $80:92DE A6 C0       LDX $C0    [$7E:00C0]  ;} BG4 Y scroll
-$80:92E0 8E 14 21    STX $2114  [$7E:2114]  ;/
+$80:92E0 8E 14 21    STX $2114              ;/
 $80:92E3 A6 56       LDX $56    [$7E:0056]  ;\
 $80:92E5 8E EC 07    STX $07EC  [$7E:07EC]  ;} $07EC = [fake mode and BG tile size]
 $80:92E8 A5 55       LDA $55    [$7E:0055]  ;\
@@ -3020,29 +3045,29 @@ $80:92FA F0 01       BEQ $01    [$92FD]     ;/
 $80:92FC 60          RTS                    ; Return
 
 $80:92FD A6 78       LDX $78    [$7E:0078]  ;\
-$80:92FF 8E 1B 21    STX $211B  [$7E:211B]  ;|
+$80:92FF 8E 1B 21    STX $211B              ;|
 $80:9302 A6 79       LDX $79    [$7E:0079]  ;} Mode 7 transformation matrix parameter A
-$80:9304 8E 1B 21    STX $211B  [$7E:211B]  ;/
+$80:9304 8E 1B 21    STX $211B              ;/
 $80:9307 A6 7A       LDX $7A    [$7E:007A]  ;\
-$80:9309 8E 1C 21    STX $211C  [$7E:211C]  ;|
+$80:9309 8E 1C 21    STX $211C              ;|
 $80:930C A6 7B       LDX $7B    [$7E:007B]  ;} Mode 7 transformation matrix parameter B
-$80:930E 8E 1C 21    STX $211C  [$7E:211C]  ;/
+$80:930E 8E 1C 21    STX $211C              ;/
 $80:9311 A6 7C       LDX $7C    [$7E:007C]  ;\
-$80:9313 8E 1D 21    STX $211D  [$7E:211D]  ;|
+$80:9313 8E 1D 21    STX $211D              ;|
 $80:9316 A6 7D       LDX $7D    [$7E:007D]  ;} Mode 7 transformation matrix parameter C
-$80:9318 8E 1D 21    STX $211D  [$7E:211D]  ;/
+$80:9318 8E 1D 21    STX $211D              ;/
 $80:931B A6 7E       LDX $7E    [$7E:007E]  ;\
-$80:931D 8E 1E 21    STX $211E  [$7E:211E]  ;|
+$80:931D 8E 1E 21    STX $211E              ;|
 $80:9320 A6 7F       LDX $7F    [$7E:007F]  ;} Mode 7 transformation matrix parameter D
-$80:9322 8E 1E 21    STX $211E  [$7E:211E]  ;/
+$80:9322 8E 1E 21    STX $211E              ;/
 $80:9325 A6 80       LDX $80    [$7E:0080]  ;\
-$80:9327 8E 1F 21    STX $211F  [$7E:211F]  ;|
+$80:9327 8E 1F 21    STX $211F              ;|
 $80:932A A6 81       LDX $81    [$7E:0081]  ;} Mode 7 transformation origin co-ordinate X
-$80:932C 8E 1F 21    STX $211F  [$7E:211F]  ;/
+$80:932C 8E 1F 21    STX $211F              ;/
 $80:932F A6 82       LDX $82    [$7E:0082]  ;\
-$80:9331 8E 20 21    STX $2120  [$7E:2120]  ;|
+$80:9331 8E 20 21    STX $2120              ;|
 $80:9334 A6 83       LDX $83    [$7E:0083]  ;} Mode 7 transformation origin co-ordinate Y
-$80:9336 8E 20 21    STX $2120  [$7E:2120]  ;/
+$80:9336 8E 20 21    STX $2120              ;/
 $80:9339 60          RTS
 }
 
@@ -3050,26 +3075,26 @@ $80:9339 60          RTS
 ;;; $933A: Update OAM & CGRAM ;;;
 {
 $80:933A A9 00 04    LDA #$0400             ;\
-$80:933D 8D 00 43    STA $4300  [$7E:4300]  ;|
+$80:933D 8D 00 43    STA $4300              ;|
 $80:9340 A9 70 03    LDA #$0370             ;|
-$80:9343 8D 02 43    STA $4302  [$7E:4302]  ;|
+$80:9343 8D 02 43    STA $4302              ;|
 $80:9346 A2 00       LDX #$00               ;} Set up DMA 0 for OAM = [$0370..$058F]
-$80:9348 8E 04 43    STX $4304  [$7E:4304]  ;|
+$80:9348 8E 04 43    STX $4304              ;|
 $80:934B A9 20 02    LDA #$0220             ;|
-$80:934E 8D 05 43    STA $4305  [$7E:4305]  ;|
-$80:9351 9C 02 21    STZ $2102  [$7E:2102]  ;/
+$80:934E 8D 05 43    STA $4305              ;|
+$80:9351 9C 02 21    STZ $2102              ;/
 $80:9354 A9 00 22    LDA #$2200             ;\
-$80:9357 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:9357 8D 10 43    STA $4310              ;|
 $80:935A A9 00 C0    LDA #$C000             ;|
-$80:935D 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:935D 8D 12 43    STA $4312              ;|
 $80:9360 A2 7E       LDX #$7E               ;|
-$80:9362 8E 14 43    STX $4314  [$7E:4314]  ;} Set up DMA 1 for CGRAM = [$7E:C000..$C1FF]
+$80:9362 8E 14 43    STX $4314              ;} Set up DMA 1 for CGRAM = [$7E:C000..$C1FF]
 $80:9365 A9 00 02    LDA #$0200             ;|
-$80:9368 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:9368 8D 15 43    STA $4315              ;|
 $80:936B A2 00       LDX #$00               ;|
-$80:936D 8E 21 21    STX $2121  [$7E:2121]  ;/
+$80:936D 8E 21 21    STX $2121              ;/
 $80:9370 A2 03       LDX #$03               ;\
-$80:9372 8E 0B 42    STX $420B  [$7E:420B]  ;} Execute DMA 0 and 1
+$80:9372 8E 0B 42    STX $420B              ;} Execute DMA 0 and 1
 $80:9375 60          RTS
 }
 
@@ -3088,38 +3113,38 @@ $80:9379 DA          PHX                    ;} DB = $92
 $80:937A AB          PLB                    ;/
 $80:937B A2 02       LDX #$02
 $80:937D A0 80       LDY #$80               ;\
-$80:937F 8C 15 21    STY $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$80:937F 8C 15 21    STY $2115              ;} VRAM address increment mode = 16-bit access
 $80:9382 AC 1D 07    LDY $071D  [$7E:071D]  ;\
 $80:9385 F0 44       BEQ $44    [$93CB]     ;} If Samus top half tiles flagged for transfer:
 $80:9387 A0 02       LDY #$02
 $80:9389 AD 1F 07    LDA $071F  [$7E:071F]  ;\
 $80:938C 85 3C       STA $3C    [$7E:003C]  ;} $3C = [Samus top half tiles definition]
 $80:938E A9 00 60    LDA #$6000             ;\
-$80:9391 8D 16 21    STA $2116  [$7E:2116]  ;} VRAM address = $6000
+$80:9391 8D 16 21    STA $2116              ;} VRAM address = $6000
 $80:9394 A9 01 18    LDA #$1801             ;\
-$80:9397 8D 10 43    STA $4310  [$7E:4310]  ;} DMA 1 control / target = 16-bit VRAM data write
+$80:9397 8D 10 43    STA $4310              ;} DMA 1 control / target = 16-bit VRAM data write
 $80:939A B2 3C       LDA ($3C)  [$92:D0C5]  ;\
-$80:939C 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:939C 8D 12 43    STA $4312              ;|
 $80:939F 85 14       STA $14    [$7E:0014]  ;} DMA 1 source address = [[$3C]]
 $80:93A1 B1 3C       LDA ($3C),y[$92:D0C7]  ;|
-$80:93A3 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:93A3 8D 14 43    STA $4314              ;/
 $80:93A6 C8          INY                    ;\
 $80:93A7 B1 3C       LDA ($3C),y[$92:D0C8]  ;} DMA 1 size = [[$3C] + 3]
-$80:93A9 8D 15 43    STA $4315  [$7E:4315]  ;/
+$80:93A9 8D 15 43    STA $4315              ;/
 $80:93AC 18          CLC                    ;\
 $80:93AD 65 14       ADC $14    [$7E:0014]  ;} $14 = [DMA 1 source address] + [DMA 1 size]
 $80:93AF 85 14       STA $14    [$7E:0014]  ;/
 $80:93B1 C8          INY
 $80:93B2 C8          INY
-$80:93B3 8E 0B 42    STX $420B  [$7E:420B]  ; Enable DMA 1
+$80:93B3 8E 0B 42    STX $420B              ; Enable DMA 1
 $80:93B6 A9 00 61    LDA #$6100             ;\
-$80:93B9 8D 16 21    STA $2116  [$7E:2116]  ;} VRAM address = $6100
+$80:93B9 8D 16 21    STA $2116              ;} VRAM address = $6100
 $80:93BC A5 14       LDA $14    [$7E:0014]  ;\
-$80:93BE 8D 12 43    STA $4312  [$7E:4312]  ;} DMA 1 source address = [$14]
+$80:93BE 8D 12 43    STA $4312              ;} DMA 1 source address = [$14]
 $80:93C1 B1 3C       LDA ($3C),y[$92:D0CA]  ;\
 $80:93C3 F0 06       BEQ $06    [$93CB]     ;} If [[$3C] + 5] != 0:
-$80:93C5 8D 15 43    STA $4315  [$7E:4315]  ; DMA 1 size = [[$3C] + 5]
-$80:93C8 8E 0B 42    STX $420B  [$7E:420B]  ; Enable DMA 1
+$80:93C5 8D 15 43    STA $4315              ; DMA 1 size = [[$3C] + 5]
+$80:93C8 8E 0B 42    STX $420B              ; Enable DMA 1
 
 $80:93CB AC 1E 07    LDY $071E  [$7E:071E]  ;\
 $80:93CE F0 44       BEQ $44    [$9414]     ;} If Samus bottom half tiles flagged for transfer:
@@ -3127,31 +3152,31 @@ $80:93D0 A0 02       LDY #$02
 $80:93D2 AD 21 07    LDA $0721  [$7E:0721]  ;\
 $80:93D5 85 3C       STA $3C    [$7E:003C]  ;} $3C = [Samus bottom half tiles definition]
 $80:93D7 A9 80 60    LDA #$6080             ;\
-$80:93DA 8D 16 21    STA $2116  [$7E:2116]  ;} VRAM address = $6080
+$80:93DA 8D 16 21    STA $2116              ;} VRAM address = $6080
 $80:93DD A9 01 18    LDA #$1801             ;\
-$80:93E0 8D 10 43    STA $4310  [$7E:4310]  ;} DMA 1 control / target = 16-bit VRAM data write
+$80:93E0 8D 10 43    STA $4310              ;} DMA 1 control / target = 16-bit VRAM data write
 $80:93E3 B2 3C       LDA ($3C)  [$92:D1C8]  ;\
-$80:93E5 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:93E5 8D 12 43    STA $4312              ;|
 $80:93E8 85 14       STA $14    [$7E:0014]  ;} DMA 1 source address = [[$3C]]
 $80:93EA B1 3C       LDA ($3C),y[$92:D1CA]  ;|
-$80:93EC 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:93EC 8D 14 43    STA $4314              ;/
 $80:93EF C8          INY                    ;\
 $80:93F0 B1 3C       LDA ($3C),y[$92:D1CB]  ;} DMA 1 size = [[$3C] + 3]
-$80:93F2 8D 15 43    STA $4315  [$7E:4315]  ;/
+$80:93F2 8D 15 43    STA $4315              ;/
 $80:93F5 18          CLC                    ;\
 $80:93F6 65 14       ADC $14    [$7E:0014]  ;} $14 = [DMA 1 source address] + [DMA 1 size]
 $80:93F8 85 14       STA $14    [$7E:0014]  ;/
 $80:93FA C8          INY
 $80:93FB C8          INY
-$80:93FC 8E 0B 42    STX $420B  [$7E:420B]  ; Enable DMA 1
+$80:93FC 8E 0B 42    STX $420B              ; Enable DMA 1
 $80:93FF A9 80 61    LDA #$6180             ;\
-$80:9402 8D 16 21    STA $2116  [$7E:2116]  ;} VRAM address = $6180
+$80:9402 8D 16 21    STA $2116              ;} VRAM address = $6180
 $80:9405 A5 14       LDA $14    [$7E:0014]  ;\
-$80:9407 8D 12 43    STA $4312  [$7E:4312]  ;} DMA 1 source address = [$14]
+$80:9407 8D 12 43    STA $4312              ;} DMA 1 source address = [$14]
 $80:940A B1 3C       LDA ($3C),y[$92:D1CD]  ;\
 $80:940C F0 06       BEQ $06    [$9414]     ;} If [[$3C] + 5] != 0:
-$80:940E 8D 15 43    STA $4315  [$7E:4315]  ; DMA 1 size = [[$3C] + 5]
-$80:9411 8E 0B 42    STX $420B  [$7E:420B]  ; Enable DMA 1
+$80:940E 8D 15 43    STA $4315              ; DMA 1 size = [[$3C] + 5]
+$80:9411 8E 0B 42    STX $420B              ; Enable DMA 1
 
 $80:9414 AB          PLB
 $80:9415 60          RTS
@@ -3173,19 +3198,19 @@ $80:9422 BD F5 1E    LDA $1EF5,x[$7E:1EFF]  ;\
 $80:9425 F0 2C       BEQ $2C    [$9453]     ;} If [animated tiles object ID] != 0:
 $80:9427 BD 25 1F    LDA $1F25,x[$7E:1F2F]  ;\
 $80:942A F0 27       BEQ $27    [$9453]     ;} If [animated tiles object source address] != 0:
-$80:942C 8D 02 43    STA $4302  [$7E:4302]  ;\
+$80:942C 8D 02 43    STA $4302              ;\
 $80:942F A0 87       LDY #$87               ;} DMA 0 source address = $87:0000 + [animated tiles object source address]
-$80:9431 8C 04 43    STY $4304  [$7E:4304]  ;/
+$80:9431 8C 04 43    STY $4304              ;/
 $80:9434 A9 01 18    LDA #$1801             ;\
-$80:9437 8D 00 43    STA $4300  [$7E:4300]  ;} DMA 0 control / target = 16-bit VRAM write
+$80:9437 8D 00 43    STA $4300              ;} DMA 0 control / target = 16-bit VRAM write
 $80:943A BD 31 1F    LDA $1F31,x[$7E:1F3B]  ;\
-$80:943D 8D 05 43    STA $4305  [$7E:4305]  ;} DMA 0 size = [animated tiles object size]
+$80:943D 8D 05 43    STA $4305              ;} DMA 0 size = [animated tiles object size]
 $80:9440 BD 3D 1F    LDA $1F3D,x[$7E:1F47]  ;\
-$80:9443 8D 16 21    STA $2116  [$7E:2116]  ;} VRAM write address = [animated tiles object VRAM address]
+$80:9443 8D 16 21    STA $2116              ;} VRAM write address = [animated tiles object VRAM address]
 $80:9446 A0 80       LDY #$80               ;\
-$80:9448 8C 15 21    STY $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$80:9448 8C 15 21    STY $2115              ;} VRAM address increment mode = 16-bit access
 $80:944B A0 01       LDY #$01               ;\
-$80:944D 8C 0B 42    STY $420B  [$7E:420B]  ;} Enable DMA 0
+$80:944D 8C 0B 42    STY $420B              ;} Enable DMA 0
 $80:9450 9E 25 1F    STZ $1F25,x[$7E:1F2F]  ; Animated tiles object source address = 0
 
 $80:9453 CA          DEX                    ;\
@@ -3204,11 +3229,11 @@ $80:9458 60          RTS
 $80:9459 08          PHP
 $80:945A E2 20       SEP #$20
 
-$80:945C AD 12 42    LDA $4212  [$7E:4212]  ;\
+$80:945C AD 12 42    LDA $4212              ;\
 $80:945F 29 01       AND #$01               ;} Wait until auto-joypad read has finished
 $80:9461 D0 F9       BNE $F9    [$945C]     ;/
 $80:9463 C2 20       REP #$20
-$80:9465 AD 18 42    LDA $4218  [$7E:4218]  ;\
+$80:9465 AD 18 42    LDA $4218              ;\
 $80:9468 85 8B       STA $8B    [$7E:008B]  ;} Controller 1 input = [IO controller 1 input]
 $80:946A 45 97       EOR $97    [$7E:0097]  ;\
 $80:946C 25 8B       AND $8B    [$7E:008B]  ;} Newly pressed controller 1 input = [controller 1 input] & ~[previous controller 1 input]
@@ -3239,7 +3264,7 @@ $80:9495 28          PLP                    ;\
 $80:9496 6B          RTL                    ;} Return
 
 ; Debug branch
-$80:9497 AD 1A 42    LDA $421A  [$7E:421A]  ;\
+$80:9497 AD 1A 42    LDA $421A              ;\
 $80:949A 85 8D       STA $8D    [$7E:008D]  ;} Controller 2 input = [IO controller 2 input]
 $80:949C 45 99       EOR $99    [$7E:0099]  ;\
 $80:949E 25 8D       AND $8D    [$7E:008D]  ;} Newly pressed controller 2 input = [controller 2 input] & ~[previous controller 2 input]
@@ -3366,7 +3391,7 @@ $80:958F AB          PLB                    ;} DB = $80
 $80:9590 A9 00 00    LDA #$0000             ;\
 $80:9593 5B          TCD                    ;} DP = $0000
 $80:9594 E2 10       SEP #$10
-$80:9596 AE 10 42    LDX $4210  [$7E:4210]  ; Read RDNMI, resetting the NMI request signal
+$80:9596 AE 10 42    LDX $4210              ; Read RDNMI, resetting the NMI request signal
 $80:9599 AE B4 05    LDX $05B4  [$7E:05B4]  ;\
 $80:959C F0 64       BEQ $64    [$9602]     ;} If NMI not requested: go to BRANCH_LAG
 $80:959E 20 3A 93    JSR $933A  [$80:933A]  ; Update OAM & CGRAM
@@ -3379,7 +3404,7 @@ $80:95AC BD B4 18    LDA $18B4,x[$7E:18B4]  ;|
 $80:95AF F0 09       BEQ $09    [$95BA]     ;|
 $80:95B1 BC C0 18    LDY $18C0,x[$7E:18C0]  ;|
 $80:95B4 BD D8 18    LDA $18D8,x[$7E:18D8]  ;|
-$80:95B7 99 02 43    STA $4302,y[$7E:4322]  ;} Handle HDMA queue
+$80:95B7 99 02 43    STA $4302,y            ;} Handle HDMA queue
                                             ;|
 $80:95BA E8          INX                    ;|
 $80:95BB E8          INX                    ;|
@@ -3399,7 +3424,7 @@ $80:95D4 22 A2 8E 80 JSL $808EA2[$80:8EA2]  ; Handle VRAM read table
 $80:95D8 E2 10       SEP #$10
 $80:95DA C2 20       REP #$20
 $80:95DC A6 85       LDX $85    [$7E:0085]  ;\
-$80:95DE 8E 0C 42    STX $420C  [$7E:420C]  ;} Enable HDMA
+$80:95DE 8E 0C 42    STX $420C              ;} Enable HDMA
 $80:95E1 22 59 94 80 JSL $809459[$80:9459]  ; Read controller input. Also a debug branch
 $80:95E5 A2 00       LDX #$00               ;\
 $80:95E7 8E B4 05    STX $05B4  [$7E:05B4]  ;} NMI request flag = 0
@@ -3444,25 +3469,25 @@ $80:9616             dw 966E, 9680, 968B, 96A9, 96D3, 96F1, 971A, 9733, 9758, 97
 ;     $980A: Interrupt command 1Ah. Horizontal door transition, screen drawn
 $80:9632 E2 20       SEP #$20
 $80:9634 A9 80       LDA #$80               ;\
-$80:9636 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
+$80:9636 8D 00 21    STA $2100              ;} Enable forced blank
 $80:9639 AE BE 05    LDX $05BE  [$7E:05BE]  ;\
-$80:963C 8E 16 21    STX $2116  [$7E:2116]  ;} VRAM address = [door transition VRAM update destination]
+$80:963C 8E 16 21    STX $2116              ;} VRAM address = [door transition VRAM update destination]
 $80:963F A2 01 18    LDX #$1801             ;\
-$80:9642 8E 10 43    STX $4310  [$7E:4310]  ;} DMA 1 control / target = 16-bit VRAM write
+$80:9642 8E 10 43    STX $4310              ;} DMA 1 control / target = 16-bit VRAM write
 $80:9645 AE C0 05    LDX $05C0  [$7E:05C0]  ;\
-$80:9648 8E 12 43    STX $4312  [$7E:4312]  ;|
+$80:9648 8E 12 43    STX $4312              ;|
 $80:964B AD C2 05    LDA $05C2  [$7E:05C2]  ;} DMA 1 source address = [door transition VRAM update source]
-$80:964E 8D 14 43    STA $4314  [$7E:4314]  ;/
+$80:964E 8D 14 43    STA $4314              ;/
 $80:9651 AE C3 05    LDX $05C3  [$7E:05C3]  ;\
-$80:9654 8E 15 43    STX $4315  [$7E:4315]  ;} DMA 1 size = [door transition VRAM update size]
+$80:9654 8E 15 43    STX $4315              ;} DMA 1 size = [door transition VRAM update size]
 $80:9657 A9 80       LDA #$80               ;\
-$80:9659 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
+$80:9659 8D 15 21    STA $2115              ;} VRAM address increment mode = 16-bit access
 $80:965C A9 02       LDA #$02               ;\
-$80:965E 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
+$80:965E 8D 0B 42    STA $420B              ;} Execute DMA 1
 $80:9661 A9 80       LDA #$80               ;\
 $80:9663 1C BD 05    TRB $05BD  [$7E:05BD]  ;} Door transition VRAM update flag = 0
 $80:9666 A9 0F       LDA #$0F               ;\
-$80:9668 8D 00 21    STA $2100  [$7E:2100]  ;} Disable forced blank
+$80:9668 8D 00 21    STA $2100              ;} Disable forced blank
 $80:966B C2 20       REP #$20
 $80:966D 60          RTS
 }
@@ -3515,11 +3540,11 @@ $80:968A 60          RTS
 
 $80:968B E2 20       SEP #$20
 $80:968D A9 5A       LDA #$5A               ;\
-$80:968F 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address = $5800, size = 32x64
-$80:9692 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:9695 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:968F 8D 09 21    STA $2109              ;} BG3 tilemap base address = $5800, size = 32x64
+$80:9692 9C 30 21    STZ $2130              ;\
+$80:9695 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9698 A9 04       LDA #$04               ;\
-$80:969A 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
+$80:969A 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:969D C2 20       REP #$20
 $80:969F A9 06 00    LDA #$0006             ; Interrupt command = 6
 $80:96A2 A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
@@ -3537,13 +3562,13 @@ $80:96A8 60          RTS
 
 $80:96A9 E2 20       SEP #$20
 $80:96AB A5 70       LDA $70    [$7E:0070]  ;\
-$80:96AD 8D 30 21    STA $2130  [$7E:2130]  ;} Colour math control register A = [gameplay colour math control register A]
+$80:96AD 8D 30 21    STA $2130              ;} Colour math control register A = [gameplay colour math control register A]
 $80:96B0 A5 73       LDA $73    [$7E:0073]  ;\
-$80:96B2 8D 31 21    STA $2131  [$7E:2131]  ;} Colour math control register B = [gameplay colour math control register B]
+$80:96B2 8D 31 21    STA $2131              ;} Colour math control register B = [gameplay colour math control register B]
 $80:96B5 A5 5B       LDA $5B    [$7E:005B]  ;\
-$80:96B7 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address and size = [gameplay BG3 tilemap base address and size]
+$80:96B7 8D 09 21    STA $2109              ;} BG3 tilemap base address and size = [gameplay BG3 tilemap base address and size]
 $80:96BA A5 6A       LDA $6A    [$7E:006A]  ;\
-$80:96BC 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = [gameplay main screen layers]
+$80:96BC 8D 2C 21    STA $212C              ;} Main screen layers = [gameplay main screen layers]
 $80:96BF C2 20       REP #$20
 $80:96C1 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:96C3 F0 04       BEQ $04    [$96C9]     ; If [next interrupt command] != 0:
@@ -3567,11 +3592,11 @@ $80:96D2 60          RTS
 
 $80:96D3 E2 20       SEP #$20
 $80:96D5 A9 5A       LDA #$5A               ;\
-$80:96D7 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address = $5800, size = 32x64
+$80:96D7 8D 09 21    STA $2109              ;} BG3 tilemap base address = $5800, size = 32x64
 $80:96DA A9 04       LDA #$04               ;\
-$80:96DC 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
-$80:96DF 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:96E2 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:96DC 8D 2C 21    STA $212C              ;} Main screen layers = BG3
+$80:96DF 9C 30 21    STZ $2130              ;\
+$80:96E2 9C 31 21    STZ $2131              ;} Disable colour math
 $80:96E5 C2 20       REP #$20
 $80:96E7 A9 0A 00    LDA #$000A             ; Interrupt command = Ah
 $80:96EA A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
@@ -3598,7 +3623,7 @@ $80:96FF 80 02       BRA $02    [$9703]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9701 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:9703 8D 2C 21    STA $212C  [$7E:212C]
+$80:9703 8D 2C 21    STA $212C            
 $80:9706 C2 20       REP #$20
 $80:9708 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:970A F0 04       BEQ $04    [$9710]     ; If [next interrupt command] != 0:
@@ -3623,9 +3648,9 @@ $80:9719 60          RTS
 ; Compared to interrupt command 4, this one doesn't set BG3 tilemap base address and size
 $80:971A E2 20       SEP #$20
 $80:971C A9 04       LDA #$04               ;\
-$80:971E 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
-$80:9721 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:9724 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:971E 8D 2C 21    STA $212C              ;} Main screen layers = BG3
+$80:9721 9C 30 21    STZ $2130              ;\
+$80:9724 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9727 C2 20       REP #$20
 $80:9729 A9 0E 00    LDA #$000E             ; Interrupt command = Eh
 $80:972C A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
@@ -3644,11 +3669,11 @@ $80:9732 60          RTS
 ; Compared to interrupt command 6, this one doesn't set the main screen layers
 $80:9733 E2 20       SEP #$20
 $80:9735 A5 5B       LDA $5B    [$7E:005B]  ;\
-$80:9737 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address and size = [gameplay BG3 tilemap base address and size]
+$80:9737 8D 09 21    STA $2109              ;} BG3 tilemap base address and size = [gameplay BG3 tilemap base address and size]
 $80:973A A5 70       LDA $70    [$7E:0070]  ;\
-$80:973C 8D 30 21    STA $2130  [$7E:2130]  ;} Colour math control register A = [gameplay colour math control register A]
+$80:973C 8D 30 21    STA $2130              ;} Colour math control register A = [gameplay colour math control register A]
 $80:973F A5 73       LDA $73    [$7E:0073]  ;\
-$80:9741 8D 31 21    STA $2131  [$7E:2131]  ;} Colour math control register B = [gameplay colour math control register B]
+$80:9741 8D 31 21    STA $2131              ;} Colour math control register B = [gameplay colour math control register B]
 $80:9744 C2 20       REP #$20
 $80:9746 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:9748 F0 04       BEQ $04    [$974E]     ; If [next interrupt command] != 0:
@@ -3672,9 +3697,9 @@ $80:9757 60          RTS
 
 $80:9758 E2 20       SEP #$20
 $80:975A A9 04       LDA #$04               ;\
-$80:975C 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
-$80:975F 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:9762 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:975C 8D 2C 21    STA $212C              ;} Main screen layers = BG3
+$80:975F 9C 30 21    STZ $2130              ;\
+$80:9762 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9765 C2 20       REP #$20
 $80:9767 A9 12 00    LDA #$0012             ; Interrupt command = 12h
 $80:976A A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
@@ -3701,9 +3726,9 @@ $80:977F 80 02       BRA $02    [$9783]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9781 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:9783 8D 2C 21    STA $212C  [$7E:212C]
-$80:9786 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:9789 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:9783 8D 2C 21    STA $212C            
+$80:9786 9C 30 21    STZ $2130              ;\
+$80:9789 9C 31 21    STZ $2131              ;} Disable colour math
 $80:978C C2 20       REP #$20
 $80:978E AE BC 05    LDX $05BC  [$7E:05BC]  ;\
 $80:9791 10 03       BPL $03    [$9796]     ;} If door transition VRAM update:
@@ -3751,9 +3776,9 @@ $80:97C0 60          RTS
 
 $80:97C1 E2 20       SEP #$20
 $80:97C3 A9 04       LDA #$04               ;\
-$80:97C5 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
-$80:97C8 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:97CB 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:97C5 8D 2C 21    STA $212C              ;} Main screen layers = BG3
+$80:97C8 9C 30 21    STZ $2130              ;\
+$80:97CB 9C 31 21    STZ $2131              ;} Disable colour math
 $80:97CE C2 20       REP #$20
 $80:97D0 A9 18 00    LDA #$0018             ; Interrupt command = 18h
 $80:97D3 A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
@@ -3780,9 +3805,9 @@ $80:97E8 80 02       BRA $02    [$97EC]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:97EA A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:97EC 8D 2C 21    STA $212C  [$7E:212C]
-$80:97EF 9C 30 21    STZ $2130  [$7E:2130]  ;\
-$80:97F2 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
+$80:97EC 8D 2C 21    STA $212C            
+$80:97EF 9C 30 21    STZ $2130              ;\
+$80:97F2 9C 31 21    STZ $2131              ;} Disable colour math
 $80:97F5 C2 20       REP #$20
 $80:97F7 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $80:97FA 30 04       BMI $04    [$9800]     ;} If door transition has not finished scrolling:
@@ -3827,9 +3852,9 @@ $80:9829 60          RTS
 $80:982A 08          PHP
 $80:982B C2 30       REP #$30
 $80:982D A9 00 00    LDA #$0000             ;\
-$80:9830 8D 09 42    STA $4209  [$7E:4209]  ;} IRQ v-counter target = 0
+$80:9830 8D 09 42    STA $4209              ;} IRQ v-counter target = 0
 $80:9833 A9 98 00    LDA #$0098             ;\
-$80:9836 8D 07 42    STA $4207  [$7E:4207]  ;} IRQ h-counter target = 98h
+$80:9836 8D 07 42    STA $4207              ;} IRQ h-counter target = 98h
 $80:9839 A9 30 00    LDA #$0030             ;\
 $80:983C 04 84       TSB $84    [$7E:0084]  ;} Enable h/v-counter interrupts
 $80:983E 28          PLP
@@ -3843,14 +3868,14 @@ $80:9840 6B          RTL
 $80:9841 08          PHP
 $80:9842 C2 30       REP #$30
 $80:9844 A9 00 00    LDA #$0000             ;\
-$80:9847 8D 09 42    STA $4209  [$7E:4209]  ;} IRQ v-counter target = 0
+$80:9847 8D 09 42    STA $4209              ;} IRQ v-counter target = 0
 $80:984A A9 98 00    LDA #$0098             ;\
-$80:984D 8D 07 42    STA $4207  [$7E:4207]  ;} IRQ h-counter target = 98h
+$80:984D 8D 07 42    STA $4207              ;} IRQ h-counter target = 98h
 $80:9850 A9 30 00    LDA #$0030             ;\
 $80:9853 04 84       TSB $84    [$7E:0084]  ;|
 $80:9855 E2 20       SEP #$20               ;} Enable h/v-counter interrupts now
 $80:9857 A5 84       LDA $84    [$7E:0084]  ;|
-$80:9859 8D 00 42    STA $4200  [$7E:4200]  ;/
+$80:9859 8D 00 42    STA $4200              ;/
 $80:985C 28          PLP
 $80:985D 58          CLI                    ; Enable IRQ
 $80:985E 6B          RTL
@@ -3883,12 +3908,12 @@ $80:9872 DA          PHX
 $80:9873 5A          PHY
 $80:9874 4B          PHK                    ;\
 $80:9875 AB          PLB                    ;} DB = $80
-$80:9876 AD 11 42    LDA $4211  [$7E:4211]  ; Acknowledge IRQ request
+$80:9876 AD 11 42    LDA $4211              ; Acknowledge IRQ request
 $80:9879 A6 AB       LDX $AB    [$7E:00AB]  ;\
 $80:987B FC 16 96    JSR ($9616,x)[$80:966E];} Execute [$9616 + [interrupt command]]
 $80:987E 85 AB       STA $AB    [$7E:00AB]  ; Interrupt command = [A]
-$80:9880 8C 09 42    STY $4209  [$7E:4209]  ; IRQ v-counter target = [Y]
-$80:9883 8E 07 42    STX $4207  [$7E:4207]  ; IRQ h-counter target = [X]
+$80:9880 8C 09 42    STY $4209              ; IRQ v-counter target = [Y]
+$80:9883 8E 07 42    STX $4207              ; IRQ h-counter target = [X]
 $80:9886 7A          PLY
 $80:9887 FA          PLX
 $80:9888 68          PLA
@@ -4084,14 +4109,14 @@ $80:9A7B 4B          PHK                    ;\
 $80:9A7C AB          PLB                    ;} DB = $80
 $80:9A7D C2 30       REP #$30
 $80:9A7F A9 00 58    LDA #$5800             ;\
-$80:9A82 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:9A82 8D 16 21    STA $2116              ;|
 $80:9A85 A9 80 00    LDA #$0080             ;|
-$80:9A88 8D 15 21    STA $2115  [$7E:2115]  ;|
+$80:9A88 8D 15 21    STA $2115              ;|
 $80:9A8B 22 A9 91 80 JSL $8091A9[$80:91A9]  ;} VRAM $5800..1F = HUD top row tilemap
 $80:9A8F             dx 01,01,18,80988B,0040;|
 $80:9A97 E2 20       SEP #$20               ;|
 $80:9A99 A9 02       LDA #$02               ;|
-$80:9A9B 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:9A9B 8D 0B 42    STA $420B              ;/
 $80:9A9E C2 20       REP #$20
 $80:9AA0 A2 00 00    LDX #$0000
 
@@ -4201,31 +4226,31 @@ $80:9B8E CD 06 0A    CMP $0A06  [$7E:0A06]  ;} If [Samus health] = [Samus previo
 $80:9B91 F0 68       BEQ $68    [$9BFB]     ;/
 $80:9B93 8D 06 0A    STA $0A06  [$7E:0A06]  ; Samus previous health = [Samus health]
 $80:9B96 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
-$80:9B99 8D 04 42    STA $4204  [$7E:4204]  ;|
+$80:9B99 8D 04 42    STA $4204              ;|
 $80:9B9C E2 20       SEP #$20               ;|
 $80:9B9E A9 64       LDA #$64               ;|
-$80:9BA0 8D 06 42    STA $4206  [$7E:4206]  ;|
+$80:9BA0 8D 06 42    STA $4206              ;|
 $80:9BA3 48          PHA                    ;|
 $80:9BA4 68          PLA                    ;} $14 = number of whole energy tanks
 $80:9BA5 48          PHA                    ;} $12 = sub-tank energy
 $80:9BA6 68          PLA                    ;|
 $80:9BA7 C2 20       REP #$20               ;|
-$80:9BA9 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$80:9BA9 AD 14 42    LDA $4214              ;|
 $80:9BAC 85 14       STA $14    [$7E:0014]  ;|
-$80:9BAE AD 16 42    LDA $4216  [$7E:4216]  ;|
+$80:9BAE AD 16 42    LDA $4216              ;|
 $80:9BB1 85 12       STA $12    [$7E:0012]  ;/
 $80:9BB3 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
-$80:9BB6 8D 04 42    STA $4204  [$7E:4204]  ;|
+$80:9BB6 8D 04 42    STA $4204              ;|
 $80:9BB9 E2 20       SEP #$20               ;|
 $80:9BBB A9 64       LDA #$64               ;|
-$80:9BBD 8D 06 42    STA $4206  [$7E:4206]  ;|
+$80:9BBD 8D 06 42    STA $4206              ;|
 $80:9BC0 48          PHA                    ;|
 $80:9BC1 68          PLA                    ;} $16 = number of collected energy tanks + 1
 $80:9BC2 48          PHA                    ;} Y = 0 (energy tank index)
 $80:9BC3 68          PLA                    ;|
 $80:9BC4 C2 30       REP #$30               ;|
 $80:9BC6 A0 00 00    LDY #$0000             ;|
-$80:9BC9 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$80:9BC9 AD 14 42    LDA $4214              ;|
 $80:9BCC 1A          INC A                  ;|
 $80:9BCD 85 16       STA $16    [$7E:0016]  ;/
 
@@ -4436,23 +4461,23 @@ $80:9D6E             dw 0014, ; Missiles
 ;;     X: HUD tilemap index
 ;;     $00: Long pointer to digits tilemap
 
-$80:9D78 8D 04 42    STA $4204  [$7E:4204]  ;\
+$80:9D78 8D 04 42    STA $4204              ;\
 $80:9D7B E2 20       SEP #$20               ;|
 $80:9D7D A9 64       LDA #$64               ;|
-$80:9D7F 8D 06 42    STA $4206  [$7E:4206]  ;|
+$80:9D7F 8D 06 42    STA $4206              ;|
 $80:9D82 48          PHA                    ;|
 $80:9D83 68          PLA                    ;|
 $80:9D84 48          PHA                    ;|
 $80:9D85 68          PLA                    ;} HUD tilemap base + [X] = [[$00] + ([A] / 100) * 2] (draw hundreds digit)
 $80:9D86 C2 20       REP #$20               ;|
-$80:9D88 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$80:9D88 AD 14 42    LDA $4214              ;|
 $80:9D8B 0A          ASL A                  ;|
 $80:9D8C A8          TAY                    ;|
 $80:9D8D B7 00       LDA [$00],y[$00:9DD3]  ;|
 $80:9D8F 9F 08 C6 7E STA $7EC608,x[$7E:C69C];/
 $80:9D93 E8          INX                    ;\
 $80:9D94 E8          INX                    ;} X += 2 (next HUD tilemap index)
-$80:9D95 AD 16 42    LDA $4216  [$7E:4216]  ; A = [A] % 100
+$80:9D95 AD 16 42    LDA $4216              ; A = [A] % 100
 }
 
 
@@ -4463,21 +4488,21 @@ $80:9D95 AD 16 42    LDA $4216  [$7E:4216]  ; A = [A] % 100
 ;;     X: HUD tilemap index
 ;;     $00: Long pointer to digits tilemap
 
-$80:9D98 8D 04 42    STA $4204  [$7E:4204]  ;\
+$80:9D98 8D 04 42    STA $4204              ;\
 $80:9D9B E2 20       SEP #$20               ;|
 $80:9D9D A9 0A       LDA #$0A               ;|
-$80:9D9F 8D 06 42    STA $4206  [$7E:4206]  ;|
+$80:9D9F 8D 06 42    STA $4206              ;|
 $80:9DA2 48          PHA                    ;|
 $80:9DA3 68          PLA                    ;|
 $80:9DA4 48          PHA                    ;|
 $80:9DA5 68          PLA                    ;} HUD tilemap base + [X] = [[$00] + ([A] / 10) * 2] (draw tens digit)
 $80:9DA6 C2 20       REP #$20               ;|
-$80:9DA8 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$80:9DA8 AD 14 42    LDA $4214              ;|
 $80:9DAB 0A          ASL A                  ;|
 $80:9DAC A8          TAY                    ;|
 $80:9DAD B7 00       LDA [$00],y[$00:9DD1]  ;|
 $80:9DAF 9F 08 C6 7E STA $7EC608,x[$7E:C694];/
-$80:9DB3 AD 16 42    LDA $4216  [$7E:4216]  ;\
+$80:9DB3 AD 16 42    LDA $4216              ;\
 $80:9DB6 0A          ASL A                  ;|
 $80:9DB7 A8          TAY                    ;} HUD tilemap base + [X] = [[$00] + ([A] % 10) * 2] (draw units digit)
 $80:9DB8 B7 00       LDA [$00],y[$00:9DD1]  ;|
@@ -4804,7 +4829,7 @@ $80:A07D 4B          PHK                    ;\
 $80:A07E AB          PLB                    ;} DB = $80
 $80:A07F C2 30       REP #$30
 $80:A081 78          SEI                    ; Disable IRQ
-$80:A082 9C 0B 42    STZ $420B  [$7E:420B]  ; Clear (H)DMA enable flags
+$80:A082 9C 0B 42    STZ $420B              ; Clear (H)DMA enable flags
 $80:A085 9C E9 07    STZ $07E9  [$7E:07E9]  ; Scrolling finished hook = 0
 $80:A088 9C F3 07    STZ $07F3  [$7E:07F3]  ; Music data index = 0
 $80:A08B 9C F5 07    STZ $07F5  [$7E:07F5]  ; Music track index = 0
@@ -4893,7 +4918,7 @@ $80:A14B 4B          PHK                    ;\
 $80:A14C AB          PLB                    ;} DB = $80
 $80:A14D C2 30       REP #$30
 $80:A14F 78          SEI                    ; Disable IRQ
-$80:A150 9C 0B 42    STZ $420B  [$7E:420B]  ; Clear (H)DMA enable flags
+$80:A150 9C 0B 42    STZ $420B              ; Clear (H)DMA enable flags
 $80:A153 22 5D 83 80 JSL $80835D[$80:835D]  ; Disable NMI
 $80:A157 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
 $80:A15B 22 83 E7 82 JSL $82E783[$82:E783]  ; Load CRE tiles, tileset tiles and tileset palette
@@ -5037,36 +5062,36 @@ $80:A23E 6B          RTL
 $80:A23F 08          PHP
 $80:A240 C2 20       REP #$20
 $80:A242 A9 00 48    LDA #$4800             ;\
-$80:A245 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:A245 8D 16 21    STA $2116              ;|
 $80:A248 A9 08 18    LDA #$1808             ;|
-$80:A24B 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:A24B 8D 10 43    STA $4310              ;|
 $80:A24E A9 9A A2    LDA #$A29A             ;|
-$80:A251 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:A251 8D 12 43    STA $4312              ;|
 $80:A254 A9 80 00    LDA #$0080             ;|
-$80:A257 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $4800..4FFF low bytes = 38h
+$80:A257 8D 14 43    STA $4314              ;} VRAM $4800..4FFF low bytes = 38h
 $80:A25A A9 00 08    LDA #$0800             ;|
-$80:A25D 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:A25D 8D 15 43    STA $4315              ;|
 $80:A260 E2 20       SEP #$20               ;|
 $80:A262 A9 00       LDA #$00               ;|
-$80:A264 8D 15 21    STA $2115  [$7E:2115]  ;|
+$80:A264 8D 15 21    STA $2115              ;|
 $80:A267 A9 02       LDA #$02               ;|
-$80:A269 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:A269 8D 0B 42    STA $420B              ;/
 $80:A26C C2 20       REP #$20
 $80:A26E A9 00 48    LDA #$4800             ;\
-$80:A271 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:A271 8D 16 21    STA $2116              ;|
 $80:A274 A9 08 19    LDA #$1908             ;|
-$80:A277 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:A277 8D 10 43    STA $4310              ;|
 $80:A27A A9 9A A2    LDA #$A29A             ;|
-$80:A27D 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:A27D 8D 12 43    STA $4312              ;|
 $80:A280 A9 80 00    LDA #$0080             ;|
-$80:A283 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $4800..4FFF high bytes = 38h
+$80:A283 8D 14 43    STA $4314              ;} VRAM $4800..4FFF high bytes = 38h
 $80:A286 A9 00 08    LDA #$0800             ;|
-$80:A289 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:A289 8D 15 43    STA $4315              ;|
 $80:A28C E2 20       SEP #$20               ;|
 $80:A28E A9 80       LDA #$80               ;|
-$80:A290 8D 15 21    STA $2115  [$7E:2115]  ;|
+$80:A290 8D 15 21    STA $2115              ;|
 $80:A293 A9 02       LDA #$02               ;|
-$80:A295 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:A295 8D 0B 42    STA $420B              ;/
 $80:A298 28          PLP
 $80:A299 6B          RTL
 
@@ -5082,36 +5107,36 @@ $80:A29A             dw 0338
 $80:A29C 08          PHP
 $80:A29D C2 20       REP #$20
 $80:A29F A9 80 58    LDA #$5880             ;\
-$80:A2A2 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:A2A2 8D 16 21    STA $2116              ;|
 $80:A2A5 A9 08 18    LDA #$1808             ;|
-$80:A2A8 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:A2A8 8D 10 43    STA $4310              ;|
 $80:A2AB A9 F7 A2    LDA #$A2F7             ;|
-$80:A2AE 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:A2AE 8D 12 43    STA $4312              ;|
 $80:A2B1 A9 80 00    LDA #$0080             ;|
-$80:A2B4 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $5880..5FFF low bytes = 4Eh
+$80:A2B4 8D 14 43    STA $4314              ;} VRAM $5880..5FFF low bytes = 4Eh
 $80:A2B7 A9 80 07    LDA #$0780             ;|
-$80:A2BA 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:A2BA 8D 15 43    STA $4315              ;|
 $80:A2BD E2 20       SEP #$20               ;|
 $80:A2BF A9 00       LDA #$00               ;|
-$80:A2C1 8D 15 21    STA $2115  [$7E:2115]  ;|
+$80:A2C1 8D 15 21    STA $2115              ;|
 $80:A2C4 A9 02       LDA #$02               ;|
-$80:A2C6 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:A2C6 8D 0B 42    STA $420B              ;/
 $80:A2C9 C2 20       REP #$20
 $80:A2CB A9 80 58    LDA #$5880             ;\
-$80:A2CE 8D 16 21    STA $2116  [$7E:2116]  ;|
+$80:A2CE 8D 16 21    STA $2116              ;|
 $80:A2D1 A9 08 19    LDA #$1908             ;|
-$80:A2D4 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:A2D4 8D 10 43    STA $4310              ;|
 $80:A2D7 A9 F8 A2    LDA #$A2F8             ;|
-$80:A2DA 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:A2DA 8D 12 43    STA $4312              ;|
 $80:A2DD A9 80 00    LDA #$0080             ;|
-$80:A2E0 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $5880..5FFF high bytes = 18h
+$80:A2E0 8D 14 43    STA $4314              ;} VRAM $5880..5FFF high bytes = 18h
 $80:A2E3 A9 80 07    LDA #$0780             ;|
-$80:A2E6 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:A2E6 8D 15 43    STA $4315              ;|
 $80:A2E9 E2 20       SEP #$20               ;|
 $80:A2EB A9 80       LDA #$80               ;|
-$80:A2ED 8D 15 21    STA $2115  [$7E:2115]  ;|
+$80:A2ED 8D 15 21    STA $2115              ;|
 $80:A2F0 A9 02       LDA #$02               ;|
-$80:A2F2 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$80:A2F2 8D 0B 42    STA $420B              ;/
 $80:A2F5 28          PLP
 $80:A2F6 6B          RTL
 
@@ -5149,20 +5174,20 @@ $80:A302 F0 2A       BEQ $2A    [$A32E]     ;} If [layer 2 scroll X] != 0:
 $80:A304 C9 01       CMP #$01               ;\
 $80:A306 F0 2F       BEQ $2F    [$A337]     ;} If [layer 2 scroll X] = 1: return carry set
 $80:A308 29 FE       AND #$FE               ;\
-$80:A30A 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A30A 8D 02 42    STA $4202              ;|
 $80:A30D AD 11 09    LDA $0911  [$7E:0911]  ;|
-$80:A310 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A310 8D 03 42    STA $4203              ;|
 $80:A313 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 X position] % 0x100 * ([layer 2 scroll X] & ~1) / 100h
 $80:A316 48          PHA                    ;|
 $80:A317 68          PLA                    ;|
-$80:A318 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$80:A318 AD 17 42    LDA $4217              ;|
 $80:A31B 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A31E AD 12 09    LDA $0912  [$7E:0912]  ;\
-$80:A321 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A321 8D 03 42    STA $4203              ;|
 $80:A324 C2 20       REP #$20               ;|
 $80:A326 AD 33 09    LDA $0933  [$7E:0933]  ;} Y = [$0933] + [layer 1 X position] / 100h * ([layer 2 scroll X] & ~1)
 $80:A329 18          CLC                    ;|
-$80:A32A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A32A 6D 16 42    ADC $4216              ;|
 $80:A32D A8          TAY                    ;/
 
 $80:A32E C2 20       REP #$20
@@ -5206,20 +5231,20 @@ $80:A343 F0 2A       BEQ $2A    [$A36F]     ;} If [layer 2 scroll Y] != 0:
 $80:A345 C9 01       CMP #$01               ;\
 $80:A347 F0 2F       BEQ $2F    [$A378]     ;} If [layer 2 scroll Y] = 1: return carry set
 $80:A349 29 FE       AND #$FE               ;\
-$80:A34B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A34B 8D 02 42    STA $4202              ;|
 $80:A34E AD 15 09    LDA $0915  [$7E:0915]  ;|
-$80:A351 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A351 8D 03 42    STA $4203              ;|
 $80:A354 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 Y position] % 0x100 * ([layer 2 scroll Y] & ~1) / 100h
 $80:A357 48          PHA                    ;|
 $80:A358 68          PLA                    ;|
-$80:A359 AD 17 42    LDA $4217  [$7E:4217]  ;|
+$80:A359 AD 17 42    LDA $4217              ;|
 $80:A35C 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A35F AD 16 09    LDA $0916  [$7E:0916]  ;\
-$80:A362 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A362 8D 03 42    STA $4203              ;|
 $80:A365 C2 20       REP #$20               ;|
 $80:A367 AD 33 09    LDA $0933  [$7E:0933]  ;} Y = [$0933] + [layer 1 Y position] / 100h * ([layer 2 scroll Y] & ~1)
 $80:A36A 18          CLC                    ;|
-$80:A36B 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A36B 6D 16 42    ADC $4216              ;|
 $80:A36E A8          TAY                    ;/
 
 $80:A36F C2 20       REP #$20
@@ -5565,14 +5590,14 @@ $80:A558 18          CLC                    ;|
 $80:A559 69 80 00    ADC #$0080             ;|
 $80:A55C EB          XBA                    ;|
 $80:A55D E2 20       SEP #$20               ;|
-$80:A55F 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A55F 8D 02 42    STA $4202              ;|
 $80:A562 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A565 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A565 8D 03 42    STA $4203              ;|
 $80:A568 C2 20       REP #$20               ;} If layer 1 position + 1/2 scroll down's scroll != red: go to BRANCH_UNBOUNDED_FROM_LEFT
 $80:A56A AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A56D 29 FF 00    AND #$00FF             ;|
 $80:A570 18          CLC                    ;|
-$80:A571 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A571 6D 16 42    ADC $4216              ;|
 $80:A574 AA          TAX                    ;|
 $80:A575 BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A579 29 FF 00    AND #$00FF             ;|
@@ -5594,15 +5619,15 @@ $80:A5A0 18          CLC                    ;|
 $80:A5A1 69 80 00    ADC #$0080             ;|
 $80:A5A4 EB          XBA                    ;|
 $80:A5A5 E2 20       SEP #$20               ;|
-$80:A5A7 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A5A7 8D 02 42    STA $4202              ;|
 $80:A5AA AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A5AD 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A5AD 8D 03 42    STA $4203              ;|
 $80:A5B0 C2 20       REP #$20               ;|
 $80:A5B2 AD 3A 09    LDA $093A  [$7E:093A]  ;} If new layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 $80:A5B5 1A          INC A                  ;|
 $80:A5B6 29 FF 00    AND #$00FF             ;|
 $80:A5B9 18          CLC                    ;|
-$80:A5BA 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A5BA 6D 16 42    ADC $4216              ;|
 $80:A5BD AA          TAX                    ;|
 $80:A5BE BF 20 CD 7E LDA $7ECD20,x[$7E:CD2D];|
 $80:A5C2 29 FF 00    AND #$00FF             ;|
@@ -5638,14 +5663,14 @@ $80:A601 18          CLC                    ;|
 $80:A602 69 80 00    ADC #$0080             ;|
 $80:A605 EB          XBA                    ;|
 $80:A606 E2 20       SEP #$20               ;|
-$80:A608 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A608 8D 02 42    STA $4202              ;|
 $80:A60B AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A60E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A60E 8D 03 42    STA $4203              ;|
 $80:A611 C2 20       REP #$20               ;} If new layer 1 position + 1/2 scroll down's scroll = red:
 $80:A613 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A616 29 FF 00    AND #$00FF             ;|
 $80:A619 18          CLC                    ;|
-$80:A61A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A61A 6D 16 42    ADC $4216              ;|
 $80:A61D AA          TAX                    ;|
 $80:A61E BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
 $80:A622 29 FF 00    AND #$00FF             ;|
@@ -5703,14 +5728,14 @@ $80:A674 18          CLC                    ;|
 $80:A675 69 80 00    ADC #$0080             ;|
 $80:A678 EB          XBA                    ;|
 $80:A679 E2 20       SEP #$20               ;|
-$80:A67B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A67B 8D 02 42    STA $4202              ;|
 $80:A67E AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A681 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A681 8D 03 42    STA $4203              ;|
 $80:A684 C2 20       REP #$20               ;} If layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 $80:A686 AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A689 29 FF 00    AND #$00FF             ;|
 $80:A68C 38          SEC                    ;|
-$80:A68D 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A68D 6D 16 42    ADC $4216              ;|
 $80:A690 AA          TAX                    ;|
 $80:A691 BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
 $80:A695 29 FF 00    AND #$00FF             ;|
@@ -5763,14 +5788,14 @@ $80:A6E6 18          CLC                    ;|
 $80:A6E7 69 80 00    ADC #$0080             ;|
 $80:A6EA EB          XBA                    ;|
 $80:A6EB E2 20       SEP #$20               ;|
-$80:A6ED 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A6ED 8D 02 42    STA $4202              ;|
 $80:A6F0 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A6F3 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A6F3 8D 03 42    STA $4203              ;|
 $80:A6F6 C2 20       REP #$20               ;} If layer 1 position + 1/2 screen down's scroll = red:
 $80:A6F8 AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A6FB 29 FF 00    AND #$00FF             ;|
 $80:A6FE 18          CLC                    ;|
-$80:A6FF 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A6FF 6D 16 42    ADC $4216              ;|
 $80:A702 AA          TAX                    ;|
 $80:A703 BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A707 29 FF 00    AND #$00FF             ;|
@@ -5847,9 +5872,9 @@ $80:A744 C2 30       REP #$30
 $80:A746 A0 00 00    LDY #$0000             ; Y = 0
 $80:A749 E2 20       SEP #$20
 $80:A74B AD 16 09    LDA $0916  [$7E:0916]  ;\
-$80:A74E 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A74E 8D 02 42    STA $4202              ;|
 $80:A751 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A754 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A754 8D 03 42    STA $4203              ;|
 $80:A757 C2 20       REP #$20               ;|
 $80:A759 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A75C 18          CLC                    ;|
@@ -5857,7 +5882,7 @@ $80:A75D 69 80 00    ADC #$0080             ;|
 $80:A760 EB          XBA                    ;|
 $80:A761 29 FF 00    AND #$00FF             ;} If layer 1 position + 1/2 scroll right's scroll != blue:
 $80:A764 18          CLC                    ;|
-$80:A765 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A765 6D 16 42    ADC $4216              ;|
 $80:A768 85 14       STA $14    [$7E:0014]  ;|
 $80:A76A AA          TAX                    ;|
 $80:A76B BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
@@ -5883,9 +5908,9 @@ $80:A796 8D 15 09    STA $0915  [$7E:0915]  ;/
 
 $80:A799 E2 20       SEP #$20
 $80:A79B AD 16 09    LDA $0916  [$7E:0916]  ;\
-$80:A79E 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A79E 8D 02 42    STA $4202              ;|
 $80:A7A1 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A7A4 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A7A4 8D 03 42    STA $4203              ;|
 $80:A7A7 C2 20       REP #$20               ;|
 $80:A7A9 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7AC 18          CLC                    ;|
@@ -5893,7 +5918,7 @@ $80:A7AD 69 80 00    ADC #$0080             ;|
 $80:A7B0 EB          XBA                    ;} If layer 1 position + 1/2 scroll right's scroll != red: go to BRANCH_UNBOUNDED_FROM_ABOVE
 $80:A7B1 29 FF 00    AND #$00FF             ;|
 $80:A7B4 18          CLC                    ;|
-$80:A7B5 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A7B5 6D 16 42    ADC $4216              ;|
 $80:A7B8 AA          TAX                    ;|
 $80:A7B9 BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A7BD 29 FF 00    AND #$00FF             ;|
@@ -5913,9 +5938,9 @@ $80:A7DE 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera Y speed] + 2
 $80:A7E1 E2 20       SEP #$20               ;\
 $80:A7E3 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A7E6 1A          INC A                  ;|
-$80:A7E7 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A7E7 8D 02 42    STA $4202              ;|
 $80:A7EA AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A7ED 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A7ED 8D 03 42    STA $4203              ;|
 $80:A7F0 C2 20       REP #$20               ;|
 $80:A7F2 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7F5 18          CLC                    ;|
@@ -5923,7 +5948,7 @@ $80:A7F6 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 scroll 
 $80:A7F9 EB          XBA                    ;|
 $80:A7FA 29 FF 00    AND #$00FF             ;|
 $80:A7FD 18          CLC                    ;|
-$80:A7FE 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A7FE 6D 16 42    ADC $4216              ;|
 $80:A801 AA          TAX                    ;|
 $80:A802 BF 20 CD 7E LDA $7ECD20,x[$7E:CD23];|
 $80:A806 29 FF 00    AND #$00FF             ;|
@@ -5963,9 +5988,9 @@ $80:A84B 30 3D       BMI $3D    [$A88A]     ;/
 $80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] + 2
 $80:A850 E2 20       SEP #$20               ;\
 $80:A852 AD 3A 09    LDA $093A  [$7E:093A]  ;|
-$80:A855 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A855 8D 02 42    STA $4202              ;|
 $80:A858 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A85B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A85B 8D 03 42    STA $4203              ;|
 $80:A85E C2 20       REP #$20               ;|
 $80:A860 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A863 18          CLC                    ;|
@@ -5973,7 +5998,7 @@ $80:A864 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 scroll 
 $80:A867 EB          XBA                    ;|
 $80:A868 29 FF 00    AND #$00FF             ;|
 $80:A86B 18          CLC                    ;|
-$80:A86C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A86C 6D 16 42    ADC $4216              ;|
 $80:A86F AA          TAX                    ;|
 $80:A870 BF 20 CD 7E LDA $7ECD20,x[$7E:CD22];|
 $80:A874 29 FF 00    AND #$00FF             ;|
@@ -6014,9 +6039,9 @@ $80:A8A0 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
 $80:A8A3 A0 00 00    LDY #$0000             ; Y = 0
 $80:A8A6 E2 20       SEP #$20               ;\
 $80:A8A8 AD 16 09    LDA $0916  [$7E:0916]  ;|
-$80:A8AB 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A8AB 8D 02 42    STA $4202              ;|
 $80:A8AE AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A8B1 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A8B1 8D 03 42    STA $4203              ;|
 $80:A8B4 C2 20       REP #$20               ;|
 $80:A8B6 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A8B9 18          CLC                    ;|
@@ -6024,7 +6049,7 @@ $80:A8BA 69 80 00    ADC #$0080             ;|
 $80:A8BD EB          XBA                    ;} If layer 1 position + 1/2 screen right's scroll != blue:
 $80:A8BE 29 FF 00    AND #$00FF             ;|
 $80:A8C1 18          CLC                    ;|
-$80:A8C2 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A8C2 6D 16 42    ADC $4216              ;|
 $80:A8C5 85 14       STA $14    [$7E:0014]  ;|
 $80:A8C7 AA          TAX                    ;|
 $80:A8C8 BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
@@ -6106,9 +6131,9 @@ $80:A95C 80 4B       BRA $4B    [$A9A9]     ; Return
 
 $80:A95E E2 20       SEP #$20               ;\
 $80:A960 AD 16 09    LDA $0916  [$7E:0916]  ;|
-$80:A963 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A963 8D 02 42    STA $4202              ;|
 $80:A966 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
-$80:A969 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A969 8D 03 42    STA $4203              ;|
 $80:A96C C2 20       REP #$20               ;|
 $80:A96E AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A971 18          CLC                    ;|
@@ -6116,7 +6141,7 @@ $80:A972 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 screen 
 $80:A975 EB          XBA                    ;|
 $80:A976 29 FF 00    AND #$00FF             ;|
 $80:A979 18          CLC                    ;|
-$80:A97A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A97A 6D 16 42    ADC $4216              ;|
 $80:A97D AA          TAX                    ;|
 $80:A97E BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A982 29 FF 00    AND #$00FF             ;|
@@ -6237,14 +6262,14 @@ $80:A9E3 60          RTS                    ;/
 $80:A9E4 08          PHP
 $80:A9E5 E2 20       SEP #$20               ;\
 $80:A9E7 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$80:A9EA 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:A9EA 8D 02 42    STA $4202              ;|
 $80:A9ED AD 92 09    LDA $0992  [$7E:0992]  ;|
-$80:A9F0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:A9F0 8D 03 42    STA $4203              ;|
 $80:A9F3 8B          PHB                    ;|
 $80:A9F4 C2 30       REP #$30               ;|
 $80:A9F6 AD 90 09    LDA $0990  [$7E:0990]  ;|
 $80:A9F9 18          CLC                    ;|
-$80:A9FA 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:A9FA 6D 16 42    ADC $4216              ;|
 $80:A9FD 0A          ASL A                  ;} $36 = address of blocks to update (in bank $7F)
 $80:A9FE 18          CLC                    ;|
 $80:A9FF 69 02 00    ADC #$0002             ;|
@@ -6267,16 +6292,16 @@ $80:AA1F 9D 56 09    STA $0956,x[$7E:0956]  ;/
 $80:AA22 E2 20       SEP #$20               ;\
 $80:AA24 AD 96 09    LDA $0996  [$7E:0996]  ;|
 $80:AA27 29 0F       AND #$0F               ;|
-$80:AA29 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:AA29 8D 02 42    STA $4202              ;|
 $80:AA2C A9 40       LDA #$40               ;|
-$80:AA2E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:AA2E 8D 03 42    STA $4203              ;|
 $80:AA31 C2 20       REP #$20               ;|
 $80:AA33 AD 94 09    LDA $0994  [$7E:0994]  ;} VRAM offset of blocks to update = (([VRAM blocks to update Y block] & Fh) * 20h + ([X block of VRAM blocks to update] & 1Fh)) * 2
 $80:AA36 29 1F 00    AND #$001F             ;|
 $80:AA39 8D 35 09    STA $0935  [$7E:0935]  ;|
 $80:AA3C 0A          ASL A                  ;|
 $80:AA3D 18          CLC                    ;|
-$80:AA3E 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:AA3E 6D 16 42    ADC $4216              ;|
 $80:AA41 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:AA44 A9 00 50    LDA #$5000             ; A = VRAM map 1st screen base address
 $80:AA47 AC 35 09    LDY $0935  [$7E:0935]  ;\
@@ -6442,14 +6467,14 @@ $80:AB7D 60          RTS                    ;/
 $80:AB7E 08          PHP
 $80:AB7F E2 20       SEP #$20               ;\
 $80:AB81 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
-$80:AB84 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:AB84 8D 02 42    STA $4202              ;|
 $80:AB87 AD 92 09    LDA $0992  [$7E:0992]  ;|
-$80:AB8A 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:AB8A 8D 03 42    STA $4203              ;|
 $80:AB8D 8B          PHB                    ;|
 $80:AB8E C2 30       REP #$30               ;|
 $80:AB90 AD 90 09    LDA $0990  [$7E:0990]  ;|
 $80:AB93 18          CLC                    ;|
-$80:AB94 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:AB94 6D 16 42    ADC $4216              ;|
 $80:AB97 0A          ASL A                  ;} $36 = address of blocks to update (in bank $7F)
 $80:AB98 18          CLC                    ;|
 $80:AB99 69 02 00    ADC #$0002             ;|
@@ -6478,16 +6503,16 @@ $80:ABC5 9D 66 09    STA $0966,x[$7E:0966]  ;/
 $80:ABC8 E2 20       SEP #$20               ;\
 $80:ABCA AD 96 09    LDA $0996  [$7E:0996]  ;|
 $80:ABCD 29 0F       AND #$0F               ;|
-$80:ABCF 8D 02 42    STA $4202  [$7E:4202]  ;|
+$80:ABCF 8D 02 42    STA $4202              ;|
 $80:ABD2 A9 40       LDA #$40               ;|
-$80:ABD4 8D 03 42    STA $4203  [$7E:4203]  ;|
+$80:ABD4 8D 03 42    STA $4203              ;|
 $80:ABD7 C2 20       REP #$20               ;|
 $80:ABD9 AD 94 09    LDA $0994  [$7E:0994]  ;} VRAM offset of blocks to update = (([VRAM blocks to update Y block] & Fh) * 20h + [X block of VRAM blocks to update] & 1Fh) * 2
 $80:ABDC 29 1F 00    AND #$001F             ;|
 $80:ABDF 8D 35 09    STA $0935  [$7E:0935]  ;|
 $80:ABE2 0A          ASL A                  ;|
 $80:ABE3 18          CLC                    ;|
-$80:ABE4 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$80:ABE4 6D 16 42    ADC $4216              ;|
 $80:ABE7 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:ABEA A9 00 54    LDA #$5400             ;\
 $80:ABED 8D 37 09    STA $0937  [$7E:0937]  ;} Base address of wrapped VRAM tilemap screen = VRAM map 2nd screen base address
@@ -6514,7 +6539,7 @@ $80:AC18 38          SEC                    ;\
 $80:AC19 ED 8E 09    SBC $098E  [$7E:098E]  ;} A -= [size of BG2]
 
 $80:AC1C 18          CLC                    ;\
-$80:AC1D 6D 16 42    ADC $4216  [$7E:4216]  ;} Wrapped tilemap VRAM update destination = [A] + (VRAM blocks to update Y position & 0Fh) * 20h * 2
+$80:AC1D 6D 16 42    ADC $4216              ;} Wrapped tilemap VRAM update destination = [A] + (VRAM blocks to update Y position & 0Fh) * 20h * 2
 $80:AC20 9D 6A 09    STA $096A,x[$7E:096A]  ;/
 $80:AC23 A9 48 C9    LDA #$C948             ;\
 $80:AC26 A0 00 00    LDY #$0000             ;|
@@ -7089,37 +7114,37 @@ $80:B03E 6B          RTL                    ;/
 
 $80:B03F 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI
 $80:B043 A9 80 00    LDA #$0080             ;\
-$80:B046 8D 15 21    STA $2115  [$7E:2115]  ;|
-$80:B049 9C 16 21    STZ $2116  [$7E:2116]  ;|
+$80:B046 8D 15 21    STA $2115              ;|
+$80:B049 9C 16 21    STZ $2116              ;|
 $80:B04C A9 00 19    LDA #$1900             ;|
-$80:B04F 8D 10 43    STA $4310  [$7E:4310]  ;|
+$80:B04F 8D 10 43    STA $4310              ;|
 $80:B052 A9 00 80    LDA #$8000             ;|
-$80:B055 8D 12 43    STA $4312  [$7E:4312]  ;|
+$80:B055 8D 12 43    STA $4312              ;|
 $80:B058 A9 00 40    LDA #$4000             ;} VRAM $0000..3FFF high bytes = [$98:8000..BFFF] (mode 7 tiles)
-$80:B05B 8D 15 43    STA $4315  [$7E:4315]  ;|
+$80:B05B 8D 15 43    STA $4315              ;|
 $80:B05E E2 20       SEP #$20               ;|
 $80:B060 A9 98       LDA #$98               ;|
-$80:B062 8D 14 43    STA $4314  [$7E:4314]  ;|
+$80:B062 8D 14 43    STA $4314              ;|
 $80:B065 A9 02       LDA #$02               ;|
-$80:B067 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$80:B06A 9C 15 21    STZ $2115  [$7E:2115]  ;\
-$80:B06D 9C 16 21    STZ $2116  [$7E:2116]  ;|
-$80:B070 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$80:B067 8D 0B 42    STA $420B              ;/
+$80:B06A 9C 15 21    STZ $2115              ;\
+$80:B06D 9C 16 21    STZ $2116              ;|
+$80:B070 9C 17 21    STZ $2117              ;|
 $80:B073 A2 00 40    LDX #$4000             ;|
                                             ;} VRAM $0000..3FFF low bytes = 0 (mode 7 tilemap)
-$80:B076 9C 18 21    STZ $2118  [$7E:2118]  ;|
+$80:B076 9C 18 21    STZ $2118              ;|
 $80:B079 CA          DEX                    ;|
 $80:B07A D0 FA       BNE $FA    [$B076]     ;/
 $80:B07C A0 00 00    LDY #$0000             ; Y = 0
 $80:B07F BB          TYX                    ; X = 0
 
 ; LOOP
-$80:B080 8C 16 21    STY $2116  [$7E:2116]  ;\
+$80:B080 8C 16 21    STY $2116              ;\
 $80:B083 5A          PHY                    ;|
 $80:B084 A0 20 00    LDY #$0020             ;|
                                             ;|
 $80:B087 BF 00 C0 98 LDA $98C000,x          ;} Copy 20h bytes from $98:C000 + [X] to VRAM [Y] low bytes (mode 7 tilemap)
-$80:B08B 8D 18 21    STA $2118  [$7E:2118]  ;} X += 20h
+$80:B08B 8D 18 21    STA $2118              ;} X += 20h
 $80:B08E E8          INX                    ;|
 $80:B08F 88          DEY                    ;|
 $80:B090 D0 F5       BNE $F5    [$B087]     ;/
@@ -7559,11 +7584,11 @@ $80:B2EC 98          TYA                    ;|
 $80:B2ED 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B2EE 68          PLA                    ;|
 $80:B2EF B0 06       BCS $06    [$B2F7]     ;/
-$80:B2F1 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B2F1 8F 18 21 00 STA $002118            ;\
 $80:B2F5 80 04       BRA $04    [$B2FB]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B2F7 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B2F7 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B2FB C8          INY                    ; ++dest
 $80:B2FC CA          DEX                    ; Decrement X
@@ -7588,11 +7613,11 @@ $80:B312 98          TYA                    ;|
 $80:B313 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B314 68          PLA                    ;|
 $80:B315 B0 06       BCS $06    [$B31D]     ;/
-$80:B317 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B317 8F 18 21 00 STA $002118            ;\
 $80:B31B 80 04       BRA $04    [$B321]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B31D 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B31D 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B321 C8          INY                    ; ++dest
 $80:B322 CA          DEX                    ; Decrement X
@@ -7629,11 +7654,11 @@ $80:B34D 98          TYA                    ;|
 $80:B34E 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B34F 68          PLA                    ;|
 $80:B350 B0 06       BCS $06    [$B358]     ;/
-$80:B352 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B352 8F 18 21 00 STA $002118            ;\
 $80:B356 80 04       BRA $04    [$B35C]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B358 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B358 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B35C C8          INY                    ; ++dest
 $80:B35D CA          DEX                    ; Decrement X
@@ -7644,11 +7669,11 @@ $80:B363 98          TYA                    ;|
 $80:B364 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B365 68          PLA                    ;|
 $80:B366 B0 06       BCS $06    [$B36E]     ;/
-$80:B368 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B368 8F 18 21 00 STA $002118            ;\
 $80:B36C 80 04       BRA $04    [$B372]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B36E 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B36E 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B372 C8          INY                    ; ++dest
 $80:B373 CA          DEX                    ; Decrement X
@@ -7674,11 +7699,11 @@ $80:B389 98          TYA                    ;|
 $80:B38A 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B38B 68          PLA                    ;|
 $80:B38C B0 06       BCS $06    [$B394]     ;/
-$80:B38E 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B38E 8F 18 21 00 STA $002118            ;\
 $80:B392 80 04       BRA $04    [$B398]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B394 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B394 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B398 C8          INY                    ; ++dest
 $80:B399 1A          INC A                  ; ++A
@@ -7724,9 +7749,9 @@ $80:B3D3 DA          PHX
 $80:B3D4 C2 20       REP #$20
 $80:B3D6 A5 4A       LDA $4A    [$7E:004A]  ;\
 $80:B3D8 4A          LSR A                  ;} VRAM address = [$4A] / 2 (actual VRAM address)
-$80:B3D9 8F 16 21 00 STA $002116[$7E:2116]  ;/
-$80:B3DD AF 39 21 00 LDA $002139[$7E:2139]  ; Dummy VRAM read due to prefetch glitch
-$80:B3E1 AF 39 21 00 LDA $002139[$7E:2139]  ; A = [VRAM data read]
+$80:B3D9 8F 16 21 00 STA $002116            ;/
+$80:B3DD AF 39 21 00 LDA $002139            ; Dummy VRAM read due to prefetch glitch
+$80:B3E1 AF 39 21 00 LDA $002139            ; A = [VRAM data read]
 $80:B3E5 90 01       BCC $01    [$B3E8]     ; If [$4A] % 2 != 0:
 $80:B3E7 EB          XBA                    ; A = [A high]
 
@@ -7740,7 +7765,7 @@ $80:B3F2 48          PHA                    ;\
 $80:B3F3 C2 20       REP #$20               ;|
 $80:B3F5 98          TYA                    ;|
 $80:B3F6 4A          LSR A                  ;} VRAM address = [Y] / 2 (actual VRAM address)
-$80:B3F7 8F 16 21 00 STA $002116[$7E:2116]  ;|
+$80:B3F7 8F 16 21 00 STA $002116            ;|
 $80:B3FB E2 20       SEP #$20               ;|
 $80:B3FD 68          PLA                    ;/
 $80:B3FE 48          PHA                    ;\
@@ -7748,11 +7773,11 @@ $80:B3FF 98          TYA                    ;|
 $80:B400 4A          LSR A                  ;} If dest % 2 == 0:
 $80:B401 68          PLA                    ;|
 $80:B402 B0 06       BCS $06    [$B40A]     ;/
-$80:B404 8F 18 21 00 STA $002118[$7E:2118]  ;\
+$80:B404 8F 18 21 00 STA $002118            ;\
 $80:B408 80 04       BRA $04    [$B40E]     ;} VRAM data write low = [A]
 
                                             ; Else (dest % 2 != 0):
-$80:B40A 8F 19 21 00 STA $002119[$7E:2119]  ; VRAM data write high = [A]
+$80:B40A 8F 19 21 00 STA $002119            ; VRAM data write high = [A]
 
 $80:B40E C8          INY                    ; ++dest
 $80:B40F FA          PLX                    ;\
