@@ -693,11 +693,11 @@ $80:8337 6B          RTL
 {
 $80:8338 08          PHP
 $80:8339 8B          PHB
-$80:833A 4B          PHK
-$80:833B AB          PLB
+$80:833A 4B          PHK                    ;\
+$80:833B AB          PLB                    ;} DB = $80
 $80:833C E2 30       SEP #$30
 $80:833E A9 01       LDA #$01               ;\
-$80:8340 8D B4 05    STA $05B4  [$7E:05B4]  ;} Set NMI request flag
+$80:8340 8D B4 05    STA $05B4  [$7E:05B4]  ;} NMI request flag = 1
 
 $80:8343 AD B4 05    LDA $05B4  [$7E:05B4]  ;\
 $80:8346 D0 FB       BNE $FB    [$8343]     ;} Wait until NMI request acknowledged
@@ -716,7 +716,7 @@ $80:834E AB          PLB
 $80:834F E2 20       SEP #$20
 $80:8351 A5 84       LDA $84    [$7E:0084]
 $80:8353 09 80       ORA #$80
-$80:8355 8D 00 42    STA $4200            
+$80:8355 8D 00 42    STA $4200
 $80:8358 85 84       STA $84    [$7E:0084]
 $80:835A AB          PLB
 $80:835B 28          PLP
@@ -733,7 +733,7 @@ $80:8360 AB          PLB
 $80:8361 E2 20       SEP #$20
 $80:8363 A5 84       LDA $84    [$7E:0084]
 $80:8365 29 7F       AND #$7F
-$80:8367 8D 00 42    STA $4200            
+$80:8367 8D 00 42    STA $4200
 $80:836A 85 84       STA $84    [$7E:0084]
 $80:836C AB          PLB
 $80:836D 28          PLP
@@ -800,17 +800,17 @@ $80:8395 08          PHP
 $80:8396 E2 10       SEP #$10
 $80:8398 C2 20       REP #$20
 $80:839A A9 00 22    LDA #$2200
-$80:839D 8D 10 43    STA $4310            
+$80:839D 8D 10 43    STA $4310
 $80:83A0 A9 00 C0    LDA #$C000
-$80:83A3 8D 12 43    STA $4312            
+$80:83A3 8D 12 43    STA $4312
 $80:83A6 A2 7E       LDX #$7E
-$80:83A8 8E 14 43    STX $4314            
+$80:83A8 8E 14 43    STX $4314
 $80:83AB A9 00 02    LDA #$0200
-$80:83AE 8D 15 43    STA $4315            
+$80:83AE 8D 15 43    STA $4315
 $80:83B1 A2 00       LDX #$00
-$80:83B3 8E 21 21    STX $2121            
+$80:83B3 8E 21 21    STX $2121
 $80:83B6 A2 02       LDX #$02
-$80:83B8 8E 0B 42    STX $420B            
+$80:83B8 8E 0B 42    STX $420B
 $80:83BB 28          PLP
 $80:83BC 6B          RTL
 }
@@ -818,6 +818,10 @@ $80:83BC 6B          RTL
 
 ;;; $83BD: Unused. Write [Y] bytes of [A] to $00:0000 + [X] - 8-bit ;;;
 {
+;; Parameters:
+;;     A: Fill value
+;;     X: Destination address. Range $0000..1FFF for WRAM writes
+;;     Y: Size
 $80:83BD 08          PHP
 $80:83BE 8B          PHB
 $80:83BF 4B          PHK
@@ -837,6 +841,10 @@ $80:83CF 6B          RTL
 
 ;;; $83D0: Unused. Write [Y] bytes of [A] to $00:0000 + [X] - 16-bit ;;;
 {
+;; Parameters:
+;;     A: Fill value
+;;     X: Destination address. Range $0000..1FFF for WRAM writes
+;;     Y: Size
 $80:83D0 08          PHP
 $80:83D1 8B          PHB
 $80:83D2 4B          PHK
@@ -857,6 +865,10 @@ $80:83E2 6B          RTL
 
 ;;; $83E3: Unused. Write [Y] bytes of [A] to $7E:0000 + [X] - 8-bit ;;;
 {
+;; Parameters:
+;;     A: Fill value
+;;     X: Destination address
+;;     Y: Size
 $80:83E3 08          PHP
 $80:83E4 8B          PHB
 $80:83E5 4B          PHK
@@ -876,6 +888,11 @@ $80:83F5 6B          RTL
 
 ;;; $83F6: Write [Y] bytes of [A] to $7E:0000 + [X] - 16-bit ;;;
 {
+;; Parameters:
+;;     A: Fill value
+;;     X: Destination address
+;;     Y: Size
+
 ; Called by:
 ;     $88B4: Unused. Clear high RAM
 ;     $88EB: Write 800h bytes of [A] to $7E:3000
@@ -904,6 +921,11 @@ $80:8408 6B          RTL
 
 ;;; $8409: Write [Y] bytes of [A] to $7F:0000 + [X] - 16-bit ;;;
 {
+;; Parameters:
+;;     A: Fill value
+;;     X: Destination address
+;;     Y: Size
+
 ; Called by
 ;     $88B4: Unused. Clear high RAM
 $80:8409 08          PHP
@@ -926,6 +948,8 @@ $80:841B 6B          RTL
 
 ;;; $841C: Boot ;;;
 {
+; Most SNES games don't randomly wait 3 frames before running initialisation
+; Best wild guess is that they might have had some kind of dev hardware thingy attached somewhere that boot-up had to wait for
 $80:841C 78          SEI                    ; Disable IRQ
 $80:841D 18          CLC                    ;\
 $80:841E FB          XCE                    ;} Enable native mode
@@ -946,7 +970,7 @@ $80:843A A2 04       LDX #$04               ;\
                                             ;|
 $80:843C AD 12 42    LDA $4212              ;|
 $80:843F 10 FB       BPL $FB    [$843C]     ;|
-                                            ;} Wait the remainder of this frame and 3 more frames (???)
+                                            ;} Wait the remainder of this frame and 3 more frames
 $80:8441 AD 12 42    LDA $4212              ;|
 $80:8444 30 FB       BMI $FB    [$8441]     ;|
 $80:8446 CA          DEX                    ;|
@@ -973,7 +997,7 @@ $80:8460 80 20       BRA $20    [$8482]     ; Go to common boot section
 ;     $81:90FE: Game over menu - index 7: fade out into soft reset
 ;     $81:94D5: File select menu - index 21h: fade out to title sequence
 
-; Compared to boot ($841C), doesn't display Nintendo logo or upload SPC engine
+; Compared to boot ($841C), doesn't display Nintendo logo or upload SPC engine, but still waits 3 frames (see $841C)
 $80:8462 78          SEI                    ; Disable IRQ
 $80:8463 18          CLC                    ;\
 $80:8464 FB          XCE                    ;} Enable native mode
@@ -989,7 +1013,7 @@ $80:8473 A2 04       LDX #$04               ;\
                                             ;|
 $80:8475 AD 12 42    LDA $4212  [$80:4212]  ;|
 $80:8478 10 FB       BPL $FB    [$8475]     ;|
-                                            ;} Wait the remainder of this frame and 3 more frames (???)
+                                            ;} Wait the remainder of this frame and 3 more frames
 $80:847A AD 12 42    LDA $4212  [$80:4212]  ;|
 $80:847D 30 FB       BMI $FB    [$847A]     ;|
 $80:847F CA          DEX                    ;|
@@ -999,6 +1023,8 @@ $80:8480 D0 F3       BNE $F3    [$8475]     ;/
 
 ;;; $8482: Common boot section ;;;
 {
+; They wait another (see $841C) 3 frames here at $8523
+; It might be giving the SPC engine a chance to run its initialisation after sending zero bytes to the APU IO registers
 $80:8482 E2 20       SEP #$20
 $80:8484 A9 8F       LDA #$8F               ;\
 $80:8486 8D 00 21    STA $2100              ;} Enable forced blank
@@ -1065,7 +1091,7 @@ $80:8523 A2 04       LDX #$04               ;\
                                             ;|
 $80:8525 AD 12 42    LDA $4212              ;|
 $80:8528 10 FB       BPL $FB    [$8525]     ;|
-                                            ;} Wait the remainder of this frame and 3 more frames (???)
+                                            ;} Wait the remainder of this frame and 3 more frames
 $80:852A AD 12 42    LDA $4212              ;|
 $80:852D 30 FB       BMI $FB    [$852A]     ;|
 $80:852F CA          DEX                    ;|
@@ -2047,7 +2073,7 @@ $80:8CAD B6 D5       LDX $D5,y  [$7E:00D5]  ;\
 $80:8CAF 10 01       BPL $01    [$8CB2]     ;} If [VRAM write table entry destination address] & 8000h:
 $80:8CB1 1A          INC A                  ; Use 32-byte VRAM address increment
 
-$80:8CB2 8D 15 21    STA $2115            
+$80:8CB2 8D 15 21    STA $2115
 $80:8CB5 8E 16 21    STX $2116              ; VRAM address = [VRAM write table entry destination address]
 $80:8CB8 E2 20       SEP #$20
 $80:8CBA A9 02       LDA #$02               ;\
@@ -3623,7 +3649,7 @@ $80:96FF 80 02       BRA $02    [$9703]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9701 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:9703 8D 2C 21    STA $212C            
+$80:9703 8D 2C 21    STA $212C
 $80:9706 C2 20       REP #$20
 $80:9708 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:970A F0 04       BEQ $04    [$9710]     ; If [next interrupt command] != 0:
@@ -3726,7 +3752,7 @@ $80:977F 80 02       BRA $02    [$9783]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9781 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:9783 8D 2C 21    STA $212C            
+$80:9783 8D 2C 21    STA $212C
 $80:9786 9C 30 21    STZ $2130              ;\
 $80:9789 9C 31 21    STZ $2131              ;} Disable colour math
 $80:978C C2 20       REP #$20
@@ -3805,7 +3831,7 @@ $80:97E8 80 02       BRA $02    [$97EC]     ;} Main screen layers = sprites
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:97EA A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
-$80:97EC 8D 2C 21    STA $212C            
+$80:97EC 8D 2C 21    STA $212C
 $80:97EF 9C 30 21    STZ $2130              ;\
 $80:97F2 9C 31 21    STZ $2131              ;} Disable colour math
 $80:97F5 C2 20       REP #$20
@@ -6844,7 +6870,7 @@ $80:AE5C FC 76 AE    JSR ($AE76,x)[$80:AE7E];/
 $80:AE5F 90 12       BCC $12    [$AE73]     ; If carry set:
 $80:AE61 AD 27 09    LDA $0927  [$7E:0927]  ;\
 $80:AE64 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [door destination X position]
-$80:AE67 AD 29 09    LDA $0929  [$7E:0929]  ;\                      
+$80:AE67 AD 29 09    LDA $0929  [$7E:0929]  ;\
 $80:AE6A 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = [door destination Y position]
 $80:AE6D A9 00 80    LDA #$8000             ;\
 $80:AE70 0C 31 09    TSB $0931  [$7E:0931]  ;} Door transition finished scrolling flag = 8000h
@@ -6860,7 +6886,7 @@ $80:AE76             dw AE7E, AEC2, AF02, AF89
 ;;; $AE7E: Door transition scrolling - right ;;;
 {
 $80:AE7E AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
-$80:AE81 DA          PHX                    
+$80:AE81 DA          PHX
 $80:AE82 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $80:AE85 18          CLC                    ;|
 $80:AE86 6D 2B 09    ADC $092B  [$7E:092B]  ;|
@@ -6886,7 +6912,7 @@ $80:AEB8 D0 06       BNE $06    [$AEC0]     ;} If [door transition frame counter
 $80:AEBA 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
 $80:AEBE 38          SEC                    ;\
 $80:AEBF 60          RTS                    ;} Return carry set
-                                            
+
 $80:AEC0 18          CLC                    ;\
 $80:AEC1 60          RTS                    ;} Return carry clear
 }
@@ -6895,7 +6921,7 @@ $80:AEC1 60          RTS                    ;} Return carry clear
 ;;; $AEC2: Door transition scrolling - left ;;;
 {
 $80:AEC2 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
-$80:AEC5 DA          PHX                    
+$80:AEC5 DA          PHX
 $80:AEC6 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $80:AEC9 38          SEC                    ;|
 $80:AECA ED 2B 09    SBC $092B  [$7E:092B]  ;|
@@ -6920,7 +6946,7 @@ $80:AEF9 E0 40 00    CPX #$0040             ;\
 $80:AEFC D0 02       BNE $02    [$AF00]     ;} If [door transition frame counter] = 40h:
 $80:AEFE 38          SEC                    ;\
 $80:AEFF 60          RTS                    ;} Return carry set
-                                            
+
 $80:AF00 18          CLC                    ;\
 $80:AF01 60          RTS                    ;} Return carry clear
 }
@@ -6940,7 +6966,7 @@ $80:AF01 60          RTS                    ;} Return carry clear
 ; tldr: need to redraw the top row to replace the garbage
 
 $80:AF02 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
-$80:AF05 DA          PHX                    
+$80:AF05 DA          PHX
 $80:AF06 D0 3C       BNE $3C    [$AF44]     ; If [door transition frame counter] = 0:
 $80:AF08 A5 B3       LDA $B3    [$7E:00B3]  ;\
 $80:AF0A 48          PHA                    ;} Save BG1 Y scroll
@@ -6999,7 +7025,7 @@ $80:AF7F 90 06       BCC $06    [$AF87]     ;} If [door transition frame counter
 $80:AF81 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
 $80:AF85 38          SEC                    ;\
 $80:AF86 60          RTS                    ;} Return carry set
-                                            
+
 $80:AF87 18          CLC                    ;\
 $80:AF88 60          RTS                    ;} Return carry clear
 }
