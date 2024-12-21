@@ -3384,7 +3384,7 @@ $81:9CE1 AD B7 19    LDA $19B7  [$7E:19B7]  ; A = [file clear slot]
 $81:9CE4 22 85 80 81 JSL $818085[$81:8085]  ; Clear SRAM <-- again >_<;
 $81:9CE8 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9CEB 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [file clear slot] <-- this shouldn't be here, but since areas 0/1/2 are all cleared, it doesn't matter
-$81:9CEE 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
+$81:9CEE 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $81:9CF2 A2 00 05    LDX #$0500             ;\
 $81:9CF5 A9 0F 00    LDA #$000F             ;|
                                             ;|
@@ -4031,7 +4031,7 @@ $81:A243 8F EE 1F 70 STA $701FEE[$70:1FEE]  ;} SRAM save slot selected complemen
 $81:A247 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:A24A 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
 $81:A24E B0 06       BCS $06    [$A256]     ; If not corrupt:
-$81:A250 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
+$81:A250 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $81:A254 80 63       BRA $63    [$A2B9]     ; Go to BRANCH_DONE
 
 $81:A256 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file
@@ -5388,7 +5388,7 @@ $81:AD16 60          RTS
 ;;; $AD17: File select map - index 9: area select map to room select map - initialise ;;;
 {
 $81:AD17 C2 30       REP #$30
-$81:AD19 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
+$81:AD19 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $81:AD1D 22 17 95 82 JSL $829517[$82:9517]  ; Draw room select map
 $81:AD21 22 37 C4 80 JSL $80C437[$80:C437]  ; Load from load station
 $81:AD25 22 93 82 88 JSL $888293[$88:8293]  ; Disable HDMA objects

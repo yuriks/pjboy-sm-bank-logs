@@ -5249,7 +5249,7 @@ $8B:A41E             dl 7F9000              ;/
 $8B:A421 A9 00 96    LDA #$9600             ;\
 $8B:A424 85 48       STA $48    [$7E:0048]  ;|
 $8B:A426 A9 14 FF    LDA #$FF14             ;|
-$8B:A429 85 47       STA $47    [$7E:0047]  ;} Decompress $96:FF14 (intro BG1 tilemap) to $7F:9800 (Mother Brain's room)
+$8B:A429 85 47       STA $47    [$7E:0047]  ;} Decompress $96:FF14 (intro BG1 tilemaps) to $7F:9800
 $8B:A42B 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:A42F             dl 7F9800              ;/
 $8B:A432 A9 00 95    LDA #$9500             ;\
@@ -5310,7 +5310,7 @@ $8B:A4D8 8D 16 21    STA $2116              ;|
 $8B:A4DB A9 50       LDA #$50               ;|
 $8B:A4DD 8D 17 21    STA $2117              ;|
 $8B:A4E0 A9 80       LDA #$80               ;|
-$8B:A4E2 8D 15 21    STA $2115              ;} VRAM $5000..5FFF = [$7F:9800..B7FF] (BG1 tilemap - Mother Brain's room)
+$8B:A4E2 8D 15 21    STA $2115              ;} VRAM $5000..5FFF = [$7F:9800..B7FF] (BG1 tilemaps)
 $8B:A4E5 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:A4E9             dx 01,01,18,7F9800,2000;|
 $8B:A4F1 A9 02       LDA #$02               ;|

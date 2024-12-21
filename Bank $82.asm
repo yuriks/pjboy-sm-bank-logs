@@ -25,7 +25,7 @@ $82:8030 80 1C       BRA $1C    [$804E]     ; Go to BRANCH_ON_ZEBES
 $82:8032 9C 9F 07    STZ $079F  [$7E:079F]  ; Area = Crateria
 $82:8035 A9 12 00    LDA #$0012             ;\
 $82:8038 8D 8B 07    STA $078B  [$7E:078B]  ;} Load station index = 12h (Zebes landing cutscene)
-$82:803B 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
+$82:803B 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $82:803F 80 0D       BRA $0D    [$804E]     ; Go to BRANCH_ON_ZEBES
 
 ; BRANCH_CERES
@@ -9859,7 +9859,7 @@ $82:DFA5 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:DFA8 BF 02 00 83 LDA $830002,x[$83:AB4E];|
 $82:DFAC 89 40 00    BIT #$0040             ;} If [elevator door properties] & 40h != 0:
 $82:DFAF F0 04       BEQ $04    [$DFB5]     ;/
-$82:DFB1 22 C6 85 80 JSL $8085C6[$80:85C6]  ; Mirror current area's map explored
+$82:DFB1 22 C6 85 80 JSL $8085C6[$80:85C6]  ; Save map explored
 
 $82:DFB5 60          RTS
 }
@@ -9871,7 +9871,7 @@ $82:DFB6 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:DFB9 BF 02 00 83 LDA $830002,x[$83:AB4E];|
 $82:DFBD 89 40 00    BIT #$0040             ;} If [elevator door properties] & 40h != 0:
 $82:DFC0 F0 04       BEQ $04    [$DFC6]     ;/
-$82:DFC2 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
+$82:DFC2 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 
 $82:DFC6 60          RTS
 }

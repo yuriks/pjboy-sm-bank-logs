@@ -1140,45 +1140,54 @@ $80:8573 5C 73 85 80 JML $808573[$80:8573]
 }
 
 
-;;; $8577: Unused. Wait [A] frames ;;;
+;;; $8577: Unused. Block for [A] frames ;;;
 {
+;; Parameters:
+;;     A: Number of frames to block for (including the rest of this frame)
 $80:8577 08          PHP
 $80:8578 8B          PHB
-$80:8579 4B          PHK
-$80:857A AB          PLB
+$80:8579 4B          PHK                    ;\
+$80:857A AB          PLB                    ;} DB = $80
 $80:857B E2 20       SEP #$20
-$80:857D 8D 1C 07    STA $071C  [$82:071C]
+$80:857D 8D 1C 07    STA $071C  [$7E:071C]  ; Block timer = [A]
 
-$80:8580 22 38 83 80 JSL $808338[$80:8338]
-$80:8584 CE 1C 07    DEC $071C  [$82:071C]
-$80:8587 D0 F7       BNE $F7    [$8580]
+; LOOP
+$80:8580 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
+$80:8584 CE 1C 07    DEC $071C  [$7E:071C]  ; Decrement block timer
+$80:8587 D0 F7       BNE $F7    [$8580]     ; If [block timer] != 0: go to LOOP
 $80:8589 AB          PLB
 $80:858A 28          PLP
 $80:858B 6B          RTL
 }
 
 
-;;; $858C: Load mirror of current area's map explored ;;;
+;;; $858C: Load map explored ;;;
 {
+; Called by:
+;     $81:9C9E: File select menu - index 19h: file clear - do file clear
+;     $81:A1C2: File select menu - index 4: main
+;     $81:AD17: File select map - index 9: area select map to room select map - initialise
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / load demo game data)
+;     $82:DFB6: Load map explored if elevator
 $80:858C 08          PHP
 $80:858D C2 30       REP #$30
-$80:858F AD 9F 07    LDA $079F  [$7E:079F]
-$80:8592 EB          XBA
-$80:8593 AA          TAX
-$80:8594 A0 00 00    LDY #$0000
-
-$80:8597 BF 52 CD 7E LDA $7ECD52,x[$7E:CD52]
-$80:859B 99 F7 07    STA $07F7,y[$7E:07F7]
-$80:859E E8          INX
-$80:859F E8          INX
-$80:85A0 C8          INY
-$80:85A1 C8          INY
-$80:85A2 C0 00 01    CPY #$0100
-$80:85A5 30 F0       BMI $F0    [$8597]
-$80:85A7 AE 9F 07    LDX $079F  [$7E:079F]
-$80:85AA BF 08 D9 7E LDA $7ED908,x[$7E:D908]
-$80:85AE 29 FF 00    AND #$00FF
-$80:85B1 8D 89 07    STA $0789  [$7E:0789]
+$80:858F AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$80:8592 EB          XBA                    ;|
+$80:8593 AA          TAX                    ;|
+$80:8594 A0 00 00    LDY #$0000             ;|
+                                            ;|
+$80:8597 BF 52 CD 7E LDA $7ECD52,x[$7E:CD52];|
+$80:859B 99 F7 07    STA $07F7,y[$7E:07F7]  ;} Copy 100h bytes from $7E:CD52 + [area index] * 100h to current map tiles explored
+$80:859E E8          INX                    ;|
+$80:859F E8          INX                    ;|
+$80:85A0 C8          INY                    ;|
+$80:85A1 C8          INY                    ;|
+$80:85A2 C0 00 01    CPY #$0100             ;|
+$80:85A5 30 F0       BMI $F0    [$8597]     ;/
+$80:85A7 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$80:85AA BF 08 D9 7E LDA $7ED908,x[$7E:D908];|
+$80:85AE 29 FF 00    AND #$00FF             ;} Current area map collected flag = [area map station byte]
+$80:85B1 8D 89 07    STA $0789  [$7E:0789]  ;/
 $80:85B4 28          PLP
 $80:85B5 6B          RTL
 }
@@ -1190,31 +1199,31 @@ $80:85B6             dw 0001, 0002, 0004, 0008, 0010, 0020, 0040, 0080
 }
 
 
-;;; $85C6: Mirror current area's map explored ;;;
+;;; $85C6: Save map explored ;;;
 {
 ; Called by:
 ;     $82:DF99: Save map explored if elevator
 $80:85C6 08          PHP
 $80:85C7 C2 30       REP #$30
-$80:85C9 AD 9F 07    LDA $079F  [$7E:079F]
-$80:85CC EB          XBA
-$80:85CD AA          TAX
-$80:85CE A0 00 00    LDY #$0000
-
-$80:85D1 B9 F7 07    LDA $07F7,y[$7E:07F7]
-$80:85D4 9F 52 CD 7E STA $7ECD52,x[$7E:CD52]
-$80:85D8 E8          INX
-$80:85D9 E8          INX
-$80:85DA C8          INY
-$80:85DB C8          INY
-$80:85DC C0 00 01    CPY #$0100
-$80:85DF 30 F0       BMI $F0    [$85D1]
-$80:85E1 AD 89 07    LDA $0789  [$7E:0789]
-$80:85E4 F0 0E       BEQ $0E    [$85F4]
-$80:85E6 AE 9F 07    LDX $079F  [$7E:079F]
-$80:85E9 BF 08 D9 7E LDA $7ED908,x[$7E:D908]
-$80:85ED 09 FF 00    ORA #$00FF
-$80:85F0 9F 08 D9 7E STA $7ED908,x[$7E:D908]
+$80:85C9 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$80:85CC EB          XBA                    ;|
+$80:85CD AA          TAX                    ;|
+$80:85CE A0 00 00    LDY #$0000             ;|
+                                            ;|
+$80:85D1 B9 F7 07    LDA $07F7,y[$7E:07F7]  ;|
+$80:85D4 9F 52 CD 7E STA $7ECD52,x[$7E:CD52];} Copy 100h bytes from current map tiles explored to $7E:CD52 + [area index] * 100h
+$80:85D8 E8          INX                    ;|
+$80:85D9 E8          INX                    ;|
+$80:85DA C8          INY                    ;|
+$80:85DB C8          INY                    ;|
+$80:85DC C0 00 01    CPY #$0100             ;|
+$80:85DF 30 F0       BMI $F0    [$85D1]     ;/
+$80:85E1 AD 89 07    LDA $0789  [$7E:0789]  ;\
+$80:85E4 F0 0E       BEQ $0E    [$85F4]     ;} If [current area map collected flag] != 0:
+$80:85E6 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$80:85E9 BF 08 D9 7E LDA $7ED908,x[$7E:D908];|
+$80:85ED 09 FF 00    ORA #$00FF             ;} Area map station byte = FFh
+$80:85F0 9F 08 D9 7E STA $7ED908,x[$7E:D908];/
 
 $80:85F4 28          PLP
 $80:85F5 6B          RTL
@@ -1529,7 +1538,7 @@ $80:88BC A0 00 E0    LDY #$E000             ;} Clear $7E:2000..FFFF
 $80:88BF 22 F6 83 80 JSL $8083F6[$80:83F6]  ;/
 $80:88C3 A9 00 00    LDA #$0000             ;\
 $80:88C6 AA          TAX                    ;|
-$80:88C7 A0 FE DF    LDY #$DFFE             ;} Clear $7F:0000..DFFD
+$80:88C7 A0 FE DF    LDY #$DFFE             ;} Clear $7F:0000..DFFD (???)
 $80:88CA 22 09 84 80 JSL $808409[$80:8409]  ;/
 $80:88CE E2 30       SEP #$30
 $80:88D0 60          RTS
@@ -1540,6 +1549,11 @@ $80:88D0 60          RTS
 {
 ; Called by:
 ;     $8482: Common boot section
+
+; These assignments have no effect. Before the first read to any of these RAM regions:
+;     $7E:3000..37FF is set to 0 by $8B:8000 (set up PPU for title sequence), which also has no effect, then to either 0 by $82:81DD (set up PPU for gameplay) or Zebes and stars tilemap by $81:9E93 (file select menu - index 1: title sequence to main - load BG2)
+;     $7E:4000..47FF is set to 006Fh by $82:81DD (set up PPU for gameplay)
+;     $7E:6000..67FF is clobbered by a decompression in $82:E3C0 (door transition function - place Samus, load tiles)
 $80:88D1 C2 30       REP #$30
 $80:88D3 A9 2F 1C    LDA #$1C2F             ;\
 $80:88D6 22 EB 88 80 JSL $8088EB[$80:88EB]  ;} $7E:3000..37FF = 1C2Fh
@@ -1554,6 +1568,9 @@ $80:88EA 60          RTS
 
 ;;; $88EB: Write 800h bytes of [A] to $7E:3000 ;;;
 {
+;; Parameters:
+;;     A: Fill value
+
 ; Called by:
 ;     $88D1: Write a load of 1C2Fh
 $80:88EB 08          PHP
@@ -1572,6 +1589,9 @@ $80:88FD 6B          RTL
 
 ;;; $88FE: Write 800h bytes of [A] to $7E:4000 ;;;
 {
+;; Parameters:
+;;     A: Fill value
+
 ; Called by:
 ;     $88D1: Write a load of 1C2Fh
 $80:88FE 08          PHP
@@ -1590,6 +1610,9 @@ $80:8910 6B          RTL
 
 ;;; $8911: Write 800h bytes of [A] to $7E:6000 ;;;
 {
+;; Parameters:
+;;     A: Fill value
+
 ; Called by:
 ;     $88D1: Write a load of 1C2Fh
 $80:8911 08          PHP
@@ -1629,10 +1652,10 @@ $80:893E F0 0B       BEQ $0B    [$894B]     ;/
 $80:8940 3A          DEC A                  ;\
 $80:8941 D0 06       BNE $06    [$8949]     ;} If (brightness) = 1:
 $80:8943 A9 80       LDA #$80               ;\
-$80:8945 85 51       STA $51    [$7E:0051]  ;} Enable forced blank, brightness = 0
-$80:8947 80 02       BRA $02    [$894B]     ; Return
-
-$80:8949 85 51       STA $51    [$7E:0051]  ; Decrement brightness (disable forced blank)
+$80:8945 85 51       STA $51    [$7E:0051]  ;} Brightness = 0, enable forced blank
+$80:8947 80 02       BRA $02    [$894B]
+                                            ; Else ((brightness) != 1):
+$80:8949 85 51       STA $51    [$7E:0051]  ; Decrement brightness, disable forced blank
 
 $80:894B 28          PLP
 $80:894C 6B          RTL
@@ -1659,9 +1682,9 @@ $80:895E 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = [screen fad
 $80:8961 E2 30       SEP #$30
 $80:8963 A5 51       LDA $51    [$7E:0051]  ;\
 $80:8965 1A          INC A                  ;|
-$80:8966 29 0F       AND #$0F               ;} If brightness is not max:
+$80:8966 29 0F       AND #$0F               ;} If (brightness) != Fh:
 $80:8968 F0 02       BEQ $02    [$896C]     ;/
-$80:896A 85 51       STA $51    [$7E:0051]  ; Increment brightness (disable forced blank)
+$80:896A 85 51       STA $51    [$7E:0051]  ; Increment brightness, disable forced blank
 
 $80:896C 28          PLP
 $80:896D 6B          RTL
@@ -2341,22 +2364,23 @@ $80:8EF3 6B          RTL
 $80:8EF4 08          PHP
 $80:8EF5 C2 30       REP #$30
 $80:8EF7 DA          PHX
-$80:8EF8 A2 0E 00    LDX #$000E
+$80:8EF8 A2 0E 00    LDX #$000E             ; X = Eh (music queue index)
 
-$80:8EFB BD 29 06    LDA $0629,x[$7E:0637]
-$80:8EFE D0 08       BNE $08    [$8F08]
-$80:8F00 CA          DEX
-$80:8F01 CA          DEX
-$80:8F02 10 F7       BPL $F7    [$8EFB]
+; LOOP
+$80:8EFB BD 29 06    LDA $0629,x[$7E:0637]  ;\
+$80:8EFE D0 08       BNE $08    [$8F08]     ;} If [music queue timer] = 0:
+$80:8F00 CA          DEX                    ;\
+$80:8F01 CA          DEX                    ;} X -= 2
+$80:8F02 10 F7       BPL $F7    [$8EFB]     ; If [X] >= 0: go to LOOP
 $80:8F04 FA          PLX
 $80:8F05 28          PLP
-$80:8F06 18          CLC
-$80:8F07 6B          RTL
+$80:8F06 18          CLC                    ;\
+$80:8F07 6B          RTL                    ;} Return carry clear
 
 $80:8F08 FA          PLX
 $80:8F09 28          PLP
-$80:8F0A 38          SEC
-$80:8F0B 6B          RTL
+$80:8F0A 38          SEC                    ;\
+$80:8F0B 6B          RTL                    ;} Return carry set
 }
 
 
@@ -2567,6 +2591,8 @@ $80:9020 6B          RTL
 {
 ;;; $9021: Queue sound, sound library 1, max queued sounds allowed = 15 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9021 DA          PHX
 $80:9022 5A          PHY
 $80:9023 08          PHP
@@ -2579,6 +2605,8 @@ $80:9029 80 26       BRA $26    [$9051]
 
 ;;; $902B: Queue sound, sound library 1, max queued sounds allowed = 9 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:902B DA          PHX
 $80:902C 5A          PHY
 $80:902D 08          PHP
@@ -2591,6 +2619,8 @@ $80:9033 80 1C       BRA $1C    [$9051]
 
 ;;; $9035: Queue sound, sound library 1, max queued sounds allowed = 3 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9035 DA          PHX
 $80:9036 5A          PHY
 $80:9037 08          PHP
@@ -2603,6 +2633,8 @@ $80:903D 80 12       BRA $12    [$9051]
 
 ;;; $903F: Queue sound, sound library 1, max queued sounds allowed = 1 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:903F DA          PHX
 $80:9040 5A          PHY
 $80:9041 08          PHP
@@ -2615,6 +2647,8 @@ $80:9047 80 08       BRA $08    [$9051]
 
 ;;; $9049: Queue sound, sound library 1, max queued sounds allowed = 6 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9049 DA          PHX
 $80:904A 5A          PHY
 $80:904B 08          PHP
@@ -2679,6 +2713,8 @@ $80:90A1 80 EF       BRA $EF    [$9092]     ; Return
 
 ;;; $90A3: Queue sound, sound library 2, max queued sounds allowed = 15 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:90A3 DA          PHX
 $80:90A4 5A          PHY
 $80:90A5 08          PHP
@@ -2691,6 +2727,8 @@ $80:90AB 80 26       BRA $26    [$90D3]
 
 ;;; $90AD: Queue sound, sound library 2, max queued sounds allowed = 9 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:90AD DA          PHX
 $80:90AE 5A          PHY
 $80:90AF 08          PHP
@@ -2703,6 +2741,8 @@ $80:90B5 80 1C       BRA $1C    [$90D3]
 
 ;;; $90B7: Queue sound, sound library 2, max queued sounds allowed = 3 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:90B7 DA          PHX
 $80:90B8 5A          PHY
 $80:90B9 08          PHP
@@ -2715,6 +2755,8 @@ $80:90BF 80 12       BRA $12    [$90D3]
 
 ;;; $90C1: Queue sound, sound library 2, max queued sounds allowed = 1 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:90C1 DA          PHX
 $80:90C2 5A          PHY
 $80:90C3 08          PHP
@@ -2727,6 +2769,8 @@ $80:90C9 80 08       BRA $08    [$90D3]
 
 ;;; $90CB: Queue sound, sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:90CB DA          PHX
 $80:90CC 5A          PHY
 $80:90CD 08          PHP
@@ -2791,6 +2835,8 @@ $80:9123 80 EF       BRA $EF    [$9114]     ; Return
 
 ;;; $9125: Queue sound, sound library 3, max queued sounds allowed = 15 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9125 DA          PHX
 $80:9126 5A          PHY
 $80:9127 08          PHP
@@ -2803,6 +2849,8 @@ $80:912D 80 26       BRA $26    [$9155]
 
 ;;; $912F: Queue sound, sound library 3, max queued sounds allowed = 9 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:912F DA          PHX
 $80:9130 5A          PHY
 $80:9131 08          PHP
@@ -2815,6 +2863,8 @@ $80:9137 80 1C       BRA $1C    [$9155]
 
 ;;; $9139: Queue sound, sound library 3, max queued sounds allowed = 3 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9139 DA          PHX
 $80:913A 5A          PHY
 $80:913B 08          PHP
@@ -2827,6 +2877,8 @@ $80:9141 80 12       BRA $12    [$9155]
 
 ;;; $9143: Queue sound, sound library 3, max queued sounds allowed = 1 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:9143 DA          PHX
 $80:9144 5A          PHY
 $80:9145 08          PHP
@@ -2839,6 +2891,8 @@ $80:914B 80 08       BRA $08    [$9155]
 
 ;;; $914D: Queue sound, sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameter:
+;;     A: Sound to queue
 $80:914D DA          PHX
 $80:914E 5A          PHY
 $80:914F 08          PHP
@@ -3286,8 +3340,8 @@ $80:948C A5 8B       LDA $8B    [$7E:008B]  ;\
 $80:948E 85 97       STA $97    [$7E:0097]  ;} Previous controller 1 input = [controller 1 input]
 $80:9490 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $80:9493 D0 02       BNE $02    [$9497]     ;} If debug not enabled:
-$80:9495 28          PLP                    ;\
-$80:9496 6B          RTL                    ;} Return
+$80:9495 28          PLP
+$80:9496 6B          RTL                    ; Return
 
 ; Debug branch
 $80:9497 AD 1A 42    LDA $421A              ;\
@@ -3324,17 +3378,17 @@ $80:94CE 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $80:94D1 4C 62 84    JMP $8462  [$80:8462]  ; Go to soft reset
 
 $80:94D4 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
-$80:94D7 D0 0F       BNE $0F    [$94E8]     ;} If debug mode not enabled:
+$80:94D7 D0 0F       BNE $0F    [$94E8]     ;} If debug mode not enabled: (???)
 $80:94D9 9C C5 05    STZ $05C5  [$7E:05C5]  ;\
 $80:94DC 9C C7 05    STZ $05C7  [$7E:05C7]  ;|
 $80:94DF A9 EF FF    LDA #$FFEF             ;|
-$80:94E2 14 8D       TRB $8D    [$7E:008D]  ;} >_<
+$80:94E2 14 8D       TRB $8D    [$7E:008D]  ;} >_<;
 $80:94E4 14 91       TRB $91    [$7E:0091]  ;|
 $80:94E6 28          PLP                    ;|
 $80:94E7 6B          RTL                    ;/
 
-$80:94E8 9C C5 05    STZ $05C5  [$7E:05C5]  ; $05C5 = 0 (newly pressed controller 1 input when select + L is pressed)
-$80:94EB 9C C7 05    STZ $05C7  [$7E:05C7]  ; $05C7 = 0 (newly pressed controller 1 input when select + R is pressed)
+$80:94E8 9C C5 05    STZ $05C5  [$7E:05C5]  ; Debug input L = 0 (newly pressed controller 1 input when select + L is pressed)
+$80:94EB 9C C7 05    STZ $05C7  [$7E:05C7]  ; Debug input R = 0 (newly pressed controller 1 input when select + R is pressed)
 $80:94EE 2C CF 05    BIT $05CF  [$7E:05CF]  ;\
 $80:94F1 50 03       BVC $03    [$94F6]     ;} If [debug options] & 4000h != 0: (debug controller input processing is disabled)
 $80:94F3 4C 81 95    JMP $9581  [$80:9581]  ; Return
@@ -3344,29 +3398,29 @@ $80:94F8 29 20 20    AND #$2020             ;|
 $80:94FB C9 20 20    CMP #$2020             ;} If pressing select and L:
 $80:94FE D0 09       BNE $09    [$9509]     ;/
 $80:9500 A5 8F       LDA $8F    [$7E:008F]  ;\
-$80:9502 8D C5 05    STA $05C5  [$7E:05C5]  ;} $05C5 = [newly pressed input]
+$80:9502 8D C5 05    STA $05C5  [$7E:05C5]  ;} Debug input L = [newly pressed input]
 $80:9505 64 8B       STZ $8B    [$7E:008B]  ; Controller 1 input = 0
-$80:9507 64 8F       STZ $8F    [$7E:008F]  ; Controller 1 newly pressed input = 0
+$80:9507 64 8F       STZ $8F    [$7E:008F]  ; Newly pressed controller 1 input = 0
 
 $80:9509 A5 8B       LDA $8B    [$7E:008B]  ;\
 $80:950B 29 10 20    AND #$2010             ;|
 $80:950E C9 10 20    CMP #$2010             ;} If pressing select and R:
 $80:9511 D0 0C       BNE $0C    [$951F]     ;/
 $80:9513 A5 8F       LDA $8F    [$7E:008F]  ;\
-$80:9515 8D C7 05    STA $05C7  [$7E:05C7]  ;} $05C7 = [newly pressed input]
+$80:9515 8D C7 05    STA $05C7  [$7E:05C7]  ;} Debug input R = [newly pressed input]
 $80:9518 A9 F0 E0    LDA #$E0F0             ; >_<
 $80:951B 64 8B       STZ $8B    [$7E:008B]  ; Controller 1 input = 0
 $80:951D 64 8F       STZ $8F    [$7E:008F]  ; Newly pressed controller 1 input = 0
 
 $80:951F AD C7 05    LDA $05C7  [$7E:05C7]  ;\
-$80:9522 89 80 00    BIT #$0080             ;} If [$05C7] & A:
+$80:9522 89 80 00    BIT #$0080             ;} If newly pressed A whilst select + R is pressed:
 $80:9525 F0 07       BEQ $07    [$952E]     ;/
 $80:9527 A5 84       LDA $84    [$7E:0084]  ;\
 $80:9529 49 30 00    EOR #$0030             ;} Toggle IRQ (toggle HUD display)
 $80:952C 85 84       STA $84    [$7E:0084]  ;/
 
 $80:952E AD C7 05    LDA $05C7  [$7E:05C7]  ;\
-$80:9531 89 00 80    BIT #$8000             ;} If [$05C7] & B = 0: go to BRANCH_SWAP_END
+$80:9531 89 00 80    BIT #$8000             ;} If not newly pressed B whilst select + R is pressed: go to BRANCH_SWAP_END
 $80:9534 F0 3A       BEQ $3A    [$9570]     ;/
 $80:9536 AD CF 05    LDA $05CF  [$7E:05CF]  ;\
 $80:9539 49 00 80    EOR #$8000             ;} Debug options ^= 8000h (ammo is swapped flag)
@@ -3392,7 +3446,7 @@ $80:956D 8D CE 09    STA $09CE  [$7E:09CE]  ;} Samus power bombs = [power bombs 
 
 ; BRANCH_SWAP_END
 $80:9570 AD C7 05    LDA $05C7  [$7E:05C7]  ;\
-$80:9573 89 40 00    BIT #$0040             ;} If [$05C7] & X = 0: return
+$80:9573 89 40 00    BIT #$0040             ;} If newly pressed X whilst select + R is pressed:
 $80:9576 F0 09       BEQ $09    [$9581]     ;/
 $80:9578 AD CF 05    LDA $05CF  [$7E:05CF]  ;\
 $80:957B 49 00 20    EOR #$2000             ;} Debug options ^= 2000h (X is pressed whilst select + R is held)
@@ -3468,7 +3522,7 @@ $80:95FD FA          PLX
 $80:95FE 68          PLA
 $80:95FF 2B          PLD
 $80:9600 AB          PLB
-$80:9601 40          RTI
+$80:9601 40          RTI                    ; Return
 
 ; BRANCH_LAG
 $80:9602 AE BA 05    LDX $05BA  [$7E:05BA]  ;\
@@ -3491,8 +3545,8 @@ $80:9616             dw 966E, 9680, 968B, 96A9, 96D3, 96F1, 971A, 9733, 9758, 97
 ;;; $9632: Execute door transition VRAM update ;;;
 {
 ; Called by:
-;     $9771: Interrupt command 12h. Vertical door transition, screen drawing
-;     $980A: Interrupt command 1Ah. Horizontal door transition, screen drawn
+;     $9771: Interrupt command 12h - vertical door transition - end HUD drawing
+;     $980A: Interrupt command 1Ah - horizontal door transition - end drawing
 $80:9632 E2 20       SEP #$20
 $80:9634 A9 80       LDA #$80               ;\
 $80:9636 8D 00 21    STA $2100              ;} Enable forced blank
