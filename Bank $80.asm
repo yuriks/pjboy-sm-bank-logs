@@ -4,7 +4,7 @@ $80:8000             dw 0000 ; Skip NTSC/PAL and SRAM mapping check ($85F6)
 $80:8002             dw 0000 ; Demo recorder ($90:E759)
 $80:8004             dw 0000 ; Debug mode, written to $05D1 on boot
 $80:8006             dw 0000 ; Debug scrolling ($82:8B44)
-$80:8008             dw 0000 ; Disable audio ($80:8024)
+$80:8008             dw 0000 ; Disable audio ($8028)
 }
 
 
@@ -37,7 +37,7 @@ $80:8027 6B          RTL
 }
 
 
-;;; $8024: Upload to APU (from [$00]) ;;;
+;;; $8028: Upload to APU (from [$00]) ;;;
 {
 ;; Parameter
 ;;     $00: APU data pointer
@@ -3449,7 +3449,7 @@ $80:9570 AD C7 05    LDA $05C7  [$7E:05C7]  ;\
 $80:9573 89 40 00    BIT #$0040             ;} If newly pressed X whilst select + R is pressed:
 $80:9576 F0 09       BEQ $09    [$9581]     ;/
 $80:9578 AD CF 05    LDA $05CF  [$7E:05CF]  ;\
-$80:957B 49 00 20    EOR #$2000             ;} Debug options ^= 2000h (X is pressed whilst select + R is held)
+$80:957B 49 00 20    EOR #$2000             ;} Debug options ^= 2000h (unused)
 $80:957E 8D CF 05    STA $05CF  [$7E:05CF]  ;/
 
 $80:9581 28          PLP
@@ -3584,7 +3584,7 @@ $80:966D 60          RTS
 
 $80:966E A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:9670 F0 04       BEQ $04    [$9676]
-$80:9672 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:9672 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:9674 80 03       BRA $03    [$9679]
 
 $80:9676 A9 00 00    LDA #$0000
@@ -3604,7 +3604,7 @@ $80:967F 60          RTS
 
 $80:9680 A9 30 00    LDA #$0030             ;\
 $80:9683 14 84       TRB $84    [$7E:0084]  ;} Disable h/v-counter interrupts
-$80:9685 A9 00 00    LDA #$0000             ; Interrupt command = 0
+$80:9685 A9 00 00    LDA #$0000             ; Interrupt command = 0 (nothing)
 $80:9688 AA          TAX                    ; IRQ h-counter target = 0
 $80:9689 A8          TAY                    ; IRQ v-counter target = 0
 $80:968A 60          RTS
@@ -3626,7 +3626,7 @@ $80:9695 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9698 A9 04       LDA #$04               ;\
 $80:969A 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:969D C2 20       REP #$20
-$80:969F A9 06 00    LDA #$0006             ; Interrupt command = 6
+$80:969F A9 06 00    LDA #$0006             ; Interrupt command = 6 (main gameplay - end HUD drawing)
 $80:96A2 A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
 $80:96A5 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:96A8 60          RTS
@@ -3652,10 +3652,10 @@ $80:96BC 8D 2C 21    STA $212C              ;} Main screen layers = [gameplay ma
 $80:96BF C2 20       REP #$20
 $80:96C1 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:96C3 F0 04       BEQ $04    [$96C9]     ; If [next interrupt command] != 0:
-$80:96C5 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:96C5 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:96C7 80 03       BRA $03    [$96CC]
                                             ; Else ([next interrupt command] = 0):
-$80:96C9 A9 04 00    LDA #$0004             ; Interrupt command = 4
+$80:96C9 A9 04 00    LDA #$0004             ; Interrupt command = 4 (main gameplay - begin HUD drawing)
 
 $80:96CC A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:96CF A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
@@ -3678,7 +3678,7 @@ $80:96DC 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:96DF 9C 30 21    STZ $2130              ;\
 $80:96E2 9C 31 21    STZ $2131              ;} Disable colour math
 $80:96E5 C2 20       REP #$20
-$80:96E7 A9 0A 00    LDA #$000A             ; Interrupt command = Ah
+$80:96E7 A9 0A 00    LDA #$000A             ; Interrupt command = Ah (start of door transition - end HUD drawing)
 $80:96EA A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
 $80:96ED A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:96F0 60          RTS
@@ -3697,9 +3697,8 @@ $80:96F3 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:96F6 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
 $80:96F9 89 01       BIT #$01               ;} If ([CRE bitset] | [previous CRE bitset]) & 1 != 0:
 $80:96FB F0 04       BEQ $04    [$9701]     ;/
-$80:96FD A9 10       LDA #$10               ;\
-$80:96FF 80 02       BRA $02    [$9703]     ;} Main screen layers = sprites
-
+$80:96FD A9 10       LDA #$10               ; Main screen layers = sprites
+$80:96FF 80 02       BRA $02    [$9703]
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9701 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
@@ -3707,10 +3706,10 @@ $80:9703 8D 2C 21    STA $212C
 $80:9706 C2 20       REP #$20
 $80:9708 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:970A F0 04       BEQ $04    [$9710]     ; If [next interrupt command] != 0:
-$80:970C 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:970C 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:970E 80 03       BRA $03    [$9713]
                                             ; Else ([next interrupt command] = 0):
-$80:9710 A9 08 00    LDA #$0008             ; Interrupt command = 8
+$80:9710 A9 08 00    LDA #$0008             ; Interrupt command = 8 (start of door transition - begin HUD drawing)
 
 $80:9713 A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:9716 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
@@ -3732,7 +3731,7 @@ $80:971E 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:9721 9C 30 21    STZ $2130              ;\
 $80:9724 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9727 C2 20       REP #$20
-$80:9729 A9 0E 00    LDA #$000E             ; Interrupt command = Eh
+$80:9729 A9 0E 00    LDA #$000E             ; Interrupt command = Eh (Draygon's room - end HUD drawing)
 $80:972C A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
 $80:972F A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:9732 60          RTS
@@ -3757,10 +3756,10 @@ $80:9741 8D 31 21    STA $2131              ;} Colour math control register B = 
 $80:9744 C2 20       REP #$20
 $80:9746 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:9748 F0 04       BEQ $04    [$974E]     ; If [next interrupt command] != 0:
-$80:974A 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:974A 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:974C 80 03       BRA $03    [$9751]
                                             ; Else ([next interrupt command] = 0):
-$80:974E A9 0C 00    LDA #$000C             ; Interrupt command = Ch
+$80:974E A9 0C 00    LDA #$000C             ; Interrupt command = Ch (Draygon's room - begin HUD drawing)
 
 $80:9751 A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:9754 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
@@ -3781,7 +3780,7 @@ $80:975C 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:975F 9C 30 21    STZ $2130              ;\
 $80:9762 9C 31 21    STZ $2131              ;} Disable colour math
 $80:9765 C2 20       REP #$20
-$80:9767 A9 12 00    LDA #$0012             ; Interrupt command = 12h
+$80:9767 A9 12 00    LDA #$0012             ; Interrupt command = 12h (vertical door transition - end HUD drawing)
 $80:976A A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
 $80:976D A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:9770 60          RTS
@@ -3800,9 +3799,8 @@ $80:9773 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:9776 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
 $80:9779 89 01       BIT #$01               ;} If ([CRE bitset] | [previous CRE bitset]) & 1 != 0:
 $80:977B F0 04       BEQ $04    [$9781]     ;/
-$80:977D A9 10       LDA #$10               ;\
-$80:977F 80 02       BRA $02    [$9783]     ;} Main screen layers = sprites
-
+$80:977D A9 10       LDA #$10               ; Main screen layers = sprites
+$80:977F 80 02       BRA $02    [$9783]
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:9781 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
@@ -3818,7 +3816,7 @@ $80:9796 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $80:9799 30 04       BMI $04    [$979F]     ;} If door transition has not finished scrolling:
 $80:979B 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Door transition scrolling
 
-$80:979F A9 14 00    LDA #$0014             ; Interrupt command = 14h
+$80:979F A9 14 00    LDA #$0014             ; Interrupt command = 14h (vertical door transition - end drawing)
 $80:97A2 A0 D8 00    LDY #$00D8             ; IRQ v-counter target = D8h
 $80:97A5 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:97A8 60          RTS
@@ -3834,10 +3832,10 @@ $80:97A8 60          RTS
 
 $80:97A9 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:97AB F0 04       BEQ $04    [$97B1]     ; If [next interrupt command] != 0:
-$80:97AD 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:97AD 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:97AF 80 03       BRA $03    [$97B4]
                                             ; Else ([next interrupt command] = 0):
-$80:97B1 A9 10 00    LDA #$0010             ; Interrupt command = 10h
+$80:97B1 A9 10 00    LDA #$0010             ; Interrupt command = 10h (vertical door transition - begin HUD drawing)
 
 $80:97B4 A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:97B7 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
@@ -3860,7 +3858,7 @@ $80:97C5 8D 2C 21    STA $212C              ;} Main screen layers = BG3
 $80:97C8 9C 30 21    STZ $2130              ;\
 $80:97CB 9C 31 21    STZ $2131              ;} Disable colour math
 $80:97CE C2 20       REP #$20
-$80:97D0 A9 18 00    LDA #$0018             ; Interrupt command = 18h
+$80:97D0 A9 18 00    LDA #$0018             ; Interrupt command = 18h (horizontal door transition - end HUD drawing)
 $80:97D3 A0 1F 00    LDY #$001F             ; IRQ v-counter target = 1Fh
 $80:97D6 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:97D9 60          RTS
@@ -3879,9 +3877,8 @@ $80:97DC AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:97DF 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
 $80:97E2 89 01       BIT #$01               ;} If ([CRE bitset] | [previous CRE bitset]) & 1 != 0:
 $80:97E4 F0 04       BEQ $04    [$97EA]     ;/
-$80:97E6 A9 10       LDA #$10               ;\
-$80:97E8 80 02       BRA $02    [$97EC]     ;} Main screen layers = sprites
-
+$80:97E6 A9 10       LDA #$10               ; Main screen layers = sprites
+$80:97E8 80 02       BRA $02    [$97EC]
                                             ; Else (([CRE bitset] | [previous CRE bitset]) & 1 = 0):
 $80:97EA A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
@@ -3893,7 +3890,7 @@ $80:97F7 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $80:97FA 30 04       BMI $04    [$9800]     ;} If door transition has not finished scrolling:
 $80:97FC 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Door transition scrolling
 
-$80:9800 A9 1A 00    LDA #$001A             ; Interrupt command = 1Ah
+$80:9800 A9 1A 00    LDA #$001A             ; Interrupt command = 1Ah (horizontal door transition - end drawing)
 $80:9803 A0 A0 00    LDY #$00A0             ; IRQ v-counter target = A0h (bottom of door)
 $80:9806 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:9809 60          RTS
@@ -3913,10 +3910,10 @@ $80:980F 20 32 96    JSR $9632  [$80:9632]  ; Execute door transition VRAM updat
 
 $80:9812 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:9814 F0 04       BEQ $04    [$981A]     ; If [next interrupt command] != 0:
-$80:9816 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$80:9816 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0 (nothing)
 $80:9818 80 03       BRA $03    [$981D]
                                             ; Else ([next interrupt command] = 0):
-$80:981A A9 16 00    LDA #$0016             ; Interrupt command = 16h
+$80:981A A9 16 00    LDA #$0016             ; Interrupt command = 16h (horizontal door transition - begin HUD drawing)
 
 $80:981D A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:9820 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
@@ -3929,6 +3926,7 @@ $80:9829 60          RTS
 
 ;;; $982A: Enable h/v-counter interrupts ;;;
 {
+; Used to enable HUD drawing when starting/resuming gameplay
 $80:982A 08          PHP
 $80:982B C2 30       REP #$30
 $80:982D A9 00 00    LDA #$0000             ;\
@@ -3945,6 +3943,7 @@ $80:9840 6B          RTL
 
 ;;; $9841: Enable h/v-counter interrupts now ;;;
 {
+; Used to enable HUD drawing and door transition scrolling in door transition code
 $80:9841 08          PHP
 $80:9842 C2 30       REP #$30
 $80:9844 A9 00 00    LDA #$0000             ;\
@@ -3964,6 +3963,7 @@ $80:985E 6B          RTL
 
 ;;; $985F: Disable h/v-counter interrupts ;;;
 {
+; Used to disable HUD drawing when ending gameplay
 $80:985F 08          PHP
 $80:9860 C2 30       REP #$30
 $80:9862 A9 30 00    LDA #$0030             ;\
@@ -4385,7 +4385,6 @@ $80:9C2F D0 08       BNE $08    [$9C39]     ;/
 $80:9C31 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus previous super missiles]
 $80:9C34 20 98 9D    JSR $9D98  [$80:9D98]  ; Draw two HUD digits
 $80:9C37 80 06       BRA $06    [$9C3F]
-
                                             ; Else ([debug options] & 1F40h != 0):
 $80:9C39 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus previous super missiles]
 $80:9C3C 20 78 9D    JSR $9D78  [$80:9D78]  ; Draw three HUD digits

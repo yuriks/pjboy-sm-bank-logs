@@ -15613,14 +15613,14 @@ $90:ED33 F0 1A       BEQ $1A    [$ED4F]     ;/
 $90:ED35 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $90:ED38 4A          LSR A                  ;|
 $90:ED39 4A          LSR A                  ;|
-$90:ED3A 4A          LSR A                  ;} Current missiles = max missiles = [Samus X position] / 10h
+$90:ED3A 4A          LSR A                  ;} Samus missiles = Samus max missiles = [Samus X position] / 10h
 $90:ED3B 4A          LSR A                  ;|
 $90:ED3C 8D C6 09    STA $09C6  [$7E:09C6]  ;|
 $90:ED3F 8D C8 09    STA $09C8  [$7E:09C8]  ;/
 $90:ED42 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:ED45 4A          LSR A                  ;|
 $90:ED46 4A          LSR A                  ;|
-$90:ED47 4A          LSR A                  ;} Current super missiles = max super missiles = [Samus Y position] / 10h
+$90:ED47 4A          LSR A                  ;} Samus super missiles = Samus max super missiles = [Samus Y position] / 10h
 $90:ED48 4A          LSR A                  ;|
 $90:ED49 8D CA 09    STA $09CA  [$7E:09CA]  ;|
 $90:ED4C 8D CC 09    STA $09CC  [$7E:09CC]  ;/

@@ -3360,13 +3360,13 @@ $B4:99BF 60          RTS                    ;} Return A = 0
 
 ; BRANCH_P2_SELECT
 $B4:99C0 A9 10 00    LDA #$0010             ;\
-$B4:99C3 8D 5C 18    STA $185C  [$7E:185C]  ;} Debug index = 10h
+$B4:99C3 8D 5C 18    STA $185C  [$7E:185C]  ;} Debug index = 10h (enemy allocation viewer)
 $B4:99C6 A9 00 00    LDA #$0000             ;\
 $B4:99C9 60          RTS                    ;} Return A = 0
 
 ; BRANCH_SELECT_L_X
 $B4:99CA EE 5C 18    INC $185C  [$7E:185C]  ;\
-$B4:99CD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 3
+$B4:99CD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 3 (sprite tiles viewer)
 $B4:99D0 EE 5C 18    INC $185C  [$7E:185C]  ;/
 $B4:99D3 A9 01 00    LDA #$0001             ;\
 $B4:99D6 60          RTS                    ;} Return A = 1
@@ -3374,7 +3374,7 @@ $B4:99D6 60          RTS                    ;} Return A = 1
 ; BRANCH_P2_R
 $B4:99D7 EE 5C 18    INC $185C  [$7E:185C]  ;\
 $B4:99DA EE 5C 18    INC $185C  [$7E:185C]  ;|
-$B4:99DD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 5
+$B4:99DD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 5 (enemy debugger)
 $B4:99E0 EE 5C 18    INC $185C  [$7E:185C]  ;|
 $B4:99E3 EE 5C 18    INC $185C  [$7E:185C]  ;/
 $B4:99E6 A9 00 00    LDA #$0000             ;\
@@ -3396,7 +3396,7 @@ $B4:9A0C A9 02       LDA #$02               ;|
 $B4:9A0E 8D 0B 42    STA $420B              ;/
 $B4:9A11 9C 00 21    STZ $2100              ; Disable forced blank
 $B4:9A14 C2 20       REP #$20
-$B4:9A16 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 1
+$B4:9A16 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 1 (palette viewer)
 $B4:9A19 A9 01 00    LDA #$0001             ;\
 $B4:9A1C 60          RTS                    ;} Return A = 1
 }
