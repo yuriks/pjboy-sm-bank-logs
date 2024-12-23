@@ -3479,7 +3479,7 @@ $A2:A7D7 6B          RTL
 }
 
 
-;;; $A7D8: Unused. Gunship function - rise to Y position 80h and the descend ;;;
+;;; $A7D8: Unused. Gunship function - rise to Y position 80h and then descend ;;;
 {
 ; Probably a little debug function for testing the landing sequence
 $A2:A7D8 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -3825,6 +3825,7 @@ $A2:AAA1 6B          RTL
 ;;; $AAA2: Gunship function - Samus entered - go to liftoff or restore Samus health / ammo ;;;
 {
 ; The unconditional branch at $AAEF was most likely added to disable the liftoff debug feature
+; (although debug mode has to be enabled to allow controller 2 input)
 $A2:AAA2 A9 0E 00    LDA #$000E             ;\
 $A2:AAA5 22 33 82 80 JSL $808233[$80:8233]  ;} If Zebes timebomb not set:
 $A2:AAA9 B0 4D       BCS $4D    [$AAF8]     ;/
@@ -3857,13 +3858,13 @@ $A2:AAF3 89 00 80    BIT #$8000             ;} If controller 2 not pressing B: g
 $A2:AAF6 F0 20       BEQ $20    [$AB18]     ;/
 
 $A2:AAF8 A9 C7 AB    LDA #$ABC7             ;\
-$A2:AAFB 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ABC7
+$A2:AAFB 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ABC7 (liftoff)
 $A2:AAFE 9E F2 0F    STZ $0FF2,x[$7E:0FF2]  ; Enemy ([X] + 1) $0FB2 = 0
 $A2:AB01 9E F0 0F    STZ $0FF0,x[$7E:0FF0]  ; Enemy ([X] + 1) $0FB0 = 0
-$A2:AB04 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
-$A2:AB07 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0
-$A2:AB0A 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0
-$A2:AB0D 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ; $0DF2 = 0
+$A2:AB04 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ;\
+$A2:AB07 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ;|
+$A2:AB0A 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} Ending clear time digits = 0
+$A2:AB0D 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ;/
 $A2:AB10 A9 0A 00    LDA #$000A             ;\
 $A2:AB13 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - stop drawing Samus
 $A2:AB17 6B          RTL                    ; Return

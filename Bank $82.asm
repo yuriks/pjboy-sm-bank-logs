@@ -12079,13 +12079,13 @@ $82:EEC9 8D 98 09    STA $0998  [$7E:0998]  ; Game state = [loading game state]
 $82:EECC C9 22 00    CMP #$0022             ;\
 $82:EECF D0 1E       BNE $1E    [$EEEF]     ;} If [loading game state] = 22h (escaping Ceres / landing on Zebes):
 $82:EED1 A9 1B C1    LDA #$C11B             ;\
-$82:EED4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B
+$82:EED4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B (Ceres goes boom)
 $82:EED7 80 16       BRA $16    [$EEEF]
 
 $82:EED9 A9 1E 00    LDA #$001E             ;\ Else ([loading game state] = 0):
 $82:EEDC 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1Eh (intro)
 $82:EEDF A9 95 A3    LDA #$A395             ;\
-$82:EEE2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A395
+$82:EEE2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A395 (intro)
 $82:EEE5 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
 $82:EEE8 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:EEEB 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0

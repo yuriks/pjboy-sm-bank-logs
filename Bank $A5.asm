@@ -1539,7 +1539,6 @@ $A5:936C 89 40 00    BIT #$0040             ;} If controller 2 pressing X:
 $A5:936F F0 06       BEQ $06    [$9377]     ;/
 $A5:9371 22 30 94 A5 JSL $A59430[$A5:9430]  ; Move Draygon with d-pad - fast
 $A5:9375 80 04       BRA $04    [$937B]
-
                                             ; Else (controller 2 not pressing X):
 $A5:9377 22 DA 93 A5 JSL $A593DA[$A5:93DA]  ; Move Draygon with d-pad - slow
 

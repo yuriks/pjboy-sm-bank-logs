@@ -2577,9 +2577,9 @@ $B4:9346 89 80 00    BIT #$0080             ;} If controller 2 newly pressed A:
 $B4:9349 F0 11       BEQ $11    [$935C]     ;/
 $B4:934B AE 46 18    LDX $1846  [$7E:1846]
 $B4:934E BD 7A 0F    LDA $0F7A,x            ;\
-$B4:9351 9F 20 70 7E STA $7E7020,x          ;} Debug enemy spawn X position = [debug enemy X position]
+$B4:9351 9F 20 70 7E STA $7E7020,x          ;} Enemy spawn X position = [debug enemy X position]
 $B4:9355 BD 7E 0F    LDA $0F7E,x            ;\
-$B4:9358 9F 22 70 7E STA $7E7022,x          ;} Debug enemy spawn Y position = [debug enemy Y position]
+$B4:9358 9F 22 70 7E STA $7E7022,x          ;} Enemy spawn Y position = [debug enemy Y position]
 
 $B4:935C A5 91       LDA $91    [$7E:0091]  ;\
 $B4:935E 89 20 00    BIT #$0020             ;} If controller 2 newly pressed L:
@@ -2868,7 +2868,7 @@ $B4:95CB 9F 1E 70 7E STA $7E701E,x          ;/
 $B4:95CF A5 91       LDA $91    [$7E:0091]  ;\
 $B4:95D1 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:95D4 F0 07       BEQ $07    [$95DD]     ;/
-$B4:95D6 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0
+$B4:95D6 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0 <-- Change to INC $185C to reach RAM viewer
 $B4:95D9 A9 01 00    LDA #$0001             ;\
 $B4:95DC 60          RTS                    ;} Return A = 1
 

@@ -4160,6 +4160,8 @@ $80:9A49 A2 2E 00    LDX #$002E         ; X = x-ray HUD tilemap destination offs
 ;; Parameters:
 ;;     X: HUD tilemap index
 ;;     Y: Source address
+
+; Expects a pushed DB, Y, X and PSR
 $80:9A4C BF 08 C6 7E LDA $7EC608,x[$7E:C624];\
 $80:9A50 29 FF 03    AND #$03FF             ;|
 $80:9A53 C9 0F 00    CMP #$000F             ;} If the tilemap is blank:
@@ -4474,8 +4476,8 @@ $80:9CEA 8E 7C 07    STX $077C  [$7E:077C]  ; HUD item tilemap palette bits = [X
 $80:9CED 3A          DEC A                  ;\
 $80:9CEE 30 7D       BMI $7D    [$9D6D]     ;} If [A] <= 0: return
 $80:9CF0 0A          ASL A                  ;\
-$80:9CF1 A8          TAY                    ;} X = [$9D6E + ([A] - 1) * 2] (HUD item tilemap offset)
-$80:9CF2 BE 6E 9D    LDX $9D6E,y[$80:9D6E]  ;/
+$80:9CF1 A8          TAY                    ;} Y = ([A] - 1) * 2
+$80:9CF2 BE 6E 9D    LDX $9D6E,y[$80:9D6E]  ; X = [$9D6E + [Y]] (HUD item tilemap offset)
 $80:9CF5 BF 08 C6 7E LDA $7EC608,x[$7E:C61C];\
 $80:9CF9 C9 0F 2C    CMP #$2C0F             ;} If top-left icon tile is not blank:
 $80:9CFC F0 0A       BEQ $0A    [$9D08]     ;/
@@ -4505,8 +4507,8 @@ $80:9D3A 0D 7C 07    ORA $077C  [$7E:077C]  ;} Set tile's palette bits
 $80:9D3D 9F 4A C6 7E STA $7EC64A,x[$7E:C65E];/
 
 $80:9D41 C0 00 00    CPY #$0000             ;\
-$80:9D44 F0 01       BEQ $01    [$9D47]     ;} If not missiles: return
-$80:9D46 60          RTS                    ;/
+$80:9D44 F0 01       BEQ $01    [$9D47]     ;} If [Y] != 0 (missiles):
+$80:9D46 60          RTS                    ; Return
 
 $80:9D47 BF 0C C6 7E LDA $7EC60C,x[$7E:C620];\
 $80:9D4B C9 0F 2C    CMP #$2C0F             ;} If top-right icon tile is not blank:
@@ -4635,6 +4637,8 @@ $80:9DFB             dw 9E1A, 9E09, 9E1C, 9E2F, 9E41, 9E58, 9E89
 
 ;;; $9E09: Process timer - Ceres start ;;;
 {
+;; Returns:
+;;     Carry: Clear (timer not reached zero)
 $80:9E09 22 93 9E 80 JSL $809E93[$80:9E93]  ; Clear timer RAM
 $80:9E0D A9 00 01    LDA #$0100             ;\
 $80:9E10 22 8C 9E 80 JSL $809E8C[$80:9E8C]  ;} Timer = 1 minute, 0 seconds
@@ -4645,6 +4649,8 @@ $80:9E17 8D 43 09    STA $0943  [$7E:0943]  ;} Timer status = initial delay
 
 ;;; $9E1A: Clear carry. Process timer - inactive ;;;
 {
+;; Returns:
+;;     Carry: Clear (timer not reached zero)
 $80:9E1A 18          CLC
 $80:9E1B 60          RTS
 }
@@ -4652,18 +4658,22 @@ $80:9E1B 60          RTS
 
 ;;; $9E1C: Process timer - Mother Brain start ;;;
 {
+;; Returns:
+;;     Carry: Clear (timer not reached zero)
 $80:9E1C 22 93 9E 80 JSL $809E93[$80:9E93]  ; Clear timer RAM
 $80:9E20 A9 00 03    LDA #$0300             ;\
 $80:9E23 22 8C 9E 80 JSL $809E8C[$80:9E8C]  ;} Timer = 3 minutes, 0 seconds
 $80:9E27 A9 03 80    LDA #$8003             ;\
 $80:9E2A 8D 43 09    STA $0943  [$7E:0943]  ;} Timer status = initial delay
-$80:9E2D 18          CLC
-$80:9E2E 60          RTS
+$80:9E2D 18          CLC                    ;\
+$80:9E2E 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $9E2F: Process timer - initial delay ;;;
 {
+;; Returns:
+;;     Carry: Clear (timer not reached zero)
 $80:9E2F E2 20       SEP #$20
 $80:9E31 EE 48 09    INC $0948  [$7E:0948]  ; Increment timer status counter
 $80:9E34 AD 48 09    LDA $0948  [$7E:0948]  ;\
@@ -4671,13 +4681,15 @@ $80:9E37 C9 10       CMP #$10               ;} If [timer status counter] >= 10h:
 $80:9E39 90 03       BCC $03    [$9E3E]     ;/
 $80:9E3B EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, movement delayed
 
-$80:9E3E C2 21       REP #$21
-$80:9E40 60          RTS
+$80:9E3E C2 21       REP #$21               ;\
+$80:9E40 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $9E41: Process timer - timer running, movement delayed ;;;
 {
+;; Returns:
+;;     Carry: Set if timer has reached zero, otherwise clear
 $80:9E41 E2 20       SEP #$20
 $80:9E43 EE 48 09    INC $0948  [$7E:0948]  ; Increment timer status counter
 $80:9E46 AD 48 09    LDA $0948  [$7E:0948]  ;\
@@ -4693,6 +4705,8 @@ $80:9E55 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer
 
 ;;; $9E58: Process timer - timer running, moving into place ;;;
 {
+;; Returns:
+;;     Carry: Set if timer has reached zero, otherwise clear
 $80:9E58 A0 00 00    LDY #$0000             ; Y = 0
 $80:9E5B A9 E0 00    LDA #$00E0             ;\
 $80:9E5E 18          CLC                    ;} A = [timer X position] + 0.E0h
@@ -4720,6 +4734,8 @@ $80:9E86 EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, move
 
 ;;; $9E89: Process timer - timer running, moved into place ;;;
 {
+;; Returns:
+;;     Carry: Set if timer has reached zero, otherwise clear
 $80:9E89 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer
 }
 
@@ -4785,7 +4801,7 @@ $80:9EEA 38          SEC                    ; Set carry
 
 $80:9EEB 60          RTS
 
-; Timer centisecond decrements (43 01's and 85 02's)
+; Timer centisecond decrements (43 1s and 85 2s)
 $80:9EEC             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02
 $80:9F0C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02
 $80:9F2C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02
@@ -4828,8 +4844,8 @@ $80:9F94 6B          RTL
 {
 ;; Parameters:
 ;;     DB: Spritemap bank
-;;     A:  Timer value
-;;     X:  X position offset
+;;     A: Timer value
+;;     X: X position offset
 
 $80:9F95 DA          PHX
 $80:9F96 48          PHA
@@ -4854,7 +4870,7 @@ $80:9FB0 69 08 00    ADC #$0008             ;} A = [X] + 8
 ;;; $9FB3: Draw timer spritemap ;;;
 {
 ;; Parameters:
-;;     A:    X position offset
+;;     A: X position offset
 ;;     DB:Y: Spritemap pointer
 
 $80:9FB3 85 14       STA $14    [$7E:0014]  ;\
@@ -6248,7 +6264,6 @@ $80:A9AB 6B          RTL
 
 ;;; $A9AC: Debug layer 1 position save/loading ;;;
 {
-; Good for testing scrolling
 $80:A9AC A5 91       LDA $91    [$7E:0091]  ;\
 $80:A9AE 29 40 00    AND #$0040             ;} If controller 2 newly pressed X:
 $80:A9B1 F0 03       BEQ $03    [$A9B6]     ;/

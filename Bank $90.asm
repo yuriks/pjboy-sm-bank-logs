@@ -14654,7 +14654,7 @@ $90:E785 6B          RTL
 $90:E786 08          PHP
 $90:E787 C2 30       REP #$30
 $90:E789 A5 91       LDA $91    [$7E:0091]  ;\
-$90:E78B 89 00 80    BIT #$8000             ;} If controller 2 newly pressed B:
+$90:E78B 89 00 80    BIT #$8000             ;} If controller 2 not newly pressed B: go to BRANCH_NO_TOGGLE_PLACEMENT_MODE
 $90:E78E F0 1E       BEQ $1E    [$E7AE]     ;/
 $90:E790 AD E6 09    LDA $09E6  [$7E:09E6]  ;\
 $90:E793 F0 0B       BEQ $0B    [$E7A0]     ;} If Samus placement mode disabled:
@@ -14669,7 +14669,8 @@ $90:E7A6 A9 52 EB    LDA #$EB52             ;\
 $90:E7A9 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $90:E7AC 80 22       BRA $22    [$E7D0]     ; Return
 
-$90:E7AE AD E6 09    LDA $09E6  [$7E:09E6]  ;\ Else (controller 2 not newly pressed B)
+; BRANCH_NO_TOGGLE_PLACEMENT_MODE
+$90:E7AE AD E6 09    LDA $09E6  [$7E:09E6]  ;\
 $90:E7B1 D0 1D       BNE $1D    [$E7D0]     ;} If Samus placement mode enabled:
 $90:E7B3 A5 91       LDA $91    [$7E:0091]  ;\
 $90:E7B5 89 80 00    BIT #$0080             ;} If controller 2 newly pressed A:
