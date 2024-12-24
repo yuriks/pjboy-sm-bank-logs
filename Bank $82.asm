@@ -463,7 +463,7 @@ $82:83DD 8D 98 09    STA $0998  [$7E:0998]  ; Game state = 22h (Ceres goes boom,
 $82:83E0 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $82:83E3 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
 $82:83E7 A9 1B C1    LDA #$C11B             ;\
-$82:83EA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B
+$82:83EA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B (Ceres goes boom)
 $82:83ED 9C 3F 09    STZ $093F  [$7E:093F]  ; Ceres status = 0
 $82:83F0 9C 43 09    STZ $0943  [$7E:0943]  ; Timer status = inactive
 $82:83F3 A9 00 00    LDA #$0000             ;\
@@ -558,7 +558,7 @@ $82:84AE 60          RTS                    ; Return
 $82:84AF A9 25 00    LDA #$0025             ;\
 $82:84B2 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 25h (Ceres goes boom with Samus)
 $82:84B5 A9 1B C1    LDA #$C11B             ;\
-$82:84B8 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B
+$82:84B8 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B (Ceres goes boom)
 $82:84BB 28          PLP
 $82:84BC 60          RTS
 }
@@ -599,7 +599,7 @@ $82:84FD 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:8500 A9 27 00    LDA #$0027             ;\
 $82:8503 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 27h (ending and credits)
 $82:8506 A9 80 D4    LDA #$D480             ;\
-$82:8509 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D480
+$82:8509 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D480 (ending)
 $82:850C 9C 43 09    STZ $0943  [$7E:0943]  ; Timer status = inactive
 $82:850F A9 00 00    LDA #$0000             ;\
 $82:8512 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
@@ -747,7 +747,7 @@ $82:860B A9 00 00    LDA #$0000             ;\
 $82:860E 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:8612 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:8615 A9 68 9B    LDA #$9B68             ;\
-$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence)
 $82:861B 28          PLP
 $82:861C 60          RTS                    ; Return
 
@@ -1249,7 +1249,7 @@ $82:8AE4 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0
 $82:8AE7 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0
 $82:8AEA 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0
 $82:8AED A9 68 9B    LDA #$9B68             ;\
-$82:8AF0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$82:8AF0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence)
 $82:8AF3 9C 55 1F    STZ $1F55  [$7E:1F55]  ; Demo set = 0
 $82:8AF6 AD 59 1F    LDA $1F59  [$7E:1F59]  ;\
 $82:8AF9 C9 04 00    CMP #$0004             ;} If [number of demo sets] = 4:
@@ -12431,6 +12431,9 @@ $82:F151             dw 01EE,022E, 036E,03AE ; Right option tilemap indices
 {
 ;;; $F159: Game options menu - [menu index] = 7 (controller settings) ;;;
 {
+; There's some quirky code at $F1DB that enables debug invincibility going to "reset to default" in the controller settings and pressing L L L L R R R on controller 2
+; But it has no effect, due to the code in Samus initialisation that disables it ($91:E156)
+; Instead, it can be enabled by controller 2 holding L + R and pressing A whilst Samus is facing forward ($90:F5E4)
 $82:F159 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F15B 29 00 08    AND #$0800             ;} If not newly pressed up: go to BRANCH_UP_END
 $82:F15E F0 1F       BEQ $1F    [$F17F]     ;/

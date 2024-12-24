@@ -1872,6 +1872,8 @@ $81:905A 60          RTS
 
 ;;; $905B: Restore palettes and regular IO registers from debug game over menu ;;;
 {
+; The restoring of IO registers here has no effect, due to the ensuing unpause code calling $82:8E19, which sets the IO registers to the pause menu backup
+; The restoring of the palettes is also redundant, due to the unpause code
 $81:905B A2 00 00    LDX #$0000             ;\
                                             ;|
 $81:905E BF 00 33 7E LDA $7E3300,x          ;|
@@ -5987,7 +5989,7 @@ $81:B35A 9C E2 09    STZ $09E2  [$7E:09E2]  ; Disable Japanese text
 $81:B35D 9C E4 09    STZ $09E4  [$7E:09E4]  ; Disable moonwalk
 $81:B360 9C EA 09    STZ $09EA  [$7E:09EA]  ; Disable HUD auto-cancel
 $81:B363 A9 01 00    LDA #$0001             ;\
-$81:B366 8D E6 09    STA $09E6  [$7E:09E6]  ;} Debug disable Samus placement mode flag = 1
+$81:B366 8D E6 09    STA $09E6  [$7E:09E6]  ;} Disable Samus placement mode (debug)
 $81:B369 8D E8 09    STA $09E8  [$7E:09E8]  ; $09E8 = 1 (never read)
 $81:B36C A2 00 00    LDX #$0000             ;\
 $81:B36F A9 00 00    LDA #$0000             ;|

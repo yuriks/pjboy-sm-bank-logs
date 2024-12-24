@@ -4118,13 +4118,13 @@ $8B:9B58 9C 53 1A    STZ $1A53  [$7E:1A53]  ; Skip to title screen index = 0
 $8B:9B5B A9 84 03    LDA #$0384             ;\
 $8B:9B5E 8D 53 1F    STA $1F53  [$7E:1F53]  ;} Demo timer = 900
 $8B:9B61 A9 29 9F    LDA #$9F29             ;\
-$8B:9B64 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title screen)
+$8B:9B64 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title sequence - title screen)
 
 $8B:9B67 60          RTS
 }
 
 
-;;; $9B68: Cinematic function - load title sequence ;;;
+;;; $9B68: Cinematic function - title sequence - setup ;;;
 {
 $8B:9B68 22 87 9B 8B JSL $8B9B87[$8B:9B87]  ; Load title sequence graphics
 $8B:9B6C A9 03 FF    LDA #$FF03             ;\
@@ -4142,7 +4142,7 @@ $8B:9B86 60          RTS
 ;;; $9B87: Load title sequence graphics ;;;
 {
 ; Called by:
-;     $9B68: Cinematic function - load title sequence
+;     $9B68: Cinematic function - title sequence - setup
 ;     $82:85FB: Game state 2Ch (transition from demo)
 $8B:9B87 08          PHP
 $8B:9B88 8B          PHB
@@ -4299,7 +4299,7 @@ $8B:9CE3 A9 11       LDA #$11               ;|
 $8B:9CE5 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $8B:9CE7 C2 20       REP #$20               ;/
 $8B:9CE9 A9 17 9D    LDA #$9D17             ;\
-$8B:9CEC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D17 (title sequence scene 0)
+$8B:9CEC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D17 (title sequence - scene 0)
 $8B:9CEF A9 48 00    LDA #$0048             ;\
 $8B:9CF2 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 48h
 $8B:9CF5 A9 3B 01    LDA #$013B             ;\
@@ -4317,7 +4317,7 @@ $8B:9D16 60          RTS
 }
 
 
-;;; $9D17: Cinematic function - title sequence scene 0 - panning left - lower ;;;
+;;; $9D17: Cinematic function - title sequence - scene 0 - panning left - lower ;;;
 {
 $8B:9D17 AD 91 19    LDA $1991  [$7E:1991]  ;\
 $8B:9D1A 18          CLC                    ;|
@@ -4362,7 +4362,7 @@ $8B:9D5F A9 11       LDA #$11               ;|
 $8B:9D61 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $8B:9D63 C2 20       REP #$20               ;/
 $8B:9D65 A9 90 9D    LDA #$9D90             ;\
-$8B:9D68 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D90 (title sequence scene 1)
+$8B:9D68 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D90 (title sequence - scene 1)
 $8B:9D6B A9 60 00    LDA #$0060             ;\
 $8B:9D6E 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 60h
 $8B:9D71 A9 2C 00    LDA #$002C             ;\
@@ -4379,7 +4379,7 @@ $8B:9D8F 60          RTS
 }
 
 
-;;; $9D90: Cinematic function - title sequence scene 1 - panning left - upper ;;;
+;;; $9D90: Cinematic function - title sequence - scene 1 - panning left - upper ;;;
 {
 $8B:9D90 AD 91 19    LDA $1991  [$7E:1991]  ;\
 $8B:9D93 18          CLC                    ;|
@@ -4424,7 +4424,7 @@ $8B:9DD8 A9 11       LDA #$11               ;|
 $8B:9DDA 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $8B:9DDC C2 20       REP #$20               ;/
 $8B:9DDE A9 12 9E    LDA #$9E12             ;\
-$8B:9DE1 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E12 (title sequence scene 2)
+$8B:9DE1 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E12 (title sequence - scene 2)
 $8B:9DE4 A9 60 00    LDA #$0060             ;\
 $8B:9DE7 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 60h
 $8B:9DEA A9 4F FF    LDA #$FF4F             ;\
@@ -4444,7 +4444,7 @@ $8B:9E11 60          RTS
 }
 
 
-;;; $9E12: Cinematic function - title sequence scene 2 - panning down ;;;
+;;; $9E12: Cinematic function - title sequence - scene 2 - panning down ;;;
 {
 $8B:9E12 AD 95 19    LDA $1995  [$7E:1995]  ;\
 $8B:9E15 18          CLC                    ;|
@@ -4489,7 +4489,7 @@ $8B:9E5A A9 11       LDA #$11               ;|
 $8B:9E5C 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $8B:9E5E C2 20       REP #$20               ;/
 $8B:9E60 A9 8B 9E    LDA #$9E8B             ;\
-$8B:9E63 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E8B (title sequence scene 3)
+$8B:9E63 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E8B (title sequence - scene 3)
 $8B:9E66 A9 43 00    LDA #$0043             ;\
 $8B:9E69 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 43h
 $8B:9E6C 9C 93 19    STZ $1993  [$7E:1993]  ;\
@@ -4507,7 +4507,7 @@ $8B:9E8A 60          RTS
 }
 
 
-;;; $9E8B: Cinematic function - title sequence scene 3 - zooming out ;;;
+;;; $9E8B: Cinematic function - title sequence - scene 3 - zooming out ;;;
 {
 $8B:9E8B AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $8B:9E8E 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: return
@@ -4601,7 +4601,7 @@ $8B:9F19 5A          PHY
 $8B:9F1A A9 84 03    LDA #$0384             ;\
 $8B:9F1D 8D 53 1F    STA $1F53  [$7E:1F53]  ;} Demo timer = 900
 $8B:9F20 A9 29 9F    LDA #$9F29             ;\
-$8B:9F23 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title screen)
+$8B:9F23 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title sequence - title screen)
 $8B:9F26 7A          PLY
 $8B:9F27 60          RTS
 }
@@ -4613,14 +4613,14 @@ $8B:9F28 60          RTS
 }
 
 
-;;; $9F29: Cinematic function - title screen ;;;
+;;; $9F29: Cinematic function - title sequence - title screen ;;;
 {
 $8B:9F29 CE 53 1F    DEC $1F53  [$7E:1F53]  ; Decrement demo timer
 $8B:9F2C F0 02       BEQ $02    [$9F30]     ;\
 $8B:9F2E 10 08       BPL $08    [$9F38]     ;} If [demo timer] > 0: go to BRANCH_NOT_DEMO
 
 $8B:9F30 A9 AE 9F    LDA #$9FAE             ;\
-$8B:9F33 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9FAE (transition to demos)
+$8B:9F33 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9FAE (title sequence - transition to demos)
 $8B:9F36 80 0D       BRA $0D    [$9F45]     ; Go to BRANCH_TRANSITION
 
 ; BRANCH_NOT_DEMO
@@ -4628,7 +4628,7 @@ $8B:9F38 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:9F3A 89 80 90    BIT #$9080             ;} If not newly pressed A, B or start: go to BRANCH_MERGE
 $8B:9F3D F0 0F       BEQ $0F    [$9F4E]     ;/
 $8B:9F3F A9 52 9F    LDA #$9F52             ;\
-$8B:9F42 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F52 (transition to file select menu)
+$8B:9F42 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F52 (title sequence - transition to file select menu)
 
 ; BRANCH_TRANSITION
 $8B:9F45 A9 02 00    LDA #$0002             ;\
@@ -4641,7 +4641,7 @@ $8B:9F51 60          RTS
 }
 
 
-;;; $9F52: Cinematic function - transition to file select menu ;;;
+;;; $9F52: Cinematic function - title sequence - transition to file select menu ;;;
 {
 $8B:9F52 20 97 86    JSR $8697  [$8B:8697]  ; Debug. Display version info
 $8B:9F55 20 D5 90    JSR $90D5  [$8B:90D5]  ; Advance slow screen fade out
@@ -4659,7 +4659,7 @@ $8B:9F70 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $8B:9F72 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 $8B:9F74 9C 8D 19    STZ $198D  [$7E:198D]  ; >_<;
 $8B:9F77 A9 68 9B    LDA #$9B68             ;\
-$8B:9F7A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$8B:9F7A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence - setup)
 $8B:9F7D 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
 $8B:9F81 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $8B:9F85 A9 1F 1C    LDA #$1C1F             ;\
@@ -4688,7 +4688,7 @@ $8B:9FAD 60          RTS
 }
 
 
-;;; $9FAE: Cinematic function - transition to demos ;;;
+;;; $9FAE: Cinematic function - title sequence - transition to demos ;;;
 {
 $8B:9FAE 20 97 86    JSR $8697  [$8B:8697]  ; Debug. Display version info
 $8B:9FB1 20 D5 90    JSR $90D5  [$8B:90D5]  ; Advance slow screen fade out
@@ -4706,7 +4706,7 @@ $8B:9FCC 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $8B:9FCE 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 $8B:9FD0 9C 8D 19    STZ $198D  [$7E:198D]  ; >_<;
 $8B:9FD3 A9 68 9B    LDA #$9B68             ;\
-$8B:9FD6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$8B:9FD6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence - setup)
 $8B:9FD9 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
 $8B:9FDD 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $8B:9FE1 A9 1F 1C    LDA #$1C1F             ;\
@@ -5370,7 +5370,7 @@ $8B:A58A 10 F4       BPL $F4    [$A580]     ;/
 $8B:A58C A9 FF FF    LDA #$FFFF             ;\
 $8B:A58F 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Disable intro frame counter
 $8B:A592 A9 A7 A5    LDA #$A5A7             ;\
-$8B:A595 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5A7
+$8B:A595 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5A7 (intro - wait for music queue and fade in)
 $8B:A598 A9 00 00    LDA #$0000             ;\
 $8B:A59B 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $8B:A59F A9 3F FF    LDA #$FF3F             ;\
@@ -5384,7 +5384,7 @@ $8B:A5A6 60          RTS
 $8B:A5A7 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:A5AB B0 0F       BCS $0F    [$A5BC]     ;} If music is queued: return
 $8B:A5AD A9 BD A5    LDA #$A5BD             ;\
-$8B:A5B0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5BD
+$8B:A5B0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5BD (intro - handle drawing initial Japanese text and wait 60 frames)
 $8B:A5B3 A9 02 00    LDA #$0002             ;\
 $8B:A5B6 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 2
 $8B:A5B9 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 2
@@ -5398,7 +5398,7 @@ $8B:A5BC 60          RTS
 $8B:A5BD 20 1B 91    JSR $911B  [$8B:911B]  ; Advance slow screen fade in
 $8B:A5C0 90 35       BCC $35    [$A5F7]     ; If not reached max brightness: return
 $8B:A5C2 A9 F8 A5    LDA #$A5F8             ;\
-$8B:A5C5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5F8
+$8B:A5C5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5F8 (intro - play "the last Metroid is in captivity" music for 200 frames)
 $8B:A5C8 A9 3C 00    LDA #$003C             ;\
 $8B:A5CB 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 60
 $8B:A5CE AD E2 09    LDA $09E2  [$7E:09E2]  ;\
@@ -5434,7 +5434,7 @@ $8B:A5FB F0 02       BEQ $02    [$A5FF]     ;\
 $8B:A5FD 10 13       BPL $13    [$A612]     ;} If [cinematic function timer] > 0: return
 
 $8B:A5FF A9 13 A6    LDA #$A613             ;\
-$8B:A602 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A613
+$8B:A602 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A613 (intro - queue "the galaxy is at peace" music)
 $8B:A605 A9 C8 00    LDA #$00C8             ;\
 $8B:A608 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 200
 $8B:A60B A9 05 00    LDA #$0005             ;\
@@ -5458,7 +5458,7 @@ $8B:A628 A9 05 00    LDA #$0005             ;\
 $8B:A62B A0 0E 00    LDY #$000E             ;} Queue song 0 music track, 14 frame delay
 $8B:A62E 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;/
 $8B:A632 A9 39 A6    LDA #$A639             ;\
-$8B:A635 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A639
+$8B:A635 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A639 (intro - wait for music queue and wait 240 frames)
 
 $8B:A638 60          RTS
 }
@@ -5469,7 +5469,7 @@ $8B:A638 60          RTS
 $8B:A639 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:A63D B0 0C       BCS $0C    [$A64B]     ;} If music is queued: return
 $8B:A63F A9 4C A6    LDA #$A64C             ;\
-$8B:A642 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A64C
+$8B:A642 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A64C (intro - fade out)
 $8B:A645 A9 F0 00    LDA #$00F0             ;\
 $8B:A648 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 240
 
@@ -5484,7 +5484,7 @@ $8B:A64F F0 02       BEQ $02    [$A653]     ;\
 $8B:A651 10 0F       BPL $0F    [$A662]     ;} If [cinematic function timer] > 0: return
 
 $8B:A653 A9 63 A6    LDA #$A663             ;\
-$8B:A656 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A663
+$8B:A656 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A663 (intro - wait for fade out)
 $8B:A659 A9 02 00    LDA #$0002             ;\
 $8B:A65C 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 2
 $8B:A65F 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 2
@@ -5498,7 +5498,7 @@ $8B:A662 60          RTS
 $8B:A663 20 D5 90    JSR $90D5  [$8B:90D5]  ; Advance slow screen fade out
 $8B:A666 90 06       BCC $06    [$A66E]     ; If not reached zero brightness: return
 $8B:A668 A9 6F A6    LDA #$A66F             ;\
-$8B:A66B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A66F
+$8B:A66B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A66F (intro - set up intro text page 1)
 
 $8B:A66E 60          RTS
 }
@@ -5572,7 +5572,7 @@ $8B:A71A A9 05 00    LDA #$0005             ;\
 $8B:A71D A0 0E 00    LDY #$000E             ;} Queue song 0 music track, 14 frame delay
 $8B:A720 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;/
 $8B:A724 A9 2B A8    LDA #$A82B             ;\
-$8B:A727 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A82B
+$8B:A727 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A82B (intro - wait for music queue, fade in and spawn intro text page 1)
 $8B:A72A 60          RTS
 
 ; Intro Japanese text tilemap
@@ -5588,7 +5588,7 @@ $8B:A72B             dw 3C29, 3C29, 3C29, 3C29, 3030, 3031, 3032, 3033, 3034, 30
 $8B:A82B 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:A82F B0 18       BCS $18    [$A849]     ;} If music is queued: return
 $8B:A831 A9 4A A8    LDA #$A84A             ;\
-$8B:A834 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A84A
+$8B:A834 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A84A (intro - wait for fade in)
 $8B:A837 A9 02 00    LDA #$0002             ;\
 $8B:A83A 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 2
 $8B:A83D 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 2
@@ -6121,7 +6121,7 @@ $8B:AE70 7A          PLY                    ;/
 $8B:AE71 AB          PLB
 
 $8B:AE72 A9 B8 AE    LDA #$AEB8             ;\
-$8B:AE75 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AEB8 (wait for input and set up old Mother Brain fight)
+$8B:AE75 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AEB8 (intro - wait for input and set up old Mother Brain fight)
 $8B:AE78 60          RTS
 }
 
@@ -6166,7 +6166,7 @@ $8B:AEAF AB          PLB
 $8B:AEB0 60          RTS                    ; Return
 
 $8B:AEB1 A9 6C AF    LDA #$AF6C             ;\
-$8B:AEB4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C (wait for input and set up baby metroid discovery)
+$8B:AEB4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C (intro - wait for input and set up baby metroid discovery)
 $8B:AEB7 60          RTS
 }
 
@@ -6330,7 +6330,7 @@ $8B:B028 22 F0 EB 88 JSL $88EBF0[$88:EBF0]  ; Spawn intro cutscene cross-fade HD
 $8B:B02C C2 20       REP #$20
 $8B:B02E 20 E1 AD    JSR $ADE1  [$8B:ADE1]  ; Place intro text caret off-screen
 $8B:B031 A9 50 B2    LDA #$B250             ;\
-$8B:B034 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B250 (cross-fade to Samus gameplay)
+$8B:B034 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B250 (intro - cross-fade to Samus gameplay)
 $8B:B037 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:B03A BF E9 E3 8C LDA $8CE3E9,x[$8C:E3E9];|
@@ -6397,7 +6397,7 @@ $8B:B0AA AB          PLB
 $8B:B0AB 60          RTS                    ; Return
 
 $8B:B0AC A9 F2 B0    LDA #$B0F2             ;\
-$8B:B0AF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2 (wait for input and set up baby metroid being delivered)
+$8B:B0AF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2 (intro - wait for input and set up baby metroid being delivered)
 $8B:B0B2 60          RTS
 }
 
@@ -6442,7 +6442,7 @@ $8B:B0E9 AB          PLB
 $8B:B0EA 60          RTS                    ; Return
 
 $8B:B0EB A9 23 B1    LDA #$B123             ;\
-$8B:B0EE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123 (wait for input and set up baby metroid being examined)
+$8B:B0EE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123 (intro - wait for input and set up baby metroid being examined)
 $8B:B0F1 60          RTS
 }
 
@@ -6516,7 +6516,7 @@ $8B:B161 22 F0 EB 88 JSL $88EBF0[$88:EBF0]  ; Spawn intro cutscene cross-fade HD
 $8B:B165 C2 20       REP #$20
 $8B:B167 20 E1 AD    JSR $ADE1  [$8B:ADE1]  ; Place intro text caret off-screen
 $8B:B16A A9 D2 B2    LDA #$B2D2             ;\
-$8B:B16D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B2D2 (cross-fade to scientist cutscene)
+$8B:B16D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B2D2 (intro - cross-fade to scientist cutscene)
 $8B:B170 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:B173 BF E9 E3 8C LDA $8CE3E9,x[$8C:E3E9];|
@@ -6577,7 +6577,7 @@ $8B:B1D1 AB          PLB
 $8B:B1D2 60          RTS                    ; Return
 
 $8B:B1D3 A9 DA B1    LDA #$B1DA             ;\
-$8B:B1D6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA (wait for input and clear text)
+$8B:B1D6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA (intro - wait for input and clear text)
 $8B:B1D9 60          RTS
 }
 
@@ -6598,7 +6598,7 @@ $8B:B1EE 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Intro cross-fade timer = 7Fh
 $8B:B1F1 AD E2 09    LDA $09E2  [$7E:09E2]  ;\
 $8B:B1F4 F0 11       BEQ $11    [$B207]     ;} If English text: go to cinematic function - intro - page 6
 $8B:B1F6 A9 07 B2    LDA #$B207             ;\
-$8B:B1F9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B207 (page 6)
+$8B:B1F9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B207 (intro - page 6)
 $8B:B1FC 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
 $8B:B200 20 6A A8    JSR $A86A  [$8B:A86A]  ; Blank out Japanese text tiles
 $8B:B203 20 E6 8D    JSR $8DE6  [$8B:8DE6]  ; Transfer Japanese text tiles to VRAM
@@ -6645,7 +6645,7 @@ $8B:B23F 60          RTS
 ;;; $B240: Instruction - finish intro ;;;
 {
 $8B:B240 A9 2F B7    LDA #$B72F             ;\
-$8B:B243 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B72F (finish)
+$8B:B243 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B72F (intro - finish)
 $8B:B246 A9 01 00    LDA #$0001             ;\
 $8B:B249 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $8B:B24C 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
@@ -6759,7 +6759,7 @@ $8B:B335 60          RTS
 ;;; $B336: Instruction - start intro page 2 ;;;
 {
 $8B:B336 A9 5F B3    LDA #$B35F             ;\
-$8B:B339 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B35F (page 2)
+$8B:B339 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B35F (intro - page 2)
 $8B:B33C 80 16       BRA $16    [$B354]     ; Go to clear Japanese text tiles and disable cinematic BG tilemap updates
 }
 
@@ -6767,7 +6767,7 @@ $8B:B33C 80 16       BRA $16    [$B354]     ; Go to clear Japanese text tiles an
 ;;; $B33E: Instruction - start intro page 3 ;;;
 {
 $8B:B33E A9 70 B3    LDA #$B370             ;\
-$8B:B341 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B370 (page 3)
+$8B:B341 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B370 (intro - page 3)
 $8B:B344 80 0E       BRA $0E    [$B354]     ; Go to clear Japanese text tiles and disable cinematic BG tilemap updates
 }
 
@@ -6775,7 +6775,7 @@ $8B:B344 80 0E       BRA $0E    [$B354]     ; Go to clear Japanese text tiles an
 ;;; $B346: Instruction - start intro page 4 ;;;
 {
 $8B:B346 A9 81 B3    LDA #$B381             ;\
-$8B:B349 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B381 (page 4)
+$8B:B349 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B381 (intro - page 4)
 $8B:B34C 80 06       BRA $06    [$B354]     ; Go to clear Japanese text tiles and disable cinematic BG tilemap updates
 }
 
@@ -6783,7 +6783,7 @@ $8B:B34C 80 06       BRA $06    [$B354]     ; Go to clear Japanese text tiles an
 ;;; $B34E: Instruction - start intro page 5 ;;;
 {
 $8B:B34E A9 92 B3    LDA #$B392             ;\
-$8B:B351 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B392 (page 5)
+$8B:B351 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B392 (intro - page 5)
 }
 
 
@@ -6802,7 +6802,7 @@ $8B:B35F A0 45 CF    LDY #$CF45             ;\
 $8B:B362 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 2 cinematic BG object for VRAM $4C00
 $8B:B365 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
 $8B:B368 A9 F4 B3    LDA #$B3F4             ;\
-$8B:B36B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4 (cross-fade from Samus gameplay)
+$8B:B36B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4 (intro - cross-fade from Samus gameplay)
 $8B:B36E 80 31       BRA $31    [$B3A1]     ; Go to set up intro cross-fade into text
 }
 
@@ -6813,7 +6813,7 @@ $8B:B370 A0 4B CF    LDY #$CF4B             ;\
 $8B:B373 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 3 cinematic BG object for VRAM $4C00
 $8B:B376 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
 $8B:B379 A9 F4 B3    LDA #$B3F4             ;\
-$8B:B37C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4 (cross-fade from Samus gameplay)
+$8B:B37C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4 (intro - cross-fade from Samus gameplay)
 $8B:B37F 80 20       BRA $20    [$B3A1]     ; Go to set up intro cross-fade into text
 }
 
@@ -6824,7 +6824,7 @@ $8B:B381 A0 51 CF    LDY #$CF51             ;\
 $8B:B384 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 4 cinematic BG object for VRAM $4C00
 $8B:B387 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
 $8B:B38A A9 58 B4    LDA #$B458             ;\
-$8B:B38D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458 (cross-fade from scientist cutscene)
+$8B:B38D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458 (intro - cross-fade from scientist cutscene)
 $8B:B390 80 0F       BRA $0F    [$B3A1]     ; Go to set up intro cross-fade into text
 }
 
@@ -6835,7 +6835,7 @@ $8B:B392 A0 57 CF    LDY #$CF57             ;\
 $8B:B395 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 5 cinematic BG object for VRAM $4C00
 $8B:B398 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
 $8B:B39B A9 58 B4    LDA #$B458             ;\
-$8B:B39E 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458 (cross-fade from scientist cutscene)
+$8B:B39E 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458 (intro - cross-fade from scientist cutscene)
 }
 
 
@@ -7106,7 +7106,7 @@ $8B:B5B7 60          RTS
 {
 $8B:B5B8 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:B5BC A9 6C AF    LDA #$AF6C             ;\
-$8B:B5BF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C (wait for input and set up baby metroid discovery)
+$8B:B5BF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C (intro - wait for input and set up baby metroid discovery)
 $8B:B5C2 60          RTS
 }
 
@@ -7156,7 +7156,7 @@ $8B:B61A 60          RTS
 {
 $8B:B61B 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:B61F A9 F2 B0    LDA #$B0F2             ;\
-$8B:B622 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2 (wait for input and set up baby metroid being delivered)
+$8B:B622 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2 (intro - wait for input and set up baby metroid being delivered)
 $8B:B625 60          RTS
 }
 
@@ -7210,7 +7210,7 @@ $8B:B689 60          RTS
 {
 $8B:B68A 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:B68E A9 23 B1    LDA #$B123             ;\
-$8B:B691 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123 (wait for input and set up baby metroid being examined)
+$8B:B691 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123 (intro - wait for input and set up baby metroid being examined)
 $8B:B694 60          RTS
 }
 
@@ -7260,7 +7260,7 @@ $8B:B6EC 60          RTS
 {
 $8B:B6ED 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:B6F1 A9 DA B1    LDA #$B1DA             ;\
-$8B:B6F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA (wait for input and clear text)
+$8B:B6F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA (intro - wait for input and clear text)
 $8B:B6F7 60          RTS
 }
 
@@ -8117,7 +8117,7 @@ $8B:BDC3 A0 0F CF    LDY #$CF0F             ;\
 $8B:BDC6 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CF0F (Ceres stars) with parameter 0
 $8B:BDC9 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BDCC A9 E4 BD    LDA #$BDE4             ;\
-$8B:BDCF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDE4
+$8B:BDCF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDE4 (fly to Ceres - wait for music queue and enable display)
 $8B:BDD2 A9 2D FF    LDA #$FF2D             ;\
 $8B:BDD5 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue Ceres music data
 $8B:BDD9 A9 05 00    LDA #$0005             ;\
@@ -8136,7 +8136,7 @@ $8B:BDEC A9 0F       LDA #$0F               ;|
 $8B:BDEE 85 51       STA $51    [$7E:0051]  ;} Screen brightness = Fh, disable forced blank
 $8B:BDF0 C2 20       REP #$20               ;/
 $8B:BDF2 A9 F9 BD    LDA #$BDF9             ;\
-$8B:BDF5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDF9
+$8B:BDF5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDF9 (fly to Ceres - flying into camera)
 
 $8B:BDF8 60          RTS
 }
@@ -8185,7 +8185,7 @@ $8B:BE56 A0 0F CF    LDY #$CF0F             ;\
 $8B:BE59 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CF0F (Ceres stars) with parameter 1
 $8B:BE5C 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BE5F A9 DA BF    LDA #$BFDA             ;\
-$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA (flying into Ceres)
+$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA (fly to Ceres - flying into Ceres)
 $8B:BE65 A0 A8 E1    LDY #$E1A8             ;\
 $8B:BE68 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
 $8B:BE6C A0 AC E1    LDY #$E1AC             ;\
@@ -8555,7 +8555,7 @@ $8B:C0F5 CA          DEX                    ;|
 $8B:C0F6 CA          DEX                    ;|
 $8B:C0F7 10 F9       BPL $F9    [$C0F2]     ;/
 $8B:C0F9 A9 00 C1    LDA #$C100             ;\
-$8B:C0FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C100
+$8B:C0FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C100 (fly to Ceres - start game at Ceres)
 
 $8B:C0FF 60          RTS
 }
@@ -8728,7 +8728,7 @@ $8B:C2A9 A9 01 00    LDA #$0001             ;\
 $8B:C2AC 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $8B:C2AF 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $8B:C2B2 A9 E4 C2    LDA #$C2E4             ;\
-$8B:C2B5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2E4
+$8B:C2B5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2E4 (Ceres goes boom - wait for music queue)
 $8B:C2B8 A9 00 00    LDA #$0000             ;\
 $8B:C2BB 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $8B:C2BF A9 2D FF    LDA #$FF2D             ;\
@@ -8753,7 +8753,7 @@ $8B:C2E3 60          RTS
 $8B:C2E4 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:C2E8 B0 06       BCS $06    [$C2F0]     ;} If music is queued: return
 $8B:C2EA A9 F1 C2    LDA #$C2F1             ;\
-$8B:C2ED 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2F1
+$8B:C2ED 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2F1 (Ceres goes boom - small Ceres explosions - fading in)
 
 $8B:C2F0 60          RTS
 }
@@ -8788,7 +8788,7 @@ $8B:C32D C2 20       REP #$20
 $8B:C32F 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:C332 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:C335 A9 45 C3    LDA #$C345             ;\
-$8B:C338 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C345
+$8B:C338 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C345 (Ceres goes boom - Ceres explosions)
 $8B:C33B A9 01 00    LDA #$0001             ;\
 $8B:C33E 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 1
 $8B:C341 9C 4B 1A    STZ $1A4B  [$7E:1A4B]  ; Ceres explosion 2 offset index = 0
@@ -8867,7 +8867,7 @@ $8B:C3D4 22 4F 8B 80 JSL $808B4F[$80:8B4F]  ; Queue mode 7 transfers
 $8B:C3D8 A2 F0 C3    LDX #$C3F0             ; X = $C3F0 (clear Ceres lower half)
 $8B:C3DB 22 4F 8B 80 JSL $808B4F[$80:8B4F]  ; Queue mode 7 transfers
 $8B:C3DF A9 CA C5    LDA #$C5CA             ;\
-$8B:C3E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C5CA (gunship flying away)
+$8B:C3E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C5CA (Ceres goes boom - gunship flying away)
 $8B:C3E5 60          RTS
 
 ; Mode 7 transfers data
@@ -9137,7 +9137,7 @@ $8B:C5FF 8D 8F 19    STA $198F  [$7E:198F]  ;/
 $8B:C602 60          RTS                    ; Return
 
 $8B:C603 A9 10 C6    LDA #$C610             ;\
-$8B:C606 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C610
+$8B:C606 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C610 (Ceres goes boom - wait C0h frames)
 $8B:C609 A9 C0 00    LDA #$00C0             ;\
 $8B:C60C 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = C0h
 $8B:C60F 60          RTS
@@ -9154,7 +9154,7 @@ $8B:C617 A9 01 00    LDA #$0001             ;\
 $8B:C61A 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $8B:C61D 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $8B:C620 A9 27 C6    LDA #$C627             ;\
-$8B:C623 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C627
+$8B:C623 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C627 (Ceres goes boom - fade out)
 
 $8B:C626 60          RTS
 }
@@ -9176,7 +9176,7 @@ $8B:C63F AD 98 09    LDA $0998  [$7E:0998]  ;\
 $8B:C642 C9 25 00    CMP #$0025             ;} If [game state] != 25h (Ceres goes boom with Samus):
 $8B:C645 F0 07       BEQ $07    [$C64E]     ;/
 $8B:C647 A9 99 C6    LDA #$C699             ;\
-$8B:C64A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C699
+$8B:C64A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C699 (fly to Zebes - initial)
 $8B:C64D 60          RTS                    ; Return
 
 $8B:C64E A9 00 00    LDA #$0000             ;\
@@ -9306,7 +9306,7 @@ $8B:C77F C2 20       REP #$20               ;/
 $8B:C781 A0 A8 E1    LDY #$E1A8             ;\
 $8B:C784 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
 $8B:C788 A9 9C C7    LDA #$C79C             ;\
-$8B:C78B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C79C
+$8B:C78B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C79C (fly to Zebes - fading in)
 $8B:C78E 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:C792 A9 01 00    LDA #$0001             ;\
 $8B:C795 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
@@ -9336,7 +9336,7 @@ $8B:C7BB C2 20       REP #$20
 $8B:C7BD 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:C7C0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:C7C3 A9 CA C7    LDA #$C7CA             ;\
-$8B:C7C6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C7CA
+$8B:C7C6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C7CA (fly to Zebes - mosaic transition)
 
 $8B:C7C9 60          RTS
 }
@@ -9501,7 +9501,7 @@ $8B:C8E9 9D 5D 1B    STA $1B5D,x[$7E:1B73]  ;} Cinematic sprite object instructi
 $8B:C8EC A9 53 CE    LDA #$CE53             ;\
 $8B:C8EF 9D 1D 1B    STA $1B1D,x[$7E:1B33]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
 $8B:C8F2 A9 DF CA    LDA #$CADF             ;\
-$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADF (load game data)
+$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADF (fly to Zebes - load game data)
 
 $8B:C8F8 60          RTS
 }
@@ -9658,7 +9658,7 @@ $8B:C9D6 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
 $8B:C9D9 A9 10 00    LDA #$0010             ;\
 $8B:C9DC 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 10h
 $8B:C9DF A9 F9 C9    LDA #$C9F9             ;\
-$8B:C9E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C9F9
+$8B:C9E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C9F9 (fly to Zebes - flying to Zebes - drifting right)
 $8B:C9E5 60          RTS
 }
 
@@ -9700,7 +9700,7 @@ $8B:CA2B 8D 8F 19    STA $198F  [$7E:198F]  ;/
 $8B:CA2E 60          RTS                    ; Return
 
 $8B:CA2F A9 36 CA    LDA #$CA36             ;\
-$8B:CA32 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA36
+$8B:CA32 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA36 (fly to Zebes - flying to Zebes - turning left)
 $8B:CA35 60          RTS
 }
 
@@ -9739,7 +9739,7 @@ $8B:CA7D 60          RTS                    ; Return
 
 ; BRANCH_FINISHED
 $8B:CA7E A9 85 CA    LDA #$CA85             ;\
-$8B:CA81 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA85
+$8B:CA81 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA85 (fly to Zebes - flying to Zebes - drifting left)
 $8B:CA84 60          RTS
 }
 
@@ -9773,7 +9773,7 @@ $8B:CABD A9 10       LDA #$10               ;|
 $8B:CABF 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
 $8B:CAC1 C2 20       REP #$20               ;/
 $8B:CAC3 A9 D0 CA    LDA #$CAD0             ;\
-$8B:CAC6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CAD0
+$8B:CAC6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CAD0 (fly to Zebes - hold on scene for 40h frames)
 $8B:CAC9 A9 40 00    LDA #$0040             ;\
 $8B:CACC 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 40h
 $8B:CACF 60          RTS
@@ -9787,7 +9787,7 @@ $8B:CAD3 F0 02       BEQ $02    [$CAD7]     ;\
 $8B:CAD5 10 06       BPL $06    [$CADD]     ;} If [cinematic function timer] > 0: return
 
 $8B:CAD7 A9 DE CA    LDA #$CADE             ;\
-$8B:CADA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADE
+$8B:CADA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 
 $8B:CADD 60          RTS
 }
@@ -11116,7 +11116,7 @@ $8B:D6AF 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:D6B2 A9 02 00    LDA #$0002             ;\
 $8B:D6B5 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = 2
 $8B:D6B8 A9 D7 D6    LDA #$D6D7             ;\
-$8B:D6BB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D6D7
+$8B:D6BB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D6D7 (ending - wait for music to change)
 $8B:D6BE A9 00 00    LDA #$0000             ;\
 $8B:D6C1 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $8B:D6C5 A9 33 FF    LDA #$FF33             ;\
@@ -11137,7 +11137,7 @@ $8B:D6E0 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1D8 (ex
 $8B:D6E4 A0 DC E1    LDY #$E1DC             ;\
 $8B:D6E7 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1DC (fade out exploding Zebes crust)
 $8B:D6EB A9 F2 D6    LDA #$D6F2             ;\
-$8B:D6EE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D6F2
+$8B:D6EE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D6F2 (ending - Zebes destruction scene 0 - zooming out, clouds on left/right - fading in)
 
 $8B:D6F1 60          RTS
 }
@@ -11149,7 +11149,7 @@ $8B:D6F2 20 01 D7    JSR $D701  [$8B:D701]  ; Cinematic function - ending - Zebe
 $8B:D6F5 20 00 91    JSR $9100  [$8B:9100]  ; Advance fast screen fade in
 $8B:D6F8 90 06       BCC $06    [$D700]     ; If not reached max brightness: return
 $8B:D6FA A9 01 D7    LDA #$D701             ;\
-$8B:D6FD 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D701
+$8B:D6FD 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D701 (ending - Zebes destruction scene 0 - zooming out, clouds on left/right)
 
 $8B:D700 60          RTS
 }
@@ -11175,7 +11175,7 @@ $8B:D723 30 0B       BMI $0B    [$D730]     ;} If [mode 7 transformation zoom le
 $8B:D725 20 B8 90    JSR $90B8  [$8B:90B8]  ; Advance fast screen fade out
 $8B:D728 90 06       BCC $06    [$D730]     ; If not reached zero brightness: return
 $8B:D72A A9 31 D7    LDA #$D731             ;\
-$8B:D72D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D731
+$8B:D72D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D731 (ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom - setup)
 
 $8B:D730 60          RTS
 }
@@ -11247,7 +11247,7 @@ $8B:D7E8 A9 00 00    LDA #$0000             ;\
 $8B:D7EB 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = 0
 $8B:D7EE 8D 97 19    STA $1997  [$7E:1997]  ; Cinematic BG1 Y position = 0
 $8B:D7F1 A9 F8 D7    LDA #$D7F8             ;\
-$8B:D7F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D7F8
+$8B:D7F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D7F8 (ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom - fading in)
 $8B:D7F7 60          RTS
 }
 
@@ -11258,7 +11258,7 @@ $8B:D7F8 20 07 D8    JSR $D807  [$8B:D807]  ; Cinematic function - ending - Zebe
 $8B:D7FB 20 00 91    JSR $9100  [$8B:9100]  ; Advance fast screen fade in
 $8B:D7FE 90 06       BCC $06    [$D806]     ; If not reached max brightness: return
 $8B:D800 A9 07 D8    LDA #$D807             ;\
-$8B:D803 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D807
+$8B:D803 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D807 (ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom)
 
 $8B:D806 60          RTS
 }
@@ -11284,7 +11284,7 @@ $8B:D829 30 0B       BMI $0B    [$D836]     ;} If [mode 7 transformation zoom le
 $8B:D82B 20 B8 90    JSR $90B8  [$8B:90B8]  ; Advance fast screen fade out
 $8B:D82E 90 06       BCC $06    [$D836]     ; If not reached zero brightness: return
 $8B:D830 A9 37 D8    LDA #$D837             ;\
-$8B:D833 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D837
+$8B:D833 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D837 (ending - Zebes destruction scene 2 - cross-fade to space view - setup)
 
 $8B:D836 60          RTS
 }
@@ -11447,7 +11447,7 @@ $8B:D9F2 20 EA 8C    JSR $8CEA  [$8B:8CEA]  ; Compose fading palettes
 $8B:D9F5 A9 3F 00    LDA #$003F             ;\
 $8B:D9F8 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 3Fh
 $8B:D9FB A9 02 DA    LDA #$DA02             ;\
-$8B:D9FE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DA02
+$8B:D9FE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DA02 (ending - Zebes destruction scene 2 - cross-fade to space view - fading in)
 $8B:DA01 60          RTS
 }
 
@@ -11461,7 +11461,7 @@ $8B:DA0A A9 02 00    LDA #$0002             ;\
 $8B:DA0D 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 2
 $8B:DA10 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 2
 $8B:DA13 A9 1A DA    LDA #$DA1A             ;\
-$8B:DA16 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DA1A
+$8B:DA16 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DA1A (ending - Zebes destruction scene 2 - cross-fade to space view)
 
 $8B:DA19 60          RTS
 }
@@ -11544,7 +11544,7 @@ $8B:DAC0 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:DAC3 A9 02 00    LDA #$0002             ;\
 $8B:DAC6 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = 2
 $8B:DAC9 A9 D3 DA    LDA #$DAD3             ;\
-$8B:DACC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DAD3
+$8B:DACC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DAD3 (ending - space view - load gunship BG)
 $8B:DACF 9C 49 1A    STZ $1A49  [$7E:1A49]  ; Cinematic function timer = 0
 
 $8B:DAD2 60          RTS
@@ -11639,7 +11639,7 @@ $8B:DBB3 A9 05 00    LDA #$0005             ;\
 $8B:DBB6 A0 0E 00    LDY #$000E             ;} Queue song 0 music track, 14 frame delay
 $8B:DBB9 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;/
 $8B:DBBD A9 C4 DB    LDA #$DBC4             ;\
-$8B:DBC0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DBC4
+$8B:DBC0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DBC4 (ending - space view - gunship emergence - setup)
 
 $8B:DBC3 60          RTS
 }
@@ -11699,7 +11699,7 @@ $8B:DC3C A9 C0 00    LDA #$00C0             ;\
 $8B:DC3F 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Zebes explosion afterglow timer = C0h
 $8B:DC42 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Ending gunship shake index = 0
 $8B:DC45 A9 A5 DC    LDA #$DCA5             ;\
-$8B:DC48 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DCA5
+$8B:DC48 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DCA5 (ending - space view - gunship emergence - spinning fast)
 $8B:DC4B 60          RTS
 }
 
@@ -11801,7 +11801,7 @@ $8B:DCF2 A9 01 00    LDA #$0001             ;\
 $8B:DCF5 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} $1A4B = 1 (never read)
 $8B:DCF8 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Ending gunship shake index = 0
 $8B:DCFB A9 42 DD    LDA #$DD42             ;\
-$8B:DCFE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DD42
+$8B:DCFE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DD42 (ending - space view - gunship emergence - spinning slow)
 
 $8B:DD01 60          RTS
 
@@ -11844,7 +11844,7 @@ $8B:DD81 8D 8F 19    STA $198F  [$7E:198F]  ;/
 $8B:DD84 C9 A0 04    CMP #$04A0             ;\
 $8B:DD87 10 23       BPL $23    [$DDAC]     ;} If [mode 7 transformation zoom level] < 4A0h:
 $8B:DD89 A9 CD DD    LDA #$DDCD             ;\
-$8B:DD8C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DDCD
+$8B:DD8C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DDCD (ending - space view - gunship emergence - fly into camera)
 $8B:DD8F A9 00 80    LDA #$8000             ;\
 $8B:DD92 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} Ending gunship X velocity = 0.8000h
 $8B:DD95 9C 4B 1A    STZ $1A4B  [$7E:1A4B]  ;/
@@ -11936,7 +11936,7 @@ $8B:DE6F 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:DE73 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:DE76 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:DE79 A9 80 DE    LDA #$DE80             ;\
-$8B:DE7C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DE80
+$8B:DE7C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DE80 (credits - setup)
 
 $8B:DE7F 60          RTS
 }
@@ -12176,7 +12176,7 @@ $8B:E0F7 F0 02       BEQ $02    [$E0FB]     ;\
 $8B:E0F9 10 14       BPL $14    [$E10F]     ;} If [cinematic function timer] > 0: return
 
 $8B:E0FB A9 10 E1    LDA #$E110             ;\
-$8B:E0FE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E110
+$8B:E0FE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E110 (post-credits - fade in shooting stars)
 $8B:E101 A9 78 00    LDA #$0078             ;\
 $8B:E104 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 120 (unused)
 $8B:E107 E2 20       SEP #$20               ;\
@@ -12219,7 +12219,7 @@ $8B:E148 20 EA 8C    JSR $8CEA  [$8B:8CEA]  ; Compose fading palettes
 $8B:E14B A9 20 00    LDA #$0020             ;\
 $8B:E14E 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 20h
 $8B:E151 A9 58 E1    LDA #$E158             ;\
-$8B:E154 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E158
+$8B:E154 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E158 (post-credits - fade in Samus)
 $8B:E157 60          RTS
 }
 
@@ -12247,7 +12247,7 @@ $8B:E17D C2 20       REP #$20
 $8B:E17F A9 B4 00    LDA #$00B4             ;\
 $8B:E182 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 180
 $8B:E185 A9 90 E1    LDA #$E190             ;\
-$8B:E188 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E190
+$8B:E188 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E190 (post-credits - wavy Samus)
 $8B:E18B 22 3B EC 88 JSL $88EC3B[$88:EC3B]  ; Spawn wavy Samus HDMA object
 
 $8B:E18F 60          RTS
@@ -12283,7 +12283,7 @@ $8B:E1C0 C2 20       REP #$20
 $8B:E1C2 A9 B4 00    LDA #$00B4             ;\
 $8B:E1C5 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 180
 $8B:E1C8 A9 D2 E1    LDA #$E1D2             ;\
-$8B:E1CB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E1D2
+$8B:E1CB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E1D2 (post-credits - Deer Force)
 $8B:E1CE 9C 9C 0D    STZ $0D9C  [$7E:0D9C]  ; Disable wavy Samus
 
 $8B:E1D1 60          RTS
@@ -12308,7 +12308,7 @@ $8B:E1F0 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EF
 $8B:E1F3 A0 45 EF    LDY #$EF45             ;\
 $8B:E1F6 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EF45 (suited Samus - idle - body)
 $8B:E1F9 A9 93 E2    LDA #$E293             ;\
-$8B:E1FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E293 (idle Samus 1/2)
+$8B:E1FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E293 (post-credits - idle Samus 1/2)
 $8B:E1FF E2 20       SEP #$20
 $8B:E201 A9 10       LDA #$10               ;\
 $8B:E203 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1
@@ -12354,7 +12354,7 @@ $8B:E258 A9 22       LDA #$22               ;\
 $8B:E25A 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG2/backdrop
 $8B:E25C C2 20       REP #$20
 $8B:E25E A9 65 E2    LDA #$E265             ;\
-$8B:E261 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E265 (idle Samus 1/2 - cross-fade out Samus suit)
+$8B:E261 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E265 (post-credits - idle Samus 1/2 - cross-fade out Samus suit)
 
 $8B:E264 60          RTS
 }
@@ -12415,7 +12415,7 @@ $8B:E2CE C2 20       REP #$20
 $8B:E2D0 A9 B4 00    LDA #$00B4             ;\
 $8B:E2D3 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Cinematic function timer = 180
 $8B:E2D6 A9 DD E2    LDA #$E2DD             ;\
-$8B:E2D9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E2DD
+$8B:E2D9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E2DD (post-credits - 1994 Nintendo)
 
 $8B:E2DC 60          RTS
 }
@@ -12433,7 +12433,7 @@ $8B:E2EA 30 0D       BMI $0D    [$E2F9]     ;/
 $8B:E2EC C9 0A 00    CMP #$000A             ;\
 $8B:E2EF 30 08       BMI $08    [$E2F9]     ;} If [game time hours] >= 10:
 $8B:E2F1 A9 42 E3    LDA #$E342             ;\
-$8B:E2F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E342 (idle Samus 2/2)
+$8B:E2F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E342 (post-credits - idle Samus 2/2)
 $8B:E2F7 80 1A       BRA $1A    [$E313]     ; Return
 
 $8B:E2F9 E2 20       SEP #$20
@@ -12447,7 +12447,7 @@ $8B:E307 A9 22       LDA #$22               ;\
 $8B:E309 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG2/backdrop
 $8B:E30B C2 20       REP #$20
 $8B:E30D A9 14 E3    LDA #$E314             ;\
-$8B:E310 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E314 (idle Samus 2/2 - cross-fade out Samus suit)
+$8B:E310 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E314 (post-credits - idle Samus 2/2 - cross-fade out Samus suit)
 
 $8B:E313 60          RTS
 }
@@ -12565,7 +12565,7 @@ $8B:E3F2 60          RTS                    ; Return
 $8B:E3F3 A9 18 00    LDA #$0018             ;\
 $8B:E3F6 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 18h
 $8B:E3F9 A9 8A E4    LDA #$E48A             ;\
-$8B:E3FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E48A (fade to white)
+$8B:E3FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E48A (post-credits - fade to white)
 $8B:E3FF A9 B4 00    LDA #$00B4             ;\
 $8B:E402 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 180
 $8B:E405 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Post-credits Super Metroid icon VRAM transfer index = 0
@@ -12674,7 +12674,7 @@ $8B:E4D0 30 F1       BMI $F1    [$E4C3]     ;/
 $8B:E4D2 9C 93 19    STZ $1993  [$7E:1993]  ; Cinematic BG1 X position = 0
 $8B:E4D5 9C 97 19    STZ $1997  [$7E:1997]  ; Cinematic BG1 Y position = 0
 $8B:E4D8 A9 04 E5    LDA #$E504             ;\
-$8B:E4DB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E504
+$8B:E4DB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E504 (post-credits - fade from white)
 $8B:E4DE A9 20 00    LDA #$0020             ;\
 $8B:E4E1 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 20h
 $8B:E4E4 22 A2 95 8B JSL $8B95A2[$8B:95A2]  ; Enable cinematic BG objects
@@ -14500,7 +14500,7 @@ $8B:F348 CA          DEX                    ;|
 $8B:F349 10 F8       BPL $F8    [$F343]     ;|
 $8B:F34B FA          PLX                    ;/
 $8B:F34C A9 9E DB    LDA #$DB9E             ;\
-$8B:F34F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DB9E (space view - change music)
+$8B:F34F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DB9E (ending - space view - change music)
 $8B:F352 A9 78 00    LDA #$0078             ;\
 $8B:F355 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 120
 $8B:F358 7A          PLY
@@ -15100,7 +15100,7 @@ $8B:F72E 9C 97 19    STZ $1997  [$7E:1997]  ;} Cinematic BG1 Y position = 0.0
 $8B:F731 A9 01 00    LDA #$0001             ;\
 $8B:F734 8D 05 1A    STA $1A05  [$7E:1A05]  ;} Enable shooting stars
 $8B:F737 A9 F4 E0    LDA #$E0F4             ;\
-$8B:F73A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E0F4
+$8B:F73A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E0F4 (post-credits - blank screen)
 $8B:F73D A9 3C 00    LDA #$003C             ;\
 $8B:F740 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 60
 $8B:F743 7A          PLY

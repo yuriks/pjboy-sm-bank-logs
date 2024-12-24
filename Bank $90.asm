@@ -14771,6 +14771,7 @@ $90:E869 6B          RTL
 
 ;;; $E86A: Samus new state handler - Samus appearance ;;;
 {
+; The code here for disabling debug invincibility has no effect, as debug invincibility is disabled by Samus initialisation ($91:E156)
 $90:E86A 08          PHP
 $90:E86B 8B          PHB
 $90:E86C 4B          PHK                    ;\
@@ -16981,6 +16982,9 @@ $90:F575 60          RTS
 
 ;;; $F576: Handle unspin sound effects, cancelling echo sound and setting time up game state ;;;
 {
+; Also enables debug invincibility if debug mode is enabled and controller 2 newly presses A whilst L + R is pressed
+; The code at $90:E0E6 is supposed to set the time up game state, and also sets $0A5A to $E114
+; The purpose of the code at $F619 checking for $0A5A = $E114 and setting the time up game state seems to be for handling edge cases like entering at door at timer = 00'00"00
 $90:F576 08          PHP
 $90:F577 C2 30       REP #$30
 $90:F579 AD C0 0D    LDA $0DC0  [$7E:0DC0]  ;\
@@ -17036,7 +17040,7 @@ $90:F5E7 F0 30       BEQ $30    [$F619]     ;} If debug not enabled: go to BRANC
 $90:F5E9 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:F5EC F0 0F       BEQ $0F    [$F5FD]     ;} If [Samus pose] != facing forward - power suit:
 $90:F5EE C9 9B 00    CMP #$009B             ;\
-$90:F5F1 F0 0A       BEQ $0A    [$F5FD]     ;} If [Samus pose] != Facing forward - varia/gravity suit:
+$90:F5F1 F0 0A       BEQ $0A    [$F5FD]     ;} If [Samus pose] != facing forward - varia/gravity suit:
 $90:F5F3 AD E0 0D    LDA $0DE0  [$7E:0DE0]  ;\
 $90:F5F6 C9 07 00    CMP #$0007             ;} If [debug invincibility] < 7: go to BRANCH_CLEAR_DEBUG_INVINCIBILITY
 $90:F5F9 30 1B       BMI $1B    [$F616]     ;/
