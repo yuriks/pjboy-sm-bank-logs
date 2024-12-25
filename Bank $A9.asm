@@ -12259,7 +12259,7 @@ $A9:EED0 60          RTS
 ;;     X: Enemy index
 ;;     Y: Other enemy index
 ;; Returns:
-;;    Carry: Clear if collision, set otherwise
+;;     Carry: Clear if collision, set otherwise
 $A9:EED1 B9 82 0F    LDA $0F82,y[$7E:0FC2]  ;\
 $A9:EED4 18          CLC                    ;|
 $A9:EED5 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|

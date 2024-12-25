@@ -519,7 +519,7 @@ $8B:8487 60          RTS
 }
 
 
-;;; $8488: Unused. Modify mode 7 transformation and BG1 position with controller ;;;
+;;; $8488: Unused. Debug. Modify mode 7 transformation and BG1 position with controller ;;;
 {
 $8B:8488 08          PHP
 $8B:8489 C2 30       REP #$30

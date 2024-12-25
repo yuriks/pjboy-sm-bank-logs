@@ -8,6 +8,8 @@ $80:8008             dw 0000 ; Disable audio ($8028)
 }
 
 
+;;; $800A..8110: APU upload ;;;
+{
 ;;; $800A: Upload to APU (hardcoded parameter) ;;;
 {
 ;; Parameter:
@@ -240,6 +242,7 @@ $80:810B AB          PLB                    ;} DB = [$02]
 $80:810C AB          PLB                    ;/
 $80:810D A0 00 80    LDY #$8000             ; Y = 8000h
 $80:8110 60          RTS
+}
 }
 
 
@@ -5244,8 +5247,8 @@ $80:A2F7             dw 184E
 ;;; $A2F9: Calculate layer 2 X position ;;;
 {
 ;; Returns:
-;;     A:     [Layer 2 X position]
 ;;     Carry: Clear if BG2 needs to be scrolled
+;;     A: Layer 2 X position
 
 ; Called by:
 ;     $A07B: Start gameplay
@@ -5302,7 +5305,7 @@ $80:A339 60          RTS                    ;/
 {
 ;; Returns:
 ;;     Carry: Clear if BG2 needs to be scrolled
-;;     A:     [Layer 2 Y position]
+;;     A: Layer 2 Y position
 
 ; Called by:
 ;     $A07B: Start gameplay
@@ -5389,8 +5392,8 @@ $80:A39F 60          RTS
 ;     $AF89: Door transition scrolling - up
 $80:A3A0 08          PHP
 $80:A3A1 8B          PHB
-$80:A3A2 4B          PHK
-$80:A3A3 AB          PLB
+$80:A3A2 4B          PHK                    ;\
+$80:A3A3 AB          PLB                    ;} DB = $80
 $80:A3A4 C2 30       REP #$30
 $80:A3A6 20 7B A3    JSR $A37B  [$80:A37B]  ; Calculate BG scrolls
 $80:A3A9 80 34       BRA $34    [$A3DF]     ; Go to update BG graphics when scrolling
@@ -5440,9 +5443,8 @@ $80:A3DD 85 B7       STA $B7    [$7E:00B7]  ;/
 ;     $A3A0: Calculate BG scrolls and update BG graphics when scrolling
 ;     $A3AB: Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
 
-; Calculates new BG and layer positions,
-; calls the update level/background data row/column functions
-; and updates the previous layer 1/2 block X/Y values
+; Calculates new BG and layer positions, calls the update level/background data row/column functions and updates the previous layer 1/2 block X/Y values
+; Expects a pushed DB and PSR
 $80:A3DF C2 20       REP #$20
 $80:A3E1 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
 $80:A3E4 A2 00 00    LDX #$0000
@@ -6292,7 +6294,7 @@ $80:A9D5 6B          RTL
 ;     $A176: Display the viewable part of the room
 ;     $A3DF: Update BG graphics when scrolling
 $80:A9D6 A2 1C 00    LDX #$001C             ; X = 1Ch
-$80:A9D9 80 03       BRA $03    [$A9DE]     ; Branch to $A9DE
+$80:A9D9 80 03       BRA $03    [$A9DE]     ; Go to update level/background data column
 }
 
 
@@ -6307,6 +6309,9 @@ $80:A9DB A2 00 00    LDX #$0000             ; X = 0
 
 ;;; $A9DE: Update level/background data column ;;;
 {
+;; Parameters:
+;;     X: WRAM offset. 0 for level data, 1Ch for background data. See $0956 in RAM map
+
 ; Called by:
 ;     $A9D6: Update background data column
 ;     $A9DB: Update level data column
@@ -6318,7 +6323,7 @@ $80:A9DB A2 00 00    LDX #$0000             ; X = 0
 ; Initially the memory layout of the level data and VRAM mirror each other (broadly speaking)
 ; As the screen is being scrolled down, rows of blocks are loaded and placed after the end of where the previous last row of blocks is
 ; Note that the previous top row of blocks isn't erased and the VRAM data isn't "moved up" in memory, the BG1/BG2 scroll registers are incremented instead
-; If the bottom of the VRAM has been reached, the blocks are loaded to the top of VRAM instead, so there's a pacman-escaue wrapping behaviour
+; If the bottom of the VRAM has been reached, the blocks are loaded to the top of VRAM instead, so there's a pacman-esque wrapping behaviour
 
 ; When loading a new column of data (due to scrolling horizontally), the column will have to be loaded in two parts (if the visible screen is vertically wrapped in VRAM)
 ; The first part is the top of the visible screen corresponding to the bottom part in VRAM
@@ -6551,6 +6556,9 @@ $80:AB75 A2 00 00    LDX #$0000             ; X = 0
 
 ;;; $AB78: Update level/background data row ;;;
 {
+;; Parameters:
+;;     X: WRAM offset. 0 for level data, 1Ch for background data. See $0964 in RAM map
+
 ; Called by:
 ;     $AB70: Update background data row
 ;     $AB75: Update level data row
@@ -6941,7 +6949,7 @@ $80:AE64 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [door destin
 $80:AE67 AD 29 09    LDA $0929  [$7E:0929]  ;\
 $80:AE6A 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = [door destination Y position]
 $80:AE6D A9 00 80    LDA #$8000             ;\
-$80:AE70 0C 31 09    TSB $0931  [$7E:0931]  ;} Door transition finished scrolling flag = 8000h
+$80:AE70 0C 31 09    TSB $0931  [$7E:0931]  ;} Door transition finished scrolling flag = 8000h (finished)
 
 $80:AE73 AB          PLB
 $80:AE74 28          PLP
@@ -6953,6 +6961,9 @@ $80:AE76             dw AE7E, AEC2, AF02, AF89
 
 ;;; $AE7E: Door transition scrolling - right ;;;
 {
+;; Returns:
+;;     Carry: Set if finished scrolling, clear otherwise
+
 $80:AE7E AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
 $80:AE81 DA          PHX
 $80:AE82 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
@@ -6988,6 +6999,9 @@ $80:AEC1 60          RTS                    ;} Return carry clear
 
 ;;; $AEC2: Door transition scrolling - left ;;;
 {
+;; Returns:
+;;     Carry: Set if finished scrolling, clear otherwise
+
 $80:AEC2 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
 $80:AEC5 DA          PHX
 $80:AEC6 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
@@ -7022,6 +7036,9 @@ $80:AF01 60          RTS                    ;} Return carry clear
 
 ;;; $AF02: Door transition scrolling - down ;;;
 {
+;; Returns:
+;;     Carry: Set if finished scrolling, clear otherwise
+
 ; Spends 1 frame drawing the top row of the new room
 ; Then spends 38h frames doing the scrolling (38h frames * 4px/frame = 224px)
 
@@ -7101,6 +7118,9 @@ $80:AF88 60          RTS                    ;} Return carry clear
 
 ;;; $AF89: Door transition scrolling - up ;;;
 {
+;; Returns:
+;;     Carry: Set if finished scrolling, clear otherwise
+
 ; This routine - unlike the other three door transition directions - is called once prior to the destination room being loaded (via $AD1D)
 ; The reason for this is to load the tilemap for the top row of the scroll, which hasn't yet been loaded by the scrolling routine
 ; After the destination room has been loaded and the screen starts scrolling, on frames 1..4 don't call the scrolling routine,
@@ -7306,7 +7326,7 @@ $80:B0FE 6B          RTL
 {
 ;; Parameters:
 ;;     [[S] + 1]: Destination address (3 bytes)
-;;     $47:       Source address (3 bytes)
+;;     $47: Source address (3 bytes)
 
 ; Source may overflow bank, target may NOT
 $80:B0FF A3 02       LDA $02,s  [$7E:1FF9]  ;\
@@ -7571,11 +7591,16 @@ $80:B264 80 C3       BRA $C3    [$B229]     ; Go to BRANCH_DICTIONARY_COPY
 
 ;;; $B266: Source bank overflow correction ;;;
 {
-$80:B266 A2 00 80    LDX #$8000             ; Set address to $8000
+;; Parameters:
+;;     DB: Source bank
+;; Returns:
+;;     X: $8000
+;;     DB: Incremented source bank
+$80:B266 A2 00 80    LDX #$8000             ; X = $8000
 $80:B269 48          PHA                    ;\
 $80:B26A 8B          PHB                    ;|
 $80:B26B 68          PLA                    ;|
-$80:B26C 1A          INC A                  ;} Increment bank
+$80:B26C 1A          INC A                  ;} Increment DB
 $80:B26D 48          PHA                    ;|
 $80:B26E AB          PLB                    ;|
 $80:B26F 68          PLA                    ;/
@@ -7905,9 +7930,9 @@ $80:B435 80 9C       BRA $9C    [$B3D3]     ; Go to LOOP_DICTIONARY_COPY
 
 ;;; $B437: Tilemap - failed NTSC/PAL check ;;;
 {
-; THIS GAME PAK IS NOT DESIGNED
-; FOR YOUR SUPER FAMICOM OR
-; SUPER NES.            NINTENDO
+; ' THIS GAME PAK IS NOT DESIGINED '
+; ' FOR YOUR SUPER FAMICOM OR      '
+; ' SUPER NES.            NINTENDO '
 
 $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
@@ -7946,16 +7971,18 @@ $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 00
 
 ;;; $BC37: Tilemap - failed SRAM mapping check ;;;
 {
-;  IT IS A SERIOUS CRIME TO COPY
-;  VIDEO GAMES.      18 USC 2319.
-;  PLEASE REFER TO YOUR NINTENDO
-;  GAME INSTRUCTION BOOKLET FOR
-;  FURTHER INFORMATION.
-; --------------------------------
-;
-;              警  告
-;      ビデオゲームのコピーは法律で禁じられています。
-;      詳しくは取扱説明書を参照してください。
+; '            WARNING             '
+; '                                '
+; ' IT IS A SERIOUS CRIME TO COPY  '
+; ' VIDEO GAMES.      18 USC 2319. '
+; ' PLEASE REFER TO YOUR NINTENDO  '
+; ' GAME INSTRUCTION BOOKLET FOR   '
+; ' FURTHER INFORMATION.           '
+; '--------------------------------'
+; '                                '
+; '             警  告               '
+; '     ビデオゲームのコピーは法律で禁じられています。    '
+; '     詳しくは取扱説明書を参照してください。        '
 
 ; (warning)
 ; (game copying is prohibited by law.)
@@ -8246,7 +8273,7 @@ $80:CC19             dw E82C,ABC4,0000,0000,0000,00B0,0000, ; Debug room (from ?
 }
 
 
-;;; $CD07: Set debug elevators as used ;;;
+;;; $CD07: Debug. Set debug elevators as used ;;;
 {
 ; Called if an elevator door has (elevator properties) & Fh != 0, which is never true, so this routine is unused/debug
 $80:CD07 08          PHP

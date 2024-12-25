@@ -1531,7 +1531,7 @@ $A5:9366 6B          RTL
 }
 
 
-;;; $9367: Debug. Draygon controller 2 input handling ;;;
+;;; $9367: Unused. Debug. Draygon controller 2 input handling ;;;
 {
 $A5:9367 A2 00 00    LDX #$0000
 $A5:936A A5 8D       LDA $8D    [$7E:008D]  ;\
@@ -1583,8 +1583,8 @@ $A5:93CF 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 
 $A5:93D2 80 05       BRA $05    [$93D9]     ; Return
 
 ; BRANCH_GRAB_END
-$A5:93D4 89 40 00    BIT #$0040
-$A5:93D7 F0 00       BEQ $00    [$93D9]
+$A5:93D4 89 40 00    BIT #$0040             ;\
+$A5:93D7 F0 00       BEQ $00    [$93D9]     ;} >_<;
 
 $A5:93D9 6B          RTL
 }
