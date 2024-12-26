@@ -811,7 +811,7 @@ $86:83E7 85 1C       STA $1C    [$7E:001C]  ;/
 $86:83E9 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
 $86:83EC 38          SEC                    ;|
 $86:83ED ED 11 09    SBC $0911  [$7E:0911]  ;|
-$86:83F0 18          CLC                    ;} $14 = [enemy projectile X position] - [layer 1 X position] + [$24]
+$86:83F0 18          CLC                    ;} $14 = [enemy projectile X position] - [layer 1 X position] + [$24] (spritemap X origin)
 $86:83F1 65 24       ADC $24    [$7E:0024]  ;|
 $86:83F3 85 14       STA $14    [$7E:0014]  ;/
 $86:83F5 18          CLC                    ;\
@@ -821,22 +821,22 @@ $86:83FC D0 28       BNE $28    [$8426]     ;/
 $86:83FE BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
 $86:8401 38          SEC                    ;|
 $86:8402 ED 15 09    SBC $0915  [$7E:0915]  ;|
-$86:8405 18          CLC                    ;} $12 = [enemy projectile Y position] - [layer 1 Y position] + [$22]
+$86:8405 18          CLC                    ;} $12 = [enemy projectile Y position] - [layer 1 Y position] + [$22] (spritemap Y origin)
 $86:8406 65 22       ADC $22    [$7E:0022]  ;|
 $86:8408 85 12       STA $12    [$7E:0012]  ;/
 $86:840A 89 00 FF    BIT #$FF00             ;\
-$86:840D D0 08       BNE $08    [$8417]     ;} If 0 <= [$14] < 100h:
+$86:840D D0 08       BNE $08    [$8417]     ;} If 0 <= (spritemap Y origin) < 100h:
 $86:840F DA          PHX                    ;\
-$86:8410 22 0A 8C 81 JSL $818C0A[$81:8C0A]  ;} Add spritemap to OAM with base tile number
+$86:8410 22 0A 8C 81 JSL $818C0A[$81:8C0A]  ;} Add spritemap to OAM with base tile number - Y origin on-screen
 $86:8414 FA          PLX                    ;/
 $86:8415 80 0F       BRA $0F    [$8426]
 
-$86:8417 18          CLC                    ;\ Else (not 0 <= [$14] < 100h):
+$86:8417 18          CLC                    ;\ Else (not 0 <= (spritemap Y origin) < 100h):
 $86:8418 69 80 00    ADC #$0080             ;|
-$86:841B 89 00 FE    BIT #$FE00             ;} If -80h <= [$14] < 180h:
+$86:841B 89 00 FE    BIT #$FE00             ;} If -80h <= (spritemap Y origin) < 180h:
 $86:841E D0 06       BNE $06    [$8426]     ;/
 $86:8420 DA          PHX                    ;\
-$86:8421 22 7F 8C 81 JSL $818C7F[$81:8C7F]  ;} Add spritemap to OAM with base tile number offscreen
+$86:8421 22 7F 8C 81 JSL $818C7F[$81:8C7F]  ;} Add spritemap to OAM with base tile number - Y origin off-screen
 $86:8425 FA          PLX                    ;/
 
 $86:8426 60          RTS

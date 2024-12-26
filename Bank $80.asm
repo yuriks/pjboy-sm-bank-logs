@@ -4889,7 +4889,7 @@ $80:9FC5 29 FF 00    AND #$00FF             ;} $12 = [timer Y position]
 $80:9FC8 85 12       STA $12    [$7E:0012]  ;/
 $80:9FCA A9 00 0A    LDA #$0A00             ;\
 $80:9FCD 85 16       STA $16    [$7E:0016]  ;} $16 = A00h (palette 5)
-$80:9FCF 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
+$80:9FCF 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM - Y origin on-screen
 $80:9FD3 60          RTS
 }
 

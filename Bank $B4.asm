@@ -4925,7 +4925,7 @@ $B4:BD7C 85 00       STA $00    [$7E:0000]  ;/
 $B4:BD7E DA          PHX                    ;\
 $B4:BD7F BF 78 EF 7E LDA $7EEF78,x[$7E:EFB6];|
 $B4:BD83 AA          TAX                    ;|
-$B4:BD84 BF 02 00 B4 LDA $B40002,x[$B4:C5C8];} Add spritemap [$B4:0002 + [sprite object instruction list pointer]] to OAM with base tile number
+$B4:BD84 BF 02 00 B4 LDA $B40002,x[$B4:C5C8];} Add spritemap [$B4:0002 + [sprite object instruction list pointer]] to OAM with base tile number - no off-screen handling
 $B4:BD88 A8          TAY                    ;|
 $B4:BD89 22 B8 8A 81 JSL $818AB8[$81:8AB8]  ;|
 $B4:BD8D FA          PLX                    ;/

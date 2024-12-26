@@ -2271,14 +2271,14 @@ $A0:945D ED 11 09    SBC $0911  [$7E:0911]  ;|
 $A0:9460 18          CLC                    ;} $0E22 = [enemy X position] - [layer 1 X position] + [enemy graphical X offset] (enemy X position on screen)
 $A0:9461 7F 10 70 7E ADC $7E7010,x[$7E:7010];|
 $A0:9465 8D 22 0E    STA $0E22  [$7E:0E22]  ;/
-$A0:9468 85 14       STA $14    [$7E:0014]  ; $14 = (enemy X position on screen) (sprite X position)
+$A0:9468 85 14       STA $14    [$7E:0014]  ; $14 = (enemy X position on screen) (spritemap X origin)
 $A0:946A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A0:946D 38          SEC                    ;|
 $A0:946E ED 15 09    SBC $0915  [$7E:0915]  ;|
 $A0:9471 18          CLC                    ;} $0E20 = [enemy Y position] - [layer 1 Y position] + [enemy graphical Y offset] (enemy Y position on screen)
 $A0:9472 7F 12 70 7E ADC $7E7012,x[$7E:7012];|
 $A0:9476 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
-$A0:9479 85 12       STA $12    [$7E:0012]  ; $12 = (enemy Y position on screen) (sprite Y position)
+$A0:9479 85 12       STA $12    [$7E:0012]  ; $12 = (enemy Y position on screen) (spritemap Y origin)
 $A0:947B BD A2 0F    LDA $0FA2,x[$7E:0FA2]  ;\
 $A0:947E F0 17       BEQ $17    [$9497]     ;} If [enemy shake timer] = 0: BRANCH_NO_SHAKE
 $A0:9480 BD A4 0F    LDA $0FA4,x[$7E:1024]  ;\
@@ -2331,7 +2331,7 @@ $A0:94E0 8F 7C F3 7E STA $7EF37C[$7E:F37C]  ;} $7E:F37C = [enemy index] (never r
 $A0:94E4 A9 01 00    LDA #$0001             ;\
 $A0:94E7 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 1
 $A0:94EB BC 8E 0F    LDY $0F8E,x[$7E:0F8E]  ; Y = [enemy spritemap pointer]
-$A0:94EE 22 B8 8A 81 JSL $818AB8[$81:8AB8]  ; Add spritemap to OAM with base tile number
+$A0:94EE 22 B8 8A 81 JSL $818AB8[$81:8AB8]  ; Add spritemap to OAM with base tile number - no off-screen handling
 $A0:94F2 AB          PLB
 $A0:94F3 60          RTS                    ; Return
 
@@ -2370,28 +2370,28 @@ $A0:9536 80 39       BRA $39    [$9571]     ; Go to BRANCH_NEXT
 
 $A0:9538 B9 00 00    LDA $0000,y[$A6:E985]  ;\
 $A0:953B 18          CLC                    ;|
-$A0:953C 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = (enemy X position on screen) + (entry X offset) (sprite X position)
+$A0:953C 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = (enemy X position on screen) + (entry X offset) (spritemap X origin)
 $A0:953F 85 14       STA $14    [$7E:0014]  ;/
 $A0:9541 69 80 00    ADC #$0080             ;\
 $A0:9544 89 00 FE    BIT #$FE00             ;} If not -80h <= (sprite X position) < 180h: go to BRANCH_NEXT
 $A0:9547 D0 28       BNE $28    [$9571]     ;/
 $A0:9549 B9 02 00    LDA $0002,y[$A6:E987]  ;\
 $A0:954C 18          CLC                    ;|
-$A0:954D 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = (enemy Y position on screen) + (entry Y offset) (sprite Y position)
+$A0:954D 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = (enemy Y position on screen) + (entry Y offset) (spritemap Y origin)
 $A0:9550 85 12       STA $12    [$7E:0012]  ;/
 $A0:9552 69 80 00    ADC #$0080             ;\
 $A0:9555 89 00 FE    BIT #$FE00             ;} If not -80h <= (sprite Y position) < 180h: go to BRANCH_NEXT
 $A0:9558 D0 17       BNE $17    [$9571]     ;/
 $A0:955A 5A          PHY
 $A0:955B A5 12       LDA $12    [$7E:0012]  ;\
-$A0:955D 89 00 FF    BIT #$FF00             ;} If 0 <= (sprite Y position) < 100h:
+$A0:955D 89 00 FF    BIT #$FF00             ;} If 0 <= (sprite Y origin) < 100h:
 $A0:9560 D0 08       BNE $08    [$956A]     ;/
 $A0:9562 A4 16       LDY $16    [$7E:0016]  ; Y = [$16]
-$A0:9564 22 22 8B 81 JSL $818B22[$81:8B22]  ; Add spritemap to OAM with base tile number
+$A0:9564 22 22 8B 81 JSL $818B22[$81:8B22]  ; Add spritemap to OAM with base tile number - Y origin on-screen
 $A0:9568 80 06       BRA $06    [$9570]
-                                            ; Else (not 0 <= (sprite Y position) < 100h):
+                                            ; Else (not 0 <= (sprite Y origin) < 100h):
 $A0:956A A4 16       LDY $16    [$7E:0016]  ; Y = [$16]
-$A0:956C 22 96 8B 81 JSL $818B96[$81:8B96]  ; Add spritemap to OAM with base tile number off-screen
+$A0:956C 22 96 8B 81 JSL $818B96[$81:8B96]  ; Add spritemap to OAM with base tile number - Y origin off-screen
 
 $A0:9570 7A          PLY
 

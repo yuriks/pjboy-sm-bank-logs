@@ -574,12 +574,12 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 }
 
 
-;;; $879F: Add spritemap to OAM ;;;
+;;; $879F: Add spritemap to OAM - Y origin on-screen ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $16: Palette bits of sprite (palette * 200h)
 
 ; Spritemap format is roughly:
@@ -588,8 +588,8 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 ;     ...          ; Entry 1...
 ; Where:
 ;     n = number of entries
-;     x = X offset of sprite from centre
-;     y = Y offset of sprite from centre
+;     x = sprite X offset
+;     y = sprite Y offset
 ;     a = attributes
 ;     t = tile number
 
@@ -597,8 +597,8 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 ;     s000000xxxxxxxxx yyyyyyyy YXpp000ttttttttt
 ; Where:
 ;     s = size bit
-;     x = X offset of sprite from centre
-;     y = Y offset of sprite from centre
+;     x = sprite X offset
+;     y = sprite Y offset
 ;     Y = Y flip
 ;     X = X flip
 ;     p = priority (relative to background)
@@ -607,10 +607,10 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 ; Called by:
 ;    $80:9FB3: Draw timer spritemap
 ;    $82:8CA1: Draw options menu spritemaps
-;    $8B:936B: Draw Nintendo logo
-;    $8B:9746: Draw cinematic sprite objects
-;    $8B:9799: Draw ending and credits sprites
-;    $A6:A2F2: Ceres Ridley's enemy graphics drawn hook
+;    $8B:936B: Add Nintendo boot logo spritemap to OAM
+;    $8B:9746: Draw cinematic sprite objects - intro/title sequence
+;    $8B:9799: Draw cinematic sprite objects - ending/credits
+;    $A6:A2F2: Enemy graphics drawn hook - Ceres Ridley - draw Baby Metroid and door
 $81:879F DA          PHX
 $81:87A0 B9 00 00    LDA $0000,y[$8C:80BB]  ;\
 $81:87A3 D0 05       BNE $05    [$87AA]     ;|
@@ -711,17 +711,17 @@ $81:8852 6B          RTL
 }
 
 
-;;; $8853: Add spritemap to OAM off-screen ;;;
+;;; $8853: Add spritemap to OAM - Y origin off-screen ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $16     = palette bits of sprite (palette * 200h)
+;;     DB:Y: Address of spritemap
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
+;;     $16: Palette bits of sprite (palette * 200h)
 
 ; Called by:
-;    $8B:9746: Draw title sequence sprites (including scrolled text)
-;    $8B:9799: Draw ending and credits sprites
+;    $8B:9746: Draw cinematic sprite objects - intro/title sequence
+;    $8B:9799: Draw cinematic sprite objects - ending/credits
 
 ; See $879F for spritemap format
 $81:8853 DA          PHX
@@ -826,12 +826,14 @@ $81:8906 6B          RTL
 
 ;;; $8907: OAM entry X position = 180h ;;;
 {
+;; Parameters:
+;;     X: OAM entry index
 $81:8907 A9 80       LDA #$80               ;\
-$81:8909 9D 70 03    STA $0370,x[$7E:038C]  ;} $0370 + [X] = 80h
+$81:8909 9D 70 03    STA $0370,x[$7E:038C]  ;} OAM entry X position = 80h
 $81:890C C2 20       REP #$20
 $81:890E BF 9F 85 81 LDA $81859F,x[$81:85BB];\
 $81:8912 85 1C       STA $1C    [$7E:001C]  ;|
-$81:8914 B2 1C       LDA ($1C)  [$7E:0570]  ;} [$81:859F + [X]] |= [$81:839F + [X]]
+$81:8914 B2 1C       LDA ($1C)  [$7E:0570]  ;} Set OAM entry high X position bit
 $81:8916 1F 9F 83 81 ORA $81839F,x[$81:83BB];|
 $81:891A 92 1C       STA ($1C)  [$7E:0570]  ;/
 $81:891C E2 20       SEP #$20
@@ -843,8 +845,8 @@ $81:891E 60          RTS
 {
 ;; Parameters:
 ;;     A: Index into $82:C569 table
-;;     X: X position of spritemap centre
-;;     Y: Y position of spritemap centre
+;;     X: Spritemap X origin
+;;     Y: Spritemap Y origin
 ;;     $03: Palette bits of sprite (palette * 200h)
 
 ; See $879F for spritemap format
@@ -928,8 +930,8 @@ $81:89AD 6B          RTL
 {
 ;; Parameters:
 ;;     A: Index into $92:808D table
-;;     X: X position of spritemap centre
-;;     Y: Y position of spritemap centre
+;;     X: Spritemap X origin
+;;     Y: Spritemap Y origin
 
 ; Actually uses the palette defined in the spritemap
 ; See $8A5F for spritemap format
@@ -1012,8 +1014,8 @@ $81:8A36 6B          RTL
 {
 ;; Parameters:
 ;;     A: Index into $93:A1A1 table
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 
 ; Called by:
 ;    $90:BBE1: Draw flare animation component
@@ -1034,7 +1036,7 @@ $81:8A42 B9 00 00    LDA $0000,y[$93:AB6C]  ;\
 $81:8A45 85 18       STA $18    [$7E:0018]  ;} $18 = [[Y]] (size)
 $81:8A47 C8          INY                    ;\
 $81:8A48 C8          INY                    ;} Y += 2
-$81:8A49 80 14       BRA $14    [$8A5F]     ; Go to $8A5F
+$81:8A49 80 14       BRA $14    [$8A5F]     ; Go to add spritemap to OAM - no off-screen handling
 }
 
 
@@ -1042,8 +1044,8 @@ $81:8A49 80 14       BRA $14    [$8A5F]     ; Go to $8A5F
 {
 ;; Parameters:
 ;;     X: Projectile index
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 
 ; Actually uses the palette defined in the spritemap
 ; See $8A5F for spritemap format
@@ -1063,12 +1065,12 @@ $81:8A5E C8          INY                    ;} Y += 2
 }
 
 
-;;; $8A5F: Add spritemap to OAM ;;;
+;;; $8A5F: Add spritemap to OAM - no off-screen handling ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of first entry in spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $18: Number of entries
 
 ; Spritemap format is roughly:
@@ -1146,17 +1148,17 @@ $81:8AB7 6B          RTL
 }
 
 
-;;; $8AB8: Add spritemap to OAM with base tile number ;;;
+;;; $8AB8: Add spritemap to OAM with base tile number - no off-screen handling ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $03: Palette bits of sprite (palette * 200h)
 ;;     $00: Base tile number
 
 ; Called by:
-;    $A0:944A: Write enemy OAM (non multi-hitbox)
+;    $A0:944A: Write enemy OAM (non extended spritemap format)
 ;    $B4:BD32: Draw sprite objects
 
 ; See $879F for spritemap format
@@ -1215,26 +1217,26 @@ $81:8B20 6B          RTL
 }
 
 
-;;; $8B21: RTL ;;;
+;;; $8B21: Unused. RTL ;;;
 {
 $81:8B21 6B          RTL
 }
 
 
-;;; $8B22: Add spritemap to OAM with base tile number ;;;
+;;; $8B22: Add spritemap to OAM with base tile number - Y origin on-screen ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $03: Palette bits of sprite (palette * 200h)
 ;;     $00: Base tile number
 
 ; Called by:
-;    $A0:944A: Write enemy OAM (multi-hitbox)
+;    $A0:944A: Write enemy OAM (extended spritemap format)
 
 ; See $879F for spritemap format
-; Bug: missing CLC before ADC when calclulating Y position, causes enemies straddling the left screen boundary to shift down a pixel
+; Bug: missing CLC before ADC when calculating Y position, causes enemies straddling the left screen boundary to shift down a pixel
 
 $81:8B22 5A          PHY
 $81:8B23 B9 00 00    LDA $0000,y[$A6:ED29]  ; $18 = [[Y]] (number of entries)
@@ -1300,19 +1302,21 @@ $81:8B95 6B          RTL
 }
 
 
-;;; $8B96: Add spritemap to OAM with base tile number off-screen ;;;
+;;; $8B96: Add spritemap to OAM with base tile number - Y origin off-screen ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $03: Palette bits of sprite (palette * 200h)
 ;;     $00: Base tile number
 
 ; Called by:
-;    $A0:944A: Write enemy OAM
+;    $A0:944A: Write enemy OAM (extended spritemap format)
 
 ; See $879F for spritemap format
+; Bug: missing CLC before ADC when calculating Y position, causes enemies straddling the left screen boundary to shift down a pixel
+
 $81:8B96 5A          PHY
 $81:8B97 B9 00 00    LDA $0000,y[$A6:EC5B]  ; $18 = [[Y]] (number of entries)
 $81:8B9A F0 6C       BEQ $6C    [$8C08]     ; If [$18] = 0: return
@@ -1377,12 +1381,12 @@ $81:8C09 6B          RTL
 }
 
 
-;;; $8C0A: Add spritemap to OAM with base tile number ;;;
+;;; $8C0A: Add spritemap to OAM with base tile number - Y origin on-screen ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $1A: Base tile number
 ;;     $1C: Palette bits of sprite (palette * 200h)
 
@@ -1455,12 +1459,12 @@ $81:8C7E 6B          RTL
 }
 
 
-;;; $8C7F: Add spritemap to OAM with base tile number offscreen ;;;
+;;; $8C7F: Add spritemap to OAM with base tile number - Y origin off-screen ;;;
 {
 ;; Parameters:
 ;;     DB:Y: Address of spritemap
-;;     $12: Y position of spritemap centre
-;;     $14: X position of spritemap centre
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
 ;;     $1A: Base tile number
 ;;     $1C: Palette bits of sprite (palette * 200h)
 
@@ -1594,7 +1598,7 @@ $81:8D60 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
 $81:8D62 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $81:8D64 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 $81:8D66 20 60 8E    JSR $8E60  [$81:8E60]  ; Load menu palettes
-$81:8D69 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1
+$81:8D69 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1 (initialise)
 $81:8D6C 60          RTS
 }
 
@@ -1616,7 +1620,7 @@ $81:8D8A A9 81 00    LDA #$0081             ;} $00 = $81:8EE1
 $81:8D8D 85 02       STA $02    [$7E:0002]  ;/
 $81:8D8F 22 7F 8E 81 JSL $818E7F[$81:8E7F]  ; Load debug game over menu tilemaps
 $81:8D93 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
-$81:8D97 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2
+$81:8D97 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2 (fade in to main)
 $81:8D9A 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $81:8D9D 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $81:8DA0 9C 50 09    STZ $0950  [$7E:0950]  ; Game over menu selection = end
@@ -1802,10 +1806,10 @@ $81:8EE0 6B          RTL
 ;                       |    |       ______ Padding byte for source bank
 ;                       |    |      |   ___ Destination VRAM address
 ;                       |    |      |  |
-$81:8EE1             dx 0040,818F03,00,5140, ; '            CONTINUE            '
-$81:8EE9             dx 0040,818F43,00,5180, ; '            END                 '
-$81:8EF1             dx 0040,818F83,00,51E0, ; '        WOULD YOU PLAY ?        '
-$81:8EF9             dx 0040,818FC3,00,5220, ; '            GAME QUIT           '
+$81:8EE1             dx 0040,818F03,00,5140, ; '            GAME QUIT           '
+$81:8EE9             dx 0040,818F43,00,5180, ; '        WOULD YOU PLAY ?        '
+$81:8EF1             dx 0040,818F83,00,51E0, ; '            END                 '
+$81:8EF9             dx 0040,818FC3,00,5220, ; '            CONTINUE            '
 $81:8F01             dx FFFF
 }
 
@@ -1813,12 +1817,15 @@ $81:8F01             dx FFFF
 ;;; $8F03: Debug game over menu tilemaps ;;;
 {
 ; '            GAME QUIT           '
-; '        WOULD YOU PLAY ?        '
-; '            END                 '
-; '            CONTINUE            '
 $81:8F03             dw 000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,0070,006A,0076,006E,000F,007A,007E,0072,007D,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F
+
+; '        WOULD YOU PLAY ?        '
 $81:8F43             dw 000F,000F,000F,000F,000F,000F,000F,000F,0080,0078,007E,0075,006D,000F,0082,0078,007E,000F,0079,0075,006A,0082,000F,0085,000F,000F,000F,000F,000F,000F,000F,000F
+
+; '            END                 '
 $81:8F83             dw 000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,006E,0077,006D,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F
+
+; '            CONTINUE            '
 $81:8FC3             dw 000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,006C,0078,0077,007D,0072,0077,007E,006E,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F,000F
 }
 
@@ -1841,7 +1848,7 @@ $81:9020 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:9023 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
 $81:9027 5C 62 84 80 JML $808462[$80:8462]  ; Go to soft reset
 
-$81:902B EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4
+$81:902B EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4 (fade in to continue)
 $81:902E 60          RTS                    ; Return
 
 ; BRANCH_TOGGLE_SELECTION
@@ -1941,7 +1948,7 @@ $81:90D9 A5 51       LDA $51    [$7E:0051]  ;\
 $81:90DB 29 0F 00    AND #$000F             ;|
 $81:90DE C9 0F 00    CMP #$000F             ;} If (brightness) = Fh:
 $81:90E1 D0 03       BNE $03    [$90E6]     ;/
-$81:90E3 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4
+$81:90E3 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4 (main)
 
 $81:90E6 60          RTS
 }
@@ -1955,7 +1962,7 @@ $81:90EF 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $81:90F3 A5 51       LDA $51    [$7E:0051]  ;\
 $81:90F5 29 0F 00    AND #$000F             ;} If (brightness) = 0:
 $81:90F8 D0 03       BNE $03    [$90FD]     ;/
-$81:90FA EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 6
+$81:90FA EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 6 (load game map view)
 
 $81:90FD 60          RTS
 }
@@ -2002,17 +2009,17 @@ $81:9144 D0 36       BNE $36    [$917C]     ;} If newly pressed down: go to BRAN
 $81:9146 89 80 00    BIT #$0080             ;\
 $81:9149 F0 41       BEQ $41    [$918C]     ;} If not newly pressed A: go to BRANCH_NO_CHANGE
 $81:914B A9 B4 00    LDA #$00B4             ;\
-$81:914E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy 0 instruction timer = B4h
+$81:914E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy 0 instruction timer = 180
 $81:9151 AD 50 09    LDA $0950  [$7E:0950]  ;\
 $81:9154 F0 07       BEQ $07    [$915D]     ;} If [game over menu selection] != yes:
 $81:9156 A9 07 00    LDA #$0007             ;\
-$81:9159 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 7
+$81:9159 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 7 (fade out into soft reset)
 $81:915C 60          RTS                    ; Return
 
 $81:915D AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
 $81:9161 C9 1F 00    CMP #$001F             ;} If [loading game state] != starting at Ceres:
 $81:9164 F0 0B       BEQ $0B    [$9171]     ;/
-$81:9166 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 5
+$81:9166 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 5 (fade out into game map view)
 $81:9169 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:916C 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
 $81:9170 60          RTS                    ; Return
@@ -2116,7 +2123,7 @@ $81:9254             dx 00, 32, 927D        ;} Spawn HDMA object for colour math
 $81:9258 22 35 84 88 JSL $888435[$88:8435]  ;\
 $81:925C             dx 00, 31, 928D        ;} Spawn HDMA object for colour math control register B with instruction list $928D
 $81:9260 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
-$81:9264 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2
+$81:9264 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2 (play pre-statue hall music track)
 $81:9267 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $81:926A 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $81:926D 9C 50 09    STZ $0950  [$7E:0950]  ; Game over menu selection = yes
@@ -2222,7 +2229,7 @@ $81:93A0             dw 0027,000F,0000,000F,000F,000F,000F,000F,000F,000F,000F,0
 $81:93E8 C2 30       REP #$30
 $81:93EA 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $81:93EE B0 0A       BCS $0A    [$93FA]     ;} If music is queued: return
-$81:93F0 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 3
+$81:93F0 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 3 (fade in to main)
 $81:93F3 A9 04 00    LDA #$0004             ;\
 $81:93F6 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue pre-statue hall music track
 
@@ -2315,7 +2322,7 @@ $81:94C4 A0 00 00    LDY #$0000             ;\
 $81:94C7 A9 00 00    LDA #$0000             ;|
                                             ;|
 $81:94CA 99 8D 19    STA $198D,y[$7E:198D]  ;|
-$81:94CD C8          INY                    ;} $198D..BC = 0
+$81:94CD C8          INY                    ;} $198D..BC = 0 (menu RAM)
 $81:94CE C8          INY                    ;|
 $81:94CF C0 30 00    CPY #$0030             ;|
 $81:94D2 30 F6       BMI $F6    [$94CA]     ;/
@@ -2486,7 +2493,7 @@ $81:95BB 4C E2 B3    JMP $B3E2  [$81:B3E2]  ;/
 ;;; $95BE: Draw file copy/clear save file info ;;;
 {
 $81:95BE A9 00 00    LDA #$0000             ;\
-$81:95C1 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot A
+$81:95C1 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A
 $81:95C4 9C 96 0F    STZ $0F96  [$7E:0F96]  ; Enemy 0 palette index = 0
 $81:95C7 AD 54 09    LDA $0954  [$7E:0954]  ;\
 $81:95CA 89 01 00    BIT #$0001             ;} If save slot A is empty:
@@ -2496,7 +2503,7 @@ $81:95D2 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = 400h (pal
 
 $81:95D5 20 0F 96    JSR $960F  [$81:960F]  ; Draw file copy save slot A info
 $81:95D8 A9 01 00    LDA #$0001             ;\
-$81:95DB 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot B
+$81:95DB 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B
 $81:95DE 9C 96 0F    STZ $0F96  [$7E:0F96]  ; Enemy 0 palette index = 0
 $81:95E1 AD 54 09    LDA $0954  [$7E:0954]  ;\
 $81:95E4 89 02 00    BIT #$0002             ;} If save slot B is empty:
@@ -2506,7 +2513,7 @@ $81:95EC 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = 400h (pal
 
 $81:95EF 20 3F 96    JSR $963F  [$81:963F]  ; Draw file copy save slot B info
 $81:95F2 A9 02 00    LDA #$0002             ;\
-$81:95F5 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot C
+$81:95F5 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C
 $81:95F8 9C 96 0F    STZ $0F96  [$7E:0F96]  ; Enemy 0 palette index = 0
 $81:95FB AD 54 09    LDA $0954  [$7E:0954]  ;\
 $81:95FE 89 04 00    BIT #$0004             ;} If save slot C is empty:
@@ -2609,7 +2616,7 @@ $81:96C2 C2 30       REP #$30
 $81:96C4 22 48 BA 82 JSL $82BA48[$82:BA48]  ; Draw border around DATA COPY MODE
 $81:96C8 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
 $81:96CC A5 8F       LDA $8F    [$7E:008F]  ;\
-$81:96CE 89 80 10    BIT #$1080             ;} If new pressed A or start: go to BRANCH_SELECT
+$81:96CE 89 80 10    BIT #$1080             ;} If newly pressed A or start: go to BRANCH_SELECT
 $81:96D1 D0 65       BNE $65    [$9738]     ;/
 $81:96D3 89 00 80    BIT #$8000             ;\
 $81:96D6 D0 30       BNE $30    [$9708]     ;} If newly pressed B: go to BRANCH_B
@@ -2628,7 +2635,7 @@ $81:96ED 10 6F       BPL $6F    [$975E]     ;} If [X] >= 4: go to set file copy 
 $81:96EF E0 03       CPX #$03               ;\
 $81:96F1 F0 05       BEQ $05    [$96F8]     ;} If [X] != 3:
 $81:96F3 3C 5B 97    BIT $975B,x            ;\
-$81:96F6 F0 F2       BEQ $F2    [$96EA]     ;} If [non-empty save slots] & (1 << [X]) = 0 (save slot is empty): go to LOOP_DOWN
+$81:96F6 F0 F2       BEQ $F2    [$96EA]     ;} If [non-empty save slots] & 1 << [X] = 0 (save slot is empty): go to LOOP_DOWN
 
 $81:96F8 8E B5 19    STX $19B5  [$7E:19B5]  ; File copy menu selection = [X]
 $81:96FB C2 30       REP #$30
@@ -2736,7 +2743,7 @@ $81:97B8 69 6A 20    ADC #$206A             ;} Menu tilemap tile (10h, 5) = 206A
 $81:97BB 8F 60 37 7E STA $7E3760[$7E:3760]  ;/
 $81:97BF 20 B5 95    JSR $95B5  [$81:95B5]  ; Load menu exit tilemap
 $81:97C2 A9 00 00    LDA #$0000             ;\
-$81:97C5 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot A
+$81:97C5 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A
 $81:97C8 A2 00 04    LDX #$0400             ; X = 400h (palette 2)
 $81:97CB AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:97CE F0 03       BEQ $03    [$97D3]     ;} If [file copy source slot] != 0:
@@ -2746,7 +2753,7 @@ $81:97D3 8A          TXA                    ;\
 $81:97D4 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:97D7 20 0F 96    JSR $960F  [$81:960F]  ; Draw file copy save slot A info
 $81:97DA A9 01 00    LDA #$0001             ;\
-$81:97DD 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot B
+$81:97DD 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B
 $81:97E0 A2 00 04    LDX #$0400             ; X = 400h (palette 2)
 $81:97E3 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:97E6 C9 01 00    CMP #$0001             ;} If [file copy source slot] != 1:
@@ -2757,7 +2764,7 @@ $81:97EE 8A          TXA                    ;\
 $81:97EF 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:97F2 20 3F 96    JSR $963F  [$81:963F]  ; Draw file copy save slot B info
 $81:97F5 A9 02 00    LDA #$0002             ;\
-$81:97F8 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot C
+$81:97F8 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C
 $81:97FB A2 00 04    LDX #$0400             ; X = 400h (palette 2)
 $81:97FE AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9801 C9 02 00    CMP #$0002             ;} If [file copy source slot] != 2:
@@ -2777,7 +2784,7 @@ $81:9813 C2 30       REP #$30
 $81:9815 22 48 BA 82 JSL $82BA48[$82:BA48]  ; Draw border around DATA COPY MODE
 $81:9819 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
 $81:981D A5 8F       LDA $8F    [$7E:008F]  ;\
-$81:981F 89 80 10    BIT #$1080             ;} If new pressed A or start: go to BRANCH_SELECT
+$81:981F 89 80 10    BIT #$1080             ;} If newly pressed A or start: go to BRANCH_SELECT
 $81:9822 D0 55       BNE $55    [$9879]     ;/
 $81:9824 89 00 80    BIT #$8000             ;\
 $81:9827 D0 36       BNE $36    [$985F]     ;} If newly pressed B: go to BRANCH_B
@@ -2905,7 +2912,7 @@ $81:991F 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 ;;; $9922: Draw file copy/clear confirmation save file info ;;;
 {
 $81:9922 A9 00 00    LDA #$0000             ;\
-$81:9925 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot A
+$81:9925 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A
 $81:9928 A2 00 00    LDX #$0000             ; X = 0 (palette 0)
 $81:992B AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:992E F0 08       BEQ $08    [$9938]     ;} If [file copy source slot] != 0:
@@ -2917,7 +2924,7 @@ $81:9938 8A          TXA                    ;\
 $81:9939 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:993C 20 0F 96    JSR $960F  [$81:960F]  ; Draw file copy save slot A info
 $81:993F A9 01 00    LDA #$0001             ;\
-$81:9942 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot B
+$81:9942 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B
 $81:9945 A2 00 00    LDX #$0000             ; X = 0 (palette 0)
 $81:9948 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:994B 3A          DEC A                  ;} If [file copy source slot] != 1:
@@ -2931,7 +2938,7 @@ $81:9957 8A          TXA                    ;\
 $81:9958 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:995B 20 3F 96    JSR $963F  [$81:963F]  ; Draw file copy save slot B info
 $81:995E A9 02 00    LDA #$0002             ;\
-$81:9961 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot C
+$81:9961 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C
 $81:9964 A2 00 00    LDX #$0000             ; X = 0 (palette 0)
 $81:9967 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:996A C9 02 00    CMP #$0002             ;} If [file copy source slot] != 2:
@@ -3200,7 +3207,7 @@ $81:9B64 C2 30       REP #$30
 $81:9B66 22 5B BA 82 JSL $82BA5B[$82:BA5B]  ; Draw border around DATA CLEAR MODE
 $81:9B6A 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
 $81:9B6E A5 8F       LDA $8F    [$7E:008F]  ;\
-$81:9B70 89 80 10    BIT #$1080             ;} If new pressed A or start: go to BRANCH_SELECT
+$81:9B70 89 80 10    BIT #$1080             ;} If newly pressed A or start: go to BRANCH_SELECT
 $81:9B73 D0 5F       BNE $5F    [$9BD4]     ;/
 $81:9B75 89 00 80    BIT #$8000             ;\
 $81:9B78 D0 2B       BNE $2B    [$9BA5]     ;} If newly pressed B: go to BRANCH_EXIT
@@ -3219,7 +3226,7 @@ $81:9B8F 10 5E       BPL $5E    [$9BEF]     ;} If [X] >= 4: go to set file clear
 $81:9B91 E0 03       CPX #$03               ;\
 $81:9B93 F0 05       BEQ $05    [$9B9A]     ;} If [X] != 3:
 $81:9B95 3C EC 9B    BIT $9BEC,x            ;\
-$81:9B98 F0 F2       BEQ $F2    [$9B8C]     ;} If [non-empty save slots] & (1 << [X]) = 0 (save slot is empty): go to LOOP_DOWN
+$81:9B98 F0 F2       BEQ $F2    [$9B8C]     ;} If [non-empty save slots] & 1 << [X] = 0 (save slot is empty): go to LOOP_DOWN
 
 $81:9B9A 8E B5 19    STX $19B5  [$7E:19B5]  ; File clear menu selection = [X]
 $81:9B9D A9 37       LDA #$37               ;\
@@ -3294,7 +3301,7 @@ $81:9C1E 18          CLC                    ;|
 $81:9C1F 69 6A 20    ADC #$206A             ;} Menu tilemap tile (15h, 5) = 206Ah + [file clear slot] (tile A/B/C)
 $81:9C22 8F 6A 37 7E STA $7E376A[$7E:376A]  ;/
 $81:9C26 A9 03 00    LDA #$0003             ;\
-$81:9C29 8D B9 19    STA $19B9  [$7E:19B9]  ;} $19B9 = 3
+$81:9C29 8D B9 19    STA $19B9  [$7E:19B9]  ;} File copy destination slot = 3
 $81:9C2C 20 ED 98    JSR $98ED  [$81:98ED]  ; Draw file clear confirmation
 $81:9C2F EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 18h (confirmation)
 $81:9C32 9C B5 19    STZ $19B5  [$7E:19B5]  ; File clear menu selection = 0
@@ -3385,7 +3392,7 @@ $81:9CDE 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file
 $81:9CE1 AD B7 19    LDA $19B7  [$7E:19B7]  ; A = [file clear slot]
 $81:9CE4 22 85 80 81 JSL $818085[$81:8085]  ; Clear SRAM <-- again >_<;
 $81:9CE8 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
-$81:9CEB 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [file clear slot] <-- this shouldn't be here, but since areas 0/1/2 are all cleared, it doesn't matter
+$81:9CEB 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [file clear slot] <-- this makes no sense and shouldn't be here, but since areas 0/1/2 are all cleared, it doesn't matter
 $81:9CEE 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $81:9CF2 A2 00 05    LDX #$0500             ;\
 $81:9CF5 A9 0F 00    LDA #$000F             ;|
@@ -3520,34 +3527,34 @@ $81:9DE5 8B          PHB
 $81:9DE6 4B          PHK                    ;\
 $81:9DE7 AB          PLB                    ;} DB = $81
 $81:9DE8 BD 8D 19    LDA $198D,x[$7E:1991]  ;\
-$81:9DEB F0 21       BEQ $21    [$9E0E]     ;} If [slot Samus helmet timer] = 0: go to BRANCH_TIMER_HANDLED
+$81:9DEB F0 21       BEQ $21    [$9E0E]     ;} If [slot Samus helmet animation timer] = 0: go to BRANCH_TIMER_HANDLED
 $81:9DED 3A          DEC A                  ;\
-$81:9DEE 9D 8D 19    STA $198D,x[$7E:1991]  ;} Decrement slot Samus helmet timer
-$81:9DF1 D0 1B       BNE $1B    [$9E0E]     ; If [slot Samus helmet timer] != 0: go to BRANCH_TIMER_HANDLED
+$81:9DEE 9D 8D 19    STA $198D,x[$7E:1991]  ;} Decrement slot Samus helmet animation timer
+$81:9DF1 D0 1B       BNE $1B    [$9E0E]     ; If [slot Samus helmet animation timer] != 0: go to BRANCH_TIMER_HANDLED
 $81:9DF3 A9 08 00    LDA #$0008             ;\
-$81:9DF6 9D 8D 19    STA $198D,x[$7E:1991]  ;} Slot Samus helmet timer = 8
+$81:9DF6 9D 8D 19    STA $198D,x[$7E:1991]  ;} Slot Samus helmet animation timer = 8
 $81:9DF9 BD 97 19    LDA $1997,x[$7E:199B]  ;\
-$81:9DFC 1A          INC A                  ;} Increment $1997 + [X]
+$81:9DFC 1A          INC A                  ;} Increment slot Samus helmet animation frame
 $81:9DFD C9 08 00    CMP #$0008             ;\
-$81:9E00 30 09       BMI $09    [$9E0B]     ;} If [$1997 + [X]] >= 8:
+$81:9E00 30 09       BMI $09    [$9E0B]     ;} If [slot Samus helmet animation frame] >= 8:
 $81:9E02 A9 00 00    LDA #$0000             ;\
-$81:9E05 9D 8D 19    STA $198D,x            ;} Slot Samus helmet timer = 0
-$81:9E08 A9 07 00    LDA #$0007             ; $1997 + [X] = 7
+$81:9E05 9D 8D 19    STA $198D,x            ;} Slot Samus helmet animation timer = 0
+$81:9E08 A9 07 00    LDA #$0007             ; Slot Samus helmet animation frame = 7
 
 $81:9E0B 9D 97 19    STA $1997,x[$7E:199B]
 
 ; BRANCH_TIMER_HANDLED
 $81:9E0E BD 97 19    LDA $1997,x[$7E:199B]  ;\
-$81:9E11 0A          ASL A                  ;} Y = [$1997 + [X]] * 2
+$81:9E11 0A          ASL A                  ;} Y = [slot Samus helmet animation frame] * 2
 $81:9E12 A8          TAY                    ;/
 $81:9E13 A9 00 0E    LDA #$0E00             ;\
 $81:9E16 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
-$81:9E18 B9 2C 9E    LDA $9E2C,y[$81:9E2C]  ; A = [$9E2C + [$1997 + [X]] * 2]
+$81:9E18 B9 2C 9E    LDA $9E2C,y[$81:9E2C]  ; A = [$9E2C + [Y]]
 $81:9E1B 48          PHA
 $81:9E1C BD AB 19    LDA $19AB,x[$7E:19AF]  ;\
-$81:9E1F A8          TAY                    ;} Y = [$19AB + [X]]
+$81:9E1F A8          TAY                    ;} Y = [slot Samus helmet Y position]
 $81:9E20 BD A1 19    LDA $19A1,x[$7E:19A5]  ;\
-$81:9E23 AA          TAX                    ;} X = [$19A1 + [X]]
+$81:9E23 AA          TAX                    ;} X = [slot Samus helmet X position]
 $81:9E24 68          PLA
 $81:9E25 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
 $81:9E29 AB          PLB
@@ -3562,12 +3569,12 @@ $81:9E2C             dw 002C, 002D, 002E, 002F, 0030, 0031, 0032, 0033, 0033
 {
 $81:9E3E C2 30       REP #$30
 $81:9E40 8B          PHB
-$81:9E41 4B          PHK
-$81:9E42 AB          PLB
-$81:9E43 AD 27 07    LDA $0727  [$7E:0727]
-$81:9E46 0A          ASL A
-$81:9E47 AA          TAX
-$81:9E48 FC 4D 9E    JSR ($9E4D,x)[$81:A32A]
+$81:9E41 4B          PHK                    ;\
+$81:9E42 AB          PLB                    ;} DB = $81
+$81:9E43 AD 27 07    LDA $0727  [$7E:0727]  ;\
+$81:9E46 0A          ASL A                  ;|
+$81:9E47 AA          TAX                    ;} Execute [$9E4D + [menu index] * 2]
+$81:9E48 FC 4D 9E    JSR ($9E4D,x)[$81:A32A];/
 $81:9E4B AB          PLB
 $81:9E4C 6B          RTL
 
@@ -3663,7 +3670,7 @@ $81:9F13 A0 36 B4    LDY #$B436             ;\
 $81:9F16 A2 46 01    LDX #$0146             ;} Load menu tilemap $B40A to (3, 5) (SAMUS A)
 $81:9F19 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F1C A9 00 00    LDA #$0000             ;\
-$81:9F1F 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot A (carry set if corrupt)
+$81:9F1F 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A (carry set if corrupt)
 $81:9F22 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F25 A2 5C 01    LDX #$015C             ; X = 15Ch (Eh, 5)
 $81:9F28 AD 54 09    LDA $0954  [$7E:0954]  ;\
@@ -3681,7 +3688,7 @@ $81:9F49 A2 86 02    LDX #$0286             ;|
 $81:9F4C 9C 96 0F    STZ $0F96  [$7E:0F96]  ;} Load menu tilemap $B456 to (3, Ah) (SAMUS B)
 $81:9F4F 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F52 A9 01 00    LDA #$0001             ;\
-$81:9F55 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot B (carry set if corrupt)
+$81:9F55 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B (carry set if corrupt)
 $81:9F58 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F5B A2 9C 02    LDX #$029C             ; X = 29Ch (Eh, Ah)
 $81:9F5E AD 54 09    LDA $0954  [$7E:0954]  ;\
@@ -3699,7 +3706,7 @@ $81:9F7F A2 C6 03    LDX #$03C6             ;|
 $81:9F82 9C 96 0F    STZ $0F96  [$7E:0F96]  ;} Load menu tilemap $B476 to (3, Fh) (SAMUS C)
 $81:9F85 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F88 A9 02 00    LDA #$0002             ;\
-$81:9F8B 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM slot C (carry set if corrupt)
+$81:9F8B 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C (carry set if corrupt)
 $81:9F8E 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F91 A2 DC 03    LDX #$03DC             ; X = 3DCh (Eh, Fh)
 $81:9F94 AD 54 09    LDA $0954  [$7E:0954]  ;\
@@ -3738,45 +3745,50 @@ $81:9FE4 9C 96 0F    STZ $0F96  [$7E:0F96]  ;} Load menu tilemap $B4D8 to (4, 1A
 $81:9FE7 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9FEA 20 9F 96    JSR $969F  [$81:969F]  ; Queue transfer of menu tilemap to VRAM BG1
 $81:9FED A9 01 00    LDA #$0001             ;\
-$81:9FF0 8D 8D 19    STA $198D  [$7E:198D]  ;} $198D = 1
+$81:9FF0 8D 8D 19    STA $198D  [$7E:198D]  ;} Menu selection missile animation timer = 1
 $81:9FF3 3A          DEC A                  ;\
-$81:9FF4 8D 8F 19    STA $198F  [$7E:198F]  ;} $198F = 0
-$81:9FF7 8D 91 19    STA $1991  [$7E:1991]  ; $1991 = 0
-$81:9FFA 8D 93 19    STA $1993  [$7E:1993]  ; $1993 = 0
-$81:9FFD 8D 95 19    STA $1995  [$7E:1995]  ; $1995 = 0
-$81:A000 8D 97 19    STA $1997  [$7E:1997]  ; $1997 = 0
-$81:A003 8D 99 19    STA $1999  [$7E:1999]  ; $1999 = 0
-$81:A006 8D 9B 19    STA $199B  [$7E:199B]  ; $199B = 0
-$81:A009 8D 9D 19    STA $199D  [$7E:199D]  ; $199D = 0
-$81:A00C 8D 9F 19    STA $199F  [$7E:199F]  ; $199F = 0
-$81:A00F 8D A1 19    STA $19A1  [$7E:19A1]  ; $19A1 = 0
-$81:A012 8D AB 19    STA $19AB  [$7E:19AB]  ; $19AB = 0
-$81:A015 8D A3 19    STA $19A3  [$7E:19A3]  ; $19A3 = 0
-$81:A018 8D AD 19    STA $19AD  [$7E:19AD]  ; $19AD = 0
+$81:9FF4 8D 8F 19    STA $198F  [$7E:198F]  ;} File copy arrow palette timer = 0
+$81:9FF7 8D 91 19    STA $1991  [$7E:1991]  ; Slot A Samus helmet animation timer = 0
+$81:9FFA 8D 93 19    STA $1993  [$7E:1993]  ; Slot B Samus helmet animation timer = 0
+$81:9FFD 8D 95 19    STA $1995  [$7E:1995]  ; Slot C Samus helmet animation timer = 0
+$81:A000 8D 97 19    STA $1997  [$7E:1997]  ; Menu selection missile animation frame = 0
+$81:A003 8D 99 19    STA $1999  [$7E:1999]  ; $1999 = 0 (never read)
+$81:A006 8D 9B 19    STA $199B  [$7E:199B]  ; Slot A Samus helmet animation frame = 0
+$81:A009 8D 9D 19    STA $199D  [$7E:199D]  ; Slot B Samus helmet animation frame = 0
+$81:A00C 8D 9F 19    STA $199F  [$7E:199F]  ; Slot C Samus helmet animation frame = 0
+$81:A00F 8D A1 19    STA $19A1  [$7E:19A1]  ; Menu selection missile X position = 0
+$81:A012 8D AB 19    STA $19AB  [$7E:19AB]  ; Menu selection missile Y position = 0
+$81:A015 8D A3 19    STA $19A3  [$7E:19A3]  ; $19A3 = 0 (never read)
+$81:A018 8D AD 19    STA $19AD  [$7E:19AD]  ; $19AD = 0 (never read)
 $81:A01B A9 64 00    LDA #$0064             ;\
-$81:A01E 8D A5 19    STA $19A5  [$7E:19A5]  ;} $19A5 = 100
-$81:A021 8D A7 19    STA $19A7  [$7E:19A7]  ; $19A7 = 100
-$81:A024 8D A9 19    STA $19A9  [$7E:19A9]  ; $19A9 = 100
+$81:A01E 8D A5 19    STA $19A5  [$7E:19A5]  ;} Slot A Samus helmet X position = 100
+$81:A021 8D A7 19    STA $19A7  [$7E:19A7]  ; Slot B Samus helmet X position = 100
+$81:A024 8D A9 19    STA $19A9  [$7E:19A9]  ; Slot C Samus helmet X position = 100
 $81:A027 A9 2F 00    LDA #$002F             ;\
-$81:A02A 8D AF 19    STA $19AF  [$7E:19AF]  ;} $19AF = 2Fh
+$81:A02A 8D AF 19    STA $19AF  [$7E:19AF]  ;} Slot A Samus helmet Y position = 2Fh
 $81:A02D A9 57 00    LDA #$0057             ;\
-$81:A030 8D B1 19    STA $19B1  [$7E:19B1]  ;} $19B1 = 57h
+$81:A030 8D B1 19    STA $19B1  [$7E:19B1]  ;} Slot B Samus helmet Y position = 57h
 $81:A033 A9 7F 00    LDA #$007F             ;\
-$81:A036 8D B3 19    STA $19B3  [$7E:19B3]  ;} $19B3 = 7Fh
+$81:A036 8D B3 19    STA $19B3  [$7E:19B3]  ;} Slot C Samus helmet Y position = 7Fh
 $81:A039 A9 01 00    LDA #$0001             ;\
 $81:A03C 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $81:A03F 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $81:A042 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
 $81:A046 EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index
-$81:A049 9C B5 19    STZ $19B5  [$7E:19B5]  ; $19B5 = 0
-$81:A04C 9C B7 19    STZ $19B7  [$7E:19B7]  ; $19B7 = 0
-$81:A04F 9C B9 19    STZ $19B9  [$7E:19B9]  ; $19B9 = 0
+$81:A049 9C B5 19    STZ $19B5  [$7E:19B5]  ; File copy/clear menu selection = 0
+$81:A04C 9C B7 19    STZ $19B7  [$7E:19B7]  ; File copy source slot / file clear slot = 0
+$81:A04F 9C B9 19    STZ $19B9  [$7E:19B9]  ; File copy destination slot = 0
 $81:A052 60          RTS
 }
 
 
-;;; $A053: Load from SRAM ;;;
+;;; $A053: Load from SRAM / clear SRAM ;;;
 {
+;; Parameter:
+;;     A: SRAM slot (0, 1 or 2)
+;; Returns:
+;;     Carry: Set if SRAM was corrupt
+
 $81:A053 22 85 80 81 JSL $818085[$81:8085]
 $81:A057 60          RTS
 }
@@ -3823,7 +3835,7 @@ $81:A096 4C E2 B3    JMP $B3E2  [$81:B3E2]  ;} Go to load menu tilemap $B4AC to 
 
 $81:A099 86 1A       STX $1A    [$7E:001A]  ; $1A = [X]
 $81:A09B A0 96 B4    LDY #$B496             ;\
-$81:A09E 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;} Go to load menu tilemap $B496 to ([X] / 2 % 20h, [X] / 40h) (ENERGY)
+$81:A09E 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;} Load menu tilemap $B496 to ([X] / 2 % 20h, [X] / 40h) (ENERGY)
 $81:A0A1 A5 1A       LDA $1A    [$7E:001A]  ;\
 $81:A0A3 18          CLC                    ;|
 $81:A0A4 69 08 00    ADC #$0008             ;} X = [$1A] + 8 (4 columns right)
@@ -4231,7 +4243,7 @@ $81:A3BE E8          INX                    ; Increment X
 $81:A3BF E0 06 00    CPX #$0006             ;\
 $81:A3C2 30 EB       BMI $EB    [$A3AF]     ;} If [X] < 6: go to LOOP_AREA_COLOURS
 $81:A3C4 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2 (load foreground tilemap)
-$81:A3C7 9C 87 07    STZ $0787  [$7E:0787]  ; $0787 = 0
+$81:A3C7 9C 87 07    STZ $0787  [$7E:0787]  ; $0787 = 0 (never read)
 $81:A3CA E2 20       SEP #$20               ;\
 $81:A3CC A9 02       LDA #$02               ;} Main screen layers = BG2
 $81:A3CE 85 69       STA $69    [$7E:0069]  ;/
@@ -5424,7 +5436,7 @@ $81:AD67 29 FB FF    AND #$FFFB             ;} Disable BG3
 $81:AD6A 85 69       STA $69    [$7E:0069]  ;/
 $81:AD6C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ah (room select map)
 $81:AD6F 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
-$81:AD72 9C FF 05    STZ $05FF  [$7E:05FF]  ; $05FF = 0
+$81:AD72 9C FF 05    STZ $05FF  [$7E:05FF]  ; Map scrolling speed index = 0
 $81:AD75 9C 76 07    STZ $0776  [$7E:0776]  ; Samus position indicator animation frame = 0
 $81:AD78 9C 78 07    STZ $0778  [$7E:0778]  ; Samus position indicator animation timer = 0
 $81:AD7B 9C 7A 07    STZ $077A  [$7E:077A]  ; Samus position indicator animation loop counter = 0
@@ -5509,16 +5521,16 @@ $81:AE0D AA          TAX                    ;|
 $81:AE0E BD 00 00    LDA $0000,x            ;/
 
 $81:AE11 F0 FE       BEQ $FE    [$AE11]     ; If [A] = 0: crash
-$81:AE13 85 00       STA $00    [$7E:0000]  ; $00 = [A]
+$81:AE13 85 00       STA $00    [$7E:0000]  ; $00 = [A] (save points)
 $81:AE15 AD 8B 07    LDA $078B  [$7E:078B]  ;\
 $81:AE18 0A          ASL A                  ;|
 $81:AE19 0A          ASL A                  ;} Y = [load station index] * 4
 $81:AE1A A8          TAY                    ;/
 $81:AE1B B7 00       LDA [$00],y            ;\
-$81:AE1D 85 12       STA $12    [$7E:0012]  ;} $12 = [[$00] + [Y]]
+$81:AE1D 85 12       STA $12    [$7E:0012]  ;} $12 = [[$00] + [Y]] (first save point X position)
 $81:AE1F C8          INY                    ;\
 $81:AE20 C8          INY                    ;|
-$81:AE21 B7 00       LDA [$00],y            ;} $14 = [[$00] + [Y] + 2]
+$81:AE21 B7 00       LDA [$00],y            ;} $14 = [[$00] + [Y] + 2] (first save point Y position)
 $81:AE23 85 14       STA $14    [$7E:0014]  ;/
 $81:AE25 AD 8B 07    LDA $078B  [$7E:078B]  ;\
 $81:AE28 C9 10 00    CMP #$0010             ;} If [load station index] >= 10h: go to BRANCH_DEBUG_SAVE_POINTS
@@ -5530,7 +5542,7 @@ $81:AE2F 46 18       LSR $18    [$7E:0018]  ; $18 >>= 1
 $81:AE31 90 12       BCC $12    [$AE45]     ; If carry set:
 $81:AE33 AD 8B 07    LDA $078B  [$7E:078B]  ;\
 $81:AE36 0A          ASL A                  ;|
-$81:AE37 0A          ASL A                  ;} A = [[$00] + [load station index] * 4]
+$81:AE37 0A          ASL A                  ;} A = [[$00] + [load station index] * 4] (save point / debug elevator X position)
 $81:AE38 A8          TAY                    ;|
 $81:AE39 B7 00       LDA [$00],y            ;/
 $81:AE3B C9 FE FF    CMP #$FFFE             ;\
@@ -5547,7 +5559,7 @@ $81:AE4E 30 DF       BMI $DF    [$AE2F]     ;/
 ; LOOP_DEBUG_SAVE_POINTS
 $81:AE50 AD 8B 07    LDA $078B  [$7E:078B]  ;\
 $81:AE53 0A          ASL A                  ;|
-$81:AE54 0A          ASL A                  ;} A = [[$00] + [load station index] * 4]
+$81:AE54 0A          ASL A                  ;} A = [[$00] + [load station index] * 4] (debug save point X position)
 $81:AE55 A8          TAY                    ;|
 $81:AE56 B7 00       LDA [$00],y            ;/
 $81:AE58 C9 FF FF    CMP #$FFFF             ;\
@@ -5573,24 +5585,24 @@ $81:AE77 AD 8B 07    LDA $078B  [$7E:078B]  ;\
 $81:AE7A 0A          ASL A                  ;|
 $81:AE7B 0A          ASL A                  ;} Y = [load station index] * 4
 $81:AE7C A8          TAY                    ;/
-$81:AE7D B7 00       LDA [$00],y            ; A = [[$00] + [Y]]
+$81:AE7D B7 00       LDA [$00],y            ; A = [[$00] + [Y]] (icon X position)
 $81:AE7F C5 B1       CMP $B1    [$7E:00B1]  ;\
 $81:AE81 30 08       BMI $08    [$AE8B]     ;|
 $81:AE83 38          SEC                    ;|
-$81:AE84 E9 00 01    SBC #$0100             ;} If 0 <= [A] - [BG1 X scroll] < 100h: go to BRANCH_NO_X_SCROLL
+$81:AE84 E9 00 01    SBC #$0100             ;} If 0 <= (icon X position) - [BG1 X scroll] < 100h: go to BRANCH_NO_X_SCROLL
 $81:AE87 C5 B1       CMP $B1    [$7E:00B1]  ;|
 $81:AE89 30 19       BMI $19    [$AEA4]     ;/
 
 $81:AE8B B7 00       LDA [$00],y            ;\
 $81:AE8D 38          SEC                    ;|
-$81:AE8E E5 12       SBC $12    [$7E:0012]  ;|
+$81:AE8E E5 12       SBC $12    [$7E:0012]  ;} A = [BG1 X scroll] + (icon X position) - (first save point X position)
 $81:AE90 18          CLC                    ;|
-$81:AE91 65 B1       ADC $B1    [$7E:00B1]  ;|
-$81:AE93 10 05       BPL $05    [$AE9A]     ;|
+$81:AE91 65 B1       ADC $B1    [$7E:00B1]  ;/
+$81:AE93 10 05       BPL $05    [$AE9A]     ;\
 $81:AE95 A9 00 00    LDA #$0000             ;|
-$81:AE98 80 08       BRA $08    [$AEA2]     ;} BG1 X scroll = clamp([BG1 X scroll] + [A] - [$12], 0, [map min X scroll])
+$81:AE98 80 08       BRA $08    [$AEA2]     ;|
                                             ;|
-$81:AE9A CD AC 05    CMP $05AC  [$7E:05AC]  ;|
+$81:AE9A CD AC 05    CMP $05AC  [$7E:05AC]  ;} BG1 X scroll = clamp([A], 0, [map min X scroll])
 $81:AE9D 30 03       BMI $03    [$AEA2]     ;|
 $81:AE9F AD AC 05    LDA $05AC  [$7E:05AC]  ;|
                                             ;|
@@ -5598,23 +5610,23 @@ $81:AEA2 85 B1       STA $B1    [$7E:00B1]  ;/
 
 ; BRANCH_NO_X_SCROLL
 $81:AEA4 C8          INY                    ;\
-$81:AEA5 C8          INY                    ;} A = [[$00] + [Y] + 2]
+$81:AEA5 C8          INY                    ;} A = [[$00] + [Y] + 2] (icon Y position)
 $81:AEA6 B7 00       LDA [$00],y            ;/
 $81:AEA8 C5 B3       CMP $B3    [$7E:00B3]  ;\
 $81:AEAA 30 08       BMI $08    [$AEB4]     ;|
 $81:AEAC 38          SEC                    ;|
-$81:AEAD E9 A1 00    SBC #$00A1             ;} If 0 <= [A] - [BG1 Y scroll] < A1h: return
+$81:AEAD E9 A1 00    SBC #$00A1             ;} If 0 <= (icon Y position) - [BG1 Y scroll] < A1h: return
 $81:AEB0 C5 B3       CMP $B3    [$7E:00B3]  ;|
 $81:AEB2 30 12       BMI $12    [$AEC6]     ;/
 
 $81:AEB4 B7 00       LDA [$00],y            ;\
 $81:AEB6 38          SEC                    ;|
-$81:AEB7 E5 14       SBC $14    [$7E:0014]  ;|
+$81:AEB7 E5 14       SBC $14    [$7E:0014]  ;} A = [BG1 Y scroll] + (icon Y position) - (first save point Y position)
 $81:AEB9 18          CLC                    ;|
-$81:AEBA 65 B3       ADC $B3    [$7E:00B3]  ;|
-$81:AEBC CD B0 05    CMP $05B0  [$7E:05B0]  ;} BG1 Y scroll = min([BG1 Y scroll] + [A] - [$14], [map min Y scroll])
+$81:AEBA 65 B3       ADC $B3    [$7E:00B3]  ;/
+$81:AEBC CD B0 05    CMP $05B0  [$7E:05B0]  ;\
 $81:AEBF 30 03       BMI $03    [$AEC4]     ;|
-$81:AEC1 AD B0 05    LDA $05B0  [$7E:05B0]  ;|
+$81:AEC1 AD B0 05    LDA $05B0  [$7E:05B0]  ;} BG1 Y scroll = min([A], [map min Y scroll])
                                             ;|
 $81:AEC4 85 B3       STA $B3    [$7E:00B3]  ;/
 
@@ -5679,9 +5691,9 @@ $81:AF1E 60          RTS                    ; Return
 $81:AF1F AD FD 05    LDA $05FD  [$7E:05FD]  ;\
 $81:AF22 CD 58 AF    CMP $AF58  [$81:AF58]  ;} If [map scrolling direction] != down: return
 $81:AF25 D0 F5       BNE $F5    [$AF1C]     ;/
-$81:AF27 9C FB 05    STZ $05FB  [$7E:05FB]  ; $05FB = 0
+$81:AF27 9C FB 05    STZ $05FB  [$7E:05FB]  ; Map scrolling gear switch timer = 0
 $81:AF2A 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
-$81:AF2D 9C FF 05    STZ $05FF  [$7E:05FF]  ; $05FF = 0
+$81:AF2D 9C FF 05    STZ $05FF  [$7E:05FF]  ; Map scrolling speed index = 0
 $81:AF30 80 EA       BRA $EA    [$AF1C]     ; Return
 
 ; Map scroll arrow data
@@ -5786,7 +5798,7 @@ $81:AFE4 30 F5       BMI $F5    [$AFDB]     ;} If [X] < 6 (Ceres): go to LOOP
 $81:AFE6 AE 9F 07    LDX $079F  [$7E:079F]  ; X = [area index]
 $81:AFE9 20 D3 A3    JSR $A3D3  [$81:A3D3]  ; Load active area map foreground colours
 $81:AFEC AC 9F 07    LDY $079F  [$7E:079F]  ; Y = [area index]
-$81:AFEF 20 8A A5    JSR $A58A  [$81:A58A]  ; Go to load area select background tilemap
+$81:AFEF 20 8A A5    JSR $A58A  [$81:A58A]  ; Load area select background tilemap
 $81:AFF2 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 11h (load foreground tilemap)
 $81:AFF5 60          RTS
 }

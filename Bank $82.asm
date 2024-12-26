@@ -1598,7 +1598,7 @@ $82:8CBA BD AD 1A    LDA $1AAD,x[$7E:1ABB]  ;\
 $82:8CBD 85 14       STA $14    [$7E:0014]  ;} $14 = [game options menu object X position]
 $82:8CBF BD BD 1A    LDA $1ABD,x[$7E:1ACB]  ;\
 $82:8CC2 85 12       STA $12    [$7E:0012]  ;} $12 = [game options menu object Y position]
-$82:8CC4 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
+$82:8CC4 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM - Y origin on-screen
 
 $82:8CC8 CA          DEX                    ;\
 $82:8CC9 CA          DEX                    ;} X -= 2

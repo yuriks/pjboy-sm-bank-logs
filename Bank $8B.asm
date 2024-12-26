@@ -3501,26 +3501,26 @@ $8B:975A BD BD 1A    LDA $1ABD,x[$7E:1ADB]  ;\
 $8B:975D 85 16       STA $16    [$7E:0016]  ;} $16 = [cinematic sprite object palette index]
 $8B:975F BD 7D 1A    LDA $1A7D,x[$7E:1A9B]  ;\
 $8B:9762 38          SEC                    ;|
-$8B:9763 ED 11 09    SBC $0911  [$7E:0911]  ;} $14 = [cinematic sprite object X position] - [layer 1 X position]
+$8B:9763 ED 11 09    SBC $0911  [$7E:0911]  ;} $14 = [cinematic sprite object X position] - [layer 1 X position] (spritemap x origin)
 $8B:9766 85 14       STA $14    [$7E:0014]  ;/
 $8B:9768 BD 9D 1A    LDA $1A9D,x[$7E:1ABB]  ;\
 $8B:976B 38          SEC                    ;|
-$8B:976C ED 15 09    SBC $0915  [$7E:0915]  ;} $12 = [cinematic sprite object Y position] - [layer 1 Y position]
+$8B:976C ED 15 09    SBC $0915  [$7E:0915]  ;} $12 = [cinematic sprite object Y position] - [layer 1 Y position] (spritemap Y origin)
 $8B:976F 85 12       STA $12    [$7E:0012]  ;/
 $8B:9771 89 00 FF    BIT #$FF00             ;\
-$8B:9774 D0 0F       BNE $0F    [$9785]     ;} If 0 <= [$12] < 100h:
+$8B:9774 D0 0F       BNE $0F    [$9785]     ;} If 0 <= (spritemap Y origin) < 100h:
 $8B:9776 18          CLC                    ;\
 $8B:9777 69 80 00    ADC #$0080             ;|
-$8B:977A C9 FF 01    CMP #$01FF             ;} If -80h <= [$12] < 17Fh: (redundant check)
+$8B:977A C9 FF 01    CMP #$01FF             ;} If -80h <= (spritemap Y origin) < 17Fh: (redundant check)
 $8B:977D B0 13       BCS $13    [$9792]     ;/
-$8B:977F 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
+$8B:977F 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM - Y origin on-screen
 $8B:9783 80 0D       BRA $0D    [$9792]
 
-$8B:9785 18          CLC                    ;\ Else (not 0 <= [$12] < 100h):
+$8B:9785 18          CLC                    ;\ Else (not 0 <= (spritemap Y origin) < 100h):
 $8B:9786 69 80 00    ADC #$0080             ;|
-$8B:9789 C9 FF 01    CMP #$01FF             ;} If -80h <= [$12] < 17Fh:
+$8B:9789 C9 FF 01    CMP #$01FF             ;} If -80h <= (spritemap Y origin) < 17Fh:
 $8B:978C B0 04       BCS $04    [$9792]     ;/
-$8B:978E 22 53 88 81 JSL $818853[$81:8853]  ; Add spritemap to OAM off-screen
+$8B:978E 22 53 88 81 JSL $818853[$81:8853]  ; Add spritemap to OAM - Y origin off-screen
 
 ; BRANCH_NEXT
 $8B:9792 CA          DEX                    ;\
@@ -3550,26 +3550,26 @@ $8B:97AD BD BD 1A    LDA $1ABD,x[$7E:1ADB]  ;\
 $8B:97B0 85 16       STA $16    [$7E:0016]  ;} $16 = [cinematic sprite object palette index]
 $8B:97B2 BD 7D 1A    LDA $1A7D,x[$7E:1A9B]  ;\
 $8B:97B5 38          SEC                    ;|
-$8B:97B6 ED 11 09    SBC $0911  [$7E:0911]  ;} $14 = [cinematic sprite object X position] - [layer 1 X position]
+$8B:97B6 ED 11 09    SBC $0911  [$7E:0911]  ;} $14 = [cinematic sprite object X position] - [layer 1 X position] (spritemap X origin)
 $8B:97B9 85 14       STA $14    [$7E:0014]  ;/
 $8B:97BB BD 9D 1A    LDA $1A9D,x[$7E:1ABB]  ;\
 $8B:97BE 38          SEC                    ;|
-$8B:97BF ED 15 09    SBC $0915  [$7E:0915]  ;} $12 = [cinematic sprite object Y position] - [layer 1 Y position]
+$8B:97BF ED 15 09    SBC $0915  [$7E:0915]  ;} $12 = [cinematic sprite object Y position] - [layer 1 Y position] (spritemap Y origin)
 $8B:97C2 85 12       STA $12    [$7E:0012]  ;/
 $8B:97C4 89 00 FF    BIT #$FF00             ;\
-$8B:97C7 D0 0F       BNE $0F    [$97D8]     ;} If 0 <= [$12] < 100h:
+$8B:97C7 D0 0F       BNE $0F    [$97D8]     ;} If 0 <= (spritemap Y origin) < 100h:
 $8B:97C9 18          CLC                    ;\
 $8B:97CA 69 80 00    ADC #$0080             ;|
-$8B:97CD C9 FF 01    CMP #$01FF             ;} If -80h <= [$12] < 17Fh: (redundant check)
+$8B:97CD C9 FF 01    CMP #$01FF             ;} If -80h <= (spritemap Y origin) < 17Fh: (redundant check)
 $8B:97D0 B0 13       BCS $13    [$97E5]     ;/
-$8B:97D2 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
+$8B:97D2 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM - Y origin on-screen
 $8B:97D6 80 0D       BRA $0D    [$97E5]
 
-$8B:97D8 18          CLC                    ;\ Else (not 0 <= [$12] < 100h):
+$8B:97D8 18          CLC                    ;\ Else (not 0 <= (spritemap Y origin) < 100h):
 $8B:97D9 69 80 00    ADC #$0080             ;|
-$8B:97DC C9 FF 01    CMP #$01FF             ;} If -80h <= [$12] < 17Fh:
+$8B:97DC C9 FF 01    CMP #$01FF             ;} If -80h <= (spritemap Y origin) < 17Fh:
 $8B:97DF B0 04       BCS $04    [$97E5]     ;/
-$8B:97E1 22 53 88 81 JSL $818853[$81:8853]  ; Add spritemap to OAM off-screen
+$8B:97E1 22 53 88 81 JSL $818853[$81:8853]  ; Add spritemap to OAM - Y origin off-screen
 
 ; BRANCH_NEXT
 $8B:97E5 CA          DEX                    ;\

@@ -2595,7 +2595,7 @@ $A6:A312 85 12       STA $12    [$7E:0012]  ;} Spritemap X position = [enemy 1 Y
 $A6:A314 A9 00 04    LDA #$0400             ;\
 $A6:A317 85 16       STA $16    [$7E:0016]  ;} Spritemap palette bits = 400h (palette 2)
 $A6:A319 A0 29 A3    LDY #$A329             ; Spritemap address = $A329 (Ceres Ridley door)
-$A6:A31C 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
+$A6:A31C 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM - Y origin on-screen
 
 $A6:A320 6B          RTL
 }

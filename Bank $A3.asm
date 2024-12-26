@@ -2003,7 +2003,7 @@ $A3:9D72 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:9D76 90 0A       BCC $0A    [$9D82]     ; If collided with wall:
 $A3:9D78 A9 01 00    LDA #$0001             ;\
 $A3:9D7B 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy X movement function index = 1 (moving right)
-$A3:9D7F 20 9E 9E    JSR $9E9E  [$A3:9E9E]  ; Go to set vertically moving instruction list - vertically still - moving right
+$A3:9D7F 20 9E 9E    JSR $9E9E  [$A3:9E9E]  ; Set vertically moving instruction list - vertically still - moving right
 
 $A3:9D82 60          RTS
 }
@@ -2022,7 +2022,7 @@ $A3:9D97 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:9D9B 90 0A       BCC $0A    [$9DA7]     ; If collided with wall:
 $A3:9D9D A9 00 00    LDA #$0000             ;\
 $A3:9DA0 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy X movement function index = 0
-$A3:9DA4 20 81 9E    JSR $9E81  [$A3:9E81]  ; Go to set vertically moving instruction list - vertically still - moving left
+$A3:9DA4 20 81 9E    JSR $9E81  [$A3:9E81]  ; Set vertically moving instruction list - vertically still - moving left
 
 $A3:9DA7 60          RTS
 }
