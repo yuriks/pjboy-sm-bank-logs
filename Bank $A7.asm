@@ -2770,7 +2770,7 @@ $A7:B800 6B          RTL
 $A7:B801 A2 80 00    LDX #$0080             ; X = Kraid top lint enemy index
 $A7:B804 A9 FF 7F    LDA #$7FFF             ;\
 $A7:B807 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Kraid top lint instruction timer = 7FFFh
-$A7:B80A 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
+$A7:B80A 4C 22 B8    JMP $B822  [$A7:B822]  ; Go to Kraid lint main AI
 }
 
 
@@ -2779,7 +2779,7 @@ $A7:B80A 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
 $A7:B80D A2 C0 00    LDX #$00C0             ; X = Kraid middle lint enemy index
 $A7:B810 A9 FF 7F    LDA #$7FFF             ;\
 $A7:B813 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Kraid top lint instruction timer = 7FFFh
-$A7:B816 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
+$A7:B816 4C 22 B8    JMP $B822  [$A7:B822]  ; Go to Kraid lint main AI
 }
 
 
@@ -4325,7 +4325,7 @@ $A7:C4B9 A9 FF 7F    LDA #$7FFF             ;\
 $A7:C4BC 8D 32 10    STA $1032  [$7E:1032]  ;|
 $A7:C4BF 8D 72 10    STA $1072  [$7E:1072]  ;} Kraid lint function timers = 7FFFh
 $A7:C4C2 8D B2 10    STA $10B2  [$7E:10B2]  ;/
-$A7:C4C5 4C 74 C8    JMP $C874  [$A7:C874]  ; Update BG2 tilemap top half
+$A7:C4C5 4C 74 C8    JMP $C874  [$A7:C874]  ; Go to update BG2 tilemap top half
 }
 
 
@@ -4359,7 +4359,7 @@ $A7:C50E A9 01 00    LDA #$0001             ;\
 $A7:C511 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:C514 A9 2D BA    LDA #$BA2D             ;\
 $A7:C517 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = RTL
-$A7:C51A 4C B6 C8    JMP $C8B6  [$A7:C8B6]  ; Update BG2 tilemap bottom half
+$A7:C51A 4C B6 C8    JMP $C8B6  [$A7:C8B6]  ; Go to update BG2 tilemap bottom half
 }
 
 
@@ -4771,7 +4771,7 @@ $A7:C864 6B          RTL
 ;;; $C865: Kraid function - restrict Samus X position to first screen ;;;
 {
 $A7:C865 20 EE C9    JSR $C9EE  [$A7:C9EE]  ; Restrict Samus X position to first screen
-$A7:C868 4C 2D B9    JMP $B92D  [$A7:B92D]  ; Handle Kraid enemy function timer
+$A7:C868 4C 2D B9    JMP $B92D  [$A7:B92D]  ; Go to handle Kraid enemy function timer
 }
 
 

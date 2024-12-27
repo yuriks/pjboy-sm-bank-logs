@@ -8754,20 +8754,21 @@ $91:D4D0             dw CF6F, 0058, 0058, 0058, 0058 ; Copy 2x2 block to x-ray B
 
 ;;; $D4DA: Game state 1Ch (unused) ;;;
 {
+; $0DEA is never set to a pointer
 $91:D4DA 08          PHP
 $91:D4DB C2 30       REP #$30
-$91:D4DD 6C EA 0D    JMP ($0DEA)
+$91:D4DD 6C EA 0D    JMP ($0DEA)            ; Go to [$0DEA]
 }
 
 
-;;; $D4E0: PLP : RTL ;;;
+;;; $D4E0: Unused. PLP : RTL ;;;
 {
 $91:D4E0 28          PLP
 $91:D4E1 6B          RTL
 }
 
 
-;;; $D4E2: PLP : RTL ;;;
+;;; $D4E2: Unused. PLP : RTL ;;;
 {
 $91:D4E2 28          PLP
 $91:D4E3 6B          RTL

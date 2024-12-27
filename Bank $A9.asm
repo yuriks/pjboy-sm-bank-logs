@@ -778,7 +778,7 @@ $A9:8C27 20 3F 90    JSR $903F  [$A9:903F]  ; Set up Mother Brain's neck for fak
 $A9:8C2A A9 87 8C    LDA #$8C87             ;\
 $A9:8C2D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8C87 (fake death - ascent)
 $A9:8C30 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:8C33 4C A6 8B    JMP $8BA6  [$A9:8BA6]  ; Explode Mother Brain tube
+$A9:8C33 4C A6 8B    JMP $8BA6  [$A9:8BA6]  ; Go to explode Mother Brain tube
 }
 
 
@@ -5358,7 +5358,7 @@ $A9:BBD8 10 04       BPL $04    [$BBDE]     ;/
 $A9:BBDA 49 FF FF    EOR #$FFFF             ;\
 $A9:BBDD 1A          INC A                  ;} A = -40h
 
-$A9:BBDE 4C FD BB    JMP $BBFD  [$A9:BBFD]  ; Move Samus [A] / 100h px vertically towards ceiling/floor
+$A9:BBDE 4C FD BB    JMP $BBFD  [$A9:BBFD]  ; Go to move Samus [A] / 100h px vertically towards ceiling/floor
 }
 
 
@@ -6155,13 +6155,13 @@ $A9:C1B2 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:C1B5 29 FF 00    AND #$00FF             ;|
 $A9:C1B8 C9 C0 00    CMP #$00C0             ;} If [random number] & FFh < C0h: return
 $A9:C1BB 90 11       BCC $11    [$C1CE]     ;/
-$A9:C1BD 4C 70 C6    JMP $C670  [$A9:C670]  ; Make Mother Brain stand up
+$A9:C1BD 4C 70 C6    JMP $C670  [$A9:C670]  ; Go to make Mother Brain stand up
 
 $A9:C1C0 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:C1C3 29 FF 00    AND #$00FF             ;|
 $A9:C1C6 C9 C0 00    CMP #$00C0             ;} If [random number] & FFh < C0h: return
 $A9:C1C9 90 03       BCC $03    [$C1CE]     ;/
-$A9:C1CB 4C A3 C6    JMP $C6A3  [$A9:C6A3]  ; Make Mother Brain lean down
+$A9:C1CB 4C A3 C6    JMP $C6A3  [$A9:C6A3]  ; Go to make Mother Brain lean down
 
 $A9:C1CE 60          RTS
 }

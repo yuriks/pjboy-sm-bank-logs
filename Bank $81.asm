@@ -5937,6 +5937,12 @@ $81:B14A 60          RTS
 ;;; $B14B: Tilemap - room select map controls ;;;
 {
 ; First word is skipped
+; '                                '
+; '                                '
+; '   <^MAP     AA       BB        '
+; '   v>SCROLL  AAStart  BBCancel  '
+; '                                '
+; '                                '
 $81:B14B             dw 2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,
                         2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,2801,
                         2801,2801,2801,28B6,28B7,283C,2830,283F,2801,2801,2801,2801,2801,2850,6850,2801,2801,2801,2801,2801,2801,2801,2851,2852,2801,2801,2801,2801,2801,2801,2801,2801,
@@ -6065,33 +6071,38 @@ $81:B3E1 60          RTS
 
 ;;; $B3E2: Load menu tilemap [Y] to ([X] / 2 % 20h, [X] / 40h) ;;;
 {
+;; Parameters:
+;;     X: Destination tilemap index
+;;     Y: Source tilemap pointer
+
 ; def f(i):
 ;     formatValue = lambda v: f'{v:X}' + ('h' if v >= 0xA else '')
 ;     print(f'{formatValue(i // 2 % 0x20)}, {formatValue(i // 0x40)}')
 
-$81:B3E2 DA          PHX
+$81:B3E2 DA          PHX                    ; Save X
 
-$81:B3E3 B9 00 00    LDA $0000,y[$81:B40A]
-$81:B3E6 C9 FE FF    CMP #$FFFE
-$81:B3E9 F0 12       BEQ $12    [$B3FD]
-$81:B3EB C9 FF FF    CMP #$FFFF
-$81:B3EE F0 18       BEQ $18    [$B408]
-$81:B3F0 0D 96 0F    ORA $0F96  [$7E:0F96]
-$81:B3F3 9F 00 36 7E STA $7E3600,x[$7E:3656]
-$81:B3F7 E8          INX
-$81:B3F8 E8          INX
-$81:B3F9 C8          INY
-$81:B3FA C8          INY
-$81:B3FB 80 E6       BRA $E6    [$B3E3]
+; LOOP
+$81:B3E3 B9 00 00    LDA $0000,y[$81:B40A]  ;\
+$81:B3E6 C9 FE FF    CMP #$FFFE             ;} If [[Y]] != FFFEh:
+$81:B3E9 F0 12       BEQ $12    [$B3FD]     ;/
+$81:B3EB C9 FF FF    CMP #$FFFF             ;\
+$81:B3EE F0 18       BEQ $18    [$B408]     ;} If [[Y]] = FFFFh: return
+$81:B3F0 0D 96 0F    ORA $0F96  [$7E:0F96]  ;\
+$81:B3F3 9F 00 36 7E STA $7E3600,x[$7E:3656];} $7E:3600 + [X] = [[Y]] | [enemy 0 palette index]
+$81:B3F7 E8          INX                    ;\
+$81:B3F8 E8          INX                    ;} X += 2
+$81:B3F9 C8          INY                    ;\
+$81:B3FA C8          INY                    ;} Y += 2
+$81:B3FB 80 E6       BRA $E6    [$B3E3]     ; Go to LOOP
 
-$81:B3FD C8          INY
-$81:B3FE C8          INY
-$81:B3FF 68          PLA
-$81:B400 18          CLC
-$81:B401 69 40 00    ADC #$0040
-$81:B404 AA          TAX
-$81:B405 48          PHA
-$81:B406 80 DB       BRA $DB    [$B3E3]
+$81:B3FD C8          INY                    ;\
+$81:B3FE C8          INY                    ;} Y += 2
+$81:B3FF 68          PLA                    ;\
+$81:B400 18          CLC                    ;|
+$81:B401 69 40 00    ADC #$0040             ;} X = (saved X) = (saved X) + 40h
+$81:B404 AA          TAX                    ;|
+$81:B405 48          PHA                    ;/
+$81:B406 80 DB       BRA $DB    [$B3E3]     ; Go to LOOP
 
 $81:B408 FA          PLX
 $81:B409 60          RTS

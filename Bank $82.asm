@@ -641,14 +641,14 @@ $82:854B 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
 $82:854E A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:8550 F0 08       BEQ $08    [$855A]     ;} If newly pressed anything:
 $82:8552 A9 01 00    LDA #$0001             ;\
-$82:8555 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} $0DEC = 1
+$82:8555 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Demo control flags = 1 (pressed button to exit demos)
 $82:8558 80 20       BRA $20    [$857A]     ; Go to BRANCH_END_DEMOS
 
 $82:855A CE 53 1F    DEC $1F53  [$7E:1F53]  ; Decrement demo timer
 $82:855D F0 02       BEQ $02    [$8561]     ;\
 $82:855F 10 30       BPL $30    [$8591]     ;} If [demo timer] > 0: return
 
-$82:8561 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
+$82:8561 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Demo control flags = 0
 $82:8564 A2 5A 00    LDX #$005A             ; X = 90
 
 ; LOOP
@@ -660,7 +660,7 @@ $82:8570 D0 F5       BNE $F5    [$8567]     ; If [X] != 0: go to LOOP
 $82:8572 80 06       BRA $06    [$857A]     ; Go to BRANCH_END_DEMOS
 
 $82:8574 A9 01 00    LDA #$0001             ;\
-$82:8577 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} $0DEC = 1
+$82:8577 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Demo control flags = 1 (pressed button to exit demos)
 
 ; BRANCH_END_DEMOS
 $82:857A EE 98 09    INC $0998  [$7E:0998]  ; Game state = 2Bh (unload game data)
@@ -683,7 +683,7 @@ $82:8592 60          RTS
 $82:8593 08          PHP
 $82:8594 C2 30       REP #$30
 $82:8596 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
-$82:8599 C9 01 00    CMP #$0001             ;} If [$0DEC] != 1:
+$82:8599 C9 01 00    CMP #$0001             ;} If [demo control flags] != 1:
 $82:859C F0 03       BEQ $03    [$85A1]     ;/
 $82:859E 20 37 86    JSR $8637  [$82:8637]  ; Check for next demo
 
@@ -741,8 +741,8 @@ $82:85FC C2 30       REP #$30
 $82:85FE A9 01 00    LDA #$0001             ;\
 $82:8601 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1 (title sequence)
 $82:8604 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
-$82:8607 30 26       BMI $26    [$862F]     ;} If [$0DEC] & 8000h != 0: go to BRANCH_NEXT_DEMO_SCENE
-$82:8609 D0 12       BNE $12    [$861D]     ; If [$0DEC] = 0:
+$82:8607 30 26       BMI $26    [$862F]     ;} If [demo control flags] & 8000h != 0 (demo set has another scene remaining): go to BRANCH_NEXT_DEMO_SCENE
+$82:8609 D0 12       BNE $12    [$861D]     ; If [demo control flags] = 0 (didn't press button to exit demos):
 $82:860B A9 00 00    LDA #$0000             ;\
 $82:860E 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:8612 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
@@ -788,7 +788,7 @@ $82:8651 AA          TAX                    ;|
 $82:8652 BD 00 00    LDA $0000,x[$82:8786]  ;/
 $82:8655 C9 FF FF    CMP #$FFFF             ;\
 $82:8658 D0 17       BNE $17    [$8671]     ;} If [A] != FFFFh: go to BRANCH_NEXT_DEMO_SCENE
-$82:865A 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
+$82:865A 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Demo control flags = 0
 $82:865D AD 55 1F    LDA $1F55  [$7E:1F55]  ;\
 $82:8660 1A          INC A                  ;|
 $82:8661 CD 59 1F    CMP $1F59  [$7E:1F59]  ;|
@@ -802,7 +802,7 @@ $82:8670 60          RTS                    ; Return
 
 ; BRANCH_NEXT_DEMO_SCENE
 $82:8671 A9 00 80    LDA #$8000             ;\
-$82:8674 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} $0DEC = 8000h
+$82:8674 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Demo control flags = 8000h (demo set has another scene remaining)
 $82:8677 28          PLP
 $82:8678 60          RTS
 }
@@ -1197,6 +1197,7 @@ $82:8A99 60          RTS
 
 ;;; $8A9A: Reset sound queues ;;;
 {
+; Clear sound queue start/next indices and sound states
 $82:8A9A 08          PHP
 $82:8A9B C2 20       REP #$20
 $82:8A9D 9C 43 06    STZ $0643  [$7E:0643]
@@ -1246,8 +1247,8 @@ $82:8AE3 6B          RTL
 ;;; $8AE4: Game state 0 (reset/start) ;;;
 {
 $82:8AE4 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0
-$82:8AE7 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0
-$82:8AEA 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0
+$82:8AE7 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0 (never read meaningfully)
+$82:8AEA 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0 (never read)
 $82:8AED A9 68 9B    LDA #$9B68             ;\
 $82:8AF0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence)
 $82:8AF3 9C 55 1F    STZ $1F55  [$7E:1F55]  ; Demo set = 0
@@ -2494,11 +2495,11 @@ $82:934E C9 01 00    CMP #$0001             ;} If [pause screen mode] != equipme
 $82:9351 F0 0B       BEQ $0B    [$935E]     ;/
 $82:9353 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:9357 22 72 B6 82 JSL $82B672[$82:B672]  ; Draw map icons
-$82:935B 4C C8 B9    JMP $B9C8  [$82:B9C8]  ; Map screen - draw Samus position indicator
+$82:935B 4C C8 B9    JMP $B9C8  [$82:B9C8]  ; Go to map screen - draw Samus position indicator
 
 $82:935E 20 67 B2    JSR $B267  [$82:B267]  ; Draw item selector
 $82:9361 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Display reserve tank amount
-$82:9364 4C 6D A5    JMP $A56D  [$82:A56D]  ; Handle pause menu L/R pressed highlight
+$82:9364 4C 6D A5    JMP $A56D  [$82:A56D]  ; Go to handle pause menu L/R pressed highlight
 }
 
 
@@ -10970,7 +10971,7 @@ $82:E774 20 F1 DD    JSR $DDF1  [$82:DDF1]  ; Load destination room CRE bitset
 $82:E777 20 12 DE    JSR $DE12  [$82:DE12]  ; Load door header
 $82:E77A 20 6F DE    JSR $DE6F  [$82:DE6F]  ; Load room header
 $82:E77D 20 F2 DE    JSR $DEF2  [$82:DEF2]  ; Load state header
-$82:E780 4C 8C E7    JMP $E78C  [$82:E78C]  ; Load CRE tiles, tileset tiles and tileset palette
+$82:E780 4C 8C E7    JMP $E78C  [$82:E78C]  ; Go to load CRE tiles, tileset tiles and tileset palette
 }
 
 

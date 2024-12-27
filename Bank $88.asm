@@ -888,7 +888,7 @@ $88:842B C8          INY                    ;/
 $88:842C 18          CLC                    ;\
 $88:842D 69 04 00    ADC #$0004             ;} Adjust return address
 $88:8430 83 03       STA $03,s  [$7E:1FF3]  ;/
-$88:8432 4C 77 84    JMP $8477  [$88:8477]  ; Spawn HDMA object to slot [X]
+$88:8432 4C 77 84    JMP $8477  [$88:8477]  ; Go to spawn HDMA object to slot [X]
 }
 
 
@@ -2557,13 +2557,13 @@ $88:8E20 29 FF       AND #$FF               ;} If (X position of power bomb on s
 $88:8E22 F0 09       BEQ $09    [$8E2D]     ;/
 $88:8E24 3A          DEC A                  ;\
 $88:8E25 F0 03       BEQ $03    [$8E2A]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
-$88:8E27 4C 46 8D    JMP $8D46  [$88:8D46]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
+$88:8E27 4C 46 8D    JMP $8D46  [$88:8D46]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
-$88:8E2A 4C 04 8D    JMP $8D04  [$88:8D04]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is on screen
+$88:8E2A 4C 04 8D    JMP $8D04  [$88:8D04]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is on screen
 
 ; BRANCH_OFFSCREEN_LEFT
-$88:8E2D 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is left of screen
+$88:8E2D 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is left of screen
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
@@ -2659,13 +2659,13 @@ $88:8ED5 29 FF       AND #$FF               ;} If (X position of power bomb on s
 $88:8ED7 F0 09       BEQ $09    [$8EE2]     ;/
 $88:8ED9 3A          DEC A                  ;\
 $88:8EDA F0 03       BEQ $03    [$8EDF]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
-$88:8EDC 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
+$88:8EDC 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
-$88:8EDF 4C 12 8C    JMP $8C12  [$88:8C12]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is on screen
+$88:8EDF 4C 12 8C    JMP $8C12  [$88:8C12]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is on screen
 
 ; BRANCH_OFFSCREEN_LEFT
-$88:8EE2 4C EA 8B    JMP $8BEA  [$88:8BEA]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen
+$88:8EE2 4C EA 8B    JMP $8BEA  [$88:8BEA]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen
 
 ; RETURN
 $88:8EE5 E2 30       SEP #$30
@@ -3017,13 +3017,13 @@ $88:9116 29 FF       AND #$FF               ;} If (X position of power bomb on s
 $88:9118 F0 09       BEQ $09    [$9123]     ;/
 $88:911A 3A          DEC A                  ;\
 $88:911B F0 03       BEQ $03    [$9120]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
-$88:911D 4C 46 8D    JMP $8D46  [$88:8D46]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
+$88:911D 4C 46 8D    JMP $8D46  [$88:8D46]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
-$88:9120 4C 04 8D    JMP $8D04  [$88:8D04]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is on screen
+$88:9120 4C 04 8D    JMP $8D04  [$88:8D04]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is on screen
 
 ; BRANCH_OFFSCREEN_LEFT
-$88:9123 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is left of screen
+$88:9123 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Go to calculate power bomb explosion HDMA data tables - scaled - power bomb is left of screen
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
@@ -3119,13 +3119,13 @@ $88:91CB 29 FF       AND #$FF               ;} If (X position of power bomb on s
 $88:91CD F0 09       BEQ $09    [$91D8]     ;/
 $88:91CF 3A          DEC A                  ;\
 $88:91D0 F0 03       BEQ $03    [$91D5]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
-$88:91D2 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
+$88:91D2 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
-$88:91D5 4C 12 8C    JMP $8C12  [$88:8C12]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is on screen
+$88:91D5 4C 12 8C    JMP $8C12  [$88:8C12]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is on screen
 
 ; BRANCH_OFFSCREEN_LEFT
-$88:91D8 4C EA 8B    JMP $8BEA  [$88:8BEA]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen
+$88:91D8 4C EA 8B    JMP $8BEA  [$88:8BEA]  ; Go to calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen
 
 ; RETURN
 $88:91DB E2 30       SEP #$30
@@ -3697,13 +3697,13 @@ $88:A589 29 FF       AND #$FF               ;} If (X position of power bomb on s
 $88:A58B F0 09       BEQ $09    [$A596]     ;/
 $88:A58D 3A          DEC A                  ;\
 $88:A58E F0 03       BEQ $03    [$A593]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
-$88:A590 4C 13 A5    JMP $A513  [$88:A513]  ; Calculate crystal flash HDMA data tables - power bomb is right of screen
+$88:A590 4C 13 A5    JMP $A513  [$88:A513]  ; Go to calculate crystal flash HDMA data tables - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
-$88:A593 4C D1 A4    JMP $A4D1  [$88:A4D1]  ; Calculate crystal flash HDMA data tables - power bomb is on screen
+$88:A593 4C D1 A4    JMP $A4D1  [$88:A4D1]  ; Go to calculate crystal flash HDMA data tables - power bomb is on screen
 
 ; BRANCH_OFFSCREEN_LEFT
-$88:A596 4C 93 A4    JMP $A493  [$88:A493]  ; Calculate crystal flash HDMA data tables - power bomb is left of screen
+$88:A596 4C 93 A4    JMP $A493  [$88:A493]  ; Go to calculate crystal flash HDMA data tables - power bomb is left of screen
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
