@@ -3442,6 +3442,22 @@ $82:9D27             db 00,00,00,00,
 {
 ;; Parameters:
 ;;     A: Always 80h. Affects BG1 Y scroll in some way
+
+; M = midpoint([map min X scroll], [map max X scroll])
+; P = ([room X co-ordinate] + [Samus X position] / 100h) * 8
+
+; If M - 60h < P <= M + 60h:
+;     Ideal case, map can be centred around the room position
+;     X = M - 80h
+
+; If P > M + 60h:
+;     Room is too far right to centre map around, display room with 20h pixel margin from the right
+;     X = P - E0h
+
+; If P <= M - 60h:
+;     Room is too far left to centre map around, display room with 20h pixel margin from the left
+;     X = P - 20h
+
 $82:9E27 C2 30       REP #$30
 $82:9E29 85 14       STA $14    [$7E:0014]  ; $14 = [A]
 $82:9E2B AD AE 05    LDA $05AE  [$7E:05AE]  ;\
@@ -3466,23 +3482,23 @@ $82:9E4C E5 B1       SBC $B1    [$7E:00B1]  ;|
 $82:9E4E 85 12       STA $12    [$7E:0012]  ;/
 $82:9E50 A9 E0 00    LDA #$00E0             ;\
 $82:9E53 38          SEC                    ;|
-$82:9E54 E5 12       SBC $12    [$7E:0012]  ;} If [$12] > E0h:
+$82:9E54 E5 12       SBC $12    [$7E:0012]  ;} If [$12] > 80h + 60h:
 $82:9E56 10 0B       BPL $0B    [$9E63]     ;/
 $82:9E58 85 12       STA $12    [$7E:0012]  ;\
 $82:9E5A A5 B1       LDA $B1    [$7E:00B1]  ;|
-$82:9E5C 38          SEC                    ;} BG1 X scroll += [$12] - E0h
+$82:9E5C 38          SEC                    ;} BG1 X scroll = ([room X co-ordinate] + [Samus X position] / 100h) * 8 - E0h
 $82:9E5D E5 12       SBC $12    [$7E:0012]  ;|
 $82:9E5F 85 B1       STA $B1    [$7E:00B1]  ;/
 $82:9E61 80 11       BRA $11    [$9E74]
 
-$82:9E63 A9 20 00    LDA #$0020             ;\ Else ([$12] <= E0h):
+$82:9E63 A9 20 00    LDA #$0020             ;\ Else ([$12] <= 80h + 60h):
 $82:9E66 38          SEC                    ;|
-$82:9E67 E5 12       SBC $12    [$7E:0012]  ;} If [$12] <= 20h:
+$82:9E67 E5 12       SBC $12    [$7E:0012]  ;} If [$12] <= 80h - 60h:
 $82:9E69 85 12       STA $12    [$7E:0012]  ;|
 $82:9E6B 30 07       BMI $07    [$9E74]     ;/
 $82:9E6D A5 B1       LDA $B1    [$7E:00B1]  ;\
 $82:9E6F 38          SEC                    ;|
-$82:9E70 E5 12       SBC $12    [$7E:0012]  ;} BG1 X scroll -= 20h - [$12]
+$82:9E70 E5 12       SBC $12    [$7E:0012]  ;} BG1 X scroll = ([room X co-ordinate] + [Samus X position] / 100h) * 8 - 20h
 $82:9E72 85 B1       STA $B1    [$7E:00B1]  ;/
 
 $82:9E74 AD B2 05    LDA $05B2  [$7E:05B2]  ;\
@@ -3885,7 +3901,7 @@ $82:A0F6 60          RTS
 ;;; $A0F7: Reset pause menu animations ;;;
 {
 $82:A0F7 C2 30       REP #$30
-$82:A0F9 9C 57 07    STZ $0757  [$7E:0757]  ; $0757 = 0
+$82:A0F9 9C 57 07    STZ $0757  [$7E:0757]  ; Reserve tank sound delay counter = 0
 $82:A0FC 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
 $82:A0FE 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
 $82:A100 64 B9       STZ $B9    [$7E:00B9]  ; BG3 X scroll = 0
@@ -3893,7 +3909,7 @@ $82:A102 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $82:A104 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 $82:A106 9C 53 07    STZ $0753  [$7E:0753]  ; Pause screen button label mode = map screen
 $82:A109 9C 3F 07    STZ $073F  [$7E:073F]  ; L/R highlight animation frame = 0
-$82:A10C 9C 45 07    STZ $0745  [$7E:0745]  ; $0745 = 0
+$82:A10C 9C 45 07    STZ $0745  [$7E:0745]  ; $0745 = 0 (never read)
 $82:A10F 9C 76 07    STZ $0776  [$7E:0776]  ; Samus position indicator animation frame = 0
 $82:A112 9C 78 07    STZ $0778  [$7E:0778]  ; Samus position indicator animation timer = 0
 $82:A115 9C 7A 07    STZ $077A  [$7E:077A]  ; Samus position indicator animation loop counter = 0
@@ -4072,6 +4088,10 @@ $82:A27D 60          RTS
 
 ;;; $A27E: Copy [$16] bytes from [X] to $7E:[$00] ;;;
 {
+;; Parameters:
+;;     DB:X: Source address
+;;     $00: Destination address
+;;     $16: Number of bytes
 $82:A27E 08          PHP
 $82:A27F 5A          PHY
 $82:A280 E2 20       SEP #$20
@@ -4095,8 +4115,12 @@ $82:A29C 60          RTS
 }
 
 
-;;; $A29D: Set the palette of [$16] bytes of $7E:[$00] to [$12] ;;;
+;;; $A29D: Set the palette bits of [$16] bytes of $7E:[$00] to [$12] ;;;
 {
+;; Parameters:
+;;     $00: Tilemap address
+;;     $12: Palette bits
+;;     $16: Number of bytes
 $82:A29D 08          PHP
 $82:A29E 5A          PHY
 $82:A29F E2 20       SEP #$20
@@ -5668,21 +5692,21 @@ $82:AF4E 60          RTS
 $82:AF4F 08          PHP
 $82:AF50 C2 30       REP #$30
 $82:AF52 AD 57 07    LDA $0757  [$7E:0757]  ;\
-$82:AF55 D0 14       BNE $14    [$AF6B]     ;} If [$0757] = 0:
+$82:AF55 D0 14       BNE $14    [$AF6B]     ;} If [reserve tank sound delay counter] = 0:
 $82:AF57 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:AF59 89 80 00    BIT #$0080             ;} If not newly pressed A: return
 $82:AF5C F0 5E       BEQ $5E    [$AFBC]     ;/
 $82:AF5E AD D6 09    LDA $09D6  [$7E:09D6]  ;\
 $82:AF61 18          CLC                    ;|
-$82:AF62 69 07 00    ADC #$0007             ;} $0757 = [Samus reserve health] rounded up to nearest 8
+$82:AF62 69 07 00    ADC #$0007             ;} Reserve tank sound delay counter = [Samus reserve health] rounded up to nearest 8
 $82:AF65 29 F8 FF    AND #$FFF8             ;|
 $82:AF68 8D 57 07    STA $0757  [$7E:0757]  ;/
 
 $82:AF6B AD 57 07    LDA $0757  [$7E:0757]  ;\
-$82:AF6E 3A          DEC A                  ;} Decrement $0757
+$82:AF6E 3A          DEC A                  ;} Decrement reserve tank sound delay counter
 $82:AF6F 8D 57 07    STA $0757  [$7E:0757]  ;/
 $82:AF72 29 07 00    AND #$0007             ;\
-$82:AF75 C9 07 00    CMP #$0007             ;} If [$0757] % 8 = 7:
+$82:AF75 C9 07 00    CMP #$0007             ;} If [reserve tank sound delay counter] % 8 = 7:
 $82:AF78 D0 07       BNE $07    [$AF81]     ;/
 $82:AF7A A9 2D 00    LDA #$002D             ;\
 $82:AF7D 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Dh, sound library 3, max queued sounds allowed = 6 (gaining/losing incremental health)
@@ -5709,7 +5733,7 @@ $82:AFAA 6D D6 09    ADC $09D6  [$7E:09D6]  ;} Samus health += [Samus reserve he
 $82:AFAD 8D C2 09    STA $09C2  [$7E:09C2]  ;/
 
 $82:AFB0 9C D6 09    STZ $09D6  [$7E:09D6]  ; Samus reserve health = 0
-$82:AFB3 9C 57 07    STZ $0757  [$7E:0757]  ; $0757 = 0
+$82:AFB3 9C 57 07    STZ $0757  [$7E:0757]  ; Reserve tank sound delay counter = 0
 $82:AFB6 20 46 AE    JSR $AE46  [$82:AE46]  ; Disable energy arrow glow
 $82:AFB9 9C 55 07    STZ $0755  [$7E:0755]  ; Equipment screen category index = tanks
 
@@ -5852,7 +5876,7 @@ $82:B0B3 A9 00 0C    LDA #$0C00             ;\
 $82:B0B6 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 6)
 $82:B0B8 A9 0A 00    LDA #$000A             ;\
 $82:B0BB 85 16       STA $16    [$7E:0016]  ;} $16 = Ah
-$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette of [$16] bytes of $7E:[$00] to [$12]
+$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette bits of [$16] bytes of $7E:[$00] to [$12]
 
 $82:B0C0 28          PLP
 $82:B0C1 60          RTS
@@ -6664,7 +6688,7 @@ $82:B5DA A9 00 0C    LDA #$0C00             ;\
 $82:B5DD 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 6)
 $82:B5DF A5 18       LDA $18    [$7E:0018]  ;\
 $82:B5E1 85 16       STA $16    [$7E:0016]  ;} $16 = [$18]
-$82:B5E3 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette of [$16] bytes of [$00] to [$12]
+$82:B5E3 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette bits of [$16] bytes of [$00] to [$12]
 
 $82:B5E6 28          PLP
 $82:B5E7 60          RTS
