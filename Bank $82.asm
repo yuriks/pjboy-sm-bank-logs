@@ -3441,13 +3441,13 @@ $82:9D27             db 00,00,00,00,
 ;;; $9E27: Set up map scrolling for pause menu ;;;
 {
 ;; Parameters:
-;;     A: Always 80h. Affects BG1 Y scroll in some way
+;;     A: Always 80h. Y position to show centre of centred map scroll
 
 ; M = midpoint([map min X scroll], [map max X scroll])
 ; P = ([room X co-ordinate] + [Samus X position] / 100h) * 8
 
 ; If M - 60h < P <= M + 60h:
-;     Ideal case, map can be centred around the room position
+;     Ideal case, centred map scroll shows room position
 ;     X = M - 80h
 
 ; If P > M + 60h:
@@ -3457,6 +3457,18 @@ $82:9D27             db 00,00,00,00,
 ; If P <= M - 60h:
 ;     Room is too far left to centre map around, display room with 20h pixel margin from the left
 ;     X = P - 20h
+
+; M = midpoint([map min Y scroll], [map max Y scroll])
+; P = ([room Y co-ordinate] + [Samus Y position] / 100h) * 8
+
+; If M - 38h < P:
+;     Ideal case, centred map scroll shows room position
+;     Y = M - 70h
+
+; If P <= M - 38h:
+;     Room is too far up, display room with 38h pixel margin from top (8 of those pixels are for the fake top row of the map)
+;     Y = P - 38h
+;     Y = max(Y, -28h)
 
 $82:9E27 C2 30       REP #$30
 $82:9E29 85 14       STA $14    [$7E:0014]  ; $14 = [A]
@@ -3523,7 +3535,7 @@ $82:9E98 29 FF 00    AND #$00FF             ;|
 $82:9E9B 18          CLC                    ;|
 $82:9E9C 6D A3 07    ADC $07A3  [$7E:07A3]  ;|
 $82:9E9F 1A          INC A                  ;|
-$82:9EA0 0A          ASL A                  ;} $12 = ([room Y co-ordinate] + [Samus Y position] / 100h + 1) * 8 - [BG1 Y scroll]
+$82:9EA0 0A          ASL A                  ;} $12 = ([room Y co-ordinate] + [Samus Y position] / 100h) * 8 + 8 - [BG1 Y scroll]
 $82:9EA1 0A          ASL A                  ;|
 $82:9EA2 0A          ASL A                  ;|
 $82:9EA3 38          SEC                    ;|
@@ -3535,7 +3547,7 @@ $82:9EAC E5 12       SBC $12    [$7E:0012]  ;} If [$12] <= 40h:
 $82:9EAE 30 13       BMI $13    [$9EC3]     ;/
 $82:9EB0 85 12       STA $12    [$7E:0012]  ;\
 $82:9EB2 A5 B3       LDA $B3    [$7E:00B3]  ;|
-$82:9EB4 38          SEC                    ;} BG1 Y scroll -= 40h - [$12]
+$82:9EB4 38          SEC                    ;} BG1 Y scroll = ([room Y co-ordinate] + [Samus Y position] / 100h) * 8 - 38h
 $82:9EB5 E5 12       SBC $12    [$7E:0012]  ;|
 $82:9EB7 85 B3       STA $B3    [$7E:00B3]  ;/
 $82:9EB9 C9 D8 FF    CMP #$FFD8             ;\
@@ -7694,7 +7706,7 @@ $82:BC25 80 C9       BRA $C9    [$BBF0]     ; Go to finish processing game over 
 
 ;;; $BC27: Game over baby metroid instruction list ;;;
 {
-; Positive instruction format: <timer> <spritemap index for $82:C569 table> <palette pointer>
+; Positive instruction format: timer, spritemap index for $82:C569 table, palette pointer
 $82:BC27             dw 000A,0065,BD97,
                         000A,0066,BD97,
                         000A,0067,BD97,
