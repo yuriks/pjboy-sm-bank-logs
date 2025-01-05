@@ -5655,7 +5655,7 @@ $A0:ACE8 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A0:ACEB AD 24 0E    LDA $0E24  [$7E:0E24]  ;|
 $A0:ACEE 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A0:ACF2 89 00 80    BIT #$8000             ;|
-$A0:ACF5 F0 04       BEQ $04    [$ACFB]     ;} $0E26 = |[$0E20] * -sin([$0E24] * pi / 80h) * FFh / 100h|
+$A0:ACF5 F0 04       BEQ $04    [$ACFB]     ;} $0E26 = |[$0E20] * -sin([$0E24] * pi / 80h)|
 $A0:ACF7 49 FF FF    EOR #$FFFF             ;|
 $A0:ACFA 1A          INC A                  ;|
                                             ;|
@@ -5665,7 +5665,7 @@ $A0:AD01 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A0:AD04 AD 24 0E    LDA $0E24  [$7E:0E24]  ;|
 $A0:AD07 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A0:AD0B 89 00 80    BIT #$8000             ;|
-$A0:AD0E F0 04       BEQ $04    [$AD14]     ;} A = [$0E26] + |[$0E22] * cos([$0E24] * pi / 80h) * FFh / 100h|
+$A0:AD0E F0 04       BEQ $04    [$AD14]     ;} A = [$0E26] + |[$0E22] * cos([$0E24] * pi / 80h)|
 $A0:AD10 49 FF FF    EOR #$FFFF             ;|
 $A0:AD13 1A          INC A                  ;|
                                             ;|
@@ -6475,6 +6475,14 @@ $A0:B133             dw 0E84, 0EA4, 0EA6, 0EC6, 0EC8, 0EE8, 0F28, 0F48
 
 ;;; $B143: Sine/cosine tables ;;;
 {
+; Generate 16-bit tables with
+;     [int((0x7FFF+0.5) * math.sin(i * math.pi / 0x80)) for i in range(0x40 * n_quadrants)]
+
+; Generate sign-extended 8-bit tables with
+;     [0x100 * math.sin(i * math.pi / 0x80) for i in range(0x40 * n_quadrants)]
+
+; Unsigned 8-bit table is the same as the signed-extended first half, except cos(0) is capped at FFh
+
 ; 8-bit sine
 $A0:B143             db 00, 06, 0C, 12, 19, 1F, 25, 2B, 31, 38, 3E, 44, 4A, 50, 56, 5C, 61, 67, 6D, 73, 78, 7E, 83, 88, 8E, 93, 98, 9D, A2, A7, AB, B0, B5, B9, BD, C1, C5, C9, CD, D1, D4, D8, DB, DE, E1, E4, E7, EA, EC, EE, F1, F3, F4, F6, F8, F9, FB, FC, FD, FE, FE, FF, FF, FF
 

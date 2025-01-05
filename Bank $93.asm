@@ -1,7 +1,11 @@
+;;; $8000..81D0: Initialise projectile ;;;
+{
 ;;; $8000: Initialise projectile ;;;
 {
 ;; Parameters:
 ;;     X: Projectile index
+
+; Used for beam (uncharged / charged / hyper), (super) missile, ice SBA
 $93:8000 08          PHP
 $93:8001 8B          PHB
 $93:8002 4B          PHK                    ;\
@@ -109,7 +113,7 @@ $93:80A6 BD 19 0C    LDA $0C19,x[$7E:0C23]  ;\
 $93:80A9 29 0F 00    AND #$000F             ;|
 $93:80AC 0A          ASL A                  ;|
 $93:80AD A8          TAY                    ;|
-$93:80AE B9 F1 83    LDA $83F1,y[$93:83FB]  ;} Projectile damage = [[$83F1 + projectile type * 2]]
+$93:80AE B9 F1 83    LDA $83F1,y[$93:83FB]  ;} Projectile damage = [[$83F1 + (projectile type) * 2]]
 $93:80B1 A8          TAY                    ;|
 $93:80B2 B9 00 00    LDA $0000,y[$93:8675]  ;|
 $93:80B5 9D 2C 0C    STA $0C2C,x[$7E:0C36]  ;/
@@ -119,7 +123,7 @@ $93:80BA 5C 73 85 80 JML $808573[$80:8573]  ; Crash
 
 $93:80BE C8          INY                    ;\
 $93:80BF C8          INY                    ;|
-$93:80C0 B9 00 00    LDA $0000,y[$93:8677]  ;} Projectile instruction = [[$83F1 + projectile type * 2] + 2]
+$93:80C0 B9 00 00    LDA $0000,y[$93:8677]  ;} Projectile instruction = [[$83F1 + (projectile type) * 2] + 2]
 $93:80C3 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;/
 $93:80C6 A9 01 00    LDA #$0001             ;\
 $93:80C9 9D 54 0C    STA $0C54,x[$7E:0C5E]  ;} Projectile instruction timer = 1
@@ -151,7 +155,7 @@ $93:80F2 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Ch, sound library 2, 
 $93:80F6 80 47       BRA $47    [$813F]     ; Go to BRANCH_RETURN
 
 $93:80F8 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$93:80FB D0 07       BNE $07    [$8104]     ;} If [$1F51] = 0:
+$93:80FB D0 07       BNE $07    [$8104]     ;} If [cinematic function] = 0:
 $93:80FD A9 07 00    LDA #$0007             ;\
 $93:8100 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7, sound library 2, max queued sounds allowed = 6 (missile hit wall)
 
@@ -275,6 +279,7 @@ $93:81CE AB          PLB
 $93:81CF 28          PLP
 $93:81D0 6B          RTL
 }
+}
 
 
 ;;; $81D1: $16 = projectile trail frame ;;;
@@ -340,6 +345,8 @@ $93:822E 6B          RTL
 }
 
 
+;;; $822F..53: Instructions ;;;
+{
 ;;; $822F: Instruction - delete ;;;
 {
 $93:822F C2 30       REP #$30
@@ -373,6 +380,7 @@ $93:824E 60          RTS
 $93:824F B9 02 00    LDA $0002,y
 $93:8252 A8          TAY
 $93:8253 60          RTS
+}
 }
 
 
@@ -586,21 +594,21 @@ $93:83BF             dw 03E8
 }
 
 
-;;; $83C1: Projectile data pointers ;;;
+;;; $83C1: Projectile damage and instruction list table pointers ;;;
 {
 ; Uncharged beams. Indexed by beam type
 $93:83C1             dw 8431, 84B5, 849F, 84E1, 8447, 84F7, 845D, 8473, 84CB, 850D, 8523, 8489
 
-; Charged beams. Indexed by beam type
+; Charged beams. Indexed by beam type. Used by ice SBA
 $93:83D9             dw 8539, 85D3, 85A7, 85E9, 854F, 85FF, 8565, 857B, 85BD, 862B, 8615, 8591
 
-; Non-beam projectiles. Indexed by projectile type
+; Non-beam projectiles. Indexed by projectile type. Used for (super) missile, (power) bomb
 $93:83F1             dw 8641, 8641, 8657, 8671, 8641, 8675, 8641, 8679, 867D
 
 ; Shinespark echo and spazer SBA trail projectile. Indexed by projectile type - 22h
 $93:8403             dw 0000, 0000, 86AB, 8695, 86AB, 86D7, 0000, 86C1
 
-; SBA projectiles. Indexed by beam type
+; Non-ice SBA projectiles. Indexed by beam type
 $93:8413             dw 0000, 8689, 0000, 0000, 868D, 868D, 0000, 0000, 8685, 8685, 0000, 0000
 
 ; Super missile link. Indexed by projectile type (always 2)
@@ -608,7 +616,7 @@ $93:842B             dw 0000, 0000, 866D
 }
 
 
-;;; $8431: Projectile data table ;;;
+;;; $8431: Projectile damage and instruction list tables ;;;
 {
 ;                        ___________________________________________________ Damage
 ;                       |     ______________________________________________ Up, facing right
@@ -642,7 +650,7 @@ $93:854F             dw 0078,936B,93BF,9413,9467,936B,936B,93BF,9413,9467,936B ;
 $93:8565             dw 00B4,936B,93BF,9413,9467,936B,936B,93BF,9413,9467,936B ; Spazer + ice
 $93:857B             dw 012C,94BB,957F,9643,9707,97CB,97CB,988F,9953,9A17,94BB ; Spazer + ice + wave
 $93:8591             dw 0384,9BEB,9C9F,9D53,9E07,9BEB,9BEB,9C9F,9D53,9E07,9BEB ; Plasma + ice + wave
-$93:85A7             dw 005A,912F,912F,912F,912F,912F,912F,912F,912F,912F,912F ; Ice
+$93:85A7             dw 005A,912F,912F,912F,912F,912F,912F,912F,912F,912F,912F ; Ice / ice SBA
 $93:85BD             dw 01C2,9ADB,9B1F,9B63,9BA7,9ADB,9ADB,9B1F,9B63,9BA7,9ADB ; Plasma
 $93:85D3             dw 0096,8F17,8FA3,9027,90AB,8F1F,8F1F,8FA3,9027,90AB,8F17 ; Wave
 $93:85E9             dw 00B4,9153,91DF,9263,92E7,915B,915B,91DF,9263,92E7,9153 ; Ice + wave
@@ -656,13 +664,13 @@ $93:8657             dw 012C,9F1B,9F27,9F33,9F3F,9F4B,9F4B,9F57,9F63,9F6F,9F1B ;
 $93:866D             dw 012C,9F7B ; Super missile link
 $93:8671             dw 00C8,9F87 ; Power bomb
 $93:8675             dw 001E,9FBF ; Bomb
-$93:8679             dw 0008,A007 ; Beam explosion
-$93:867D             dw 0008,A039 ; (Super) missile explosion
-$93:8681             dw 0000,A06B ; Unused. Bomb explosion
+$93:8679             dw 0008,A007 ; Beam explosion. Damage is ignored
+$93:867D             dw 0008,A039 ; Missile explosion. Damage is ignored
+$93:8681             dw 0000,A06B ; Bomb explosion. Damage is ignored
 $93:8685             dw 012C,A095 ; Plasma SBA
 $93:8689             dw 012C,A159 ; Wave SBA
 $93:868D             dw 012C,8977 ; Spazer SBA
-$93:8691             dw 0008,A0C1 ; Unused. Super missile explosion
+$93:8691             dw 0008,A0C1 ; Super missile explosion. Damage is ignored
 $93:8695             dw F000,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3 ; Unused projectile 25h
 $93:86AB             dw 012C,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D ; Spazer SBA trail
 $93:86C1             dw 1000,A119,A119,A119,A119,A119,A119,A119,A119,A119,A119 ; Shinespark echo
@@ -670,7 +678,7 @@ $93:86D7             dw 0000,A16D ; Unused projectile 27h (unused shinespark bea
 }
 
 
-;;; $86DB..A1A0: Instruction lists ;;;
+;;; $86DB..A1A0: Projectile instruction lists ;;;
 {
 ;;; $86DB: Instruction list - power - up ;;;
 {

@@ -13380,7 +13380,7 @@ $86:DCD3 60          RTS
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
-;;     $1993: X offset. Unit 40px
+;;     $1993: X offset. Unit 40h px
 $86:DCD4 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:DCD7 0A          ASL A                  ;|
 $86:DCD8 AA          TAX                    ;} Enemy projectile X position = 20h + [enemy projectile initialisation parameter] * 40h

@@ -1414,7 +1414,7 @@ $A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E];} Enemy arc origin Y position = [en
 $A6:955A BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:955D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:9560 BF 06 80 7E LDA $7E8006,x[$7E:8006];|
-$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy body part spawn X position = [enemy arc origin X position] + [enemy arc radius] * cos([enemy start angle] * pi / 80h) * FFh / 100h
+$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy body part spawn X position = [enemy arc origin X position] + [enemy arc radius] * cos([enemy start angle] * pi / 80h)
 $A6:9568 18          CLC                    ;|
 $A6:9569 7F 0C 80 7E ADC $7E800C,x[$7E:800C];|
 $A6:956D 9F 10 80 7E STA $7E8010,x[$7E:8010];/
@@ -1422,7 +1422,7 @@ $A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ; Enemy X position = [enemy body par
 $A6:9574 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:9577 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:957A BF 06 80 7E LDA $7E8006,x[$7E:8006];|
-$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy body part spawn Y position = [enemy arc origin Y position] + [enemy arc radius] * -sin([enemy start angle] * pi / 80h) * FFh / 100h
+$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy body part spawn Y position = [enemy arc origin Y position] + [enemy arc radius] * -sin([enemy start angle] * pi / 80h)
 $A6:9582 18          CLC                    ;|
 $A6:9583 7F 0E 80 7E ADC $7E800E,x[$7E:800E];|
 $A6:9587 9F 12 80 7E STA $7E8012,x[$7E:8012];/
@@ -1564,13 +1564,13 @@ $A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy angle]
 $A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:96E2 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:96E6 18          CLC                    ;|
-$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h)
 $A6:96EB 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy angle]
 $A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:96F9 18          CLC                    ;|
-$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h)
 $A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Handle fire arc enemy projectiles
 $A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Handle fire arc sprite objects
@@ -1646,13 +1646,13 @@ $A6:97A2 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
 $A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:97A7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:97AB 18          CLC                    ;|
-$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h)
 $A6:97B0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 $A6:97B3 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
 $A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:97B8 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:97BC 18          CLC                    ;|
-$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h)
 $A6:97C1 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $A6:97C4 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
 $A6:97C8 38          SEC                    ;|
@@ -1735,13 +1735,13 @@ $A6:986C A5 24       LDA $24    [$7E:0024]  ; A = [$24]
 $A6:986E 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:9871 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:9875 18          CLC                    ;|
-$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} $20 = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} $20 = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h)
 $A6:987A 85 20       STA $20    [$7E:0020]  ;/
 $A6:987C A5 24       LDA $24    [$7E:0024]  ; A = [$24]
 $A6:987E 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:9881 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:9885 18          CLC                    ;|
-$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} $22 = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} $22 = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h)
 $A6:988A 85 22       STA $22    [$7E:0022]  ;/
 $A6:988C DA          PHX
 $A6:988D BB          TYX                    ;\

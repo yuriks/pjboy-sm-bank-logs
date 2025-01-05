@@ -1847,7 +1847,7 @@ $B2:F053 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
 $B2:F056 4A          LSR A                  ;|
 $B2:F057 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F05A BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
-$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
+$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h)
 $B2:F061 18          CLC                    ;|
 $B2:F062 7D AE 0F    ADC $0FAE,x[$7E:122E]  ;|
 $B2:F065 9D 7A 0F    STA $0F7A,x[$7E:11FA]  ;/
@@ -1856,7 +1856,7 @@ $B2:F06B 4A          LSR A                  ;|
 $B2:F06C 4A          LSR A                  ;|
 $B2:F06D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F070 BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
-$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
+$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h)
 $B2:F077 49 FF FF    EOR #$FFFF             ;|
 $B2:F07A 1A          INC A                  ;|
 $B2:F07B 18          CLC                    ;|
@@ -1928,7 +1928,7 @@ $B2:F0E7 BD B6 0F    LDA $0FB6,x[$7E:11F6]  ;\
 $B2:F0EA 4A          LSR A                  ;|
 $B2:F0EB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F0EE BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
-$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
+$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h)
 $B2:F0F5 18          CLC                    ;|
 $B2:F0F6 7D AE 0F    ADC $0FAE,x[$7E:11EE]  ;|
 $B2:F0F9 9D 7A 0F    STA $0F7A,x[$7E:11BA]  ;/
@@ -1937,7 +1937,7 @@ $B2:F0FF 4A          LSR A                  ;|
 $B2:F100 4A          LSR A                  ;|
 $B2:F101 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F104 BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
-$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
+$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h)
 $B2:F10B 49 FF FF    EOR #$FFFF             ;|
 $B2:F10E 1A          INC A                  ;|
 $B2:F10F 18          CLC                    ;|

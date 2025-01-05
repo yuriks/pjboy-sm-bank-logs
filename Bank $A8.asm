@@ -439,11 +439,11 @@ $A8:89F9 1A          INC A                  ;|
 $A8:89FA 85 16       STA $16    [$7E:0016]  ;/
 $A8:89FC 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A8:8A00 9F 0E 78 7E STA $7E780E,x[$7E:788E];|
-$A8:8A04 AD 38 0E    LDA $0E38  [$7E:0E38]  ;} Enemy X velocity = 4 * cos([$16] * pi / 80h) * FFh / 100h
+$A8:8A04 AD 38 0E    LDA $0E38  [$7E:0E38]  ;} Enemy X velocity = 4 * cos([$16] * pi / 80h)
 $A8:8A07 9F 10 78 7E STA $7E7810,x[$7E:7890];/
 $A8:8A0B A5 16       LDA $16    [$7E:0016]  ;\
 $A8:8A0D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
-$A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enemy Y velocity = 4 * -sin([$16] * pi / 80h) * FFh / 100h
+$A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enemy Y velocity = 4 * -sin([$16] * pi / 80h)
 $A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
 $A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894];/
 $A8:8A1C A9 6F 87    LDA #$876F             ;\
@@ -10062,7 +10062,7 @@ $A8:F46F BF 22 78 7E LDA $7E7822,x[$7E:7822];\
 $A8:F473 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F476 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;|
 $A8:F479 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
-$A8:F47D 18          CLC                    ;} $14 = [enemy arc centre X position] + [enemy arc X radius] * cos([enemy arc angle] * pi / 80h) * FFh / 100h - [enemy X position]
+$A8:F47D 18          CLC                    ;} $14 = [enemy arc centre X position] + [enemy arc X radius] * cos([enemy arc angle] * pi / 80h) - [enemy X position]
 $A8:F47E 7D AA 0F    ADC $0FAA,x[$7E:0FAA]  ;|
 $A8:F481 38          SEC                    ;|
 $A8:F482 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
@@ -10075,7 +10075,7 @@ $A8:F493 BF 24 78 7E LDA $7E7824,x[$7E:7824];\
 $A8:F497 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F49A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;|
 $A8:F49D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
-$A8:F4A1 18          CLC                    ;} $14 = [enemy arc centre Y position] + [enemy arc Y radius] * -sin([enemy arc angle] * pi / 80h) * FFh / 100h - [enemy Y position]
+$A8:F4A1 18          CLC                    ;} $14 = [enemy arc centre Y position] + [enemy arc Y radius] * -sin([enemy arc angle] * pi / 80h) - [enemy Y position]
 $A8:F4A2 7D AC 0F    ADC $0FAC,x[$7E:0FAC]  ;|
 $A8:F4A5 38          SEC                    ;|
 $A8:F4A6 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;|
@@ -10511,7 +10511,7 @@ $A8:F7F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F7FC BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F7FF EB          XBA                    ;|
 $A8:F800 29 FF 00    AND #$00FF             ;|
-$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy arc start Y position] - [enemy left arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy arc start Y position] - [enemy left arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h)
 $A8:F807 38          SEC                    ;|
 $A8:F808 FF 08 78 7E SBC $7E7808,x[$7E:7948];|
 $A8:F80C 18          CLC                    ;|
@@ -10523,7 +10523,7 @@ $A8:F81A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F81D BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F820 EB          XBA                    ;|
 $A8:F821 29 FF 00    AND #$00FF             ;|
-$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy left arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy left arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h)
 $A8:F828 38          SEC                    ;|
 $A8:F829 FF 06 78 7E SBC $7E7806,x[$7E:7946];|
 $A8:F82D 18          CLC                    ;|
@@ -10552,14 +10552,14 @@ $A8:F851 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F854 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F857 29 FF 00    AND #$00FF             ;|
 $A8:F85A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F85D A9 00 E0    LDA #$E000             ;} Enemy left arc centre X offset = 30h * cos(-20h * pi / 80h) * FFh / 100h
+$A8:F85D A9 00 E0    LDA #$E000             ;} Enemy left arc centre X offset = 30h * cos(-20h * pi / 80h)
 $A8:F860 EB          XBA                    ;|
 $A8:F861 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A8:F865 9F 06 78 7E STA $7E7806,x[$7E:7946];/
 $A8:F869 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F86C 29 FF 00    AND #$00FF             ;|
 $A8:F86F 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F872 A9 00 E0    LDA #$E000             ;} Enemy left arc centre Y offset = 30h * -sin(-20h * pi / 80h) * FFh / 100h
+$A8:F872 A9 00 E0    LDA #$E000             ;} Enemy left arc centre Y offset = 30h * -sin(-20h * pi / 80h)
 $A8:F875 EB          XBA                    ;|
 $A8:F876 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F87A 9F 08 78 7E STA $7E7808,x[$7E:7948];/
@@ -10573,14 +10573,14 @@ $A8:F87F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F882 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F885 29 FF 00    AND #$00FF             ;|
 $A8:F888 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F88B A9 00 A0    LDA #$A000             ;} Enemy right arc centre X offset = 30h * cos(-60h * pi / 80h) * FFh / 100h
+$A8:F88B A9 00 A0    LDA #$A000             ;} Enemy right arc centre X offset = 30h * cos(-60h * pi / 80h)
 $A8:F88E EB          XBA                    ;|
 $A8:F88F 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A8:F893 9F 02 78 7E STA $7E7802,x[$7E:7942];/
 $A8:F897 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F89A 29 FF 00    AND #$00FF             ;|
 $A8:F89D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F8A0 A9 00 A0    LDA #$A000             ;} Enemy right arc centre Y offset = 30h * -sin(-60h * pi / 80h) * FFh / 100h
+$A8:F8A0 A9 00 A0    LDA #$A000             ;} Enemy right arc centre Y offset = 30h * -sin(-60h * pi / 80h)
 $A8:F8A3 EB          XBA                    ;|
 $A8:F8A4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F8A8 9F 04 78 7E STA $7E7804,x[$7E:7944];/
@@ -10607,7 +10607,7 @@ $A8:F8C8 29 FF 00    AND #$00FF             ;|
 $A8:F8CB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F8CE BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F8D1 EB          XBA                    ;|
-$A8:F8D2 29 FF 00    AND #$00FF             ;} A = [enemy arc start Y position] - [enemy right arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F8D2 29 FF 00    AND #$00FF             ;} A = [enemy arc start Y position] - [enemy right arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h)
 $A8:F8D5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F8D9 38          SEC                    ;|
 $A8:F8DA FF 04 78 7E SBC $7E7804,x[$7E:7944];|
@@ -10625,7 +10625,7 @@ $A8:F8F7 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F8FA BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F8FD EB          XBA                    ;|
 $A8:F8FE 29 FF 00    AND #$00FF             ;|
-$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy right arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy right arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h)
 $A8:F905 38          SEC                    ;|
 $A8:F906 FF 02 78 7E SBC $7E7802,x[$7E:7942];|
 $A8:F90A 18          CLC                    ;|

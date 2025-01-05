@@ -10959,10 +10959,10 @@ $90:CD93             dw 0080,
 ;;; $CD9B: Fire ice SBA ;;;
 {
 $90:CD9B AD 68 0C    LDA $0C68  [$7E:0C68]  ;\
-$90:CD9E C9 7A CF    CMP #$CF7A             ;} If [projectile pre-instruction] = $CF7A: return carry clear
+$90:CD9E C9 7A CF    CMP #$CF7A             ;} If [projectile pre-instruction] = $CF7A (ice SBA - end): return carry clear
 $90:CDA1 F0 05       BEQ $05    [$CDA8]     ;/
 $90:CDA3 C9 09 CF    CMP #$CF09             ;\
-$90:CDA6 D0 02       BNE $02    [$CDAA]     ;} If [projectile pre-instruction] != $CF09: go to BRANCH_FIRE
+$90:CDA6 D0 02       BNE $02    [$CDAA]     ;} If [projectile pre-instruction] != $CF09 (ice SBA - main): go to BRANCH_FIRE
 
 $90:CDA8 18          CLC                    ;\
 $90:CDA9 60          RTS                    ;} Return carry clear

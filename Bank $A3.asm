@@ -142,7 +142,7 @@ $A3:8793 4C CF 87    JMP $87CF  [$A3:87CF]  ; Go to BRANCH_MERGE
 
 $A3:8796 A9 04 00    LDA #$0004             ;\
 $A3:8799 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} A = 4 * -sin([enemy angle] * pi / 80h) * FFh / 100h
+$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} A = 4 * -sin([enemy angle] * pi / 80h)
 $A3:879F 29 FF 00    AND #$00FF             ;|
 $A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;/
 $A3:87A6 85 14       STA $14    [$7E:0014]  ;\
@@ -716,14 +716,14 @@ $A3:8DAD 60          RTS
 $A3:8DAE BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DB1 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DB4 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
-$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 80h) * FFh / 100h
+$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 80h)
 $A3:8DBB 18          CLC                    ;|
 $A3:8DBC 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
 $A3:8DBF 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $A3:8DC2 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DC5 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DC8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
-$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
+$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 80h)
 $A3:8DCF 18          CLC                    ;|
 $A3:8DD0 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
 $A3:8DD3 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
@@ -755,7 +755,7 @@ $A3:8DF9 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DFC 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DFF BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
 $A3:8E02 29 00 FF    AND #$FF00             ;|
-$A3:8E05 EB          XBA                    ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 8000h) * FFh / 100h
+$A3:8E05 EB          XBA                    ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 8000h)
 $A3:8E06 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A3:8E0A 18          CLC                    ;|
 $A3:8E0B 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
@@ -764,7 +764,7 @@ $A3:8E11 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8E14 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8E17 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
 $A3:8E1A 29 00 FF    AND #$FF00             ;|
-$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 8000h) * FFh / 100h
+$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 8000h)
 $A3:8E1E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:8E22 18          CLC                    ;|
 $A3:8E23 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
@@ -1047,7 +1047,7 @@ $A3:915A 80 46       BRA $46    [$91A2]
 
 $A3:915C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $A3:9160 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
+$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h)
 $A3:9166 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:916A 9F 08 78 7E STA $7E7808,x[$7E:7848];/
 $A3:916E 38          SEC                    ;\
@@ -1098,7 +1098,7 @@ $A3:91D3 80 46       BRA $46    [$921B]     ; Go to BRANCH_MERGE
 
 $A3:91D5 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $A3:91D9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
+$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h)
 $A3:91DF 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:91E3 9F 08 78 7E STA $7E7808,x[$7E:7848];/
 $A3:91E7 38          SEC                    ;\
@@ -2458,7 +2458,7 @@ $A3:A1B3 29 FF 00    AND #$00FF             ;|
 $A3:A1B6 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A1B9 BD B5 0F    LDA $0FB5,x            ;|
 $A3:A1BC 29 FF 00    AND #$00FF             ;|
-$A3:A1BF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy moving forward X velocity = [enemy parameter 1 low] * cos([enemy parameter 1 high] * pi / 80h) * FFh / 100h
+$A3:A1BF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy moving forward X velocity = [enemy parameter 1 low] * cos([enemy parameter 1 high] * pi / 80h)
 $A3:A1C3 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A1C6 9F 02 78 7E STA $7E7802,x          ;|
 $A3:A1CA AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
@@ -2468,7 +2468,7 @@ $A3:A1D4 29 FF 00    AND #$00FF             ;|
 $A3:A1D7 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A1DA BD B5 0F    LDA $0FB5,x            ;|
 $A3:A1DD 29 FF 00    AND #$00FF             ;|
-$A3:A1E0 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy moving forward Y velocity = [enemy parameter 1 low] * -sin([enemy parameter 1 high] * pi / 80h) * FFh / 100h
+$A3:A1E0 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy moving forward Y velocity = [enemy parameter 1 low] * -sin([enemy parameter 1 high] * pi / 80h)
 $A3:A1E4 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A1E7 9F 06 78 7E STA $7E7806,x          ;|
 $A3:A1EB AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
@@ -2485,7 +2485,7 @@ $A3:A1F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A1FC BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
 $A3:A1FF 38          SEC                    ;|
 $A3:A200 E9 20 00    SBC #$0020             ;|
-$A3:A203 29 FF 00    AND #$00FF             ;} Enemy moving left X velocity = [enemy parameter 1 low] * cos(([enemy parameter 1 high] - 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A203 29 FF 00    AND #$00FF             ;} Enemy moving left X velocity = [enemy parameter 1 low] * cos(([enemy parameter 1 high] - 20h) % 100h * pi / 80h)
 $A3:A206 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A3:A20A AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A20D 9F 0A 78 7E STA $7E780A,x[$7E:780A];|
@@ -2497,7 +2497,7 @@ $A3:A21E 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A221 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
 $A3:A224 38          SEC                    ;|
 $A3:A225 E9 20 00    SBC #$0020             ;|
-$A3:A228 29 FF 00    AND #$00FF             ;} Enemy moving left Y velocity = [enemy parameter 1 low] * -sin(([enemy parameter 1 high] - 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A228 29 FF 00    AND #$00FF             ;} Enemy moving left Y velocity = [enemy parameter 1 low] * -sin(([enemy parameter 1 high] - 20h) % 100h * pi / 80h)
 $A3:A22B 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:A22F AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A232 9F 0E 78 7E STA $7E780E,x[$7E:780E];|
@@ -2515,7 +2515,7 @@ $A3:A244 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A247 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
 $A3:A24A 18          CLC                    ;|
 $A3:A24B 69 20 00    ADC #$0020             ;|
-$A3:A24E 29 FF 00    AND #$00FF             ;} Enemy moving right X velocity = [enemy parameter 1 low] * cos(([enemy parameter 1 high] + 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A24E 29 FF 00    AND #$00FF             ;} Enemy moving right X velocity = [enemy parameter 1 low] * cos(([enemy parameter 1 high] + 20h) % 100h * pi / 80h)
 $A3:A251 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A3:A255 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A258 9F 12 78 7E STA $7E7812,x[$7E:7812];|
@@ -2527,7 +2527,7 @@ $A3:A269 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A26C BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
 $A3:A26F 18          CLC                    ;|
 $A3:A270 69 20 00    ADC #$0020             ;|
-$A3:A273 29 FF 00    AND #$00FF             ;} Enemy moving right Y velocity = [enemy parameter 1 low] * -sin(([enemy parameter 1 high] + 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A273 29 FF 00    AND #$00FF             ;} Enemy moving right Y velocity = [enemy parameter 1 low] * -sin(([enemy parameter 1 high] + 20h) % 100h * pi / 80h)
 $A3:A276 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:A27A AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A27D 9F 16 78 7E STA $7E7816,x[$7E:7816];|
@@ -2752,7 +2752,7 @@ $A3:A3CA BD B4 0F    LDA $0FB4,x            ;\
 $A3:A3CD 29 FF 00    AND #$00FF             ;|
 $A3:A3D0 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A3D3 BD AC 0F    LDA $0FAC,x            ;|
-$A3:A3D6 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy custom X velocity = [enemy parameter 1 low] * cos([enemy custom angle] * pi / 80h) * FFh / 100h
+$A3:A3D6 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy custom X velocity = [enemy parameter 1 low] * cos([enemy custom angle] * pi / 80h)
 $A3:A3DA AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A3DD 9F 1A 78 7E STA $7E781A,x          ;|
 $A3:A3E1 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
@@ -2761,7 +2761,7 @@ $A3:A3E8 BD B4 0F    LDA $0FB4,x            ;\
 $A3:A3EB 29 FF 00    AND #$00FF             ;|
 $A3:A3EE 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:A3F1 BD AC 0F    LDA $0FAC,x            ;|
-$A3:A3F4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy custom Y velocity = [enemy parameter 1 low] * -sin([enemy custom angle] * pi / 80h) * FFh / 100h
+$A3:A3F4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy custom Y velocity = [enemy parameter 1 low] * -sin([enemy custom angle] * pi / 80h)
 $A3:A3F8 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
 $A3:A3FB 9F 1E 78 7E STA $7E781E,x          ;|
 $A3:A3FF AD 38 0E    LDA $0E38  [$7E:0E38]  ;|

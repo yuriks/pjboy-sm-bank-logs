@@ -4989,6 +4989,10 @@ $82:A87C 60          RTS
 
 ;;; $A87D: Unused. External draw equipment screen spritemap ;;;
 {
+;; Parameters:
+;;     A: Animation ID + 1
+;;     X: X position
+;;     Y: Y position + 1
 $82:A87D 20 81 A8    JSR $A881  [$82:A881]
 $82:A880 6B          RTL
 }
@@ -5251,8 +5255,8 @@ $82:ABD1 80 0B       BRA $0B    [$ABDE]     ; Go to BRANCH_NO_BEAMS
 $82:ABD3 8A          TXA                    ;\
 $82:ABD4 4A          LSR A                  ;} Equipment screen item index = [X] / 2
 $82:ABD5 EB          XBA                    ;/
-$82:ABD6 09 01 00    ORA #$0001             ; Equipment screen category index = weapons
-$82:ABD9 8D 55 07    STA $0755  [$7E:0755]
+$82:ABD6 09 01 00    ORA #$0001             ;\
+$82:ABD9 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen category index = weapons
 $82:ABDC 80 37       BRA $37    [$AC15]     ; Go to BRANCH_RETURN
 
 ; BRANCH_NO_BEAMS
@@ -5271,24 +5275,27 @@ $82:ABF0 80 0B       BRA $0B    [$ABFD]     ; Go to BRANCH_NO_SUIT_MISC
 $82:ABF2 8A          TXA                    ;\
 $82:ABF3 4A          LSR A                  ;} Equipment screen item index = [X] / 2
 $82:ABF4 EB          XBA                    ;/
-$82:ABF5 09 02 00    ORA #$0002             ; Equipment screen category index = suit/misc
-$82:ABF8 8D 55 07    STA $0755  [$7E:0755]
+$82:ABF5 09 02 00    ORA #$0002             ;\
+$82:ABF8 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen category index = suit/misc
 $82:ABFB 80 18       BRA $18    [$AC15]     ; Go to BRANCH_RETURN
 
 ; BRANCH_NO_SUIT_MISC
-$82:ABFD A2 00 00    LDX #$0000             ;\
-                                            ;|
-$82:AC00 3C 62 C0    BIT $C062,x            ;|
-$82:AC03 E8          INX                    ;} Inefficient NOP
-$82:AC04 E8          INX                    ;|
-$82:AC05 E0 06 00    CPX #$0006             ;|
-$82:AC08 30 F6       BMI $F6    [$AC00]     ;/
+$82:ABFD A2 00 00    LDX #$0000             ; X = 0
+
+; LOOP_BOOTS
+$82:AC00 3C 62 C0    BIT $C062,x            ; <-- Whoops, forgot to write a conditional branch
+$82:AC03 E8          INX                    ;\
+$82:AC04 E8          INX                    ;} X += 2
+$82:AC05 E0 06 00    CPX #$0006             ;\
+$82:AC08 30 F6       BMI $F6    [$AC00]     ;} If [X] < 6h: go to LOOP_BOOTS
 $82:AC0A 80 09       BRA $09    [$AC15]     ; Go to BRANCH_RETURN
+
+; Nothing points here
 $82:AC0C 8A          TXA                    ;\
-$82:AC0D 4A          LSR A                  ;|
-$82:AC0E EB          XBA                    ;} Dead code (should be allowing boots to be the initial selection)
-$82:AC0F 09 03 00    ORA #$0003             ;|
-$82:AC12 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:AC0D 4A          LSR A                  ;} Equipment screen item index = [X] / 2
+$82:AC0E EB          XBA                    ;/
+$82:AC0F 09 03 00    ORA #$0003             ;\
+$82:AC12 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen category index = boots
 
 ; BRANCH_RETURN
 $82:AC15 AD D6 09    LDA $09D6  [$7E:09D6]  ;\
@@ -7821,107 +7828,113 @@ $82:BE59 6B          RTL
 }
 
 
-;;; $BE5A: Unused ;;;
+;;; $BE5A: Unused. Mark entire map as explored and crash ;;;
 {
-; So... this routine does some stuff and then crashes?
 $82:BE5A C2 30       REP #$30
-$82:BE5C AD 9F 07    LDA $079F  [$7E:079F]
-$82:BE5F 85 12       STA $12    [$7E:0012]
-$82:BE61 0A          ASL A
-$82:BE62 18          CLC
-$82:BE63 65 12       ADC $12    [$7E:0012]
-$82:BE65 AA          TAX
-$82:BE66 BD 4A 96    LDA $964A,x
-$82:BE69 85 00       STA $00    [$7E:0000]
-$82:BE6B BD 4C 96    LDA $964C,x
-$82:BE6E 85 02       STA $02    [$7E:0002]
-$82:BE70 A0 00 00    LDY #$0000
+$82:BE5C AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$82:BE5F 85 12       STA $12    [$7E:0012]  ;} $12 = [area index]
+$82:BE61 0A          ASL A                  ;\
+$82:BE62 18          CLC                    ;|
+$82:BE63 65 12       ADC $12    [$7E:0012]  ;|
+$82:BE65 AA          TAX                    ;|
+$82:BE66 BD 4A 96    LDA $964A,x            ;} $00 = [$964A + [$12] * 3] (source tilemap)
+$82:BE69 85 00       STA $00    [$7E:0000]  ;|
+$82:BE6B BD 4C 96    LDA $964C,x            ;|
+$82:BE6E 85 02       STA $02    [$7E:0002]  ;/
+$82:BE70 A0 00 00    LDY #$0000             ; Y = 0 (tilemap index)
 
-$82:BE73 64 12       STZ $12    [$7E:0012]
+; LOOP_BYTE
+$82:BE73 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (new map tiles explored byte)
 
-$82:BE75 B7 00       LDA [$00],y
-$82:BE77 29 FF 03    AND #$03FF
-$82:BE7A C9 1F 00    CMP #$001F
-$82:BE7D F0 03       BEQ $03    [$BE82]
-$82:BE7F 38          SEC
+; LOOP_BIT
+$82:BE75 B7 00       LDA [$00],y            ;\
+$82:BE77 29 FF 03    AND #$03FF             ;|
+$82:BE7A C9 1F 00    CMP #$001F             ;} If (tilemap entry tile number) != 1Fh (blank):
+$82:BE7D F0 03       BEQ $03    [$BE82]     ;/
+$82:BE7F 38          SEC                    ; $12 = [$12] << 1 | 1
 $82:BE80 80 01       BRA $01    [$BE83]
-
-$82:BE82 18          CLC
+                                            ; Else ((tilemap entry tile number) = 1Fh (blank)):
+$82:BE82 18          CLC                    ; $12 = [$12] << 1
 
 $82:BE83 26 12       ROL $12    [$7E:0012]
-$82:BE85 C8          INY
-$82:BE86 C8          INY
-$82:BE87 98          TYA
-$82:BE88 29 0F 00    AND #$000F
-$82:BE8B D0 E8       BNE $E8    [$BE75]
-$82:BE8D C0 00 10    CPY #$1000
-
-$82:BE90 10 FE       BPL $FE    [$BE90]
+$82:BE85 C8          INY                    ;\
+$82:BE86 C8          INY                    ;} Y += 2
+$82:BE87 98          TYA                    ;\
+$82:BE88 29 0F 00    AND #$000F             ;} If [Y] % 10h != 0: go to LOOP_BIT
+$82:BE8B D0 E8       BNE $E8    [$BE75]     ;/
+$82:BE8D C0 00 10    CPY #$1000             ;\
+$82:BE90 10 FE       BPL $FE    [$BE90]     ;} If [Y] >= 1000h (tilemap size): crash
 $82:BE92 98          TYA                    ;\
 $82:BE93 4A          LSR A                  ;|
 $82:BE94 4A          LSR A                  ;|
 $82:BE95 4A          LSR A                  ;|
 $82:BE96 4A          LSR A                  ;|
-$82:BE97 AA          TAX                    ;} Dead code
+$82:BE97 AA          TAX                    ;} $07F7 + [Y] / 10h - 1 = [$12]
 $82:BE98 E2 20       SEP #$20               ;|
 $82:BE9A A5 12       LDA $12    [$7E:0012]  ;|
 $82:BE9C 9D F6 07    STA $07F6,x            ;|
-$82:BE9F C2 20       REP #$20               ;|
-$82:BEA1 80 D0       BRA $D0    [$BE73]     ;/
+$82:BE9F C2 20       REP #$20               ;/
+$82:BEA1 80 D0       BRA $D0    [$BE73]     ; Go to LOOP_BYTE
 }
 
 
-;;; $BEA3: Unused ;;;
+;;; $BEA3: Unused. Count rooms and crash ;;;
 {
 ; So... this routine does some stuff and then crashes as well? Great!
+
+; This loops through data at $BF04 that no longer exists, 100h bytes per area for 7 areas
+; $7E:3000 + [area index] * 100h is populated with indices of non-zero bytes in the $BF04 for that area
+; $7E:4000 + [area index] is populated with count of non-zero bytes in the $BF04 for that area
 $82:BEA3 C2 30       REP #$30
-$82:BEA5 A2 00 06    LDX #$0600
-$82:BEA8 A9 00 00    LDA #$0000
+$82:BEA5 A2 00 06    LDX #$0600             ;\
+$82:BEA8 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$82:BEAB 9F 00 30 7E STA $7E3000,x          ;|
+$82:BEAF 9F 00 40 7E STA $7E4000,x          ;} $7E:3000..3601 = $7E:4000..4601 = 0
+$82:BEB3 CA          DEX                    ;|
+$82:BEB4 CA          DEX                    ;|
+$82:BEB5 10 F4       BPL $F4    [$BEAB]     ;/
+$82:BEB7 8F 00 40 7E STA $7E4000[$7E:4000]  ;\
+$82:BEBB 8F 02 40 7E STA $7E4002[$7E:4002]  ;} >_<;
+$82:BEBF 8F 04 40 7E STA $7E4004[$7E:4004]  ;/
+$82:BEC3 9C 9F 07    STZ $079F  [$7E:079F]  ; Area index = 0 (Crateria)
 
-$82:BEAB 9F 00 30 7E STA $7E3000,x
-$82:BEAF 9F 00 40 7E STA $7E4000,x
-$82:BEB3 CA          DEX
-$82:BEB4 CA          DEX
-$82:BEB5 10 F4       BPL $F4    [$BEAB]
-$82:BEB7 8F 00 40 7E STA $7E4000[$7E:4000]
-$82:BEBB 8F 02 40 7E STA $7E4002[$7E:4002]
-$82:BEBF 8F 04 40 7E STA $7E4004[$7E:4004]
-$82:BEC3 9C 9F 07    STZ $079F  [$7E:079F]
-
+; LOOP_AREA
 $82:BEC6 C2 20       REP #$20
-$82:BEC8 AD 9F 07    LDA $079F  [$7E:079F]
-$82:BECB EB          XBA
-$82:BECC A8          TAY
-$82:BECD AA          TAX
+$82:BEC8 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$82:BECB EB          XBA                    ;} Y = [area index] * 100h (source index)
+$82:BECC A8          TAY                    ;/
+$82:BECD AA          TAX                    ; X = [area index] * 100h (destination index)
 $82:BECE E2 20       SEP #$20
-$82:BED0 A9 FF       LDA #$FF
-$82:BED2 85 12       STA $12    [$7E:0012]
+$82:BED0 A9 FF       LDA #$FF               ;\
+$82:BED2 85 12       STA $12    [$7E:0012]  ;} $12 = FFh (loop counter)
 
-$82:BED4 B9 04 BF    LDA $BF04,y
-$82:BED7 F0 14       BEQ $14    [$BEED]
-$82:BED9 98          TYA
-$82:BEDA 9F 00 30 7E STA $7E3000,x
-$82:BEDE E8          INX
-$82:BEDF DA          PHX
-$82:BEE0 AE 9F 07    LDX $079F  [$7E:079F]
-$82:BEE3 BF 00 40 7E LDA $7E4000,x
-$82:BEE7 1A          INC A
-$82:BEE8 9F 00 40 7E STA $7E4000,x
-$82:BEEC FA          PLX
+; LOOP_SQUARE
+$82:BED4 B9 04 BF    LDA $BF04,y            ;\
+$82:BED7 F0 14       BEQ $14    [$BEED]     ;} If [$BF04 + [Y]] != 0:
+$82:BED9 98          TYA                    ;\
+$82:BEDA 9F 00 30 7E STA $7E3000,x          ;} $7E:3000 + [X] = [Y]
+$82:BEDE E8          INX                    ; Increment X
+$82:BEDF DA          PHX                    ;\
+$82:BEE0 AE 9F 07    LDX $079F  [$7E:079F]  ;|
+$82:BEE3 BF 00 40 7E LDA $7E4000,x          ;|
+$82:BEE7 1A          INC A                  ;} Increment $7E:4000 + [area index]
+$82:BEE8 9F 00 40 7E STA $7E4000,x          ;|
+$82:BEEC FA          PLX                    ;/
 
-$82:BEED C8          INY
-$82:BEEE A5 12       LDA $12    [$7E:0012]
-$82:BEF0 3A          DEC A
-$82:BEF1 85 12       STA $12    [$7E:0012]
-$82:BEF3 C9 FF       CMP #$FF
-$82:BEF5 D0 DD       BNE $DD    [$BED4]
-$82:BEF7 AD 9F 07    LDA $079F  [$7E:079F]
-$82:BEFA 1A          INC A
-$82:BEFB 8D 9F 07    STA $079F  [$7E:079F]
-$82:BEFE C9 07       CMP #$07
-$82:BF00 30 C4       BMI $C4    [$BEC6]
+$82:BEED C8          INY                    ; Increment Y
+$82:BEEE A5 12       LDA $12    [$7E:0012]  ;\
+$82:BEF0 3A          DEC A                  ;} Decrement $12
+$82:BEF1 85 12       STA $12    [$7E:0012]  ;/
+$82:BEF3 C9 FF       CMP #$FF               ;\
+$82:BEF5 D0 DD       BNE $DD    [$BED4]     ;} If [$12] != FFh: go to LOOP_SQUARE
+$82:BEF7 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$82:BEFA 1A          INC A                  ;} Increment area index
+$82:BEFB 8D 9F 07    STA $079F  [$7E:079F]  ;/
+$82:BEFE C9 07       CMP #$07               ;\
+$82:BF00 30 C4       BMI $C4    [$BEC6]     ;} If [area index] < 7 (debug): go to LOOP_AREA
 
-$82:BF02 80 FE       BRA $FE    [$BF02]
+$82:BF02 80 FE       BRA $FE    [$BF02]     ; Crash
 }
 
 
@@ -9045,14 +9058,18 @@ $82:DA49 60          RTS                    ;} Return carry clear
 
 ;;; $DA4A: Calculate the [A]th transitional colour from [X] to [Y] ;;;
 {
+;; Parameters:
+;;     A: Palette change numerator
+;;     X: Current transitional colour
+;;     Y: Target colour
 ;; Returns:
-;;     A: Result colour
+;;     A: Next transitional colour
 
 ; After pushes, we have:
 ;     $01 + [S]: Target colour
-;     $03 + [S]: Source colour
+;     $03 + [S]: Current transitional colour
 ;     $05 + [S]: Palette change numerator
-;     $07 + [S]: Result colour
+;     $07 + [S]: Next transitional colour
 $82:DA4A 48          PHA
 $82:DA4B 48          PHA
 $82:DA4C DA          PHX
@@ -9118,24 +9135,30 @@ $82:DAA5 60          RTS
 
 ;;; $DAA6: Calculate the [A]th transitional colour component from [X] to [Y] ;;;
 {
+;; Parameters:
+;;     A: Palette change numerator
+;;     X: Current transitional colour component
+;;     Y: Target colour component
 ;; Returns:
-;;     If [A] = 0:
-;;         A = [X]
-;;     If [A] = [palette change denominator] + 1:
-;;         A = [Y]
-;;     Otherwise:
-;;         A = [X] + ([Y] - [X]) / ([palette change denominator] + 1 - [A])
+;;     A: Next transitional colour component
+
+; If [A] = 0:
+;     A = [X]
+; If [A] = [palette change denominator] + 1:
+;     A = [Y]
+; Otherwise:
+;     A = [X] + ([Y] - [X]) / ([palette change denominator] + 1 - [A])
 
 ; This routine is designed to be called iteratively with X = (last return value) and incrementing A.
 ; The resulting equation can be expressed as:
-;      x_{t+1} = x_t + (y - x_t) / (d + 1 - t)
+;      c_{t+1} = c_t + (c_{d+1} - c_t) / (d + 1 - t)
 ; where
 ;      t = [A]
-;      x = [X]
-;      y = [Y]
+;      c = [X]
+;      c_{d+1} = [Y]
 ;      d = [palette change denominator]
 ; Solving this recurrence relation actually gives you:
-;     x_t = x_0 + t (y - x_0) / d <-- TODO: double check, I feel like I'm missing a +1
+;     c_t = c_0 + t (c_{d+1} - c_0) / (d + 1)
 ; which is linear interpolation
 
 $82:DAA6 C9 00 00    CMP #$0000             ;\
@@ -9283,7 +9306,7 @@ $82:DB2E 69 20 00    ADC #$0020             ;} Colour index += 20h
 $82:DB31 8D 04 C4    STA $C404  [$7E:C404]  ;/
 $82:DB34 80 EE       BRA $EE    [$DB24]     ; Go to LOOP
 
-$82:DB36 20 41 DB    JSR $DB41  [$82:DB41]  ; Advance gradual colour change of palette [X] / 20h
+$82:DB36 20 41 DB    JSR $DB41  [$82:DB41]  ; Advance gradual colour change of palette at colour index
 $82:DB39 80 E9       BRA $E9    [$DB24]     ; Go to LOOP
 
 ; Nothing points here
@@ -9296,7 +9319,7 @@ $82:DB40 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DB41: Advance gradual colour change of palette [X] / 20h ;;;
+;;; $DB41: Advance gradual colour change of palette at colour index ;;;
 {
 $82:DB41 AE 04 C4    LDX $C404  [$7E:C404]  ; X = [colour index]
 
@@ -9801,9 +9824,9 @@ $82:DEF1 60          RTS
 
 ;;; $DEF2: Load state header ;;;
 {
-$82:DEF2 F4 00 8F    PEA $8F00
-$82:DEF5 AB          PLB
-$82:DEF6 AB          PLB
+$82:DEF2 F4 00 8F    PEA $8F00              ;\
+$82:DEF5 AB          PLB                    ;} DB = $8F
+$82:DEF6 AB          PLB                    ;/
 $82:DEF7 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
 $82:DEFA BD 03 00    LDA $0003,x[$8F:DF5A]  ;|
 $82:DEFD 29 FF 00    AND #$00FF             ;|
@@ -9984,11 +10007,10 @@ $82:E038 60          RTS
 
 ;;; $E039: Perform door transition VRAM update ;;;
 {
-; 7 bytes after the JSR are used as arguments:
-;  Source address (3 bytes),
-;  VRAM address (2 bytes),
-;  size (2 bytes).
-; Waits for an IRQ to DMA - ONLY during door transitions.
+;; Parameters:
+;;     [[S] + 1] + 1: Source address (24-bit)
+;;     [[S] + 1] + 4: VRAM address
+;;     [[S] + 1] + 6: Size (in bytes)
 $82:E039 A3 01       LDA $01,s  [$7E:1FF7]  ;\
 $82:E03B 1A          INC A                  ;} $AD = (return address) + 1
 $82:E03C 85 AD       STA $AD    [$7E:00AD]  ;/
@@ -10123,6 +10145,8 @@ $82:E117 6B          RTL
 
 ;;; $E118: Play room music track after [A] frames ;;;
 {
+;; Parameters:
+;;     A: Delay. Called with 6 seconds for Samus/item fanfare
 $82:E118 08          PHP
 $82:E119 8B          PHB
 $82:E11A C2 30       REP #$30
@@ -10183,7 +10207,7 @@ $82:E169 08          PHP
 $82:E16A C2 30       REP #$30
 $82:E16C F4 71 E1    PEA $E171              ;\
 $82:E16F 6C 9C 09    JMP ($099C)[$82:E17D]  ;} Execute [door transition function]
-$82:E172 B0 02       BCS $02    [$E176]     ; If carry clear:
+$82:E172 B0 02       BCS $02    [$E176]     ; If carry clear (not finished delay):
 $82:E174 28          PLP
 $82:E175 60          RTS                    ; Return
 
@@ -10195,6 +10219,8 @@ $82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]  ; Go to game state Ah
 
 ;;; $E17D: Door transition function - handle elevator ;;;
 {
+;; Returns:
+;;     Carry: Set if finished delay, clear otherwise
 $82:E17D AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
 $82:E180 F0 1B       BEQ $1B    [$E19D]     ;} If door is not an elevator: return carry set
 $82:E182 A9 00 00    LDA #$0000             ;\
@@ -10214,6 +10240,8 @@ $82:E19E 60          RTS
 
 ;;; $E19F: Door transition function - wait 48 frames for down elevator ;;;
 {
+;; Returns:
+;;     Carry: Set if finished delay, clear otherwise
 $82:E19F CE 2F 09    DEC $092F  [$7E:092F]  ; Decrement downwards elevator delay timer
 $82:E1A2 30 11       BMI $11    [$E1B5]     ; If [downwards elevator delay timer] < 0: return carry set
 $82:E1A4 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
@@ -10514,9 +10542,8 @@ $82:E3EB AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E3EE 29 03 00    AND #$0003             ;|
 $82:E3F1 C9 02 00    CMP #$0002             ;} If door direction is down:
 $82:E3F4 D0 05       BNE $05    [$E3FB]     ;/
-$82:E3F6 A9 10 00    LDA #$0010             ;\
-$82:E3F9 80 03       BRA $03    [$E3FE]     ;} Next interrupt command = 10h (vertical room transition)
-
+$82:E3F6 A9 10 00    LDA #$0010             ; Next interrupt command = 10h (vertical room transition)
+$82:E3F9 80 03       BRA $03    [$E3FE]
                                             ; Else (door direction is not down):
 $82:E3FB A9 16 00    LDA #$0016             ; Next interrupt command = 16h (horizontal room transition)
 
@@ -12357,7 +12384,7 @@ $82:F09C A9 00 00    LDA #$0000             ;\
 $82:F09F 9D 00 00    STA $0000,x            ;} [X] = 0
 $82:F0A2 80 06       BRA $06    [$F0AA]
 
-$82:F0A4 A9 01 00    LDA #$0001             ;\ Else ([[X]] = 0)L
+$82:F0A4 A9 01 00    LDA #$0001             ;\ Else ([[X]] = 0):
 $82:F0A7 9D 00 00    STA $0000,x[$7E:09E4]  ;} [X] = 1
 
 $82:F0AA 20 B9 F0    JSR $F0B9  [$82:F0B9]  ; Set special setting highlights

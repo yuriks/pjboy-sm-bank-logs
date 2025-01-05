@@ -594,7 +594,7 @@ $A5:8B75 60          RTS                    ; Return
 $A5:8B76 A9 20 00    LDA #$0020             ;\
 $A5:8B79 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8B7C AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8B80 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8B80 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8B84 18          CLC                    ;|
 $A5:8B85 69 80 01    ADC #$0180             ;|
 $A5:8B88 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -634,7 +634,7 @@ $A5:8BD2 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 
 $A5:8BD5 A9 20 00    LDA #$0020             ;\
 $A5:8BD8 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8BDB AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8BDF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8BDF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8BE3 18          CLC                    ;|
 $A5:8BE4 69 80 01    ADC #$0180             ;|
 $A5:8BE7 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -681,7 +681,7 @@ $A5:8C33 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubble
 $A5:8C36 A9 20 00    LDA #$0020             ;\
 $A5:8C39 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8C3C AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8C40 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8C40 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8C44 18          CLC                    ;|
 $A5:8C45 69 80 01    ADC #$0180             ;|
 $A5:8C48 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -763,7 +763,7 @@ $A5:8CF7 60          RTS                    ; Return
 $A5:8CF8 A9 20 00    LDA #$0020             ;\
 $A5:8CFB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8CFE AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8D02 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8D02 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8D06 18          CLC                    ;|
 $A5:8D07 69 80 01    ADC #$0180             ;|
 $A5:8D0A 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -802,7 +802,7 @@ $A5:8D51 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 
 $A5:8D54 A9 20 00    LDA #$0020             ;\
 $A5:8D57 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8D5A AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8D5E 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8D5E 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8D62 18          CLC                    ;|
 $A5:8D63 69 80 01    ADC #$0180             ;|
 $A5:8D66 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -851,7 +851,7 @@ $A5:8DB8 D0 3F       BNE $3F    [$8DF9]     ;} If [Samus X speed divisor] != 0: 
 $A5:8DBA A9 20 00    LDA #$0020             ;\
 $A5:8DBD 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:8DC0 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
-$A5:8DC4 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8DC4 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h)
 $A5:8DC8 18          CLC                    ;|
 $A5:8DC9 69 80 01    ADC #$0180             ;|
 $A5:8DCC 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
@@ -1124,7 +1124,7 @@ $A5:9010 60          RTS                    ; Return
 $A5:9011 AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A5:9015 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:9018 AF 10 78 7E LDA $7E7810[$7E:7810]  ;|
-$A5:901C 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon X position = [Draygon spiral X position] + [Draygon spiral X radius] * cos([Draygon spiral angle] * pi / 80h) * FFh / 100h
+$A5:901C 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon X position = [Draygon spiral X position] + [Draygon spiral X radius] * cos([Draygon spiral angle] * pi / 80h)
 $A5:9020 18          CLC                    ;|
 $A5:9021 6F 0C 78 7E ADC $7E780C[$7E:780C]  ;|
 $A5:9025 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
@@ -1132,7 +1132,7 @@ $A5:9028 AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A5:902C 4A          LSR A                  ;|
 $A5:902D 4A          LSR A                  ;|
 $A5:902E 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A5:9031 AF 10 78 7E LDA $7E7810[$7E:7810]  ;} Draygon Y position = [Draygon spiral Y position] - [Draygon spiral X radius] / 4 * sin([Draygon spiral angle] * pi / 80h) * FFh / 100h
+$A5:9031 AF 10 78 7E LDA $7E7810[$7E:7810]  ;} Draygon Y position = [Draygon spiral Y position] - [Draygon spiral X radius] / 4 * sin([Draygon spiral angle] * pi / 80h)
 $A5:9035 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A5:9039 18          CLC                    ;|
 $A5:903A 6F 0E 78 7E ADC $7E780E[$7E:780E]  ;|
@@ -2955,7 +2955,7 @@ $A5:9F9A 18          CLC                    ;|
 $A5:9F9B 69 80 00    ADC #$0080             ;} Enemy projectile initialisation parameter 1 (angle) = A0h + [random number] % 40h - 20h
 $A5:9F9E 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A5:9FA1 A0 50 8E    LDY #$8E50             ;\
-$A5:9FA4 A9 02 00    LDA #$0002             ;} Spawn Draygon goop enemy projectile
+$A5:9FA4 A9 02 00    LDA #$0002             ;} Spawn Draygon goop enemy projectile with speed 2px/frame
 $A5:9FA7 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:9FAB 7A          PLY
 $A5:9FAC FA          PLX
@@ -2983,7 +2983,7 @@ $A5:9FCC 18          CLC                    ;|
 $A5:9FCD 69 C0 00    ADC #$00C0             ;} Enemy projectile initialisation parameter 1 (angle) = E0h + [random number] % 40h - 20h
 $A5:9FD0 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A5:9FD3 A0 50 8E    LDY #$8E50             ;\
-$A5:9FD6 A9 02 00    LDA #$0002             ;} Spawn Draygon goop enemy projectile
+$A5:9FD6 A9 02 00    LDA #$0002             ;} Spawn Draygon goop enemy projectile with speed 2px/frame
 $A5:9FD9 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:9FDD 7A          PLY
 $A5:9FDE FA          PLX
@@ -5167,16 +5167,16 @@ $A5:EA3B E0 20 00    CPX #$0020             ;|
 $A5:EA3E D0 F0       BNE $F0    [$EA30]     ;/
 $A5:EA40 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EA43 A9 00 00    LDA #$0000             ;\
-$A5:EA46 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile
+$A5:EA46 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile with Y offset 0 px
 $A5:EA49 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EA4D A9 01 00    LDA #$0001             ;\
-$A5:EA50 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile
+$A5:EA50 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile with Y offset 8 px
 $A5:EA53 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EA57 A9 02 00    LDA #$0002             ;\
-$A5:EA5A A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile
+$A5:EA5A A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile with Y offset 10h px
 $A5:EA5D 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EA61 A9 03 00    LDA #$0003             ;\
-$A5:EA64 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile
+$A5:EA64 A0 6C DE    LDY #$DE6C             ;} Spawn Spore Spawn's stalk enemy projectile with Y offset 18h px
 $A5:EA67 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EA6B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EA6E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -5222,16 +5222,16 @@ $A5:EAE0 38          SEC                    ;|
 $A5:EAE1 E9 80 00    SBC #$0080             ;} Enemy Y position -= 80h
 $A5:EAE4 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A5:EAE7 A9 00 00    LDA #$0000             ;\
-$A5:EAEA A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile
+$A5:EAEA A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 0 px
 $A5:EAED 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EAF1 A9 01 00    LDA #$0001             ;\
-$A5:EAF4 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile
+$A5:EAF4 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 40h px
 $A5:EAF7 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EAFB A9 02 00    LDA #$0002             ;\
-$A5:EAFE A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile
+$A5:EAFE A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 80h px
 $A5:EB01 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EB05 A9 03 00    LDA #$0003             ;\
-$A5:EB08 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile
+$A5:EB08 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset C0h px
 $A5:EB0B 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EB0F 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment positions
 $A5:EB12 6B          RTL
@@ -5283,7 +5283,7 @@ $A5:EB52 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment p
 $A5:EB55 AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
 $A5:EB59 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:EB5C AF 14 78 7E LDA $7E7814[$7E:7814]  ;|
-$A5:EB60 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X origin] + [Spore Spawn max X radius] * cos([Spore Spawn angle] * pi / 80h) * FFh / 100h
+$A5:EB60 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X origin] + [Spore Spawn max X radius] * cos([Spore Spawn angle] * pi / 80h)
 $A5:EB64 18          CLC                    ;|
 $A5:EB65 7D AC 0F    ADC $0FAC,x[$7E:0FAC]  ;|
 $A5:EB68 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
@@ -5292,7 +5292,7 @@ $A5:EB6F 38          SEC                    ;|
 $A5:EB70 E9 10 00    SBC #$0010             ;|
 $A5:EB73 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:EB76 AF 14 78 7E LDA $7E7814[$7E:7814]  ;|
-$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] - ([Spore Spawn max X radius] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h) * FFh / 100h
+$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] - ([Spore Spawn max X radius] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h)
 $A5:EB7B E9 40 00    SBC #$0040             ;|
 $A5:EB7E 0A          ASL A                  ;|
 $A5:EB7F 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
