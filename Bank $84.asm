@@ -9669,10 +9669,10 @@ $84:C88A             dw C7B1,C318,C301  ; Door. Red door facing left
 $84:C890             dw C7B1,C37A,C363  ; Door. Red door facing right
 $84:C896             dw C7B1,C3DC,C3C5  ; Door. Red door facing up
 $84:C89C             dw C7B1,C43E,C427  ; Door. Red door facing down
-$84:C8A2             dw C7BB,C489,C49E  ; Door. shot/bombed/grappled reaction, shootable, BTS 40h. Blue facing left
-$84:C8A8             dw C7BB,C4BA,C4CF  ; Door. shot/bombed/grappled reaction, shootable, BTS 41h. Blue facing right
-$84:C8AE             dw C7BB,C4EB,C500  ; Door. shot/bombed/grappled reaction, shootable, BTS 42h. Blue facing up
-$84:C8B4             dw C7BB,C51C,C531  ; Door. shot/bombed/grappled reaction, shootable, BTS 43h. Blue facing down
+$84:C8A2             dw C7BB,C489,C49E  ; Door. Shot/bombed/grappled reaction, shootable, BTS 40h. Blue facing left
+$84:C8A8             dw C7BB,C4BA,C4CF  ; Door. Shot/bombed/grappled reaction, shootable, BTS 41h. Blue facing right
+$84:C8AE             dw C7BB,C4EB,C500  ; Door. Shot/bombed/grappled reaction, shootable, BTS 42h. Blue facing up
+$84:C8B4             dw C7BB,C51C,C531  ; Door. Shot/bombed/grappled reaction, shootable, BTS 43h. Blue facing down
 $84:C8BA             dw B3C1,C49E       ; Blue door closing facing left
 $84:C8BE             dw B3C1,C4CF       ; Blue door closing facing right
 $84:C8C2             dw B3C1,C500       ; Blue door closing facing up

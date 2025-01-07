@@ -409,7 +409,7 @@ $95:D089             db 03, 7E, 7E, FF, C3, 44, FF, 99, 00, 81, 44, FF, 99, 00, 
 
 ;;; $95:D713: Tiles - font 2 ;;;
 {
-; Decompressed to $7F:A000..B1FF around $8B:A549, and then loaded via $8B:8D23 to the $7E:4000..45FF tilemap (and transferred to VRAM $4180..447F or $4C00..4FFF???)
+; Decompressed to $7F:A000..B1FF around $8B:A549, and then loaded via $8B:8D23 to the $7E:4000..45FF tilemap (and transferred to VRAM $4180..447F)
 ; 2bpp, Japanese text
 
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|

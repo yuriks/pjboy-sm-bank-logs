@@ -1293,7 +1293,7 @@ $80:8684 8D 00 21    STA $2100              ;} Disable forced blank
 $80:8687 A9 00       LDA #$00               ;\
 $80:8689 8D 0B 21    STA $210B              ;} BG1 tiles base address = $0000
 $80:868C A9 40       LDA #$40               ;\
-$80:868E 8D 07 21    STA $2107              ;} BG1 tilemap base address = $4000
+$80:868E 8D 07 21    STA $2107              ;} BG1 tilemap base address = $4000, size = 32x32
 
 $80:8691 80 FE       BRA $FE    [$8691]     ; Crash
 
@@ -1380,7 +1380,7 @@ $80:874E 8D 00 21    STA $2100  [$82:2100]  ;} Disable forced blank
 $80:8751 A9 00       LDA #$00               ;\
 $80:8753 8D 0B 21    STA $210B  [$82:210B]  ;} BG1 tiles base address = $0000
 $80:8756 A9 40       LDA #$40               ;\
-$80:8758 8D 07 21    STA $2107  [$82:2107]  ;} BG1 tilemap base address = $4000
+$80:8758 8D 07 21    STA $2107  [$82:2107]  ;} BG1 tilemap base address = $4000, size = 32x32
 
 $80:875B 80 FE       BRA $FE    [$875B]     ; Crash
 }
@@ -1413,6 +1413,7 @@ $80:8791 60          RTS
 
 ;;; $8792: Initialise PPU registers ;;;
 {
+; These BG/sprites addresses aren't used, $8B:8000 (set up PPU for title sequence) overwrites them
 $80:8792 A9 8F       LDA #$8F               ;\
 $80:8794 8D 00 21    STA $2100              ;} Enable forced blank
 $80:8797 85 51       STA $51    [$7E:0051]  ;/

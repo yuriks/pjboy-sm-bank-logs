@@ -317,7 +317,7 @@ $8B:82C3 64 5C       STZ $5C    [$7E:005C]  ;\
 $8B:82C5 9C 0A 21    STZ $210A              ;} BG4 tilemap base address = $0000, size = 32x32
 $8B:82C8 64 5D       STZ $5D    [$7E:005D]  ;\
 $8B:82CA 9C 0B 21    STZ $210B              ;|
-$8B:82CD 64 5E       STZ $5E    [$7E:005E]  ;} BG tiles base address = $0000
+$8B:82CD 64 5E       STZ $5E    [$7E:005E]  ;} BG tiles base addresses = $0000
 $8B:82CF 9C 0C 21    STZ $210C              ;/
 $8B:82D2 A9 11       LDA #$11               ;\
 $8B:82D4 8D 2C 21    STA $212C              ;} Main screen layers = BG1/sprites
@@ -11669,7 +11669,7 @@ $8B:DBE7 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop co
 $8B:DBE9 A9 9F       LDA #$9F               ;|
 $8B:DBEB 85 76       STA $76    [$7E:0076]  ;/
 $8B:DBED A9 00       LDA #$00               ;\
-$8B:DBEF 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
+$8B:DBEF 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000
 $8B:DBF1 A9 00       LDA #$00               ;\
 $8B:DBF3 85 5D       STA $5D    [$7E:005D]  ;} BG1/2 tiles base address = $0000
 $8B:DBF5 C2 20       REP #$20
@@ -12490,7 +12490,7 @@ $8B:E355 85 55       STA $55    [$7E:0055]  ;} BG mode = 7
 $8B:E357 A9 80       LDA #$80               ;\
 $8B:E359 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
 $8B:E35B A9 00       LDA #$00               ;\
-$8B:E35D 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
+$8B:E35D 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000
 $8B:E35F 64 5D       STZ $5D    [$7E:005D]  ; BG1/2 tiles base address = $0000
 $8B:E361 C2 20       REP #$20
 $8B:E363 A9 9D DB    LDA #$DB9D             ;\

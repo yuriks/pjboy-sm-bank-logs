@@ -809,7 +809,7 @@ $8D:A7C2             dx 0002, C3F8,F8,3A7C, C3F8,00,3A7E
 $8D:A7CE             dx 0003, C3F8,F8,3A7C, C3F8,00,3A7E, C3F8,08,3A9A
 $8D:A7DF             dx 0004, C3F8,F8,3A7C, C3F8,00,3A7E, C3F8,08,3A9A, C3F8,10,3A9C
 
-$8D:A7F5             dx C3F8,C0,3A9C ; Weird
+$8D:A7F5             dx C3F8,C0,3A9C ; Unused spritemap entry
 
 ; Enemy projectile $D920 (n00b tube released air bubbles)
 $8D:A7FA             dx 0007, 01FD,F2,3A43, 01FF,F3,3A43, 01FA,F4,3A43, 01FA,F9,3A43, C3F8,F8,3A7E, C3F8,00,3A9A, C3F8,08,3A9C

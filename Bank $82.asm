@@ -970,7 +970,7 @@ $82:8924 60          RTS
 }
 
 
-;;; $8925: Demo room code - landing site: BG2 tilemap base address = $4800, BG2 tilemap size = 32x64 ;;;
+;;; $8925: Demo room code - landing site: BG2 tilemap size = 32x64 ;;;
 {
 $82:8925 A9 4A 00    LDA #$004A
 $82:8928 85 59       STA $59    [$7E:0059]
@@ -3992,7 +3992,7 @@ $82:A1A3 2C A6 09    BIT $09A6  [$7E:09A6]  ;} If [equipped beams] & [$C04C + [Y
 $82:A1A6 D0 0D       BNE $0D    [$A1B5]     ;/
 $82:A1A8 A9 00 0C    LDA #$0C00             ;\
 $82:A1AB 85 12       STA $12    [$7E:0012]  ;|
-$82:A1AD A9 0A 00    LDA #$000A             ;} Set Ah bytes of [$00] to palette 6
+$82:A1AD A9 0A 00    LDA #$000A             ;} Set Ah bytes of [$00] to palette 3
 $82:A1B0 85 16       STA $16    [$7E:0016]  ;|
 $82:A1B2 20 9D A2    JSR $A29D  [$82:A29D]  ;/
 
@@ -4047,7 +4047,7 @@ $82:A20F 2C A2 09    BIT $09A2  [$7E:09A2]  ;} If [equipped items] & [$C056 + [Y
 $82:A212 D0 0D       BNE $0D    [$A221]     ;/
 $82:A214 A9 00 0C    LDA #$0C00             ;\
 $82:A217 85 12       STA $12    [$7E:0012]  ;|
-$82:A219 A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 6
+$82:A219 A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 3
 $82:A21C 85 16       STA $16    [$7E:0016]  ;|
 $82:A21E 20 9D A2    JSR $A29D  [$82:A29D]  ;/
 
@@ -4084,7 +4084,7 @@ $82:A260 2C A2 09    BIT $09A2  [$7E:09A2]  ;} If [equipped items] & [$C062 + [Y
 $82:A263 D0 0D       BNE $0D    [$A272]     ;/
 $82:A265 A9 00 0C    LDA #$0C00             ;\
 $82:A268 85 12       STA $12    [$7E:0012]  ;|
-$82:A26A A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 6
+$82:A26A A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 3
 $82:A26D 85 16       STA $16    [$7E:0016]  ;|
 $82:A26F 20 9D A2    JSR $A29D  [$82:A29D]  ;/
 
@@ -4127,12 +4127,12 @@ $82:A29C 60          RTS
 }
 
 
-;;; $A29D: Set the palette bits of [$16] bytes of $7E:[$00] to [$12] ;;;
+;;; $A29D: Set tile palettes of [$16] bytes of $7E:[$00] to [$12] ;;;
 {
 ;; Parameters:
 ;;     $00: Tilemap address
-;;     $12: Palette bits
-;;     $16: Number of bytes
+;;     $12: Palette index (multiple of 400h)
+;;     $16: Size (multiple of 2)
 $82:A29D 08          PHP
 $82:A29E 5A          PHY
 $82:A29F E2 20       SEP #$20
@@ -5892,10 +5892,10 @@ $82:B0B1 85 00       STA $00    [$7E:0000]  ;} $00 = $3D08 (plasma)
 
 ; BRANCH_MERGE
 $82:B0B3 A9 00 0C    LDA #$0C00             ;\
-$82:B0B6 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 6)
+$82:B0B6 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 3)
 $82:B0B8 A9 0A 00    LDA #$000A             ;\
 $82:B0BB 85 16       STA $16    [$7E:0016]  ;} $16 = Ah
-$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette bits of [$16] bytes of $7E:[$00] to [$12]
+$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]  ; Set tile palettes of [$16] bytes of $7E:[$00] to [$12]
 
 $82:B0C0 28          PLP
 $82:B0C1 60          RTS
@@ -6704,10 +6704,10 @@ $82:B5D2 B9 00 00    LDA $0000,y[$7E:09A6]  ;} [Y] &= ~[[X]] (unequip)
 $82:B5D5 25 12       AND $12    [$7E:0012]  ;|
 $82:B5D7 99 00 00    STA $0000,y[$7E:09A6]  ;/
 $82:B5DA A9 00 0C    LDA #$0C00             ;\
-$82:B5DD 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 6)
+$82:B5DD 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 3)
 $82:B5DF A5 18       LDA $18    [$7E:0018]  ;\
 $82:B5E1 85 16       STA $16    [$7E:0016]  ;} $16 = [$18]
-$82:B5E3 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette bits of [$16] bytes of [$00] to [$12]
+$82:B5E3 20 9D A2    JSR $A29D  [$82:A29D]  ; Set tile palettes of [$16] bytes of [$00] to [$12]
 
 $82:B5E6 28          PLP
 $82:B5E7 60          RTS
@@ -11252,23 +11252,26 @@ $82:E8EA 6B          RTL
 
 ;;; $E8EB: Spawn door closing PLM ;;;
 {
-; PLM room argument is garbage then
+; If no coloured doorcap is present, spawns:
+;     0 <= [door direction] < 4: Nothing
+;     4 <= [door direction] < 8: Blue door closing
+;     8 <= [door direction] < Ch: Gate that closes during escape in room after Mother Brain
 $82:E8EB 08          PHP
 $82:E8EC 8B          PHB
 $82:E8ED C2 30       REP #$30
 $82:E8EF F4 00 8F    PEA $8F00              ;\
 $82:E8F2 AB          PLB                    ;} DB = $8F
 $82:E8F3 AB          PLB                    ;/
-$82:E8F4 20 1C E9    JSR $E91C  [$82:E91C]  ; Check if coloured doorcap was spawned, switch door PLM instruction lists if so
-$82:E8F7 B0 20       BCS $20    [$E919]     ; If coloured doorcap was spawned: return
+$82:E8F4 20 1C E9    JSR $E91C  [$82:E91C]  ; Set closing PLM instruction list if coloured doorcap is present
+$82:E8F7 B0 20       BCS $20    [$E919]     ; If coloured doorcap is present: return
 $82:E8F9 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E8FC 0A          ASL A                  ;|
 $82:E8FD 18          CLC                    ;|
-$82:E8FE 69 8A E6    ADC #$E68A             ;} $12 = [$E68A + [door direction] * 2] (PLM ID)
+$82:E8FE 69 8A E6    ADC #$E68A             ;} A = [$E68A + [door direction] * 2] (PLM ID)
 $82:E901 AA          TAX                    ;|
 $82:E902 BD 00 00    LDA $0000,x[$8F:E68A]  ;/
-$82:E905 F0 12       BEQ $12    [$E919]     ; If [$12] = 0 (door has no cap): return
-$82:E907 85 12       STA $12    [$7E:0012]
+$82:E905 F0 12       BEQ $12    [$E919]     ; If [A] = 0 (door has no cap): return
+$82:E907 85 12       STA $12    [$7E:0012]  ; $12 = (PLM ID)
 $82:E909 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:E90C BF 04 00 83 LDA $830004,x[$83:891A];} $14 = [$83:0000 + [door pointer] + 4] (X and Y positions)
 $82:E910 85 14       STA $14    [$7E:0014]  ;/
@@ -11281,8 +11284,11 @@ $82:E91B 60          RTS
 }
 
 
-;;; $E91C: Check if coloured doorcap was spawned, switch door PLM instruction lists if so ;;;
+;;; $E91C: Set closing PLM instruction list if coloured doorcap is present ;;;
 {
+;; Returns:
+;;     Carry: Set if coloured doorcap is present, clear otherwise
+
 ; Disables IRQ during multiplication calculation, which is good practice seeing as interrupt handler can write to those registers,
 ; although this is the only piece of code in the game that does that
 $82:E91C AE 8D 07    LDX $078D  [$7E:078D]  ; X = [door pointer]
@@ -11910,7 +11916,7 @@ $82:ED27 60          RTS
 ;;; $ED28: Set game options menu tile palettes ;;;
 {
 ;; Parameters:
-;;     A: Palette index (multiple of 200h)
+;;     A: Palette index (multiple of 400h)
 ;;     X: Tilemap index (multiple of 2)
 ;;     Y: Size (multiple of 2)
 $82:ED28 08          PHP

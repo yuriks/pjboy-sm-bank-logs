@@ -5624,7 +5624,7 @@ $88:C3F0             dx 8655,88,    ; HDMA table bank = $88
 ;;; $C3FF: FX type 6: water ;;;
 {
 $88:C3FF A9 28 C4    LDA #$C428             ;\
-$88:C402 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428
+$88:C402 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428 (normal)
 $88:C405 AD 78 19    LDA $1978  [$7E:1978]  ;\
 $88:C408 8D 5E 19    STA $195E  [$7E:195E]  ;} FX Y position = [FX base Y position]
 $88:C40B 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -6647,7 +6647,7 @@ $88:DBA4 A9 4A       LDA #$4A               ;\
 $88:DBA6 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 32x64
 $88:DBA8 C2 20       REP #$20
 $88:DBAA A9 28 C4    LDA #$C428             ;\
-$88:DBAD 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428
+$88:DBAD 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428 (normal)
 $88:DBB0 AD 78 19    LDA $1978  [$7E:1978]  ;\
 $88:DBB3 8D 5E 19    STA $195E  [$7E:195E]  ;} FX Y position = [FX base Y position]
 $88:DBB6 22 35 84 88 JSL $888435[$88:8435]  ;\
