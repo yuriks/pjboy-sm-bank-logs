@@ -5061,33 +5061,33 @@ $80:A18A A2 00 00    LDX #$0000             ; X = 0 (column counter)
 ; LOOP
 $80:A18D DA          PHX
 $80:A18E AD F7 08    LDA $08F7  [$7E:08F7]  ;\
-$80:A191 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 1 block X]
+$80:A191 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 1 X block]
 $80:A194 AD F9 08    LDA $08F9  [$7E:08F9]  ;\
-$80:A197 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 1 block Y]
+$80:A197 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 1 Y block]
 $80:A19A AD 07 09    LDA $0907  [$7E:0907]  ;\
-$80:A19D 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG1 block X]
+$80:A19D 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG1 X block]
 $80:A1A0 AD 09 09    LDA $0909  [$7E:0909]  ;\
-$80:A1A3 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG1 block Y]
+$80:A1A3 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG1 Y block]
 $80:A1A6 20 DB A9    JSR $A9DB  [$80:A9DB]  ; Update level data column
 $80:A1A9 AD 1B 09    LDA $091B  [$7E:091B]  ;\
 $80:A1AC 4A          LSR A                  ;} If using custom layer 2:
 $80:A1AD B0 1B       BCS $1B    [$A1CA]     ;/
 $80:A1AF AD FB 08    LDA $08FB  [$7E:08FB]  ;\
-$80:A1B2 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 2 block X]
+$80:A1B2 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 2 X block]
 $80:A1B5 AD FD 08    LDA $08FD  [$7E:08FD]  ;\
-$80:A1B8 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 2 block Y]
+$80:A1B8 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 2 Y block]
 $80:A1BB AD 0B 09    LDA $090B  [$7E:090B]  ;\
-$80:A1BE 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG2 block X]
+$80:A1BE 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG2 X block]
 $80:A1C1 AD 0D 09    LDA $090D  [$7E:090D]  ;\
-$80:A1C4 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG2 block Y]
+$80:A1C4 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG2 Y block]
 $80:A1C7 20 D6 A9    JSR $A9D6  [$80:A9D6]  ; Update background data column
 
 $80:A1CA 22 83 8C 80 JSL $808C83[$80:8C83]  ; Handle VRAM write table and scrolling DMAs
 $80:A1CE FA          PLX
-$80:A1CF EE F7 08    INC $08F7  [$7E:08F7]  ; Increment layer 1 block X
-$80:A1D2 EE 07 09    INC $0907  [$7E:0907]  ; Increment BG1 block X
-$80:A1D5 EE FB 08    INC $08FB  [$7E:08FB]  ; Increment layer 2 block X
-$80:A1D8 EE 0B 09    INC $090B  [$7E:090B]  ; Increment BG2 block X
+$80:A1CF EE F7 08    INC $08F7  [$7E:08F7]  ; Increment layer 1 X block
+$80:A1D2 EE 07 09    INC $0907  [$7E:0907]  ; Increment BG1 X block
+$80:A1D5 EE FB 08    INC $08FB  [$7E:08FB]  ; Increment layer 2 X block
+$80:A1D8 EE 0B 09    INC $090B  [$7E:090B]  ; Increment BG2 X block
 $80:A1DB E8          INX                    ; Increment X
 $80:A1DC E0 11 00    CPX #$0011             ;\
 $80:A1DF D0 AC       BNE $AC    [$A18D]     ;} If [X] != 17: go to LOOP
@@ -5444,30 +5444,30 @@ $80:A3DD 85 B7       STA $B7    [$7E:00B7]  ;/
 ;     $A3A0: Calculate BG scrolls and update BG graphics when scrolling
 ;     $A3AB: Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
 
-; Calculates new BG and layer positions, calls the update level/background data row/column functions and updates the previous layer 1/2 block X/Y values
+; Calculates new BG and layer positions, calls the update level/background data row/column functions and updates the previous layer 1/2 X block/Y values
 ; Expects a pushed DB and PSR
 $80:A3DF C2 20       REP #$20
 $80:A3E1 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
 $80:A3E4 A2 00 00    LDX #$0000
 $80:A3E7 AD F7 08    LDA $08F7  [$7E:08F7]  ;\
-$80:A3EA CD FF 08    CMP $08FF  [$7E:08FF]  ;} If [layer 1 block X] = [previous layer 1 block X]: go to BRANCH_LAYER_1_HORIZONTAL_END
+$80:A3EA CD FF 08    CMP $08FF  [$7E:08FF]  ;} If [layer 1 X block] = [previous layer 1 X block]: go to BRANCH_LAYER_1_HORIZONTAL_END
 $80:A3ED F0 27       BEQ $27    [$A416]     ;/
-$80:A3EF 8D FF 08    STA $08FF  [$7E:08FF]  ; Previous layer 1 block X = [layer 1 block X]
+$80:A3EF 8D FF 08    STA $08FF  [$7E:08FF]  ; Previous layer 1 X block = [layer 1 X block]
 $80:A3F2 30 03       BMI $03    [$A3F7]     ;\
 $80:A3F4 A2 10 00    LDX #$0010             ;} If scrolled rightwards: X = 10h, else X = 0
 
 $80:A3F7 8A          TXA                    ;\
 $80:A3F8 18          CLC                    ;|
-$80:A3F9 6D F7 08    ADC $08F7  [$7E:08F7]  ;} Blocks to update X block = [layer 1 block X] + [X]
+$80:A3F9 6D F7 08    ADC $08F7  [$7E:08F7]  ;} Blocks to update X block = [layer 1 X block] + [X]
 $80:A3FC 8D 90 09    STA $0990  [$7E:0990]  ;/
 $80:A3FF 8A          TXA                    ;\
 $80:A400 18          CLC                    ;|
-$80:A401 6D 07 09    ADC $0907  [$7E:0907]  ;} VRAM blocks to update X block = [BG1 block X] + [X]
+$80:A401 6D 07 09    ADC $0907  [$7E:0907]  ;} VRAM blocks to update X block = [BG1 X block] + [X]
 $80:A404 8D 94 09    STA $0994  [$7E:0994]  ;/
 $80:A407 AD F9 08    LDA $08F9  [$7E:08F9]  ;\
-$80:A40A 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 1 block Y]
+$80:A40A 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 1 Y block]
 $80:A40D AD 09 09    LDA $0909  [$7E:0909]  ;\
-$80:A410 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG1 block Y]
+$80:A410 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG1 Y block]
 $80:A413 20 DB A9    JSR $A9DB  [$80:A9DB]  ; Update level data column
 
 ; BRANCH_LAYER_1_HORIZONTAL_END
@@ -5476,47 +5476,47 @@ $80:A419 4A          LSR A                  ;} If not using custom layer 2: go t
 $80:A41A B0 32       BCS $32    [$A44E]     ;/
 $80:A41C A2 00 00    LDX #$0000
 $80:A41F AD FB 08    LDA $08FB  [$7E:08FB]  ;\
-$80:A422 CD 03 09    CMP $0903  [$7E:0903]  ;} If [layer 2 block X] = [previous layer 2 block X]: go to BRANCH_LAYER_2_HORIZONTAL_END
+$80:A422 CD 03 09    CMP $0903  [$7E:0903]  ;} If [layer 2 X block] = [previous layer 2 X block]: go to BRANCH_LAYER_2_HORIZONTAL_END
 $80:A425 F0 27       BEQ $27    [$A44E]     ;/
-$80:A427 8D 03 09    STA $0903  [$7E:0903]  ; Previous layer 2 block X = [layer 2 block X]
+$80:A427 8D 03 09    STA $0903  [$7E:0903]  ; Previous layer 2 X block = [layer 2 X block]
 $80:A42A 30 03       BMI $03    [$A42F]     ;\
 $80:A42C A2 10 00    LDX #$0010             ;} If scrolled rightwards: X = 10h, else X = 0
 
 $80:A42F 8A          TXA                    ;\
 $80:A430 18          CLC                    ;|
-$80:A431 6D FB 08    ADC $08FB  [$7E:08FB]  ;} Blocks to update X block = [layer 2 block X] + [X]
+$80:A431 6D FB 08    ADC $08FB  [$7E:08FB]  ;} Blocks to update X block = [layer 2 X block] + [X]
 $80:A434 8D 90 09    STA $0990  [$7E:0990]  ;/
 $80:A437 8A          TXA                    ;\
 $80:A438 18          CLC                    ;|
-$80:A439 6D 0B 09    ADC $090B  [$7E:090B]  ;} VRAM blocks to update X block = [BG2 block X] + [X]
+$80:A439 6D 0B 09    ADC $090B  [$7E:090B]  ;} VRAM blocks to update X block = [BG2 X block] + [X]
 $80:A43C 8D 94 09    STA $0994  [$7E:0994]  ;/
 $80:A43F AD FD 08    LDA $08FD  [$7E:08FD]  ;\
-$80:A442 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 2 block Y]
+$80:A442 8D 92 09    STA $0992  [$7E:0992]  ;} Blocks to update Y block = [layer 2 Y block]
 $80:A445 AD 0D 09    LDA $090D  [$7E:090D]  ;\
-$80:A448 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG2 block Y]
+$80:A448 8D 96 09    STA $0996  [$7E:0996]  ;} VRAM blocks to update Y block = [BG2 Y block]
 $80:A44B 20 D6 A9    JSR $A9D6  [$80:A9D6]  ; Update background data column
 
 ; BRANCH_LAYER_2_HORIZONTAL_END
 $80:A44E A2 01 00    LDX #$0001
 $80:A451 AD F9 08    LDA $08F9  [$7E:08F9]  ;\
-$80:A454 CD 01 09    CMP $0901  [$7E:0901]  ;} If [layer 1 block Y] = [previous layer 1 block Y]: go to BRANCH_LAYER_1_VERTICAL_END
+$80:A454 CD 01 09    CMP $0901  [$7E:0901]  ;} If [layer 1 Y block] = [previous layer 1 Y block]: go to BRANCH_LAYER_1_VERTICAL_END
 $80:A457 F0 27       BEQ $27    [$A480]     ;/
-$80:A459 8D 01 09    STA $0901  [$7E:0901]  ; Previous layer 1 block Y = [layer 1 block Y]
+$80:A459 8D 01 09    STA $0901  [$7E:0901]  ; Previous layer 1 Y block = [layer 1 Y block]
 $80:A45C 30 03       BMI $03    [$A461]     ;\
 $80:A45E A2 0F 00    LDX #$000F             ;} If scrolled down: X = Fh, else X = 1
 
 $80:A461 8A          TXA                    ;\
 $80:A462 18          CLC                    ;|
-$80:A463 6D F9 08    ADC $08F9  [$7E:08F9]  ;} Blocks to update Y block = [layer 1 block Y] + [X]
+$80:A463 6D F9 08    ADC $08F9  [$7E:08F9]  ;} Blocks to update Y block = [layer 1 Y block] + [X]
 $80:A466 8D 92 09    STA $0992  [$7E:0992]  ;/
 $80:A469 8A          TXA                    ;\
 $80:A46A 18          CLC                    ;|
-$80:A46B 6D 09 09    ADC $0909  [$7E:0909]  ;} VRAM blocks to update Y block = [BG1 block Y] + [X]
+$80:A46B 6D 09 09    ADC $0909  [$7E:0909]  ;} VRAM blocks to update Y block = [BG1 Y block] + [X]
 $80:A46E 8D 96 09    STA $0996  [$7E:0996]  ;/
 $80:A471 AD F7 08    LDA $08F7  [$7E:08F7]  ;\
-$80:A474 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 1 block X]
+$80:A474 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 1 X block]
 $80:A477 AD 07 09    LDA $0907  [$7E:0907]  ;\
-$80:A47A 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG1 block X]
+$80:A47A 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG1 X block]
 $80:A47D 20 75 AB    JSR $AB75  [$80:AB75]  ; Update level data row
 
 ; BRANCH_LAYER_1_VERTICAL_END
@@ -5525,24 +5525,24 @@ $80:A483 4A          LSR A                  ;} If not using custom layer 2: retu
 $80:A484 B0 32       BCS $32    [$A4B8]     ;/
 $80:A486 A2 01 00    LDX #$0001
 $80:A489 AD FD 08    LDA $08FD  [$7E:08FD]  ;\
-$80:A48C CD 05 09    CMP $0905  [$7E:0905]  ;} If [layer 2 block Y] = [previous layer 2 block Y]: return
+$80:A48C CD 05 09    CMP $0905  [$7E:0905]  ;} If [layer 2 Y block] = [previous layer 2 Y block]: return
 $80:A48F F0 27       BEQ $27    [$A4B8]     ;/
-$80:A491 8D 05 09    STA $0905  [$7E:0905]  ; Previous layer 2 block Y = [layer 2 block Y]
+$80:A491 8D 05 09    STA $0905  [$7E:0905]  ; Previous layer 2 Y block = [layer 2 Y block]
 $80:A494 30 03       BMI $03    [$A499]     ;\
 $80:A496 A2 0F 00    LDX #$000F             ;} If scrolled down: X = Fh, else X = 1
 
 $80:A499 8A          TXA                    ;\
 $80:A49A 18          CLC                    ;|
-$80:A49B 6D FD 08    ADC $08FD  [$7E:08FD]  ;} Blocks to update Y block = [layer 2 block Y] + [X]
+$80:A49B 6D FD 08    ADC $08FD  [$7E:08FD]  ;} Blocks to update Y block = [layer 2 Y block] + [X]
 $80:A49E 8D 92 09    STA $0992  [$7E:0992]  ;/
 $80:A4A1 8A          TXA                    ;\
 $80:A4A2 18          CLC                    ;|
-$80:A4A3 6D 0D 09    ADC $090D  [$7E:090D]  ;} VRAM blocks to update Y block = [BG2 block Y] + [X]
+$80:A4A3 6D 0D 09    ADC $090D  [$7E:090D]  ;} VRAM blocks to update Y block = [BG2 Y block] + [X]
 $80:A4A6 8D 96 09    STA $0996  [$7E:0996]  ;/
 $80:A4A9 AD FB 08    LDA $08FB  [$7E:08FB]  ;\
-$80:A4AC 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 2 block X]
+$80:A4AC 8D 90 09    STA $0990  [$7E:0990]  ;} Blocks to update X block = [layer 2 X block]
 $80:A4AF AD 0B 09    LDA $090B  [$7E:090B]  ;\
-$80:A4B2 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG2 block X]
+$80:A4B2 8D 94 09    STA $0994  [$7E:0994]  ;} VRAM blocks to update X block = [BG2 X block]
 $80:A4B5 20 70 AB    JSR $AB70  [$80:AB70]  ; Update background data row
 
 $80:A4B8 AB          PLB
