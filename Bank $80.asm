@@ -5125,7 +5125,7 @@ $80:A210 6B          RTL
 ;;; $A211: Queue clearing of FX tilemap ;;;
 {
 ; Called by:
-;     $82:8CEF: Game state Dh (pausing, loading pause screen)
+;     $82:8CEF: Game state Dh (pausing, loading pause menu)
 $80:A211 A2 FE 0E    LDX #$0EFE             ;\
 $80:A214 A9 4E 18    LDA #$184E             ;|
                                             ;|

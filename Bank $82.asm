@@ -1404,7 +1404,7 @@ $82:8BCC C2 30       REP #$30
 $82:8BCE DA          PHX
 $82:8BCF 8D 93 1A    STA $1A93  [$7E:1A93]  ; Game options menu object initialisation parameter = [A]
 $82:8BD2 BB          TYX                    ; X = [Y]
-$82:8BD3 A0 0E 00    LDY #$000E             ; Y = Eh
+$82:8BD3 A0 0E 00    LDY #$000E             ; Y = Eh (game options menu object index)
 
 ; LOOP
 $82:8BD6 B9 FD 1A    LDA $1AFD,y[$7E:1B0B]  ;\
@@ -1501,6 +1501,8 @@ $82:8C59 60          RTS
 
 ;;; $8C5A: Instruction - delete ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:8C5A C2 30       REP #$30
 $82:8C5C 9E 9D 1A    STZ $1A9D,x[$7E:1AA9]  ; Game options menu object spritemap pointer = 0
 $82:8C5F 9E FD 1A    STZ $1AFD,x[$7E:1B09]  ; Game options menu object instruction list pointer = 0
@@ -1511,6 +1513,9 @@ $82:8C63 60          RTS
 
 ;;; $8C64: Instruction - sleep ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
+;;     Y: Pointer to instruction arguments
 $82:8C64 C2 30       REP #$30
 $82:8C66 88          DEY                    ;\
 $82:8C67 88          DEY                    ;|
@@ -1523,6 +1528,11 @@ $82:8C6D 60          RTS
 
 ;;; $8C6E: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $82:8C6E C2 30       REP #$30
 $82:8C70 B9 00 00    LDA $0000,y[$82:F484]
 $82:8C73 9D 0D 1B    STA $1B0D,x[$7E:1B19]
@@ -1534,6 +1544,8 @@ $82:8C78 60          RTS
 
 ;;; $8C79: Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:8C79 C2 30       REP #$30
 $82:8C7B A9 81 8C    LDA #$8C81             ;\
 $82:8C7E 9D 0D 1B    STA $1B0D,x            ;} Game options menu object pre-instruction = RTS
@@ -1543,6 +1555,10 @@ $82:8C81 60          RTS
 
 ;;; $8C82: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $82:8C82 C2 30       REP #$30
 $82:8C84 B9 00 00    LDA $0000,y[$82:F454]
 $82:8C87 A8          TAY
@@ -1552,6 +1568,11 @@ $82:8C88 60          RTS
 
 ;;; $8C89: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $82:8C89 C2 30       REP #$30
 $82:8C8B DE 2D 1B    DEC $1B2D,x
 $82:8C8E D0 F2       BNE $F2    [$8C82]
@@ -1563,6 +1584,11 @@ $82:8C92 60          RTS
 
 ;;; $8C93: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $82:8C93 C2 30       REP #$30
 $82:8C95 B9 00 00    LDA $0000,y
 $82:8C98 9D 2D 1B    STA $1B2D,x
@@ -1625,14 +1651,14 @@ $82:8CDE D0 0D       BNE $0D    [$8CED]     ;/
 $82:8CE0 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:8CE4 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:8CE7 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$82:8CEA EE 98 09    INC $0998  [$7E:0998]  ; Game state = Dh (pausing, loading pause screen)
+$82:8CEA EE 98 09    INC $0998  [$7E:0998]  ; Game state = Dh (pausing, loading pause menu)
 
 $82:8CED 28          PLP
 $82:8CEE 60          RTS
 }
 
 
-;;; $8CEF: Game state Dh (pausing, loading pause screen) ;;;
+;;; $8CEF: Game state Dh (pausing, loading pause menu) ;;;
 {
 $82:8CEF 08          PHP
 $82:8CF0 C2 30       REP #$30
@@ -1655,22 +1681,22 @@ $82:8D11 DC 01 06    JML [$0601][$88:83E1]  ;|
 $82:8D14 AB          PLB                    ;|
 $82:8D15 28          PLP                    ;/
 $82:8D16 22 17 BE 82 JSL $82BE17[$82:BE17]  ; Cancel sound effects
-$82:8D1A 20 BD 8D    JSR $8DBD  [$82:8DBD]  ; Back up some graphics state for pause screen
+$82:8D1A 20 BD 8D    JSR $8DBD  [$82:8DBD]  ; Back up some graphics state for pause menu
 $82:8D1D 22 75 8E 82 JSL $828E75[$82:8E75]  ; Load pause menu tiles and clear BG2 tilemap
-$82:8D21 22 DA 8E 82 JSL $828EDA[$82:8EDA]  ; Load pause screen base tilemaps
+$82:8D21 22 DA 8E 82 JSL $828EDA[$82:8EDA]  ; Load pause menu base tilemaps
 $82:8D25 22 C3 93 82 JSL $8293C3[$82:93C3]  ; Load pause menu map tilemap and area label
-$82:8D29 20 D4 8F    JSR $8FD4  [$82:8FD4]  ; Backup gameplay palettes and load pause screen palettes
+$82:8D29 20 D4 8F    JSR $8FD4  [$82:8FD4]  ; Backup gameplay palettes and load pause menu palettes
 $82:8D2C 20 09 90    JSR $9009  [$82:9009]  ; Continue initialising pause menu
 $82:8D2F A9 01 00    LDA #$0001             ;\
 $82:8D32 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $82:8D35 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $82:8D38 9C 4D 07    STZ $074D  [$7E:074D]  ; Map scroll left arrow animation frame = 0
 $82:8D3B A9 01 00    LDA #$0001             ;\
-$82:8D3E 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause screen palette animation timer = 1
+$82:8D3E 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause menu palette animation timer = 1
 $82:8D41 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
 $82:8D44 9C FF 05    STZ $05FF  [$7E:05FF]  ; Map scrolling speed index = 0
 $82:8D47 22 11 A2 80 JSL $80A211[$80:A211]  ; Queue clearing of FX tilemap
-$82:8D4B EE 98 09    INC $0998  [$7E:0998]  ; Game state = Eh (paused, loading pause screen)
+$82:8D4B EE 98 09    INC $0998  [$7E:0998]  ; Game state = Eh (paused, loading pause menu)
 $82:8D4E AB          PLB
 $82:8D4F 28          PLP
 $82:8D50 60          RTS
@@ -1715,7 +1741,7 @@ $82:8D95 60          RTS
 }
 
 
-;;; $8D96: Restore BG2 tilemap from pause screen ;;;
+;;; $8D96: Restore BG2 tilemap from pause menu ;;;
 {
 $82:8D96 08          PHP
 $82:8D97 E2 20       SEP #$20
@@ -1735,7 +1761,7 @@ $82:8DBC 60          RTS
 }
 
 
-;;; $8DBD: Back up some graphics state for pause screen ;;;
+;;; $8DBD: Back up some graphics state for pause menu ;;;
 {
 $82:8DBD 08          PHP
 $82:8DBE E2 20       SEP #$20
@@ -1778,7 +1804,7 @@ $82:8E18 60          RTS
 }
 
 
-;;; $8E19: Restore some graphics state from pause screen ;;;
+;;; $8E19: Restore some graphics state from pause menu ;;;
 {
 $82:8E19 08          PHP
 $82:8E1A E2 20       SEP #$20
@@ -1823,7 +1849,7 @@ $82:8E74 60          RTS
 
 ;;; $8E75: Load pause menu tiles and clear BG2 tilemap ;;;
 {
-; VRAM $4800..4FFF isn't actually used for anything in the pause screen,
+; VRAM $4800..4FFF isn't actually used for anything in the pause menu,
 ; so backing it up to $7E:DF5C, clearing it here, and restoring it later is a complete waste of time and memory.
 ; I think this backing up + restoring of BG2 miiight have been a workaround for "bug" whereby this VRAM is cleared in $8E75
 $82:8E75 08          PHP
@@ -1863,7 +1889,7 @@ $82:8ED9 6B          RTL
 }
 
 
-;;; $8EDA: Load pause screen base tilemaps ;;;
+;;; $8EDA: Load pause menu base tilemaps ;;;
 {
 ; Note that $B20C loads the actual Samus wireframe tilemap to the $7E:3800 area,
 ; unsure why this routine loads the dummy tilemap to the $7E:3000 area, possibly a typo during development
@@ -1987,7 +2013,7 @@ $82:8FD3 60          RTS
 }
 
 
-;;; $8FD4: Backup gameplay palettes and load pause screen palettes ;;;
+;;; $8FD4: Backup gameplay palettes and load pause menu palettes ;;;
 {
 $82:8FD4 08          PHP
 $82:8FD5 E2 30       SEP #$30               ;\
@@ -2011,7 +2037,7 @@ $82:8FF5 A2 00 00    LDX #$0000             ;|
                                             ;|
 $82:8FF8 BF 00 F0 B6 LDA $B6F000,x[$B6:F000];|
 $82:8FFC 9F 00 C0 7E STA $7EC000,x[$7E:C000];|
-$82:9000 E8          INX                    ;} Palettes = [$B6:F000..F1FF] (pause screen palettes)
+$82:9000 E8          INX                    ;} Palettes = [$B6:F000..F1FF] (pause menu palettes)
 $82:9001 E8          INX                    ;|
 $82:9002 88          DEY                    ;|
 $82:9003 88          DEY                    ;|
@@ -2032,7 +2058,7 @@ $82:900C AB          PLB                    ;} DB = $82
 $82:900D 20 9A A0    JSR $A09A  [$82:A09A]  ; Set up PPU for pause menu
 $82:9010 20 F7 A0    JSR $A0F7  [$82:A0F7]  ; Reset pause menu animations
 $82:9013 20 2B A1    JSR $A12B  [$82:A12B]  ; Load equipment screen equipment tilemaps
-$82:9016 20 96 A7    JSR $A796  [$82:A796]  ; Set pause screen button label palettes - map screen
+$82:9016 20 96 A7    JSR $A796  [$82:A796]  ; Set pause menu button label palettes - map screen
 $82:9019 20 4D A8    JSR $A84D  [$82:A84D]  ; Update pause menu L/R/start VRAM tilemap
 $82:901C 20 C4 9E    JSR $9EC4  [$82:9EC4]  ; Determine map scroll limits
 $82:901F A9 80 00    LDA #$0080             ;\
@@ -2135,7 +2161,7 @@ $82:90C7 6B          RTL
 }
 
 
-;;; $90C8: Game state Eh (paused, loading pause screen) ;;;
+;;; $90C8: Game state Eh (paused, loading pause menu) ;;;
 {
 $82:90C8 08          PHP
 $82:90C9 C2 30       REP #$30
@@ -2164,7 +2190,7 @@ $82:90EB A9 03 00    LDA #$0003             ;\
 $82:90EE 22 46 81 80 JSL $808146[$80:8146]  ;} Update timed held input
 $82:90F2 22 FF 90 82 JSL $8290FF[$82:90FF]  ; Main pause routine
 $82:90F6 22 44 9B 80 JSL $809B44[$80:9B44]  ; Handle HUD tilemap
-$82:90FA 20 2B A9    JSR $A92B  [$82:A92B]  ; Handle pause screen palette animation
+$82:90FA 20 2B A9    JSR $A92B  [$82:A92B]  ; Handle pause menu palette animation
 $82:90FD AB          PLB
 $82:90FE 60          RTS
 }
@@ -2194,15 +2220,15 @@ $82:9110             dw 9120, 9142, 9156, 91AB, 9231, 9186, 91D7, 9200
 ;;; $9120: Pause menu - index 0: map screen ;;;
 {
 $82:9120 C2 30       REP #$30
-$82:9122 20 05 A5    JSR $A505  [$82:A505]  ; Handle pause screen L/R
-$82:9125 20 B7 A5    JSR $A5B7  [$82:A5B7]  ; Handle pause screen start button
+$82:9122 20 05 A5    JSR $A505  [$82:A505]  ; Handle pause menu L/R
+$82:9125 20 B7 A5    JSR $A5B7  [$82:A5B7]  ; Handle pause menu start button
 $82:9128 22 34 B9 82 JSL $82B934[$82:B934]  ; Handle map scroll arrows
 $82:912C 22 5D 92 82 JSL $82925D[$82:925D]  ; Map scrolling
 $82:9130 20 C8 B9    JSR $B9C8  [$82:B9C8]  ; Map screen - draw Samus position indicator
 $82:9133 22 72 B6 82 JSL $82B672[$82:B672]  ; Draw map icons
 $82:9137 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:913B A9 00 00    LDA #$0000             ;\
-$82:913E 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = map screen
+$82:913E 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = map screen
 $82:9141 60          RTS
 }
 
@@ -2212,10 +2238,10 @@ $82:9141 60          RTS
 $82:9142 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
 $82:9144 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
 $82:9146 20 4F AC    JSR $AC4F  [$82:AC4F]  ; Equipment screen - main
-$82:9149 20 05 A5    JSR $A505  [$82:A505]  ; Handle pause screen L/R
-$82:914C 20 B7 A5    JSR $A5B7  [$82:A5B7]  ; Handle pause screen start button
+$82:9149 20 05 A5    JSR $A505  [$82:A505]  ; Handle pause menu L/R
+$82:914C 20 B7 A5    JSR $A5B7  [$82:A5B7]  ; Handle pause menu start button
 $82:914F A9 01 00    LDA #$0001             ;\
-$82:9152 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = equipment screen
+$82:9152 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = equipment screen
 $82:9155 60          RTS
 }
 
@@ -2227,7 +2253,7 @@ $82:915A 20 C8 B9    JSR $B9C8  [$82:B9C8]  ; Map screen - draw Samus position i
 $82:915D 22 72 B6 82 JSL $82B672[$82:B672]  ; Draw map icons
 $82:9161 20 6D A5    JSR $A56D  [$82:A56D]  ; Handle pause menu L/R pressed highlight
 $82:9164 A9 00 00    LDA #$0000             ;\
-$82:9167 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = map screen
+$82:9167 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = map screen
 $82:916A 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:916E E2 20       SEP #$20
 $82:9170 A5 51       LDA $51    [$7E:0051]  ;\
@@ -2270,8 +2296,8 @@ $82:91AD 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:91B1 20 47 AB    JSR $AB47  [$82:AB47]  ; Equipment screen - set up reserve mode and determine initial selection
 $82:91B4 22 22 AC 82 JSL $82AC22[$82:AC22]  ; Equipment screen - transfer BG1 tilemap
 $82:91B8 A9 01 00    LDA #$0001             ;\
-$82:91BB 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = equipment screen
-$82:91BE 20 15 A6    JSR $A615  [$82:A615]  ; Set pause screen button label palettes
+$82:91BB 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = equipment screen
+$82:91BE 20 15 A6    JSR $A615  [$82:A615]  ; Set pause menu button label palettes
 $82:91C1 9C 3F 07    STZ $073F  [$7E:073F]  ; L/R highlight animation frame = 0
 $82:91C4 AD 0C C1    LDA $C10C  [$82:C10C]  ;\
 $82:91C7 8D 2B 07    STA $072B  [$7E:072B]  ;} L/R highlight animation timer = Fh
@@ -2288,7 +2314,7 @@ $82:91D6 60          RTS
 $82:91D7 C2 30       REP #$30
 $82:91D9 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:91DD 22 C3 93 82 JSL $8293C3[$82:93C3]  ; Load pause menu map tilemap and area label
-$82:91E1 20 15 A6    JSR $A615  [$82:A615]  ; Set pause screen button label palettes
+$82:91E1 20 15 A6    JSR $A615  [$82:A615]  ; Set pause menu button label palettes
 $82:91E4 9C 3F 07    STZ $073F  [$7E:073F]  ; L/R highlight animation frame = 0
 $82:91E7 AD 0C C1    LDA $C10C  [$82:C10C]  ;\
 $82:91EA 8D 2B 07    STA $072B  [$7E:072B]  ;} L/R highlight animation timer = Fh
@@ -2296,7 +2322,7 @@ $82:91ED A9 01 00    LDA #$0001             ;\
 $82:91F0 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $82:91F3 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $82:91F6 A9 00 00    LDA #$0000             ;\
-$82:91F9 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = map screen
+$82:91F9 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = map screen
 $82:91FC EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7 (equipment screen to map screen - fading in)
 $82:91FF 60          RTS
 }
@@ -2308,7 +2334,7 @@ $82:9200 20 C8 B9    JSR $B9C8  [$82:B9C8]  ; Map screen - draw Samus position i
 $82:9203 22 72 B6 82 JSL $82B672[$82:B672]  ; Draw map icons
 $82:9207 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:920B A9 00 00    LDA #$0000             ;\
-$82:920E 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = map screen
+$82:920E 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = map screen
 $82:9211 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:9215 E2 20       SEP #$20
 $82:9217 A5 51       LDA $51    [$7E:0051]  ;\
@@ -2319,8 +2345,8 @@ $82:921F 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:9222 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:9225 AD 53 07    LDA $0753  [$7E:0753]  ;\
 $82:9228 F0 03       BEQ $03    [$922D]     ;|
-$82:922A A9 01 00    LDA #$0001             ;} If [pause screen button label mode] != map screen: menu index = 1 (equipment screen)
-                                            ;} Else ([pause screen button label mode] = map screen): menu index = 0 (map screen)
+$82:922A A9 01 00    LDA #$0001             ;} If [pause menu button label mode] != map screen: menu index = 1 (equipment screen)
+                                            ;} Else ([pause menu button label mode] = map screen): menu index = 0 (map screen)
 $82:922D 8D 27 07    STA $0727  [$7E:0727]  ;/
 
 $82:9230 60          RTS
@@ -2332,7 +2358,7 @@ $82:9230 60          RTS
 $82:9231 20 67 B2    JSR $B267  [$82:B267]  ; Equipment screen - draw item selector
 $82:9234 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Equipment screen - display reserve tank amount
 $82:9237 A9 01 00    LDA #$0001             ;\
-$82:923A 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = equipment screen
+$82:923A 8D 63 07    STA $0763  [$7E:0763]  ;} Pause menu mode = equipment screen
 $82:923D 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:9241 E2 20       SEP #$20
 $82:9243 A5 51       LDA $51    [$7E:0051]  ;\
@@ -2343,8 +2369,8 @@ $82:924B 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:924E 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:9251 AD 53 07    LDA $0753  [$7E:0753]  ;\
 $82:9254 F0 03       BEQ $03    [$9259]     ;|
-$82:9256 A9 01 00    LDA #$0001             ;} If [pause screen button label mode] != map screen: menu index = 1 (equipment screen)
-                                            ;} Else ([pause screen button label mode] = map screen): menu index = 0 (map screen)
+$82:9256 A9 01 00    LDA #$0001             ;} If [pause menu button label mode] != map screen: menu index = 1 (equipment screen)
+                                            ;} Else ([pause menu button label mode] = map screen): menu index = 0 (map screen)
 $82:9259 8D 27 07    STA $0727  [$7E:0727]  ;/
 
 $82:925C 60          RTS
@@ -2470,7 +2496,7 @@ $82:9304             dw 0000, 0000, 0000, 0008, 0000, 0000, 0000, 0000, 0000, 00
 {
 $82:9324 08          PHP
 $82:9325 C2 30       REP #$30
-$82:9327 22 F1 A5 82 JSL $82A5F1[$82:A5F1]  ; Highlight pause screen button
+$82:9327 22 F1 A5 82 JSL $82A5F1[$82:A5F1]  ; Highlight pause menu button
 $82:932B 20 4B 93    JSR $934B  [$82:934B]  ; Draw pause menu during fade out
 $82:932E 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:9332 E2 20       SEP #$20
@@ -2491,7 +2517,7 @@ $82:934A 60          RTS
 ;;; $934B: Draw pause menu during fade out ;;;
 {
 $82:934B AD 63 07    LDA $0763  [$7E:0763]  ;\
-$82:934E C9 01 00    CMP #$0001             ;} If [pause screen mode] != equipment screen:
+$82:934E C9 01 00    CMP #$0001             ;} If [pause menu mode] != equipment screen:
 $82:9351 F0 0B       BEQ $0B    [$935E]     ;/
 $82:9353 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:9357 22 72 B6 82 JSL $82B672[$82:B672]  ; Draw map icons
@@ -2510,8 +2536,8 @@ $82:9368 C2 30       REP #$30
 $82:936A 20 BE A2    JSR $A2BE  [$82:A2BE]  ; Clear Samus/beam tiles
 $82:936D 20 E3 A2    JSR $A2E3  [$82:A2E3]  ; Continue initialising gameplay resume
 $82:9370 22 49 A1 80 JSL $80A149[$80:A149]  ; Resume gameplay
-$82:9374 20 19 8E    JSR $8E19  [$82:8E19]  ; Restore some graphics state from pause screen
-$82:9377 20 96 8D    JSR $8D96  [$82:8D96]  ; Restore BG2 tilemap from pause screen
+$82:9374 20 19 8E    JSR $8E19  [$82:8E19]  ; Restore some graphics state from pause menu
+$82:9377 20 96 8D    JSR $8D96  [$82:8D96]  ; Restore BG2 tilemap from pause menu
 $82:937A C2 30       REP #$30
 $82:937C A9 01 00    LDA #$0001             ;\
 $82:937F 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
@@ -3919,7 +3945,7 @@ $82:A0FE 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
 $82:A100 64 B9       STZ $B9    [$7E:00B9]  ; BG3 X scroll = 0
 $82:A102 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $82:A104 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
-$82:A106 9C 53 07    STZ $0753  [$7E:0753]  ; Pause screen button label mode = map screen
+$82:A106 9C 53 07    STZ $0753  [$7E:0753]  ; Pause menu button label mode = map screen
 $82:A109 9C 3F 07    STZ $073F  [$7E:073F]  ; L/R highlight animation frame = 0
 $82:A10C 9C 45 07    STZ $0745  [$7E:0745]  ; $0745 = 0 (never read)
 $82:A10F 9C 76 07    STZ $0776  [$7E:0776]  ; Samus position indicator animation frame = 0
@@ -3928,9 +3954,9 @@ $82:A115 9C 7A 07    STZ $077A  [$7E:077A]  ; Samus position indicator animation
 $82:A118 AD 0C C1    LDA $C10C  [$82:C10C]  ;\
 $82:A11B 8D 2B 07    STA $072B  [$7E:072B]  ;} L/R highlight animation timer = Fh
 $82:A11E A9 01 00    LDA #$0001             ;\
-$82:A121 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause screen palette animation timer = 1
+$82:A121 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause menu palette animation timer = 1
 $82:A124 A9 00 00    LDA #$0000             ;\
-$82:A127 8D 4F 07    STA $074F  [$7E:074F]  ;} Pause screen palette animation frame = 0
+$82:A127 8D 4F 07    STA $074F  [$7E:074F]  ;} Pause menu palette animation frame = 0
 $82:A12A 60          RTS
 }
 
@@ -4489,17 +4515,17 @@ $82:A504 60          RTS
 }
 
 
-;;; $A505..AB46: Pause screen ;;;
+;;; $A505..AB46: Pause menu ;;;
 {
-;;; $A505: Handle pause screen L/R ;;;
+;;; $A505: Handle pause menu L/R ;;;
 {
-$82:A505 20 0C A5    JSR $A50C  [$82:A50C]  ; Handle pause screen L/R input
+$82:A505 20 0C A5    JSR $A50C  [$82:A50C]  ; Handle pause menu L/R input
 $82:A508 20 9A A5    JSR $A59A  [$82:A59A]  ; Draw L/R highlight
 $82:A50B 60          RTS
 }
 
 
-;;; $A50C: Handle pause screen L/R input ;;;
+;;; $A50C: Handle pause menu L/R input ;;;
 {
 $82:A50C 08          PHP
 $82:A50D C2 30       REP #$30
@@ -4515,7 +4541,7 @@ $82:A523 80 14       BRA $14    [$A539]     ;/
 
 ; BRANCH_R
 $82:A525 AD 53 07    LDA $0753  [$7E:0753]  ;\
-$82:A528 C9 02 00    CMP #$0002             ;} If [pause screen button label mode] = equipment screen: return
+$82:A528 C9 02 00    CMP #$0002             ;} If [pause menu button label mode] = equipment screen: return
 $82:A52B F0 3E       BEQ $3E    [$A56B]     ;/
 $82:A52D AD 0A C1    LDA $C10A  [$82:C10A]  ;\
 $82:A530 8D 29 07    STA $0729  [$7E:0729]  ;} L/R button pressed highlight timer = 5
@@ -4523,21 +4549,21 @@ $82:A533 A9 02 00    LDA #$0002             ;\
 $82:A536 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 2 (map screen to equipment screen - fading out)
 $82:A539 A9 02 00    LDA #$0002             ;\
 $82:A53C 8D 51 07    STA $0751  [$7E:0751]  ;} Shoulder button pressed highlight = R
-$82:A53F 8D 53 07    STA $0753  [$7E:0753]  ; Pause screen button label mode = equipment screen
-$82:A542 20 15 A6    JSR $A615  [$82:A615]  ; Set pause screen button label palettes
+$82:A53F 8D 53 07    STA $0753  [$7E:0753]  ; Pause menu button label mode = equipment screen
+$82:A542 20 15 A6    JSR $A615  [$82:A615]  ; Set pause menu button label palettes
 $82:A545 80 1D       BRA $1D    [$A564]     ; Go to BRANCH_MERGE
 
 ; BRANCH_L
 $82:A547 AD 53 07    LDA $0753  [$7E:0753]  ;\
-$82:A54A F0 1F       BEQ $1F    [$A56B]     ;} If [pause screen button label mode] = map screen: return
+$82:A54A F0 1F       BEQ $1F    [$A56B]     ;} If [pause menu button label mode] = map screen: return
 $82:A54C AD 0A C1    LDA $C10A  [$82:C10A]  ;\
 $82:A54F 8D 29 07    STA $0729  [$7E:0729]  ;} L/R button pressed highlight timer = 5
 $82:A552 A9 05 00    LDA #$0005             ;\
 $82:A555 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 5 (equipment screen to map screen - fading out)
 $82:A558 A9 01 00    LDA #$0001             ;\
 $82:A55B 8D 51 07    STA $0751  [$7E:0751]  ;} Shoulder button pressed highlight = L
-$82:A55E 9C 53 07    STZ $0753  [$7E:0753]  ; Pause screen button label mode = map screen
-$82:A561 20 15 A6    JSR $A615  [$82:A615]  ; Set pause screen button label palettes
+$82:A55E 9C 53 07    STZ $0753  [$7E:0753]  ; Pause menu button label mode = map screen
+$82:A561 20 15 A6    JSR $A615  [$82:A615]  ; Set pause menu button label palettes
 
 ; BRANCH_MERGE
 $82:A564 A9 38 00    LDA #$0038             ;\
@@ -4563,7 +4589,7 @@ $82:A57F 0A          ASL A                  ;} X = ([shoulder button pressed hig
 $82:A580 AA          TAX                    ;/
 $82:A581 A9 00 00    LDA #$0000             ;\
 $82:A584 85 03       STA $03    [$7E:0003]  ;} $03 = 0 (palette 0)
-$82:A586 BD 82 C1    LDA $C182,x[$82:C184]  ; A = [$C182 + [X]]
+$82:A586 BD 82 C1    LDA $C182,x[$82:C184]  ; A = [$C182 + [X]] (L/R button pressed highlight)
 $82:A589 48          PHA
 $82:A58A BD 8A C1    LDA $C18A,x[$82:C18C]  ;\
 $82:A58D A8          TAY                    ;} Y = [$C18A + [X]] - 1
@@ -4571,7 +4597,7 @@ $82:A58E 88          DEY                    ;/
 $82:A58F BD 86 C1    LDA $C186,x[$82:C188]  ;\
 $82:A592 AA          TAX                    ;} X = [$C186 + [X]]
 $82:A593 68          PLA
-$82:A594 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:A594 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:A598 28          PLP
 $82:A599 60          RTS
@@ -4584,18 +4610,18 @@ $82:A59A 08          PHP
 $82:A59B C2 30       REP #$30
 $82:A59D A0 D0 00    LDY #$00D0             ;\
 $82:A5A0 A2 18 00    LDX #$0018             ;|
-$82:A5A3 A9 02 00    LDA #$0002             ;} Draw pause screen spritemap 2 to (18h, CFh)
+$82:A5A3 A9 02 00    LDA #$0002             ;} Draw pause menu spritemap 2 to (18h, CFh)
 $82:A5A6 20 81 A8    JSR $A881  [$82:A881]  ;/
 $82:A5A9 A0 D0 00    LDY #$00D0             ;\
 $82:A5AC A2 E8 00    LDX #$00E8             ;|
-$82:A5AF A9 02 00    LDA #$0002             ;} Draw pause screen spritemap 2 to (E8h, CFh)
+$82:A5AF A9 02 00    LDA #$0002             ;} Draw pause menu spritemap 2 to (E8h, CFh)
 $82:A5B2 20 81 A8    JSR $A881  [$82:A881]  ;/
 $82:A5B5 28          PLP
 $82:A5B6 60          RTS
 }
 
 
-;;; $A5B7: Handle pause screen start button ;;;
+;;; $A5B7: Handle pause menu start button ;;;
 {
 $82:A5B7 08          PHP
 $82:A5B8 C2 30       REP #$30
@@ -4610,7 +4636,7 @@ $82:A5CF 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $82:A5D2 AD 53 07    LDA $0753  [$7E:0753]  ;\
 $82:A5D5 48          PHA                    ;|
 $82:A5D6 A9 01 00    LDA #$0001             ;|
-$82:A5D9 8D 53 07    STA $0753  [$7E:0753]  ;} Set pause screen button label palettes - unpausing
+$82:A5D9 8D 53 07    STA $0753  [$7E:0753]  ;} Set pause menu button label palettes - unpausing
 $82:A5DC 20 15 A6    JSR $A615  [$82:A615]  ;|
 $82:A5DF 68          PLA                    ;|
 $82:A5E0 8D 53 07    STA $0753  [$7E:0753]  ;/
@@ -4639,8 +4665,8 @@ $82:A600 A9 00 00    LDA #$0000             ;\
 $82:A603 85 03       STA $03    [$7E:0003]  ;} $03 = 0 (palette 0)
 $82:A605 A2 90 00    LDX #$0090             ; X = 90h
 $82:A608 A0 D0 00    LDY #$00D0             ; Y = D0h
-$82:A60B A9 2B 00    LDA #$002B             ; A = 2Bh
-$82:A60E 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:A60B A9 2B 00    LDA #$002B             ; A = 2Bh (start button pressed highlight)
+$82:A60E 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:A612 AB          PLB
 $82:A613 28          PLP
@@ -4648,13 +4674,13 @@ $82:A614 6B          RTL
 }
 
 
-;;; $A615: Set pause screen button label palettes ;;;
+;;; $A615: Set pause menu button label palettes ;;;
 {
 $82:A615 08          PHP
 $82:A616 C2 30       REP #$30
 $82:A618 AD 53 07    LDA $0753  [$7E:0753]  ;\
 $82:A61B 0A          ASL A                  ;|
-$82:A61C AA          TAX                    ;} Execute [$A622 + [pause screen button label mode] * 2]
+$82:A61C AA          TAX                    ;} Execute [$A622 + [pause menu button label mode] * 2]
 $82:A61D FC 22 A6    JSR ($A622,x)[$82:A6DF];/
 $82:A620 28          PLP
 $82:A621 60          RTS
@@ -4663,7 +4689,7 @@ $82:A622             dw A796, A6DF, A628
 }
 
 
-;;; $A628: Set pause screen button label palettes - equipment screen ;;;
+;;; $A628: Set pause menu button label palettes - equipment screen ;;;
 {
 ; Someone liked pushing and pulling operations >_>
 $82:A628 C2 30       REP #$30
@@ -4761,7 +4787,7 @@ $82:A6DE 60          RTS
 }
 
 
-;;; $A6DF: Set pause screen button label palettes - unpausing ;;;
+;;; $A6DF: Set pause menu button label palettes - unpausing ;;;
 {
 $82:A6DF C2 30       REP #$30
 $82:A6E1 08          PHP
@@ -4858,7 +4884,7 @@ $82:A795 60          RTS
 }
 
 
-;;; $A796: Set pause screen button label palettes - map screen ;;;
+;;; $A796: Set pause menu button label palettes - map screen ;;;
 {
 $82:A796 C2 30       REP #$30
 $82:A798 08          PHP
@@ -4998,7 +5024,7 @@ $82:A880 6B          RTL
 }
 
 
-;;; $A881: Draw pause screen sprite animation ;;;
+;;; $A881: Draw pause menu sprite animation ;;;
 {
 ;; Parameters:
 ;;     A: Animation ID + 1
@@ -5088,25 +5114,25 @@ $82:A908 A8          TAY                    ;|
 $82:A909 B9 00 00    LDA $0000,y[$7E:0753]  ;|
 $82:A90C 29 FF 00    AND #$00FF             ;|
 $82:A90F 0A          ASL A                  ;|
-$82:A910 85 1A       STA $1A    [$7E:001A]  ;} Y = [(animation spritemap base IDs) + (animation mode) * 2]
+$82:A910 85 1A       STA $1A    [$7E:001A]  ;} Y = [(animation spritemap base IDs) + (animation mode) * 2] (spritemap base ID)
 $82:A912 BD E4 C1    LDA $C1E4,x[$82:C1E6]  ;|
 $82:A915 18          CLC                    ;|
 $82:A916 65 1A       ADC $1A    [$7E:001A]  ;|
 $82:A918 A8          TAY                    ;/
 $82:A919 B9 00 00    LDA $0000,y[$82:C1FC]  ;\
-$82:A91C 18          CLC                    ;} A = [Y] + [$18]
+$82:A91C 18          CLC                    ;} A = [Y] + [$18] (spritemap ID)
 $82:A91D 65 18       ADC $18    [$7E:0018]  ;/
 $82:A91F A6 12       LDX $12    [$7E:0012]  ; X = [$12]
 $82:A921 A4 14       LDY $14    [$7E:0014]  ;\
 $82:A923 88          DEY                    ;} Y = [$14] - 1
-$82:A924 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:A924 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:A928 FA          PLX
 $82:A929 28          PLP
 $82:A92A 60          RTS
 }
 
 
-;;; $A92B: Handle pause screen palette animation ;;;
+;;; $A92B: Handle pause menu palette animation ;;;
 {
 ; Map arrows, status selection box, etc.
 $82:A92B 08          PHP
@@ -5115,19 +5141,19 @@ $82:A92E A9 00       LDA #$00               ;\
 $82:A930 EB          XBA                    ;} A high = 0
 $82:A931 A9 00       LDA #$00               ; >_<;
 $82:A933 AD 3B 07    LDA $073B  [$7E:073B]  ;\
-$82:A936 F0 4D       BEQ $4D    [$A985]     ;} If [pause screen palette animation timer] = 0: return
+$82:A936 F0 4D       BEQ $4D    [$A985]     ;} If [pause menu palette animation timer] = 0: return
 $82:A938 3A          DEC A                  ;\
-$82:A939 8D 3B 07    STA $073B  [$7E:073B]  ;} Decrement pause screen palette animation timer
-$82:A93C D0 47       BNE $47    [$A985]     ; If [pause screen palette animation timer] != 0: return
+$82:A939 8D 3B 07    STA $073B  [$7E:073B]  ;} Decrement pause menu palette animation timer
+$82:A93C D0 47       BNE $47    [$A985]     ; If [pause menu palette animation timer] != 0: return
 $82:A93E AD 4F 07    LDA $074F  [$7E:074F]  ;\
-$82:A941 1A          INC A                  ;} Increment pause screen palette animation frame
+$82:A941 1A          INC A                  ;} Increment pause menu palette animation frame
 
 ; LOOP
 $82:A942 8D 4F 07    STA $074F  [$7E:074F]
 $82:A945 0A          ASL A                  ;\
 $82:A946 18          CLC                    ;|
 $82:A947 6D 4F 07    ADC $074F  [$7E:074F]  ;|
-$82:A94A AA          TAX                    ;} If [$C10C + [pause screen palette animation frame] * 3] = FFh:
+$82:A94A AA          TAX                    ;} If [$C10C + [pause menu palette animation frame] * 3] = FFh:
 $82:A94B BD 0C C1    LDA $C10C,x[$82:C10F]  ;|
 $82:A94E C9 FF       CMP #$FF               ;|
 $82:A950 D0 12       BNE $12    [$A964]     ;/
@@ -5137,10 +5163,10 @@ $82:A957 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Ah, sound library 3,
 $82:A95B E2 20       SEP #$20               ;/
 $82:A95D A9 00       LDA #$00               ;\
 $82:A95F EB          XBA                    ;} A high = 0
-$82:A960 A9 00       LDA #$00               ; Pause screen palette animation frame = 0
+$82:A960 A9 00       LDA #$00               ; Pause menu palette animation frame = 0
 $82:A962 80 DE       BRA $DE    [$A942]     ; Go to LOOP
 
-$82:A964 8D 3B 07    STA $073B  [$7E:073B]  ; Pause screen palette animation timer = [$C10C + [pause screen palette animation frame] * 3]
+$82:A964 8D 3B 07    STA $073B  [$7E:073B]  ; Pause menu palette animation timer = [$C10C + [pause menu palette animation frame] * 3]
 $82:A967 AD 4F 07    LDA $074F  [$7E:074F]  ;\
 $82:A96A C2 30       REP #$30               ;|
 $82:A96C EB          XBA                    ;|
@@ -5150,7 +5176,7 @@ $82:A96F 4A          LSR A                  ;|
 $82:A970 18          CLC                    ;|
 $82:A971 69 1E 00    ADC #$001E             ;|
 $82:A974 A8          TAY                    ;|
-$82:A975 A2 1E 00    LDX #$001E             ;} Sprite palette 3 = 20h bytes from $A987 + [pause screen palette animation frame] * 20h
+$82:A975 A2 1E 00    LDX #$001E             ;} Sprite palette 3 = 20h bytes from $A987 + [pause menu palette animation frame] * 20h
                                             ;|
 $82:A978 B9 87 A9    LDA $A987,y[$82:A9C5]  ;|
 $82:A97B 9F 60 C1 7E STA $7EC160,x[$7E:C17E];|
@@ -6173,7 +6199,7 @@ $82:B28F B9 00 00    LDA $0000,y[$82:C196]  ;\
 $82:B292 AA          TAX                    ;|
 $82:B293 CA          DEX                    ;|
 $82:B294 C8          INY                    ;|
-$82:B295 C8          INY                    ;} Draw pause screen spritemap 3 to ([[Y]] - 1, [[Y] + 2] - 1)
+$82:B295 C8          INY                    ;} Draw pause menu spritemap 3 to ([[Y]] - 1, [[Y] + 2] - 1)
 $82:B296 B9 00 00    LDA $0000,y[$82:C198]  ;|
 $82:B299 A8          TAY                    ;|
 $82:B29A A9 03 00    LDA #$0003             ;|
@@ -6247,7 +6273,7 @@ $82:B2FC 5A          PHY                    ;\
 $82:B2FD B9 D6 C1    LDA $C1D6,y[$82:C1D6]  ;|
 $82:B300 AA          TAX                    ;|
 $82:B301 AC E2 C1    LDY $C1E2  [$82:C1E2]  ;|
-$82:B304 88          DEY                    ;} Add spritemap 1Bh from $82:C569 table to OAM at ([$C1D6 + [Y]], 5Fh)
+$82:B304 88          DEY                    ;} Add pause menu / menu spritemap 1Bh (full equipment screen reserve tank) to OAM at ([$C1D6 + [Y]], 5Fh)
 $82:B305 A9 1B 00    LDA #$001B             ;|
 $82:B308 22 1F 89 81 JSL $81891F[$81:891F]  ;|
 $82:B30C 7A          PLY                    ;/
@@ -6293,7 +6319,7 @@ $82:B34F 18          CLC                    ;|
 $82:B350 69 10 00    ADC #$0010             ;} X += 10h
 $82:B353 AA          TAX                    ;/
 
-$82:B354 BD D9 B3    LDA $B3D9,x[$82:B3E5]  ; A = [$B3D9 + [X]] (partial reserve tank)
+$82:B354 BD D9 B3    LDA $B3D9,x[$82:B3E5]  ; A = [$B3D9 + [X]] (partial equipment screen reserve tank)
 $82:B357 48          PHA
 $82:B358 A6 34       LDX $34    [$7E:0034]  ;\
 $82:B35A BD D6 C1    LDA $C1D6,x[$82:C1D6]  ;} X = [$C1D6 + [$34]]
@@ -6301,7 +6327,7 @@ $82:B35D AA          TAX                    ;/
 $82:B35E AC E2 C1    LDY $C1E2  [$82:C1E2]  ;\
 $82:B361 88          DEY                    ;} Y = 5Fh
 $82:B362 68          PLA
-$82:B363 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B363 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B367 E6 30       INC $30    [$7E:0030]  ; Increment $30
 $82:B369 E6 34       INC $34    [$7E:0034]  ;\
 $82:B36B E6 34       INC $34    [$7E:0034]  ;} $34 += 2
@@ -6316,8 +6342,8 @@ $82:B375 BD D6 C1    LDA $C1D6,x[$82:C1D8]  ;\
 $82:B378 AA          TAX                    ;} X = [$C1D6 + [$34]]
 $82:B379 AC E2 C1    LDY $C1E2  [$82:C1E2]  ;\
 $82:B37C 88          DEY                    ;} Y = 5Fh
-$82:B37D A9 20 00    LDA #$0020             ; A = 20h
-$82:B380 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B37D A9 20 00    LDA #$0020             ; A = 20h (empty equipment screen reserve tank)
+$82:B380 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B384 E6 34       INC $34    [$7E:0034]  ;\
 $82:B386 E6 34       INC $34    [$7E:0034]  ;} $34 += 2
 $82:B388 E6 30       INC $30    [$7E:0030]  ; Increment $30
@@ -6328,8 +6354,8 @@ $82:B38E BD D6 C1    LDA $C1D6,x[$82:C1DA]  ;} X = [$C1D6 + [$34]]
 $82:B391 AA          TAX                    ;/
 $82:B392 AC E2 C1    LDY $C1E2  [$82:C1E2]  ;\
 $82:B395 88          DEY                    ;} Y = 5Fh
-$82:B396 A9 1F 00    LDA #$001F             ; A = 1Fh (end of reserve health bar)
-$82:B399 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B396 A9 1F 00    LDA #$001F             ; A = 1Fh (end of equipment screen reserve health bar)
+$82:B399 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B39D E2 20       SEP #$20               ;\
 $82:B39F A5 32       LDA $32    [$7E:0032]  ;|
 $82:B3A1 8D 04 42    STA $4204              ;|
@@ -6803,7 +6829,7 @@ $82:B652 4B          PHK                    ;\
 $82:B653 AB          PLB                    ;} DB = $82
 $82:B654 C2 30       REP #$30
 $82:B656 AD 53 07    LDA $0753  [$7E:0753]  ;\
-$82:B659 D0 09       BNE $09    [$B664]     ;} If [pause screen button label mode] = map screen:
+$82:B659 D0 09       BNE $09    [$B664]     ;} If [pause menu button label mode] = map screen:
 $82:B65B 20 67 B2    JSR $B267  [$82:B267]  ; Equipment screen - draw item selector
 $82:B65E 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Equipment screen - display reserve tank amount
 $82:B661 AB          PLB
@@ -6865,7 +6891,7 @@ $82:B6D0 38          SEC                    ;|
 $82:B6D1 E5 B1       SBC $B1    [$7E:00B1]  ;} X = D8h - [BG1 X scroll]
 $82:B6D3 AA          TAX                    ;/
 $82:B6D4 A9 63 00    LDA #$0063             ; A = 63h (gunship icon)
-$82:B6D7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B6D7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:B6DB AB          PLB
 $82:B6DC 6B          RTL
@@ -6878,7 +6904,7 @@ $82:B6DD 8B          PHB
 $82:B6DE C2 30       REP #$30
 $82:B6E0 4B          PHK                    ;\
 $82:B6E1 AB          PLB                    ;} DB = $82
-$82:B6E2 20 2B A9    JSR $A92B  [$82:A92B]  ; Handle pause screen palette animation
+$82:B6E2 20 2B A9    JSR $A92B  [$82:A92B]  ; Handle pause menu palette animation
 $82:B6E5 A2 CB C7    LDX #$C7CB             ; X = $C7CB (boss icon data pointers)
 $82:B6E8 A9 09 00    LDA #$0009             ; A = 9 (boss icon spritemap ID)
 $82:B6EB 20 92 B8    JSR $B892  [$82:B892]  ; Display map boss icons
@@ -6924,12 +6950,12 @@ $82:B73C AD 7A 07    LDA $077A  [$7E:077A]  ;\
 $82:B73F 89 01 00    BIT #$0001             ;} If [Samus position indicator animation loop counter] % 2 = 0:
 $82:B742 D0 07       BNE $07    [$B74B]     ;/
 $82:B744 A9 12 00    LDA #$0012             ; A = 12h (file select map Samus icon)
-$82:B747 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B747 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:B74B 7A          PLY
 $82:B74C FA          PLX
 $82:B74D 68          PLA                    ; Restore A
-$82:B74E 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B74E 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B752 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $82:B755 F0 20       BEQ $20    [$B777]     ;} If debug mode enabled:
 $82:B757 A9 00 06    LDA #$0600             ;\
@@ -6957,7 +6983,7 @@ $82:B78B 38          SEC                    ;|
 $82:B78C E5 B1       SBC $B1    [$7E:00B1]  ;} X = D8h - [BG1 X scroll]
 $82:B78E AA          TAX                    ;/
 $82:B78F A9 63 00    LDA #$0063             ; A = 63h (gunship icon)
-$82:B792 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B792 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:B796 AB          PLB
 $82:B797 6B          RTL
@@ -7099,7 +7125,7 @@ $82:B843 38          SEC                    ;|
 $82:B844 E5 B1       SBC $B1    [$7E:00B1]  ;} X = [[X]] - [BG1 X scroll]
 $82:B846 AA          TAX                    ;/
 $82:B847 A5 22       LDA $22    [$7E:0022]  ; A = [$22]
-$82:B849 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B849 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 $82:B84D FA          PLX                    ; Restore X
 
@@ -7203,7 +7229,7 @@ $82:B8D6 38          SEC                    ;|
 $82:B8D7 E5 B1       SBC $B1    [$7E:00B1]  ;} X = [[X]] - [BG1 X scroll]
 $82:B8D9 AA          TAX                    ;/
 $82:B8DA A5 22       LDA $22    [$7E:0022]  ; A = [$22] (boss icon)
-$82:B8DC 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B8DC 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B8E0 FA          PLX                    ; Restore X
 
 ; BRANCH_NEXT
@@ -7230,7 +7256,7 @@ $82:B8F7 38          SEC                    ;|
 $82:B8F8 E5 B1       SBC $B1    [$7E:00B1]  ;} X = [[X]] - [BG1 X scroll]
 $82:B8FA AA          TAX                    ;/
 $82:B8FB A9 62 00    LDA #$0062             ; A = 62h (boss cross-out icon)
-$82:B8FE 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B8FE 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B902 FA          PLX                    ; Restore X
 $82:B903 A9 00 0C    LDA #$0C00             ;\
 $82:B906 85 03       STA $03    [$7E:0003]  ;} $03 = C00h (palette 6)
@@ -7248,7 +7274,7 @@ $82:B90E 48          PHA                    ;|
 $82:B90F BD 02 00    LDA $0002,x[$82:B9A2]  ;|
 $82:B912 A8          TAY                    ;|
 $82:B913 BD 04 00    LDA $0004,x[$82:B9A4]  ;|
-$82:B916 FA          PLX                    ;} Draw pause screen spritemap [[X] + 4] to ([[X]], [[X] + 2] - 1)
+$82:B916 FA          PLX                    ;} Draw pause menu spritemap [[X] + 4] to ([[X]], [[X] + 2] - 1)
 $82:B917 8B          PHB                    ;|
 $82:B918 4B          PHK                    ;|
 $82:B919 AB          PLB                    ;|
@@ -7333,7 +7359,7 @@ $82:B99E 80 EA       BRA $EA    [$B98A]     ; Return
 
 ;                        _______________________ X position
 ;                       |     __________________ Y position
-;                       |    |     _____________ Pause screen animation ID
+;                       |    |     _____________ Pause menu animation ID
 ;                       |    |    |     ________ Necessary input
 ;                       |    |    |    |     ___ Map scrolling direction
 ;                       |    |    |    |    |
@@ -7374,7 +7400,7 @@ $82:B9F2 38          SEC                    ;|
 $82:B9F3 E5 B3       SBC $B3    [$7E:00B3]  ;|
 $82:B9F5 A8          TAY                    ;/
 $82:B9F6 68          PLA                    ; Restore A
-$82:B9F7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:B9F7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:B9FB 60          RTS
 }
 
@@ -7417,8 +7443,8 @@ $82:BA35 A9 00 0E    LDA #$0E00             ;\
 $82:BA38 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
 $82:BA3A A2 80 00    LDX #$0080             ; X = 80h
 $82:BA3D A0 10 00    LDY #$0010             ; Y = 10h
-$82:BA40 A9 48 00    LDA #$0048             ; A = 48h
-$82:BA43 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:BA40 A9 48 00    LDA #$0048             ; A = 48h (border around SAMUS DATA)
+$82:BA43 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:BA47 6B          RTL
 }
 
@@ -7429,8 +7455,8 @@ $82:BA48 A9 00 0E    LDA #$0E00             ;\
 $82:BA4B 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
 $82:BA4D A2 80 00    LDX #$0080             ; X = 80h
 $82:BA50 A0 10 00    LDY #$0010             ; Y = 10h
-$82:BA53 A9 49 00    LDA #$0049             ; A = 49h
-$82:BA56 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:BA53 A9 49 00    LDA #$0049             ; A = 49h (border around DATA COPY MODE)
+$82:BA56 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:BA5A 6B          RTL
 }
 
@@ -7441,8 +7467,8 @@ $82:BA5B A9 00 0E    LDA #$0E00             ;\
 $82:BA5E 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
 $82:BA60 A2 7C 00    LDX #$007C             ; X = 7Ch
 $82:BA63 A0 10 00    LDY #$0010             ; Y = 10h
-$82:BA66 A9 4A 00    LDA #$004A             ; A = 4Ah
-$82:BA69 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:BA66 A9 4A 00    LDA #$004A             ; A = 4Ah (border around DATA CLEAR MODE)
+$82:BA69 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:BA6D 6B          RTL
 }
 
@@ -7470,7 +7496,7 @@ $82:BA8E A9 00 0E    LDA #$0E00             ;\
 $82:BA91 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
 $82:BA93 AD 97 19    LDA $1997  [$7E:1997]  ;\
 $82:BA96 0A          ASL A                  ;|
-$82:BA97 A8          TAY                    ;} A = [$BAB2 + [menu selection missile animation frame] * 2]
+$82:BA97 A8          TAY                    ;} A = [$BAB2 + [menu selection missile animation frame] * 2] (menu selection missile)
 $82:BA98 B9 B2 BA    LDA $BAB2,y[$82:BAB4]  ;/
 $82:BA9B 48          PHA
 $82:BA9C AD AB 19    LDA $19AB  [$7E:19AB]  ;\
@@ -7479,10 +7505,10 @@ $82:BAA0 AD A1 19    LDA $19A1  [$7E:19A1]  ;\
 $82:BAA3 AA          TAX                    ;} X = [menu selection missile X position]
 $82:BAA4 68          PLA
 $82:BAA5 AB          PLB
-$82:BAA6 5C 1F 89 81 JML $81891F[$81:891F]  ; Go to add spritemap from $82:C569 table to OAM
+$82:BAA6 5C 1F 89 81 JML $81891F[$81:891F]  ; Go add pause menu / menu spritemap to OAM
 
-$82:BAAA             dw 0008, 0008, 0008, 0008
-$82:BAB2             dw 0037, 0036, 0035, 0034
+$82:BAAA             dw 0008, 0008, 0008, 0008 ; Delays
+$82:BAB2             dw 0037, 0036, 0035, 0034 ; Spritemap IDs (into $82:C569 table)
 }
 
 
@@ -7528,7 +7554,7 @@ $82:BB02 BD 0E BB    LDA $BB0E,x            ;\
 $82:BB05 AA          TAX                    ;} X = [$BB0C + [X] + 2]
 $82:BB06 68          PLA
 $82:BB07 AB          PLB
-$82:BB08 5C 1F 89 81 JML $81891F[$81:891F]  ; Go to add spritemap from $82:C569 table to OAM
+$82:BB08 5C 1F 89 81 JML $81891F[$81:891F]  ; Go add pause menu / menu spritemap to OAM
 
 ;                        _____________ Spritemap index
 ;                       |     ________ X position
@@ -7570,7 +7596,7 @@ $82:BB58 38          SEC                    ;|
 $82:BB59 E5 B1       SBC $B1    [$7E:00B1]  ;|
 $82:BB5B 48          PHA                    ;|
 $82:BB5C BD 02 00    LDA $0002,x[$82:C75B]  ;|
-$82:BB5F 38          SEC                    ;} Add spritemap [[X] + 4] from $82:C569 table to OAM at position ([[X]] - [BG1 X scroll], [[X] + 2] - [BG1 Y scroll])
+$82:BB5F 38          SEC                    ;} Add pause menu / menu spritemap [[X] + 4] to OAM at position ([[X]] - [BG1 X scroll], [[X] + 2] - [BG1 Y scroll])
 $82:BB60 E5 B3       SBC $B3    [$7E:00B3]  ;|
 $82:BB62 A8          TAY                    ;|
 $82:BB63 BD 04 00    LDA $0004,x[$82:C75D]  ;|
@@ -7602,6 +7628,10 @@ $82:BB7D F0 5E       BEQ $5E    [$BBDD]     ;} If [enemy 0 instruction timer] = 
 
 ;;; $BB7F: Process game over baby metroid instruction list ;;;
 {
+;; Parameters:
+;;     A: [Enemy 0 instruction timer]
+
+; Expects a pushed DB
 $82:BB7F AE 92 0F    LDX $0F92  [$7E:0F92]  ; X = [enemy 0 instruction list pointer]
 $82:BB82 3A          DEC A                  ;\
 $82:BB83 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Decrement enemy 0 instruction timer
@@ -7621,6 +7651,10 @@ $82:BB9D AA          TAX                    ; X = [enemy 0 instruction list poin
 
 ;;; $BB9E: Draw game over baby metroid ;;;
 {
+;; Parameters:
+;;     X: Instruction list pointer
+
+; Expects a pushed DB
 $82:BB9E DA          PHX                    ;\
 $82:BB9F BD 04 00    LDA $0004,x[$82:BC2B]  ;|
 $82:BBA2 A8          TAY                    ;|
@@ -7637,16 +7671,16 @@ $82:BBB4 30 F0       BMI $F0    [$BBA6]     ;|
 $82:BBB6 FA          PLX                    ;/
 $82:BBB7 A9 00 08    LDA #$0800             ;\
 $82:BBBA 85 03       STA $03    [$7E:0003]  ;} $03 = 800h (palette 4)
-$82:BBBC BD 02 00    LDA $0002,x[$82:BC29]  ; A = [[X] + 2]
+$82:BBBC BD 02 00    LDA $0002,x[$82:BC29]  ; A = [[X] + 2] (game over baby metroid)
 $82:BBBF A2 7C 00    LDX #$007C             ; X = 7Ch
 $82:BBC2 A0 50 00    LDY #$0050             ; Y = 50h
-$82:BBC5 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:BBC5 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:BBC9 A9 00 0A    LDA #$0A00             ;\
 $82:BBCC 85 03       STA $03    [$7E:0003]  ;} $03 = A00h (palette 5)
-$82:BBCE A9 64 00    LDA #$0064             ; A = 64h (baby metroid container)
+$82:BBCE A9 64 00    LDA #$0064             ; A = 64h (game over baby metroid container)
 $82:BBD1 A2 7C 00    LDX #$007C             ; X = 7Ch
 $82:BBD4 A0 50 00    LDY #$0050             ; Y = 50h
-$82:BBD7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$82:BBD7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $82:BBDB AB          PLB
 $82:BBDC 6B          RTL
 }
@@ -7654,6 +7688,7 @@ $82:BBDC 6B          RTL
 
 ;;; $BBDD: Restart game over baby metroid instruction list ;;;
 {
+; Expects a pushed DB
 $82:BBDD A9 27 BC    LDA #$BC27             ;\
 $82:BBE0 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy 0 instruction list pointer = $BC27
 $82:BBE3 A9 0A 00    LDA #$000A             ;\
@@ -7681,7 +7716,7 @@ $82:BBFB 69 08 00    ADC #$0008             ;} Enemy 0 instruction list pointer 
 $82:BBFE 8D 92 0F    STA $0F92  [$7E:0F92]  ;/
 $82:BC01 AA          TAX                    ; X = [enemy 0 instruction list pointer]
 $82:BC02 BD 00 00    LDA $0000,x            ;\
-$82:BC05 C9 FF FF    CMP #$FFFF             ;} If [[X]] = FFFFh: go to $BBDD
+$82:BC05 C9 FF FF    CMP #$FFFF             ;} If [[X]] = FFFFh: go to restart game over baby metroid instruction list
 $82:BC08 F0 D3       BEQ $D3    [$BBDD]     ;/
 $82:BC0A 80 92       BRA $92    [$BB9E]     ; Go to draw game over baby metroid
 }
@@ -8086,7 +8121,7 @@ $82:C0A8             dw C01A, ; Blank
 }
 
 
-;;; $C0B2: Pause screen sprite animation data ;;;
+;;; $C0B2: Pause menu sprite animation data ;;;
 {
 ;                        ___________________________________________________ 1: Unused (used for start / L/R button pressed highlight elsewhere)
 ;                       |      _____________________________________________ 2: L/R highlight
@@ -8110,7 +8145,7 @@ $82:C0FA             dw 0000, 0200, 0400, 0600, 0800, 0A00, 0C00, 0E00
 $82:C10A             dw 0005
 
 ; FF = loop to start, else timer (1 byte), unknown (1 byte), spritemap ID (1 byte)
-; L/R highlight animation data / pause screen palette animation delays
+; L/R highlight animation data / pause menu palette animation delays
 $82:C10C             db 0F,00,00, 03,01,00, 03,02,00, 03,03,00, 03,04,00, 03,05,00, 03,06,00, 03,07,00, 03,06,00, 03,05,00, 03,04,00, 03,03,00, 03,02,00, 03,01,00, FF
 
 ; Item selector and map scroll arrows
@@ -8168,7 +8203,7 @@ $82:C1E4             dw C1F6, C1FC, C202, C20A, C20C, C20E, C210, C212, C214
 ; Unused (animation 0)
 $82:C1F6             dw 0000,0028,0029
 
-; L/R highlight (pause screen button label mode)
+; L/R highlight (pause menu button label mode)
 $82:C1FC             dw 002A, ; 0: Map screen (SAMUS on the right)
                         002A, ; 1: Unpausing (nothing)
                         002A  ; 2: Equipment screen (MAP on the left)
@@ -8188,20 +8223,20 @@ $82:C214             dw 0005 ; Left scroll arrow
 }
 
 
-;;; $C216: Spritemaps ;;;
+;;; $C216: Pause menu spritemaps ;;;
 {
 ; See $81:8A5F for spritemap format
 
-; Spritemap 2
+; Spritemap 2: unused
 $82:C216             dx 0001, 0000,00,3095
 
-; Spritemap 3
+; Spritemap 3: unused
 $82:C21D             dx 0001, 0000,00,B095
 
-; Spritemap 1
+; Spritemap 1: unused
 $82:C224             dx 0001, 0000,00,3094
 
-; Spritemap 0
+; Spritemap 0: unused
 $82:C22B             dx 0001, 0000,00,7094
 
 ; Spritemap 6: map scrolling arrow - up
@@ -8216,10 +8251,10 @@ $82:C24A             dx 0002, 01FC,00,F49E, 01FC,F9,749E
 ; Spritemap 4: map scrolling arrow - right
 $82:C256             dx 0002, 01FC,00,B49E, 01FC,F9,349E
 
-; Spritemap 10h
+; Spritemap 10h: unused
 $82:C262             dx 0005, 01FC,04,3097, 01F4,FC,3086, 0004,FC,3088, 01FC,F4,3077, 01FC,FC,3087
 
-; Spritemap 11h
+; Spritemap 11h: unused
 $82:C27D             dx 0005, 0004,FC,308B, 01F4,FC,3089, 01FC,04,309A, 01FC,FC,308A, 01FC,F4,307A
 
 ; Spritemap 12h: file select map Samus icon
@@ -8228,7 +8263,7 @@ $82:C298             dx 0001, 0001,00,2E89
 ; Spritemap 14h: equipment screen item selector - tanks
 $82:C29F             dx 0001, 01FC,FC,3646
 
-; Spritemap 19h
+; Spritemap 19h: unused
 $82:C2A6             dx 0003, 01F8,F8,3063, 01E8,F8,30B9, 01E0,F8,30B8
 
 ; Spritemap 15h: equipment screen item selector - weapons
@@ -8240,19 +8275,19 @@ $82:C2F5             dx 0014, 001C,04,345C, 001C,FC,345C, 0004,04,345C, 0014,04,
 ; Spritemap 1Bh: full equipment screen reserve tank
 $82:C35B             dx 0001, 0000,00,344E
 
-; Spritemap 1Ch
+; Spritemap 1Ch: unused. Clone of $C3D9 (empty equipment screen reserve tank)
 $82:C362             dx 0001, 0000,00,344D
 
-; Spritemap 1Ah
+; Spritemap 1Ah/1Fh: end of equipment screen reserve health bar
 $82:C369             dx 0001, 0000,00,344F
 
-; Spritemap 1Fh: end of equipment screen reserve health bar
+; Spritemap 1Dh: unused. Clone of $C35B (full equipment screen reserve tank)
 $82:C370             dx 0001, 0000,00,344E
 
-; Spritemap 1Dh
+; Spritemap 1Eh: unused. Empty equipment screen reserve tank with a different palette
 $82:C377             dx 0001, 0000,00,304D
 
-; Spritemap 1Eh
+; Spritemap 13h: unused
 $82:C37E             dx 0001, 01FD,FC,3FF0
 
 ; Spritemap 8: save icon
@@ -8276,19 +8311,19 @@ $82:C3A8             dx 0001, 0001,00,208F
 ; Spritemap Ch: debug save icon
 $82:C3AF             dx 0001, 0001,00,21F4
 
-; Spritemap Dh
+; Spritemap Dh: unused
 $82:C3B6             dx 0001, 0001,00,21F1
 
-; Spritemap Eh
+; Spritemap Eh: unused
 $82:C3BD             dx 0001, 0001,00,21F3
 
-; Spritemap Fh
+; Spritemap Fh: unused
 $82:C3C4             dx 0001, 0001,00,21F2
 
-; Spritemap 18h
+; Spritemap 18h: unused
 $82:C3CB             dx 0001, 0001,00,21F6
 
-; ???
+; Unused
 $82:C3D2             dx 0001, 0001,00,21F5
 
 ; Spritemap 20h: empty equipment screen reserve tank
@@ -8315,40 +8350,40 @@ $82:C403             dx 0001, 0000,00,344C
 ; Spritemap 27h: equipment screen 7/7 reserve tank
 $82:C40A             dx 0001, 0000,00,344E
 
-; Spritemap 4Fh
+; Spritemap 4Fh: unused
 $82:C411             dx 0001, 0000,00,3064
 
-; Spritemap 50h
+; Spritemap 50h: unused
 $82:C418             dx 0001, 0000,00,3065
 
-; Spritemap 51h
+; Spritemap 51h: unused
 $82:C41F             dx 0001, 0000,00,3066
 
-; Spritemap 52h
+; Spritemap 52h: unused
 $82:C426             dx 0001, 0000,00,3067
 
-; Spritemap 53h
+; Spritemap 53h: unused
 $82:C42D             dx 0001, 0000,00,3068
 
-; Spritemap 54h
+; Spritemap 54h: unused
 $82:C434             dx 0001, 0000,00,3069
 
-; Spritemap 55h
+; Spritemap 55h: unused
 $82:C43B             dx 0001, 0000,00,306A
 
-; Spritemap 56h
+; Spritemap 56h: unused
 $82:C442             dx 0001, 0000,00,306B
 
-; Spritemap 57h
+; Spritemap 57h: unused
 $82:C449             dx 0001, 0000,00,306C
 
-; Spritemap 58h
+; Spritemap 58h: unused
 $82:C450             dx 0001, 0000,00,306D
 
-; ???
+; Unused
 $82:C457             dx 0001, 0000,00,306E
 
-; ???
+; Unused
 $82:C45E             dx 0001, 0000,00,306F
 
 ; Spritemap 2Ah: L/R highlight
@@ -8383,7 +8418,7 @@ $82:C549             dx 0006, 0004,00,2045, 01FC,00,2044, 000C,F8,2056, 0004,F8,
 }
 
 
-;;; $C569: Spritemap pointers ;;;
+;;; $C569: Menu / pause menu spritemap pointers ;;;
 {
 ; Spawned by $81:891F
 $82:C569             dw C22B, C224, C216, C21D, C256, C24A, C232, C23E, C385, C38C, C393, C39A, C3AF, C3B6, C3BD, C3C4,
@@ -8680,7 +8715,7 @@ $82:CAE7             dw FFFF
 }
 
 
-;;; $CAE9: Spritemaps ;;;
+;;; $CAE9: Menu spritemaps ;;;
 {
 ; See $81:8A5F for spritemap format
 
@@ -8741,7 +8776,7 @@ $82:CD09             dx 0007, 0013,FC,306A, 000B,FC,3072, 0004,FC,306D, 01FC,FC,
 ; Spritemap 3Ch: area select - Wrecked Ship
 $82:CD2E             dx 000B, 0018,00,3079, 0010,00,3072, 0009,00,3071, 0001,00,307C, 0010,F8,306D, 0008,F8,306E, 0000,F8,3074, 01F8,F8,306C, 01F0,F8,306E, 01E8,F8,307B, 01E0,F8,3080
 
-; Spritemap 3Fh
+; Spritemap 3Fh: unused. Border for four character text
 $82:CD67             dx 0014, 0010,08,3EFA, 0008,08,3EFA, 0000,08,3EFA, 01F8,08,3EFA, 01F0,08,3EFA, 01E8,08,3EFA, 0010,F0,3EFA, 0008,F0,3EFA, 0000,F0,3EFA, 01F8,F0,3EFA, 01F0,F0,3EFA, 01E8,F0,3EFA, 01E0,00,3EED, 01E0,F8,3EED, 0018,00,3EED, 0018,F8,3EED, 0018,08,3EFD, 01E0,08,3EFC, 0018,F0,3EFB, 01E0,F0,3EF9
 
 ; Spritemap 40h: file copy arrow - one slot down
@@ -8756,16 +8791,16 @@ $82:CE5D             dx 0016, 01FA,08,32BD, 01F2,08,32BC, 01FA,00,32BD, 01F2,00,
 ; Spritemap 43h: file copy arrow - two slots up
 $82:CECD             dx 0016, 01FA,F0,B2BD, 01F2,F0,B2BC, 01FA,F8,B2BD, 01F2,F8,B2BC, 01FA,00,B2BD, 01F2,00,B2BC, 01FA,08,B2BD, 01F2,08,B2BC, 01F2,E0,B2B8, 01F2,E8,B2BC, 01FA,E8,B2BD, 01FA,D8,B2C9, 01FA,E0,B2B9, 0002,18,B2CF, 01FA,18,B2CE, 0002,20,B2BF, 01FA,20,B2BE, 01F2,18,B2CD, 01FA,10,B2BD, 01F2,10,B2BC, 0002,D8,B2CB, 0002,E0,B2BB
 
-; Spritemap 44h:
+; Spritemap 44h: unused. D-pad (according to $B6:C000 tiles)
 $82:CF3D             dx 0004, 01FF,FF,F0B3, 01F8,FF,B0B3, 01FF,F8,70B3, 01F8,F8,30B3
 
-; Spritemap 45h:
+; Spritemap 45h: unused. Select button (according to $B6:C000 tiles)
 $82:CF53             dx 0002, C3F4,F8,3095, C3FC,F8,3096
 
-; Spritemap 46h
+; Spritemap 46h: unused
 $82:CF5F             dx 0001, C3F8,F8,3091
 
-; Spritemap 47h
+; Spritemap 47h: unused
 $82:CF66             dx 0004, 0000,00,70A0, 0000,F8,7090, 01F8,00,30A0, 01F8,F8,3090
 
 ; Spritemap 5Fh: Samus position indicator (frame 0)
@@ -8804,7 +8839,7 @@ $82:D0AD             dx 0028, 0000,08,3EFA, 0008,08,3EFA, 01F0,08,3EFA, 01F8,08,
 ; Spritemap 4Ah: border around DATA CLEAR MODE
 $82:D177             dx 002A, 01EC,F0,3EFA, 01EC,08,3EFA, 0004,08,3EFA, 000C,08,3EFA, 01F4,08,3EFA, 01FC,08,3EFA, 0004,F0,3EFA, 000C,F0,3EFA, 01F4,F0,3EFA, 01FC,F0,3EFA, 01B4,00,3EED, 01B4,F8,3EED, 0044,00,3EED, 0044,F8,3EED, 0044,08,3EFD, 01B4,08,3EFC, 0044,F0,3EFB, 01B4,F0,3EF9, 01E4,08,3EFA, 01DC,08,3EFA, 01D4,08,3EFA, 01CC,08,3EFA, 01C4,08,3EFA, 01BC,08,3EFA, 003C,08,3EFA, 0034,08,3EFA, 002C,08,3EFA, 0024,08,3EFA, 001C,08,3EFA, 0014,08,3EFA, 003C,F0,3EFA, 0034,F0,3EFA, 002C,F0,3EFA, 0024,F0,3EFA, 001C,F0,3EFA, 0014,F0,3EFA, 01E4,F0,3EFA, 01DC,F0,3EFA, 01D4,F0,3EFA, 01CC,F0,3EFA, 01C4,F0,3EFA, 01BC,F0,3EFA
 
-; Spritemap 4Bh: border around OPTIONS MODE
+; Spritemap 4Bh: border around OPTION MODE
 $82:D24B             dx 0022, 01FC,08,3EFA, 01FC,F0,3EFA, 01F4,08,3EFA, 01F4,F0,3EFA, 01C4,00,3EED, 01C4,F8,3EED, 0034,00,3EED, 0034,F8,3EED, 0034,08,3EFD, 01C4,08,3EFC, 0034,F0,3EFB, 01C4,F0,3EF9, 01EC,08,3EFA, 01E4,08,3EFA, 01DC,08,3EFA, 01D4,08,3EFA, 01CC,08,3EFA, 002C,08,3EFA, 0024,08,3EFA, 001C,08,3EFA, 0014,08,3EFA, 000C,08,3EFA, 0004,08,3EFA, 002C,F0,3EFA, 0024,F0,3EFA, 001C,F0,3EFA, 0014,F0,3EFA, 000C,F0,3EFA, 0004,F0,3EFA, 01EC,F0,3EFA, 01E4,F0,3EFA, 01DC,F0,3EFA, 01D4,F0,3EFA, 01CC,F0,3EFA
 
 ; Spritemap 4Ch: border around CONTROLLER SETTING MODE
@@ -10754,6 +10789,8 @@ $82:E5C7             dw E5D7, E5EB, E616, E637, E63E, E64B, E652, E5D9
 
 ;;; $E5D7: Load library background - command 0: terminator ;;;
 {
+;; Returns:
+;;     Carry: Set. Finished list
 $82:E5D7 38          SEC                    ;\
 $82:E5D8 60          RTS                    ;} Return carry set
 }
@@ -10761,6 +10798,12 @@ $82:E5D8 60          RTS                    ;} Return carry set
 
 ;;; $E5D9: Load library background - command Eh: door dependent transfer to VRAM ;;;
 {
+;; Parameters:
+;;     Y: Pointer to parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
+
 ; Command Eh is only used by landing site, WS entrance and WS back door
 $82:E5D9 AD 8D 07    LDA $078D  [$7E:078D]  ;\
 $82:E5DC D9 00 00    CMP $0000,y[$8F:B76C]  ;} If [door pointer] != [[Y]]:
@@ -10779,6 +10822,11 @@ $82:E5EA C8          INY                    ;} Y += 2
 
 ;;; $E5EB: Load library background - command 2: transfer to VRAM ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
 $82:E5EB B9 03 00    LDA $0003,y[$8F:E4B1]  ;\
 $82:E5EE 8D BE 05    STA $05BE  [$7E:05BE]  ;} Door transition VRAM update destination = [[Y] + 3]
 $82:E5F1 B9 00 00    LDA $0000,y[$8F:E4AE]  ;\
@@ -10803,6 +10851,11 @@ $82:E615 60          RTS                    ;} Return carry clear
 
 ;;; $E616: Load library background - command 4: decompression ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
 $82:E616 5A          PHY
 $82:E617 B9 00 00    LDA $0000,y[$8F:E4A7]  ;\
 $82:E61A 85 47       STA $47    [$7E:0047]  ;|
@@ -10824,6 +10877,9 @@ $82:E636 60          RTS                    ;} Return carry clear
 
 ;;; $E637: Load library background - command 6: clear FX tilemap ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Command 6 is unused
 $82:E637 5A          PHY
 $82:E638 20 66 E5    JSR $E566  [$82:E566]  ; Clear FX tilemap
@@ -10835,6 +10891,12 @@ $82:E63D 60          RTS                    ;} Return carry clear
 
 ;;; $E63E: Load library background - command 8: transfer to VRAM and set BG3 tiles base address = $2000 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
+
 ; Command 8 is only used by Kraid's room
 $82:E63E 20 EB E5    JSR $E5EB  [$82:E5EB]  ; Command 2: transfer to VRAM
 $82:E641 E2 20       SEP #$20               ;\
@@ -10848,6 +10910,9 @@ $82:E64A 60          RTS                    ;} Return carry clear
 
 ;;; $E64B: Load library background - command Ah: clear BG2 tilemap ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Command Ah is only used by:
 ;     Room $CD13, state $CD3F: Phantoon's room, Phantoon is dead
 ;     Room $DA60, state $DA8C: Draygon's room, Drayon is dead
@@ -10862,6 +10927,9 @@ $82:E651 60          RTS                    ;} Return carry clear
 
 ;;; $E652: Load library background - command Ch: clear Kraid's layer 2 ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Command Ch is only used by:
 ;     Room $A59F, state $A5CB: Kraid's room, Kraid is dead
 $82:E652 5A          PHY
@@ -11349,7 +11417,7 @@ $82:E97B 60          RTS                    ;} Return carry set
 ;;; $E97C: Load library background ;;;
 {
 ; Called when loading game or unpausing. For door transitions, see $E512
-; Note that when unpausing, $8D96 (restore BG2 tilemap from pause screen) gets executed,
+; Note that when unpausing, $8D96 (restore BG2 tilemap from pause menu) gets executed,
 ; overwriting any changes made to the BG2 tilemap here
 $82:E97C 08          PHP
 $82:E97D 8B          PHB
@@ -11403,6 +11471,8 @@ $82:E9D5             dw E9E5, E9F9, EA2D, EA4E, EA66, EA56, EA5E, E9E7
 
 ;;; $E9E5: Load library background - command 0: terminator ;;;
 {
+;; Returns:
+;;     Carry: Set. Finished list
 $82:E9E5 38          SEC                    ;\
 $82:E9E6 60          RTS                    ;} Return carry set
 }
@@ -11410,6 +11480,12 @@ $82:E9E6 60          RTS                    ;} Return carry set
 
 ;;; $E9E7: Load library background - command Eh: door dependent transfer to VRAM ;;;
 {
+;; Parameters:
+;;     Y: Pointer to parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
+
 ; Command Eh is only used by landing site, WS entrance and WS back door
 $82:E9E7 AD 8D 07    LDA $078D  [$7E:078D]  ;\
 $82:E9EA D9 00 00    CMP $0000,y[$8F:B76C]  ;} If [door pointer] != [[Y]]:
@@ -11428,6 +11504,11 @@ $82:E9F8 C8          INY                    ;} Y += 2
 
 ;;; $E9F9: Load library background - command 2: transfer to VRAM ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
 $82:E9F9 B9 03 00    LDA $0003,y[$8F:B79D]  ;\
 $82:E9FC 8D 16 21    STA $2116              ;|
 $82:E9FF A9 01 18    LDA #$1801             ;|
@@ -11455,6 +11536,11 @@ $82:EA2C 60          RTS                    ;} Return carry clear
 
 ;;; $EA2D: Load library background - command 4: decompression ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
 $82:EA2D 5A          PHY
 $82:EA2E B9 00 00    LDA $0000,y[$8F:BAF6]  ;\
 $82:EA31 85 47       STA $47    [$7E:0047]  ;|
@@ -11476,6 +11562,9 @@ $82:EA4D 60          RTS                    ;} Return carry clear
 
 ;;; $EA4E: Load library background - command 6: clear FX tilemap ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Command 6 is unused
 $82:EA4E 5A          PHY
 $82:EA4F 22 9C A2 80 JSL $80A29C[$80:A29C]  ; Clear FX tilemap
@@ -11487,6 +11576,9 @@ $82:EA55 60          RTS                    ;} Return carry clear
 
 ;;; $EA56: Load library background - command Ah: clear BG2 tilemap ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Command Ah is only used by:
 ;     Phantoon's room and Draygon's room (which aren't load station rooms)
 ;     Ceres elevator shaft (which doesn't display BG2)
@@ -11503,6 +11595,9 @@ $82:EA5D 60          RTS                    ;} Return carry clear
 
 ;;; $EA5E: Load library background - command Ch: clear Kraid's layer 2 ;;;
 {
+;; Returns:
+;;     Carry: Clear. Not finished list
+
 ; Identical to $EA56
 ; Command Ch is only used by Kraid's room (which isn't a load station room),
 ; so this routine has no observable effect (and hence the bug in $80:A23F doesn't show)
@@ -11517,6 +11612,12 @@ $82:EA65 60          RTS                    ;} Return carry clear
 
 ;;; $EA66: Load library background - command 8: transfer to VRAM and set BG3 tiles base address = $2000 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to command parameters
+;; Returns:
+;;     Carry: Clear. Not finished list
+;;     Y: Pointer to next command
+
 ; Command 8 is only used by Kraid's room
 $82:EA66 20 F9 E9    JSR $E9F9  [$82:E9F9]  ; Command 2: transfer to VRAM
 $82:EA69 E2 20       SEP #$20               ;\
@@ -11858,7 +11959,7 @@ $82:ECCD 20 B9 8B    JSR $8BB9  [$82:8BB9]  ; Delete game options menu objects
 $82:ECD0 A0 B8 F4    LDY #$F4B8             ;\
 $82:ECD3 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn menu selection missile
 $82:ECD6 A0 C4 F4    LDY #$F4C4             ;\
-$82:ECD9 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTIONS MODE
+$82:ECD9 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTION MODE
 $82:ECDC EE E2 0D    INC $0DE2  [$7E:0DE2]  ; Game options menu index = 2
 $82:ECDF 20 ED ED    JSR $EDED  [$82:EDED]  ; Set language text option highlight
 $82:ECE2 28          PLP
@@ -12277,7 +12378,7 @@ $82:EFCE CA          DEX                    ;|
 $82:EFCF 10 F4       BPL $F4    [$EFC5]     ;/
 $82:EFD1 20 ED ED    JSR $EDED  [$82:EDED]  ; Set language text option highlight
 $82:EFD4 A0 C4 F4    LDY #$F4C4             ;\
-$82:EFD7 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTIONS MODE
+$82:EFD7 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTION MODE
 $82:EFDA 60          RTS
 }
 
@@ -12672,6 +12773,8 @@ $82:F295 60          RTS
 {
 ;;; $F296: Setup - menu selection missile ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F296 A9 18 00    LDA #$0018             ;\
 $82:F299 99 AD 1A    STA $1AAD,y[$7E:1ABB]  ;} Game options menu object X position = 18h
 $82:F29C A9 38 00    LDA #$0038             ;\
@@ -12684,6 +12787,8 @@ $82:F2A8 60          RTS
 
 ;;; $F2A9: Pre-instruction - menu selection missile ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F2A9 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $82:F2AC C9 02 00    CMP #$0002             ;} If [game state] != game options menu:
 $82:F2AF F0 0D       BEQ $0D    [$F2BE]     ;/
@@ -12758,6 +12863,8 @@ $82:F33F             dw 0010,0040, ; 0: Icon cancel
 
 ;;; $F34B: Setup - border around OPTION MODE ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F34B A9 7C 00    LDA #$007C             ;\
 $82:F34E 99 AD 1A    STA $1AAD,y[$7E:1AB9]  ;} Game options menu object X position = 7Ch
 $82:F351 80 16       BRA $16    [$F369]     ; Go to common border setup
@@ -12766,6 +12873,8 @@ $82:F351 80 16       BRA $16    [$F369]     ; Go to common border setup
 
 ;;; $F353: Setup - border around CONTROLLER SETTING MODE ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F353 A9 84 00    LDA #$0084             ;\
 $82:F356 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = 84h
 $82:F359 80 0E       BRA $0E    [$F369]     ; Go to common border setup
@@ -12774,6 +12883,8 @@ $82:F359 80 0E       BRA $0E    [$F369]     ; Go to common border setup
 
 ;;; $F35B: Setup - border around SPECIAL SETTING MODE ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F35B A9 80 00    LDA #$0080             ;\
 $82:F35E 99 AD 1A    STA $1AAD,y[$7E:1AB7]  ;} Game options menu object X position = 80h
 $82:F361 80 06       BRA $06    [$F369]     ; Go to common border setup
@@ -12782,6 +12893,8 @@ $82:F361 80 06       BRA $06    [$F369]     ; Go to common border setup
 
 ;;; $F363: Setup - border around SAMUS DATA ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F363 A9 80 00    LDA #$0080             ;\
 $82:F366 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = 80h
 }
@@ -12789,6 +12902,8 @@ $82:F366 99 AD 1A    STA $1AAD,y            ;} Game options menu object X positi
 
 ;;; $F369: Common border setup ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F369 A9 10 00    LDA #$0010             ;\
 $82:F36C 99 BD 1A    STA $1ABD,y[$7E:1AC9]  ;} Game options menu object Y position = 10h
 $82:F36F A9 00 0E    LDA #$0E00             ;\
@@ -12797,8 +12912,10 @@ $82:F375 60          RTS
 }
 
 
-;;; $F376: Pre-instruction - border around OPTIONS MODE ;;;
+;;; $F376: Pre-instruction - border around OPTION MODE ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F376 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $82:F379 C9 02 00    CMP #$0002             ;} If [game state] = game options menu:
 $82:F37C D0 13       BNE $13    [$F391]     ;/
@@ -12824,6 +12941,8 @@ $82:F39F 60          RTS
 
 ;;; $F3A0: Pre-instruction - border around CONTROLLER SETTING MODE ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F3A0 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
 $82:F3A3 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): go to BRANCH_DISSOLVE_IN_END
 $82:F3A6 D0 1A       BNE $1A    [$F3C2]     ;/
@@ -12863,6 +12982,8 @@ $82:F3E1 60          RTS
 
 ;;; $F3E2: Pre-instruction - border around SPECIAL SETTING MODE ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F3E2 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
 $82:F3E5 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): return
 $82:F3E8 D0 19       BNE $19    [$F403]     ;/
@@ -12885,6 +13006,8 @@ $82:F403 60          RTS
 
 ;;; $F404: Unused. Pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F404 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
 $82:F407 C9 01 00    CMP #$0001             ;} If [game options menu index] = 1 (loading options menu):
 $82:F40A D0 0C       BNE $0C    [$F418]     ;/
@@ -12899,6 +13022,8 @@ $82:F418 60          RTS
 
 ;;; $F419: Setup - file select menu Samus helmet ;;;
 {
+;; Parameters:
+;;     Y: Game options menu object index
 $82:F419 A9 D8 00    LDA #$00D8             ;\
 $82:F41C 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = D8h
 $82:F41F A9 10 00    LDA #$0010             ;\
@@ -12911,6 +13036,8 @@ $82:F42B 60          RTS
 
 ;;; $F42C: Pre-instruction - file select menu Samus helmet ;;;
 {
+;; Parameters:
+;;     X: Game options menu object index
 $82:F42C AD 98 09    LDA $0998  [$7E:0998]  ;\
 $82:F42F C9 02 00    CMP #$0002             ;} If [game state] != game options menu:
 $82:F432 F0 0D       BEQ $0D    [$F441]     ;/
@@ -12949,7 +13076,7 @@ $82:F456             dx 0090,CAE9,
 }
 
 
-;;; $F47E: Instruction list - border around OPTIONS MODE ;;;
+;;; $F47E: Instruction list - border around OPTION MODE ;;;
 {
 $82:F47E             dx 0002,D24B,
                         8C6E,F376   ; Pre-instruction = $F376

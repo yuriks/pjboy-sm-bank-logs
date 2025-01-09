@@ -841,16 +841,90 @@ $81:891E 60          RTS
 }
 
 
-;;; $891F: Add spritemap from $82:C569 table to OAM ;;;
+;;; $891F: Add pause menu / menu spritemap to OAM ;;;
 {
 ;; Parameters:
-;;     A: Index into $82:C569 table
+;;     A: Index into pause menu / menu spritemap table ($82:C569)
+{
+;;        4: Map scrolling arrow - right
+;;        5: Map scrolling arrow - left
+;;        6: Map scrolling arrow - up
+;;        7: Map scrolling arrow - down
+;;        8: Save icon
+;;        9: Boss icon
+;;        Ah: Energy station icon
+;;        Bh: Missile station icon
+;;        Ch: Debug save icon
+;;        12h: File select map Samus icon
+;;        14h: Equipment screen item selector - tanks
+;;        15h: Equipment screen item selector - weapons
+;;        16h: Equipment screen item selector - suit/misc/boots
+;;        17h: Debug elevator icon
+;;        1Bh: Full equipment screen reserve tank
+;;        1Fh: End of equipment screen reserve health bar
+;;        20h: Empty equipment screen reserve tank
+;;        21h: Equipment screen 1/7 reserve tank
+;;        22h: Equipment screen 2/7 reserve tank
+;;        23h: Equipment screen 3/7 reserve tank
+;;        24h: Equipment screen 4/7 reserve tank
+;;        25h: Equipment screen 5/7 reserve tank
+;;        26h: Equipment screen 6/7 reserve tank
+;;        27h: Equipment screen 7/7 reserve tank
+;;        28h: L button pressed highlight
+;;        29h: R button pressed highlight
+;;        2Ah: L/R highlight
+;;        2Bh: Start button pressed highlight
+;;        2Ch: File select menu Samus helmet (frame 0)
+;;        2Dh: File select menu Samus helmet (frame 1)
+;;        2Eh: File select menu Samus helmet (frame 2)
+;;        2Fh: File select menu Samus helmet (frame 3)
+;;        30h: File select menu Samus helmet (frame 4)
+;;        31h: File select menu Samus helmet (frame 5)
+;;        32h: File select menu Samus helmet (frame 6)
+;;        33h: File select menu Samus helmet (frame 7)
+;;        34h: Menu selection missile (frame 0)
+;;        35h: Menu selection missile (frame 1)
+;;        36h: Menu selection missile (frame 2)
+;;        37h: Menu selection missile (frame 3)
+;;        38h: Area select - planet Zebes
+;;        39h: Area select - Crateria
+;;        3Ah: Area select - Brinstar
+;;        3Bh: Area select - Norfair
+;;        3Ch: Area select - Wrecked Ship
+;;        3Dh: Area select - Maridia
+;;        3Eh: Area select - Tourian
+;;        40h: File copy arrow - one slot down
+;;        41h: File copy arrow - one slot up
+;;        42h: File copy arrow - two slots down
+;;        43h: File copy arrow - two slots up
+;;        48h: Border around SAMUS DATA
+;;        49h: Border around DATA COPY MODE
+;;        4Ah: Border around DATA CLEAR MODE
+;;        4Bh: Border around OPTION MODE
+;;        4Ch: Border around CONTROLLER SETTING MODE
+;;        4Dh: Border around SPECIAL SETTING MODE
+;;        4Eh: Map station icon
+;;        59h: Elevator destination - Crateria
+;;        5Ah: Elevator destination - Brinstar
+;;        5Bh: Elevator destination - Norfair
+;;        5Ch: Elevator destination - Wrecked Ship
+;;        5Dh: Elevator destination - Maridia
+;;        5Eh: Elevator destination - Tourian
+;;        5Fh: Samus position indicator (frame 0)
+;;        60h: Samus position indicator (frame 1)
+;;        61h: Samus position indicator (frame 2)
+;;        62h: Boss cross-out icon
+;;        63h: Gunship icon
+;;        64h: Game over baby metroid container
+;;        65h: Game over baby metroid (frame 0)
+;;        66h: Game over baby metroid (frame 1)
+;;        67h: Game over baby metroid (frame 2)
+}
 ;;     X: Spritemap X origin
 ;;     Y: Spritemap Y origin
 ;;     $03: Palette bits of sprite (palette * 200h)
 
 ; See $879F for spritemap format
-; Used for general menu sprites I think
 $81:891F 8B          PHB
 $81:8920 F4 00 82    PEA $8200              ;\
 $81:8923 AB          PLB                    ;} DB = $82
@@ -1690,7 +1764,7 @@ $81:8E00 8D 16 21    STA $2116              ;|
 $81:8E03 A9 30       LDA #$30               ;|
 $81:8E05 8D 17 21    STA $2117              ;|
 $81:8E08 A9 80       LDA #$80               ;|
-$81:8E0A 8D 15 21    STA $2115              ;} VRAM $3000..3FFF = [$B6:8000..9FFF] (first half of pause screen BG1/2 tiles)
+$81:8E0A 8D 15 21    STA $2115              ;} VRAM $3000..3FFF = [$B6:8000..9FFF] (first half of pause menu BG1/2 tiles)
 $81:8E0D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8E11             dx 01,01,18,B68000,2000;|
 $81:8E19 A9 02       LDA #$02               ;|
@@ -1700,7 +1774,7 @@ $81:8E20 8D 16 21    STA $2116              ;|
 $81:8E23 A9 60       LDA #$60               ;|
 $81:8E25 8D 17 21    STA $2117              ;|
 $81:8E28 A9 80       LDA #$80               ;|
-$81:8E2A 8D 15 21    STA $2115              ;} VRAM $6000..6FFF = [$B6:C000..DFFF] (menu / pause screen sprite tiles)
+$81:8E2A 8D 15 21    STA $2115              ;} VRAM $6000..6FFF = [$B6:C000..DFFF] (menu / pause menu sprite tiles)
 $81:8E2D 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:8E31             dx 01,01,18,B6C000,2000;|
 $81:8E39 A9 02       LDA #$02               ;|
@@ -3556,7 +3630,7 @@ $81:9E1F A8          TAY                    ;} Y = [slot Samus helmet Y position
 $81:9E20 BD A1 19    LDA $19A1,x[$7E:19A5]  ;\
 $81:9E23 AA          TAX                    ;} X = [slot Samus helmet X position]
 $81:9E24 68          PLA
-$81:9E25 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$81:9E25 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $81:9E29 AB          PLB
 $81:9E2A FA          PLX
 $81:9E2B 60          RTS
@@ -4673,7 +4747,7 @@ $81:A790 A9 00       LDA #$00               ;} BG2 Y scroll = 18h
 $81:A792 85 B8       STA $B8    [$7E:00B8]  ;/
 $81:A794 C2 30       REP #$30
 $81:A796 A9 01 00    LDA #$0001             ;\
-$81:A799 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause screen palette animation timer = 1
+$81:A799 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause menu palette animation timer = 1
 $81:A79C A2 00 00    LDX #$0000             ;\
                                             ;|
 $81:A79F BF 00 E0 B6 LDA $B6E000,x[$B6:E000];|
@@ -4963,7 +5037,7 @@ $81:A97E 64 03       STZ $03    [$7E:0003]  ; $03 = 0 (palette 0)
 $81:A980 A2 80 00    LDX #$0080             ; X = 80h
 $81:A983 A0 10 00    LDY #$0010             ; Y = 10h
 $81:A986 AF 49 C7 82 LDA $82C749[$82:C749]  ; A = 38h (area select - planet Zebes)
-$81:A98A 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$81:A98A 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 $81:A98E 64 1C       STZ $1C    [$7E:001C]  ; $1C = 0 (area index)
 
 ; LOOP_AREAS
@@ -5034,7 +5108,7 @@ $81:AA01 18          CLC                    ;|
 $81:AA02 6F 49 C7 82 ADC $82C749[$82:C749]  ;|
 $81:AA06 1A          INC A                  ;|
 $81:AA07 FA          PLX                    ;/
-$81:AA08 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
+$81:AA08 22 1F 89 81 JSL $81891F[$81:891F]  ; Add pause menu / menu spritemap to OAM
 
 ; BRANCH_NEXT
 $81:AA0C E6 1C       INC $1C    [$7E:001C]  ; Increment $1C
@@ -5699,7 +5773,7 @@ $81:AF30 80 EA       BRA $EA    [$AF1C]     ; Return
 ; Map scroll arrow data
 ;                        _______________________ X position
 ;                       |     __________________ Y position
-;                       |    |     _____________ Pause screen animation ID
+;                       |    |     _____________ Pause menu animation ID
 ;                       |    |    |     ________ Necessary input
 ;                       |    |    |    |     ___ Map scrolling direction
 ;                       |    |    |    |    |

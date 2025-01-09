@@ -68,7 +68,7 @@ $85:80AA 20 F3 81    JSR $81F3  [$85:81F3]  ; Clear message box BG3 tilemap
 $85:80AD 20 1A 86    JSR $861A  [$85:861A]  ; Restore PPU
 $85:80B0 22 2F BE 82 JSL $82BE2F[$82:BE2F]  ; Queue Samus movement sound effects
 $85:80B4 20 74 85    JSR $8574  [$85:8574]  ; Play 2 lag frames of music and sound effects
-$85:80B7 20 FA 80    JSR $80FA  [$85:80FA]  ; Maybe trigger pause screen or return save confirmation selection
+$85:80B7 20 FA 80    JSR $80FA  [$85:80FA]  ; Maybe trigger pause menu or return save confirmation selection
 
 $85:80BA 7A          PLY
 $85:80BB FA          PLX
@@ -96,12 +96,12 @@ $85:80E8 20 F3 81    JSR $81F3  [$85:81F3]  ; Clear message box BG3 tilemap
 $85:80EB 20 1A 86    JSR $861A  [$85:861A]  ; Restore PPU
 $85:80EE 22 2F BE 82 JSL $82BE2F[$82:BE2F]  ; Queue Samus movement sound effects
 $85:80F2 20 74 85    JSR $8574  [$85:8574]  ; Play 2 lag frames of music and sound effects
-$85:80F5 20 FA 80    JSR $80FA  [$85:80FA]  ; Maybe trigger pause screen or return save confirmation selection
+$85:80F5 20 FA 80    JSR $80FA  [$85:80FA]  ; Maybe trigger pause menu or return save confirmation selection
 $85:80F8 80 C0       BRA $C0    [$80BA]     ; Return
 }
 
 
-;;; $80FA: Maybe trigger pause screen or return save confirmation selection ;;;
+;;; $80FA: Maybe trigger pause menu or return save confirmation selection ;;;
 {
 $85:80FA C2 30       REP #$30
 $85:80FC AD 1F 1C    LDA $1C1F  [$7E:1C1F]  ;\
