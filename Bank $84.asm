@@ -63,6 +63,10 @@ $84:8132             dw 1000, 4215, 2D0D, 0002, 0000, 3970, 20CB, 0C26, 0403, 46
 ;;; $8232: Load room PLM GFX ;;;
 {
 ; Called as part of unpausing
+; The call to $8764 *should* be done with the PLM index in X,
+; which is where the PLM's $7E:DF0C variable is written
+; In the case of unpausing, this variable doesn't need to be written again,
+; but this does mean that the PLM with indexes 0/2/4/6 get their $7E:DF0C variable clobbered
 $84:8232 08          PHP
 $84:8233 8B          PHB
 $84:8234 C2 30       REP #$30
@@ -165,7 +169,7 @@ $84:82B3 6B          RTL
 {
 ;; Parameter:
 ;;     A low: BTS
-;;     A high: high byte of level data
+;;     A high: High byte of level data
 ;;     X: PLM block index
 $84:82B4 DA          PHX
 $84:82B5 85 12       STA $12    [$7E:0012]  ;\
@@ -190,10 +194,10 @@ $84:82D5 60          RTS
 ;;; $82D6: Write row of level data block and BTS ;;;
 {
 ;; Parameters:
+;;     X: PLM index
 ;;     [[S] + 1] + 1: Level data block
 ;;     [[S] + 1] + 3: BTS
 ;;     [[S] + 1] + 5: Number of blocks
-;;     X: PLM index
 $84:82D6 DA          PHX
 $84:82D7 5A          PHY
 $84:82D8 A0 01 00    LDY #$0001             ;\
@@ -1016,17 +1020,22 @@ $84:8763 60          RTS
 ;;; $8764: Instruction - load item PLM GFX ;;;
 {
 ;; Parameter
-;;     [Y]: Pointer to GFX of two blocks (each composed of 4 tiles in the following order)
-;;     [Y] + 2: Palette index - block 1 - top-left
-;;     [Y] + 3: Palette index - block 1 - top-right
-;;     [Y] + 4: Palette index - block 1 - bottom-left
-;;     [Y] + 5: Palette index - block 1 - bottom-right
-;;     [Y] + 6: Palette index - block 2 - top-left
-;;     [Y] + 7: Palette index - block 2 - top-right
-;;     [Y] + 8: Palette index - block 2 - bottom-left
-;;     [Y] + 9: Palette index - block 2 - bottom-right
+;;     X: PLM index
+;;     Y: Pointer to instruction arguments
+;;         [Y]: Pointer to GFX of two blocks (each composed of 4 tiles in the following order)
+;;         [Y] + 2: Palette index - block 1 - top-left
+;;         [Y] + 3: Palette index - block 1 - top-right
+;;         [Y] + 4: Palette index - block 1 - bottom-left
+;;         [Y] + 5: Palette index - block 1 - bottom-right
+;;         [Y] + 6: Palette index - block 2 - top-left
+;;         [Y] + 7: Palette index - block 2 - top-right
+;;         [Y] + 8: Palette index - block 2 - bottom-left
+;;         [Y] + 9: Palette index - block 2 - bottom-right
+;; Returns:
+;;     Y: Pointer to next instruction
+
 $84:8764 AD 2D 1C    LDA $1C2D  [$7E:1C2D]  ;\
-$84:8767 9F 0C DF 7E STA $7EDF0C,x[$7E:DF50];} X = PLM $DF0C = [PLM item GFX index]
+$84:8767 9F 0C DF 7E STA $7EDF0C,x[$7E:DF50];} X = PLM $7E:DF0C = [PLM item GFX index]
 $84:876B AA          TAX                    ;/
 $84:876C 1A          INC A                  ;\
 $84:876D 1A          INC A                  ;|
@@ -1046,7 +1055,7 @@ $84:878D 95 D0       STA $D0,x  [$7E:00D0]  ;|
 $84:878F B9 00 00    LDA $0000,y[$84:E3F1]  ;|
 $84:8792 95 D2       STA $D2,x  [$7E:00D2]  ;|
 $84:8794 A9 89 00    LDA #$0089             ;|
-$84:8797 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of 100h bytes from $89:0000 to VRAM [$12]
+$84:8797 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of 100h bytes from $89:0000 + [[Y]] to VRAM [$12]
 $84:8799 A5 12       LDA $12    [$7E:0012]  ;|
 $84:879B 95 D5       STA $D5,x  [$7E:00D5]  ;|
 $84:879D 8A          TXA                    ;|

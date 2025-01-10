@@ -10577,10 +10577,10 @@ $82:E3EB AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E3EE 29 03 00    AND #$0003             ;|
 $82:E3F1 C9 02 00    CMP #$0002             ;} If door direction is down:
 $82:E3F4 D0 05       BNE $05    [$E3FB]     ;/
-$82:E3F6 A9 10 00    LDA #$0010             ; Next interrupt command = 10h (vertical room transition)
+$82:E3F6 A9 10 00    LDA #$0010             ; Next interrupt command = 10h (vertical door transition)
 $82:E3F9 80 03       BRA $03    [$E3FE]
                                             ; Else (door direction is not down):
-$82:E3FB A9 16 00    LDA #$0016             ; Next interrupt command = 16h (horizontal room transition)
+$82:E3FB A9 16 00    LDA #$0016             ; Next interrupt command = 16h (horizontal door transition)
 
 $82:E3FE 85 A7       STA $A7    [$7E:00A7]
 $82:E400 20 69 DF    JSR $DF69  [$82:DF69]  ; Wait until the end of a v-blank and enable h/v-counter interrupts
@@ -10633,7 +10633,7 @@ $82:E495 29 03 00    AND #$0003             ;|
 $82:E498 C9 03 00    CMP #$0003             ;} If door direction is up:
 $82:E49B D0 05       BNE $05    [$E4A2]     ;/
 $82:E49D A9 10 00    LDA #$0010             ;\
-$82:E4A0 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 10h (vertical room transition)
+$82:E4A0 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 10h (vertical door transition)
 
 $82:E4A2 A9 A9 E4    LDA #$E4A9             ;\
 $82:E4A5 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E4A9

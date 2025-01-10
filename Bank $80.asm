@@ -5444,7 +5444,7 @@ $80:A3DD 85 B7       STA $B7    [$7E:00B7]  ;/
 ;     $A3A0: Calculate BG scrolls and update BG graphics when scrolling
 ;     $A3AB: Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
 
-; Calculates new BG and layer positions, calls the update level/background data row/column functions and updates the previous layer 1/2 X block/Y values
+; Calculates new BG and layer positions, calls the update level/background data row/column functions and updates the previous layer 1/2 X/Y block values
 ; Expects a pushed DB and PSR
 $80:A3DF C2 20       REP #$20
 $80:A3E1 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
