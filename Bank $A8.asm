@@ -2185,7 +2185,7 @@ $A8:A027             dw 0050,A91A,
 $A8:A03D             dx A0D9,       ; Offset Samus up-left
                         0004,AAED,
                         A10F        ; Offset Samus up
-$A2:A045             dx 0050,A91A,
+$A8:A045             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
@@ -2203,8 +2203,8 @@ $A8:A05B             dw A0EB,       ; Offset Samus down-right
 
 ;;; $A061: Instruction list - cooldown - facing down ;;;
 {
-$A2:A061             dw A121        ; Offset Samus down
-$A2:A063             dw 0050,AA22,
+$A8:A061             dw A121        ; Offset Samus down
+$A8:A063             dw 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
@@ -2218,7 +2218,7 @@ $A2:A063             dw 0050,AA22,
 $A8:A079             dx A0FD,       ; Offset Samus down-left
                         0004,AA69,
                         A121        ; Offset Samus down
-$A2:A081             dx 0050,AA22,
+$A8:A081             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
@@ -3507,7 +3507,7 @@ $A8:AD9E             dx AE50,       ; Move head + arm up 1px
 $A8:ADAC             dx AE3A,       ; Set animation active flag
                         AE88,       ; Reset head + arm position
                         8123,0018   ; Timer = 18h
-$A2:ADB4             dx AE5A,       ; Move head + arm down 1px
+$A8:ADB4             dx AE5A,       ; Move head + arm down 1px
                         0001,B56A,
                         8110,ADB4,  ; Decrement timer and go to $ADB4 if non-zero
                         AE96,       ; Set emerged head + arm position, make arm + hand invisible
@@ -7783,7 +7783,7 @@ $A8:D841             dw 000A,DB76,
 ;;; $D855: Instruction list - shot ;;;
 {
 $A8:D855             dw 8123,0005   ; Timer = 5
-$A2:D859             dw 0003,DB76,
+$A8:D859             dw 0003,DB76,
                         0003,DB8C,
                         0003,DB76,
                         0003,DBA2,

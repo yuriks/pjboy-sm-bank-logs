@@ -491,6 +491,8 @@ $85:83CE AD B6 09    LDA $09B6  [$7E:09B6]  ; A = [run binding]
 
 ;;; $83D1: Draw special button and set up PPU for large message box ;;;
 {
+;; Parameters:
+;;     A: Button binding
 $85:83D1 A0 00 00    LDY #$0000             ; Y = 0
 $85:83D4 89 80 00    BIT #$0080             ;\
 $85:83D7 D0 33       BNE $33    [$840C]     ;} If [A] & 80h != 0: go to BRANCH_FOUND

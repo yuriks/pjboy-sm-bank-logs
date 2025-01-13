@@ -169,13 +169,13 @@ $84:82B3 6B          RTL
 {
 ;; Parameter:
 ;;     A low: BTS
-;;     A high: High byte of level data
+;;     A high: Block type in high nybble (like level data)
 ;;     X: PLM block index
 $84:82B4 DA          PHX
 $84:82B5 85 12       STA $12    [$7E:0012]  ;\
 $84:82B7 E2 20       SEP #$20               ;|
 $84:82B9 BF 03 00 7F LDA $7F0003,x[$7F:2D3F];|
-$84:82BD 29 0F       AND #$0F               ;} (PLM block type) = [A high] / 10h
+$84:82BD 29 0F       AND #$0F               ;} PLM block = [PLM block] & ~F000h | [A high] << 8 (set block type)
 $84:82BF 05 13       ORA $13    [$7E:0013]  ;|
 $84:82C1 9F 03 00 7F STA $7F0003,x[$7F:2D3F];|
 $84:82C5 C2 20       REP #$20               ;/
@@ -3181,7 +3181,7 @@ $84:9407             dw 8004, 9440, 9460, 9C60, 9C40,
 }
 
 
-;;; $9413..72: Spore Spawn ;;;
+;;; $9413..52: Spore Spawn ;;;
 {
 ; Used by instruction list $AB21: PLM $B793 (clear Spore Spawn ceiling)
 $84:9413             dx 0002, 00FF, 00FF,
@@ -3206,23 +3206,26 @@ $84:9443             dx 0002, 0055, 0055,
                         00, 01,
                         0002, 0055, 0055,
                         0000
+}
 
+
+;;; $9453..C8: Mother Brain walls ;;;
+{
+; Matches the level data of a zebetite
 ; Used by instruction list $ABE3: PLM $B65F (unused)
 $84:9453             dx 8002, 00FF, 12FB,
                         00, FE,
                         8002, 1AFB, 00FF,
                         0000
 
+; Solid version of $9453
 ; Used by instruction list $ABE9: PLM $B663 (unused)
 $84:9463             dx 8002, 80FF, 82FB,
                         00, FE,
                         8002, 8AFB, 80FF,
                         0000
-}
 
-
-;;; $9473..C8: Mother Brain walls ;;;
-{
+; Escape gate - open
 ; Used by instruction lists:
 ;     $ABEF: PLM $B667 (unused)
 ;     $BB3A: Unused
@@ -3230,12 +3233,14 @@ $84:9463             dx 8002, 80FF, 82FB,
 $84:9473             dw 8004, 80FF, 80FF, 80FF, 80FF,
                         0000
 
+; Escape gate - half closed
 ; Used by instruction lists:
 ;     $BB3A: Unused
 ;     $BB44: Door $C8CA / PLM $C8D0 (gate that closes during escape in room after Mother Brain)
 $84:947F             dw 8004, 830F, 80FF, 80FF, 830F,
                         0000
 
+; Escape gate - closed
 ; Used by instruction lists:
 ;     $ABEF: PLM $B667 (unused)
 ;     $BB34: Door $C8CA (gate that closes during escape in room after Mother Brain)
@@ -3243,11 +3248,11 @@ $84:947F             dw 8004, 830F, 80FF, 80FF, 830F,
 $84:948B             dw 8004, 830F, 8AE8, 82E8, 830F,
                         0000
 
-; Used by instruction list $ABF9: PLM $B66B (unused)
+; Used by instruction list $ABF9: PLM $B66B (unused. Blank air)
 $84:9497             dw 0001, 00FF,
                         0000
 
-; Used by instruction list $ABFF: PLM $B66F (unused)
+; Used by instruction list $ABFF: PLM $B66F (unused. Blank solid)
 $84:949D             dw 0001, 80FF,
                         0000
 
@@ -3323,11 +3328,11 @@ $84:9631             dw 000D, 060C, 01EF, 01B2, 01E5, 01E6, 01E5, 01E5, 01E6, 01
 $84:964F             dw 000D, 1248, 1249, 124A, 124B, 1339, 124C, 124D, 1339, 124E, 1339, 1339, 124F, 1249,
                         0000
 
-; Used by instruction list $AC59: PLM $B6AB (unused)
+; Used by instruction list $AC59: PLM $B6AB (unused. Mother Brain's background row Eh)
 $84:966D             dw 000D, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319, 8319,
                         0000
 
-; Used by instruction list $AC5F: PLM $B6AF (unused)
+; Used by instruction list $AC5F: PLM $B6AF (unused. Mother Brain's background row Fh)
 $84:968B             dw 000D, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044, 8044,
                         0000
 }
@@ -4316,6 +4321,8 @@ $84:A241             dx 0001, A9CB,
 
 ;;; $A255..74: PLM $B6F7 (unused) ;;;
 {
+; Tile numbers don't match any tilesets
+
 ; Used by instruction list $AED8: PLM $B6F7 (unused)
 $84:A255             dw 8002, 2330, 2350,
                         0000
@@ -4336,6 +4343,8 @@ $84:A26D             dw 8002, 2333, 2353,
 
 ;;; $A275..B4: PLM $B6FB (unused) ;;;
 {
+; 2x2 version of $A255
+
 ; Used by instruction list $AF1E: PLM $B6FB (unused)
 $84:A275             dx 8002, 2330, 2350,
                         FF, 00,
@@ -4475,34 +4484,42 @@ $84:A303             dw 0001, B050,
 $84:A309             dw 0001, B051,
                         0000
 
+; Item frame 0 - item GFX index 0
 ; Used by instruction $E04F: Draw item frame 0
 $84:A30F             dw 0001, B08E,
                         0000
 
+; Item frame 1 - item GFX index 0
 ; Used by instruction $E04F: Draw item frame 1
 $84:A315             dw 0001, B08F,
                         0000
 
+; Item frame 0 - item GFX index 1
 ; Used by instruction $E04F: Draw item frame 0
 $84:A31B             dw 0001, B090,
                         0000
 
+; Item frame 1 - item GFX index 1
 ; Used by instruction $E04F: Draw item frame 1
 $84:A321             dw 0001, B091,
                         0000
 
+; Item frame 0 - item GFX index 2
 ; Used by instruction $E04F: Draw item frame 0
 $84:A327             dw 0001, B092,
                         0000
 
+; Item frame 1 - item GFX index 2
 ; Used by instruction $E04F: Draw item frame 1
 $84:A32D             dw 0001, B093,
                         0000
 
+; Item frame 0 - item GFX index 3
 ; Used by instruction $E04F: Draw item frame 0
 $84:A333             dw 0001, B094,
                         0000
 
+; Item frame 1 - item GFX index 3
 ; Used by instruction $E04F: Draw item frame 1
 $84:A339             dw 0001, B095,
                         0000
@@ -4518,11 +4535,11 @@ $84:A33F             dw 0001, 8052,
 {
 ; Used by instruction lists:
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
-;     $C92E: PLM $D028 (unused)
+;     $C92E: PLM $D028 (unused. Respawning screw attack block)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
 ;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
-;     $C9BA: PLM $D02C (unused)
+;     $C9BA: PLM $D02C (unused. Screw attack block)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
 ;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
@@ -4543,11 +4560,11 @@ $84:A345             dw 0001, 0053,
 
 ; Used by instruction lists:
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
-;     $C92E: PLM $D028 (unused)
+;     $C92E: PLM $D028 (unused. Respawning screw attack block)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
 ;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
-;     $C9BA: PLM $D02C (unused)
+;     $C9BA: PLM $D02C (unused. Screw attack block)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
 ;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
@@ -4568,11 +4585,11 @@ $84:A34B             dw 0001, 0054,
 
 ; Used by instruction lists:
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
-;     $C92E: PLM $D028 (unused)
+;     $C92E: PLM $D028 (unused. Respawning screw attack block)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
 ;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
-;     $C9BA: PLM $D02C (unused)
+;     $C9BA: PLM $D02C (unused. Screw attack block)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
 ;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
@@ -4593,11 +4610,11 @@ $84:A351             dw 0001, 0055,
 
 ; Used by instruction lists:
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
-;     $C92E: PLM $D028 (unused)
+;     $C92E: PLM $D028 (unused. Respawning screw attack block)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
 ;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
-;     $C9BA: PLM $D02C (unused)
+;     $C9BA: PLM $D02C (unused. Screw attack block)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
 ;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
@@ -5797,6 +5814,8 @@ $84:AAE3             dw 86BC    ; Delete
 }
 
 
+;;; $AAE5..AB11: Access to Tourian elevator ;;;
+{
 ;;; $AAE5: Instruction list - PLM $B773 (crumble access to Tourian elevator) ;;;
 {
 $84:AAE5             dx 874E,06     ; Timer = 6
@@ -5830,8 +5849,11 @@ $84:AB0B 60          RTS
 $84:AB0C             dw 0001,92C7,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AB12..6C: Spore Spawn ;;;
+{
 ;;; $AB12: Instruction list - PLM $B78F (crumble Spore Spawn ceiling) ;;;
 {
 $84:AB12             dx 8C10,0A     ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumble)
@@ -5846,8 +5868,11 @@ $84:AB12             dx 8C10,0A     ; Queue sound Ah, sound library 2, max queue
 $84:AB21             dw 0004,9413,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AB27..6C: Botwoon ;;;
+{
 ;;; $AB27: RTS. Setup - PLM $B797 (clear Botwoon wall) ;;;
 {
 $84:AB27 60          RTS
@@ -5908,8 +5933,11 @@ $84:AB66 60          RTS
 $84:AB67             dw 0001,930F,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AB6D..E2: Kraid ;;;
+{
 ;;; $AB6D: Instruction list - PLM $B7A3 (crumble Kraid ceiling block into background 1) ;;;
 {
 $84:AB6D             dw 0003,9367,
@@ -5995,10 +6023,14 @@ $84:ABDC 60          RTS
 $84:ABDD             dw 0001,93BF,
                         86BC        ; Delete
 }
+}
 
 
+;;; $ABE3..AC88: Mother Brain ;;;
+{
 ;;; $ABE3: Instruction list - PLM $B65F (unused) ;;;
 {
+; Matches the level data of a zebetite
 $84:ABE3             dw 0001,9453,
                         86BC        ; Delete
 }
@@ -6006,6 +6038,7 @@ $84:ABE3             dw 0001,9453,
 
 ;;; $ABE9: Instruction list - PLM $B663 (unused) ;;;
 {
+; Solid version of $B65F
 $84:ABE9             dw 0001,9463,
                         86BC        ; Delete
 }
@@ -6013,20 +6046,21 @@ $84:ABE9             dw 0001,9463,
 
 ;;; $ABEF: Instruction list - PLM $B667 (unused) ;;;
 {
+; Open escape gate that becomes closed after 18h frames
 $84:ABEF             dw 0018,9473
 $84:ABF3             dw 0001,948B,
                         86BC        ; Delete
 }
 
 
-;;; $ABF9: Instruction list - PLM $B66B (unused) ;;;
+;;; $ABF9: Instruction list - PLM $B66B (unused. Blank air) ;;;
 {
 $84:ABF9             dw 0001,9497,
                         86BC        ; Delete
 }
 
 
-;;; $ABFF: Instruction list - PLM $B66F (unused) ;;;
+;;; $ABFF: Instruction list - PLM $B66F (unused. Blank solid) ;;;
 {
 $84:ABFF             dw 0001,949D,
                         86BC        ; Delete
@@ -6131,14 +6165,14 @@ $84:AC53             dw 0001,964F,
 }
 
 
-;;; $AC59: Instruction list - PLM $B6AB (unused) ;;;
+;;; $AC59: Instruction list - PLM $B6AB (unused. Mother Brain's background row Eh) ;;;
 {
 $84:AC59             dw 0001,966D,
                         86BC        ; Delete
 }
 
 
-;;; $AC5F: Instruction list - PLM $B6AF (unused) ;;;
+;;; $AC5F: Instruction list - PLM $B6AF (unused. Mother Brain's background row Fh) ;;;
 {
 $84:AC5F             dw 0001,968B,
                         86BC        ; Delete
@@ -6185,8 +6219,11 @@ $84:AC7D             dw 0001,96EF,
 $84:AC83             dw 0001,9703,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AC89..AD37: Plant ;;;
+{
 ;;; $AC89: Pre-instruction - position Samus and give at least 10h frames of invincibility ;;;
 {
 ;; Parameter:
@@ -6270,8 +6307,11 @@ $84:ACFF             dx 0005,9EED,
                         0001,9E99,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AD38..61: Wrecked Ship entrance treadmill from west ;;;
+{
 ;;; $AD38: Instruction list - PLM $B64B (Wrecked Ship entrance treadmill from west) ;;;
 {
 $84:AD38             dx 880E,01,AD3F,   ; Go to $AD3F if any of the boss bits 1 are set
@@ -6308,8 +6348,11 @@ $84:AD58 20 D6 82    JSR $82D6  [$84:82D6]
 $84:AD5B             dw 30FF, 0009, 0038
 $84:AD61 60          RTS
 }
+}
 
 
+;;; $AD62..AED5: Map/refill station ;;;
+{
 ;;; $AD62: Instruction list - PLM $B6D3 (map station) ;;;
 {
 $84:AD62             dx 8A24,AD76   ; Link instruction = $AD76
@@ -6486,10 +6529,12 @@ $84:AED1 B9 00 00    LDA $0000,y            ;\
 $84:AED4 A8          TAY                    ;} Y = [[Y]]
 $84:AED5 60          RTS
 }
+}
 
 
 ;;; $AED6: Instruction list - PLM $B6F7 (unused) ;;;
 {
+; Unknown. 4 frame animation loop of 1x2 spike air blocks, tile numbers don't match any tilesets
 $84:AED6             dw 86BC        ; Delete
 $84:AED8             dw 0010,A255,
                         0010,A25D,
@@ -6513,6 +6558,7 @@ $84:AED8             dw 0010,A255,
 
 ;;; $AF1C: Instruction list - PLM $B6FB (unused) ;;;
 {
+; 2x2 version of $B6F7
 $84:AF1C             dw 86BC        ; Delete
 $84:AF1E             dw 0010,A275,
                         0010,A285,
@@ -6534,6 +6580,8 @@ $84:AF1E             dw 0010,A275,
 }
 
 
+;;; $AF62..AFB5: Scroll PLM ;;;
+{
 ;;; $AF62: Debug. Scroll PLM draw instructions ;;;
 {
 ; Used by instruction list $AF86: PLM $B703 (scroll PLM)
@@ -6606,6 +6654,7 @@ $84:AFAA             dx 0001,AF7A,
 $84:AFB0             dx 0001,AF80,
                         86BC        ; Delete
 }
+}
 
 
 ;;; $AFB6: Instruction list - PLM $B70B (elevator platform) ;;;
@@ -6618,6 +6667,8 @@ $84:AFB6             dx 0004,AA97,
 }
 
 
+;;; $AFCA..E7: Crocomire ;;;
+{
 ;;; $AFCA: Instruction list - PLM $B747 (clear Crocomire's bridge) ;;;
 {
 $84:AFCA             dx 0001,9B5B,
@@ -6651,8 +6702,11 @@ $84:AFDC             dx 0001,9B7F,
 $84:AFE2             dx 0001,9BBB,
                         86BC        ; Delete
 }
+}
 
 
+;;; $AFE8..B03D: Save station ;;;
+{
 ;;; $AFE8: Instruction list - PLM $B76F (save station) ;;;
 {
 $84:AFE8             dx 0001,9A3F,
@@ -6705,6 +6759,7 @@ $84:B033 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:B037 A9 01 00    LDA #$0001             ;\
 $84:B03A 8D 75 1E    STA $1E75  [$7E:1E75]  ;} Save station lockout flag = 1
 $84:B03D 60          RTS
+}
 }
 
 
@@ -6899,13 +6954,15 @@ $84:B145 60          RTS
 }
 
 
+;;; $B146..B332: Map/refill station ;;;
+{
 ;;; $B146: Activate the station at block index [A] if Samus arm cannon is lined up ;;;
 {
 ;; Parameters:
 ;;     A: Block index
 ;;     Y: PLM index
 ;; Returns:
-;;     Carry: Set
+;;     Carry: Set. Unconditional collision
 $84:B146 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
@@ -7201,8 +7258,11 @@ $84:B32E 99 37 1C    STA $1C37,y[$7E:1C81]  ;} PLM ID = 0
 $84:B331 38          SEC                    ;\
 $84:B332 60          RTS                    ;} Return carry set
 }
+}
 
 
+;;; $B333..65: Extension ;;;
+{
 ;;; $B333: Delete PLM ;;;
 {
 ;; Parameters:
@@ -7263,10 +7323,15 @@ $84:B35E A9 01 D0    LDA #$D001
 $84:B361 20 B4 82    JSR $82B4  [$84:82B4]
 $84:B364 80 CD       BRA $CD    [$B333]
 }
+}
 
 
+;;; $B366..C0: Scroll PLMs ;;;
+{
 ;;; $B366: Skip debug draw instruction for scroll PLMs ;;;
 {
+;; Parameters:
+;;     Y: PLM index
 $84:B366 B9 27 1D    LDA $1D27,y[$7E:1D75]  ;\
 $84:B369 18          CLC                    ;|
 $84:B36A 69 04 00    ADC #$0004             ;} PLM instruction list pointer += 4
@@ -7336,6 +7401,7 @@ $84:B3B9 A9 01 00    LDA #$0001             ;\
 $84:B3BC 9F 1C DE 7E STA $7EDE1C,x[$7E:DE60];} PLM instruction timer = 1
 
 $84:B3C0 60          RTS
+}
 }
 
 
@@ -7407,6 +7473,8 @@ $84:B407 60          RTS
 }
 
 
+;;; $B408..B550: Quicksand ;;;
+{
 ;;; $B408: Setup - PLM $B713 / $B717 / $B71B (inside reaction, special air, BTS Maridia 80h/81h/82h. Quicksand surface) ;;;
 {
 $84:B408 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; Samus running momentum flag = 0
@@ -7439,7 +7507,7 @@ $84:B43F             dw B447, B45A, B47B, B447
 ;;; $B447: Inside reaction - quicksand surface - Samus is grounded ;;;
 {
 ;; Parameters:
-;;     A: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
+;;     Y: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
 $84:B447 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $84:B44A 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $84:B44D 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ;\
@@ -7454,7 +7522,7 @@ $84:B459 60          RTS
 ;;; $B45A: Inside reaction - quicksand surface - Samus is moving up ;;;
 {
 ;; Parameters:
-;;     A: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
+;;     Y: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
 $84:B45A B9 93 B4    LDA $B493,y[$84:B495]  ;\
 $84:B45D CD 2D 0B    CMP $0B2D  [$7E:0B2D]  ;} If [$B493 + [Y]] < [Samus Y speed] / 100h:
 $84:B460 B0 0C       BCS $0C    [$B46E]     ;/
@@ -7474,7 +7542,7 @@ $84:B47A 60          RTS
 ;;; $B47B: Inside reaction - quicksand surface - Samus is moving down ;;;
 {
 ;; Parameters:
-;;     A: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
+;;     Y: Quicksand physics table index. 0 = without gravity suit, 2 = with gravity suit
 $84:B47B 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ;\
 $84:B47E 9C 5C 0B    STZ $0B5C  [$7E:0B5C]  ;|
 $84:B481 B9 8B B4    LDA $B48B,y[$84:B48D]  ;} Extra Samus Y displacement = [$B48B + [Y]] / 100h
@@ -7666,6 +7734,7 @@ $84:B54E 60          RTS                    ;} Return carry clear
 $84:B54F 18          CLC
 $84:B550 60          RTS
 }
+}
 
 
 ;;; $B551: Setup - PLM $B763 (clear Shitroid invisible wall) ;;;
@@ -7838,11 +7907,11 @@ $84:B64F             dw B04A,AD4D   ; Wrecked Ship entrance treadmill from east
 $84:B653             dw B3CF,AAE3   ; Inside reaction, special air, BTS Norfair 80h. Nothing
 $84:B657             dw B3CF,AAE3   ; Inside reaction, special air, BTS Norfair 81h. Nothing
 $84:B65B             dw B3CF,AAE3   ; Inside reaction, special air, BTS Norfair 82h. Nothing
-$84:B65F             dw B3C1,ABE3   ; Unused
-$84:B663             dw B3C1,ABE9   ; Unused
-$84:B667             dw B3C1,ABEF   ; Unused
-$84:B66B             dw B3C1,ABF9   ; Unused
-$84:B66F             dw B3C1,ABFF   ; Unused
+$84:B65F             dw B3C1,ABE3   ; Unused. Draws a column 1AFB,00FF,00FF,12FB centred around PLM. Matches the level data of a zebetite
+$84:B663             dw B3C1,ABE9   ; Unused. Draws a column 8AFB,80FF,80FF,82FB centred around PLM. Solid version of $B65F
+$84:B667             dw B3C1,ABEF   ; Unused. Open escape gate that becomes closed after 18h frames
+$84:B66B             dw B3C1,ABF9   ; Unused. Blank air
+$84:B66F             dw B3C1,ABFF   ; Unused. Blank solid
 $84:B673             dw B3C1,AC05   ; Fill Mother Brain's wall
 $84:B677             dw B5F8,AC0B   ; Mother Brain's room escape door
 $84:B67B             dw B3C1,AC11   ; Mother Brain's background row 2
@@ -7857,8 +7926,8 @@ $84:B69B             dw B3C1,AC41   ; Mother Brain's background row Ah
 $84:B69F             dw B3C1,AC47   ; Mother Brain's background row Bh
 $84:B6A3             dw B3C1,AC4D   ; Mother Brain's background row Ch
 $84:B6A7             dw B3C1,AC53   ; Mother Brain's background row Dh
-$84:B6AB             dw B3C1,AC59   ; Unused
-$84:B6AF             dw B3C1,AC5F   ; Unused
+$84:B6AB             dw B3C1,AC59   ; Unused. Mother Brain's background row Eh
+$84:B6AF             dw B3C1,AC5F   ; Unused. Mother Brain's background row Fh
 $84:B6B3             dw B3C1,AC65   ; Clear ceiling block in Mother Brain's room
 $84:B6B7             dw B3C1,AC6B   ; Clear ceiling tube in Mother Brain's room
 $84:B6BB             dw B3C1,AC71   ; Clear Mother Brain's bottom-middle-side tube
@@ -7876,22 +7945,22 @@ $84:B6E7             dw B29D,AE13   ; Collision reaction, special, BTS 4Ah. Ener
 $84:B6EB             dw B245,AE4C   ; Missile station
 $84:B6EF             dw B2D0,AE7B   ; Collision reaction, special, BTS 4Bh. Missile station right access
 $84:B6F3             dw B300,AE9D   ; Collision reaction, special, BTS 4Ch. Missile station left access
-$84:B6F7             dw B3C1,AED6   ; Unused
-$84:B6FB             dw B3C1,AF1C   ; Unused
+$84:B6F7             dw B3C1,AED6   ; Unused. Unknown. 4 frame animation loop of 1x2 spike air blocks, tile numbers don't match any tilesets
+$84:B6FB             dw B3C1,AF1C   ; Unused. 2x2 version of $B6F7
 $84:B6FF             dw B393,AAE3   ; Collision reaction, special, BTS 46h / inside reaction, special air, BTS 46h. Scroll PLM trigger
 $84:B703             dw B371,AF86   ; Scroll PLM
 $84:B707             dw B382,AF92   ; Unused. Solid scroll PLM
 $84:B70B             dw B3C1,AFB6   ; Elevator platform
 $84:B70F             dw B3EB,AAE3   ; Inside reaction, special air, BTS Crateria/Debug 80h
 $84:B713             dw B408,AAE3   ; Inside reaction, special air, BTS Maridia 80h/81h/82h. Quicksand surface
-$84:B717             dw B408,AAE3   ; Unused. Clone of PLM B713
-$84:B71B             dw B408,AAE3   ; Unused. Clone of PLM B713
+$84:B717             dw B408,AAE3   ; Unused. Clone of PLM $B713
+$84:B71B             dw B408,AAE3   ; Unused. Clone of PLM $B713
 $84:B71F             dw B497,AAE3   ; Inside reaction, special air, BTS Maridia 83h. Submerging quicksand
 $84:B723             dw B4A8,AAE3   ; Inside reaction, special air, BTS Maridia 84h. Sand falls - slow
 $84:B727             dw B4B6,AAE3   ; Inside reaction, special air, BTS Maridia 85h. Sand falls - fast
 $84:B72B             dw B4C4,AAE3   ; Collision reaction, special, BTS Maridia 80h/81h/82h. Quicksand surface
-$84:B72F             dw B4C4,AAE3   ; Unused
-$84:B733             dw B4C4,AAE3   ; Unused
+$84:B72F             dw B4C4,AAE3   ; Unused. Clone of PLM $B72B
+$84:B733             dw B4C4,AAE3   ; Unused. Clone of PLM $B72B
 $84:B737             dw B541,AAE3   ; Collision reaction, special, BTS Maridia 83h. Submerging quicksand
 $84:B73B             dw B54F,AAE3   ; Collision reaction, special, BTS Maridia 84h. Sand falls - slow
 $84:B73F             dw B54F,AAE3   ; Collision reaction, special, BTS Maridia 85h. Sand falls - fast
@@ -7945,7 +8014,7 @@ $84:B7BF             dw B3C1,ABA9   ; Crumble Kraid spike blocks
 }
 
 
-;;; $B7C3..BC12: Misc. ;;;
+;;; $B7C3..EE: Enable sounds in 20h frames, or F0h frames if on Ceres ;;;
 {
 ;;; $B7C3: Setup - PLM $B7EB (enable sounds in 20h frames, or F0h frames if on Ceres) ;;;
 {
@@ -7991,8 +8060,11 @@ $84:B7E9             dw 86B4        ; Sleep
 {
 $84:B7EB             dw B7C3,B7E9
 }
+}
 
 
+;;; $B7EF..B8AF: Speed booster escape ;;;
+{
 ;;; $B7EF: Pre-instruction - wake PLM and start lavaquake if speed booster collected ;;;
 {
 ;; Parameter:
@@ -8117,8 +8189,11 @@ $84:B8AB 60          RTS
 {
 $84:B8AC             dw B89C,B88A
 }
+}
 
 
+;;; $B8B0..EE: Shaktool's room ;;;
+{
 ;;; $B8B0: Pre-instruction - Shaktool's room ;;;
 {
 ;; Parameter:
@@ -8165,8 +8240,11 @@ $84:B8EA 60          RTS
 {
 $84:B8EB             dw B8DC,B8D6
 }
+}
 
 
+;;; $B8EF..FC: Maridia elevatube ;;;
+{
 ;;; $B8EF: RTS. Setup - PLM $B8F9 (Maridia elevatube) ;;;
 {
 $84:B8EF 60          RTS
@@ -8188,13 +8266,15 @@ $84:B8F0             dx 0010,9367,
 ; This PLM effectively does nothing
 $84:B8F9             dw B8EF,B8F0
 }
+}
 
 
+;;; $B8FD..B96B: Escape ;;;
+{
 ;;; $B8FD: Wake PLM if Samus is below and right of target position ;;;
 {
-;; Parameter:
-;;     X: PLM index
 ;; Parameters:
+;;     X: PLM index
 ;;     $12: Target X position
 ;;     $14: Target Y position
 $84:B8FD A5 12       LDA $12    [$7E:0012]  ;\
@@ -8278,8 +8358,11 @@ $84:B964             dw B3C1,B919
 {
 $84:B968             dw B3C1,B940
 }
+}
 
 
+;;; $B96C..77: Gate block ;;;
+{
 ;;; $B96C: Setup - PLM $B974 (shot/bombed/grappled reaction, shootable, BTS 10h. Gate block) ;;;
 {
 $84:B96C 64 26       STZ $26    [$7E:0026]  ; Remaining number of blocks left to check - 1 = 0 (don't check any more blocks)
@@ -8293,8 +8376,11 @@ $84:B973 60          RTS
 {
 $84:B974             dw B96C,AAE3
 }
+}
 
 
+;;; $B978..F0: Critters escape block ;;;
+{
 ;;; $B978: Setup - PLM $B9C1 (shot/bombed/grappled reaction, shootable, BTS 4Fh. Critters escape block) ;;;
 {
 ;; Parameters:
@@ -8377,8 +8463,11 @@ $84:B9EC 60          RTS
 {
 $84:B9ED             dw B9C5,AAE3
 }
+}
 
 
+;;; $B9F1..4B: Turn Ceres elevator door to solid blocks during escape ;;;
+{
 ;;; $B9F1: Setup - PLM $BA48 (turn Ceres elevator door to solid blocks during escape) ;;;
 {
 ;; Parameters:
@@ -8424,8 +8513,11 @@ $84:BA47 60          RTS
 {
 $84:BA48             dw B9F1,AAE3
 }
+}
 
 
+;;; $BA4C..F9: Bomb Torizo grey door ;;;
+{
 ;;; $BA4C: Instruction list - closing - PLM $BAF4 (Bomb Torizo grey door) ;;;
 {
 $84:BA4C             dx 0002,A683,
@@ -8488,6 +8580,9 @@ $84:BABC             dx 8C19,07,        ; Queue sound 7, sound library 3, max qu
 
 ;;; $BAD1: Unused. Setup ;;;
 {
+;; Parameters:
+;;     Y: PLM index
+
 ; Would be the setup for the Bomb Torizo grey door, just the same as the generic grey door setup, but with a hard coded grey door type
 $84:BAD1 B9 C8 1D    LDA $1DC8,y            ;\
 $84:BAD4 29 7C 00    AND #$007C             ;} Residual copy+pasted code from grey door setup
@@ -8509,8 +8604,11 @@ $84:BAF3 60          RTS
 {
 $84:BAF4             dw C794,BA7F,BA4C  ; Door. Bomb Torizo grey door
 }
+}
 
 
+;;; $BAFA..BB08: Wrecked Ship attic ;;;
+{
 ;;; $BAFA: Setup - PLM $BB05 (Wrecked Ship attic) ;;;
 {
 $84:BAFA E2 20       SEP #$20
@@ -8530,8 +8628,11 @@ $84:BAFF             dx 86C1,BAFA,  ; Pre-instruction = setup
 {
 $84:BB05             dw BAFA,BAFF
 }
+}
 
 
+;;; $BB09..33: Clear Crateria mainstreet escape passage if critters escaped ;;;
+{
 ;;; $BB09: Setup - PLM $BB30 (clear Crateria mainstreet escape passage if critters escaped) ;;;
 {
 ;; Parameters:
@@ -8571,8 +8672,13 @@ $84:BB2F 60          RTS
 {
 $84:BB30             dw BB09,BB19
 }
+}
 
 
+;;; $BB34..C8D3: Gates/doors ;;;
+{
+;;; $BB34..51: Escape gate ;;;
+{
 ;;; $BB34: Instruction list - door $C8CA (gate that closes during escape in room after Mother Brain) ;;;
 {
 $84:BB34             dx 0006,948B,
@@ -8582,6 +8688,7 @@ $84:BB34             dx 0006,948B,
 
 ;;; $BB3A: Unused. Instruction list ;;;
 {
+; Half-closed escape gate that becomes open after 6 frames
 $84:BB3A             dx 0006,947F,
                         005E,9473,
                         86BC        ; Delete
@@ -8595,8 +8702,13 @@ $84:BB44             dx 0002,9473,
                         0002,948B,
                         86BC        ; Delete
 }
+}
 
 
+;;; $BB52..BD0E: Gates ;;;
+{
+;;; $BB52..DC: Pre-instructions ;;;
+{
 ;;; $BB52: Pre-instruction - wake PLM if triggered ;;;
 {
 ;; Parameter:
@@ -8685,8 +8797,11 @@ $84:BBD9 9D D7 1C    STA $1CD7,x            ;} PLM pre-instruction = RTS
 
 $84:BBDC 60          RTS
 }
+}
 
 
+;;; $BBDD..BC12: Instructions ;;;
+{
 ;;; $BBDD: Instruction - clear trigger ;;;
 {
 ;; Parameters:
@@ -8928,8 +9043,11 @@ $84:BD09             dx 0001,A66F,
                         86BC        ; Delete
 }
 }
+}
 
 
+;;; $BD0F..C54C: Doors ;;;
+{
 ;;; $BD0F..BE58: Pre-instructions ;;;
 {
 ;;; $BD0F: Pre-instruction - go to link instruction if shot ;;;
@@ -9030,6 +9148,8 @@ $84:BDB1 60          RTS
 }
 
 
+;;; $BDB2..BE58: Grey door ;;;
+{
 ;;; $BDB2: Go to link instruction ;;;
 {
 ;; Parameter:
@@ -9168,6 +9288,7 @@ $84:BE49 7A          PLY
 $84:BE4A 60          RTS
 
 $84:BE4B             dw BDD4, BDE3, BDF2, BE01, BE1C, BE1F, BE30
+}
 }
 }
 
@@ -9868,9 +9989,12 @@ $84:C544             dx 8AF1,43,        ; PLM BTS = 43h
                         86BC            ; Delete
 }
 }
+}
 
 
 ;;; $C54D..C805: Setups ;;;
+{
+;;; $C54D..C669: Gate trigger ;;;
 {
 ;;; $C54D: Setup - PLM $C806 (shot/bombed/grappled reaction, shootable, BTS 4Ah. Left green gate trigger) ;;;
 {
@@ -10030,6 +10154,8 @@ $84:C63E 60          RTS
 
 ;;; $C63F: Trigger PLM of block to the right ;;;
 {
+;; Parameters:
+;;     Y: PLM index
 $84:C63F B9 87 1C    LDA $1C87,y[$7E:1CD3]
 $84:C642 1A          INC A
 $84:C643 1A          INC A
@@ -10039,6 +10165,8 @@ $84:C644 4C 4C C6    JMP $C64C  [$84:C64C]
 
 ;;; $C647: Trigger PLM of block to the left ;;;
 {
+;; Parameters:
+;;     Y: PLM index
 $84:C647 B9 87 1C    LDA $1C87,y[$7E:1CD3]
 $84:C64A 3A          DEC A
 $84:C64B 3A          DEC A
@@ -10047,6 +10175,9 @@ $84:C64B 3A          DEC A
 
 ;;; $C64C: Trigger PLM at block index [A] ;;;
 {
+;; Parameters:
+;;     A: Block index
+;;     Y: PLM index
 $84:C64C A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
@@ -10068,8 +10199,11 @@ $84:C665 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:C668 38          SEC
 $84:C669 60          RTS
 }
+}
 
 
+;;; $C66A..DF: Gate ;;;
+{
 ;;; $C66A: Give 5-block column below PLM BTS 10h ;;;
 {
 ;; Parameters:
@@ -10180,8 +10314,11 @@ $84:C6DB 60          RTS
 $84:C6DC 20 94 C6    JSR $C694  [$84:C694]  ; Give 5-block column above PLM BTS 10h
 $84:C6DF 60          RTS
 }
+}
 
 
+;;; $C6E0..C793: Gate shotblock ;;;
+{
 ;;; $C6E0: Setup - PLM $C836 (downwards gate shotblock) ;;;
 {
 ;; Parameters:
@@ -10260,8 +10397,11 @@ $84:C764             dw BCDF, BCE5, BCEB, BCF1, BCF7, BCFD, BD03, BD09  ; Instru
 $84:C774             dw C046, 0000, C048, 0000, C04A, 0000, C04C, 0000  ; Block type / BTS for block to the left
 $84:C784             dw 0000, C047, 0000, C049, 0000, C04B, 0000, C04D  ; Block type / BTS for block to the right
 }
+}
 
 
+;;; $C794..C805: Door ;;;
+{
 ;;; $C794: Setup - door $BAF4/$C842/$C848/$C84E/$C854 (grey door) ;;;
 {
 ;; Parameters:
@@ -10341,6 +10481,7 @@ $84:C802 9D 77 1D    STA $1D77,x[$7E:1DC3]  ;/
 $84:C805 60          RTS
 }
 }
+}
 
 
 ;;; $C806: PLM entries ;;;
@@ -10387,8 +10528,11 @@ $84:C8C6             dw B3C1,C531       ; Blue door closing facing down
 $84:C8CA             dw B3C1,BB34,BB44  ; Door. Gate that closes during escape in room after Mother Brain
 $84:C8D0             dw B3C1,BB44       ; PLM version of the above
 }
+}
 
 
+;;; $C8D4..D0EB: Block reactions ;;;
+{
 ;;; $C8D4..CDC1: Instruction lists ;;;
 {
 ;;; $C8D4: Instruction list - PLM $CFEC (unused. Draws 1x1 shot block) ;;;
@@ -10449,6 +10593,7 @@ $84:C8FE             dx 0001,A4B1,
 
 ;;; $C904: Instruction list - PLM $D00C (unused) ;;;
 {
+; Draws 1x1 bomb block
 $84:C904             dx 0001,A4C1,
                         86BC            ; Delete
 }
@@ -10456,6 +10601,7 @@ $84:C904             dx 0001,A4C1,
 
 ;;; $C90A: Instruction list - PLM $D010 (unused) ;;;
 {
+; Draws 1x2 bomb block
 $84:C90A             dx 0001,A4C7,
                         86BC            ; Delete
 }
@@ -10463,6 +10609,7 @@ $84:C90A             dx 0001,A4C7,
 
 ;;; $C910: Instruction list - PLM $D014 (unused) ;;;
 {
+; Draws 2x1 bomb block
 $84:C910             dx 0001,A4CF,
                         86BC            ; Delete
 }
@@ -10470,19 +10617,20 @@ $84:C910             dx 0001,A4CF,
 
 ;;; $C916: Instruction list - PLM $D018 (unused) ;;;
 {
+; Draws 2x2 bomb block
 $84:C916             dx 0001,A4D7,
                         86BC            ; Delete
 }
 
 
-;;; $C91C: Instruction list - PLM $D01C (unused) / power bomb block bombed ;;;
+;;; $C91C: Instruction list - power bomb block bombed / PLM $D01C (unused) ;;;
 {
 $84:C91C             dx 0001,A4E7,
                         86BC            ; Delete
 }
 
 
-;;; $C922: Instruction list - PLM $D020 (unused) / super missile block bombed ;;;
+;;; $C922: Instruction list - super missile block bombed / PLM $D020 (unused) ;;;
 {
 $84:C922             dx 0001,A4ED,
                         86BC            ; Delete
@@ -10496,7 +10644,7 @@ $84:C928             dx 0001,A4F3,
 }
 
 
-;;; $C92E: Instruction list - PLM $D028 (unused) ;;;
+;;; $C92E: Instruction list - PLM $D028 (unused. Respawning screw attack block) ;;;
 {
 $84:C92E             dx 8C10,06,        ; Queue sound 6, sound library 2, max queued sounds allowed = 6 (block destroyed by contact damage)
                         0004,A345,
@@ -10556,8 +10704,9 @@ $84:C997             dx 8C7C,06,        ; Queue sound 6, sound library 2, max qu
 }
 
 
-;;; $C9BA: Instruction list - PLM $D02C (unused) ;;;
+;;; $C9BA: Instruction list - PLM $D02C (unused. Screw attack block) ;;;
 {
+; Even slower version of $C9CF
 $84:C9BA             dx 8C10,06,        ; Queue sound 6, sound library 2, max queued sounds allowed = 6 (block destroyed by contact damage)
                         0004,A345,
                         0004,A34B,
@@ -11085,6 +11234,8 @@ $84:CD6A             dx 00F0,A4F9,
 
 ;;; $CD93: PLM BTS = 1 ;;;
 {
+;; Parameters:
+;;     X: PLM index
 $84:CD93 DA          PHX
 $84:CD94 BD 87 1C    LDA $1C87,x[$7E:1CD5]
 $84:CD97 4A          LSR A
@@ -11113,7 +11264,7 @@ $84:CDA9             dx 0078,A4F9,
 
 ;;; $CDC2..CFEB: Setups ;;;
 {
-;;; $CDC2: Setup - PLM $D028/$D02C (unused) ;;;
+;;; $CDC2: Setup - PLM $D028/$D02C (unused. (Respawning) screw attack block) ;;;
 {
 ;; Parameters:
 ;;     Y: PLM index
@@ -11450,7 +11601,7 @@ $84:CFEB 60          RTS                    ;/
 }
 
 
-;;; $CFEC..D13E: PLM entries ;;;
+;;; $CFEC..D0EB: PLM entries ;;;
 {
 $84:CFEC             dw CFA0,C8D4   ; Unused. Draws 1x1 shot block
 $84:CFF0             dw CFA0,C8DA   ; Unused. Draws 1x2 shot block
@@ -11460,19 +11611,19 @@ $84:CFFC             dw CFA0,C8EC   ; Bomb reaction, special block, BTS 0/4. 1x1
 $84:D000             dw CFA0,C8F2   ; Bomb reaction, special block, BTS 1/5. 2x1 (respawning) crumble block
 $84:D004             dw CFA0,C8F8   ; Bomb reaction, special block, BTS 2/6. 1x2 (respawning) crumble block
 $84:D008             dw CFA0,C8FE   ; Bomb reaction, special block, BTS 3/7. 2x2 (respawning) crumble block
-$84:D00C             dw CFA0,C904   ; Unused
-$84:D010             dw CFA0,C90A   ; Unused
-$84:D014             dw CFA0,C910   ; Unused
-$84:D018             dw CFA0,C916   ; Unused
-$84:D01C             dw CFA0,C91C   ; Unused
-$84:D020             dw CFA0,C922   ; Unused
+$84:D00C             dw CFA0,C904   ; Unused. Draws 1x1 bomb block
+$84:D010             dw CFA0,C90A   ; Unused. Draws 1x2 bomb block
+$84:D014             dw CFA0,C910   ; Unused. Draws 2x1 bomb block
+$84:D018             dw CFA0,C916   ; Unused. Draws 2x2 bomb block
+$84:D01C             dw CFA0,C91C   ; Unused. Draws power bomb block
+$84:D020             dw CFA0,C922   ; Unused. Draws super missile block
 $84:D024             dw CFA0,C928   ; Bomb reaction, special block, BTS Eh/Fh / Brinstar 82h/83h/84h/85h. Speed block
-$84:D028             dw CDC2,C92E   ; Unused
-$84:D02C             dw CDC2,C9BA   ; Unused
-$84:D030             dw CDEA,C951   ; Collision reaction, special, BTS Brinstar 82h
-$84:D034             dw CDEA,C9CF   ; Collision reaction, special, BTS Brinstar 83h
+$84:D028             dw CDC2,C92E   ; Unused. Respawning screw attack block
+$84:D02C             dw CDC2,C9BA   ; Unused. Screw attack block
+$84:D030             dw CDEA,C951   ; Collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation
+$84:D034             dw CDEA,C9CF   ; Collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation
 $84:D038             dw CDEA,C974   ; Collision reaction, special, BTS Eh. Respawning speed block
-$84:D03C             dw CDEA,C997   ; Collision reaction, special, BTS Brinstar 84h. Respawning speed block (used by dachora pit)
+$84:D03C             dw CDEA,C997   ; Collision reaction, special, BTS Brinstar 84h. Respawning speed block
 $84:D040             dw CDEA,C9E4   ; Collision reaction, special, BTS Fh / Brinstar 85h. Speed block
 $84:D044             dw CE37,C9F9   ; Collision reaction, special, BTS 0. 1x1 respawning crumble block
 $84:D048             dw CE37,CA1C   ; Collision reaction, special, BTS 1. 2x1 respawning crumble block
@@ -11516,8 +11667,12 @@ $84:D0DC             dw CFB5,CD6A   ; Grappled reaction, grapple block, BTS 1. R
 $84:D0E0             dw CFB5,CDA9   ; Grappled reaction, grapple block, BTS 2. Breakable grapple block
 $84:D0E4             dw CFD1,CD68   ; Grappled reaction, generic spike block
 $84:D0E8             dw CFD5,CD68   ; Grappled reaction, spike block, BTS 3. Draygon's broken turret
+}
+}
 
 
+;;; $D0EC..F5: Blue Brinstar face-block (unused) ;;;
+{
 ;;; $D0EC: Instruction list - PLM $D0F2 (unused. Blue Brinstar face-block) ;;;
 {
 $84:D0EC             dx 0001,924D,
@@ -11525,9 +11680,15 @@ $84:D0EC             dx 0001,924D,
 }
 
 
-$84:D0F2             dw B3C1,D0EC   ; Unused. Blue Brinstar face-block
+;;; $D0F2: Unused. PLM entry - Blue Brinstar face-block ;;;
+{
+$84:D0F2             dw B3C1,D0EC
+}
+}
 
 
+;;; $D0F6..D116: Chozo crumbled block ;;;
+{
 ;;; $D0F6: Instruction list - PLM $D113 (chozo crumbled block) ;;;
 {
 $84:D0F6             dx 0004,A345,
@@ -11551,9 +11712,15 @@ $84:D112 60          RTS
 }
 
 
+;;; $D113: PLM entry - chozo crumbled block ;;;
+{
 $84:D113             dw D108,D0F6   ; Chozo crumbled block
+}
+}
 
 
+;;; $D117..2A: Shot block (unused) ;;;
+{
 ;;; $D117: Setup - PLM $D127 (unused. Shot block) ;;;
 {
 $84:D117 BE 87 1C    LDX $1C87  [$7E:1C87]
@@ -11570,9 +11737,15 @@ $84:D121             dx 0004,A33F,
 }
 
 
+;;; $D127: Unused. PLM entry - shot block ;;;
+{
 $84:D127             dw D117,D121   ; Unused. Shot block
+}
+}
 
 
+;;; $D12B..D13E: Grapple block (unused) ;;;
+{
 ;;; $D12B: Setup - PLM $D13B (unused. Grapple block) ;;;
 {
 $84:D12B BE 87 1C    LDX $1C87  [$7E:1C87]
@@ -11589,10 +11762,15 @@ $84:D135             dx 0001,A4F9,
 }
 
 
+;;; $D13B: Unused. PLM entry - grapple block ;;;
+{
 $84:D13B             dw D12B,D135   ; Unused. Grapple block
+}
 }
 
 
+;;; $D13F..D70F: Glass / chozo ;;;
+{
 ;;; $D13F..D5F5: Instructions and instruction lists ;;;
 {
 ;;; $D13F: Instruction list - PLM $D6D6 (Lower Norfair chozo hand) ;;;
@@ -11824,6 +12002,11 @@ $84:D330 60          RTS
 
 ;;; $D331: Spawn Mother Brain's glass shattering shard with argument [A] ;;;
 {
+;; Parameters:
+;;     A: Enemy projectile argument
+;;         0: 8
+;;         2: -28h
+;;         4: -10h
 $84:D331 5A          PHY
 $84:D332 A0 FC CE    LDY #$CEFC             ;\
 $84:D335 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's glass shattering - shard enemy projectile
@@ -12102,6 +12285,7 @@ $84:D519             dx 0001,98E3,
 $84:D521             dx D525,           ; Enable water physics
                         86BC            ; Delete
 }
+
 
 ;;; $D525: Instruction - enable water physics ;;;
 {
@@ -12401,9 +12585,10 @@ $84:D704             dw D689,D44E   ; Unused. Alternate Lower Norfair chozo hand
 $84:D708             dw D693,D490   ; Unused. Lower Norfair 2x2 chozo shot block
 $84:D70C             dw D6CC,D4D4   ; n00b tube
 }
+}
 
 
-;;; $D710..D81D: Instructions ;;;
+;;; $D710..DB63: Eye door ;;;
 {
 ;;; $D710: Unused. Pre-instruction - wake PLM if Samus is within 4 blocks of PLM ;;;
 {
@@ -12471,6 +12656,8 @@ $84:D779 60          RTS
 }
 
 
+;;; $D77A..D81D: Instructions ;;;
+{
 ;;; $D77A: Instruction - shoot eye door projectile with enemy projectile argument [[Y]] ;;;
 {
 ;; Parameters:
@@ -12799,8 +12986,6 @@ $84:DA8A             dx 86BC            ; Delete
 }
 
 
-;;; $DA8C..DB43: Misc. ;;;
-{
 ;;; $DA8C: Setup - PLM $DB48/$DB56 (eye door eye) ;;;
 {
 ;; Parameters:
@@ -12844,8 +13029,13 @@ $84:DAD1 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 
 $84:DAD4 60          RTS
 }
+}
 
 
+;;; $DAD5..DB43: Set Metroids cleared state when required ;;;
+{
+;;; $DAD5..DB1D: Pre-instructions ;;;
+{
 ;;; $DAD5: RTS. Pre-instruction - set Metroids cleared state when required - room argument = 0 ;;;
 {
 $84:DAD5 60          RTS
@@ -12946,6 +13136,7 @@ $84:DB19 22 FA 81 80 JSL $8081FA[$80:81FA]
 
 $84:DB1D 60          RTS
 }
+}
 
 
 ;;; $DB1E: Setup - PLM $DB44 (sets Metroids cleared states when required) ;;;
@@ -12980,6 +13171,8 @@ $84:DB60             dw DAB9,D91F       ; Eye door bottom, facing left
 }
 
 
+;;; $DB64..DF58: Draygon cannon ;;;
+{
 ;;; $DB64..DCDD: Instructions ;;;
 {
 ;;; $DB64: Pre-instruction - go to link instruction if shot with a (super) missile ;;;
@@ -13519,8 +13712,11 @@ $84:DF7D             dw DF4C,DDEC ; Draygon cannon, facing left
 $84:DF81             dw DF4C,DE35 ; Unused. Draygon cannon, facing down-left
 $84:DF85             dw DF4C,DE7E ; Unused. Draygon cannon, facing up-left
 }
+}
 
 
+;;; $DF89..EFD2: Items ;;;
+{
 ;;; $DF89..EE4C: Instruction lists ;;;
 {
 ;;; $DF89: Pre-instruction - go to link instruction if triggered ;;;
@@ -15129,6 +15325,7 @@ $84:EFC3             dw EE8E,ED4A ; Space jump, shot block
 $84:EFC7             dw EE8E,ED8B ; Screw attack, shot block
 $84:EFCB             dw EE8E,EDCC ; Morph ball, shot block
 $84:EFCF             dw EE8E,EE0D ; Reserve tank, shot block
+}
 }
 
 
