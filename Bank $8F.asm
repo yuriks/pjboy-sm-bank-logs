@@ -4406,10 +4406,15 @@ $8F:C208 60          RTS
 }
 
 
-;;; $C209: Unknown, unreferenced ;;;
+;;; $C209: Unused. PLM metadata - Crateria / Brinstar / Norfair ;;;
 {
-; We may never know...
-$8F:C209             dw 0051, 0061, 0001, 0002, 0005, 0006
+; See $E881 for the other areas
+$8F:C209             dw 0051, ; "Next" item / refill station index (50h is the last used one, see "Item PLMs.asm")
+                        0061, ; "Next" doorcap index (60h is the last used one, see "Door PLMs.asm")
+                        0001, ; ?
+                        0002, ; Number of save stations in Crateria
+                        0005, ; Number of save stations in Brinstar
+                        0006  ; Number of save stations in Norfair
 }
 
 
@@ -7386,10 +7391,16 @@ $8F:E87F             dx 0000
 }
 
 
-;;; $E881: Unknown, unreferenced ;;;
+;;; $E881: Unused. PLM metadata - Wrecked Ship / Maridia / Tourian (/ Ceres?) ;;;
 {
-; See $C209
-$8F:E881             dw 009E, 00AD, 0081, 0001, 0004, 0002, 0000
+; See $C209 for the other areas
+$8F:E881             dw 009E, ; "Next" item / refill station index (9Dh is the last used one, see "Item PLMs.asm")
+                        00AD, ; "Next" doorcap index (ACh is the last used one, see "Door PLMs.asm")
+                        0081, ; ?
+                        0001, ; Number of save stations in Wrecked Ship
+                        0004, ; Number of save stations in Maridia
+                        0002, ; Number of save stations in Tourian
+                        0000  ; Number of save stations in Ceres?
 }
 
 

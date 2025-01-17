@@ -8557,7 +8557,7 @@ $A0:C281 BC 92 0F    LDY $0F92,x[$7E:0F92]  ; Y = [enemy instruction list pointe
 
 ; LOOP
 $A0:C284 B9 00 00    LDA $0000,y[$A6:F610]  ;\
-$A0:C287 10 0C       BPL $0C    [$C295]     ;} If [[Y]] & 8000h:
+$A0:C287 10 0C       BPL $0C    [$C295]     ;} If [[Y]] & 8000h != 0:
 $A0:C289 8D 84 17    STA $1784  [$7E:1784]  ; $1784 = [[Y]]
 $A0:C28C C8          INY                    ;\
 $A0:C28D C8          INY                    ;} Y += 2
@@ -8567,7 +8567,7 @@ $A0:C292 DC 84 17    JML [$1784][$A6:F68B]  ; Go to [$1784]
 
 $A0:C295 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = [[Y]]
 $A0:C298 B9 02 00    LDA $0002,y[$A6:F614]  ;\
-$A0:C29B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Set enemy spritemap pointer = [[Y] + 2]
+$A0:C29B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = [[Y] + 2]
 $A0:C29E 98          TYA                    ;\
 $A0:C29F 18          CLC                    ;|
 $A0:C2A0 69 04 00    ADC #$0004             ;} Enemy instruction list pointer = [Y] + 4
