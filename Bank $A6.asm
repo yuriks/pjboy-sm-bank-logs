@@ -11064,7 +11064,7 @@ $A6:F6C4 6B          RTL
 {
 $A6:F6C5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F6C8 A9 C7 FA    LDA #$FAC7             ;\
-$A6:F6CB 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $FAC7
+$A6:F6CB 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $FAC7 (no effect)
 $A6:F6CE A9 01 00    LDA #$0001             ;\
 $A6:F6D1 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A6:F6D4 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0

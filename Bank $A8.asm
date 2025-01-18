@@ -778,7 +778,7 @@ $A8:905B BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A8:905E 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A8:9061 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:9064 A9 4D 80    LDA #$804D             ;\
-$A8:9067 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A8:9067 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A8:906A A9 01 00    LDA #$0001             ;\
 $A8:906D 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A8:9070 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -5738,7 +5738,7 @@ $A8:C1CC BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A8:C1CF 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A8:C1D2 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A8:C1D5 A9 4D 80    LDA #$804D             ;\
-$A8:C1D8 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A8:C1D8 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A8:C1DB A9 01 00    LDA #$0001             ;\
 $A8:C1DE 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A8:C1E1 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -8232,7 +8232,7 @@ $A8:DBC7             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 5A
 {
 ;;; $DBE7: Instruction list - facing left - walking ;;;
 {
-$A8:DBE7             dx DF71,       ; Move horizontally
+$A8:DBE7             dw DF71,       ; Move horizontally
                         000A,DFA2,
                         DF71,       ; Move horizontally
                         000A,DFC2,
@@ -8246,7 +8246,7 @@ $A8:DBE7             dx DF71,       ; Move horizontally
 
 ;;; $DC03: Instruction list - facing left - spawn fireballs ;;;
 {
-$A8:DC03             dx 0014,E027,
+$A8:DC03             dw 0014,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
@@ -8271,21 +8271,21 @@ $A8:DC03             dx 0014,E027,
 
 ;;; $DC4B: Instruction list - facing left - airborne - looking up ;;;
 {
-$A8:DC4B             dx 7FFF,E0BB,
+$A8:DC4B             dw 7FFF,E0BB,
                         812F        ; Sleep
 }
 
 
 ;;; $DC51: Instruction list - facing left - airborne - looking forward ;;;
 {
-$A8:DC51             dx 7FFF,E007,
+$A8:DC51             dw 7FFF,E007,
                         812F        ; Sleep
 }
 
 
 ;;; $DC57: Instruction list - facing right - walking ;;;
 {
-$A8:DC57             dx DF71,       ; Move horizontally
+$A8:DC57             dw DF71,       ; Move horizontally
                         000A,E0DB,
                         DF71,       ; Move horizontally
                         000A,E0FB,
@@ -8299,7 +8299,7 @@ $A8:DC57             dx DF71,       ; Move horizontally
 
 ;;; $DC73: Instruction list - facing right - spawn fireballs ;;;
 {
-$A8:DC73             dx 0014,E160,
+$A8:DC73             dw 0014,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
@@ -8324,14 +8324,14 @@ $A8:DC73             dx 0014,E160,
 
 ;;; $DCBB: Instruction list - facing right - airborne - looking up ;;;
 {
-$A8:DCBB             dx 7FFF,E1F4,
+$A8:DCBB             dw 7FFF,E1F4,
                         812F        ; Sleep
 }
 
 
 ;;; $DCC1: Instruction list - facing right - airborne - looking forward ;;;
 {
-$A8:DCC1             dx 7FFF,E140,
+$A8:DCC1             dw 7FFF,E140,
                         812F        ; Sleep
 }
 }
@@ -8746,10 +8746,10 @@ $A8:DF86 7A          PLY
 $A8:DF87 6B          RTL                    ; Return
 
 $A8:DF88 7A          PLY
-$A8:DF89 A0 E9 DB    LDY #$DBE9             ; Y = $DBE9
+$A8:DF89 A0 E9 DB    LDY #$DBE9             ; Y = $DBE7 (facing left - walking) + 2 (skip initial $DF71 instruction)
 $A8:DF8C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A8:DF8F 10 03       BPL $03    [$DF94]     ;} If [enemy X velocity] < 0:
-$A8:DF91 A0 59 DC    LDY #$DC59             ; Y = $DC59
+$A8:DF91 A0 59 DC    LDY #$DC59             ; Y = $DC57 (facing right - walking) + 2 (skip initial $DF71 instruction)
 
 $A8:DF94 49 FF FF    EOR #$FFFF             ;\
 $A8:DF97 1A          INC A                  ;} Negate enemy X velocity
@@ -8774,23 +8774,38 @@ $A8:DFA1 6B          RTL
 
 ;;; $DFA2: Alcoon spritemaps ;;;
 {
+; Facing left - walking
 $A8:DFA2             dx 0006, 81FD,F3,2124, 8004,FC,210C, 81F8,F8,210A, 81F8,08,2102, 01ED,F0,212A, 81F5,E8,2100
 $A8:DFC2             dx 0006, 8004,FB,210E, 81FD,F2,2126, 81F8,07,2104, 81F8,F7,210A, 01EE,EF,212A, 81F6,E7,2100
 $A8:DFE2             dx 0007, 01FD,FB,213D, 01FD,F3,213C, 8004,FC,2120, 81F8,08,2106, 81F8,F8,210A, 01EF,F0,212A, 81F7,E8,2100
+
+; Facing left - looking forward
 $A8:E007             dx 0006, 8004,FB,2122, 81FD,F2,2126, 81F8,07,2108, 81F8,F7,210A, 01EE,EF,212A, 81F6,E7,2100
+
+; Facing left - spawn fireballs
 $A8:E027             dx 0006, 81FD,F3,2124, 8004,FC,210C, 81F8,08,2106, 81F8,F8,210A, 01EE,F0,212A, 81F6,E8,2100
 $A8:E047             dx 0007, 81FE,F3,2126, 8005,FC,210E, 01F7,F0,212E, 81F8,08,2106, 81F9,F8,210A, 01F0,F0,212A, 81F7,E8,2100
 $A8:E06C             dx 0009, 0000,F0,213B, 01FE,FB,213D, 01FE,F3,213C, 8005,FC,2120, 01F8,F0,212F, 81F8,08,2106, 81F9,F8,210A, 01F2,F0,212A, 81F8,E8,2100
 $A8:E09B             dx 0006, 81FD,F3,2124, 8004,FC,2122, 01EE,F0,212B, 81F8,08,2106, 81F8,F8,210A, 81F6,E8,2100
+
+; Facing left - airborne - looking up
 $A8:E0BB             dx 0006, 81FD,F3,2124, 01FA,E4,613A, 81FA,EC,2128, 8004,FC,2122, 81F8,08,2108, 81F8,F8,210A
+
+; Facing right - walking
 $A8:E0DB             dx 0006, 81F3,F3,6124, 81EC,FC,610C, 81F8,F8,610A, 81F8,08,6102, 000B,F0,612A, 81FB,E8,6100
 $A8:E0FB             dx 0006, 81EC,FB,610E, 81F3,F2,6126, 81F8,07,6104, 81F8,F7,610A, 000A,EF,612A, 81FA,E7,6100
 $A8:E11B             dx 0007, 01FB,FB,613D, 01FB,F3,613C, 81EC,FC,6120, 81F8,08,6106, 81F8,F8,610A, 0009,F0,612A, 81F9,E8,6100
+
+; Facing right - looking forward
 $A8:E140             dx 0006, 81EC,FB,6122, 81F3,F2,6126, 81F8,07,6108, 81F8,F7,610A, 000A,EF,612A, 81FA,E7,6100
+
+; Facing right - spawn fireballs
 $A8:E160             dx 0006, 81F3,F3,6124, 81EC,FC,610C, 81F8,08,6106, 81F8,F8,610A, 000A,F0,612A, 81FA,E8,6100
 $A8:E180             dx 0007, 81F2,F3,6126, 81EB,FC,610E, 0001,F0,612E, 81F8,08,6106, 81F7,F8,610A, 0008,F0,612A, 81F9,E8,6100
 $A8:E1A5             dx 0009, 01F8,F0,613B, 01FA,FB,613D, 01FA,F3,613C, 81EB,FC,6120, 0000,F0,612F, 81F8,08,6106, 81F7,F8,610A, 0006,F0,612A, 81F8,E8,6100
 $A8:E1D4             dx 0006, 81F3,F3,6124, 81EC,FC,6122, 000A,F0,612B, 81F8,08,6106, 81F8,F8,610A, 81FA,E8,6100
+
+; Facing right - airborne - looking up
 $A8:E1F4             dx 0006, 81F3,F3,6124, 01FE,E4,213A, 81F6,EC,6128, 81EC,FC,6122, 81F8,08,6108, 81F8,F8,610A
 
 ; Unused. X flipped version of the alcoon fireball enemy projectile

@@ -3426,7 +3426,7 @@ $A7:BD0A 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 7FFFh
 $A7:BD0D A9 0A 8B    LDA #$8B0A             ;\
 $A7:BD10 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $8B0A (fingernail)
 $A7:BD13 AD 0C 8B    LDA $8B0C  [$A7:8B0C]  ;\
-$A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617 (first fingernail frame)
+$A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617 (no effect)
 $A7:BD19 A9 60 BD    LDA #$BD60             ;\
 $A7:BD1C 9F 00 78 7E STA $7E7800,x[$7E:7980];} Enemy next function = initialise fingernail
 $A7:BD20 A9 2D B9    LDA #$B92D             ;\
@@ -5372,7 +5372,7 @@ $A7:CE51             dx 01, 14, CE96        ;} Spawn HDMA object with instructio
 ; Phantoon body also executes this as part of initialisation AI, so all Phantoon parts are doing this
 $A7:CE55 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:CE58 A9 4D 80    LDA #$804D             ;\
-$A7:CE5B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A7:CE5B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A7:CE5E A9 01 00    LDA #$0001             ;\
 $A7:CE61 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A7:CE64 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -8167,7 +8167,7 @@ $A7:E915 BD 86 0F    LDA $0F86,x[$7E:1186]  ;\
 $A7:E918 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A7:E91B 9D 86 0F    STA $0F86,x[$7E:1186]  ;/
 $A7:E91E A9 4D 80    LDA #$804D             ;\
-$A7:E921 9D 8E 0F    STA $0F8E,x[$7E:118E]  ;} Enemy spritemap pointer = $804D
+$A7:E921 9D 8E 0F    STA $0F8E,x[$7E:118E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A7:E924 A9 01 00    LDA #$0001             ;\
 $A7:E927 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:E92A 9E 90 0F    STZ $0F90,x[$7E:1190]  ; Enemy timer = 0
@@ -9199,7 +9199,7 @@ $A7:F4E0 BD 86 0F    LDA $0F86,x[$7E:1186]  ;\
 $A7:F4E3 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A7:F4E6 9D 86 0F    STA $0F86,x[$7E:1186]  ;/
 $A7:F4E9 A9 4D 80    LDA #$804D             ;\
-$A7:F4EC 9D 8E 0F    STA $0F8E,x[$7E:118E]  ;} Enemy spritemap pointer = $804D
+$A7:F4EC 9D 8E 0F    STA $0F8E,x[$7E:118E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A7:F4EF A9 01 00    LDA #$0001             ;\
 $A7:F4F2 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F4F5 9E 90 0F    STZ $0F90,x[$7E:1190]  ; Enemy timer = 0

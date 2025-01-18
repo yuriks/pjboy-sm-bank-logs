@@ -1909,11 +1909,11 @@ $AA:C43E C8          INY                    ;} Y += 2
 $AA:C43F 6B          RTL
 
 ; Negated X velocities
-$AA:C440             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, ; Facing left
-                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000  ; Facing right
+$AA:C440             dw FFF7,FFFA,FFF9,0005,FFF0,FFF9, 0000,0000, ; 0..Ah: Facing left
+                        0009,0006,0007,FFFB,0010,0007, 0000,0000  ; 10h..1Ah: Facing right
 
 ; Negated Y velocities
-$AA:C460             dw 0000, FFFA, FFFA, FFF9, 0000, 0000, 0000, 0000
+$AA:C460             dw 0000,FFFA,FFFA,FFF9,0000,0000, 0000,0000
 }
 
 
@@ -1959,6 +1959,7 @@ $AA:C4BA C8          INY                    ;\
 $AA:C4BB C8          INY                    ;} Y += 2
 $AA:C4BC 6B          RTL
 
+; X velocities
 $AA:C4BD             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FFEE, ; 0..12h: Moving left
                         0005, 0000, 0005, 0013, 0010, 0007, 0000, 0007, 0011, 0012  ; 14h..26h: Moving right
 }
@@ -2006,6 +2007,7 @@ $AA:C52F C8          INY                    ;\
 $AA:C530 C8          INY                    ;} Y += 2
 $AA:C531 6B          RTL
 
+; X velocities
 $AA:C532             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FFEE, 0005, 0000, 0005, 0013, 0010, 0007,
                         0000, 0007, 0011, 0012
 }
@@ -2146,8 +2148,8 @@ $AA:C602 B9 00 00    LDA $0000,y[$AA:BBF8]  ; A = [[Y]]
 $AA:C605 A0 85 A9    LDY #$A985             ;\
 $AA:C608 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Bomb Torizo explosive swipe enemy projectile
 $AA:C60C 7A          PLY
-$AA:C60D C8          INY
-$AA:C60E C8          INY
+$AA:C60D C8          INY                    ;\
+$AA:C60E C8          INY                    ;} Y += 2
 $AA:C60F 6B          RTL
 }
 
@@ -2551,7 +2553,7 @@ $AA:C8CE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy movement function = RTS
 $AA:C8D1 B9 67 C9    LDA $C967,y[$AA:C967]  ;\
 $AA:C8D4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = [$C967 + [Y]]
 $AA:C8D7 A9 D0 87    LDA #$87D0             ;\
-$AA:C8DA 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $87D0
+$AA:C8DA 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $87D0 (no effect)
 $AA:C8DD B9 5F C9    LDA $C95F,y[$AA:C95F]  ;\
 $AA:C8E0 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [$C95F + [Y]]
 $AA:C8E3 B9 63 C9    LDA $C963,y[$AA:C963]  ;\
@@ -5470,7 +5472,7 @@ $AA:E728 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $AA:E72B 09 00 A8    ORA #$A800             ;} Set enemy to process whilst off-screen, process instructions, hitbox solid to Samus
 $AA:E72E 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $AA:E731 A9 4D 80    LDA #$804D             ;\
-$AA:E734 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
+$AA:E734 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $AA:E737 A9 01 00    LDA #$0001             ;\
 $AA:E73A 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:E73D 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0

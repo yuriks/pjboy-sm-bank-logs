@@ -3891,7 +3891,7 @@ $B3:EAFB BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $B3:EAFE 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $B3:EB01 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $B3:EB04 A9 4D 80    LDA #$804D             ;\
-$B3:EB07 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
+$B3:EB07 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $B3:EB0A A9 01 00    LDA #$0001             ;\
 $B3:EB0D 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B3:EB10 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0

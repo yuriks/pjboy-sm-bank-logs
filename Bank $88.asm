@@ -823,8 +823,17 @@ $88:83E1 6B          RTL
 }
 
 
-;;; $83E2: Unused. Spawn HDMA object to slot 0 - HDMA object channel = 4, HDMA object channel index = 20h ;;;
+;;; $83E2..84B8: Spawn HDMA object ;;;
 {
+;;; $83E2: Unused. Spawn HDMA object on HDMA channel 2 ;;;
+{
+;; Parameters:
+;;     [[S] + 1] + 1: HDMA control
+;;     [[S] + 1] + 2: HDMA target
+;;     [[S] + 1] + 3: HDMA object instruction list pointer
+;; Returns:
+;;     Carry: Clear
+;;     A: HDMA object index
 $88:83E2 08          PHP
 $88:83E3 8B          PHB
 $88:83E4 C2 20       REP #$20
@@ -837,8 +846,15 @@ $88:83F3 4C 1B 84    JMP $841B  [$88:841B]
 }
 
 
-;;; $83F6: Unused. Spawn HDMA object to slot 8 - HDMA object channel = 40h, HDMA object channel index = 60h ;;;
+;;; $83F6: Unused. Spawn HDMA object on HDMA channel 6 ;;;
 {
+;; Parameters:
+;;     [[S] + 1] + 1: HDMA control
+;;     [[S] + 1] + 2: HDMA target
+;;     [[S] + 1] + 3: HDMA object instruction list pointer
+;; Returns:
+;;     Carry: Clear
+;;     A: HDMA object index
 $88:83F6 08          PHP
 $88:83F7 8B          PHB
 $88:83F8 C2 20       REP #$20
@@ -851,8 +867,16 @@ $88:8407 4C 1B 84    JMP $841B  [$88:841B]
 }
 
 
-;;; $840A: Spawn HDMA object to slot Ah - HDMA object channel = 80h, HDMA object channel index = 70h ;;;
+;;; $840A: Spawn HDMA object on HDMA channel 7 ;;;
 {
+;; Parameters:
+;;     [[S] + 1] + 1: HDMA control
+;;     [[S] + 1] + 2: HDMA target
+;;     [[S] + 1] + 3: HDMA object instruction list pointer
+;; Returns:
+;;     Carry: Clear
+;;     A: HDMA object index
+
 ; Called by:
 ;     $D865: Spawn BG3 scroll HDMA object
 $88:840A 08          PHP
@@ -869,9 +893,15 @@ $88:8418 A2 0A 00    LDX #$000A
 ;;; $841B: Spawn HDMA object to slot [X] (hardcoded parameters) ;;;
 {
 ;; Parameters:
+;;     X: HDMA object index
 ;;     [[S] + 1] + 3: HDMA control
 ;;     [[S] + 1] + 4: HDMA target
 ;;     [[S] + 1] + 5: HDMA object instruction list pointer
+;;     $13: HDMA object channel bitflag
+;;     $14: HDMA object channel index
+;; Returns:
+;;     Carry: Clear
+;;     A: HDMA object index
 
 ; Must have DB and P pushed
 $88:841B E2 20       SEP #$20
@@ -947,7 +977,7 @@ $88:8458 A2 00 00    LDX #$0000             ; X = 0 (HDMA object index)
 
 ; LOOP
 $88:845B BD B4 18    LDA $18B4,x[$7E:18B4]  ;\
-$88:845E F0 17       BEQ $17    [$8477]     ;} If [HDMA object channel] = 0: go to spawn HDMA object to slot [X]
+$88:845E F0 17       BEQ $17    [$8477]     ;} If [HDMA object channel bitflag] = 0: go to spawn HDMA object to slot [X]
 $88:8460 06 12       ASL $12    [$7E:0012]  ; $13 <<= 1
 $88:8462 B0 0F       BCS $0F    [$8473]     ; If $13 MSb was clear:
 $88:8464 A5 14       LDA $14    [$7E:0014]  ;\
@@ -974,7 +1004,7 @@ $88:8476 6B          RTL                    ;} Return carry set
 ;;     [Y] + 0: HDMA control
 ;;     [Y] + 1: HDMA target
 ;;     [Y] + 2: HDMA object instruction list pointer
-;;     $13: HDMA object channel
+;;     $13: HDMA object channel bitflag
 ;;     $14: HDMA object channel index
 ;;     $19: HDMA object bank
 ;; Returns:
@@ -996,7 +1026,7 @@ $88:8495 9E 20 19    STZ $1920,x[$7E:1920]  ; HDMA object $1920 = 0
 $88:8498 9E 2C 19    STZ $192C,x[$7E:192C]  ; HDMA object $192C = 0
 $88:849B 9E 38 19    STZ $1938,x[$7E:1938]  ; HDMA object $1938 = 0
 $88:849E A5 12       LDA $12    [$7E:0012]  ;\
-$88:84A0 EB          XBA                    ;} HDMA object channel = [$13]
+$88:84A0 EB          XBA                    ;} HDMA object channel bitflag = [$13]
 $88:84A1 9D B4 18    STA $18B4,x[$7E:18B4]  ;/
 $88:84A4 A5 14       LDA $14    [$7E:0014]  ;\
 $88:84A6 05 18       ORA $18    [$7E:0018]  ;} HDMA object channel index = [$14], HDMA object bank = [$19]
@@ -1010,6 +1040,7 @@ $88:84B5 AB          PLB
 $88:84B6 28          PLP
 $88:84B7 18          CLC                    ;\
 $88:84B8 6B          RTL                    ;} Return carry clear
+}
 }
 
 
@@ -1048,9 +1079,9 @@ $88:84F6 8E B3 18    STX $18B3  [$7E:18B3]  ; Clear upper byte of $18B2 for conv
 ; LOOP
 $88:84F9 8E B2 18    STX $18B2  [$7E:18B2]  ; HDMA object index = [X]
 $88:84FC BD B4 18    LDA $18B4,x[$7E:18B4]  ;\
-$88:84FF F0 0A       BEQ $0A    [$850B]     ;} If [HDMA object channel] != 0:
+$88:84FF F0 0A       BEQ $0A    [$850B]     ;} If [HDMA object channel bitflag] != 0:
 $88:8501 05 85       ORA $85    [$7E:0085]  ;\
-$88:8503 85 85       STA $85    [$7E:0085]  ;} HDMA channels to enable |= [HDMA object channel]
+$88:8503 85 85       STA $85    [$7E:0085]  ;} HDMA channels to enable |= [HDMA object channel bitflag]
 $88:8505 20 1C 85    JSR $851C  [$88:851C]  ; HDMA object instruction handler
 $88:8508 AE B2 18    LDX $18B2  [$7E:18B2]
 
@@ -6120,7 +6151,7 @@ $88:D856             dx 8655,88,    ; HDMA table bank = $88
 ;     Draygon's body initialisation
 ;     Door transition after scrolling finishes and before the screen fades in
 $88:D865 22 0A 84 88 JSL $88840A[$88:840A]  ;\
-$88:D869             dx 43, 11, D8D0        ;} Spawn indirect HDMA object for BG3 scroll with instruction list $D8D0
+$88:D869             dx 43, 11, D8D0        ;} Spawn indirect HDMA object on HDMA channel 7 for BG3 scroll with instruction list $D8D0
 $88:D86D 6B          RTL
 }
 

@@ -61,7 +61,7 @@ $A2:8718             dw 8801, 8850
 {
 $A2:871C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:871F A9 4D 80    LDA #$804D             ;\
-$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:8725 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
 $A2:8728 A9 01 00    LDA #$0001             ;\
 $A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy bounce movement index = rising
@@ -412,7 +412,7 @@ $A2:89AC 6B          RTL
 {
 $A2:89AD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:89B0 A9 4D 80    LDA #$804D             ;\
-$A2:89B3 9D 8E 0F    STA $0F8E,x            ;} Enemy spritemap pointer = $804D (nothing)
+$A2:89B3 9D 8E 0F    STA $0F8E,x            ;} Enemy spritemap pointer = $804D (no effect)
 $A2:89B6 BD B6 0F    LDA $0FB6,x            ;\
 $A2:89B9 0A          ASL A                  ;|
 $A2:89BA 0A          ASL A                  ;} Y = [enemy parameter 2] * 8 (linear speed table index)
@@ -878,7 +878,7 @@ $A2:8D6F BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A2:8D72 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A2:8D75 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A2:8D78 A9 4D 80    LDA #$804D             ;\
-$A2:8D7B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:8D7B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:8D7E A9 01 00    LDA #$0001             ;\
 $A2:8D81 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:8D84 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -2013,7 +2013,7 @@ $A2:9A07             dw 0010,0100,0200,9D0B, ; 0: Normal - small hop
 {
 $A2:9A3F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A42 A9 4D 80    LDA #$804D             ;\
-$A2:9A45 9D 8E 0F    STA $0F8E,x[$7E:10CE]  ;} Enemy spritemap pointer = $804D
+$A2:9A45 9D 8E 0F    STA $0F8E,x[$7E:10CE]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:9A48 9E A8 0F    STZ $0FA8,x[$7E:10E8]  ; Enemy $0FA8 = 0 (never used)
 $A2:9A4B A9 AD 99    LDA #$99AD             ;\
 $A2:9A4E 20 6C 9A    JSR $9A6C  [$A2:9A6C]  ;} Set enemy instruction list to $99AD (grounded/dropping - fast)
@@ -2658,7 +2658,7 @@ $A2:9F42             dw 9FBA, 9FEC, A01B
 {
 $A2:9F48 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9F4B A9 4D 80    LDA #$804D             ;\
-$A2:9F4E 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:9F4E 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:9F51 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A2:9F54 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 high] != 0:
 $A2:9F57 F0 05       BEQ $05    [$9F5E]     ;/
@@ -2954,7 +2954,7 @@ $A2:A3ED             dw 0020, 0040, 0060, 0080, 00A0, 00C0
 {
 $A2:A3F9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A3FC A9 4D 80    LDA #$804D             ;\
-$A2:A3FF 9D 8E 0F    STA $0F8E,x[$7E:114E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:A3FF 9D 8E 0F    STA $0F8E,x[$7E:114E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:A402 BD B4 0F    LDA $0FB4,x[$7E:1174]  ;\
 $A2:A405 29 FF 00    AND #$00FF             ;} Enemy function index = [enemy parameter 1 low]
 $A2:A408 9D B0 0F    STA $0FB0,x[$7E:1170]  ;/
@@ -4241,7 +4241,7 @@ $A2:B074 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B14E (idle move
 $A2:B077 A9 13 B0    LDA #$B013             ;\
 $A2:B07A 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B013
 $A2:B07D A9 4D 80    LDA #$804D             ;\
-$A2:B080 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:B080 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A2:B083 A9 01 00    LDA #$0001             ;\
 $A2:B086 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:B089 A9 4D 80    LDA #$804D             ;\

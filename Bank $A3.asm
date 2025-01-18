@@ -1244,7 +1244,7 @@ $A3:94E2             dw 0400, ; Down
 {
 $A3:94E6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:94E9 A9 4D 80    LDA #$804D             ;\
-$A3:94EC 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (empty)
+$A3:94EC 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A3:94EF A9 01 00    LDA #$0001             ;\
 $A3:94F2 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A3:94F5 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -6835,7 +6835,7 @@ $A3:CDE2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:CDE5 A9 5F CF    LDA #$CF5F             ;\
 $A3:CDE8 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy movement function = RTL
 $A3:CDEB A9 4D 80    LDA #$804D             ;\
-$A3:CDEE 9D 8E 0F    STA $0F8E,x[$7E:100E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A3:CDEE 9D 8E 0F    STA $0F8E,x[$7E:100E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A3:CDF1 A9 01 00    LDA #$0001             ;\
 $A3:CDF4 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A3:CDF7 BD 92 0F    LDA $0F92,x[$7E:1012]  ;\
@@ -9136,7 +9136,7 @@ $A3:E677 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
 {
 ; Used by: sciser, zero, viola, yard, zeela, zoomer, sova, stone zoomer
 $A3:E67A A9 4D 80    LDA #$804D             ;\
-$A3:E67D 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A3:E67D 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A3:E680 A9 01 00    LDA #$0001             ;\
 $A3:E683 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A3:E686 A9 C1 E6    LDA #$E6C1             ;\

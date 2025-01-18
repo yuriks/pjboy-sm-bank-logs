@@ -4918,7 +4918,7 @@ $8F:C8FB 6B          RTL
 ;;; $C8FC: Unpause hook - Draygon ;;;
 {
 $8F:C8FC AD B6 18    LDA $18B6  [$7E:18B6]  ;\
-$8F:C8FF C9 08 00    CMP #$0008             ;} If HDMA object 1 enabled:
+$8F:C8FF C9 08 00    CMP #$0008             ;} If HDMA object 1 (Draygon main screen layers) enabled:
 $8F:C902 D0 05       BNE $05    [$C909]     ;/
 $8F:C904 A9 0C 00    LDA #$000C             ;\
 $8F:C907 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = Draygon's room
