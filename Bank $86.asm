@@ -246,6 +246,8 @@ $86:8153 60          RTS
 {
 ;;; $8154: Instruction - delete ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8154 9E 97 19    STZ $1997,x[$7E:19B7]  ; Enemy projectile ID = 0
 $86:8157 68          PLA                    ; Terminate processing enemy projectile
 $86:8158 60          RTS
@@ -5792,7 +5794,7 @@ $86:A674 69 FB FF    ADC #$FFFB             ;|
 $86:A677 99 93 1A    STA $1A93,y[$7E:1AA3]  ;/
 $86:A67A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:A67D 29 1F 00    AND #$001F             ;|
-$86:A680 69 30 00    ADC #$0030             ;} Enemy projectile Y velocity = 30h + [random number]
+$86:A680 69 30 00    ADC #$0030             ;} Enemy projectile Y velocity = 30h + [random number] % 20h
 $86:A683 99 DB 1A    STA $1ADB,y[$7E:1AEB]  ;/
 $86:A686 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:A68A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -7023,7 +7025,7 @@ $86:B015 18          CLC                    ;} Enemy projectile egg hatch timer 
 $86:B016 69 40 00    ADC #$0040             ;|
 $86:B019 99 23 1B    STA $1B23,y            ;/
 $86:B01C BD B4 0F    LDA $0FB4,x            ;\
-$86:B01F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile direction = [enemy $0FB4]
+$86:B01F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile direction = [enemy graphical properties]
 $86:B022 30 05       BMI $05    [$B029]     ; If [enemy projectile direction] = leftwards:
 $86:B024 A2 39 B0    LDX #$B039             ; X = $B039
 $86:B027 80 03       BRA $03    [$B02C]

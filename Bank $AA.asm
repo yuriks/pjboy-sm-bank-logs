@@ -430,6 +430,8 @@ $AA:B09A             dw 0003 ; Elevator. Music track to queue when torizo dies
 }
 
 
+;;; $B09C..C209: Instruction lists and instructions ;;;
+{
 ;;; $B09C: Instruction - enemy function = [[Y]] ;;;
 {
 $AA:B09C B9 00 00    LDA $0000,y[$AA:B883]
@@ -1527,6 +1529,7 @@ $AA:C1CC             dx C3B6,       ; Set stepped right with left foot state
                         0005,ABCA,
                         C4E5,0014,  ; Bomb Torizo walking movement - faceless - index 14h
                         80ED,C192   ; Go to $C192 (left leg moving)
+}
 }
 }
 
@@ -2673,6 +2676,8 @@ $AA:C9CA 6B          RTL
 }
 
 
+;;; $C9CB..D368: Instruction lists and instructions ;;;
+{
 ;;; $C9CB: Instruction list - Golden Torizo - initial ;;;
 {
 $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 600h bytes from $AF:E200 to VRAM $6D00
@@ -3505,6 +3510,7 @@ $AA:D315             dx C3B6,       ; Set stepped right with left foot state
                         D54D,0014,  ; Golden Torizo walking movement - index 14h
                         80ED,D2C9   ; Go to $D2C9 (Golden Torizo - walking right - left leg moving)
 }
+}
 
 
 ;;; $D369: Main AI - enemy $EF7F/$EFBF (Gold Torizo) ;;;
@@ -3528,6 +3534,8 @@ $AA:D38E 6B          RTL
 }
 
 
+;;; $D38F..A6: Instructions ;;;
+{
 ;;; $D38F: Instruction - queue Golden Torizo egg released sound effect ;;;
 {
 $AA:D38F A9 34 00    LDA #$0034             ;\
@@ -3549,6 +3557,7 @@ $AA:D39E 6B          RTL
 $AA:D39F A9 48 00    LDA #$0048             ;\
 $AA:D3A2 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 48h, sound library 2, max queued sounds allowed = 6 (torizo sonic boom)
 $AA:D3A6 6B          RTL
+}
 }
 
 
