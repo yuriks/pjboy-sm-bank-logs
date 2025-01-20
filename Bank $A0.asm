@@ -3189,7 +3189,7 @@ $A0:9B14 CD 7E 18    CMP $187E  [$7E:187E]  ;|
 $A0:9B17 10 36       BPL $36    [$9B4F]     ;/
 $A0:9B19 AD 7A 18    LDA $187A  [$7E:187A]  ;\
 $A0:9B1C 18          CLC                    ;|
-$A0:9B1D 7D 04 00    ADC $0004,x[$A6:EB35]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry right offset] < [Samus right boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
+$A0:9B1D 7D 04 00    ADC $0004,x[$A6:EB35]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry right offset] < [Samus left boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
 $A0:9B20 CD 80 18    CMP $1880  [$7E:1880]  ;|
 $A0:9B23 30 2A       BMI $2A    [$9B4F]     ;/
 $A0:9B25 AD 7C 18    LDA $187C  [$7E:187C]  ;\
