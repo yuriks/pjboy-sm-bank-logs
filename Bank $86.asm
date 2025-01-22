@@ -256,6 +256,9 @@ $86:8158 60          RTS
 
 ;;; $8159: Instruction - sleep ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to after this instruction
 $86:8159 88          DEY                    ;\
 $86:815A 88          DEY                    ;|
 $86:815B 98          TYA                    ;} Enemy projectile instruction list pointer = [Y] - 2
@@ -267,6 +270,11 @@ $86:8160 60          RTS
 
 ;;; $8161: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8161 B9 00 00    LDA $0000,y[$86:A4CC]
 $86:8164 9D 03 1A    STA $1A03,x[$7E:1A25]
 $86:8167 C8          INY
@@ -277,6 +285,8 @@ $86:8169 60          RTS
 
 ;;; $816A: Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:816A A9 70 81    LDA #$8170
 $86:816D 9D 03 1A    STA $1A03,x[$7E:1A11]
 $86:8170 60          RTS
@@ -285,6 +295,10 @@ $86:8170 60          RTS
 
 ;;; $8171: Instruction - call external function [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8171 B9 00 00    LDA $0000,y[$86:C79C]
 $86:8174 85 12       STA $12    [$7E:0012]
 $86:8176 B9 01 00    LDA $0001,y[$86:C79D]
@@ -304,6 +318,10 @@ $86:8188 DC 12 00    JML [$0012][$86:C7FB]
 
 ;;; $818B: Unused. Instruction - call external function [[Y]] with 2 byte parameter [[Y] + 3] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:818B B9 00 00    LDA $0000,y
 $86:818E 85 12       STA $12    [$7E:0012]
 $86:8190 B9 01 00    LDA $0001,y
@@ -325,6 +343,10 @@ $86:81A8 DC 12 00    JML [$0012]
 
 ;;; $81AB: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:81AB B9 00 00    LDA $0000,y[$86:A29F]
 $86:81AE A8          TAY
 $86:81AF 60          RTS
@@ -333,6 +355,10 @@ $86:81AF 60          RTS
 
 ;;; $81B0: Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:81B0 84 12       STY $12    [$7E:0012]
 $86:81B2 88          DEY
 $86:81B3 B9 00 00    LDA $0000,y
@@ -352,6 +378,11 @@ $86:81C5 60          RTS
 
 ;;; $81C6: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:81C6 DE DF 19    DEC $19DF,x[$7E:1A01]
 $86:81C9 D0 E0       BNE $E0    [$81AB]
 $86:81CB C8          INY
@@ -362,6 +393,11 @@ $86:81CD 60          RTS
 
 ;;; $81CE: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:81CE DE DF 19    DEC $19DF,x
 $86:81D1 D0 DD       BNE $DD    [$81B0]
 $86:81D3 C8          INY
@@ -371,6 +407,11 @@ $86:81D4 60          RTS
 
 ;;; $81D5: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:81D5 B9 00 00    LDA $0000,y[$86:ECAD]
 $86:81D8 9D DF 19    STA $19DF,x[$7E:1A01]
 $86:81DB C8          INY
@@ -387,6 +428,12 @@ $86:81DE 60          RTS
 
 ;;; $81DF: Instruction - move randomly within X radius [[Y]] - [[Y] - 1] and Y radius [[Y] - 2] - [[Y] - 3] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Assumes [[Y]] + 1 and [[Y] + 2] + 1 are powers of 2
 $86:81DF 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:81E3 85 12       STA $12    [$7E:0012]  ; $12 = [random number]
@@ -436,6 +483,11 @@ $86:822F 60          RTS
 
 ;;; $8230: Instruction - enemy projectile properties |= [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8230 BD D7 1B    LDA $1BD7,x[$7E:1BE7]
 $86:8233 19 00 00    ORA $0000,y[$86:A478]
 $86:8236 9D D7 1B    STA $1BD7,x[$7E:1BE7]
@@ -447,6 +499,11 @@ $86:823B 60          RTS
 
 ;;; $823C: Instruction - enemy projectile properties &= [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:823C BD D7 1B    LDA $1BD7,x[$7E:1BE7]
 $86:823F 39 00 00    AND $0000,y[$86:A480]
 $86:8242 9D D7 1B    STA $1BD7,x[$7E:1BE7]
@@ -458,6 +515,8 @@ $86:8247 60          RTS
 
 ;;; $8248: Unused. Instruction - enable collision with Samus projectiles ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8248 BD D7 1B    LDA $1BD7,x
 $86:824B 09 00 80    ORA #$8000
 $86:824E 9D D7 1B    STA $1BD7,x
@@ -467,6 +526,8 @@ $86:8251 60          RTS
 
 ;;; $8252: Instruction - disable collision with Samus projectiles ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8252 BD D7 1B    LDA $1BD7,x[$7E:1BE5]
 $86:8255 29 FF 7F    AND #$7FFF
 $86:8258 9D D7 1B    STA $1BD7,x[$7E:1BE5]
@@ -476,6 +537,8 @@ $86:825B 60          RTS
 
 ;;; $825C: Instruction - disable collision with Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:825C BD D7 1B    LDA $1BD7,x[$7E:1BE5]
 $86:825F 09 00 20    ORA #$2000
 $86:8262 9D D7 1B    STA $1BD7,x[$7E:1BE5]
@@ -485,6 +548,8 @@ $86:8265 60          RTS
 
 ;;; $8266: Unused. Instruction - enable collision with Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8266 BD D7 1B    LDA $1BD7,x
 $86:8269 29 FF DF    AND #$DFFF
 $86:826C 9D D7 1B    STA $1BD7,x
@@ -494,6 +559,8 @@ $86:826F 60          RTS
 
 ;;; $8270: Unused. Instruction - set to not die on contact ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8270 BD D7 1B    LDA $1BD7,x
 $86:8273 09 00 40    ORA #$4000
 $86:8276 9D D7 1B    STA $1BD7,x
@@ -503,6 +570,8 @@ $86:8279 60          RTS
 
 ;;; $827A: Unused. Instruction - set to die on contact ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:827A BD D7 1B    LDA $1BD7,x
 $86:827D 29 FF BF    AND #$BFFF
 $86:8280 9D D7 1B    STA $1BD7,x
@@ -512,6 +581,8 @@ $86:8283 60          RTS
 
 ;;; $8284: Instruction - set high priority ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8284 BD D7 1B    LDA $1BD7,x[$7E:1BE5]
 $86:8287 09 00 10    ORA #$1000
 $86:828A 9D D7 1B    STA $1BD7,x[$7E:1BE5]
@@ -521,6 +592,8 @@ $86:828D 60          RTS
 
 ;;; $828E: Unused. Instruction - set low priority ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:828E BD D7 1B    LDA $1BD7,x
 $86:8291 29 FF EF    AND #$EFFF
 $86:8294 9D D7 1B    STA $1BD7,x
@@ -530,6 +603,11 @@ $86:8297 60          RTS
 
 ;;; $8298: Instruction - X radius = [[Y]], Y radius = [[Y] + 1] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8298 B9 00 00    LDA $0000,y[$86:C434]
 $86:829B 9D B3 1B    STA $1BB3,x[$7E:1BD1]
 $86:829E C8          INY
@@ -540,6 +618,8 @@ $86:82A0 60          RTS
 
 ;;; $82A1: Unused. Instruction - X radius = 0, Y radius = 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:82A1 9E B3 1B    STZ $1BB3,x
 $86:82A4 60          RTS
 }
@@ -547,6 +627,9 @@ $86:82A4 60          RTS
 
 ;;; $82A5: Instruction - calculate direction towards Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; Used only by eye door projectile
 $86:82A5 5A          PHY
 $86:82A6 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -574,6 +657,10 @@ $86:82D4 60          RTS
 
 ;;; $82D5: Unused. Instruction - write [[Y] + 4] colours from [[Y]] to colour index [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:82D5 5A          PHY
 $86:82D6 DA          PHX
 $86:82D7 BE 02 00    LDX $0002,y
@@ -602,6 +689,10 @@ $86:82FC 60          RTS
 
 ;;; $82FD: Unused. Instruction - queue music track [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:82FD B9 00 00    LDA $0000,y
 $86:8300 29 FF 00    AND #$00FF
 $86:8303 22 C1 8F 80 JSL $808FC1[$80:8FC1]
@@ -612,6 +703,10 @@ $86:8308 60          RTS
 
 ;;; $8309: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8309 B9 00 00    LDA $0000,y
 $86:830C 22 49 90 80 JSL $809049[$80:9049]
 $86:8310 C8          INY
@@ -621,6 +716,10 @@ $86:8311 60          RTS
 
 ;;; $8312: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8312 B9 00 00    LDA $0000,y[$86:A4C9]
 $86:8315 22 CB 90 80 JSL $8090CB[$80:90CB]
 $86:8319 C8          INY
@@ -630,6 +729,10 @@ $86:831A 60          RTS
 
 ;;; $831B: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:831B B9 00 00    LDA $0000,y[$86:AB4D]
 $86:831E 22 4D 91 80 JSL $80914D[$80:914D]
 $86:8322 C8          INY
@@ -639,6 +742,10 @@ $86:8323 60          RTS
 
 ;;; $8324: Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 15 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8324 B9 00 00    LDA $0000,y
 $86:8327 22 21 90 80 JSL $809021[$80:9021]
 $86:832B C8          INY
@@ -648,6 +755,10 @@ $86:832C 60          RTS
 
 ;;; $832D: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 15 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:832D B9 00 00    LDA $0000,y
 $86:8330 22 A3 90 80 JSL $8090A3[$80:90A3]
 $86:8334 C8          INY
@@ -657,6 +768,10 @@ $86:8335 60          RTS
 
 ;;; $8336: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 15 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8336 B9 00 00    LDA $0000,y
 $86:8339 22 25 91 80 JSL $809125[$80:9125]
 $86:833D C8          INY
@@ -666,6 +781,10 @@ $86:833E 60          RTS
 
 ;;; $833F: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 3 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:833F B9 00 00    LDA $0000,y
 $86:8342 22 35 90 80 JSL $809035[$80:9035]
 $86:8346 C8          INY
@@ -675,6 +794,10 @@ $86:8347 60          RTS
 
 ;;; $8348: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 3 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8348 B9 00 00    LDA $0000,y
 $86:834B 22 B7 90 80 JSL $8090B7[$80:90B7]
 $86:834F C8          INY
@@ -684,6 +807,10 @@ $86:8350 60          RTS
 
 ;;; $8351: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 3 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8351 B9 00 00    LDA $0000,y
 $86:8354 22 39 91 80 JSL $809139[$80:9139]
 $86:8358 C8          INY
@@ -693,6 +820,10 @@ $86:8359 60          RTS
 
 ;;; $835A: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 9 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:835A B9 00 00    LDA $0000,y
 $86:835D 22 2B 90 80 JSL $80902B[$80:902B]
 $86:8361 C8          INY
@@ -702,6 +833,10 @@ $86:8362 60          RTS
 
 ;;; $8363: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 9 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8363 B9 00 00    LDA $0000,y
 $86:8366 22 AD 90 80 JSL $8090AD[$80:90AD]
 $86:836A C8          INY
@@ -711,6 +846,10 @@ $86:836B 60          RTS
 
 ;;; $836C: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 9 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:836C B9 00 00    LDA $0000,y
 $86:836F 22 2F 91 80 JSL $80912F[$80:912F]
 $86:8373 C8          INY
@@ -720,6 +859,10 @@ $86:8374 60          RTS
 
 ;;; $8375: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 1 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8375 B9 00 00    LDA $0000,y
 $86:8378 22 3F 90 80 JSL $80903F[$80:903F]
 $86:837C C8          INY
@@ -729,6 +872,10 @@ $86:837D 60          RTS
 
 ;;; $837E: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 1 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:837E B9 00 00    LDA $0000,y[$86:A4AC]
 $86:8381 22 C1 90 80 JSL $8090C1[$80:90C1]
 $86:8385 C8          INY
@@ -738,6 +885,10 @@ $86:8386 60          RTS
 
 ;;; $8387: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 1 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:8387 B9 00 00    LDA $0000,y
 $86:838A 22 43 91 80 JSL $809143[$80:9143]
 $86:838E C8          INY
@@ -801,8 +952,8 @@ $86:83D5 6B          RTL
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
-;;     $22: Y displacement
-;;     $24: X displacement
+;;     $22: Y displacement (due to screen shaking)
+;;     $24: X displacement (due to screen shaking)
 $86:83D6 BC 6B 1B    LDY $1B6B,x[$7E:1B8D]  ; Y = [enemy projectile spritemap pointer]
 $86:83D9 BD BB 19    LDA $19BB,x[$7E:19DD]  ;\
 $86:83DC 29 FF 00    AND #$00FF             ;} $1A = [enemy projectile VRAM tiles index]
