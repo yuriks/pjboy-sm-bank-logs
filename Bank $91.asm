@@ -13305,6 +13305,8 @@ $91:F542 60          RTS
 ; Note that if Samus has her beam charged, then she only needs to hold fire for one frame to fire the charged beam,
 ; regardless of whether this section is NOPed or not
 
+; This checklist of poses notably excludes the two gun extended poses 13h/14h
+
 $91:F543 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:F546 C9 4E 00    CMP #$004E             ;} If [Samus pose] = facing left - normal jump - not aiming - not moving - gun not extended: go to BRANCH_SHINESPARK_FACING_LEFT
 $91:F549 F0 26       BEQ $26    [$F571]     ;/

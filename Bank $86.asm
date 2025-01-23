@@ -1078,8 +1078,12 @@ $86:84FE             dx 1000,8000,
 {
 ;;; $8506: Enemy projectile block collision - horizontal extension ;;;
 {
-; Adjusting the return address and modifying the jump index is a pretty neat trick,
-; like a sort of indirect tail recursion
+;; Returns:
+;;     Carry: Clear. No collision
+
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
+
 $86:8506 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $86:8509 BF 02 64 7F LDA $7F6402,x[$7F:6A69];|
 $86:850D 29 FF 00    AND #$00FF             ;} If [current block BTS] = 0: return carry clear
@@ -1089,7 +1093,7 @@ $86:8515 D0 05       BNE $05    [$851C]     ;|
 $86:8517 29 FF 00    AND #$00FF             ;|
 $86:851A 80 03       BRA $03    [$851F]     ;|
                                             ;|
-$86:851C 09 00 FF    ORA #$FF00             ;} Current block index += ±[current block BTS]
+$86:851C 09 00 FF    ORA #$FF00             ;} Current block index += ±[block BTS]
                                             ;|
 $86:851F 18          CLC                    ;|
 $86:8520 6D C4 0D    ADC $0DC4  [$7E:0DC4]  ;|
@@ -1098,7 +1102,7 @@ $86:8526 0A          ASL A                  ;\
 $86:8527 AA          TAX                    ;|
 $86:8528 BF 02 00 7F LDA $7F0002,x[$7F:0CCE];|
 $86:852C 29 00 F0    AND #$F000             ;|
-$86:852F EB          XBA                    ;} X = [current block type] * 2 (index for JSR on return)
+$86:852F EB          XBA                    ;} X = (block type) * 2
 $86:8530 4A          LSR A                  ;|
 $86:8531 4A          LSR A                  ;|
 $86:8532 4A          LSR A                  ;|
@@ -1115,38 +1119,43 @@ $86:853B 60          RTS
 
 ;;; $853C: Enemy projectile block collision - vertical extension ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
+
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
+; Uses an addition/subtraction loop for multiplication, which is probably faster for an offset of 1 or maybe 2
+
 $86:853C AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $86:853F BF 02 64 7F LDA $7F6402,x[$7F:6493];|
-$86:8543 29 FF 00    AND #$00FF             ;} If [current block BTS] = 0: return carry clear
+$86:8543 29 FF 00    AND #$00FF             ;} If [block BTS] = 0: return carry clear
 $86:8546 F0 40       BEQ $40    [$8588]     ;/
 $86:8548 89 80 00    BIT #$0080             ;\
-$86:854B D0 12       BNE $12    [$855F]     ;} If [current block BTS] & 80h != 0: go BRANCH_NEGATIVE
-$86:854D 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;\
+$86:854B D0 12       BNE $12    [$855F]     ;|
+$86:854D 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;|
 $86:8550 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;|
                                             ;|
-$86:8553 18          CLC                    ;} Current block += [current block BTS] * [room width]
+$86:8553 18          CLC                    ;|
 $86:8554 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
 $86:8557 CE D4 0D    DEC $0DD4  [$7E:0DD4]  ;|
-$86:855A D0 F7       BNE $F7    [$8553]     ;/
-$86:855C 4C 71 85    JMP $8571  [$86:8571]  ; Go to BRANCH_MERGE
-
-; BRANCH_NEGATIVE
-$86:855F 09 00 FF    ORA #$FF00             ;\
+$86:855A D0 F7       BNE $F7    [$8553]     ;|
+$86:855C 4C 71 85    JMP $8571  [$86:8571]  ;|
+                                            ;} Current block index += ±[block BTS] * [room width in blocks]
+$86:855F 09 00 FF    ORA #$FF00             ;|
 $86:8562 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;|
 $86:8565 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;|
                                             ;|
-$86:8568 38          SEC                    ;} Current block -= [current block BTS] * [room width]
+$86:8568 38          SEC                    ;|
 $86:8569 ED A5 07    SBC $07A5  [$7E:07A5]  ;|
 $86:856C EE D4 0D    INC $0DD4  [$7E:0DD4]  ;|
-$86:856F D0 F7       BNE $F7    [$8568]     ;/
-
-; BRANCH_MERGE
-$86:8571 8D C4 0D    STA $0DC4  [$7E:0DC4]
+$86:856F D0 F7       BNE $F7    [$8568]     ;|
+                                            ;|
+$86:8571 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
 $86:8574 0A          ASL A                  ;\
 $86:8575 AA          TAX                    ;|
 $86:8576 BF 02 00 7F LDA $7F0002,x[$7F:00C4];|
 $86:857A 29 00 F0    AND #$F000             ;|
-$86:857D EB          XBA                    ;} X = [current block type] * 2 (index for JSR on return)
+$86:857D EB          XBA                    ;} X = (block type) * 2
 $86:857E 4A          LSR A                  ;|
 $86:857F 4A          LSR A                  ;|
 $86:8580 4A          LSR A                  ;|
@@ -1179,11 +1188,11 @@ $86:858D 60          RTS
 {
 ;; Parameters:
 ;;     $14: Enemy projectile X velocity (used only for sign)
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (bottom) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile Y span - 1
-;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile Y block span
+;;     $22: Target boundary position (left/right depending on sign of enemy projectile X velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
@@ -1206,11 +1215,11 @@ $86:85AA 4C 3D 87    JMP $873D  [$86:873D]  ; Go to enemy projectile block colli
 ;; Parameters:
 ;;     $14: Enemy projectile Y velocity (used only for sign)
 ;;     $18: Target Y position
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (rightmost) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile X span - 1
-;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile X block span
+;;     $22: Target boundary position (top/bottom depending on sign of enemy projectile Y velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
@@ -1231,11 +1240,11 @@ $86:85BF 4C 4E 87    JMP $874E  [$86:874E]  ; Go to enemy projectile block colli
 ;;     A: [Block BTS] & 1Fh
 ;;     X: Block index
 ;;     $14: Enemy projectile X velocity (used only for sign)
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (bottom) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile Y span - 1
-;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile Y block span
+;;     $22: Target boundary position (left/right depending on sign of enemy projectile X velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
@@ -1349,11 +1358,11 @@ $86:8675 60          RTS                    ;} Return carry set
 ;;     A: [Block BTS] & 1Fh
 ;;     X: Block index
 ;;     $14: Enemy projectile Y velocity (used only for sign)
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (rightmost) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile X span - 1
-;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile X block span
+;;     $22: Target boundary position (top/bottom depending on sign of enemy projectile Y velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
@@ -1485,6 +1494,8 @@ $86:8729             db 00,01,82,83, ; 0: Half height
 
 ;;; $873D: Clear carry. Enemy projectile block collision reaction - horizontal - slope - non-square ;;;
 {
+;; Returns:
+;;     Carry: Clear (no collision)
 $86:873D AD 77 1E    LDA $1E77  [$7E:1E77]
 $86:8740 29 1F 00    AND #$001F
 $86:8743 0A          ASL A
@@ -1685,15 +1696,16 @@ $86:8866             dw 858A,
 }
 
 
-;;; $8886: Enemy projectile horizontal block reaction ;;;
+;;; $8886: Enemy projectile block collision reaction - horizontal ;;;
 {
 ;; Parameters:
+;;     X: Block index (multiple of 2)
 ;;     $14: Enemy projectile X velocity (used only for sign)
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (bottom) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile Y span - 1
-;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile Y block span
+;;     $22: Target boundary position (left/right depending on sign of enemy projectile velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
@@ -1713,16 +1725,16 @@ $86:889D 60          RTS
 }
 
 
-;;; $889E: Enemy projectile vertical block reaction ;;;
+;;; $889E: Enemy projectile block collision reaction - vertical ;;;
 {
 ;; Parameters:
 ;;     $14: Enemy projectile Y velocity (used only for sign)
 ;;     $18: Target Y position
-;;     $1A: Number of blocks left to check
+;;     $1A: Number of blocks left to check (0 if final (rightmost) block)
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
-;;     $20: Enemy projectile X span - 1
-;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;;     $20: Enemy projectile X block span
+;;     $22: Target boundary position (top/bottom depending on sign of enemy projectile velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
