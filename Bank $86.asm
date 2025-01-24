@@ -2014,6 +2014,8 @@ $86:8A38 60          RTS                    ;} Return carry set
 {
 ;;; $8A39: Initialisation AI - enemy projectile $8AAF ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:8A39 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:8A3D AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:8A40 BD 7E 0F    LDA $0F7E,x            ;\
@@ -2045,6 +2047,8 @@ $86:8A75             dw 8A39, 8A39, 8A39, 8A39
 
 ;;; $8A7D: Pre-instruction - enemy projectile $8AAF ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8A7D BD DA 1A    LDA $1ADA,x            ;\
 $86:8A80 29 00 FF    AND #$FF00             ;|
 $86:8A83 85 14       STA $14    [$7E:0014]  ;|
@@ -2110,6 +2114,8 @@ $86:8AC5             dw 0010,8435,
 
 ;;; $8ACD: Initialisation AI - enemy projectile $8BC2/$8BFA ((metal) skree - down-right) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:8ACD AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:8AD0 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $86:8AD3 38          SEC                    ;|
@@ -2129,6 +2135,8 @@ $86:8AF0 60          RTS
 
 ;;; $8AF1: Initialisation AI - enemy projectile $8BD0/$8C08 ((metal) skree - up-right) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:8AF1 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:8AF4 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $86:8AF7 38          SEC                    ;|
@@ -2148,6 +2156,8 @@ $86:8B14 60          RTS
 
 ;;; $8B15: Initialisation AI - enemy projectile $8BDE/$8C16 ((metal) skree - down-left) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:8B15 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:8B18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $86:8B1B 38          SEC                    ;|
@@ -2167,6 +2177,8 @@ $86:8B38 60          RTS
 
 ;;; $8B39: Initialisation AI - enemy projectile $8BEC/$8C24 ((metal) skree - up-left) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:8B39 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:8B3C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $86:8B3F 38          SEC                    ;|
@@ -2186,6 +2198,8 @@ $86:8B5C 60          RTS
 
 ;;; $8B5D: Pre-instruction - enemy projectile $8BC2/$8BD0/$8BDE/$8BEC/$8BFA/$8C08/$8C16/$8C24 ((metal) skree particle) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8B5D BD B6 1A    LDA $1AB6,x[$7E:1AD6]  ;\
 $86:8B60 29 00 FF    AND #$FF00             ;|
 $86:8B63 85 14       STA $14    [$7E:0014]  ;|
@@ -2299,6 +2313,8 @@ $86:8C58             dx 0008,8A8D,
 
 ;;; $8C68: Instruction - spawn enemy drops with Draygon eye's drop chances ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8C68 5A          PHY
 $86:8C69 DA          PHX
 $86:8C6A BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
@@ -2356,6 +2372,8 @@ $86:8CE6             dx 0008,8AAA,
 
 ;;; $8CF6: Instruction - pre-instruction = $8DFF (Draygon's wall turret projectile - fired) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8CF6 A9 FF 8D    LDA #$8DFF
 $86:8CF9 9D 03 1A    STA $1A03,x[$7E:1A25]
 $86:8CFC 60          RTS
@@ -2364,6 +2382,8 @@ $86:8CFC 60          RTS
 
 ;;; $8CFD: Unused. Pre-instruction = $8DCA (Draygon goop - stuck to Samus) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8CFD A9 CA 8D    LDA #$8DCA             ;\
 $86:8D00 9D 03 1A    STA $1A03,x            ;} Enemy projectile pre-instruction = $8DCA (Draygon goop - stuck to Samus)
 $86:8D03 60          RTS
@@ -2443,6 +2463,8 @@ $86:8D5B 60          RTS
 
 ;;; $8D5C: Delete enemy projectile if power bombed ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8D5C 5A          PHY                    ;\
 $86:8D5D DA          PHX                    ;} >_<;
 $86:8D5E AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
@@ -2482,6 +2504,8 @@ $86:8D98 60          RTS
 
 ;;; $8D99: Instruction - Draygon goop / Samus collision ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:8D99 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8D9C AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
 $86:8D9F 1A          INC A                  ;|
@@ -2506,6 +2530,8 @@ $86:8DC9 60          RTS
 
 ;;; $8DCA: Pre-instruction - Draygon goop - stuck to Samus ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8DCA 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8DCD AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $86:8DD0 D0 1E       BNE $1E    [$8DF0]     ;} If [Samus contact damage index] = normal:
@@ -2535,6 +2561,8 @@ $86:8DFE 60          RTS
 
 ;;; $8DFF: Pre-instruction - Draygon's wall turret projectile - fired ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8DFF 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8E02 20 3E E7    JSR $E73E  [$86:E73E]  ; Move enemy projectile according to enemy projectile angle and speed
 $86:8E05 20 22 E7    JSR $E722  [$86:E722]  ;\
@@ -2548,6 +2576,8 @@ $86:8E0E 60          RTS
 
 ;;; $8E0F: Pre-instruction - enemy projectile $8E50 (Draygon goop) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8E0F 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8E12 20 3E E7    JSR $E73E  [$86:E73E]  ; Move enemy projectile according to enemy projectile angle and speed
 $86:8E15 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -2628,6 +2658,8 @@ $86:8E98 60          RTS
 
 ;;; $8E99: Pre-instruction - enemy projectile $8E6C ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:8E99 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $86:8E9C 38          SEC                    ;|
 $86:8E9D E5 12       SBC $12    [$7E:0012]  ;|
@@ -2841,6 +2873,8 @@ $86:9007             dx 0004,8D9C,
 
 ;;; $9023: Initialisation AI - enemy projectile $8F8F (Crocomire's projectile) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:9023 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:9026 A9 00 FE    LDA #$FE00             ;\
 $86:9029 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;} Enemy projectile X velocity = -200h
@@ -2876,6 +2910,8 @@ $86:9059             dw FFF0,0000,0020,
 
 ;;; $906B: Pre-instruction - Crocomire's projectile - setup ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:906B 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:906E A9 00 0A    LDA #$0A00             ;\
 $86:9071 8D BB 19    STA $19BB  [$7E:19BB]  ;} Enemy projectile 0 VRAM graphics index = 0, palette 5 <-- bug (would be a no-op if fixed >_>)
@@ -2914,6 +2950,8 @@ $86:90B2 60          RTS
 
 ;;; $90B3: Pre-instruction - Crocomire's projectile - fired ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:90B3 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:90B6 B0 05       BCS $05    [$90BD]     ; If no collision:
 $86:90B8 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -2942,6 +2980,9 @@ $86:90C1             dx 90CF,9115,8FF3,00,00,0000,0000,84FC ; Crocomire spike wa
 
 ;;; $90CF: Initialisation AI - enemy projectile $90C1 (Crocomire spike wall pieces) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+
 ; This code assumes the Crocomire spike wall piece enemy projectiles are the last 8 slots
 ; (enemy projectiles are spawned starting from the last slot)
 $86:90CF C2 20       REP #$20
@@ -2973,6 +3014,8 @@ $86:9105             dw 0038, 0048, 0058, 0068, 0078, 0088, 0098, 00A8
 
 ;;; $9115: Pre-instruction - enemy projectile $90C1 (Crocomire spike wall pieces) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9115 C2 20       REP #$20
 $86:9117 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:911A DD E7 91    CMP $91E7,x[$86:9209]  ;|
@@ -3075,6 +3118,8 @@ $86:9256 9D 23 1B    STA $1B23,x            ; Enemy projectile $1B23 = 0
 
 ;;; $9259: Unused. Pre-instruction - moving up ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9259 BD 93 1A    LDA $1A93,x            ;\
 $86:925C 38          SEC                    ;|
 $86:925D FD DB 1A    SBC $1ADB,x            ;} Enemy projectile Y position -= [enemy projectile Y speed]
@@ -3091,6 +3136,8 @@ $86:926F 60          RTS
 
 ;;; $9270: Instruction - spawn enemy drops with Crocomire's drop chances ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:9270 5A          PHY
 $86:9271 DA          PHX
 $86:9272 BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
@@ -3135,6 +3182,8 @@ $86:92B9 60          RTS
 
 ;;; $92BA: Pre-instruction - enemy projectile $8F9D (Crocomire bridge crumbling) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:92BA 08          PHP
 $86:92BB C2 20       REP #$20
 $86:92BD 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -3247,6 +3296,8 @@ $86:934C 60          RTS
 
 ;;; $934D: Initialisation AI - enemy projectile $9634 (unused) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:934D A9 00 00    LDA #$0000             ;\
 $86:9350 99 FF 1A    STA $1AFF,y            ;} Enemy projectile movement delay timer = 0
 $86:9353 99 23 1B    STA $1B23,y
@@ -3276,6 +3327,8 @@ $86:938A             dw 0000, 0088, 00FC, 016A ; Y velocities
 
 ;;; $9392: Pre-instruction - enemy projectile $9634 (unused) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9392 BD FF 1A    LDA $1AFF,x            ;\
 $86:9395 C9 08 00    CMP #$0008             ;} If [enemy projectile movement delay timer] < 8:
 $86:9398 B0 04       BCS $04    [$939E]     ;/
@@ -3350,6 +3403,8 @@ $86:9408             dw 5003, ; Default
 
 ;;; $940E: Pre-instruction - enemy projectile $9642 (Ridley's fireball) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:940E 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:9411 B0 0B       BCS $0B    [$941E]     ; If collision: go to BRANCH_HIT_WALL
 $86:9413 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -3410,6 +3465,9 @@ $86:945F             dx 9475,       ; Disable collisions with Samus
 
 ;;; $9475: Unused. Instruction - disable collisions with Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; Used by unused instruction list $945F
 $86:9475 BD D7 1B    LDA $1BD7,x
 $86:9478 09 00 20    ORA #$2000
@@ -3525,6 +3583,8 @@ $86:950C 60          RTS
 
 ;;; $950D: Pre-instruction - enemy projectile $966C/$967A (horizontal afterburn - right/left) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:950D 20 11 93    JSR $9311  [$86:9311]  ; Move enemy projectile according to enemy projectile X velocity
 $86:9510 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:9513 90 0C       BCC $0C    [$9521]     ; If collision:
@@ -3539,6 +3599,8 @@ $86:9521 60          RTS
 
 ;;; $9522: Pre-instruction - enemy projectile $9688/$9696 (vertical afterburn - up/down) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9522 20 F3 92    JSR $92F3  [$86:92F3]  ; Move enemy projectile according to enemy projectile Y velocity
 $86:9525 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:9528 90 0C       BCC $0C    [$9536]     ; If collision:
@@ -3553,6 +3615,8 @@ $86:9536 60          RTS
 
 ;;; $9537: Pre-instruction - enemy projectile $96A4/$96B2 (unused. Proto horizontal afterburn - right/left) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9537 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:953A 90 03       BCC $03    [$953F]     ; If collision:
 $86:953C 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
@@ -3563,6 +3627,8 @@ $86:953F 60          RTS
 
 ;;; $9540: Pre-instruction - enemy projectile $96C0 (unused. Proto vertical afterburn - up) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9540 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:9543 90 03       BCC $03    [$9548]     ; If collision:
 $86:9545 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
@@ -3573,6 +3639,9 @@ $86:9548 60          RTS
 
 ;;; $9549: Pre-instruction - enemy projectile $96CE (unused. Proto vertical afterburn - down) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; Clone of $9540
 $86:9549 20 7B 89    JSR $897B  [$86:897B]
 $86:954C 90 03       BCC $03    [$9551]
@@ -3637,6 +3706,8 @@ $86:95A0             dx 816A,       ; Clear pre-instruction
 
 ;;; $95BA: Instruction - spawn horizontal afterburn enemy projectiles ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:95BA 5A          PHY
 $86:95BB 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
 $86:95BE 8A          TXA                    ; A = [enemy projectile index]
@@ -3666,6 +3737,8 @@ $86:95D3             dx 816A,       ; Clear pre-instruction
 
 ;;; $95ED: Instruction - spawn vertical afterburn enemy projectiles ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:95ED 5A          PHY
 $86:95EE 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
 $86:95F1 8A          TXA                    ; A = [enemy projectile index]
@@ -3695,6 +3768,8 @@ $86:9606             dx 816A,       ; Clear pre-instruction
 
 ;;; $9620: Instruction - spawn next afterburn enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:9620 E2 20       SEP #$20
 $86:9622 DE FF 1A    DEC $1AFF,x[$7E:1B19]  ; Decrement enemy projectile remaining afterburn enemy projectiles
 $86:9625 C2 20       REP #$20
@@ -3771,6 +3846,8 @@ $86:9700 60          RTS
 
 ;;; $9701: Pre-instruction - enemy projectile $9734/$9742 (Ceres falling debris) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9701 A9 10 00    LDA #$0010             ;\
 $86:9704 18          CLC                    ;|
 $86:9705 7D DB 1A    ADC $1ADB,x[$7E:1AFD]  ;} Enemy projectile Y velocity += 10h
@@ -3927,6 +4004,8 @@ $86:97FA             dx 0005,81CC,
 
 ;;; $980E: Instruction - spawn Phantoon drop ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:980E 5A          PHY
 $86:980F DA          PHX
 $86:9810 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
@@ -4126,6 +4205,8 @@ $86:9979             db 00, 20, 40, 60, 80, A0, C0, E0
 
 ;;; $9981: Pre-instruction - Phantoon destroyable flame - casual flame - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9981 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:9984 18          CLC                    ;|
 $86:9985 69 10 00    ADC #$0010             ;} Enemy projectile Y velocity += 10h
@@ -4155,6 +4236,8 @@ $86:99BE 60          RTS
 
 ;;; $99BF: Pre-instruction - Phantoon destroyable flame - casual flame - hit ground ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:99BF DE FF 1A    DEC $1AFF,x[$7E:1B21]  ; Decrement enemy projectile function timer
 $86:99C2 F0 02       BEQ $02    [$99C6]     ;\
 $86:99C4 10 3A       BPL $3A    [$9A00]     ;} If [enemy projectile function timer] > 0: return
@@ -4188,6 +4271,8 @@ $86:9A00 60          RTS
 
 ;;; $9A01: Pre-instruction - Phantoon destroyable flame - casual flame - bouncing ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9A01 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:9A04 18          CLC                    ;|
 $86:9A05 69 10 00    ADC #$0010             ;} Enemy projectile Y velocity += 10h
@@ -4231,6 +4316,8 @@ $86:9A44 60          RTS
 
 ;;; $9A45: Pre-instruction - Phantoon destroyable flame - enraged flame ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9A45 BD DB 1A    LDA $1ADB,x            ;\
 $86:9A48 18          CLC                    ;|
 $86:9A49 69 04 00    ADC #$0004             ;} Enemy projectile radius += 4
@@ -4271,6 +4358,8 @@ $86:9A93 60          RTS
 
 ;;; $9A94: Pre-instruction - Phantoon destroyable flame - flame rain ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9A94 BD B7 1A    LDA $1AB7,x[$7E:1AD5]  ;\
 $86:9A97 F0 0E       BEQ $0E    [$9AA7]     ;} If [enemy projectile fall timer] = 0: go to BRANCH_FALLING
 $86:9A99 DE B7 1A    DEC $1AB7,x[$7E:1AD5]  ; Decrement enemy projectile fall timer
@@ -4306,6 +4395,8 @@ $86:9AD9 60          RTS
 
 ;;; $9ADA: Pre-instruction - Phantoon destroyable flame - flame spiral ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9ADA BD DB 1A    LDA $1ADB,x[$7E:1AF9]  ;\
 $86:9ADD 18          CLC                    ;|
 $86:9ADE 69 02 00    ADC #$0002             ;} Enemy projectile radius += 2
@@ -4346,6 +4437,8 @@ $86:9B28 60          RTS
 
 ;;; $9B29: Pre-instruction - enemy projectile $9C37 (Phantoon starting flames) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9B29 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $86:9B2C F0 12       BEQ $12    [$9B40]     ;} If Phantoon starting flames are activated:
 $86:9B2E A9 41 9B    LDA #$9B41             ;\
@@ -4361,6 +4454,8 @@ $86:9B40 60          RTS
 
 ;;; $9B41: Pre-instruction - Phantoon starting flames - activated ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9B41 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
 $86:9B44 F0 06       BEQ $06    [$9B4C]     ;} If [enemy projectile contract timer] != 0:
 $86:9B46 3A          DEC A                  ;\
@@ -4660,6 +4755,8 @@ $86:9D55 60          RTS
 
 ;;; $9D56: Pre-instruction - enemy projectile $9C45/$9C61/$9C6F (Kraid rocks) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9D56 08          PHP
 $86:9D57 C2 20       REP #$20
 $86:9D59 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -4691,6 +4788,8 @@ $86:9D88 60          RTS
 
 ;;; $9D89: Pre-instruction - enemy projectile $9C53 (rocks that fall when Kraid's ceiling crumbles) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9D89 08          PHP
 $86:9D8A C2 20       REP #$20
 $86:9D8C 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -4711,6 +4810,8 @@ $86:9DA4 60          RTS
 
 ;;; $9DA5: Pre-instruction - rocks Kraid spits at you - use palette 0 ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9DA5 08          PHP
 $86:9DA6 C2 30       REP #$30
 $86:9DA8 A9 00 00    LDA #$0000             ;\
@@ -4763,6 +4864,8 @@ $86:9DE6             dx 7FFF,842E,
 
 ;;; $9DEC: Initialisation AI - enemy projectile $9DB0 (fake Kraid spit) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:9DEC DA          PHX
 $86:9DED AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:9DF0 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
@@ -4787,6 +4890,8 @@ $86:9E1D 60          RTS
 
 ;;; $9E1E: Pre-instruction - enemy projectile $9DB0 (fake Kraid spit) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9E1E 08          PHP
 $86:9E1F C2 20       REP #$20
 $86:9E21 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -4814,6 +4919,8 @@ $86:9E45 60          RTS
 
 ;;; $9E46: Initialisation AI - enemy projectile $9DBE (fake Kraid spikes - left) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:9E46 A9 00 FE    LDA #$FE00             ; Enemy projectile X velocity = -200h
 $86:9E49 80 03       BRA $03    [$9E4E]     ; Go to fake Kraid spikes common initialisation
 }
@@ -4821,12 +4928,16 @@ $86:9E49 80 03       BRA $03    [$9E4E]     ; Go to fake Kraid spikes common ini
 
 ;;; $9E4B: Initialisation AI - enemy projectile $9DCC (fake Kraid spikes - right) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:9E4B A9 00 02    LDA #$0200             ; Enemy projectile X velocity = 200h
 }
 
 
 ;;; $9E4E: Fake Kraid spikes common initialisation ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:9E4E 99 B7 1A    STA $1AB7,y[$7E:1AD5]
 $86:9E51 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $86:9E54 BF 0C 78 7E LDA $7E780C,x[$7E:78CC];|
@@ -4852,6 +4963,8 @@ $86:9E7D             dw FFFE, 000C, 0018
 
 ;;; $9E83: Pre-instruction - enemy projectile $9DBE/$9DCC (fake Kraid spikes) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9E83 08          PHP
 $86:9E84 C2 20       REP #$20
 $86:9E86 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -4933,6 +5046,8 @@ $86:9EF9             dw FF00, 0000, 0100
 
 ;;; $9EFF: Pre-instruction - enemy projectile $9E90 (alcoon fireball) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:9EFF C2 30       REP #$30
 $86:9F01 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:9F04 B0 34       BCS $34    [$9F3A]     ; If collision: go to BRANCH_DELETE
@@ -5086,6 +5201,14 @@ $86:A04F 60          RTS
 
 ;;; $A050: Instruction - pre-instruction = [[Y]], execute [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
+; Honestly not sure if they forgot to add 2 to Y or not
+
 $86:A050 DA          PHX
 $86:A051 5A          PHY
 $86:A052 B9 00 00    LDA $0000,y[$86:9F8B]
@@ -5104,6 +5227,8 @@ $86:A05B 60          RTS
 
 ;;; $A05C: Pre-instruction - pirate / Mother Brain laser - move left ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A05C DE 4B 1A    DEC $1A4B,x[$7E:1A6D]  ;\
 $86:A05F DE 4B 1A    DEC $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= 2
 $86:A062 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
@@ -5123,6 +5248,8 @@ $86:A079 60          RTS
 
 ;;; $A07A: Pre-instruction - pirate / Mother Brain laser - move right ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A07A FE 4B 1A    INC $1A4B,x[$7E:1A6B]  ;\
 $86:A07D FE 4B 1A    INC $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position += 2
 $86:A080 BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;\
@@ -5181,6 +5308,8 @@ $86:A0D0 60          RTS
 
 ;;; $A0D1: Pre-instruction - pirate claw - thrown left ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A0D1 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
 $86:A0D4 F0 23       BEQ $23    [$A0F9]     ;} If [enemy projectile deceleration flag] != 0:
 $86:A0D6 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
@@ -5224,6 +5353,8 @@ $86:A123 60          RTS
 
 ;;; $A124: Pre-instruction - pirate claw - thrown right ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A124 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
 $86:A127 F0 23       BEQ $23    [$A14C]     ;} If [enemy projectile deceleration flag] != 0:
 $86:A129 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
@@ -5438,6 +5569,8 @@ $86:A2E2             dw A197, A1C1, A1EB, A211, A23B, A265 ; Instruction list po
 
 ;;; $A2EE: Initialisation AI - enemy projectile $A387 (Ceres elevator pad) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A2EE 08          PHP
 $86:A2EF C2 30       REP #$30
 $86:A2F1 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -5451,6 +5584,10 @@ $86:A2FE 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile timer = 60
 
 ;;; $A301: Ceres elevator common initialisation ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+
+; Expects a pushed PSR
 $86:A301 A9 00 00    LDA #$0000
 $86:A304 99 27 1A    STA $1A27,y[$7E:1A49]
 $86:A307 99 6F 1A    STA $1A6F,y[$7E:1A91]
@@ -5466,6 +5603,8 @@ $86:A31A 60          RTS
 
 ;;; $A31B: Initialisation AI - enemy projectile $A395 (Ceres elevator pad level data concealer) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A31B 08          PHP
 $86:A31C C2 30       REP #$30
 $86:A31E A9 61 00    LDA #$0061             ;\
@@ -5482,6 +5621,8 @@ $86:A327 60          RTS
 
 ;;; $A328: Pre-instruction - enemy projectile $A387 (Ceres elevator pad) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A328 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A32B F0 07       BEQ $07    [$A334]     ;} If [enemy projectile timer] != 0:
 $86:A32D DE FF 1A    DEC $1AFF,x[$7E:1B21]  ; Decrement enemy projectile timer
@@ -5512,6 +5653,8 @@ $86:A363 60          RTS
 
 ;;; $A364: Pre-instruction - enemy projectile $A395 (Ceres elevator pad level data concealer) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A364 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $86:A367 C9 48 00    CMP #$0048             ;} If [Samus Y position] = 48h:
 $86:A36A D0 0C       BNE $0C    [$A378]     ;/
@@ -5585,6 +5728,8 @@ $86:A3B0             dx A3A3,A3A3,A3AA,00,00,3000,0000,84FC
 {
 ;;; $A3BE: Instruction - reset position ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:A3BE BD FF 1A    LDA $1AFF,x[$7E:1B0D]  ;\
 $86:A3C1 9D 4B 1A    STA $1A4B,x[$7E:1A59]  ;} Enemy projectile X position = [enemy projectile reset X position]
 $86:A3C4 BD 23 1B    LDA $1B23,x[$7E:1B31]  ;\
@@ -5643,6 +5788,10 @@ $86:A435             dx A3BE,               ; Reset position
 
 ;;; $A456: Instruction - go to [[Y]] with probability 1/4 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:A456 22 11 81 80 JSL $808111[$80:8111]
 $86:A45A 29 00 C0    AND #$C000
 $86:A45D C9 00 C0    CMP #$C000
@@ -5880,6 +6029,8 @@ $86:A5C2             dx 0040,8E64,
 
 ;;; $A5D3: Initialisation AI - enemy projectile $A95B (Bomb Torizo low-health continuous drool) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A5D3 A9 00 00    LDA #$0000             ;\
 $86:A5D6 99 BB 19    STA $19BB,y[$7E:19D7]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:A5D9 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -5945,6 +6096,8 @@ $86:A64D             dw A472, A46E, A46A,
 
 ;;; $A65D: Initialisation AI - enemy projectile $A969 (Bomb Torizo low-health initial drool) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A65D A9 00 00    LDA #$0000             ;\
 $86:A660 99 BB 19    STA $19BB,y[$7E:19CB]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:A663 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -5992,6 +6145,8 @@ $86:A6C6 60          RTS
 
 ;;; $A6C7: Initialisation AI - enemy projectile $A977 ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A6C7 A9 00 00    LDA #$0000             ;\
 $86:A6CA 99 BB 19    STA $19BB,y            ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:A6CD AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
@@ -6163,6 +6318,8 @@ $86:A865             dw FFF8,FFF8,FFF8,
 
 ;;; $A871: Initialisation AI - enemy projectile $A9AF (torizo death explosion) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:A871 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:A874 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:A877 99 4B 1A    STA $1A4B,y[$7E:1A63]  ;} Enemy projectile X position = [enemy X position]
@@ -6176,6 +6333,8 @@ $86:A886 60          RTS
 
 ;;; $A887: Pre-instruction - Bomb Torizo low-health drool - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A887 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:A88A B0 3F       BCS $3F    [$A8CB]     ; If collision: go to BRANCH_HIT_WALL
 $86:A88C BD B7 1A    LDA $1AB7,x[$7E:1AC7]  ;\
@@ -6235,6 +6394,8 @@ $86:A8EE 60          RTS
 
 ;;; $A8EF: Pre-instruction - Bomb Torizo statue breaking - falling / enemy projectile $A977 ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:A8EF 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:A8F2 3C DB 1A    BIT $1ADB,x[$7E:1AFD]  ;\
 $86:A8F5 30 02       BMI $02    [$A8F9]     ;} If [enemy projectile Y velocity] >= 0:
@@ -6356,6 +6517,8 @@ $86:A9FD             db 01,00,03,00,03,00,01,00,00,00,01,00,03,00,01,00,00,00,00
 
 ;;; $AA3D: Initialisation AI - enemy projectile $AB07 ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AA3D AE 30 03    LDX $0330  [$7E:0330]  ;\
 $86:AA40 A9 40 00    LDA #$0040             ;|
 $86:AA43 95 D0       STA $D0,x              ;|
@@ -6394,6 +6557,9 @@ $86:AA8B 60          RTS
 
 ;;; $AA8C: Pre-instruction - enemy projectile $AB07 ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; The `BPL + : DEC $14 : +` should really be done *before* the `ASL #3` >_<;
 ; Oh well
 $86:AA8C 64 12       STZ $12    [$7E:0012]  ;\
@@ -6539,6 +6705,11 @@ $86:AB68             dx 816A,           ; Clear pre-instruction
 
 ;;; $AB8A: Instruction - spawn enemy drops with enemy [[Y]] or enemy [[Y] + 2]'s drop chances ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:AB8A 5A          PHY
 $86:AB8B DA          PHX
 $86:AB8C BD 4B 1A    LDA $1A4B,x[$7E:1A61]  ;\
@@ -6600,6 +6771,8 @@ $86:ABEA 60          RTS
 
 ;;; $ABEB: Initialisation AI - enemy projectile $AD5E/$AD6C (Bomb Torizo's chozo orbs) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:ABEB AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:ABEE BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:ABF1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
@@ -6672,6 +6845,8 @@ $86:AC7B 60          RTS
 
 ;;; $AC7C: Initialisation AI - enemy projectile $AD7A (Golden Torizo's chozo orbs) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AC7C AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:AC7F BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:AC82 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
@@ -6699,6 +6874,8 @@ $86:ACA3             dw AB15,FFE5,FF00,FFD8,FE40 ; Leftwards
 
 ;;; $ACAD: Pre-instruction - enemy projectile $AD5E/$AD6C (Bomb Torizo's chozo orbs) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:ACAD 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:ACB0 B0 20       BCS $20    [$ACD2]     ; If collision: go to BRANCH_HIT_WALL
 $86:ACB2 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -6741,6 +6918,8 @@ $86:ACF9 60          RTS
 
 ;;; $ACFA: Pre-instruction - enemy projectile $AD7A (Golden Torizo's chozo orbs) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:ACFA 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:ACFD 90 0A       BCC $0A    [$AD09]     ; If collision:
 $86:ACFF BD B7 1A    LDA $1AB7,x            ;\
@@ -6822,6 +7001,12 @@ $86:AD88             dx 8161,AE6C,      ; Pre-instruction = $AE6C
 
 ;;; $AD92: Instruction - move horizontally and go to [[Y]] or [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Used by unused instruction list $AD88
 $86:AD92 64 12       STZ $12    [$7E:0012]  ;\
 $86:AD94 64 14       STZ $14    [$7E:0014]  ;|
@@ -6901,6 +7086,8 @@ $86:ADF1             dx A3BE,               ; Reset position
 
 ;;; $AE15: Initialisation AI - enemy projectile $AEA8/$AEB6 (torizo sonic boom) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AE15 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:AE19 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:AE1C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -6942,6 +7129,8 @@ $86:AE6B 60          RTS
 
 ;;; $AE6C: Pre-instruction - enemy projectile $AEA8/$AEB6 (torizo sonic boom) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:AE6C 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:AE6F B0 1E       BCS $1E    [$AE8F]     ; If collision: go to BRANCH_HIT_WALL
 $86:AE71 BD B7 1A    LDA $1AB7,x[$7E:1AC5]  ;\
@@ -7051,6 +7240,9 @@ $86:AF18             dx AF36,               ; Reset position
 
 ;;; $AF36: Instruction - reset position ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; Clone of $A3BE
 $86:AF36 BD FF 1A    LDA $1AFF,x[$7E:1B1B]
 $86:AF39 9D 4B 1A    STA $1A4B,x[$7E:1A67]
@@ -7062,6 +7254,8 @@ $86:AF42 60          RTS
 
 ;;; $AF43: Initialisation AI - enemy projectile $AF84 (Tourian statue dust clouds) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AF43 A9 80 00    LDA #$0080             ;\
 $86:AF46 99 FF 1A    STA $1AFF,y[$7E:1B1B]  ;} Enemy projectile reset X position = 80h
 $86:AF49 A9 BC 00    LDA #$00BC             ;\
@@ -7072,6 +7266,8 @@ $86:AF4F 60          RTS
 
 ;;; $AF50: Initialisation AI - enemy projectile $AFE5 (Torizo landing dust cloud - right foot) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AF50 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:AF53 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:AF56 18          CLC                    ;|
@@ -7107,6 +7303,8 @@ $86:AF84             dx AF43,84FB,AF14,00,00,3000,0000,84FC ; Tourian statue dus
 {
 ;;; $AF92: Instruction - enemy projectile Y position -= 4 ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:AF92 BD 93 1A    LDA $1A93,x[$7E:1AB5]
 $86:AF95 38          SEC
 $86:AF96 E9 04 00    SBC #$0004
@@ -7143,6 +7341,8 @@ $86:AFB5             dx 0004,8EFB,
 
 ;;; $AFCD: Initialisation AI - enemy projectile $AFF3 (Torizo landing dust cloud - left foot) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:AFCD AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:AFD0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:AFD3 18          CLC                    ;|
@@ -7177,6 +7377,8 @@ $86:AFF3             dx AFCD,84FB,AFB5,00,00,3000,0000,84FC ; Torizo landing dus
 {
 ;;; $B001: Initialisation AI - enemy projectile $B1C0 (Golden Torizo egg) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:B001 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:B004 BD 7A 0F    LDA $0F7A,x            ;\
 $86:B007 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
@@ -7210,6 +7412,8 @@ $86:B039             dw B104,FFF0,FF80,FFFF,FE80 ; Leftwards
 
 ;;; $B043: Pre-instruction - Golden Torizo egg - bouncing ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B043 DE 23 1B    DEC $1B23,x            ; Decrement enemy projectile egg hatch timer
 $86:B046 30 54       BMI $54    [$B09C]     ; If [enemy projectile egg hatch timer] < 0: go to BRANCH_HATCH
 $86:B048 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -7272,6 +7476,8 @@ $86:B0B8 60          RTS
 
 ;;; $B0B9: Pre-instruction - Golden Torizo egg - hatched ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B0B9 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:B0BC B0 15       BCS $15    [$B0D3]     ; If collision: go to BRANCH_HIT_WALL
 $86:B0BE 3C FF 1A    BIT $1AFF,x            ;\
@@ -7296,6 +7502,8 @@ $86:B0DC 60          RTS
 
 ;;; $B0DD: Pre-instruction - Golden Torizo egg - hit wall ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B0DD 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:B0E0 B0 0B       BCS $0B    [$B0ED]     ; If no collision:
 $86:B0E2 A9 30 00    LDA #$0030             ;\
@@ -7352,6 +7560,10 @@ $86:B134             dx 823C,DFFF,  ; Enemy projectile properties &= DFFFh (enab
 
 ;;; $B13E: Instruction - go to hatched ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:B13E 3C FF 1A    BIT $1AFF,x            ;\
 $86:B141 30 04       BMI $04    [$B147]     ;} If [enemy projectile direction] = leftwards:
 $86:B143 A0 4B B1    LDY #$B14B             ; Y = $B14B (hatched - leftwards)
@@ -7394,6 +7606,11 @@ $86:B181             dw B183        ; Go to break
 
 ;;; $B183: Unused. Instruction - go to break ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Used by unused instruction list $B181
 $86:B183 BD FF 1A    LDA $1AFF,x            ;\
 $86:B186 30 04       BMI $04    [$B18C]     ;} If [enemy projectile direction] = leftwards:
@@ -7449,6 +7666,8 @@ $86:B1C0             dx B001,B043,B104,07,07,6064,0000,AB25 ; Golden Torizo egg.
 {
 ;;; $B1CE: Initialisation AI - enemy projectile $B31A (Golden Torizo super missile) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:B1CE AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
 $86:B1D1 99 FF 1A    STA $1AFF,y            ;} X = enemy projectile enemy index = [enemy index]
 $86:B1D4 AA          TAX                    ;/
@@ -7485,6 +7704,9 @@ $86:B209             dw B2C1, B293 ; Instruction list pointers
 
 ;;; $B20D: Pre-instruction - Golden Torizo super missile - held ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; If Golden Torizo is killed, its Y position will be 0, so this projectile will teleport off-screen
 $86:B20D BC FF 1A    LDY $1AFF,x            ; Y = [enemy projectile enemy index]
 $86:B210 B9 7A 0F    LDA $0F7A,y            ;\
@@ -7511,6 +7733,8 @@ $86:B236 60          RTS
 
 ;;; $B237: Pre-instruction - Golden Torizo super missile - thrown ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B237 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:B23A B0 20       BCS $20    [$B25C]     ; If collision: go to BRANCH_COLLISION
 $86:B23C 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -7540,6 +7764,8 @@ $86:B268 60          RTS
 
 ;;; $B269: Instruction - aim super missile - rightwards ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:B269 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
 $86:B26D 29 7F 00    AND #$007F             ; If angle >= 80h: invert angle
 $86:B270 80 07       BRA $07    [$B279]     ; Go to calculate Golden Torizo super missile velocities from angle
@@ -7548,6 +7774,8 @@ $86:B270 80 07       BRA $07    [$B279]     ; Go to calculate Golden Torizo supe
 
 ;;; $B272: Instruction - aim super missile - leftwards ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:B272 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
 $86:B276 09 80 00    ORA #$0080             ; If angle < 80h: invert angle
 }
@@ -7557,6 +7785,7 @@ $86:B276 09 80 00    ORA #$0080             ; If angle < 80h: invert angle
 {
 ;; Parameters:
 ;;     A: Angle
+;;     X: Enemy projectile index
 $86:B279 DA          PHX
 $86:B27A 5A          PHY
 $86:B27B 9B          TXY                    ;\
@@ -7647,6 +7876,8 @@ $86:B31A             dx B1CE,B20D,B293,04,04,A0C8,0000,B2EF ; Golden Torizo supe
 {
 ;;; $B328: Initialisation AI - enemy projectile $B428 (Golden Torizo eye beam) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:B328 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:B32B BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:B32E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
@@ -7698,6 +7929,8 @@ $86:B380             dw B410,FFEC,FC00,FFE2,0400 ; Leftwards
 
 ;;; $B38A: Pre-instruction - enemy projectile $B428 (Golden Torizo eye beam) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B38A 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:B38D B0 06       BCS $06    [$B395]     ; If no collision:
 $86:B38F 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -7727,6 +7960,12 @@ $86:B3B7 60          RTS
 
 ;;; $B3B8: Instruction - go to [[Y]] if eye beam explosions are disabled ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; I'm guessing that enemy projectile $1B23 is enemy index here, it's never actually initialised, but 0 is correct for vanilla anyway
 $86:B3B8 DA          PHX
 $86:B3B9 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
@@ -7805,6 +8044,9 @@ $86:B428             dx B328,B38A,B410,03,03,700A,0000,84FC ; Golden Torizo eye 
 {
 ;;; $B436: Unused. Instruction - reset position ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; Clone of $A3BE
 $86:B436 BD FF 1A    LDA $1AFF,x
 $86:B439 9D 4B 1A    STA $1A4B,x
@@ -7845,6 +8087,11 @@ $86:B470             dx 8312,24,    ; Queue sound 24h, sound library 2, max queu
 
 ;;; $B489: Unused. Instruction - go to [[Y]] with probability 1/4 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Clone of $A456
 $86:B489 22 11 81 80 JSL $808111[$80:8111]
 $86:B48D 29 00 C0    AND #$C000
@@ -7862,6 +8109,9 @@ $86:B49C 60          RTS
 
 ;;; $B49D: Initialisation AI - enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+
 ; Set position to middle of wall that breaks
 $86:B49D A9 10 01    LDA #$0110             ;\
 $86:B4A0 99 4B 1A    STA $1A4B,y[$7E:1A69]  ;} Enemy projectile X position = 110h
@@ -7931,6 +8181,8 @@ $86:B4E3             dx 0005,8FFD,
 
 ;;; $B4EF: Initialisation AI - enemy projectile $B5CB (dragon fireball) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:B4EF AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:B4F2 BD 7E 0F    LDA $0F7E,x[$7E:11BE]  ;\
 $86:B4F5 38          SEC                    ;|
@@ -7964,6 +8216,8 @@ $86:B534 60          RTS
 
 ;;; $B535: Pre-instruction - enemy projectile $B5CB (dragon fireball) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B535 BD B6 1A    LDA $1AB6,x[$7E:1AD6]  ;\
 $86:B538 29 00 FF    AND #$FF00             ;|
 $86:B53B 85 14       STA $14    [$7E:0014]  ;|
@@ -8182,6 +8436,9 @@ $86:B6B1             dw FFC0,0200, 0040,0200
 
 ;;; $B6B9: Pre-instruction - eye door projectile - moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; BUG: the $B707 branch assumes the enemy projectile index is in X, but this is only true if the branch on $B6BC/C1 is taken,
 ; otherwise the enemy projectile index is in Y, and the door bit array index is in X,
 ; causing misaligned writes to enemy projectile RAM if X is odd, eventually causing a crash when the garbage instruction pointer gets executed
@@ -8239,6 +8496,8 @@ $86:B713 60          RTS
 
 ;;; $B714: Pre-instruction - enemy projectile $B751 (eye door sweat) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B714 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:B717 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:B71A 3C DB 1A    BIT $1ADB,x[$7E:1AFD]  ;\
@@ -8339,6 +8598,8 @@ $86:B7B3             dx 0008,910F,
 
 ;;; $B7EA: Instruction - spawn Tourian statue unlocking particle enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:B7EA 5A          PHY
 $86:B7EB 8A          TXA                    ; A = [enemy projectile index]
 $86:B7EC A0 78 BA    LDY #$BA78             ;\
@@ -8372,6 +8633,8 @@ $86:B802             dw 0003,9125,
 
 ;;; $B818: Instruction - spawn Tourian statue unlocking particle tail enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:B818 5A          PHY
 $86:B819 8A          TXA                    ; A = [enemy projectile index]
 $86:B81A A0 86 BA    LDY #$BA86             ;\
@@ -8396,6 +8659,11 @@ $86:B823             dw 0004,90A2,
 
 ;;; $B841: Instruction - enemy projectile Y position += [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:B841 BD 93 1A    LDA $1A93,x[$7E:1AA5]  ;\
 $86:B844 18          CLC                    ;|
 $86:B845 79 00 00    ADC $0000,y[$86:B829]  ;} Enemy projectile Y position += [[Y]]
@@ -8610,6 +8878,8 @@ $86:B976 60          RTS
 {
 ;;; $B977: Pre-instruction - enemy projectile $BA5C (Tourian statue unlocking particle water splash) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B977 AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $86:B97A 38          SEC                    ;|
 $86:B97B E9 04 00    SBC #$0004             ;} Enemy projectile Y position = [FX Y position] - 4
@@ -8620,6 +8890,8 @@ $86:B981 60          RTS
 
 ;;; $B982: Pre-instruction - enemy projectile $BA78 (Tourian statue unlocking particle) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B982 64 12       STZ $12    [$7E:0012]  ;\
 $86:B984 64 14       STZ $14    [$7E:0014]  ;|
 $86:B986 BD B7 1A    LDA $1AB7,x[$7E:1AD1]  ;|
@@ -8682,6 +8954,8 @@ $86:B9FC 60          RTS
 
 ;;; $B9FD: Pre-instruction - enemy projectile $BA94 (Tourian statue's soul) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:B9FD 64 12       STZ $12    [$7E:0012]  ;\
 $86:B9FF 64 14       STZ $14    [$7E:0014]  ;|
 $86:BA01 BD DB 1A    LDA $1ADB,x[$7E:1ADF]  ;|
@@ -8713,6 +8987,8 @@ $86:BA36 60          RTS
 
 ;;; $BA37: Pre-instruction - Tourian statue - base decoration - allow processing to finish ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BA37 AD 6F 1E    LDA $1E6F  [$7E:1E6F]  ;\
 $86:BA3A D0 06       BNE $06    [$BA42]     ;} If [Tourian entrance statue animation state] = 0:
 $86:BA3C A9 00 80    LDA #$8000             ;\
@@ -8722,6 +8998,8 @@ $86:BA3F 0C 6D 1E    TSB $1E6D  [$7E:1E6D]  ;} Tourian entrance statue finished 
 
 ;;; $BA42: Pre-instruction - enemy projectile $BAA2/$BAB0/$BABE (Tourian statue - Ridley / Phantoon / base decoration) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BA42 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:BA45 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [enemy projectile X position mirror]
 $86:BA48 AF 00 9E 7E LDA $7E9E00[$7E:9E00]  ;\
@@ -8965,6 +9243,8 @@ $86:BC0E 60          RTS
 
 ;;; $BC0F: Pre-instruction - enemy projectile $BD5A (polyp rock) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BC0F FC FF 1A    JSR ($1AFF,x)[$86:BC16]; Execute [enemy projectile function]
 $86:BC12 20 1E BD    JSR $BD1E  [$86:BD1E]  ; Delete enemy projectile if off screen
 $86:BC15 60          RTS
@@ -9262,6 +9542,8 @@ $86:BDF3             dw FFF0, FFF4, 0000, 000C, 0010, 000C, 0000, FFF4 ; Y offse
 
 ;;; $BE03: Pre-instruction - enemy projectile $BE25 (Shaktool's attack - front circle) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BE03 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:BE06 B0 06       BCS $06    [$BE0E]     ; If no collision:
 $86:BE08 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -9275,6 +9557,8 @@ $86:BE11 60          RTS
 
 ;;; $BE12: Pre-instruction - Shaktool's attack - middle/back circle - moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BE12 BC FF 1A    LDY $1AFF,x            ; Y = [enemy projectile front circle index]
 $86:BE15 B9 97 19    LDA $1997,y            ;\
 $86:BE18 F0 07       BEQ $07    [$BE21]     ;} If [enemy projectile [Y] ID] != 0:
@@ -9434,6 +9718,8 @@ $86:BFCF             dw 0000,01F2,02C0,01F2,0000,FE0E,FD40,FE0E ; Y velocity
 
 ;;; $BFDF: Pre-instruction - enemy projectile $C17E (Mother Brain's room turrets) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:BFDF 20 B4 C0    JSR $C0B4  [$86:C0B4]  ; Check if turret is on-screen
 $86:BFE2 90 07       BCC $07    [$BFEB]     ; If off-screen:
 $86:BFE4 AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
@@ -9580,6 +9866,8 @@ $86:C0DF 60          RTS                    ;} Return carry set
 
 ;;; $C0E0: Pre-instruction - enemy projectile $C18C (Mother Brain's room turret bullets) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C0E0 BD D7 1B    LDA $1BD7,x[$7E:1BE1]  ;\
 $86:C0E3 49 00 80    EOR #$8000             ;} Toggle projectile collision detection
 $86:C0E6 9D D7 1B    STA $1BD7,x[$7E:1BE1]  ;/
@@ -9696,6 +9984,11 @@ $86:C16D             dw 0001,93D4,
 
 ;;; $C173: Instruction - go to [[Y] + [enemy projectile direction index]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:C173 98          TYA
 $86:C174 18          CLC
 $86:C175 7D FF 1A    ADC $1AFF,x[$7E:1B09]
@@ -9737,6 +10030,8 @@ $86:C19A             dx C1B4,       ; Use palette 0
 
 ;;; $C1B4: Instruction - use palette 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:C1B4 9E BB 19    STZ $19BB,x[$7E:19C5]  ; Enemy projectile graphics indices = 0
 $86:C1B7 60          RTS
 }
@@ -9997,6 +10292,7 @@ $86:C2F2 60          RTS
 ;; Parameters:
 ;;     Y: Enemy projectile index
 ;;     $1993: Angle. Anti-clockwise where 0 = down
+
 ; The initial delay is good for some marginal telegraphing, but also gives time for the next ring to spawn under the current one
 $86:C2F3 BB          TYX                    ; X = [enemy projectile index]
 $86:C2F4 A9 08 00    LDA #$0008             ;\
@@ -10035,6 +10331,8 @@ $86:C334 60          RTS
 
 ;;; $C335: Pre-instruction - enemy projectile $CB4B (Mother Brain's blue ring lasers) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C335 BD FF 1A    LDA $1AFF,x[$7E:1B1D]  ;\
 $86:C338 F0 07       BEQ $07    [$C341]     ;} If [enemy projectile initial delay timer] = 0: go to BRANCH_ACTIVE
 $86:C33A DE FF 1A    DEC $1AFF,x[$7E:1B1D]  ; Decrement enemy projectile initial delay timer
@@ -10194,7 +10492,9 @@ $86:C42A 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3,
 
 ;;; $C42E: Instruction - use palette 0 ;;;
 {
-$86:C42E 9E BB 19    STZ $19BB,x[$7E:19D9]  ; Enemy projectile VRAM graphics index = 0, palette 0
+;; Parameters:
+;;     X: Enemy projectile index
+$86:C42E 9E BB 19    STZ $19BB,x[$7E:19D9]  ; Enemy projectile graphics indices = 0
 $86:C431 60          RTS
 }
 
@@ -10270,6 +10570,8 @@ $86:C4C7 60          RTS
 
 ;;; $C4C8: Pre-instruction - enemy projectile $CB59 (Mother Brain's bomb) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C4C8 20 64 C5    JSR $C564  [$86:C564]  ; Mother Brain's bomb / bomb collision detection
 $86:C4CB BD 23 1B    LDA $1B23,x[$7E:1B43]  ;\
 $86:C4CE D0 2D       BNE $2D    [$C4FD]     ;} If [enemy projectile bounce counter] != 0: go to BRANCH_HAVE_BOUNCED
@@ -10636,6 +10938,8 @@ $86:C811 9E DB 1A    STZ $1ADB,x[$7E:1AFB]
 
 ;;; $C814: Pre-instruction - enemy projectile $CB83 (Mother Brain's rainbow beam charging) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C814 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:C817 18          CLC                    ;|
 $86:C818 69 00 00    ADC #$0000             ;} Enemy projectile X position = [Mother Brain brain X position]
@@ -10677,6 +10981,8 @@ $86:C84A 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile attached positio
 
 ;;; $C84D: Pre-instruction - Mother Brain's drool - attached to Mother Brain ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C84D BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:C850 0A          ASL A                  ;|
 $86:C851 0A          ASL A                  ;} Y = [enemy projectile attached position offset index] * 4
@@ -10705,6 +11011,8 @@ $86:C86E             dw 0006,0014,
 
 ;;; $C886: Pre-instruction - Mother Brain's drool - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C886 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:C889 18          CLC                    ;|
 $86:C88A 69 0C 00    ADC #$000C             ;} Enemy projectile Y velocity += Ch
@@ -10742,6 +11050,8 @@ $86:C8B0             dx 000A,94FF,
 
 ;;; $C8D0: Instruction - move down Ch pixels ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:C8D0 BD 93 1A    LDA $1A93,x[$7E:1AB5]
 $86:C8D3 18          CLC
 $86:C8D4 69 0C 00    ADC #$000C
@@ -10797,6 +11107,8 @@ $86:C911 9D DB 1A    STA $1ADB,x[$7E:1AF7]  ;} Enemy projectile Y offset = [$14]
 
 ;;; $C914: Pre-instruction - enemy projectile $CB13 (Mother Brain's death explosion) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C914 BD B7 1A    LDA $1AB7,x[$7E:1AD3]  ;\
 $86:C917 18          CLC                    ;|
 $86:C918 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [Mother Brain body X position] + [enemy projectile X offset]
@@ -10840,6 +11152,8 @@ $86:C94B 60          RTS
 
 ;;; $C94C: Pre-instruction - enemy projectile $CBAD (Mother Brain's rainbow beam explosion) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C94C BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;\
 $86:C94F 18          CLC                    ;|
 $86:C950 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Enemy projectile X position = [Samus X position] + [enemy projectile X offset]
@@ -10892,6 +11206,8 @@ $86:C9B2             dw 0500,FE00, 0500,FF00, 0500,FF00, 0500,FF80, 0500,FF80, 0
 
 ;;; $C9D2: Pre-instruction - enemy projectile $CB21 (Mother Brain's exploded escape door particles) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:C9D2 BD B7 1A    LDA $1AB7,x[$7E:1ACD]  ;\
 $86:C9D5 10 04       BPL $04    [$C9DB]     ;|
 $86:C9D7 49 FF FF    EOR #$FFFF             ;|
@@ -11054,6 +11370,8 @@ $86:CAF7 9E BB 19    STZ $19BB,x            ; Enemy projectile VRAM graphics ind
 
 ;;; $CAFA: Pre-instruction - enemy projectile $CBBB (time bomb set Japanese text) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CAFA 9E B7 1A    STZ $1AB7,x
 $86:CAFD 9E DB 1A    STZ $1ADB,x
 $86:CB00 A9 80 00    LDA #$0080     ;\
@@ -11120,6 +11438,8 @@ $86:CBE6 60          RTS
 
 ;;; $CBE7: Pre-instruction - enemy projectile $CC5B/$CC69/$CC77/$CC85 (Mother Brain tube falling) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CBE7 7C FF 1A    JMP ($1AFF,x)[$86:CBEA]; Go to [enemy projectile function]
 }
 
@@ -11446,6 +11766,8 @@ $86:CE9A 60          RTS
 
 ;;; $CE9B: Pre-instruction - enemy projectile $CEFC (Mother Brain's glass shattering - shard) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CE9B 64 12       STZ $12    [$7E:0012]  ;\
 $86:CE9D 64 14       STZ $14    [$7E:0014]  ;|
 $86:CE9F BD B7 1A    LDA $1AB7,x[$7E:1AC1]  ;|
@@ -11616,6 +11938,8 @@ $86:CFD4 60          RTS
 
 ;;; $CFD5: Pre-instruction - ki hunter acid spit - left - start moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CFD5 A9 F8 CF    LDA #$CFF8             ;\
 $86:CFD8 9D 03 1A    STA $1A03,x[$7E:1A23]  ;} Enemy projectile pre-instruction = $CFF8 (moving)
 $86:CFDB BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
@@ -11628,6 +11952,8 @@ $86:CFE5 60          RTS
 
 ;;; $CFE6: Pre-instruction - ki hunter acid spit - right - start moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CFE6 A9 F8 CF    LDA #$CFF8             ;\
 $86:CFE9 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $CFF8 (moving)
 $86:CFEC BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
@@ -11646,6 +11972,8 @@ $86:CFF7 60          RTS
 
 ;;; $CFF8: Pre-instruction - ki hunter acid spit - moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:CFF8 C2 30       REP #$30
 $86:CFFA 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:CFFD B0 1B       BCS $1B    [$D01A]     ; If collision detected: go to BRANCH_HIT_FLOOR
@@ -11771,6 +12099,8 @@ $86:D0B2 60          RTS
 
 ;;; $D0B3: Handle kago bug sound effect ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:D0B3 DA          PHX
 $86:D0B4 5A          PHY
 $86:D0B5 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
@@ -11789,6 +12119,8 @@ $86:D0C9 60          RTS
 
 ;;; $D0CA: Pre-instruction - kago bug - idling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D0CA 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
 $86:D0CD 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D0D0 BD FB 1B    LDA $1BFB,x[$7E:1C1D]  ;\
@@ -11808,6 +12140,8 @@ $86:D0EB 60          RTS
 
 ;;; $D0EC: Pre-instruction - kago bug - jumping ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D0EC 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
 $86:D0EF 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D0F2 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -11842,6 +12176,8 @@ $86:D127 60          RTS
 
 ;;; $D128: Pre-instruction - kago bug - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D128 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
 $86:D12B 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D12E 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
@@ -11871,6 +12207,9 @@ $86:D15B 60          RTS
 
 ;;; $D15C: Instruction - start jumping ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; Keeping the X direction flag on the stack was... not the least awkward approach
 ; If the kago is killed, its X position will be 0, which will cause the bugs to (usually) jump left
 $86:D15C 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
@@ -11929,6 +12268,8 @@ $86:D1B5 60          RTS
 
 ;;; $D1B6: Instruction - start idling ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:D1B6 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:D1B9 29 1F 00    AND #$001F             ;|
 $86:D1BC 1A          INC A                  ;} Enemy projectile jump timer = 1 + [random number] % 20h
@@ -11941,14 +12282,18 @@ $86:D1C6 60          RTS
 
 ;;; $D1C7: Instruction - use palette 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:D1C7 A9 00 00    LDA #$0000             ;\
-$86:D1CA 9D BB 19    STA $19BB,x[$7E:19D9]  ;} Enemy projectile VRAM graphics index = 0, palette 0
+$86:D1CA 9D BB 19    STA $19BB,x[$7E:19D9]  ;} Enemy projectile VRAM graphics indices = 0
 $86:D1CD 60          RTS
 }
 
 
 ;;; $D1CE: Instruction - spawn kago enemy drop ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:D1CE 5A          PHY
 $86:D1CF DA          PHX
 $86:D1D0 BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
@@ -12001,7 +12346,7 @@ $86:D208             dw 0006,99E7,
 }
 
 
-;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (powamp spike) ;;;
+;;; $D218: Instruction list - delete / shot instruction list - enemy projectile $D298 (powamp spike) ;;;
 {
 $86:D218             dw 8154        ; Delete
 }
@@ -12057,6 +12402,8 @@ $86:D262 60          RTS
 
 ;;; $D263: Pre-instruction - enemy projectile $D298 (powamp spike) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D263 BD FF 1A    LDA $1AFF,x            ;\
 $86:D266 0A          ASL A                  ;|
 $86:D267 A8          TAY                    ;|
@@ -12240,6 +12587,8 @@ $86:D3BE 60          RTS
 
 ;;; $D3BF: Pre-instruction - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (work robot laser) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D3BF 08          PHP
 $86:D3C0 C2 20       REP #$20
 $86:D3C2 A9 00 00    LDA #$0000             ;\
@@ -12450,6 +12799,9 @@ $86:D5D5             dw D5F2,A7A3,A7AF, ; Reflect-flicker n00b tube shard with l
 
 ;;; $D5E1: Instruction - assign n00b tube shard falling angle ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
 ; TODO: seems that $05E7 (the bitmask result of $80:818E) is assumed to be 0 (or the low byte at least),
 ;       need to check if that's actually true (due to the n00b tube event check?)
 ;       Related: $D69A
@@ -12464,6 +12816,11 @@ $86:D5F1 60          RTS
 
 ;;; $D5F2: Instruction - reflect-flicker n00b tube shard with left-side spritemap [[Y]] or right-side spritemap [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:D5F2 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $86:D5F5 4A          LSR A                  ;} If [frame counter] % 2 != 0:
 $86:D5F6 90 0E       BCC $0E    [$D606]     ;/
@@ -12497,6 +12854,11 @@ $86:D629 60          RTS
 
 ;;; $D62A: Instruction - flicker n00b tube shard with spritemap [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:D62A AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $86:D62D 4A          LSR A                  ;} If [frame counter] % 2 != 0:
 $86:D62E 90 08       BCC $08    [$D638]     ;/
@@ -12546,6 +12908,8 @@ $86:D652             dw 8161,D8DF,  ; Pre-instruction = $D8DF (flying)
 
 ;;; $D69A: Instruction - assign n00b tube released air bubbles falling angle ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:D69A 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:D69E AD E6 05    LDA $05E6  [$7E:05E6]  ;\
 $86:D6A1 9D B7 1A    STA $1AB7,x[$7E:1AC3]  ;} Enemy projectile falling angle = [random number] / 100h | [$05E7] * 100h
@@ -12661,6 +13025,8 @@ $86:D7B3             dw 0050,0048,0054,0020,0040,0054 ; Y offset
 
 ;;; $D7BF: Pre-instruction - n00b tube crack - flickering ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D7BF BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
 $86:D7C2 C9 00 EE    CMP #$EE00             ;} If [enemy projectile X position] != EE00h:
 $86:D7C5 F0 03       BEQ $03    [$D7CA]     ;/
@@ -12681,6 +13047,9 @@ $86:D7DD 60          RTS
 
 ;;; $D7DE: Pre-instruction - n00b tube crack - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; >_<;
 ; Here's my optimisation:
 ;     LDA $1A6F,x : CLC : ADC #$C000 : STA $1A6F,x
@@ -12705,6 +13074,8 @@ $86:D7FC 60          RTS
 
 ;;; $D7FD: Pre-instruction - n00b tube shard - flying ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D7FD 64 12       STZ $12    [$7E:0012]  ;\
 $86:D7FF 64 14       STZ $14    [$7E:0014]  ;|
 $86:D801 BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;|
@@ -12740,6 +13111,9 @@ $86:D83C 60          RTS
 
 ;;; $D83D: Pre-instruction - n00b tube shard - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; The `ORA #$0080` seems random/pointless. Given that the angle is chosen randomly, it has no real effect
 $86:D83D BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;\
 $86:D840 29 FE 01    AND #$01FE             ;|
@@ -12791,6 +13165,9 @@ $86:D89E 60          RTS
 
 ;;; $D89F: Pre-instruction - n00b tube released air bubbles - falling ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
+
 ; The `ORA #$0080` seems random/pointless. Given that the angle is chosen randomly, it has no real effect
 $86:D89F BD B7 1A    LDA $1AB7,x[$7E:1AC3]  ;\
 $86:D8A2 29 FE 01    AND #$01FE             ;|
@@ -12826,6 +13203,8 @@ $86:D8DC 9D B7 1A    STA $1AB7,x[$7E:1AC3]  ;/
 
 ;;; $D8DF: Pre-instruction - n00b tube released air bubbles - flying ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D8DF 64 12       STZ $12    [$7E:0012]  ;\
 $86:D8E1 64 14       STZ $14    [$7E:0014]  ;|
 $86:D8E3 BD DB 1A    LDA $1ADB,x[$7E:1AE7]  ;|
@@ -13000,6 +13379,8 @@ $86:D9DA 60          RTS
 
 ;;; $D9DB: Pre-instruction - enemy projectile $DAFE (cacatac spike) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:D9DB 9B          TXY                    ;\
 $86:D9DC BE FF 1A    LDX $1AFF,y[$7E:1B21]  ;} Execute [$D97E + [enemy projectile direction]]
 $86:D9DF FC 7E D9    JSR ($D97E,x)[$86:DA8E];/
@@ -13283,6 +13664,8 @@ $86:DB5A 60          RTS
 
 ;;; $DB5B: Pre-instruction - mini-Crocomire projectile ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:DB5B FC FF 1A    JSR ($1AFF,x)          ; Execute [enemy projectile function]
 $86:DB5E 20 B6 DB    JSR $DBB6  [$86:DBB6]  ; Delete enemy projectile if off screen
 $86:DB61 60          RTS
@@ -13450,6 +13833,10 @@ $86:DC34             dw 0001,B023,
 
 ;;; $DC5A: Instruction - enemy projectile properties = 3000h ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+
+; Disable collisions with projectiles, die on contact, enable collisions with Samus, high priority
 $86:DC5A A9 00 30    LDA #$3000
 $86:DC5D 9D D7 1B    STA $1BD7,x[$7E:1BE9]
 $86:DC60 60          RTS
@@ -13458,6 +13845,8 @@ $86:DC60 60          RTS
 
 ;;; $DC61: Instruction - spawn enemy drops with Spore Spawn's drop chances ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:DC61 DA          PHX
 $86:DC62 5A          PHY
 $86:DC63 BD 4B 1A    LDA $1A4B,x[$7E:1A5D]  ;\
@@ -13474,6 +13863,8 @@ $86:DC76 60          RTS
 
 ;;; $DC77: Instruction - spawn spore enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:DC77 DA          PHX
 $86:DC78 5A          PHY
 $86:DC79 BD 4B 1A    LDA $1A4B,x[$7E:1A65]  ;\
@@ -13561,6 +13952,8 @@ $86:DCE6             dw 0020, 0060, 00A0, 00E0
 
 ;;; $DCEE: Pre-instruction - enemy projectile $DE7A (spores) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:DCEE BD FF 1A    LDA $1AFF,x[$7E:1B11]  ;\
 $86:DCF1 29 FF 00    AND #$00FF             ;} Y = [enemy projectile movement table index]
 $86:DCF4 A8          TAY                    ;/
@@ -13616,6 +14009,8 @@ $86:DD45 60          RTS
 
 ;;; $DD46: Pre-instruction - enemy projectile $DE88 (spore spawner) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:DD46 AF 00 90 7E LDA $7E9000[$7E:9000]  ;\
 $86:DD4A F0 01       BEQ $01    [$DD4D]     ;} If spore generation disabled:
 $86:DD4C 60          RTS                    ; Return
@@ -13750,6 +14145,8 @@ $86:DF38 60          RTS
 
 ;;; $DF39: Pre-instruction - enemy projectile $DFBC/$DFCA (namihe/fune fireball) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:DF39 FC FF 1A    JSR ($1AFF,x)[$86:DF6A]; Execute [enemy projectile function]
 $86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]  ; Delete enemy projectile if off screen
 $86:DF3F 60          RTS
@@ -13877,6 +14274,8 @@ $86:DFE4             dw DFEA,       ; Spawn enemy drops with magdollite's drop c
 
 ;;; $DFEA: Instruction - spawn enemy drops with magdollite's drop chances ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:DFEA 5A          PHY
 $86:DFEB DA          PHX
 $86:DFEC BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
@@ -13928,6 +14327,8 @@ $86:E048 60          RTS
 
 ;;; $E049: Pre-instruction - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:E049 FC FF 1A    JSR ($1AFF,x)[$86:E07A]; Execute [enemy projectile function]
 $86:E04C 20 A4 E0    JSR $E0A4  [$86:E0A4]  ; Delete enemy projectile if off screen
 $86:E04F 60          RTS
@@ -14548,6 +14949,8 @@ $86:E4FD 60          RTS
 
 ;;; $E4FE: Pre-instruction - enemy projectile $E509 (dust cloud / explosion) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:E4FE 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
 $86:E501 D0 01       BNE $01    [$E504]     ;} If enemy projectile is not off screen:
 $86:E503 60          RTS                    ; Return
@@ -14589,6 +14992,11 @@ $86:E525             dx E468,A197,E138,00,00,0000,0000,84FC ; Unused. Initial in
 {
 ;;; $E533: Instruction - enemy projectile Y velocity = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:E533 B9 00 00    LDA $0000,y[$86:E560]  ;\
 $86:E536 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;} Enemy projectile Y velocity = [[Y]]
 $86:E539 C8          INY                    ;\
@@ -14718,6 +15126,8 @@ $86:E604 60          RTS
 
 ;;; $E605: Pre-instruction - moving ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:E605 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:E608 10 04       BPL $04    [$E60E]     ;|
 $86:E60A 49 FF FF    EOR #$FFFF             ;|
@@ -15388,6 +15798,8 @@ $86:EA7F 60          RTS
 
 ;;; $EA80: Pre-instruction - enemy projectile $EBA0 (Botwoon's body) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:EA80 AF 20 80 7E LDA $7E8020[$7E:8020]  ;\
 $86:EA84 F0 0E       BEQ $0E    [$EA94]     ;} If [Botwoon body death flag] != 0:
 $86:EA86 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
@@ -15625,6 +16037,8 @@ $86:EC04 60          RTS
 
 ;;; $EC05: Pre-instruction - enemy projectile $EC48 (Botwoon's spit) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:EC05 20 3E E7    JSR $E73E  [$86:E73E]  ; Move enemy projectile according to enemy projectile angle and speed
 $86:EC08 20 0C EC    JSR $EC0C  [$86:EC0C]  ; Delete enemy projectile if off-screen
 $86:EC0B 60          RTS
@@ -15795,6 +16209,11 @@ $86:ECC9             dx ECE3,0003,  ; Spawn sprite object 3 (small explosion) ra
 
 ;;; $ECE3: Instruction - spawn sprite object [[Y]] randomly within radius 20h ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:ECE3 DA          PHX
 $86:ECE4 5A          PHY
 $86:ECE5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -15826,6 +16245,11 @@ $86:ED16 60          RTS
 
 ;;; $ED17: Instruction - spawn sprite object [[Y]] randomly within radius 10h ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:ED17 DA          PHX
 $86:ED18 5A          PHY
 $86:ED19 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -16042,6 +16466,10 @@ $86:EEAE 60          RTS
 
 ;;; $EEAF: Instruction - become pickup ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
+;; Returns:
+;;     Y: Pointer to next instruction
 $86:EEAF DA          PHX
 $86:EEB0 5A          PHY
 $86:EEB1 20 06 F1    JSR $F106  [$86:F106]  ; Random drop routine
@@ -16097,6 +16525,8 @@ $86:EF04             dw 0000,
 
 ;;; $EF10: Instruction - handle respawning enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $86:EF10 5A          PHY
 $86:EF11 DA          PHX
 $86:EF12 BF 10 F4 7E LDA $7EF410,x[$7E:F430];\
@@ -16117,6 +16547,7 @@ $86:EF28 60          RTS
 ;;; $EF29: Initialisation AI - enemy projectile $F337 (pickup) ;;;
 {
 ;; Parameters:
+;;     Y: Enemy projectile index
 ;;     $12: X position
 ;;     $14: Y position
 ;;     $0E24: Enemy header pointer (to check drop rates)
@@ -16220,6 +16651,8 @@ $86:EFDF 60          RTS
 
 ;;; $EFE0: Pre-instruction - enemy projectile $F337 (pickup) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:EFE0 DA          PHX
 $86:EFE1 5A          PHY
 $86:EFE2 DE 23 1B    DEC $1B23,x[$7E:1B45]  ; Decrement enemy projectile expiration timer
@@ -16745,6 +17178,8 @@ $86:F363             dx 0001,C4AD,
 
 ;;; $F391: Initialisation AI - enemy projectile $F498 (falling spark) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
 $86:F391 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:F394 A9 53 F3    LDA #$F353             ;\
 $86:F397 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $F353 (falling)
@@ -16783,6 +17218,8 @@ $86:F3D4             dw FFFF,B800,
 
 ;;; $F3F0: Pre-instruction - enemy projectile $F498 (falling spark) ;;;
 {
+;; Parameter:
+;;     X: Enemy projectile index
 $86:F3F0 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:F3F3 30 1D       BMI $1D    [$F412]     ;} If [enemy projectile Y velocity] >= 0:
 $86:F3F5 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically <-- moves enemy projectile by [enemy projectile Y velocity] / 100h
