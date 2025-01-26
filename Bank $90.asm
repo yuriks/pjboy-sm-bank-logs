@@ -11996,7 +11996,6 @@ $90:D5F3 C9 04 00    CMP #$0004             ;} If facing right:
 $90:D5F6 F0 05       BEQ $05    [$D5FD]     ;/
 $90:D5F8 A9 D3 00    LDA #$00D3             ; Samus pose = D3h (facing right - crystal flash)
 $90:D5FB 80 03       BRA $03    [$D600]
-
                                             ; Else (facing left): 
 $90:D5FD A9 D4 00    LDA #$00D4             ; Samus pose = D4h (facing left  - crystal flash)
 
@@ -13926,7 +13925,7 @@ $90:E347 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not boun
 $90:E34A 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $90:E34D AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
 $90:E350 29 FD FF    AND #$FFFD             ;|
-$90:E353 09 02 00    ORA #$0002             ;} $0A64 |= 2
+$90:E353 09 02 00    ORA #$0002             ;} Grapple connected flags = 2 (Samus released from Draygon)
 $90:E356 8D 64 0A    STA $0A64  [$7E:0A64]  ;/
 $90:E359 60          RTS
 }

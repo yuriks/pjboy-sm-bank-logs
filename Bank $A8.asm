@@ -2558,12 +2558,12 @@ $A8:A351 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A355 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A359 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A35D 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A361 38          SEC                    ;} Enemy body segment 1 X velocity = [enemy body segment 1 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A361 38          SEC                    ;} Enemy body segment 1 X velocity = [enemy body segment 1 X offset] * cos([enemy target angle] * pi / 80h)
 $A8:A362 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A366 9F 0E 80 7E STA $7E800E,x[$7E:804E];/
 $A8:A36A BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A36E 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A372 38          SEC                    ;} Enemy body segment 1 Y velocity = [enemy body segment 1 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
+$A8:A372 38          SEC                    ;} Enemy body segment 1 Y velocity = [enemy body segment 1 X offset] * -sin([enemy target angle] * pi / 80h)
 $A8:A373 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A377 9F 10 80 7E STA $7E8010,x[$7E:8050];/
 $A8:A37B 60          RTS
@@ -2583,12 +2583,12 @@ $A8:A394 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A398 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A39C BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3A0 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A3A4 38          SEC                    ;} Enemy body segment 2 X velocity = [enemy body segment 2 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3A4 38          SEC                    ;} Enemy body segment 2 X velocity = [enemy body segment 2 X offset] * cos([enemy target angle] * pi / 80h) - [enemy $7E:7820]
 $A8:A3A5 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A3A9 9F 12 80 7E STA $7E8012,x[$7E:8052];/
 $A8:A3AD BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3B1 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A3B5 38          SEC                    ;} Enemy body segment 2 Y velocity = [enemy body segment 2 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
+$A8:A3B5 38          SEC                    ;} Enemy body segment 2 Y velocity = [enemy body segment 2 X offset] * -sin([enemy target angle] * pi / 80h)
 $A8:A3B6 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A3BA 9F 14 80 7E STA $7E8014,x[$7E:8054];/
 $A8:A3BE 60          RTS
@@ -2608,12 +2608,12 @@ $A8:A3D7 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A3DB 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A3DF BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3E3 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A3E7 38          SEC                    ;} Enemy body segment 3 X velocity = [enemy body segment 3 X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A3E7 38          SEC                    ;} Enemy body segment 3 X velocity = [enemy body segment 3 X offset] * cos([enemy target angle] * pi / 80h) - [enemy $7E:7820]
 $A8:A3E8 FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A3EC 9F 16 80 7E STA $7E8016,x[$7E:8056];/
 $A8:A3F0 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A3F4 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A3F8 38          SEC                    ;} Enemy body segment 3 Y velocity = [enemy body segment 3 X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
+$A8:A3F8 38          SEC                    ;} Enemy body segment 3 Y velocity = [enemy body segment 3 X offset] * -sin([enemy target angle] * pi / 80h)
 $A8:A3F9 FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A3FD 9F 18 80 7E STA $7E8018,x[$7E:8058];/
 $A8:A401 60          RTS
@@ -2633,12 +2633,12 @@ $A8:A41A 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy $7E:7822 = 0
 $A8:A41E 9F 22 78 7E STA $7E7822,x[$7E:7862];/
 $A8:A422 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A426 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A42A 38          SEC                    ;} Enemy head segment X velocity = [enemy head segment X offset] * cos([enemy target angle] * pi / 80h) * 7FFFh / 8000h - [enemy $7E:7820]
+$A8:A42A 38          SEC                    ;} Enemy head segment X velocity = [enemy head segment X offset] * cos([enemy target angle] * pi / 80h) - [enemy $7E:7820]
 $A8:A42B FF 20 78 7E SBC $7E7820,x[$7E:7860];|
 $A8:A42F 9F 1A 80 7E STA $7E801A,x[$7E:805A];/
 $A8:A433 BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A8:A437 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A43B 38          SEC                    ;} Enemy head segment Y velocity = [enemy head segment X offset] * -sin([enemy target angle] * pi / 80h) * 7FFFh / 8000h
+$A8:A43B 38          SEC                    ;} Enemy head segment Y velocity = [enemy head segment X offset] * -sin([enemy target angle] * pi / 80h)
 $A8:A43C FF 22 78 7E SBC $7E7822,x[$7E:7862];|
 $A8:A440 9F 1C 80 7E STA $7E801C,x[$7E:805C];/
 $A8:A444 60          RTS
@@ -2685,46 +2685,46 @@ $A8:A48B 9F 08 80 7E STA $7E8008,x[$7E:8208];} Enemy head segment angle = 80h + 
 $A8:A48F BF 12 78 7E LDA $7E7812,x[$7E:7852];\
 $A8:A493 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:A496 BF 02 80 7E LDA $7E8002,x[$7E:8042];|
-$A8:A49A 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;} Enemy body segment 1 X offset = [enemy length] * cos([enemy body segment 1 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A49A 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;} Enemy body segment 1 X offset = [enemy length] * cos([enemy body segment 1 angle] * pi / 80h) - [enemy origin X position]
 $A8:A49E 38          SEC                    ;|
 $A8:A49F FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
 $A8:A4A3 9F 00 78 7E STA $7E7800,x[$7E:7840];/
 $A8:A4A7 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
 $A8:A4AB 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A4AF 38          SEC                    ;} Enemy body segment 2 X offset = [enemy length] * cos([enemy body segment 2 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4AF 38          SEC                    ;} Enemy body segment 2 X offset = [enemy length] * cos([enemy body segment 2 angle] * pi / 80h) - [enemy origin X position]
 $A8:A4B0 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
 $A8:A4B4 9F 04 78 7E STA $7E7804,x[$7E:7844];/
 $A8:A4B8 BF 06 80 7E LDA $7E8006,x[$7E:8046];\
 $A8:A4BC 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A4C0 38          SEC                    ;} Enemy body segment 3 X offset = [enemy length] * cos([enemy body segment 3 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4C0 38          SEC                    ;} Enemy body segment 3 X offset = [enemy length] * cos([enemy body segment 3 angle] * pi / 80h) - [enemy origin X position]
 $A8:A4C1 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
 $A8:A4C5 9F 08 78 7E STA $7E7808,x[$7E:7848];/
 $A8:A4C9 BF 08 80 7E LDA $7E8008,x[$7E:8048];\
 $A8:A4CD 22 3E A7 A8 JSL $A8A73E[$A8:A73E]  ;|
-$A8:A4D1 38          SEC                    ;} Enemy head segment X offset = [enemy length] * cos([enemy head segment angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin X position]
+$A8:A4D1 38          SEC                    ;} Enemy head segment X offset = [enemy length] * cos([enemy head segment angle] * pi / 80h) - [enemy origin X position]
 $A8:A4D2 FF 1C 78 7E SBC $7E781C,x[$7E:785C];|
 $A8:A4D6 9F 0C 78 7E STA $7E780C,x[$7E:784C];/
 $A8:A4DA BF 12 78 7E LDA $7E7812,x[$7E:7852];\
 $A8:A4DE 4A          LSR A                  ;|
 $A8:A4DF 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:A4E2 BF 02 80 7E LDA $7E8002,x[$7E:8042];|
-$A8:A4E6 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy body segment 1 Y offset = [enemy length] / 2 * -sin([enemy body segment 1 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A4E6 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;} Enemy body segment 1 Y offset = [enemy length] / 2 * -sin([enemy body segment 1 angle] * pi / 80h) - [enemy origin Y position]
 $A8:A4EA 38          SEC                    ;|
 $A8:A4EB FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
 $A8:A4EF 9F 02 78 7E STA $7E7802,x[$7E:7842];/
 $A8:A4F3 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
 $A8:A4F7 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A4FB 38          SEC                    ;} Enemy body segment 2 Y offset = [enemy length] / 2 * -sin([enemy body segment 2 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A4FB 38          SEC                    ;} Enemy body segment 2 Y offset = [enemy length] / 2 * -sin([enemy body segment 2 angle] * pi / 80h) - [enemy origin Y position]
 $A8:A4FC FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
 $A8:A500 9F 06 78 7E STA $7E7806,x[$7E:7846];/
 $A8:A504 BF 06 80 7E LDA $7E8006,x[$7E:8046];\
 $A8:A508 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A50C 38          SEC                    ;} Enemy body segment 3 Y offset = [enemy length] / 2 * -sin([enemy body segment 3 angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A50C 38          SEC                    ;} Enemy body segment 3 Y offset = [enemy length] / 2 * -sin([enemy body segment 3 angle] * pi / 80h) - [enemy origin Y position]
 $A8:A50D FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
 $A8:A511 9F 0A 78 7E STA $7E780A,x[$7E:784A];/
 $A8:A515 BF 08 80 7E LDA $7E8008,x[$7E:8048];\
 $A8:A519 22 42 A7 A8 JSL $A8A742[$A8:A742]  ;|
-$A8:A51D 38          SEC                    ;} Enemy head segment Y offset = [enemy length] / 2 * -sin([enemy head segment angle] * pi / 80h) * 7FFFh / 8000h - [enemy origin Y position]
+$A8:A51D 38          SEC                    ;} Enemy head segment Y offset = [enemy length] / 2 * -sin([enemy head segment angle] * pi / 80h) - [enemy origin Y position]
 $A8:A51E FF 1E 78 7E SBC $7E781E,x[$7E:785E];|
 $A8:A522 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
 $A8:A526 20 39 A3    JSR $A339  [$A8:A339]  ; Calculate body segment 1 velocities
@@ -2984,25 +2984,25 @@ $A8:A73D 60          RTS
 }
 
 
-;;; $A73E: A = [$0E32] * cos([A] * pi / 80h) * 7FFFh / 8000h ;;;
+;;; $A73E: A = [$0E32] * cos([A] * pi / 80h) ;;;
 {
 ;; Parameters:
 ;;     A: Angle
 ;;     $0E32: Radius
 ;; Returns:
-;;     A: [$0E32] * cos([A] * pi / 80h) * 7FFFh / 8000h
+;;     A: [$0E32] * cos([A] * pi / 80h)
 $A8:A73E 38          SEC                    ;\
 $A8:A73F E9 40 00    SBC #$0040             ;} A -= 40h
 }
 
 
-;;; $A742: A = [$0E32] * -sin([A] * pi / 80h) * 7FFFh / 8000h ;;;
+;;; $A742: A = [$0E32] * -sin([A] * pi / 80h) ;;;
 {
 ;; Parameters:
 ;;     A: Angle
 ;;     $0E32: Radius
 ;; Returns:
-;;     A: [$0E32] * -sin([A] * pi / 80h) * 7FFFh / 8000h
+;;     A: [$0E32] * -sin([A] * pi / 80h)
 $A8:A742 85 12       STA $12    [$7E:0012]  ;\
 $A8:A744 A9 00 01    LDA #$0100             ;|
 $A8:A747 38          SEC                    ;|

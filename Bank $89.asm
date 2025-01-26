@@ -1020,6 +1020,9 @@ $89:AAE2             dw 3800, 0400,18A2,0000, 0020,0C62,0000, 0400,1C45,0000, 63
 
 ;;; $AB02: Load FX entry ;;;
 {
+;; Parameters:
+;;     A: FX entry index
+
 ; Called by Mother Brain
 $89:AB02 08          PHP
 $89:AB03 8B          PHB
@@ -1027,11 +1030,11 @@ $89:AB04 C2 30       REP #$30
 $89:AB06 29 07 00    AND #$0007             ;\
 $89:AB09 0A          ASL A                  ;|
 $89:AB0A 0A          ASL A                  ;|
-$89:AB0B 0A          ASL A                  ;} FX entry index = ([A] & 7) * 10h
+$89:AB0B 0A          ASL A                  ;} Current FX entry offset = ([A] & 7) * 10h
 $89:AB0C 0A          ASL A                  ;|
 $89:AB0D 8D 68 19    STA $1968  [$7E:1968]  ;/
 $89:AB10 18          CLC                    ;\
-$89:AB11 6D CD 07    ADC $07CD  [$7E:07CD]  ;} Current FX entry pointer = [current FX pointer] + [current FX entry offset]
+$89:AB11 6D CD 07    ADC $07CD  [$7E:07CD]  ;} Current FX entry pointer = [FX pointer] + [current FX entry offset]
 $89:AB14 8D 66 19    STA $1966  [$7E:1966]  ;/
 $89:AB17 F4 00 83    PEA $8300              ;\
 $89:AB1A AB          PLB                    ;} DB = $83
@@ -1085,7 +1088,7 @@ $89:AB86 F4 00 83    PEA $8300              ;\
 $89:AB89 AB          PLB                    ;} DB = $83
 $89:AB8A AB          PLB                    ;/
 $89:AB8B AE CD 07    LDX $07CD  [$7E:07CD]  ; X = [FX pointer]
-$89:AB8E D0 03       BNE $03    [$AB93]     ;} If [X] = 0:
+$89:AB8E D0 03       BNE $03    [$AB93]     ; If [X] = 0:
 $89:AB90 AB          PLB
 $89:AB91 28          PLP
 $89:AB92 6B          RTL                    ; Return
@@ -1246,8 +1249,8 @@ $89:ACC2 6B          RTL
 {
 ; Handles landing on elevator and setting mode 7 rotation matrix
 $89:ACC3 8B          PHB
-$89:ACC4 4B          PHK
-$89:ACC5 AB          PLB
+$89:ACC4 4B          PHK                    ;\
+$89:ACC5 AB          PLB                    ;} DB = $89
 $89:ACC6 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $89:ACC9 30 02       BMI $02    [$ACCD]     ;} If Ceres elevator shaft is not rotating:
 $89:ACCB AB          PLB

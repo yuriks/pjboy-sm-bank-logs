@@ -4558,6 +4558,8 @@ $A9:B654             dw B65A, B764, B773
 ; [Mother Brain attack phase] = 0
 ; Call to $B6E2 returns from *this* routine if it decided a particular attack,
 ; must have nothing pushed to the stack
+; The call to $B6E2 always returns from this routine if Samus is in (almost) any in-air movement type,
+; hence the Y proximity condition to use RNG thresholds pointer $B6DF is (almost) never true
 $A9:B65A A9 40 00    LDA #$0040             ;\
 $A9:B65D 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Mother Brain attack cooldown = 40h
 $A9:B660 AF 30 78 7E LDA $7E7830[$7E:7830]  ;\

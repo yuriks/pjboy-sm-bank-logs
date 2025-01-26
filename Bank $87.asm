@@ -44,8 +44,8 @@ $87:8026 6B          RTL
 $87:8027 08          PHP
 $87:8028 8B          PHB
 $87:8029 DA          PHX
-$87:802A 4B          PHK
-$87:802B AB          PLB
+$87:802A 4B          PHK                    ;\
+$87:802B AB          PLB                    ;} DB = $87
 $87:802C A2 0A 00    LDX #$000A             ; X = Ah (animated tiles object index)
 
 ; LOOP
@@ -85,8 +85,8 @@ $87:8063 6B          RTL
 {
 $87:8064 08          PHP
 $87:8065 8B          PHB
-$87:8066 4B          PHK
-$87:8067 AB          PLB
+$87:8066 4B          PHK                    ;\
+$87:8067 AB          PLB                    ;} DB = $87
 $87:8068 2C F1 1E    BIT $1EF1  [$7E:1EF1]  ;\
 $87:806B 10 15       BPL $15    [$8082]     ;} If animated tiles objects are disabled: return
 $87:806D A2 0A 00    LDX #$000A             ; X = Ah (animated tiles object index)
@@ -110,6 +110,8 @@ $87:8084 6B          RTL
 
 ;;; $8085: Process animated tiles object ;;;
 {
+; Some instructions (e.g. delete) pop the return address pushed to the stack by $809A to return out of *this* routine
+; (marked "terminate processing animated tiles object")
 $87:8085 AE F3 1E    LDX $1EF3  [$7E:1EF3]  ; X = [animated tiles object index]
 $87:8088 DE 19 1F    DEC $1F19,x[$7E:1F23]  ; Decrement animated tiles object instruction timer
 $87:808B D0 24       BNE $24    [$80B1]     ; If [animated tiles object instruction timer] != 0: return
@@ -140,14 +142,20 @@ $87:80B1 60          RTS
 {
 ;;; $80B2: Instruction - delete ;;;
 {
-$87:80B2 9E F5 1E    STZ $1EF5,x[$7E:1EFF]
-$87:80B5 68          PLA
+;; Parameters:
+;;     X: Animated tiles object index
+$87:80B2 9E F5 1E    STZ $1EF5,x[$7E:1EFF]  ; Animated tiles object ID = 0
+$87:80B5 68          PLA                    ; Terminate processing animated tiles object
 $87:80B6 60          RTS
 }
 
 
 ;;; $80B7: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80B7 B9 00 00    LDA $0000,y[$87:82E5]
 $87:80BA A8          TAY
 $87:80BB 60          RTS
@@ -156,6 +164,10 @@ $87:80BB 60          RTS
 
 ;;; $80BC: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80BC 8C 49 1F    STY $1F49  [$7E:1F49]
 $87:80BF 88          DEY
 $87:80C0 B9 00 00    LDA $0000,y
@@ -175,6 +187,11 @@ $87:80D3 60          RTS
 
 ;;; $80D4: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Animated tiles object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80D4 DE 01 1F    DEC $1F01,x
 $87:80D7 D0 DE       BNE $DE    [$80B7]
 $87:80D9 C8          INY
@@ -185,6 +202,11 @@ $87:80DB 60          RTS
 
 ;;; $80DC: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Animated tiles object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80DC DE 01 1F    DEC $1F01,x
 $87:80DF D0 DB       BNE $DB    [$80BC]
 $87:80E1 C8          INY
@@ -194,6 +216,11 @@ $87:80E2 60          RTS
 
 ;;; $80E3: Unused. Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Animated tiles object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80E3 E2 20       SEP #$20
 $87:80E5 B9 00 00    LDA $0000,y
 $87:80E8 9D 01 1F    STA $1F01,x
@@ -211,6 +238,10 @@ $87:80EF 60          RTS
 
 ;;; $80F0: Unused. Instruction - queue music track [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80F0 B9 00 00    LDA $0000,y
 $87:80F3 29 FF 00    AND #$00FF
 $87:80F6 22 C1 8F 80 JSL $808FC1[$80:8FC1]
@@ -221,6 +252,10 @@ $87:80FB 60          RTS
 
 ;;; $80FC: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:80FC B9 00 00    LDA $0000,y
 $87:80FF 29 FF 00    AND #$00FF
 $87:8102 22 49 90 80 JSL $809049[$80:9049]
@@ -231,6 +266,10 @@ $87:8107 60          RTS
 
 ;;; $8108: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8108 B9 00 00    LDA $0000,y
 $87:810B 29 FF 00    AND #$00FF
 $87:810E 22 CB 90 80 JSL $8090CB[$80:90CB]
@@ -241,6 +280,10 @@ $87:8113 60          RTS
 
 ;;; $8114: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8114 B9 00 00    LDA $0000,y
 $87:8117 29 FF 00    AND #$00FF
 $87:811A 22 4D 91 80 JSL $80914D[$80:914D]
@@ -251,6 +294,10 @@ $87:811F 60          RTS
 
 ;;; $8120: Unused. Instruction - go to [[Y] + 1] if any of the boss bits [[Y]] are set ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8120 B9 00 00    LDA $0000,y
 $87:8123 C8          INY
 $87:8124 29 FF 00    AND #$00FF
@@ -266,6 +313,10 @@ $87:8132 60          RTS
 
 ;;; $8133: Unused. Instruction - set the boss bits [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8133 B9 00 00    LDA $0000,y
 $87:8136 29 FF 00    AND #$00FF
 $87:8139 22 A6 81 80 JSL $8081A6[$80:81A6]
@@ -276,6 +327,10 @@ $87:813E 60          RTS
 
 ;;; $813F: Instruction - go to [[Y] + 2] if the event [[Y]] is set ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:813F B9 00 00    LDA $0000,y[$87:8482]
 $87:8142 C8          INY
 $87:8143 C8          INY
@@ -291,6 +346,10 @@ $87:814F 60          RTS
 
 ;;; $8150: Instruction - set event [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8150 B9 00 00    LDA $0000,y[$87:84D2]
 $87:8153 22 FA 81 80 JSL $8081FA[$80:81FA]
 $87:8157 C8          INY
@@ -365,10 +424,12 @@ $87:81A6             dw 000A,8B64,
 
 ;;; $81BA: Instruction - wait until area boss is dead ;;;
 {
+;; Parameters:
+;;     X: Animated tiles object index
 $87:81BA A9 01 00    LDA #$0001
 $87:81BD 22 DC 81 80 JSL $8081DC[$80:81DC]
 $87:81C1 B0 07       BCS $07    [$81CA]
-$87:81C3 68          PLA
+$87:81C3 68          PLA                    ; Terminate processing animated tiles object
 $87:81C4 A9 01 00    LDA #$0001
 $87:81C7 9D 19 1F    STA $1F19,x[$7E:1F23]
 
@@ -549,6 +610,10 @@ $87:82FD             dw 82ED,0030,4280
 {
 ;;; $8303: Instruction - go to [[Y] + 2] if any of the boss bits [[Y]] for area [[Y] + 1] are set ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8303 DA          PHX
 $87:8304 B9 01 00    LDA $0001,y[$87:849D]
 $87:8307 29 FF 00    AND #$00FF
@@ -570,6 +635,10 @@ $87:831F 60          RTS
 
 ;;; $8320: Instruction - spawn Tourian statue eye glow enemy projectile with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8320 5A          PHY
 $87:8321 B9 00 00    LDA $0000,y[$87:84BE]
 $87:8324 A0 6A BA    LDY #$BA6A             ;\
@@ -583,6 +652,10 @@ $87:832E 60          RTS
 
 ;;; $832F: Instruction - spawn Tourian statue's soul enemy projectile with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:832F 5A          PHY
 $87:8330 B9 00 00    LDA $0000,y[$87:84C6]
 $87:8333 A0 94 BA    LDY #$BA94             ;\
@@ -596,6 +669,10 @@ $87:833D 60          RTS
 
 ;;; $833E: Instruction - go to [[Y]] if Tourian statue is busy releasing lock ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:833E AD 6F 1E    LDA $1E6F  [$7E:1E6F]
 $87:8341 10 03       BPL $03    [$8346]
 $87:8343 4C B7 80    JMP $80B7  [$87:80B7]
@@ -608,6 +685,10 @@ $87:8348 60          RTS
 
 ;;; $8349: Instruction - Tourian statue animation state |= [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8349 B9 00 00    LDA $0000,y[$87:847E]
 $87:834C 0C 6F 1E    TSB $1E6F  [$7E:1E6F]
 $87:834F C8          INY
@@ -618,6 +699,10 @@ $87:8351 60          RTS
 
 ;;; $8352: Instruction - Tourian statue animation state &= ~[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8352 B9 00 00    LDA $0000,y[$87:84D6]
 $87:8355 1C 6F 1E    TRB $1E6F  [$7E:1E6F]
 $87:8358 C8          INY
@@ -628,6 +713,10 @@ $87:835A 60          RTS
 
 ;;; $835B: Instruction - clear 3 colours of palette data at $7E:C000 + [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:835B DA          PHX
 $87:835C BE 00 00    LDX $0000,y[$87:84B2]
 $87:835F A9 00 00    LDA #$0000
@@ -643,6 +732,10 @@ $87:8371 60          RTS
 
 ;;; $8372: Instruction - spawn palette FX object [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:8372 5A          PHY
 $87:8373 B9 00 00    LDA $0000,y[$87:84CA]
 $87:8376 A8          TAY
@@ -656,6 +749,10 @@ $87:837E 60          RTS
 
 ;;; $837F: Instruction - write 8 colours of target palette data to $7E:C200 + [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $87:837F DA          PHX
 $87:8380 5A          PHY
 $87:8381 BE 00 00    LDX $0000,y

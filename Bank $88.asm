@@ -556,6 +556,8 @@ $88:81FD 60          RTS
 
 ;;; $81FE: Handle layer blending power bomb ;;;
 {
+;; Parameters:
+;;     Y: Layer blending power bomb configuration
 $88:81FE C2 30       REP #$30               ;\
 $88:8200 AD 9B 07    LDA $079B  [$7E:079B]  ;|
 $88:8203 C9 6A A6    CMP #$A66A             ;} If room is Tourian entrance:
@@ -1158,6 +1160,8 @@ $88:8568 60          RTS
 {
 ;;; $8569: Instruction - delete ;;;
 {
+;; Parameter:
+;;     X: HDMA object index
 $88:8569 9E B4 18    STZ $18B4,x[$7E:18B4]  ; Delete HDMA object
 $88:856C 68          PLA                    ; Terminate processing HDMA object
 $88:856D E2 30       SEP #$30
@@ -1167,6 +1171,11 @@ $88:856F 60          RTS
 
 ;;; $8570: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8570 B9 00 00    LDA $0000,y[$88:EB7A]
 $88:8573 9D F0 18    STA $18F0,x[$7E:18F0]
 $88:8576 E2 20       SEP #$20
@@ -1182,6 +1191,8 @@ $88:8583 60          RTS
 
 ;;; $8584: Unused. Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:8584 A9 8A 85    LDA #$858A
 $88:8587 9D F0 18    STA $18F0,x
 
@@ -1191,6 +1202,10 @@ $88:858A 60          RTS
 
 ;;; $858B: Unused. Instruction - call function [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:858B B9 00 00    LDA $0000,y
 $88:858E 85 12       STA $12    [$7E:0012]
 $88:8590 DA          PHX
@@ -1208,6 +1223,10 @@ $88:859C 60          RTS
 
 ;;; $859D: Unused. Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:859D B9 00 00    LDA $0000,y
 $88:85A0 85 12       STA $12    [$7E:0012]
 $88:85A2 B9 02 00    LDA $0002,y
@@ -1228,6 +1247,11 @@ $88:85B3 60          RTS
 
 ;;; $85B4: Instruction - call external function [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:85B4 B9 00 00    LDA $0000,y[$88:8AD6]
 $88:85B7 85 12       STA $12    [$7E:0012]
 $88:85B9 B9 01 00    LDA $0001,y[$88:8AD7]
@@ -1248,6 +1272,10 @@ $88:85CA DC 12 00    JML [$0012][$88:8B14]
 
 ;;; $85CD: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:85CD B9 00 00    LDA $0000,y
 $88:85D0 85 12       STA $12    [$7E:0012]
 $88:85D2 B9 01 00    LDA $0001,y
@@ -1270,6 +1298,10 @@ $88:85E9 DC 12 00    JML [$0012]
 
 ;;; $85EC: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:85EC B9 00 00    LDA $0000,y[$88:B0BA]
 $88:85EF A8          TAY
 $88:85F0 60          RTS
@@ -1278,6 +1310,10 @@ $88:85F0 60          RTS
 
 ;;; $85F1: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:85F1 84 12       STY $12    [$7E:0012]
 $88:85F3 88          DEY
 $88:85F4 B9 00 00    LDA $0000,y
@@ -1297,6 +1333,11 @@ $88:8606 60          RTS
 
 ;;; $8607: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8607 DE 08 19    DEC $1908,x
 $88:860A D0 E0       BNE $E0    [$85EC]
 $88:860C C8          INY
@@ -1307,6 +1348,11 @@ $88:860E 60          RTS
 
 ;;; $860F: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:860F DE 08 19    DEC $1908,x
 $88:8612 D0 DD       BNE $DD    [$85F1]
 $88:8614 C8          INY
@@ -1316,6 +1362,11 @@ $88:8615 60          RTS
 
 ;;; $8616: Unused. Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8616 E2 20       SEP #$20
 $88:8618 B9 00 00    LDA $0000,y
 $88:861B 9D 08 19    STA $1908,x
@@ -1327,6 +1378,11 @@ $88:8621 60          RTS
 
 ;;; $8622: Unused. Instruction - HDMA control = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8622 DA          PHX
 $88:8623 BD C0 18    LDA $18C0,x
 $88:8626 29 FF 00    AND #$00FF
@@ -1343,6 +1399,11 @@ $88:8636 60          RTS
 
 ;;; $8637: Unused. Instruction - HDMA target = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8637 DA          PHX
 $88:8638 BD C0 18    LDA $18C0,x
 $88:863B 29 FF 00    AND #$00FF
@@ -1359,6 +1420,11 @@ $88:864B 60          RTS
 
 ;;; $864C: Unused. Instruction - HDMA table pointer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:864C B9 00 00    LDA $0000,y
 $88:864F 9D D8 18    STA $18D8,x
 $88:8652 C8          INY
@@ -1369,6 +1435,11 @@ $88:8654 60          RTS
 
 ;;; $8655: Instruction - HDMA table bank = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:8655 DA          PHX
 $88:8656 BD C0 18    LDA $18C0,x[$7E:18C0]
 $88:8659 29 FF 00    AND #$00FF
@@ -1385,6 +1456,11 @@ $88:8669 60          RTS
 
 ;;; $866A: Instruction - indirect HDMA data bank = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:866A DA          PHX
 $88:866B BD C0 18    LDA $18C0,x[$7E:18C0]
 $88:866E 29 FF 00    AND #$00FF
@@ -1401,6 +1477,11 @@ $88:867E 60          RTS
 
 ;;; $867F: Unused. Instruction - skip next instruction ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:867F C8          INY
 $88:8680 C8          INY
 $88:8681 60          RTS
@@ -1409,6 +1490,9 @@ $88:8681 60          RTS
 
 ;;; $8682: Instruction - sleep ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to after this instruction
 $88:8682 88          DEY                    ;\
 $88:8683 88          DEY                    ;|
 $88:8684 98          TYA                    ;} HDMA object instruction list pointer = [Y] - 2
@@ -2076,6 +2160,8 @@ $88:8B4D 6B          RTL
 
 ;;; $8B4E: Power bomb explosion - clean up and try crystal flash ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:8B4E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $88:8B51 CD E2 0C    CMP $0CE2  [$7E:0CE2]  ;|
 $88:8B54 D0 10       BNE $10    [$8B66]     ;|
@@ -2128,6 +2214,8 @@ $88:8B96             dw 0003
 
 ;;; $8B98: Pre-instruction - power bomb explosion - stage 5 - after-glow ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:8B98 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:8B9B 30 01       BMI $01    [$8B9E]     ;} If power bomb is not exploding:
 $88:8B9D 6B          RTL                    ; Return
@@ -2277,6 +2365,9 @@ $88:8C61 60          RTS
 
 ;;; $8C62: Calculate power bomb explosion HDMA object table pointers ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
 ;     $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white
@@ -2555,6 +2646,8 @@ $88:8DE7             dw 0030
 
 ;;; $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:8DE9 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:8DEC 30 01       BMI $01    [$8DEF]     ;} If power bomb is not exploding:
 $88:8DEE 6B          RTL                    ; Return
@@ -2668,6 +2761,8 @@ $88:8EB1 6B          RTL
 
 ;;; $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:8EB2 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:8EB5 30 01       BMI $01    [$8EB8]     ;} If power bomb is not exploding:
 $88:8EB7 6B          RTL                    ; Return
@@ -2756,6 +2851,9 @@ $88:8F55 6B          RTL
 
 ;;; $8F56: Calculate power bomb pre-explosion HDMA object table pointers ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; Called by:
 ;     $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white
 ;     $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
@@ -3015,6 +3113,8 @@ $88:90DD             dw 0080
 
 ;;; $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:90DF AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:90E2 30 01       BMI $01    [$90E5]     ;} If power bomb is not exploding:
 $88:90E4 6B          RTL                    ; Return
@@ -3128,6 +3228,8 @@ $88:91A7 6B          RTL
 
 ;;; $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:91A8 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:91AB 30 01       BMI $01    [$91AE]     ;} If power bomb is not exploding:
 $88:91AD 6B          RTL                    ; Return
@@ -3335,6 +3437,8 @@ $88:A316 6B          RTL
 
 ;;; $A317: Crystal flash - clean up ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:A317 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $88:A31A 9C 92 05    STZ $0592  [$7E:0592]  ; Clear power bomb explosion status
 $88:A31D 9E B4 18    STZ $18B4,x[$7E:18B6]  ;\
@@ -3378,6 +3482,9 @@ $88:A35C 6B          RTL
 
 ;;; $A35D: Pre-instruction - crystal flash - stage 2 - after-glow ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; The same as power bomb explosion stage 5 ($8B98) except for using colour components as a wake criterion ($A36A..76) instead of [HDMA object $1938]
 ; This is actually a bug, as the colour components are always non-zero in rooms that use a backdrop colour (FX 28h/2Ah), meaning this object never dies
 ; If you lay a power bomb afterwards, this does override the backdrop colour to zero and causes this object to clean itself up,
@@ -3694,6 +3801,9 @@ $88:A551 60          RTS
 
 ;;; $A552: Pre-instruction - crystal flash - stage 1 - explosion ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; Identical to power bomb explosion stage 3 ($8DE9) except for the max radius (at $A5F6, resp. $8E8D)
 $88:A552 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:A555 30 01       BMI $01    [$A558]     ;} If power bomb is not exploding:
@@ -3852,14 +3962,19 @@ $88:A66B 6B          RTL
 
 ;;; $A66C: Instruction - HDMA object phase increase timer = 1 ;;;
 {
-$88:A66C A9 01 00    LDA #$0001             ;\
-$88:A66F 9D 20 19    STA $1920,x            ;} HDMA object $1920 = 1
+;; Parameters:
+;;     X: HDMA object index
+$88:A66C A9 01 00    LDA #$0001
+$88:A66F 9D 20 19    STA $1920,x
 $88:A672 60          RTS
 }
 
 
 ;;; $A673: Pre-instruction - FX type 22h BG3 X scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; $7E:9E02..??: FX type 22h BG3 X scroll indirect HDMA table
 ; $7E:9F02..??: FX type 22h BG1 X scroll indirect HDMA table
 ; $7E:9E80..??: FX type 22h BG3 X scroll HDMA data table
@@ -4735,12 +4850,12 @@ $88:B088 22 35 84 88 JSL $888435[$88:8435]  ;\
 $88:B08C             dx 42, 11, B0AC        ;} Spawn indirect HDMA object for BG3 X scroll with instruction list $B0AC
 $88:B090 A9 00 00    LDA #$0000             ;\
 $88:B093 8F 00 9E 7E STA $7E9E00[$7E:9E00]  ;} $7E:9E00 = 0,0 (dummy HDMA table)
-$88:B097 9C 7C 17    STZ $177C  [$7E:177C]  ; $177C = 0
+$88:B097 9C 7C 17    STZ $177C  [$7E:177C]  ; $177C = 0 (never read)
 $88:B09A 9C 7E 17    STZ $177E  [$7E:177E]  ; Fireflea darkness level = 0
 $88:B09D A9 18 00    LDA #$0018             ;\
-$88:B0A0 8D 80 17    STA $1780  [$7E:1780]  ;} $1780 = 18h
+$88:B0A0 8D 80 17    STA $1780  [$7E:1780]  ;} $1780 = 18h (never read)
 $88:B0A3 AF 58 B0 88 LDA $88B058[$88:B058]  ;\
-$88:B0A7 8D 82 17    STA $1782  [$7E:1782]  ;} $1782 = 0
+$88:B0A7 8D 82 17    STA $1782  [$7E:1782]  ;} $1782 = 0 (never read)
 $88:B0AA 28          PLP
 $88:B0AB 6B          RTL
 }
@@ -5207,6 +5322,8 @@ $88:B3A1             db 12, 13, 14, 12, 13, 14, 12, 13
 
 ;;; $B3A9: Instruction - lava sound timer = 70h ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:B3A9 A9 70 00    LDA #$0070
 $88:B3AC 9D 2C 19    STA $192C,x[$7E:192C]
 $88:B3AF 60          RTS
@@ -5345,6 +5462,8 @@ $88:B48E             dw 0000,0001,0001,0000,0000,FFFF,FFFF,0000,
 
 ;;; $B4CE: Instruction - HDMA object phase decrease timer = 1 ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:B4CE A9 01 00    LDA #$0001
 $88:B4D1 9D 20 19    STA $1920,x[$7E:1922]
 $88:B4D4 60          RTS
@@ -5395,6 +5514,8 @@ $88:B51C 6B          RTL
 
 ;;; $B51D: Set up lava/acid BG2 Y scroll data table - not wavy ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:B51D E2 20       SEP #$20               ;\
 $88:B51F BC C0 18    LDY $18C0,x[$7E:18C2]  ;|
 $88:B522 A9 10       LDA #$10               ;} HDMA target = BG2 Y scroll ($2110)
@@ -5416,6 +5537,9 @@ $88:B53A 60          RTS
 
 ;;; $B53B: Set up lava/acid BG2 Y scroll data table - horizontally wavy ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; OK so this is suddenly now BG2 *X* scroll here, but this effect is never used in vanilla, so I'm not changing the name
 $88:B53B E2 20       SEP #$20               ;\
 $88:B53D BC C0 18    LDY $18C0,x            ;|
@@ -5467,6 +5591,8 @@ $88:B589             dw 0000,0000,0001,0001,0001,0001,0000,0000,
 
 ;;; $B5A9: Set up lava/acid BG2 Y scroll data table - vertically wavy ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:B5A9 E2 20       SEP #$20               ;\
 $88:B5AB BC C0 18    LDY $18C0,x[$7E:18C2]  ;|
 $88:B5AE A9 10       LDA #$10               ;} HDMA target = BG2 Y scroll ($2110)
@@ -5534,7 +5660,7 @@ $88:B60A             dw 0000,0001,0001,0000,0000,FFFF,FFFF,0000,
 ; 0
 
 ; Disregarding the unnecessary nature of the lava/acid BG3 Y scroll HDMA (see $B3B0), this table is needlessly large
-; There's no reason to have more than E0h scanlines of $9C02 (even less if the HUD is accounted for)
+; There's no reason to have more than E0h scanlines of $9C02 (even fewer if the HUD is accounted for)
 
 $88:B62A             dx 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
@@ -5724,6 +5850,8 @@ $88:C466 60          RTS
 
 ;;; $C467: Instruction - HDMA object phase increase timer = 1 ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:C467 A9 01 00    LDA #$0001
 $88:C46A 9D 20 19    STA $1920,x[$7E:1920]
 $88:C46D 60          RTS
@@ -5878,6 +6006,9 @@ $88:C581 6B          RTL
 
 ;;; $C582: Instruction - HDMA object phase increase timer = 1 ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; Clone of $C467
 $88:C582 A9 01 00    LDA #$0001
 $88:C585 9D 20 19    STA $1920,x[$7E:1922]
@@ -5887,6 +6018,9 @@ $88:C588 60          RTS
 
 ;;; $C589: Pre-instruction - water BG2 X scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; For on-screen water,
 ; the calculation 1FFh - [A] at $C5CE is equivalent to FFh + (Y position of screen on FX)
 ; (100h is the offset of water in the BG3 tilemap, and I think FFh is an off-by-one error)
@@ -5945,6 +6079,8 @@ $88:C5E3 6B          RTL
 
 ;;; $C5E4: Set up water BG2 X scroll data table - wavy ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:C5E4 DE 20 19    DEC $1920,x[$7E:1922]  ; Decrement HDMA object phase increase timer
 $88:C5E7 D0 11       BNE $11    [$C5FA]     ; If [HDMA object phase increase timer] = 0:
 $88:C5E9 A9 06 00    LDA #$0006             ;\
@@ -6348,6 +6484,8 @@ $88:D979             dx 7FFF,D86F,  ; <-- this is the BG3 scroll HDMA object HDM
 
 ;;; $D981: Instruction - HDMA object BG3 X velocity = randomly ±400h/±600h ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:D981 DA          PHX                    ;\
 $88:D982 AD E5 05    LDA $05E5  [$7E:05E5]  ;|
 $88:D985 4A          LSR A                  ;|
@@ -6374,6 +6512,8 @@ $88:D99A             dx 1F,CAD8,
 
 ;;; $D9A1: Pre-instruction - rain BG3 scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:D9A1 8B          PHB
 $88:D9A2 A0 5C       LDY #$5C               ;\
 $88:D9A4 84 5B       STY $5B    [$7E:005B]  ;} BG3 tilemap base address = $5C00, size = 32x32
@@ -6470,6 +6610,8 @@ $88:DA40             dx 1F,CAD8,
 
 ;;; $DA47: Pre-instruction - spores BG3 X scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DA47 8B          PHB
 $88:DA48 A0 5C       LDY #$5C               ;\
 $88:DA4A 84 5B       STY $5B    [$7E:005B]  ;} BG3 tilemap base address = $5C00, size = 32x32
@@ -6520,6 +6662,7 @@ $88:DA9E 6B          RTL
 ;;; $DA9F: Unused. Handle spores waviness ;;;
 {
 ;; Parameters:
+;;     X: HDMA object index
 ;;     $12: X position of screen on Samus??
 ;;     $14: Y position of screen on FX?
 
@@ -6615,6 +6758,8 @@ $88:DB2F             dx 1F,CAD8,
 
 ;;; $DB36: Pre-instruction - fog BG3 scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DB36 8B          PHB
 $88:DB37 A0 5C       LDY #$5C               ;\
 $88:DB39 84 5B       STY $5B    [$7E:005B]  ;} Gameplay BG3 tilemap base address = $5C00, size = 32x32
@@ -6692,6 +6837,8 @@ $88:DBCA 6B          RTL
 
 ;;; $DBCB: Set Tourian entrance statue BG2 Y scroll ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DBCB BD 20 19    LDA $1920,x[$7E:1922]  ;\
 $88:DBCE 18          CLC                    ;|
 $88:DBCF 6D 15 09    ADC $0915  [$7E:0915]  ;} Tourian entrance statue BG2 Y scroll = [layer 1 Y position] + [HDMA object $1920]
@@ -6702,6 +6849,8 @@ $88:DBD6 60          RTS
 
 ;;; $DBD7: Pre-instruction - Tourian entrance statue BG2 Y scroll - wait for locks to be released ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DBD7 08          PHP
 $88:DBD8 C2 30       REP #$30
 $88:DBDA A9 06 00    LDA #$0006             ;\
@@ -6736,6 +6885,8 @@ $88:DC22 6B          RTL
 
 ;;; $DC23: Pre-instruction - Tourian entrance statue BG2 Y scroll - descent delay ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DC23 20 1D B2    JSR $B21D  [$88:B21D]  ; Handle earthquake sound effect
 $88:DC26 A9 0D 00    LDA #$000D             ;\
 $88:DC29 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
@@ -6766,6 +6917,8 @@ $88:DC68 6B          RTL
 
 ;;; $DC69: Pre-instruction - Tourian entrance statue BG2 Y scroll - descending ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DC69 20 1D B2    JSR $B21D  [$88:B21D]  ; Handle earthquake sound effect
 $88:DC6C A9 0D 00    LDA #$000D             ;\
 $88:DC6F 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
@@ -6804,6 +6957,8 @@ $88:DCB9 6B          RTL
 
 ;;; $DCBA: Pre-instruction - Tourian entrance statue BG2 Y scroll - enable scrolling ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DCBA A9 00 80    LDA #$8000             ;\
 $88:DCBD 8D 6D 1E    STA $1E6D  [$7E:1E6D]  ;} Tourian entrance statue finished processing flag = 8000h
 $88:DCC0 A9 02 02    LDA #$0202             ;\
@@ -6815,6 +6970,11 @@ $88:DCCA 6B          RTL
 
 ;;; $DCCB: Instruction - go to [[Y]] if entrance to Tourian is unlocked ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $88:DCCB 9E 2C 19    STZ $192C,x[$7E:192E]  ; HDMA object $192C = 0
 $88:DCCE 9E 14 19    STZ $1914,x[$7E:1916]  ; HDMA object $1914 = 0
 $88:DCD1 A9 0A 00    LDA #$000A             ;\
@@ -6984,6 +7144,8 @@ $88:DDE1 6B          RTL
 
 ;;; $DDE2: Unused. Set Ceres haze pre-instruction for no fade ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DDE2 A9 E8 DD    LDA #$DDE8             ;\
 $88:DDE5 9D F0 18    STA $18F0,x            ;} HDMA object pre-instruction = $DDE8
 }
@@ -6991,6 +7153,9 @@ $88:DDE5 9D F0 18    STA $18F0,x            ;} HDMA object pre-instruction = $DD
 
 ;;; $DDE8: Unused. Pre-instruction - Ceres haze colour math subscreen backdrop colour - no fade ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+
 ; I assume this routine was used before they realised they needed to handle door transition fade
 $88:DDE8 A0 20       LDY #$20               ;\
 $88:DDEA 84 74       STY $74    [$7E:0074]  ;|
@@ -7019,6 +7184,8 @@ $88:DE0F 6B          RTL
 
 ;;; $DE10: Pre-instruction - Ceres haze colour math subscreen backdrop colour - Ceres Ridley alive ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE10 A9 80 00    LDA #$0080             ; A = 80h (blue intensity)
 $88:DE13 80 03       BRA $03    [$DE18]     ; Go to set up Ceres haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in
 }
@@ -7026,12 +7193,16 @@ $88:DE13 80 03       BRA $03    [$DE18]     ; Go to set up Ceres haze colour mat
 
 ;;; $DE15: Pre-instruction - Ceres haze colour math subscreen backdrop colour - Ceres Ridley dead ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE15 A9 20 00    LDA #$0020             ; A = 20h (red intensity)
 }
 
 
 ;;; $DE18: Set up Ceres haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE18 9D 20 19    STA $1920,x[$7E:1920]  ; HDMA object colour component flags = [A]
 $88:DE1B 9E 14 19    STZ $1914,x[$7E:1914]  ; HDMA object max colour intensity = 0
 $88:DE1E AD 9C 09    LDA $099C  [$7E:099C]  ;\
@@ -7046,6 +7217,8 @@ $88:DE2A 9D F0 18    STA $18F0,x[$7E:18F0]  ;} HDMA object pre-instruction = $DE
 
 ;;; $DE2D: Pre-instruction - Ceres haze colour math subscreen backdrop colour - fading in ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE2D A0 20       LDY #$20               ;\
 $88:DE2F 84 74       STY $74    [$7E:0074]  ;|
 $88:DE31 A0 40       LDY #$40               ;|
@@ -7090,6 +7263,8 @@ $88:DE73 6B          RTL
 
 ;;; $DE74: Pre-instruction - Ceres haze colour math subscreen backdrop colour - faded in ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE74 A0 20       LDY #$20               ;\
 $88:DE76 84 74       STY $74    [$7E:0074]  ;|
 $88:DE78 A0 40       LDY #$40               ;|
@@ -7111,6 +7286,8 @@ $88:DE95 6B          RTL
 
 ;;; $DE96: Pre-instruction - Ceres haze colour math subscreen backdrop colour - fading out ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DE96 A0 20       LDY #$20               ;\
 $88:DE98 84 74       STY $74    [$7E:0074]  ;|
 $88:DE9A A0 40       LDY #$40               ;|
@@ -7300,6 +7477,8 @@ $88:DF93 6B          RTL
 
 ;;; $DF94: Pre-instruction - Draygon main screen layers ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:DF94 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $88:DF97 89 00 02    BIT #$0200             ;} If Draygon body is deleted: go to BRANCH_DRAYGON_OFF_SCREEN
 $88:DF9A D0 44       BNE $44    [$DFE0]     ;/
@@ -7411,7 +7590,7 @@ $88:E029 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $88:E02C 0A          ASL A                  ;|
 $88:E02D AA          TAX                    ;} Execute [$E04E + [suit pickup stage] * 2
 $88:E02E FC 4E E0    JSR ($E04E,x)[$88:E092];/
-$88:E031 90 19       BCC $19    [$E04C]     ; If carry set:
+$88:E031 90 19       BCC $19    [$E04C]     ; If carry set (not finished):
 $88:E033 E2 20       SEP #$20
 $88:E035 AD F0 0D    LDA $0DF0  [$7E:0DF0]  ;\
 $88:E038 85 74       STA $74    [$7E:0074]  ;} Colour math subscreen backdrop colour 0 = [suit pickup colour math subscreen backdrop red component]
@@ -7438,7 +7617,7 @@ $88:E05F AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $88:E062 0A          ASL A                  ;|
 $88:E063 AA          TAX                    ;} Execute [$E084 + [$0DEC] * 2
 $88:E064 FC 84 E0    JSR ($E084,x)[$88:E092];/
-$88:E067 90 19       BCC $19    [$E082]     ; If carry set:
+$88:E067 90 19       BCC $19    [$E082]     ; If carry set (not finished):
 $88:E069 E2 20       SEP #$20
 $88:E06B AD F0 0D    LDA $0DF0  [$7E:0DF0]  ;\
 $88:E06E 85 74       STA $74    [$7E:0074]  ;} Colour math subscreen backdrop colour 0 = [suit pickup colour math subscreen backdrop red component]
@@ -7459,6 +7638,8 @@ $88:E084             dw E092, E0D7, E113, E361, E1BA, E22B, E25F
 
 ;;; $E092: Suit pickup stage 0 - light beam appears ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
 $88:E092 AD EE 0D    LDA $0DEE  [$7E:0DEE]  ;\
 $88:E095 18          CLC                    ;|
 $88:E096 69 08 00    ADC #$0008             ;} Suit pickup light beam height += 8
@@ -7503,6 +7684,8 @@ $88:E0D5             db 78,78
 
 ;;; $E0D7: Suit pickup stage 1 - light beam widens - linear ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
 $88:E0D7 E2 20       SEP #$20
 $88:E0D9 AD EE 0D    LDA $0DEE  [$7E:0DEE]  ;\
 $88:E0DC 38          SEC                    ;|
@@ -7536,6 +7719,8 @@ $88:E112 60          RTS                    ;} Return carry set
 
 ;;; $E113: Suit pickup stage 2 - light beam widens - curved ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
 $88:E113 20 B4 E2    JSR $E2B4  [$88:E2B4]  ; Advance suit pickup colour math subscreen backdrop transition to white
 $88:E116 C2 10       REP #$10
 $88:E118 E2 20       SEP #$20
@@ -7626,6 +7811,8 @@ $88:E1B9 60          RTS                    ;} Return carry set
 
 ;;; $E1BA: Suit pickup stage 4 - light beam shrinks ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
 $88:E1BA AD F2 0D    LDA $0DF2  [$7E:0DF2]  ;\
 $88:E1BD 89 00 FF    BIT #$FF00             ;} If [suit pickup palette transition colour] = orange:
 $88:E1C0 D0 05       BNE $05    [$E1C7]     ;/
@@ -7690,6 +7877,8 @@ $88:E22A 60          RTS                    ;} Return carry set
 
 ;;; $E22B: Suit pickup stage 5 - light beam dissipates ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
 $88:E22B E2 20       SEP #$20
 $88:E22D AD EE 0D    LDA $0DEE  [$7E:0DEE]  ;\
 $88:E230 18          CLC                    ;|
@@ -7715,6 +7904,8 @@ $88:E257 60          RTS                    ;} Return carry set
 
 ;;; $E258: Varia suit pickup stage 6 ;;;
 {
+;; Returns:
+;;     Carry: Clear. Finished
 $88:E258 A9 03 00    LDA #$0003             ;\
 $88:E25B 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 }
@@ -7722,6 +7913,9 @@ $88:E25B 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 
 ;;; $E25F: Gravity suit pickup stage 6 ;;;
 {
+;; Returns:
+;;     Carry: Clear. Finished
+
 ; Called by varia suit pickup stage 6 too
 $88:E25F E2 20       SEP #$20               ;\
 $88:E261 A9 80       LDA #$80               ;|
@@ -7830,6 +8024,9 @@ $88:E31F 60          RTS
 
 ;;; $E320: Varia suit pickup stage 3 - give Samus varia suit ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
+
 ; This code is all redundant, as varia suit is already given to Samus by the PLM
 $88:E320 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $88:E323 09 01 00    ORA #$0001             ;} Equip varia suit
@@ -7858,6 +8055,9 @@ $88:E360 60          RTS                    ;} Return carry set
 
 ;;; $E361: Gravity suit pickup stage 3 - give Samus gravity suit ;;;
 {
+;; Returns:
+;;     Carry: Set. Not finished
+
 ; This code is all redundant, as gravity suit is already given to Samus by the PLM
 $88:E361 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $88:E364 09 20 00    ORA #$0020             ;} Equip gravity suit
@@ -8004,6 +8204,8 @@ $88:E4A8             dx 866A,7E,    ; Indirect HDMA data bank = $7E
 
 ;;; $E4BD: Instruction - set up wavy Phantoon ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:E4BD 08          PHP
 $88:E4BE C2 30       REP #$30
 $88:E4C0 AD 34 10    LDA $1034  [$7E:1034]  ;\
@@ -8536,6 +8738,8 @@ $88:E8EC             dx 866A,7E,    ; Indirect HDMA data bank = $7E
 
 ;;; $E917: Instruction - initialise morph ball eye beam HDMA ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:E917 08          PHP
 $88:E918 E2 20       SEP #$20
 $88:E91A C2 10       REP #$10
@@ -8580,6 +8784,8 @@ $88:E986 60          RTS
 
 ;;; $E987: Update morph ball eye beam HDMA data table and colour math subscreen backdrop colour ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:E987 08          PHP
 $88:E988 C2 30       REP #$30
 $88:E98A DA          PHX
@@ -8631,6 +8837,8 @@ $88:E9E5 60          RTS
 
 ;;; $E9E6: Pre-instruction - morph ball eye beam HDMA - beam is widening ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:E9E6 08          PHP
 $88:E9E7 C2 30       REP #$30
 $88:E9E9 A9 10 00    LDA #$0010             ;\
@@ -8669,6 +8877,8 @@ $88:EA3B 6B          RTL
 
 ;;; $EA3C: Pre-instruction - morph ball eye beam HDMA - full beam ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:EA3C 08          PHP
 $88:EA3D C2 30       REP #$30
 $88:EA3F A9 10 00    LDA #$0010             ;\
@@ -8730,6 +8940,8 @@ $88:EA8B             db 30,50,80, 00,
 
 ;;; $EACB: Pre-instruction - morph ball eye beam HDMA - deactivate beam ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:EACB 08          PHP
 $88:EACC C2 30       REP #$30
 $88:EACE A9 10 00    LDA #$0010             ;\
@@ -9024,6 +9236,8 @@ $88:EC8A             dx 866A,7E,    ; Indirect HDMA data bank = $7E
 
 ;;; $EC9F: Instruction - set up wavy Samus ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
 $88:EC9F 08          PHP
 $88:ECA0 C2 30       REP #$30
 $88:ECA2 A9 FE FF    LDA #$FFFE             ;\
