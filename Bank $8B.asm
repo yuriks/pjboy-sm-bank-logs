@@ -667,6 +667,11 @@ $8B:858E 60          RTS
 
 ;;; $858F: $2A.$2C = ±[$26] * ±[$28] / 10000h (16-bit signed multiplication) ;;;
 {
+;; Parameters:
+;;     $26: Multiplicand
+;;     $28: Multiplicand
+;; Returns:
+;;     $2A.$2C: Product / 10000h
 $8B:858F 08          PHP
 $8B:8590 C2 30       REP #$30
 $8B:8592 A5 26       LDA $26    [$7E:0026]  ;\
@@ -724,6 +729,12 @@ $8B:85ED 60          RTS
 
 ;;; $85EE: $2A.$2C = [$26] * [$28] / 10000h (16-bit unsigned multiplication) ;;;
 {
+;; Parameters:
+;;     $26: Multiplicand
+;;     $28: Multiplicand
+;; Returns:
+;;     $2A.$2C: Product / 10000h
+
 ; Exactly 1204/1232 master cycles (88%/90% of a scanline).
 
 ; Compared to $80:82D6, this routine is a bit slower (144/172 master cycles slower),
