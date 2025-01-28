@@ -1085,6 +1085,8 @@ $8B:8838 60          RTS
 
 ;;; $8839: Process cinematic BG object indirect instruction ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
 $8B:8839 08          PHP
 $8B:883A C2 30       REP #$30
 $8B:883C DA          PHX
@@ -1098,6 +1100,7 @@ $8B:8846 6C 1C 00    JMP ($001C)[$8B:88FD]  ;/
 
 ;;; $8849: Indirect instruction function - nothing ;;;
 {
+; Expects pushed Y, X and PSR
 ; Used by dummy instruction used for delay
 $8B:8849 7A          PLY
 $8B:884A FA          PLX
@@ -1108,9 +1111,14 @@ $8B:884C 60          RTS
 
 ;;; $884D: Indirect instruction function - draw text character [[Y] + 4] ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction
+
+; Expects pushed Y, X and PSR
 ; Only one tile can be specified
 ; Draws character, updates caret position (based on next instruction) and plays intro text click
-; Cinemastic sprite object Fh is the intro text caret here
+; Cinematic sprite object Fh is the intro text caret here
 $8B:884D AD A1 1B    LDA $1BA1  [$7E:1BA1]  ;\
 $8B:8850 D0 08       BNE $08    [$885A]     ;|
 $8B:8852 A9 01 00    LDA #$0001             ;|
@@ -1168,6 +1176,11 @@ $8B:88B6 7A          PLY
 
 ;;; $88B7: Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with tilemap values at [Y] + 4 to text tilemap ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction
+
+; Expects pushed Y, X and PSR
 ; Used for space colony label in intro and in the ending sequence
 $8B:88B7 20 43 89    JSR $8943  [$8B:8943]  ; X = $16 = tilemap offset for tile ([$12], [$13])
 $8B:88BA B9 02 00    LDA $0002,y[$8C:D6B7]  ;\
@@ -1209,6 +1222,11 @@ $8B:88FC 60          RTS
 
 ;;; $88FD: Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with tilemap values at [Y] + 4 to BG2 ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction
+
+; Expects pushed Y, X and PSR
 ; Used for Samus eyes during the intro
 $8B:88FD 20 43 89    JSR $8943  [$8B:8943]  ; X = $16 = tilemap offset for tile ([$12], [$13])
 $8B:8900 B9 02 00    LDA $0002,y[$8C:D783]  ;\
@@ -1250,7 +1268,11 @@ $8B:8942 60          RTS
 
 ;;; $8943: X = $16 = tilemap offset for tile ([$12], [$13]) ;;;
 {
-; X = $16 = ([$13] * 20h + [$12]) * 2
+;; Parameters:
+;;     $12: Tile X
+;;     $13: Tile Y
+;; Returns:
+;;     X/$16: Tilemap offset (in octets). ([$13] * 20h + [$12]) * 2
 $8B:8943 AD 12 00    LDA $0012  [$7E:0012]
 $8B:8946 29 FF 00    AND #$00FF
 $8B:8949 0A          ASL A
@@ -1275,6 +1297,11 @@ $8B:896A 60          RTS
 
 ;;; $896B: Unused. Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with tilemap values at [Y] + 4 to mode 7 tilemap ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction
+
+; Expects pushed Y, X and PSR
 $8B:896B 20 2C 8A    JSR $8A2C  [$8B:8A2C]  ; $16 = mode 7 tilemap offset for tile ([$12], [$13])
 $8B:896E B9 02 00    LDA $0002,y            ;\
 $8B:8971 29 FF 00    AND #$00FF             ;} $12 = [[Y] + 2] (columns)
@@ -1327,6 +1354,11 @@ $8B:89CE 60          RTS
 
 ;;; $89CF: Unused. Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with column-major tilemap values at [Y] + 4 to mode 7 tilemap ;;;
 {
+;; Parameters:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction
+
+; Expects pushed Y, X and PSR
 $8B:89CF 20 2C 8A    JSR $8A2C  [$8B:8A2C]  ; $16 = mode 7 tilemap offset for tile ([$12], [$13])
 $8B:89D2 B9 02 00    LDA $0002,y            ;\
 $8B:89D5 29 FF 00    AND #$00FF             ;} $12 = [[Y] + 2] (columns)
@@ -1376,7 +1408,12 @@ $8B:8A2B 60          RTS
 
 ;;; $8A2C: Unused. $16 = mode 7 tilemap offset for tile ([$12], [$13]) ;;;
 {
-; $16 = [$13] * 80h + [$12]
+;; Parameters:
+;;     $12: Tile X
+;;     $13: Tile Y
+;; Returns:
+;;     $16: Tilemap offset (in octets). [$13] * 80h + [$12]
+
 ; Uses the multiplication registers for some reason
 ; Only called by unused routines
 $8B:8A2C AD 12 00    LDA $0012  [$7E:0012]
@@ -1748,6 +1785,9 @@ $8B:8C5D 60          RTS
 
 ;;; $8C5E: Clear [Y] colours starting from colour index [X] ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Number of colours
 $8B:8C5E 08          PHP
 $8B:8C5F 8B          PHB
 $8B:8C60 E2 20       SEP #$20               ;\
@@ -1774,6 +1814,9 @@ $8B:8C82 60          RTS
 
 ;;; $8C83: Fade out [Y] colours starting from colour index [X] ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Number of colours
 $8B:8C83 08          PHP
 
 ; LOOP
@@ -1800,6 +1843,9 @@ $8B:8CB1 60          RTS
 
 ;;; $8CB2: Fade in [Y] colours starting from colour index [X] ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Number of colours
 $8B:8CB2 08          PHP
 
 ; LOOP
@@ -1830,8 +1876,8 @@ $8B:8CE9 60          RTS
 ;;; $8CEA: Compose fading palettes ;;;
 {
 $8B:8CEA 08          PHP
-$8B:8CEB A2 00 00    LDX #$0000             ; X = 0
-$8B:8CEE A0 00 01    LDY #$0100             ; Y = 100h
+$8B:8CEB A2 00 00    LDX #$0000             ; X = 0 (colour index)
+$8B:8CEE A0 00 01    LDY #$0100             ; Y = 100h (loop counter)
 
 ; LOOP
 $8B:8CF1 BF 00 24 7E LDA $7E2400,x[$7E:2400];\
@@ -2098,9 +2144,16 @@ $8B:8EA2 60          RTS
 }
 
 
-;;; $8EA3: Unused. A = [$18] * sin([X] / 2 * pi / 80h) ;;;
+;;; $8EA3: A = [$18] * sin([X] / 2 * pi / 80h) ;;;
 {
-; Only called by unused routine
+;; Parameters:
+;;     X: Angle * 2
+;;     $18: Radius
+;; Returns:
+;;     A: Sine component
+
+; Clone of $86:9BF3
+; Only called by above unused routine
 $8B:8EA3 E2 20       SEP #$20               ;\
 $8B:8EA5 BF 43 B4 A0 LDA $A0B443,x          ;|
 $8B:8EA9 8D 02 42    STA $4202              ;|
@@ -2134,20 +2187,21 @@ $8B:8ED8 60          RTS
 {
 ; Move unused sprites to X = 180h
 ; Uses one hell of an unrolled loop
+; TODO: this might be buggy for [OAM stack pointer] = 1FCh
 $8B:8ED9 08          PHP
 $8B:8EDA C2 30       REP #$30
 $8B:8EDC AD 90 05    LDA $0590  [$7E:0590]  ;\
 $8B:8EDF C9 00 02    CMP #$0200             ;} If [OAM stack pointer] >= 200h: return
 $8B:8EE2 10 40       BPL $40    [$8F24]     ;/
 $8B:8EE4 4A          LSR A                  ;\
-$8B:8EE5 4A          LSR A                  ;|
-$8B:8EE6 48          PHA                    ;|
-$8B:8EE7 29 07 00    AND #$0007             ;} Y = [OAM stack pointer] / 4 % 8 * 2 (high OAM bit index)
-$8B:8EEA 0A          ASL A                  ;|
+$8B:8EE5 4A          LSR A                  ;} A = [OAM stack pointer] / 4
+$8B:8EE6 48          PHA                    ;\
+$8B:8EE7 29 07 00    AND #$0007             ;|
+$8B:8EEA 0A          ASL A                  ;} Y = [A] % 8 * 2 (high OAM bit index)
 $8B:8EEB A8          TAY                    ;|
 $8B:8EEC 68          PLA                    ;/
 $8B:8EED 4A          LSR A                  ;\
-$8B:8EEE 4A          LSR A                  ;} X = [OAM stack pointer] / 10h (high OAM byte index)
+$8B:8EEE 4A          LSR A                  ;} X = [A] / 4 (high OAM byte index)
 $8B:8EEF AA          TAX                    ;/
 $8B:8EF0 BD 70 05    LDA $0570,x[$7E:0580]  ;\
 $8B:8EF3 19 26 8F    ORA $8F26,y[$8B:8F26]  ;} Set high X position bits of sprites ([X] * 4 + [Y] / 2) .. ([X] * 4 + 7)
@@ -2186,7 +2240,7 @@ $8B:8F26             dw 5555, ; Sprites 0..7 high X position bits
                         5500, ; Sprites 4..7 high X position bits
                         5400, ; Sprites 5..7 high X position bits
                         5000, ; Sprites 6..7 high X position bits
-                        4000  ; Sprites 7 high X position bit
+                        4000  ; Sprite 7 high X position bit
 
 $8B:8F36 8D 70 03    STA $0370  [$7E:0370]  ; Sprite 0 X position = 80h
 $8B:8F39 8D 74 03    STA $0374  [$7E:0374]  ; Sprite 1 X position = 80h
