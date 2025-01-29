@@ -2204,14 +2204,14 @@ $8B:8EED 4A          LSR A                  ;\
 $8B:8EEE 4A          LSR A                  ;} X = [A] / 4 (high OAM byte index)
 $8B:8EEF AA          TAX                    ;/
 $8B:8EF0 BD 70 05    LDA $0570,x[$7E:0580]  ;\
-$8B:8EF3 19 26 8F    ORA $8F26,y[$8B:8F26]  ;} Set high X position bits of sprites ([X] * 4 + [Y] / 2) .. ([X] * 4 + 7)
+$8B:8EF3 19 26 8F    ORA $8F26,y[$8B:8F26]  ;} Set high X position bits of sprites [A] .. ([A] + 7)
 $8B:8EF6 9D 70 05    STA $0570,x[$7E:0580]  ;/
 $8B:8EF9 E0 1E 00    CPX #$001E             ;\
 $8B:8EFC 10 0F       BPL $0F    [$8F0D]     ;|
 $8B:8EFE E8          INX                    ;|
 $8B:8EFF E8          INX                    ;|
                                             ;|
-$8B:8F00 A9 55 55    LDA #$5555             ;} Set high X position bits of sprites ([X] * 4 + 8) .. 7Fh
+$8B:8F00 A9 55 55    LDA #$5555             ;} Set high X position bits of sprites ([A] + 8) .. 7Fh
 $8B:8F03 9D 70 05    STA $0570,x[$7E:0582]  ;|
 $8B:8F06 E8          INX                    ;|
 $8B:8F07 E8          INX                    ;|
@@ -2223,7 +2223,7 @@ $8B:8F10 4A          LSR A                  ;|
 $8B:8F11 85 12       STA $12    [$7E:0012]  ;|
 $8B:8F13 4A          LSR A                  ;|
 $8B:8F14 65 12       ADC $12    [$7E:0012]  ;|
-$8B:8F16 18          CLC                    ;} Sprites ([X] * 4)..7Fh low X positions = 80h
+$8B:8F16 18          CLC                    ;} Sprites [A]..7Fh low X positions = 80h
 $8B:8F17 69 36 8F    ADC #$8F36             ;|
 $8B:8F1A 85 12       STA $12    [$7E:0012]  ;|
 $8B:8F1C A9 80 00    LDA #$0080             ;|
@@ -2242,134 +2242,134 @@ $8B:8F26             dw 5555, ; Sprites 0..7 high X position bits
                         5000, ; Sprites 6..7 high X position bits
                         4000  ; Sprite 7 high X position bit
 
-$8B:8F36 8D 70 03    STA $0370  [$7E:0370]  ; Sprite 0 X position = 80h
-$8B:8F39 8D 74 03    STA $0374  [$7E:0374]  ; Sprite 1 X position = 80h
-$8B:8F3C 8D 78 03    STA $0378  [$7E:0378]  ; Sprite 2 X position = 80h
-$8B:8F3F 8D 7C 03    STA $037C  [$7E:037C]  ; Sprite 3 X position = 80h
-$8B:8F42 8D 80 03    STA $0380  [$7E:0380]  ; Sprite 4 X position = 80h
-$8B:8F45 8D 84 03    STA $0384  [$7E:0384]  ; Sprite 5 X position = 80h
-$8B:8F48 8D 88 03    STA $0388  [$7E:0388]  ; Sprite 6 X position = 80h
-$8B:8F4B 8D 8C 03    STA $038C  [$7E:038C]  ; Sprite 7 X position = 80h
-$8B:8F4E 8D 90 03    STA $0390  [$7E:0390]  ; Sprite 8 X position = 80h
-$8B:8F51 8D 94 03    STA $0394  [$7E:0394]  ; Sprite 9 X position = 80h
-$8B:8F54 8D 98 03    STA $0398  [$7E:0398]  ; Sprite Ah X position = 80h
-$8B:8F57 8D 9C 03    STA $039C  [$7E:039C]  ; Sprite Bh X position = 80h
-$8B:8F5A 8D A0 03    STA $03A0  [$7E:03A0]  ; Sprite Ch X position = 80h
-$8B:8F5D 8D A4 03    STA $03A4  [$7E:03A4]  ; Sprite Dh X position = 80h
-$8B:8F60 8D A8 03    STA $03A8  [$7E:03A8]  ; Sprite Eh X position = 80h
-$8B:8F63 8D AC 03    STA $03AC  [$7E:03AC]  ; Sprite Fh X position = 80h
-$8B:8F66 8D B0 03    STA $03B0  [$7E:03B0]  ; Sprite 10h X position = 80h
-$8B:8F69 8D B4 03    STA $03B4  [$7E:03B4]  ; Sprite 11h X position = 80h
-$8B:8F6C 8D B8 03    STA $03B8  [$7E:03B8]  ; Sprite 12h X position = 80h
-$8B:8F6F 8D BC 03    STA $03BC  [$7E:03BC]  ; Sprite 13h X position = 80h
-$8B:8F72 8D C0 03    STA $03C0  [$7E:03C0]  ; Sprite 14h X position = 80h
-$8B:8F75 8D C4 03    STA $03C4  [$7E:03C4]  ; Sprite 15h X position = 80h
-$8B:8F78 8D C8 03    STA $03C8  [$7E:03C8]  ; Sprite 16h X position = 80h
-$8B:8F7B 8D CC 03    STA $03CC  [$7E:03CC]  ; Sprite 17h X position = 80h
-$8B:8F7E 8D D0 03    STA $03D0  [$7E:03D0]  ; Sprite 18h X position = 80h
-$8B:8F81 8D D4 03    STA $03D4  [$7E:03D4]  ; Sprite 19h X position = 80h
-$8B:8F84 8D D8 03    STA $03D8  [$7E:03D8]  ; Sprite 1Ah X position = 80h
-$8B:8F87 8D DC 03    STA $03DC  [$7E:03DC]  ; Sprite 1Bh X position = 80h
-$8B:8F8A 8D E0 03    STA $03E0  [$7E:03E0]  ; Sprite 1Ch X position = 80h
-$8B:8F8D 8D E4 03    STA $03E4  [$7E:03E4]  ; Sprite 1Dh X position = 80h
-$8B:8F90 8D E8 03    STA $03E8  [$7E:03E8]  ; Sprite 1Eh X position = 80h
-$8B:8F93 8D EC 03    STA $03EC  [$7E:03EC]  ; Sprite 1Fh X position = 80h
-$8B:8F96 8D F0 03    STA $03F0  [$7E:03F0]  ; Sprite 20h X position = 80h
-$8B:8F99 8D F4 03    STA $03F4  [$7E:03F4]  ; Sprite 21h X position = 80h
-$8B:8F9C 8D F8 03    STA $03F8  [$7E:03F8]  ; Sprite 22h X position = 80h
-$8B:8F9F 8D FC 03    STA $03FC  [$7E:03FC]  ; Sprite 23h X position = 80h
-$8B:8FA2 8D 00 04    STA $0400  [$7E:0400]  ; Sprite 24h X position = 80h
-$8B:8FA5 8D 04 04    STA $0404  [$7E:0404]  ; Sprite 25h X position = 80h
-$8B:8FA8 8D 08 04    STA $0408  [$7E:0408]  ; Sprite 26h X position = 80h
-$8B:8FAB 8D 0C 04    STA $040C  [$7E:040C]  ; Sprite 27h X position = 80h
-$8B:8FAE 8D 10 04    STA $0410  [$7E:0410]  ; Sprite 28h X position = 80h
-$8B:8FB1 8D 14 04    STA $0414  [$7E:0414]  ; Sprite 29h X position = 80h
-$8B:8FB4 8D 18 04    STA $0418  [$7E:0418]  ; Sprite 2Ah X position = 80h
-$8B:8FB7 8D 1C 04    STA $041C  [$7E:041C]  ; Sprite 2Bh X position = 80h
-$8B:8FBA 8D 20 04    STA $0420  [$7E:0420]  ; Sprite 2Ch X position = 80h
-$8B:8FBD 8D 24 04    STA $0424  [$7E:0424]  ; Sprite 2Dh X position = 80h
-$8B:8FC0 8D 28 04    STA $0428  [$7E:0428]  ; Sprite 2Eh X position = 80h
-$8B:8FC3 8D 2C 04    STA $042C  [$7E:042C]  ; Sprite 2Fh X position = 80h
-$8B:8FC6 8D 30 04    STA $0430  [$7E:0430]  ; Sprite 30h X position = 80h
-$8B:8FC9 8D 34 04    STA $0434  [$7E:0434]  ; Sprite 31h X position = 80h
-$8B:8FCC 8D 38 04    STA $0438  [$7E:0438]  ; Sprite 32h X position = 80h
-$8B:8FCF 8D 3C 04    STA $043C  [$7E:043C]  ; Sprite 33h X position = 80h
-$8B:8FD2 8D 40 04    STA $0440  [$7E:0440]  ; Sprite 34h X position = 80h
-$8B:8FD5 8D 44 04    STA $0444  [$7E:0444]  ; Sprite 35h X position = 80h
-$8B:8FD8 8D 48 04    STA $0448  [$7E:0448]  ; Sprite 36h X position = 80h
-$8B:8FDB 8D 4C 04    STA $044C  [$7E:044C]  ; Sprite 37h X position = 80h
-$8B:8FDE 8D 50 04    STA $0450  [$7E:0450]  ; Sprite 38h X position = 80h
-$8B:8FE1 8D 54 04    STA $0454  [$7E:0454]  ; Sprite 39h X position = 80h
-$8B:8FE4 8D 58 04    STA $0458  [$7E:0458]  ; Sprite 3Ah X position = 80h
-$8B:8FE7 8D 5C 04    STA $045C  [$7E:045C]  ; Sprite 3Bh X position = 80h
-$8B:8FEA 8D 60 04    STA $0460  [$7E:0460]  ; Sprite 3Ch X position = 80h
-$8B:8FED 8D 64 04    STA $0464  [$7E:0464]  ; Sprite 3Dh X position = 80h
-$8B:8FF0 8D 68 04    STA $0468  [$7E:0468]  ; Sprite 3Eh X position = 80h
-$8B:8FF3 8D 6C 04    STA $046C  [$7E:046C]  ; Sprite 3Fh X position = 80h
-$8B:8FF6 8D 70 04    STA $0470  [$7E:0470]  ; Sprite 40h X position = 80h
-$8B:8FF9 8D 74 04    STA $0474  [$7E:0474]  ; Sprite 41h X position = 80h
-$8B:8FFC 8D 78 04    STA $0478  [$7E:0478]  ; Sprite 42h X position = 80h
-$8B:8FFF 8D 7C 04    STA $047C  [$7E:047C]  ; Sprite 43h X position = 80h
-$8B:9002 8D 80 04    STA $0480  [$7E:0480]  ; Sprite 44h X position = 80h
-$8B:9005 8D 84 04    STA $0484  [$7E:0484]  ; Sprite 45h X position = 80h
-$8B:9008 8D 88 04    STA $0488  [$7E:0488]  ; Sprite 46h X position = 80h
-$8B:900B 8D 8C 04    STA $048C  [$7E:048C]  ; Sprite 47h X position = 80h
-$8B:900E 8D 90 04    STA $0490  [$7E:0490]  ; Sprite 48h X position = 80h
-$8B:9011 8D 94 04    STA $0494  [$7E:0494]  ; Sprite 49h X position = 80h
-$8B:9014 8D 98 04    STA $0498  [$7E:0498]  ; Sprite 4Ah X position = 80h
-$8B:9017 8D 9C 04    STA $049C  [$7E:049C]  ; Sprite 4Bh X position = 80h
-$8B:901A 8D A0 04    STA $04A0  [$7E:04A0]  ; Sprite 4Ch X position = 80h
-$8B:901D 8D A4 04    STA $04A4  [$7E:04A4]  ; Sprite 4Dh X position = 80h
-$8B:9020 8D A8 04    STA $04A8  [$7E:04A8]  ; Sprite 4Eh X position = 80h
-$8B:9023 8D AC 04    STA $04AC  [$7E:04AC]  ; Sprite 4Fh X position = 80h
-$8B:9026 8D B0 04    STA $04B0  [$7E:04B0]  ; Sprite 50h X position = 80h
-$8B:9029 8D B4 04    STA $04B4  [$7E:04B4]  ; Sprite 51h X position = 80h
-$8B:902C 8D B8 04    STA $04B8  [$7E:04B8]  ; Sprite 52h X position = 80h
-$8B:902F 8D BC 04    STA $04BC  [$7E:04BC]  ; Sprite 53h X position = 80h
-$8B:9032 8D C0 04    STA $04C0  [$7E:04C0]  ; Sprite 54h X position = 80h
-$8B:9035 8D C4 04    STA $04C4  [$7E:04C4]  ; Sprite 55h X position = 80h
-$8B:9038 8D C8 04    STA $04C8  [$7E:04C8]  ; Sprite 56h X position = 80h
-$8B:903B 8D CC 04    STA $04CC  [$7E:04CC]  ; Sprite 57h X position = 80h
-$8B:903E 8D D0 04    STA $04D0  [$7E:04D0]  ; Sprite 58h X position = 80h
-$8B:9041 8D D4 04    STA $04D4  [$7E:04D4]  ; Sprite 59h X position = 80h
-$8B:9044 8D D8 04    STA $04D8  [$7E:04D8]  ; Sprite 5Ah X position = 80h
-$8B:9047 8D DC 04    STA $04DC  [$7E:04DC]  ; Sprite 5Bh X position = 80h
-$8B:904A 8D E0 04    STA $04E0  [$7E:04E0]  ; Sprite 5Ch X position = 80h
-$8B:904D 8D E4 04    STA $04E4  [$7E:04E4]  ; Sprite 5Dh X position = 80h
-$8B:9050 8D E8 04    STA $04E8  [$7E:04E8]  ; Sprite 5Eh X position = 80h
-$8B:9053 8D EC 04    STA $04EC  [$7E:04EC]  ; Sprite 5Fh X position = 80h
-$8B:9056 8D F0 04    STA $04F0  [$7E:04F0]  ; Sprite 60h X position = 80h
-$8B:9059 8D F4 04    STA $04F4  [$7E:04F4]  ; Sprite 61h X position = 80h
-$8B:905C 8D F8 04    STA $04F8  [$7E:04F8]  ; Sprite 62h X position = 80h
-$8B:905F 8D FC 04    STA $04FC  [$7E:04FC]  ; Sprite 63h X position = 80h
-$8B:9062 8D 00 05    STA $0500  [$7E:0500]  ; Sprite 64h X position = 80h
-$8B:9065 8D 04 05    STA $0504  [$7E:0504]  ; Sprite 65h X position = 80h
-$8B:9068 8D 08 05    STA $0508  [$7E:0508]  ; Sprite 66h X position = 80h
-$8B:906B 8D 0C 05    STA $050C  [$7E:050C]  ; Sprite 67h X position = 80h
-$8B:906E 8D 10 05    STA $0510  [$7E:0510]  ; Sprite 68h X position = 80h
-$8B:9071 8D 14 05    STA $0514  [$7E:0514]  ; Sprite 69h X position = 80h
-$8B:9074 8D 18 05    STA $0518  [$7E:0518]  ; Sprite 6Ah X position = 80h
-$8B:9077 8D 1C 05    STA $051C  [$7E:051C]  ; Sprite 6Bh X position = 80h
-$8B:907A 8D 20 05    STA $0520  [$7E:0520]  ; Sprite 6Ch X position = 80h
-$8B:907D 8D 24 05    STA $0524  [$7E:0524]  ; Sprite 6Dh X position = 80h
-$8B:9080 8D 28 05    STA $0528  [$7E:0528]  ; Sprite 6Eh X position = 80h
-$8B:9083 8D 2C 05    STA $052C  [$7E:052C]  ; Sprite 6Fh X position = 80h
-$8B:9086 8D 30 05    STA $0530  [$7E:0530]  ; Sprite 70h X position = 80h
-$8B:9089 8D 34 05    STA $0534  [$7E:0534]  ; Sprite 71h X position = 80h
-$8B:908C 8D 38 05    STA $0538  [$7E:0538]  ; Sprite 72h X position = 80h
-$8B:908F 8D 3C 05    STA $053C  [$7E:053C]  ; Sprite 73h X position = 80h
-$8B:9092 8D 40 05    STA $0540  [$7E:0540]  ; Sprite 74h X position = 80h
-$8B:9095 8D 44 05    STA $0544  [$7E:0544]  ; Sprite 75h X position = 80h
-$8B:9098 8D 48 05    STA $0548  [$7E:0548]  ; Sprite 76h X position = 80h
-$8B:909B 8D 4C 05    STA $054C  [$7E:054C]  ; Sprite 77h X position = 80h
-$8B:909E 8D 50 05    STA $0550  [$7E:0550]  ; Sprite 78h X position = 80h
-$8B:90A1 8D 54 05    STA $0554  [$7E:0554]  ; Sprite 79h X position = 80h
-$8B:90A4 8D 58 05    STA $0558  [$7E:0558]  ; Sprite 7Ah X position = 80h
-$8B:90A7 8D 5C 05    STA $055C  [$7E:055C]  ; Sprite 7Bh X position = 80h
-$8B:90AA 8D 60 05    STA $0560  [$7E:0560]  ; Sprite 7Ch X position = 80h
-$8B:90AD 8D 64 05    STA $0564  [$7E:0564]  ; Sprite 7Dh X position = 80h
-$8B:90B0 8D 68 05    STA $0568  [$7E:0568]  ; Sprite 7Eh X position = 80h
-$8B:90B3 8D 6C 05    STA $056C  [$7E:056C]  ; Sprite 7Fh X position = 80h
+$8B:8F36 8D 70 03    STA $0370  [$7E:0370]  ; Sprite 0 low X position = 80h
+$8B:8F39 8D 74 03    STA $0374  [$7E:0374]  ; Sprite 1 low X position = 80h
+$8B:8F3C 8D 78 03    STA $0378  [$7E:0378]  ; Sprite 2 low X position = 80h
+$8B:8F3F 8D 7C 03    STA $037C  [$7E:037C]  ; Sprite 3 low X position = 80h
+$8B:8F42 8D 80 03    STA $0380  [$7E:0380]  ; Sprite 4 low X position = 80h
+$8B:8F45 8D 84 03    STA $0384  [$7E:0384]  ; Sprite 5 low X position = 80h
+$8B:8F48 8D 88 03    STA $0388  [$7E:0388]  ; Sprite 6 low X position = 80h
+$8B:8F4B 8D 8C 03    STA $038C  [$7E:038C]  ; Sprite 7 low X position = 80h
+$8B:8F4E 8D 90 03    STA $0390  [$7E:0390]  ; Sprite 8 low X position = 80h
+$8B:8F51 8D 94 03    STA $0394  [$7E:0394]  ; Sprite 9 low X position = 80h
+$8B:8F54 8D 98 03    STA $0398  [$7E:0398]  ; Sprite Ah low X position = 80h
+$8B:8F57 8D 9C 03    STA $039C  [$7E:039C]  ; Sprite Bh low X position = 80h
+$8B:8F5A 8D A0 03    STA $03A0  [$7E:03A0]  ; Sprite Ch low X position = 80h
+$8B:8F5D 8D A4 03    STA $03A4  [$7E:03A4]  ; Sprite Dh low X position = 80h
+$8B:8F60 8D A8 03    STA $03A8  [$7E:03A8]  ; Sprite Eh low X position = 80h
+$8B:8F63 8D AC 03    STA $03AC  [$7E:03AC]  ; Sprite Fh low X position = 80h
+$8B:8F66 8D B0 03    STA $03B0  [$7E:03B0]  ; Sprite 10h low X position = 80h
+$8B:8F69 8D B4 03    STA $03B4  [$7E:03B4]  ; Sprite 11h low X position = 80h
+$8B:8F6C 8D B8 03    STA $03B8  [$7E:03B8]  ; Sprite 12h low X position = 80h
+$8B:8F6F 8D BC 03    STA $03BC  [$7E:03BC]  ; Sprite 13h low X position = 80h
+$8B:8F72 8D C0 03    STA $03C0  [$7E:03C0]  ; Sprite 14h low X position = 80h
+$8B:8F75 8D C4 03    STA $03C4  [$7E:03C4]  ; Sprite 15h low X position = 80h
+$8B:8F78 8D C8 03    STA $03C8  [$7E:03C8]  ; Sprite 16h low X position = 80h
+$8B:8F7B 8D CC 03    STA $03CC  [$7E:03CC]  ; Sprite 17h low X position = 80h
+$8B:8F7E 8D D0 03    STA $03D0  [$7E:03D0]  ; Sprite 18h low X position = 80h
+$8B:8F81 8D D4 03    STA $03D4  [$7E:03D4]  ; Sprite 19h low X position = 80h
+$8B:8F84 8D D8 03    STA $03D8  [$7E:03D8]  ; Sprite 1Ah low X position = 80h
+$8B:8F87 8D DC 03    STA $03DC  [$7E:03DC]  ; Sprite 1Bh low X position = 80h
+$8B:8F8A 8D E0 03    STA $03E0  [$7E:03E0]  ; Sprite 1Ch low X position = 80h
+$8B:8F8D 8D E4 03    STA $03E4  [$7E:03E4]  ; Sprite 1Dh low X position = 80h
+$8B:8F90 8D E8 03    STA $03E8  [$7E:03E8]  ; Sprite 1Eh low X position = 80h
+$8B:8F93 8D EC 03    STA $03EC  [$7E:03EC]  ; Sprite 1Fh low X position = 80h
+$8B:8F96 8D F0 03    STA $03F0  [$7E:03F0]  ; Sprite 20h low X position = 80h
+$8B:8F99 8D F4 03    STA $03F4  [$7E:03F4]  ; Sprite 21h low X position = 80h
+$8B:8F9C 8D F8 03    STA $03F8  [$7E:03F8]  ; Sprite 22h low X position = 80h
+$8B:8F9F 8D FC 03    STA $03FC  [$7E:03FC]  ; Sprite 23h low X position = 80h
+$8B:8FA2 8D 00 04    STA $0400  [$7E:0400]  ; Sprite 24h low X position = 80h
+$8B:8FA5 8D 04 04    STA $0404  [$7E:0404]  ; Sprite 25h low X position = 80h
+$8B:8FA8 8D 08 04    STA $0408  [$7E:0408]  ; Sprite 26h low X position = 80h
+$8B:8FAB 8D 0C 04    STA $040C  [$7E:040C]  ; Sprite 27h low X position = 80h
+$8B:8FAE 8D 10 04    STA $0410  [$7E:0410]  ; Sprite 28h low X position = 80h
+$8B:8FB1 8D 14 04    STA $0414  [$7E:0414]  ; Sprite 29h low X position = 80h
+$8B:8FB4 8D 18 04    STA $0418  [$7E:0418]  ; Sprite 2Ah low X position = 80h
+$8B:8FB7 8D 1C 04    STA $041C  [$7E:041C]  ; Sprite 2Bh low X position = 80h
+$8B:8FBA 8D 20 04    STA $0420  [$7E:0420]  ; Sprite 2Ch low X position = 80h
+$8B:8FBD 8D 24 04    STA $0424  [$7E:0424]  ; Sprite 2Dh low X position = 80h
+$8B:8FC0 8D 28 04    STA $0428  [$7E:0428]  ; Sprite 2Eh low X position = 80h
+$8B:8FC3 8D 2C 04    STA $042C  [$7E:042C]  ; Sprite 2Fh low X position = 80h
+$8B:8FC6 8D 30 04    STA $0430  [$7E:0430]  ; Sprite 30h low X position = 80h
+$8B:8FC9 8D 34 04    STA $0434  [$7E:0434]  ; Sprite 31h low X position = 80h
+$8B:8FCC 8D 38 04    STA $0438  [$7E:0438]  ; Sprite 32h low X position = 80h
+$8B:8FCF 8D 3C 04    STA $043C  [$7E:043C]  ; Sprite 33h low X position = 80h
+$8B:8FD2 8D 40 04    STA $0440  [$7E:0440]  ; Sprite 34h low X position = 80h
+$8B:8FD5 8D 44 04    STA $0444  [$7E:0444]  ; Sprite 35h low X position = 80h
+$8B:8FD8 8D 48 04    STA $0448  [$7E:0448]  ; Sprite 36h low X position = 80h
+$8B:8FDB 8D 4C 04    STA $044C  [$7E:044C]  ; Sprite 37h low X position = 80h
+$8B:8FDE 8D 50 04    STA $0450  [$7E:0450]  ; Sprite 38h low X position = 80h
+$8B:8FE1 8D 54 04    STA $0454  [$7E:0454]  ; Sprite 39h low X position = 80h
+$8B:8FE4 8D 58 04    STA $0458  [$7E:0458]  ; Sprite 3Ah low X position = 80h
+$8B:8FE7 8D 5C 04    STA $045C  [$7E:045C]  ; Sprite 3Bh low X position = 80h
+$8B:8FEA 8D 60 04    STA $0460  [$7E:0460]  ; Sprite 3Ch low X position = 80h
+$8B:8FED 8D 64 04    STA $0464  [$7E:0464]  ; Sprite 3Dh low X position = 80h
+$8B:8FF0 8D 68 04    STA $0468  [$7E:0468]  ; Sprite 3Eh low X position = 80h
+$8B:8FF3 8D 6C 04    STA $046C  [$7E:046C]  ; Sprite 3Fh low X position = 80h
+$8B:8FF6 8D 70 04    STA $0470  [$7E:0470]  ; Sprite 40h low X position = 80h
+$8B:8FF9 8D 74 04    STA $0474  [$7E:0474]  ; Sprite 41h low X position = 80h
+$8B:8FFC 8D 78 04    STA $0478  [$7E:0478]  ; Sprite 42h low X position = 80h
+$8B:8FFF 8D 7C 04    STA $047C  [$7E:047C]  ; Sprite 43h low X position = 80h
+$8B:9002 8D 80 04    STA $0480  [$7E:0480]  ; Sprite 44h low X position = 80h
+$8B:9005 8D 84 04    STA $0484  [$7E:0484]  ; Sprite 45h low X position = 80h
+$8B:9008 8D 88 04    STA $0488  [$7E:0488]  ; Sprite 46h low X position = 80h
+$8B:900B 8D 8C 04    STA $048C  [$7E:048C]  ; Sprite 47h low X position = 80h
+$8B:900E 8D 90 04    STA $0490  [$7E:0490]  ; Sprite 48h low X position = 80h
+$8B:9011 8D 94 04    STA $0494  [$7E:0494]  ; Sprite 49h low X position = 80h
+$8B:9014 8D 98 04    STA $0498  [$7E:0498]  ; Sprite 4Ah low X position = 80h
+$8B:9017 8D 9C 04    STA $049C  [$7E:049C]  ; Sprite 4Bh low X position = 80h
+$8B:901A 8D A0 04    STA $04A0  [$7E:04A0]  ; Sprite 4Ch low X position = 80h
+$8B:901D 8D A4 04    STA $04A4  [$7E:04A4]  ; Sprite 4Dh low X position = 80h
+$8B:9020 8D A8 04    STA $04A8  [$7E:04A8]  ; Sprite 4Eh low X position = 80h
+$8B:9023 8D AC 04    STA $04AC  [$7E:04AC]  ; Sprite 4Fh low X position = 80h
+$8B:9026 8D B0 04    STA $04B0  [$7E:04B0]  ; Sprite 50h low X position = 80h
+$8B:9029 8D B4 04    STA $04B4  [$7E:04B4]  ; Sprite 51h low X position = 80h
+$8B:902C 8D B8 04    STA $04B8  [$7E:04B8]  ; Sprite 52h low X position = 80h
+$8B:902F 8D BC 04    STA $04BC  [$7E:04BC]  ; Sprite 53h low X position = 80h
+$8B:9032 8D C0 04    STA $04C0  [$7E:04C0]  ; Sprite 54h low X position = 80h
+$8B:9035 8D C4 04    STA $04C4  [$7E:04C4]  ; Sprite 55h low X position = 80h
+$8B:9038 8D C8 04    STA $04C8  [$7E:04C8]  ; Sprite 56h low X position = 80h
+$8B:903B 8D CC 04    STA $04CC  [$7E:04CC]  ; Sprite 57h low X position = 80h
+$8B:903E 8D D0 04    STA $04D0  [$7E:04D0]  ; Sprite 58h low X position = 80h
+$8B:9041 8D D4 04    STA $04D4  [$7E:04D4]  ; Sprite 59h low X position = 80h
+$8B:9044 8D D8 04    STA $04D8  [$7E:04D8]  ; Sprite 5Ah low X position = 80h
+$8B:9047 8D DC 04    STA $04DC  [$7E:04DC]  ; Sprite 5Bh low X position = 80h
+$8B:904A 8D E0 04    STA $04E0  [$7E:04E0]  ; Sprite 5Ch low X position = 80h
+$8B:904D 8D E4 04    STA $04E4  [$7E:04E4]  ; Sprite 5Dh low X position = 80h
+$8B:9050 8D E8 04    STA $04E8  [$7E:04E8]  ; Sprite 5Eh low X position = 80h
+$8B:9053 8D EC 04    STA $04EC  [$7E:04EC]  ; Sprite 5Fh low X position = 80h
+$8B:9056 8D F0 04    STA $04F0  [$7E:04F0]  ; Sprite 60h low X position = 80h
+$8B:9059 8D F4 04    STA $04F4  [$7E:04F4]  ; Sprite 61h low X position = 80h
+$8B:905C 8D F8 04    STA $04F8  [$7E:04F8]  ; Sprite 62h low X position = 80h
+$8B:905F 8D FC 04    STA $04FC  [$7E:04FC]  ; Sprite 63h low X position = 80h
+$8B:9062 8D 00 05    STA $0500  [$7E:0500]  ; Sprite 64h low X position = 80h
+$8B:9065 8D 04 05    STA $0504  [$7E:0504]  ; Sprite 65h low X position = 80h
+$8B:9068 8D 08 05    STA $0508  [$7E:0508]  ; Sprite 66h low X position = 80h
+$8B:906B 8D 0C 05    STA $050C  [$7E:050C]  ; Sprite 67h low X position = 80h
+$8B:906E 8D 10 05    STA $0510  [$7E:0510]  ; Sprite 68h low X position = 80h
+$8B:9071 8D 14 05    STA $0514  [$7E:0514]  ; Sprite 69h low X position = 80h
+$8B:9074 8D 18 05    STA $0518  [$7E:0518]  ; Sprite 6Ah low X position = 80h
+$8B:9077 8D 1C 05    STA $051C  [$7E:051C]  ; Sprite 6Bh low X position = 80h
+$8B:907A 8D 20 05    STA $0520  [$7E:0520]  ; Sprite 6Ch low X position = 80h
+$8B:907D 8D 24 05    STA $0524  [$7E:0524]  ; Sprite 6Dh low X position = 80h
+$8B:9080 8D 28 05    STA $0528  [$7E:0528]  ; Sprite 6Eh low X position = 80h
+$8B:9083 8D 2C 05    STA $052C  [$7E:052C]  ; Sprite 6Fh low X position = 80h
+$8B:9086 8D 30 05    STA $0530  [$7E:0530]  ; Sprite 70h low X position = 80h
+$8B:9089 8D 34 05    STA $0534  [$7E:0534]  ; Sprite 71h low X position = 80h
+$8B:908C 8D 38 05    STA $0538  [$7E:0538]  ; Sprite 72h low X position = 80h
+$8B:908F 8D 3C 05    STA $053C  [$7E:053C]  ; Sprite 73h low X position = 80h
+$8B:9092 8D 40 05    STA $0540  [$7E:0540]  ; Sprite 74h low X position = 80h
+$8B:9095 8D 44 05    STA $0544  [$7E:0544]  ; Sprite 75h low X position = 80h
+$8B:9098 8D 48 05    STA $0548  [$7E:0548]  ; Sprite 76h low X position = 80h
+$8B:909B 8D 4C 05    STA $054C  [$7E:054C]  ; Sprite 77h low X position = 80h
+$8B:909E 8D 50 05    STA $0550  [$7E:0550]  ; Sprite 78h low X position = 80h
+$8B:90A1 8D 54 05    STA $0554  [$7E:0554]  ; Sprite 79h low X position = 80h
+$8B:90A4 8D 58 05    STA $0558  [$7E:0558]  ; Sprite 7Ah low X position = 80h
+$8B:90A7 8D 5C 05    STA $055C  [$7E:055C]  ; Sprite 7Bh low X position = 80h
+$8B:90AA 8D 60 05    STA $0560  [$7E:0560]  ; Sprite 7Ch low X position = 80h
+$8B:90AD 8D 64 05    STA $0564  [$7E:0564]  ; Sprite 7Dh low X position = 80h
+$8B:90B0 8D 68 05    STA $0568  [$7E:0568]  ; Sprite 7Eh low X position = 80h
+$8B:90B3 8D 6C 05    STA $056C  [$7E:056C]  ; Sprite 7Fh low X position = 80h
 $8B:90B6 28          PLP
 $8B:90B7 60          RTS
 }
@@ -2550,7 +2550,7 @@ $8B:91AB A9 80       LDA #$80               ;} OAM address = $0000, priority spr
 $8B:91AD 8D 03 21    STA $2103              ;|
 $8B:91B0 85 54       STA $54    [$7E:0054]  ;/
 $8B:91B2 9C 04 21    STZ $2104              ;\
-$8B:91B5 9C 04 21    STZ $2104              ;} OAM $0000 = 0
+$8B:91B5 9C 04 21    STZ $2104              ;} Main screen backdrop colour = 0
 $8B:91B8 A9 01       LDA #$01               ;\
 $8B:91BA 8D 05 21    STA $2105              ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
 $8B:91BD 85 55       STA $55    [$7E:0055]  ;/
