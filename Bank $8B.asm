@@ -2895,6 +2895,8 @@ $8B:9437 60          RTS
 {
 ;;; $9438: Instruction - delete ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
 $8B:9438 C2 30       REP #$30
 $8B:943A 9E 5D 1A    STZ $1A5D,x[$7E:1A7B]  ; Cinematic sprite object spritemap pointer = 0
 $8B:943D 9E 1D 1B    STZ $1B1D,x[$7E:1B3B]  ; Cinematic sprite object instruction list pointer = 0
@@ -2905,6 +2907,9 @@ $8B:9441 60          RTS
 
 ;;; $9442: Unused. Instruction - sleep ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
+;;     Y: Pointer to after this instruction
 $8B:9442 C2 30       REP #$30
 $8B:9444 88          DEY                    ;\
 $8B:9445 88          DEY                    ;|
@@ -2917,6 +2922,11 @@ $8B:944B 60          RTS
 
 ;;; $944C: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:944C C2 30       REP #$30
 $8B:944E B9 00 00    LDA $0000,y[$8B:CB1D]
 $8B:9451 9D 3D 1B    STA $1B3D,x[$7E:1B3D]
@@ -2928,6 +2938,8 @@ $8B:9456 60          RTS
 
 ;;; $9457: Unused. Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
 $8B:9457 C2 30       REP #$30
 $8B:9459 A9 5F 94    LDA #$945F
 $8B:945C 9D 3D 1B    STA $1B3D,x

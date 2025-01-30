@@ -7045,7 +7045,7 @@ $A7:DA1C 60          RTS
 
 ;                        ____________ X offset
 ;                       |   _________ Y offset
-;                       |  |  _______ Explosion type. 3 = small, 1Dh = big
+;                       |  |   ______ Explosion type. 3 = small, 1Dh = big
 ;                       |  |  |   ___ Timer
 ;                       |  |  |  |
 $A7:DA1D             db 00,00,1D,10, ;\
