@@ -2949,6 +2949,10 @@ $8B:945F 60          RTS
 
 ;;; $9460: Unused. Instruction - call external function [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9460 C2 30       REP #$30
 $8B:9462 B9 00 00    LDA $0000,y
 $8B:9465 8D 12 00    STA $0012  [$7E:0012]
@@ -2969,6 +2973,10 @@ $8B:947B DC 12 00    JML [$0012]
 
 ;;; $947E: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:947E C2 30       REP #$30
 $8B:9480 B9 00 00    LDA $0000,y
 $8B:9483 8D 12 00    STA $0012  [$7E:0012]
@@ -2991,6 +2999,10 @@ $8B:949F DC 12 00    JML [$0012]
 
 ;;; $94A2: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:94A2 C2 30       REP #$30
 $8B:94A4 8C 12 00    STY $0012  [$7E:0012]
 $8B:94A7 88          DEY
@@ -3011,6 +3023,10 @@ $8B:94BB 60          RTS
 
 ;;; $94BC: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:94BC C2 30       REP #$30
 $8B:94BE B9 00 00    LDA $0000,y[$8B:A0D1]
 $8B:94C1 A8          TAY
@@ -3020,6 +3036,11 @@ $8B:94C2 60          RTS
 
 ;;; $94C3: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:94C3 C2 30       REP #$30
 $8B:94C5 DE 7D 1B    DEC $1B7D,x[$7E:1B99]
 $8B:94C8 D0 F2       BNE $F2    [$94BC]
@@ -3031,6 +3052,11 @@ $8B:94CC 60          RTS
 
 ;;; $94CD: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:94CD C2 30       REP #$30
 $8B:94CF DE 7D 1B    DEC $1B7D,x
 $8B:94D2 D0 CE       BNE $CE    [$94A2]
@@ -3041,6 +3067,11 @@ $8B:94D5 60          RTS
 
 ;;; $94D6: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Cinematic sprite object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:94D6 C2 30       REP #$30
 $8B:94D8 B9 00 00    LDA $0000,y[$8B:CB41]
 $8B:94DB 9D 7D 1B    STA $1B7D,x[$7E:1B99]
@@ -3162,6 +3193,8 @@ $8B:956A 60          RTS
 
 ;;; $956B: Instruction - delete ;;;
 {
+;; Parameters:
+;;     X: Mode 7 object index
 $8B:956B C2 30       REP #$30
 $8B:956D 9E A1 19    STZ $19A1,x            ; Mode 7 object instruction list pointer = 0
 $8B:9570 68          PLA                    ; Terminate processing mode 7 object
