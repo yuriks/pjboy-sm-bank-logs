@@ -6107,8 +6107,8 @@ $80:A87F 18          CLC                    ;} Layer 1 Y position = [$0939] roun
 $80:A880 69 00 01    ADC #$0100             ;/
 $80:A883 80 08       BRA $08    [$A88D]     ; Return
 
-$80:A885 AD 39 09    LDA $0939  [$7E:0939]  ;\
-$80:A888 80 03       BRA $03    [$A88D]     ;} Layer 1 Y position = [$0939]
+$80:A885 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 Y position = [$0939]
+$80:A888 80 03       BRA $03    [$A88D]     ; Return
 
 ; BRANCH_REACHED_TOP_SCROLL_BOUNDARY
 $80:A88A AD 37 09    LDA $0937  [$7E:0937]  ; Layer 1 Y position = [$0937]
