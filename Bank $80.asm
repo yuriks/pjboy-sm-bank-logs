@@ -5967,7 +5967,7 @@ $80:A740 A9 8F       LDA #$8F               ;\
 $80:A742 48          PHA                    ;} DB = $8F
 $80:A743 AB          PLB                    ;/
 $80:A744 C2 30       REP #$30
-$80:A746 A0 00 00    LDY #$0000             ; Y = 0
+$80:A746 A0 00 00    LDY #$0000             ; Y = 0 (hide bottom two rows at room bottom)
 $80:A749 E2 20       SEP #$20
 $80:A74B AD 16 09    LDA $0916  [$7E:0916]  ;\
 $80:A74E 8D 02 42    STA $4202              ;|
@@ -5978,7 +5978,7 @@ $80:A759 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A75C 18          CLC                    ;|
 $80:A75D 69 80 00    ADC #$0080             ;|
 $80:A760 EB          XBA                    ;|
-$80:A761 29 FF 00    AND #$00FF             ;} If layer 1 position + 1/2 scroll right's scroll != blue:
+$80:A761 29 FF 00    AND #$00FF             ;} If screen position (80h, 0) is not in a blue scroll:
 $80:A764 18          CLC                    ;|
 $80:A765 6D 16 42    ADC $4216              ;|
 $80:A768 85 14       STA $14    [$7E:0014]  ;|
@@ -5987,11 +5987,11 @@ $80:A76B BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A76F 29 FF 00    AND #$00FF             ;|
 $80:A772 C9 01 00    CMP #$0001             ;|
 $80:A775 F0 03       BEQ $03    [$A77A]     ;/
-$80:A777 A0 1F 00    LDY #$001F             ; Y = 1Fh
+$80:A777 A0 1F 00    LDY #$001F             ; Y = 1Fh (show bottom two rows at room bottom)
 
-$80:A77A 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y]
+$80:A77A 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y] (max offset from top scroll boundary at room bottom)
 $80:A77D AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A780 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
+$80:A780 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position] (proposed Y position)
 $80:A783 10 03       BPL $03    [$A788]     ;\
 $80:A785 9C 15 09    STZ $0915  [$7E:0915]  ;} Layer 1 Y position = max([layer 1 Y position], 0)
 
@@ -6013,7 +6013,7 @@ $80:A7A7 C2 20       REP #$20               ;|
 $80:A7A9 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7AC 18          CLC                    ;|
 $80:A7AD 69 80 00    ADC #$0080             ;|
-$80:A7B0 EB          XBA                    ;} If layer 1 position + 1/2 scroll right's scroll != red: go to BRANCH_UNBOUNDED_FROM_ABOVE
+$80:A7B0 EB          XBA                    ;} If screen position (80h, 0) is not in a red scroll: go to BRANCH_UNBOUNDED_FROM_ABOVE
 $80:A7B1 29 FF 00    AND #$00FF             ;|
 $80:A7B4 18          CLC                    ;|
 $80:A7B5 6D 16 42    ADC $4216              ;|
@@ -6042,7 +6042,7 @@ $80:A7ED 8D 03 42    STA $4203              ;|
 $80:A7F0 C2 20       REP #$20               ;|
 $80:A7F2 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7F5 18          CLC                    ;|
-$80:A7F6 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 scroll right + 1 scroll down's scroll = red:
+$80:A7F6 69 80 00    ADC #$0080             ;} If screen position (80h, 100h) is in a red scroll:
 $80:A7F9 EB          XBA                    ;|
 $80:A7FA 29 FF 00    AND #$00FF             ;|
 $80:A7FD 18          CLC                    ;|
@@ -6066,7 +6066,7 @@ $80:A81B 80 70       BRA $70    [$A88D]     ; Return
 $80:A81D 8A          TXA                    ;\
 $80:A81E 18          CLC                    ;|
 $80:A81F 6D A9 07    ADC $07A9  [$7E:07A9]  ;|
-$80:A822 AA          TAX                    ;} If layer 1 position + 1/2 scroll right + 1 scroll down's scroll != red: return
+$80:A822 AA          TAX                    ;} If screen position (80h, 100h) is not in a red scroll: return
 $80:A823 BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
 $80:A827 29 FF 00    AND #$00FF             ;|
 $80:A82A D0 64       BNE $64    [$A890]     ;/
@@ -6092,7 +6092,7 @@ $80:A85B 8D 03 42    STA $4203              ;|
 $80:A85E C2 20       REP #$20               ;|
 $80:A860 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A863 18          CLC                    ;|
-$80:A864 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 scroll right's scroll = red:
+$80:A864 69 80 00    ADC #$0080             ;} If screen position (80h, 0) is in a red scroll:
 $80:A867 EB          XBA                    ;|
 $80:A868 29 FF 00    AND #$00FF             ;|
 $80:A86B 18          CLC                    ;|
