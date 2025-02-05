@@ -5925,35 +5925,21 @@ $80:A730 6B          RTL
 ;     $90:94EC: Main scrolling routine
 ;     $90:964F: Handle vertical scrolling
 
-; If time frozen:
-;     Return
-;
-; If layer 1 position + 1/2 scroll right's scroll = blue:
-;     $0933 = 0
-; Else
-;     $0933 = 1Fh
-;
-; Layer 1 Y position = clamp([layer 1 Y position], 0, (room height in pixels) - 100h + [$0933])
-;
-; If layer 1 position + 1/2 scroll right's scroll = red:
-; {
-;     $0935 = position of bottom scroll boundary
-;     $0939 = [layer 1 Y position] + [camera Y speed] + 2
-;     Layer 1 X position = min([$0939], [$0935])
-;     If [$0939] < [$0935] and layer 1 position + 1/2 scroll right + 1 scroll down's scroll = red:
-;         Round layer 1 Y position to top scroll boundary
-; }
-; Else if layer 1 position + 1/2 scroll right + 1 scroll down's scroll = red:
-; {
-;     $0937 = position of top scroll boundary + [$0933]
-;     If [$0937] < [layer 1 Y position]:
-;     {
-;         $0939 = [layer 1 Y position] - [camera Y speed] - 2
-;         Layer 1 Y position = max([$0939], [$0937])
-;         If [$0939] >= [$0937] and layer 1 position + 1/2 scroll right's scroll = red:
-;             Layer 1 Y position = [$0939] rounded to right bottom boundary
-;     }
-; }
+; The purpose of this routine is to scroll the screen out of red scroll zones
+; It's called when Samus' position hasn't changed (this is the meaning of "autoscrolling"),
+; hence the `[camera Y speed] + 2` calculations below always result in 3px/frame
+
+; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
+; The scrolling code here only cares about the scrolls containing the horizontal centre, in this case scrolls 2 and 4
+; The two scrolls being considered are hereinafter called the "upper scroll" and "lower scroll"
+
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 3 3 3 4|4 4 4 4
+; 3 3 3 4|4 4 4 4
 
 $80:A731 08          PHP
 $80:A732 8B          PHB
@@ -5978,7 +5964,7 @@ $80:A759 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A75C 18          CLC                    ;|
 $80:A75D 69 80 00    ADC #$0080             ;|
 $80:A760 EB          XBA                    ;|
-$80:A761 29 FF 00    AND #$00FF             ;} If screen position (80h, 0) is not in a blue scroll:
+$80:A761 29 FF 00    AND #$00FF             ;} If the upper scroll is not blue:
 $80:A764 18          CLC                    ;|
 $80:A765 6D 16 42    ADC $4216              ;|
 $80:A768 85 14       STA $14    [$7E:0014]  ;|
@@ -5989,9 +5975,9 @@ $80:A772 C9 01 00    CMP #$0001             ;|
 $80:A775 F0 03       BEQ $03    [$A77A]     ;/
 $80:A777 A0 1F 00    LDY #$001F             ; Y = 1Fh (show bottom two rows at room bottom)
 
-$80:A77A 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y] (max offset from top scroll boundary at room bottom)
+$80:A77A 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y] (max offset from upper scroll position at room bottom)
 $80:A77D AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A780 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position] (proposed Y position)
+$80:A780 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
 $80:A783 10 03       BPL $03    [$A788]     ;\
 $80:A785 9C 15 09    STZ $0915  [$7E:0915]  ;} Layer 1 Y position = max([layer 1 Y position], 0)
 
@@ -6013,7 +5999,7 @@ $80:A7A7 C2 20       REP #$20               ;|
 $80:A7A9 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7AC 18          CLC                    ;|
 $80:A7AD 69 80 00    ADC #$0080             ;|
-$80:A7B0 EB          XBA                    ;} If screen position (80h, 0) is not in a red scroll: go to BRANCH_UNBOUNDED_FROM_ABOVE
+$80:A7B0 EB          XBA                    ;} If upper scroll is not red: go to BRANCH_UNBOUNDED_FROM_ABOVE
 $80:A7B1 29 FF 00    AND #$00FF             ;|
 $80:A7B4 18          CLC                    ;|
 $80:A7B5 6D 16 42    ADC $4216              ;|
@@ -6023,16 +6009,16 @@ $80:A7BD 29 FF 00    AND #$00FF             ;|
 $80:A7C0 D0 5B       BNE $5B    [$A81D]     ;/
 $80:A7C2 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A7C5 29 00 FF    AND #$FF00             ;|
-$80:A7C8 18          CLC                    ;} $0935 = position of bottom scroll boundary
+$80:A7C8 18          CLC                    ;} $0935 = (lower scroll position)
 $80:A7C9 69 00 01    ADC #$0100             ;|
 $80:A7CC 8D 35 09    STA $0935  [$7E:0935]  ;/
 $80:A7CF AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A7D2 18          CLC                    ;|
 $80:A7D3 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
-$80:A7D6 69 02 00    ADC #$0002             ;} If [$0939] + [camera Y speed] + 2 >= (position of bottom scroll boundary): go to BRANCH_REACHED_BOTTOM_SCROLL_BOUNDARY
+$80:A7D6 69 02 00    ADC #$0002             ;} If [$0939] + [camera Y speed] + 2 >= (lower scroll position): go to BRANCH_ALIGN_WITH_LOWER_SCROLL
 $80:A7D9 CD 35 09    CMP $0935  [$7E:0935]  ;|
 $80:A7DC B0 3A       BCS $3A    [$A818]     ;/
-$80:A7DE 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera Y speed] + 2
+$80:A7DE 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera Y speed] + 2 (proposed Y position)
 $80:A7E1 E2 20       SEP #$20               ;\
 $80:A7E3 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A7E6 1A          INC A                  ;|
@@ -6042,7 +6028,7 @@ $80:A7ED 8D 03 42    STA $4203              ;|
 $80:A7F0 C2 20       REP #$20               ;|
 $80:A7F2 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A7F5 18          CLC                    ;|
-$80:A7F6 69 80 00    ADC #$0080             ;} If screen position (80h, 100h) is in a red scroll:
+$80:A7F6 69 80 00    ADC #$0080             ;} If lower scroll is red:
 $80:A7F9 EB          XBA                    ;|
 $80:A7FA 29 FF 00    AND #$00FF             ;|
 $80:A7FD 18          CLC                    ;|
@@ -6052,38 +6038,38 @@ $80:A802 BF 20 CD 7E LDA $7ECD20,x[$7E:CD23];|
 $80:A806 29 FF 00    AND #$00FF             ;|
 $80:A809 D0 08       BNE $08    [$A813]     ;/
 $80:A80B AD 39 09    LDA $0939  [$7E:0939]  ;\
-$80:A80E 29 00 FF    AND #$FF00             ;} Layer 1 Y position = [$0939] rounded to top scroll boundary
+$80:A80E 29 00 FF    AND #$FF00             ;} Layer 1 Y position = (upper scroll position)
 $80:A811 80 7A       BRA $7A    [$A88D]     ; Return
 
-$80:A813 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 Y position = [$0939]
+$80:A813 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 Y position = (proposed Y position)
 $80:A816 80 75       BRA $75    [$A88D]     ; Return
 
-; BRANCH_REACHED_BOTTOM_SCROLL_BOUNDARY
-$80:A818 AD 35 09    LDA $0935  [$7E:0935]  ; Layer 1 Y position = (position of bottom scroll boundary)
+; BRANCH_ALIGN_WITH_LOWER_SCROLL
+$80:A818 AD 35 09    LDA $0935  [$7E:0935]  ; Layer 1 Y position = (lower scroll position)
 $80:A81B 80 70       BRA $70    [$A88D]     ; Return
 
 ; BRANCH_UNBOUNDED_FROM_ABOVE
 $80:A81D 8A          TXA                    ;\
 $80:A81E 18          CLC                    ;|
 $80:A81F 6D A9 07    ADC $07A9  [$7E:07A9]  ;|
-$80:A822 AA          TAX                    ;} If screen position (80h, 100h) is not in a red scroll: return
+$80:A822 AA          TAX                    ;} If lower scroll is not red: return
 $80:A823 BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
 $80:A827 29 FF 00    AND #$00FF             ;|
 $80:A82A D0 64       BNE $64    [$A890]     ;/
 $80:A82C AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A82F 29 00 FF    AND #$FF00             ;|
-$80:A832 18          CLC                    ;} $0937 = position of top scroll boundary + [$0933]
+$80:A832 18          CLC                    ;} $0937 = (upper scroll position) + [$0933] (adjusted upper scroll position)
 $80:A833 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A836 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A839 CD 15 09    CMP $0915  [$7E:0915]  ;\
-$80:A83C B0 52       BCS $52    [$A890]     ;} If [$0937] >= [layer 1 Y position]: return
+$80:A83C B0 52       BCS $52    [$A890]     ;} If (adjusted upper scroll position) >= [layer 1 Y position]: return
 $80:A83E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A841 38          SEC                    ;|
 $80:A842 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
-$80:A845 E9 02 00    SBC #$0002             ;} If [$0939] - [camera Y speed] - 2 < [$0937]: go to BRANCH_REACHED_TOP_SCROLL_BOUNDARY
+$80:A845 E9 02 00    SBC #$0002             ;} If [$0939] - [camera Y speed] - 2 < (adjusted upper scroll position): go to BRANCH_ALIGN_WITH_UPPER_SCROLL
 $80:A848 CD 37 09    CMP $0937  [$7E:0937]  ;|
 $80:A84B 30 3D       BMI $3D    [$A88A]     ;/
-$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] + 2
+$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] + 2 (proposed Y position)
 $80:A850 E2 20       SEP #$20               ;\
 $80:A852 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A855 8D 02 42    STA $4202              ;|
@@ -6092,7 +6078,7 @@ $80:A85B 8D 03 42    STA $4203              ;|
 $80:A85E C2 20       REP #$20               ;|
 $80:A860 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A863 18          CLC                    ;|
-$80:A864 69 80 00    ADC #$0080             ;} If screen position (80h, 0) is in a red scroll:
+$80:A864 69 80 00    ADC #$0080             ;} If upper scroll is red:
 $80:A867 EB          XBA                    ;|
 $80:A868 29 FF 00    AND #$00FF             ;|
 $80:A86B 18          CLC                    ;|
@@ -6103,15 +6089,15 @@ $80:A874 29 FF 00    AND #$00FF             ;|
 $80:A877 D0 0C       BNE $0C    [$A885]     ;/
 $80:A879 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A87C 29 00 FF    AND #$FF00             ;|
-$80:A87F 18          CLC                    ;} Layer 1 Y position = [$0939] rounded to bottom scroll boundary
+$80:A87F 18          CLC                    ;} Layer 1 Y position = (lower scroll position)
 $80:A880 69 00 01    ADC #$0100             ;/
 $80:A883 80 08       BRA $08    [$A88D]     ; Return
 
-$80:A885 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 Y position = [$0939]
+$80:A885 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 Y position = (proposed Y position)
 $80:A888 80 03       BRA $03    [$A88D]     ; Return
 
-; BRANCH_REACHED_TOP_SCROLL_BOUNDARY
-$80:A88A AD 37 09    LDA $0937  [$7E:0937]  ; Layer 1 Y position = [$0937]
+; BRANCH_ALIGN_WITH_UPPER_SCROLL
+$80:A88A AD 37 09    LDA $0937  [$7E:0937]  ; Layer 1 Y position = (adjusted upper scroll position)
 
 $80:A88D 8D 15 09    STA $0915  [$7E:0915]
 
