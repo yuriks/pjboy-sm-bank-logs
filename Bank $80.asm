@@ -5964,7 +5964,7 @@ $80:A759 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A75C 18          CLC                    ;|
 $80:A75D 69 80 00    ADC #$0080             ;|
 $80:A760 EB          XBA                    ;|
-$80:A761 29 FF 00    AND #$00FF             ;} If the upper scroll is not blue:
+$80:A761 29 FF 00    AND #$00FF             ;} If upper scroll is not blue:
 $80:A764 18          CLC                    ;|
 $80:A765 6D 16 42    ADC $4216              ;|
 $80:A768 85 14       STA $14    [$7E:0014]  ;|
@@ -6062,7 +6062,7 @@ $80:A832 18          CLC                    ;} $0937 = (upper scroll position) +
 $80:A833 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A836 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A839 CD 15 09    CMP $0915  [$7E:0915]  ;\
-$80:A83C B0 52       BCS $52    [$A890]     ;} If (adjusted upper scroll position) >= [layer 1 Y position]: return
+$80:A83C B0 52       BCS $52    [$A890]     ;} If [layer 1 Y position] <= (adjusted upper scroll position): return
 $80:A83E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A841 38          SEC                    ;|
 $80:A842 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
@@ -6111,6 +6111,24 @@ $80:A892 6B          RTL
 {
 ; Called by:
 ;     $90:964F: Handle vertical scrolling
+
+; The purpose of this routine is to scroll the screen out of red scroll zones when moving the camera down
+; Layer 1 Y position has already been increased by [camera Y speed] before calling this routine
+; Ideal layer 1 Y position is set to Samus' Y position adjusted by the up/down scroller,
+; this routine also deals with capping layer 1 Y position to that
+
+; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
+; The scrolling code here only cares about the scrolls containing the horizontal centre, in this case scrolls 2 and 4
+; The two scrolls being considered are hereinafter called the "upper scroll" and "lower scroll"
+
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 3 3 3 4|4 4 4 4
+; 3 3 3 4|4 4 4 4
+
 $80:A893 08          PHP
 $80:A894 8B          PHB
 $80:A895 E2 20       SEP #$20
@@ -6120,7 +6138,7 @@ $80:A89A AB          PLB                    ;/
 $80:A89B C2 30       REP #$30
 $80:A89D AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A8A0 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
-$80:A8A3 A0 00 00    LDY #$0000             ; Y = 0
+$80:A8A3 A0 00 00    LDY #$0000             ; Y = 0 (hide bottom two rows at room bottom)
 $80:A8A6 E2 20       SEP #$20               ;\
 $80:A8A8 AD 16 09    LDA $0916  [$7E:0916]  ;|
 $80:A8AB 8D 02 42    STA $4202              ;|
@@ -6130,7 +6148,7 @@ $80:A8B4 C2 20       REP #$20               ;|
 $80:A8B6 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A8B9 18          CLC                    ;|
 $80:A8BA 69 80 00    ADC #$0080             ;|
-$80:A8BD EB          XBA                    ;} If layer 1 position + 1/2 screen right's scroll != blue:
+$80:A8BD EB          XBA                    ;} If upper scroll is not blue:
 $80:A8BE 29 FF 00    AND #$00FF             ;|
 $80:A8C1 18          CLC                    ;|
 $80:A8C2 6D 16 42    ADC $4216              ;|
@@ -6140,9 +6158,9 @@ $80:A8C8 BF 20 CD 7E LDA $7ECD20,x[$7E:CD20];|
 $80:A8CC 29 FF 00    AND #$00FF             ;|
 $80:A8CF C9 01 00    CMP #$0001             ;|
 $80:A8D2 F0 03       BEQ $03    [$A8D7]     ;/
-$80:A8D4 A0 1F 00    LDY #$001F             ; Y = 1Fh
+$80:A8D4 A0 1F 00    LDY #$001F             ; Y = 1Fh (show bottom two rows at room bottom)
 
-$80:A8D7 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y]
+$80:A8D7 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y] (max offset from upper scroll position at room bottom)
 $80:A8DA AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;\
 $80:A8DD CD 15 09    CMP $0915  [$7E:0915]  ;|
 $80:A8E0 10 09       BPL $09    [$A8EB]     ;|
@@ -6153,33 +6171,33 @@ $80:A8E8 9C 13 09    STZ $0913  [$7E:0913]  ;/
 $80:A8EB AD AB 07    LDA $07AB  [$7E:07AB]  ;\
 $80:A8EE 3A          DEC A                  ;|
 $80:A8EF EB          XBA                    ;|
-$80:A8F0 18          CLC                    ;} $0937 = (room width in pixels) - 100h + [$0933]
+$80:A8F0 18          CLC                    ;} $0937 = (room height in pixels) - 100h + [$0933] (adjusted room bottom scroll position)
 $80:A8F1 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A8F4 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A8F7 CD 15 09    CMP $0915  [$7E:0915]  ;\
-$80:A8FA 90 22       BCC $22    [$A91E]     ;} If [$0937] >= [layer 1 Y position]:
+$80:A8FA 90 22       BCC $22    [$A91E]     ;} If [layer 1 Y position] <= (adjusted room bottom scroll position):
 $80:A8FC A5 14       LDA $14    [$7E:0014]  ;\
 $80:A8FE 18          CLC                    ;|
 $80:A8FF 6D A9 07    ADC $07A9  [$7E:07A9]  ;|
-$80:A902 AA          TAX                    ;} If layer 1 position + 1/2 screen right's scroll + 1 screen down != red: return
+$80:A902 AA          TAX                    ;} If lower scroll is not red: return
 $80:A903 BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
 $80:A907 29 FF 00    AND #$00FF             ;|
 $80:A90A D0 27       BNE $27    [$A933]     ;/
 $80:A90C AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A90F 29 00 FF    AND #$FF00             ;|
-$80:A912 18          CLC                    ;} $0937 = position of top scroll boundary + [$0933]
+$80:A912 18          CLC                    ;} $0937 = (upper scroll position) + [$0933] (adjusted upper scroll position)
 $80:A913 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A916 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A919 CD 15 09    CMP $0915  [$7E:0915]  ;\
-$80:A91C B0 15       BCS $15    [$A933]     ;} If [$0937] >= [layer 1 Y position]: return
+$80:A91C B0 15       BCS $15    [$A933]     ;} If [layer 1 Y position] <= (adjusted upper scroll position): return
 
 $80:A91E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A921 38          SEC                    ;|
-$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
-$80:A925 E9 02 00    SBC #$0002             ;|
-$80:A928 CD 37 09    CMP $0937  [$7E:0937]  ;} Layer 1 Y position = max([$0937], [$0939] - [camera Y speed] - 2)
+$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;} A = [$0939] - [camera Y speed] - 2 (proposed Y position)
+$80:A925 E9 02 00    SBC #$0002             ;/
+$80:A928 CD 37 09    CMP $0937  [$7E:0937]  ;\
 $80:A92B 10 03       BPL $03    [$A930]     ;|
-$80:A92D AD 37 09    LDA $0937  [$7E:0937]  ;|
+$80:A92D AD 37 09    LDA $0937  [$7E:0937]  ;} Layer 1 Y position = max([$0937], (proposed Y position))
                                             ;|
 $80:A930 8D 15 09    STA $0915  [$7E:0915]  ;/
 

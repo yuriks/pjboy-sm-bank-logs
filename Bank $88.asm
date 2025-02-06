@@ -7052,8 +7052,8 @@ $88:DD49 6B          RTL
 $88:DD4A             dx 8655,88,    ; HDMA table bank = $88
                         866A,88,    ; Indirect HDMA data bank = $88
                         8570,88DD43,; Pre-instruction = $88:DD43
-                        0001,DD61,
-                        7777,DD75,
+                        0001,DD61
+$88:DD59             dw 7777,DD75,
                         85EC,DD59   ; Go to $DD59
 }
 
@@ -7068,8 +7068,8 @@ $88:DD61             db 00
 {
 $88:DD62             dx 8655,88,    ; HDMA table bank = $88
                         866A,88,    ; Indirect HDMA data bank = $88
-                        0001,DD74,
-                        7777,DDA6,
+                        0001,DD74
+$88:DD6C             dw 7777,DDA6,
                         85EC,DD6C   ; Go to $DD6C
 }
 
