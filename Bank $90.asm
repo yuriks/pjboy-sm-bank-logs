@@ -11842,14 +11842,20 @@ $90:D4C6             db 00,80, ; C9h: Facing right - shinespark - horizontal
 
 ;;; $D4D2: Projectile pre-instruction - speed echo ;;;
 {
-; Must be projectile slot 3 or 4, corresponding to speed echo 2 or 3 respectively
+;; Parameters:
+;;     X: Projectile index. Must be projectile slot 3 or 4, corresponding to speed echo 2 or 3 respectively
+
+; BUG: It's possible for the projectile distance to be F8h..FFh whilst still on-screen,
+;      e.g. Samus is within 8px of the left/right edge of the screen and a horizontal echo reaches the opposite edge of the screen
+;      In this case, because only the low byte of projectile distance is used,
+;      adding 8 to projectile distance effectively wraps around to 0..7, causing the echo itself to warp back to Samus
 $90:D4D2 BD DC 0B    LDA $0BDC,x[$7E:0BE4]  ;\
 $90:D4D5 18          CLC                    ;|
 $90:D4D6 69 08 00    ADC #$0008             ;} Projectile distance += 8
 $90:D4D9 9D DC 0B    STA $0BDC,x[$7E:0BE4]  ;/
 $90:D4DC BC 7C 0C    LDY $0C7C,x[$7E:0C84]  ; Y = [projectile angle]
 $90:D4DF BD DC 0B    LDA $0BDC,x[$7E:0BE4]  ;\
-$90:D4E2 29 FF 00    AND #$00FF             ;} A = [projectile distance]
+$90:D4E2 29 FF 00    AND #$00FF             ;} A = [projectile distance] % 100h
 $90:D4E5 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
 $90:D4E8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $90:D4EB 18          CLC                    ;|
