@@ -5637,27 +5637,21 @@ $80:A527 60          RTS
 ;     $90:94EC: Main scrolling routine
 ;     $90:95A0: Handle horizontal scrolling
 
-; If time frozen:
-;     Return
-;
-; Layer 1 X position = clamp([layer 1 X position], 0, (room width in pixels) - 100h)
-;
-; If layer 1 position + 1/2 scroll down's scroll = red:
-; {
-;     $0933 = position of right scroll boundary
-;     $0939 = [layer 1 X position] + [camera X speed] + 2
-;     Layer 1 X position = min([$0939], [$0933])
-;     If [$0939] < [$0933] and layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
-;         Round layer 1 X position to left scroll boundary
-; }
-; Else if layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
-; {
-;     $0933 = position of left scroll boundary
-;     $0939 = [layer 1 X position] - [camera X speed] - 2
-;     Layer 1 X position = max([$0939], [$0933])
-;     If [$0939] >= [$0933] and layer 1 position + 1/2 scroll down's scroll = red:
-;         Layer 1 X position = [$0939] rounded to right scroll boundary
-; }
+; The purpose of this routine is to scroll the screen out of red scroll zones
+; It's called when Samus X position hasn't changed (this is the meaning of "autoscrolling"),
+; hence the `[camera X speed] + 2` calculations below always result in 3px/frame
+
+; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
+; The scrolling code here only cares about the scrolls containing the vertical position 80h, in this case scrolls 1 and 2
+; The two scrolls being considered are hereinafter called the "left scroll" and "right scroll"
+
+; 1 1 1 2 2 2 2 2
+; 1 1 1 2 2 2 2 2
+; 1 1 1 2 2 2 2 2
+; 1_1_1_2_2_2_2_2
+; 1 1 1 2 2 2 2 2
+; 3 3 3 4 4 4 4 4
+; 3 3 3 4 4 4 4 4
 
 $80:A528 08          PHP
 $80:A529 8B          PHB
@@ -5691,7 +5685,7 @@ $80:A55D E2 20       SEP #$20               ;|
 $80:A55F 8D 02 42    STA $4202              ;|
 $80:A562 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
 $80:A565 8D 03 42    STA $4203              ;|
-$80:A568 C2 20       REP #$20               ;} If layer 1 position + 1/2 scroll down's scroll != red: go to BRANCH_UNBOUNDED_FROM_LEFT
+$80:A568 C2 20       REP #$20               ;} If left scroll is not red: go to BRANCH_UNBOUNDED_FROM_LEFT
 $80:A56A AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A56D 29 FF 00    AND #$00FF             ;|
 $80:A570 18          CLC                    ;|
@@ -5702,16 +5696,16 @@ $80:A579 29 FF 00    AND #$00FF             ;|
 $80:A57C D0 5B       BNE $5B    [$A5D9]     ;/
 $80:A57E AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:A581 29 00 FF    AND #$FF00             ;|
-$80:A584 18          CLC                    ;} $0933 = position of right scroll boundary
+$80:A584 18          CLC                    ;} $0933 = (right scroll position)
 $80:A585 69 00 01    ADC #$0100             ;|
 $80:A588 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A58B AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A58E 18          CLC                    ;|
 $80:A58F 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;|
-$80:A592 69 02 00    ADC #$0002             ;} If [$0939] + [camera X speed] + 2 >= (position of right scroll boundary): go to BRANCH_REACHED_RIGHT_SCROLL_BOUNDARY
+$80:A592 69 02 00    ADC #$0002             ;} If [$0939] + [camera X speed] + 2 >= (right scroll position): go to BRANCH_ALIGN_WITH_RIGHT_SCROLL
 $80:A595 CD 33 09    CMP $0933  [$7E:0933]  ;|
 $80:A598 B0 3A       BCS $3A    [$A5D4]     ;/
-$80:A59A 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera X speed] + 2
+$80:A59A 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera X speed] + 2 (proposed X position)
 $80:A59D AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A5A0 18          CLC                    ;|
 $80:A5A1 69 80 00    ADC #$0080             ;|
@@ -5721,7 +5715,7 @@ $80:A5A7 8D 02 42    STA $4202              ;|
 $80:A5AA AD A9 07    LDA $07A9  [$7E:07A9]  ;|
 $80:A5AD 8D 03 42    STA $4203              ;|
 $80:A5B0 C2 20       REP #$20               ;|
-$80:A5B2 AD 3A 09    LDA $093A  [$7E:093A]  ;} If new layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
+$80:A5B2 AD 3A 09    LDA $093A  [$7E:093A]  ;} If right scroll is red:
 $80:A5B5 1A          INC A                  ;|
 $80:A5B6 29 FF 00    AND #$00FF             ;|
 $80:A5B9 18          CLC                    ;|
@@ -5731,31 +5725,31 @@ $80:A5BE BF 20 CD 7E LDA $7ECD20,x[$7E:CD2D];|
 $80:A5C2 29 FF 00    AND #$00FF             ;|
 $80:A5C5 D0 08       BNE $08    [$A5CF]     ;/
 $80:A5C7 AD 39 09    LDA $0939  [$7E:0939]  ;\
-$80:A5CA 29 00 FF    AND #$FF00             ;} Layer 1 X position = [$0939] rounded to left scroll boundary
+$80:A5CA 29 00 FF    AND #$FF00             ;} Layer 1 X position = (left scroll position)
 $80:A5CD 80 6C       BRA $6C    [$A63B]     ; Return
 
-$80:A5CF AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 X position = [$0939]
+$80:A5CF AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 X position = (proposed X position)
 $80:A5D2 80 67       BRA $67    [$A63B]     ; Return
 
-; BRANCH_REACHED_RIGHT_SCROLL_BOUNDARY
-$80:A5D4 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 X position = (position of right scroll boundary)
+; BRANCH_ALIGN_WITH_RIGHT_SCROLL
+$80:A5D4 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 X position = (right scroll position)
 $80:A5D7 80 62       BRA $62    [$A63B]     ; Return
 
 ; BRANCH_UNBOUNDED_FROM_LEFT
 $80:A5D9 E8          INX                    ;\
 $80:A5DA BF 20 CD 7E LDA $7ECD20,x[$7E:CD21];|
-$80:A5DE 29 FF 00    AND #$00FF             ;} If layer 1 position + 1/2 scroll down + 1 scroll right's scroll != red: return
+$80:A5DE 29 FF 00    AND #$00FF             ;} If right scroll is not red: return
 $80:A5E1 D0 5B       BNE $5B    [$A63E]     ;/
 $80:A5E3 AD 11 09    LDA $0911  [$7E:0911]  ;\
-$80:A5E6 29 00 FF    AND #$FF00             ;} $0933 = position of left scroll boundary
+$80:A5E6 29 00 FF    AND #$FF00             ;} $0933 = (left scroll position)
 $80:A5E9 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A5EC AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A5EF 38          SEC                    ;|
 $80:A5F0 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
-$80:A5F3 E9 02 00    SBC #$0002             ;} If [$0939] - [camera X speed] - 2 < (position of left scroll boundary): go to BRANCH_REACHED_LEFT_SCROLL_BOUNDARY
+$80:A5F3 E9 02 00    SBC #$0002             ;} If [$0939] - [camera X speed] - 2 < (left scroll position): go to BRANCH_ALIGN_WITH_LEFT_SCROLL
 $80:A5F6 CD 33 09    CMP $0933  [$7E:0933]  ;|
 $80:A5F9 30 3D       BMI $3D    [$A638]     ;/
-$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera X speed] + 2
+$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera X speed] + 2 (proposed X position)
 $80:A5FE AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A601 18          CLC                    ;|
 $80:A602 69 80 00    ADC #$0080             ;|
@@ -5764,7 +5758,7 @@ $80:A606 E2 20       SEP #$20               ;|
 $80:A608 8D 02 42    STA $4202              ;|
 $80:A60B AD A9 07    LDA $07A9  [$7E:07A9]  ;|
 $80:A60E 8D 03 42    STA $4203              ;|
-$80:A611 C2 20       REP #$20               ;} If new layer 1 position + 1/2 scroll down's scroll = red:
+$80:A611 C2 20       REP #$20               ;} If left scroll is red:
 $80:A613 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A616 29 FF 00    AND #$00FF             ;|
 $80:A619 18          CLC                    ;|
@@ -5775,15 +5769,15 @@ $80:A622 29 FF 00    AND #$00FF             ;|
 $80:A625 D0 0C       BNE $0C    [$A633]     ;/
 $80:A627 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A62A 29 00 FF    AND #$FF00             ;|
-$80:A62D 18          CLC                    ;} Layer 1 X position = [$0939] rounded to right scroll boundary
+$80:A62D 18          CLC                    ;} Layer 1 X position = (right scroll position)
 $80:A62E 69 00 01    ADC #$0100             ;/
 $80:A631 80 08       BRA $08    [$A63B]     ; Return
 
-$80:A633 AD 39 09    LDA $0939  [$7E:0939]  ;\
-$80:A636 80 03       BRA $03    [$A63B]     ;} Layer 1 X position = [$0939]
+$80:A633 AD 39 09    LDA $0939  [$7E:0939]  ; Layer 1 X position = (proposed X position)
+$80:A636 80 03       BRA $03    [$A63B]     ; Return
 
-; BRANCH_REACHED_LEFT_SCROLL_BOUNDARY
-$80:A638 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 X position = (position of left scroll boundary)
+; BRANCH_ALIGN_WITH_LEFT_SCROLL
+$80:A638 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 X position = (left scroll position)
 
 $80:A63B 8D 11 09    STA $0911  [$7E:0911]
 
@@ -5926,7 +5920,7 @@ $80:A730 6B          RTL
 ;     $90:964F: Handle vertical scrolling
 
 ; The purpose of this routine is to scroll the screen out of red scroll zones
-; It's called when Samus' position hasn't changed (this is the meaning of "autoscrolling"),
+; It's called when Samus Y position hasn't changed (this is the meaning of "autoscrolling"),
 ; hence the `[camera Y speed] + 2` calculations below always result in 3px/frame
 
 ; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
@@ -6113,9 +6107,11 @@ $80:A892 6B          RTL
 ;     $90:964F: Handle vertical scrolling
 
 ; The purpose of this routine is to scroll the screen out of red scroll zones when moving the camera down
-; Layer 1 Y position has already been increased by [camera Y speed] before calling this routine
 ; Ideal layer 1 Y position is set to Samus' Y position adjusted by the up/down scroller,
 ; this routine also deals with capping layer 1 Y position to that
+; Layer 1 Y position has already been increased by [camera Y speed] before calling this routine,
+; so when this routine decides the screen needs to be scrolled up out of a red scroll (which it does at 2px/frame),
+; it has to compensate by subtracting an additional [camera Y speed]
 
 ; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
 ; The scrolling code here only cares about the scrolls containing the horizontal centre, in this case scrolls 2 and 4
@@ -6211,6 +6207,26 @@ $80:A935 6B          RTL
 {
 ; Called by:
 ;     $90:964F: Handle vertical scrolling
+
+; The purpose of this routine is to scroll the screen out of red scroll zones when moving the camera up
+; Ideal layer 1 Y position is set to Samus' Y position adjusted by the up/down scroller,
+; this routine also deals with capping layer 1 Y position to that
+; Layer 1 Y position has already been decreased by [camera Y speed] before calling this routine,
+; so when this routine decides the screen needs to be scrolled down out of a red scroll (which it does at 2px/frame),
+; it has to compensate by adding an additional [camera Y speed]
+
+; The diagram below attempts to show a visual of a screen divided into the four scroll zones (1, 2, 3 and 4)
+; The scrolling code here only cares about the scrolls containing the horizontal centre, in this case scrolls 2 and 4
+; The two scrolls being considered are hereinafter called the "upper scroll" and "lower scroll"
+
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 1 1 1 2|2 2 2 2
+; 3 3 3 4|4 4 4 4
+; 3 3 3 4|4 4 4 4
+
 $80:A936 08          PHP
 $80:A937 8B          PHB
 $80:A938 E2 20       SEP #$20
@@ -6239,7 +6255,7 @@ $80:A969 8D 03 42    STA $4203              ;|
 $80:A96C C2 20       REP #$20               ;|
 $80:A96E AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A971 18          CLC                    ;|
-$80:A972 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 screen right's scroll = red:
+$80:A972 69 80 00    ADC #$0080             ;} If upper scroll is not red: return
 $80:A975 EB          XBA                    ;|
 $80:A976 29 FF 00    AND #$00FF             ;|
 $80:A979 18          CLC                    ;|
@@ -6250,16 +6266,16 @@ $80:A982 29 FF 00    AND #$00FF             ;|
 $80:A985 D0 22       BNE $22    [$A9A9]     ;/
 $80:A987 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A98A 29 00 FF    AND #$FF00             ;|
-$80:A98D 18          CLC                    ;} $0933 = position of bottom scroll boundary
+$80:A98D 18          CLC                    ;} $0933 = (lower scroll position)
 $80:A98E 69 00 01    ADC #$0100             ;|
 $80:A991 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A994 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A997 18          CLC                    ;|
-$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
-$80:A99B 69 02 00    ADC #$0002             ;|
-$80:A99E CD 33 09    CMP $0933  [$7E:0933]  ;} Layer 1 Y position = min([$0933], [$0939] + [camera Y speed] + 2)
+$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;} A = [$0939] + [camera Y speed] + 2 (proposed Y position)
+$80:A99B 69 02 00    ADC #$0002             ;/
+$80:A99E CD 33 09    CMP $0933  [$7E:0933]  ;\
 $80:A9A1 90 03       BCC $03    [$A9A6]     ;|
-$80:A9A3 AD 33 09    LDA $0933  [$7E:0933]  ;|
+$80:A9A3 AD 33 09    LDA $0933  [$7E:0933]  ;} Layer 1 Y position = min((lower scroll position), (proposed Y position))
                                             ;|
 $80:A9A6 8D 15 09    STA $0915  [$7E:0915]  ;/
 
