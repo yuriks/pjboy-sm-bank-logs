@@ -7290,6 +7290,11 @@ $90:B161 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:B165 60          RTS                    ; Return
 
 $90:B166 4C 03 B1    JMP $B103  [$90:B103]  ; Go to wave beam shared pre-instruction
+}
+
+
+;;; $B169: RTS ;;;
+{
 $90:B169 60          RTS
 }
 
