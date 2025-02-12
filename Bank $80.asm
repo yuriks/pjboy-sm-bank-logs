@@ -5653,6 +5653,10 @@ $80:A527 60          RTS
 ; 3 3 3 4 4 4 4 4
 ; 3 3 3 4 4 4 4 4
 
+; Note that scrolls 2/4 may be off-screen
+; If the camera is at the right edge of the room, then scrolls 2/4 are beyond the right edge of the room,
+; and this routine fails to prevent a wrapped / out of bounds read from the scroll data
+
 $80:A528 08          PHP
 $80:A529 8B          PHB
 $80:A52A E2 20       SEP #$20
@@ -5974,6 +5978,10 @@ $80:A730 6B          RTL
 ; 1 1 1 2|2 2 2 2
 ; 3 3 3 4|4 4 4 4
 ; 3 3 3 4|4 4 4 4
+
+; Note that scrolls 3/4 may be off-screen
+; If the camera is at the bottom of the room, then scrolls 3/4 are beyond the bottom of the room,
+; and this routine fails to prevent an out of bounds read from the scroll data
 
 $80:A731 08          PHP
 $80:A732 8B          PHB
