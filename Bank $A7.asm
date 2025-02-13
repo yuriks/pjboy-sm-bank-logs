@@ -2799,6 +2799,11 @@ $A7:B828 18          CLC                    ;|
 $A7:B829 69 E0 00    ADC #$00E0             ;} $12 = [layer 1 Y position] + E0h (unused)
 $A7:B82C 85 12       STA $12    [$7E:0012]  ;/
 $A7:B82E 7C A8 0F    JMP ($0FA8,x)[$A7:B831]; Execute [enemy function]
+}
+
+
+;;; $B831: RTL ;;;
+{
 $A7:B831 6B          RTL
 }
 

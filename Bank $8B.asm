@@ -3204,6 +3204,11 @@ $8B:9571 60          RTS
 
 ;;; $9572: Unused. Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Mode 7 object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9572 C2 30       REP #$30
 $8B:9574 B9 00 00    LDA $0000,y
 $8B:9577 9D A5 19    STA $19A5,x
@@ -3215,6 +3220,8 @@ $8B:957C 60          RTS
 
 ;;; $957D: Unused. Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Mode 7 object index
 $8B:957D C2 30       REP #$30
 $8B:957F A9 85 95    LDA #$9585
 $8B:9582 9D A5 19    STA $19A5,x
@@ -3224,6 +3231,10 @@ $8B:9585 60          RTS
 
 ;;; $9586: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9586 C2 30       REP #$30
 $8B:9588 B9 00 00    LDA $0000,y[$8B:A143]
 $8B:958B A8          TAY
@@ -3233,6 +3244,11 @@ $8B:958C 60          RTS
 
 ;;; $958D: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Mode 7 object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:958D C2 30       REP #$30
 $8B:958F DE AD 19    DEC $19AD,x[$7E:19AF]
 $8B:9592 D0 F2       BNE $F2    [$9586]
@@ -3244,6 +3260,11 @@ $8B:9596 60          RTS
 
 ;;; $9597: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Mode 7 object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9597 C2 30       REP #$30
 $8B:9599 B9 00 00    LDA $0000,y[$8B:A12F]
 $8B:959C 9D AD 19    STA $19AD,x[$7E:19AF]
@@ -3302,6 +3323,8 @@ $8B:95CD 6B          RTL
 
 ;;; $95CE: Clear cinematic BG objects, cinematic BG tilemap = [A] ;;;
 {
+;; Parameters:
+;;     A: Tilemap fill value
 $8B:95CE 08          PHP
 $8B:95CF C2 30       REP #$30
 $8B:95D1 DA          PHX
@@ -3327,6 +3350,9 @@ $8B:95EF 6B          RTL
 
 ;;; $95F0: Spawn cinematic BG object ;;;
 {
+;; Parameters:
+;;     A: VRAM address
+;;     Y: Cinematic BG object definition
 $8B:95F0 08          PHP
 $8B:95F1 C2 30       REP #$30
 $8B:95F3 DA          PHX
@@ -3439,6 +3465,8 @@ $8B:9697 60          RTS
 {
 ;;; $9698: Instruction - delete ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
 $8B:9698 C2 30       REP #$30
 $8B:969A 9E B5 19    STZ $19B5,x[$7E:19B9]  ; Cinematic BG object indirect instruction pointer = 0
 $8B:969D 9E CD 19    STZ $19CD,x[$7E:19D1]  ; Cinematic BG object instruction list pointer = 0
@@ -3450,6 +3478,9 @@ $8B:96A2 60          RTS
 
 ;;; $96A3: Unused. Instruction - sleep ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to after this instruction
 $8B:96A3 C2 30       REP #$30
 $8B:96A5 88          DEY                    ;\
 $8B:96A6 88          DEY                    ;|
@@ -3463,6 +3494,11 @@ $8B:96AD 60          RTS
 
 ;;; $96AE: Unused. Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:96AE C2 30       REP #$30
 $8B:96B0 B9 00 00    LDA $0000,y
 $8B:96B3 9D D5 19    STA $19D5,x
@@ -3474,6 +3510,8 @@ $8B:96B8 60          RTS
 
 ;;; $96B9: Unused. Instruction - clear pre-instruction ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
 $8B:96B9 C2 30       REP #$30
 $8B:96BB A9 C1 96    LDA #$96C1
 $8B:96BE 9D D5 19    STA $19D5,x
@@ -3483,6 +3521,10 @@ $8B:96C1 60          RTS
 
 ;;; $96C2: Unused. Instruction - call external function [[Y]] ;;;
 {
+;; Parameter:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:96C2 C2 30       REP #$30
 $8B:96C4 B9 00 00    LDA $0000,y
 $8B:96C7 8D 12 00    STA $0012  [$7E:0012]
@@ -3503,6 +3545,10 @@ $8B:96DD DC 12 00    JML [$0012]
 
 ;;; $96E0: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
+;; Parameter:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:96E0 C2 30       REP #$30
 $8B:96E2 B9 00 00    LDA $0000,y
 $8B:96E5 8D 12 00    STA $0012  [$7E:0012]
@@ -3525,6 +3571,10 @@ $8B:9701 DC 12 00    JML [$0012]
 
 ;;; $9704: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameter:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9704 C2 30       REP #$30
 $8B:9706 8C 12 00    STY $0012  [$7E:0012]
 $8B:9709 88          DEY
@@ -3545,6 +3595,10 @@ $8B:971D 60          RTS
 
 ;;; $971E: Instruction - go to [[Y]] ;;;
 {
+;; Parameter:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:971E C2 30       REP #$30
 $8B:9720 B9 00 00    LDA $0000,y[$8C:D611]
 $8B:9723 A8          TAY
@@ -3554,6 +3608,11 @@ $8B:9724 60          RTS
 
 ;;; $9725: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9725 C2 30       REP #$30
 $8B:9727 DE E5 19    DEC $19E5,x
 $8B:972A D0 F2       BNE $F2    [$971E]
@@ -3565,6 +3624,11 @@ $8B:972E 60          RTS
 
 ;;; $972F: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:972F C2 30       REP #$30
 $8B:9731 DE E5 19    DEC $19E5,x
 $8B:9734 D0 CE       BNE $CE    [$9704]
@@ -3575,6 +3639,11 @@ $8B:9737 60          RTS
 
 ;;; $9738: Unused. Instruction - timer = [[Y]] ;;;
 {
+;; Parameter:
+;;     X: Cinematic BG object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8B:9738 C2 30       REP #$30
 $8B:973A B9 00 00    LDA $0000,y
 $8B:973D 9D E5 19    STA $19E5,x
@@ -3698,6 +3767,10 @@ $8B:97F6 60          RTS
 
 ;;; $97F7: Spawn text glow object ;;;
 {
+;; Parameters:
+;;     Y: Indirect instruction pointer (bank $8C)
+;;     $12: X position
+;;     $13: Y position
 $8B:97F7 DA          PHX
 $8B:97F8 A2 0E 00    LDX #$000E             ; X = Eh
 
@@ -3755,6 +3828,8 @@ $8B:9848 60          RTS
 
 ;;; $9849: Process text glow object ;;;
 {
+;; Parameters:
+;;     X: Text glow object index
 $8B:9849 AE 47 1A    LDX $1A47  [$7E:1A47]
 $8B:984C DE 07 1A    DEC $1A07,x[$7E:1A15]  ; Decrement text glow object timer
 $8B:984F F0 01       BEQ $01    [$9852]     ; If [text glow object timer] != 0:
@@ -3855,6 +3930,8 @@ $8B:98F8 60          RTS
 
 ;;; $98F9: Clear credits object, cinematic BG tilemap = [A] ;;;
 {
+;; Parameters:
+;;     A: Tilemap fill value
 $8B:98F9 08          PHP
 $8B:98FA C2 30       REP #$30
 $8B:98FC DA          PHX
@@ -3972,6 +4049,9 @@ $8B:99C0 60          RTS
 
 ;;; $99C1: Copy credits row to cinematic BG tilemap ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction
+
 ; Copy 40h bytes from $7F:0000 + [[Y] + 2] to $7E:3000 + [$1A01] * 40h
 
 $8B:99C1 08          PHP
@@ -4022,6 +4102,8 @@ $8B:9A05 60          RTS
 
 ;;; $9A06: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
 $8B:9A06 C2 30       REP #$30
 $8B:9A08 B9 00 00    LDA $0000,y[$8C:D925]
 $8B:9A0B A8          TAY
@@ -4031,6 +4113,8 @@ $8B:9A0C 60          RTS
 
 ;;; $9A0D: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
 $8B:9A0D C2 30       REP #$30
 $8B:9A0F CE FB 19    DEC $19FB  [$7E:19FB]
 $8B:9A12 D0 F2       BNE $F2    [$9A06]
@@ -4042,6 +4126,8 @@ $8B:9A16 60          RTS
 
 ;;; $9A17: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
 $8B:9A17 C2 30       REP #$30
 $8B:9A19 B9 00 00    LDA $0000,y[$8C:D91D]
 $8B:9A1C 8D FB 19    STA $19FB  [$7E:19FB]
