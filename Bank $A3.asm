@@ -7187,7 +7187,7 @@ $A3:D025 90 36       BCC $36    [$D05D]     ; If no collision: go to BRANCH_OUTS
 $A3:D027 A9 00 00    LDA #$0000             ;\
 $A3:D02A 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy consecutive turn counter = 0
 $A3:D02D 5A          PHY                    ;\
-$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope <-- does nothing, a non-square slope isn't a collision
+$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope
 $A3:D032 7A          PLY                    ;/
 $A3:D033 20 24 D1    JSR $D124  [$A3:D124]  ; Handle turn transition disabling
 $A3:D036 64 12       STZ $12    [$7E:0012]  ;\
@@ -8742,7 +8742,7 @@ $A3:E0C5 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], p
 $A3:E0C9 90 61       BCC $61    [$E12C]     ; If no collision: go to BRANCH_OUTSIDE_TURN
 $A3:E0CB A9 00 00    LDA #$0000             ;\
 $A3:E0CE 9F 08 78 7E STA $7E7808,x          ;} Enemy consecutive turn counter = 0
-$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope <-- does nothing, a non-square slope isn't a collision
+$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E0D6 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E0D8 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E0DA BD AA 0F    LDA $0FAA,x            ;|

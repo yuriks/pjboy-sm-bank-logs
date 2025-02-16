@@ -9225,7 +9225,7 @@ $A0:C6A2 80 09       BRA $09    [$C6AD]
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
-; Call $A0:C8AD if this routine returns carry clear to adjust the enemy's position for any slopes
+; Call $A0:C8AD to adjust enemy Y position for any slopes, this function only adjusts enemy X position
 ; Used by yard and Wrecked Ship orange zoomer
 
 $A0:C6A4 A9 00 80    LDA #$8000
@@ -9657,7 +9657,7 @@ $A0:C88D             dw C2BC, ;  0: Air
 ;;     Carry: Set if position was adjusted by slope, otherwise clear
 
 ; Align enemy vertically to slopes if currently in contact with slopes
-; Call this after $A0:C6A4 if it returns carry clear
+; This function is usually called after $A0:C6A4 only if it returns carry clear, but it's applicable if it returns carry set too
 
 $A0:C8AD 5A          PHY
 $A0:C8AE DA          PHX
