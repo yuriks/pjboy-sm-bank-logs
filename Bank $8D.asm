@@ -1541,7 +1541,6 @@ $8D:C4E8 6B          RTL
 ;;     Y: Palette FX object ID
 ;; Returns:
 ;;     Y: Palette FX object index if carry clear
-;;     Carry: Clear if palette FX object spawned, otherwise set
 $8D:C4E9 08          PHP
 $8D:C4EA 8B          PHB
 $8D:C4EB DA          PHX
@@ -1593,8 +1592,8 @@ $8D:C526 60          RTS
 {
 $8D:C527 08          PHP
 $8D:C528 8B          PHB
-$8D:C529 4B          PHK
-$8D:C52A AB          PLB
+$8D:C529 4B          PHK                    ;\
+$8D:C52A AB          PLB                    ;} DB = $8D
 $8D:C52B C2 30       REP #$30
 $8D:C52D 2C 79 1E    BIT $1E79  [$7E:1E79]  ;\
 $8D:C530 10 15       BPL $15    [$C547]     ;} If palette FX objects not enabled: return
@@ -1619,6 +1618,12 @@ $8D:C549 6B          RTL
 
 ;;; $C54A: Process palette FX object ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+
+; Some instructions pop the return address pushed to the stack by $C578 (marked "terminate processing palette FX object")
+; The delete instruction does so to return out of *this* routine
+; The done instruction does so to exit the write colours loop
 $8D:C54A C2 30       REP #$30
 $8D:C54C FC AD 1E    JSR ($1EAD,x)[$8D:C526]; Execute [palette FX object pre-instruction]
 $8D:C54F AE 7B 1E    LDX $1E7B  [$7E:1E7B]  ; X = [palette FX object index]
@@ -1669,13 +1674,19 @@ $8D:C594 60          RTS
 {
 ;;; $C595: Instruction - done ;;;
 {
-$8D:C595 68          PLA
-$8D:C596 4C 89 C5    JMP $C589  [$8D:C589]
+$8D:C595 68          PLA                    ; Terminate processing palette FX object
+$8D:C596 4C 89 C5    JMP $C589  [$8D:C589]  ; Go to $C589 (break out of instruction loop)
 }
 
 
 ;;; $C599: Instruction - colour index += 4 ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C599 8A          TXA
 $8D:C59A 18          CLC
 $8D:C59B 69 04 00    ADC #$0004
@@ -1688,6 +1699,12 @@ $8D:C5A1 60          RTS
 
 ;;; $C5A2: Instruction - colour index += 6 ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C5A2 8A          TXA
 $8D:C5A3 18          CLC
 $8D:C5A4 69 06 00    ADC #$0006
@@ -1700,6 +1717,12 @@ $8D:C5AA 60          RTS
 
 ;;; $C5AB: Instruction - colour index += 8 ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C5AB 8A          TXA
 $8D:C5AC 18          CLC
 $8D:C5AD 69 08 00    ADC #$0008
@@ -1712,6 +1735,12 @@ $8D:C5B3 60          RTS
 
 ;;; $C5B4: Instruction - colour index += 10h ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C5B4 8A          TXA
 $8D:C5B5 18          CLC
 $8D:C5B6 69 10 00    ADC #$0010
@@ -1724,6 +1753,12 @@ $8D:C5BC 60          RTS
 
 ;;; $C5BD: Instruction - colour index += 12h ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C5BD 8A          TXA
 $8D:C5BE 18          CLC
 $8D:C5BF 69 12 00    ADC #$0012
@@ -1736,6 +1771,12 @@ $8D:C5C5 60          RTS
 
 ;;; $C5C6: Unused. Instruction - colour index += 1Eh ;;;
 {
+;; Parameters:
+;;     X: Colour index
+;;     Y: Pointer to this instruction - 2
+;; Returns:
+;;     X: Colour index
+;;     Y: Pointer to next instruction - 2
 $8D:C5C6 8A          TXA
 $8D:C5C7 18          CLC
 $8D:C5C8 69 1E 00    ADC #$001E
@@ -1748,14 +1789,21 @@ $8D:C5CE 60          RTS
 
 ;;; $C5CF: Instruction - delete ;;;
 {
-$8D:C5CF 9E 7D 1E    STZ $1E7D,x[$7E:1E8B]
-$8D:C5D2 68          PLA
+;; Parameters:
+;;     X: Palette FX object index
+$8D:C5CF 9E 7D 1E    STZ $1E7D,x[$7E:1E8B]  ; Palette FX object ID = 0
+$8D:C5D2 68          PLA                    ; Terminate processing palette FX object
 $8D:C5D3 60          RTS
 }
 
 
 ;;; $C5D4: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C5D4 B9 00 00    LDA $0000,y[$8D:EB3D]
 $8D:C5D7 9D AD 1E    STA $1EAD,x[$7E:1EBB]
 $8D:C5DA C8          INY
@@ -1766,6 +1814,8 @@ $8D:C5DC 60          RTS
 
 ;;; $C5DD: Unused. Instruction - clear pre-instruction ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:C5DD A9 E3 C5    LDA #$C5E3
 $8D:C5E0 9D AD 1E    STA $1EAD,x
 $8D:C5E3 60          RTS
@@ -1774,6 +1824,10 @@ $8D:C5E3 60          RTS
 
 ;;; $C5E4: Unused. Instruction - call external function [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C5E4 B9 00 00    LDA $0000,y
 $8D:C5E7 85 12       STA $12    [$7E:0012]
 $8D:C5E9 B9 01 00    LDA $0001,y
@@ -1793,6 +1847,10 @@ $8D:C5FB DC 12 00    JML [$0012]
 
 ;;; $C5FE: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C5FE B9 00 00    LDA $0000,y
 $8D:C601 85 12       STA $12    [$7E:0012]
 $8D:C603 B9 01 00    LDA $0001,y
@@ -1814,6 +1872,10 @@ $8D:C61B DC 12 00    JML [$0012]
 
 ;;; $C61E: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C61E B9 00 00    LDA $0000,y[$8D:C878]
 $8D:C621 A8          TAY
 $8D:C622 60          RTS
@@ -1822,6 +1884,10 @@ $8D:C622 60          RTS
 
 ;;; $C623: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C623 84 12       STY $12    [$7E:0012]
 $8D:C625 88          DEY
 $8D:C626 B9 00 00    LDA $0000,y
@@ -1841,6 +1907,11 @@ $8D:C638 60          RTS
 
 ;;; $C639: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C639 DE DD 1E    DEC $1EDD,x[$7E:1EEB]
 $8D:C63C D0 E0       BNE $E0    [$C61E]
 $8D:C63E C8          INY
@@ -1851,6 +1922,11 @@ $8D:C640 60          RTS
 
 ;;; $C641: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C641 DE DD 1E    DEC $1EDD,x
 $8D:C644 D0 DD       BNE $DD    [$C623]
 $8D:C646 C8          INY
@@ -1860,6 +1936,11 @@ $8D:C647 60          RTS
 
 ;;; $C648: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C648 E2 20       SEP #$20
 $8D:C64A B9 00 00    LDA $0000,y[$8D:EB59]
 $8D:C64D 9D DD 1E    STA $1EDD,x[$7E:1EEB]
@@ -1877,6 +1958,11 @@ $8D:C654 60          RTS
 
 ;;; $C655: Instruction - palette FX object colour index = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C655 B9 00 00    LDA $0000,y[$8D:C7FC]
 $8D:C658 9D 8D 1E    STA $1E8D,x[$7E:1E9B]
 $8D:C65B C8          INY
@@ -1887,6 +1973,10 @@ $8D:C65D 60          RTS
 
 ;;; $C65E: Unused. Instruction - queue music track [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C65E B9 00 00    LDA $0000,y
 $8D:C661 29 FF 00    AND #$00FF
 $8D:C664 22 C1 8F 80 JSL $808FC1[$80:8FC1]
@@ -1897,6 +1987,10 @@ $8D:C669 60          RTS
 
 ;;; $C66A: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C66A B9 00 00    LDA $0000,y
 $8D:C66D 22 49 90 80 JSL $809049[$80:9049]
 $8D:C671 C8          INY
@@ -1906,6 +2000,10 @@ $8D:C672 60          RTS
 
 ;;; $C673: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C673 B9 00 00    LDA $0000,y[$8D:F051]
 $8D:C676 22 CB 90 80 JSL $8090CB[$80:90CB]
 $8D:C67A C8          INY
@@ -1915,6 +2013,10 @@ $8D:C67B 60          RTS
 
 ;;; $C67C: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:C67C B9 00 00    LDA $0000,y
 $8D:C67F 22 4D 91 80 JSL $80914D[$80:914D]
 $8D:C683 C8          INY
@@ -3052,6 +3154,8 @@ $8D:E200             dw C685,DF94 ; Post-credits Super Metroid icon
 
 ;;; $E204: Setup - palette FX object $E1BC (old Mother Brain fight background lights) ;;;
 {
+;; Parameters:
+;;     Y: Palette FX object index
 $8D:E204 A9 0B E2    LDA #$E20B             ;\
 $8D:E207 99 AD 1E    STA $1EAD,y[$7E:1EBB]  ;} Palette FX object pre-instruction = $E20B (delete if intro page 2 is active)
 $8D:E20A 60          RTS
@@ -3060,6 +3164,8 @@ $8D:E20A 60          RTS
 
 ;;; $E20B: Pre-instruction - delete if intro page 2 is active ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:E20B AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
 $8D:E20E C9 5F B3    CMP #$B35F             ;} If [cinematic function] = $B35F (intro - page 2):
 $8D:E211 D0 0C       BNE $0C    [$E21F]     ;/
@@ -3137,6 +3243,8 @@ $8D:E23E             dx 0008,
 
 ;;; $E2E0: Pre-instruction - delete if enemy 0 died ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:E2E0 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
 $8D:E2E3 D0 03       BNE $03    [$E2E8]     ;} If [enemy 0 health] = 0:
 $8D:E2E5 9E 7D 1E    STZ $1E7D,x[$7E:1E8B]  ; Palette FX object ID = 0
@@ -3199,6 +3307,9 @@ $8D:E339             dx 000A,
 
 ;;; $E379: Pre-instruction - Samus in heat ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+
 ; Contains heat damage check
 $8D:E379 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $8D:E37C 29 21 00    AND #$0021             ;} If varia/gravity suit not equipped:
@@ -3256,6 +3367,8 @@ $8D:E420             dw E466, E488, E4AA, E4CC, E4EE, E510, E532, E554, E576, E5
 
 ;;; $E440: Setup - palette FX object $F761 (Norfair 1 / Tourian 1) ;;;
 {
+;; Parameters:
+;;     Y: Palette FX object index
 $8D:E440 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $8D:E443 89 20 00    BIT #$0020             ;} If gravity suit equipped:
 $8D:E446 F0 05       BEQ $05    [$E44D]     ;/
@@ -3477,6 +3590,8 @@ $8D:EAE6             dx 000A,
 
 ;;; $EB2A: Unused. Pre-instruction - wait until area boss is dead ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:EB2A A9 01 00    LDA #$0001             ;\
 $8D:EB2D 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area boss is not dead:
 $8D:EB31 B0 07       BCS $07    [$EB3A]     ;/
@@ -3543,6 +3658,8 @@ $8D:EC01             dx 0001,
 
 ;;; $EC59: Pre-instruction - restart Crateria 1 instruction list if Samus isn't low enough ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:EC59 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $8D:EC5C C9 80 03    CMP #$0380             ;} If [Samus Y position] < 380h:
 $8D:EC5F B0 0C       BCS $0C    [$EC6D]     ;/
@@ -3611,6 +3728,8 @@ $8D:ED34             dx 0001,
 
 ;;; $ED84: Pre-instruction - restart dark lightning instruction list if Samus isn't low enough ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:ED84 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $8D:ED87 C9 80 03    CMP #$0380             ;} If [Samus Y position] < 380h:
 $8D:ED8A B0 0C       BCS $0C    [$ED98]     ;/
@@ -3729,6 +3848,8 @@ $8D:EE35             dx 000A,
 
 ;;; $EEC5: Pre-instruction - delete palette FX object if area mini-boss is dead ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
 $8D:EEC5 DA          PHX                    ;\
 $8D:EEC6 AE 9F 07    LDX $079F  [$7E:079F]  ;|
 $8D:EEC9 BF 28 D8 7E LDA $7ED828,x[$7E:D829];|
@@ -3855,97 +3976,97 @@ $8D:EFFB             dx 000A,
 ;;; $F08E: Instruction list - palette FX object $F785 (Norfair 2) ;;;
 {
 $8D:F08E             dx C655,006A,  ; Palette FX object colour index = 6Ah
-$8D:F092             dx F1C6,00,    ; $1EED = 0
+$8D:F092             dx F1C6,00,    ; Samus in heat palette FX index = 0
                         0010,
                             09FD,093B,0459,
                             C5AB,       ; Colour index += 8
                             09FD,4A52,
                             C595,       ; Done
-                        F1C6,01,    ; $1EED = 1
+                        F1C6,01,    ; Samus in heat palette FX index = 1
                         0004,
                             0E3D,0D7C,089A,
                             C5AB,       ; Colour index += 8
                             0E3D,4214,
                             C595,       ; Done
-                        F1C6,02,    ; $1EED = 2
+                        F1C6,02,    ; Samus in heat palette FX index = 2
                         0004,
                             165E,0DBC,08FB,
                             C5AB,       ; Colour index += 8
                             165E,39F5,
                             C595,       ; Done
-                        F1C6,03,    ; $1EED = 3
+                        F1C6,03,    ; Samus in heat palette FX index = 3
                         0005,
                             1A9E,11FD,0D3C,
                             C5AB,       ; Colour index += 8
                             1A9E,31D7,
                             C595,       ; Done
-                        F1C6,04,    ; $1EED = 4
+                        F1C6,04,    ; Samus in heat palette FX index = 4
                         0006,
                             1EBE,161D,119C,
                             C5AB,       ; Colour index += 8
                             1EBE,29D9,
                             C595,       ; Done
-                        F1C6,05,    ; $1EED = 5
+                        F1C6,05,    ; Samus in heat palette FX index = 5
                         0007,
                             22FE,1A5E,15DD,
                             C5AB,       ; Colour index += 8
                             22FE,21BA,
                             C595,       ; Done
-                        F1C6,06,    ; $1EED = 6
+                        F1C6,06,    ; Samus in heat palette FX index = 6
                         0008,
                             2B1F,1A9E,163E,
                             C5AB,       ; Colour index += 8
                             2B1F,199C,
                             C595,       ; Done
-                        F1C6,07,    ; $1EED = 7
+                        F1C6,07,    ; Samus in heat palette FX index = 7
                         0008,
                             2F5F,1EDF,1A7F,
                             C5AB,       ; Colour index += 8
                             2F5F,0D7F,
                             C595,       ; Done
-                        F1C6,08,    ; $1EED = 8
+                        F1C6,08,    ; Samus in heat palette FX index = 8
                         0008,
                             2F5F,1EDF,1A7F,
                             C5AB,       ; Colour index += 8
                             2F5F,0D7F,
                             C595,       ; Done
-                        F1C6,09,    ; $1EED = 9
+                        F1C6,09,    ; Samus in heat palette FX index = 9
                         0008,
                             2B1F,1A9E,163E,
                             C5AB,       ; Colour index += 8
                             2B1F,199C,
                             C595,       ; Done
-                        F1C6,0A,    ; $1EED = Ah
+                        F1C6,0A,    ; Samus in heat palette FX index = Ah
                         0007,
                             22FE,1A5E,15DD,
                             C5AB,       ; Colour index += 8
                             22FE,21BA,
                             C595,       ; Done
-                        F1C6,0B,    ; $1EED = Bh
+                        F1C6,0B,    ; Samus in heat palette FX index = Bh
                         0006,
                             1EBE,161D,119C,
                             C5AB,       ; Colour index += 8
                             1EBE,29D9,
                             C595,       ; Done
-                        F1C6,0C,    ; $1EED = Ch
+                        F1C6,0C,    ; Samus in heat palette FX index = Ch
                         0005,
                             1A9E,11FD,0D3C,
                             C5AB,       ; Colour index += 8
                             1A9E,31D7,
                             C595,       ; Done
-                        F1C6,0D,    ; $1EED = Dh
+                        F1C6,0D,    ; Samus in heat palette FX index = Dh
                         0004,
                             165E,0DBC,08FB,
                             C5AB,       ; Colour index += 8
                             165E,39F5,
                             C595,       ; Done
-                        F1C6,0E,    ; $1EED = Eh
+                        F1C6,0E,    ; Samus in heat palette FX index = Eh
                         0004,
                             0E3D,0D7C,089A,
                             C5AB,       ; Colour index += 8
                             0E3D,4214,
                             C595,       ; Done
-                        F1C6,0F,    ; $1EED = Fh
+                        F1C6,0F,    ; Samus in heat palette FX index = Fh
                         0010,
                             09FD,093B,0459,
                             C5AB,       ; Colour index += 8
@@ -3955,8 +4076,12 @@ $8D:F092             dx F1C6,00,    ; $1EED = 0
 }
 
 
-;;; $F1C6: Instruction - $1EED = [[Y]] ;;;
+;;; $F1C6: Instruction - Samus in heat palette FX index = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $8D:F1C6 B9 00 00    LDA $0000,y[$8D:F094]
 $8D:F1C9 29 FF 00    AND #$00FF
 $8D:F1CC 8D ED 1E    STA $1EED  [$7E:1EED]
@@ -4303,6 +4428,9 @@ $8D:F57D             dx 0002,
 
 ;;; $F621: Pre-instruction - delete if two more palette FX objects are spawned ;;;
 {
+;; Parameters:
+;;     X: Palette FX object index
+
 ; Huh. Weird...
 $8D:F621 BD 79 1E    LDA $1E79,x[$7E:1E87]  ;\
 $8D:F624 F0 03       BEQ $03    [$F629]     ;} If [palette FX object ([X] - 2) ID] != 0:
@@ -4392,6 +4520,8 @@ $8D:F63A             dx 000A,
 
 ;;; $F730: Setup - palette FX object $F779 (Brinstar 8) ;;;
 {
+;; Parameters:
+;;     Y: Palette FX object index
 $8D:F730 DA          PHX                    ;\
 $8D:F731 AE 9F 07    LDX $079F  [$7E:079F]  ;|
 $8D:F734 BF 28 D8 7E LDA $7ED828,x[$7E:D829];|
