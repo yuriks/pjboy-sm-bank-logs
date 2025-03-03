@@ -7,7 +7,7 @@
 ;                       |    |    |    |    |   ___________________ 9: Type (foreground layer 3)
 ;                       |    |    |    |    |  |   ________________ Ah: Default layer blending configuration (FX A)
 ;                       |    |    |    |    |  |  |   _____________ Bh: FX layer 3 layer blending configuration (FX B)
-;                       |    |    |    |    |  |  |  |   __________ Ch: FX liquid options (FX C)
+;                       |    |    |    |    |  |  |  |   __________ Ch: Liquid options (FX C)
 ;                       |    |    |    |    |  |  |  |  |   _______ Dh: Palette FX bitset
 ;                       |    |    |    |    |  |  |  |  |  |   ____ Eh: Animated tiles bitset
 ;                       |    |    |    |    |  |  |  |  |  |  |   _ Fh: Palette blend
