@@ -4065,7 +4065,7 @@ $A9:B31A A9 2A B3    LDA #$B32A             ;\
 $A9:B31D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B32A
 $A9:B320 A9 00 00    LDA #$0000             ;\
 $A9:B323 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Escape door explosion interval timer = 0
-$A9:B326 8D F2 0F    STA $0FF2  [$7E:0FF2]  ; Escape door index
+$A9:B326 8D F2 0F    STA $0FF2  [$7E:0FF2]  ; Escape door index = 0
 
 $A9:B329 60          RTS
 }
