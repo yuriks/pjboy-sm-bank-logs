@@ -1,2515 +1,1996 @@
 ;;; $8000: Enemy sets ;;;
 {
-; Room $DA60, state $DA8C: Enemy set
-; Room $DD58, state $DDA2: Enemy set
+; Enemy population format is:
+;      _ Debug enemy set name
+;     |
+;     aa,aa,aa,aa,aa,aa,aa
+
+;      ______ Enemy ID. FFFFh is terminator
+;     |     _ Palette index. TODO: explain MSb
+;     |    |
+;     iiii bbbb
+
+; There's a useless byte of zero padding between most (but not all) enemy set entries
+
+; Room $DA60, state $DA8C. Draygon - main area boss is dead
+; Room $DD58, state $DDA2. Mother Brain - main area boss is dead
 $B4:8000             dw FFFF
 
-; Room $94FD, state $950A: Enemy set name
+; Room $94FD. Wrecked Ship back door
 $B4:8002             db 53,46,31,5F,31,30,20 ; "SF1_10 "
-
-; Room $94FD, state $950A: Enemy set
-$B4:8009             dw D3BF,0001, D6FF,0002, D83F,0003, FFFF
-
+$B4:8009             dw D3BF, 0001,          ; Choot
+                        D6FF, 0002,          ; Skultera
+                        D83F, 0003,          ; Suspensor platform
+                        FFFF
 $B4:8017             db 00
 
-; Room $93AA, state $93B7: Enemy set name
+; Room $93AA. Landing site power bombs cave
 $B4:8018             db 73,66,31,5F,30,34,20 ; "sf1_04 "
-
-; Room $93AA, state $93B7: Enemy set
-$B4:801F             dw E9BF,0001, D7BF,0001, FFFF
-
+$B4:801F             dw E9BF, 0001,          ; Alcoon
+                        D7BF, 0001,          ; Zero
+                        FFFF
 $B4:8029             db 00
 
-; Room $990D, state $991A: Enemy set name
+; Room $990D. Crateria slope
 $B4:802A             db 73,66,32,5F,30,36,20 ; "sf2_06 "
-
-; Room $990D, state $991A: Enemy set
-$B4:8031             dw D63F,0001, DCFF,0002, FFFF
-
+$B4:8031             dw D63F, 0001,          ; Waver
+                        DCFF, 0002,          ; Zoomer
+                        FFFF
 $B4:803B             db 00
 
-; Room $9A44, state $9A70: Enemy set name
+; Room $9A44, state $9A70. Crateria bomb block hall - event "Zebes is awake" is set
 $B4:803C             db 53,46,32,5F,31,32,61 ; "SF2_12a"
-
-; Room $9A44, state $9A70: Enemy set
-$B4:8043             dw EA7F,0007, CEFF,0007, FFFF
-
+$B4:8043             dw EA7F, 0007,          ; Blue Brinstar face block
+                        CEFF, 0007,          ; Mini-Crocomire
+                        FFFF
 $B4:804D             db 00
 
-; Room $9A44, state $9A56: Enemy set name
+; Room $9A44, state $9A56. Crateria bomb block hall - default
 $B4:804E             db 53,46,32,5F,31,32,20 ; "SF2_12 "
-
-; Room $9A44, state $9A56: Enemy set
-$B4:8055             dw EA7F,0007, CEFF,0007, FFFF
-
+$B4:8055             dw EA7F, 0007,          ; Blue Brinstar face block
+                        CEFF, 0007,          ; Mini-Crocomire
+                        FFFF
 $B4:805F             db 00
 
-; Room $92FD, state $932E: Enemy set name
+; Room $92FD, state $932E. Crateria mainstreet - event "Zebes is awake" is set
 $B4:8060             db 73,66,31,5F,30,32,41 ; "sf1_02A"
-
-; Room $92FD, state $932E: Enemy set
-$B4:8067             dw DCFF,0001, DB7F,0002, D47F,0003, FFFF
-
+$B4:8067             dw DCFF, 0001,          ; Zoomer
+                        DB7F, 0002,          ; Skree
+                        D47F, 0003,          ; Ripper
+                        FFFF
 $B4:8075             db 00
 
-; Room $9879, state $9890: Enemy set name
-; Room $9879, state $98AA: Enemy set name
+; Room $9879, state $9890. Pre Bomb Torizo hall - default
+; Room $9879, state $98AA. Pre Bomb Torizo hall - area torizo is dead
 $B4:8076             db 73,66,32,5F,30,34,20 ; "sf2_04 "
-
-; Room $9879, state $9890: Enemy set
-; Room $9879, state $98AA: Enemy set
-$B4:807D             dw D63F,0001, D0FF,0002, FFFF
-
+$B4:807D             dw D63F, 0001,          ; Waver
+                        D0FF, 0002,          ; Mellow
+                        FFFF
 $B4:8087             db 00
 
-; Room $975C, state $9787: Enemy set name
+; Room $975C, state $9787. Old Mother Brain room - morph ball and missiles have been collected
 $B4:8088             db 73,66,32,5F,30,31,41 ; "sf2_01A"
-
-; Room $975C, state $9787: Enemy set
-$B4:808F             dw F653,0001, F353,0002, FFFF
-
+$B4:808F             dw F653, 0001,          ; Grey walking space pirate
+                        F353, 0002,          ; Grey wall space pirate
+                        FFFF
 $B4:8099             db 00
 
-; Room $92B3, state $92C5: Enemy set name
-; Room $92B3, state $92DF: Enemy set name
+; Room $92B3. Gauntlet east
 $B4:809A             db 73,66,31,5F,30,31,20 ; "sf1_01 "
-
-; Room $92B3, state $92C5: Enemy set
-; Room $92B3, state $92DF: Enemy set
-$B4:80A1             dw E7BF,0001, D63F,0002, FFFF
-
+$B4:80A1             dw E7BF, 0001,          ; Yapping maw
+                        D63F, 0002,          ; Waver
+                        FFFF
 $B4:80AB             db 00
 
-; Room $9804, state $981B: Enemy set name
-; Room $9804, state $9835: Enemy set name
+; Room $9804, state $981B. Bomb Torizo - default
+; Room $9804, state $9835. Bomb Torizo - area torizo is dead
 $B4:80AC             db 73,66,32,5F,30,33,20 ; "sf2_03 "
-
-; Room $9804, state $981B: Enemy set
-; Room $9804, state $9835: Enemy set
-$B4:80B3             dw EEFF,0001, FFFF
-
+$B4:80B3             dw EEFF, 0001,          ; Bomb Torizo
+                        FFFF
 $B4:80B9             db 00
 
-; Room $99BD, state $99CA: Enemy set name
+; Room $99BD. Crateria space pirate shaft
 $B4:80BA             db 73,66,32,5F,31,30,20 ; "sf2_10 "
-
-; Room $99BD, state $99CA: Enemy set
-$B4:80C1             dw F693,0001, E87F,0002, FFFF
-
+$B4:80C1             dw F693, 0001,          ; Green walking space pirate
+                        E87F, 0002,          ; Beetom
+                        FFFF
 $B4:80CB             db 00
 
-; Room $9938, state $9945: Enemy set name
+; Room $9938. Crateria -> Green Brinstar elevator
 $B4:80CC             db 73,66,32,5F,30,37,20 ; "sf2_07 "
-
-; Room $9938, state $9945: Enemy set
 $B4:80D3             dw FFFF
-
 $B4:80D5             db 00
 
-; Room $9A90, state $9AA2: Enemy set name
+; Room $9A90, state $9AA2. Crateria chozo missile - default
 $B4:80D6             db 53,46,32,5F,31,33,20 ; "SF2_13 "
-
-; Room $9A90, state $9AA2: Enemy set
-$B4:80DD             dw E6BF,0001, FFFF
-
+$B4:80DD             dw E6BF, 0001,          ; Morph ball eye
+                        FFFF
 $B4:80E3             db 00
 
-; Room $9994, state $99A1: Enemy set name
+; Room $9994. Crateria map station
 $B4:80E4             db 73,66,32,5F,30,39,20 ; "sf2_09 "
-
-; Room $9994, state $99A1: Enemy set
-$B4:80EB             dw EEFF,0001, FFFF
-
+$B4:80EB             dw EEFF, 0001,          ; Bomb Torizo
+                        FFFF
 $B4:80F1             db 00
 
-; Unused enemy set name
+; Unused
 $B4:80F2             db 53,46,32,5F,31,34,20 ; "SF2_14 "
-
-; Unused enemy set
-$B4:80F9             dw EA7F,0001, FFFF
-
+$B4:80F9             dw EA7F, 0001,          ; Blue Brinstar face block
+                        FFFF
 $B4:80FF             db 00
 
-; Room $9A90, state $9ABC: Enemy set name
+; Room $9A90, state $9ABC. Crateria chozo missile - event "Zebes is awake" is set
 $B4:8100             db 53,46,32,5F,31,33,61 ; "SF2_13a"
-
-; Room $9A90, state $9ABC: Enemy set
 $B4:8107             dw FFFF
-
 $B4:8109             db 00
 
-; Room $96BA, state $9705: Enemy set name
+; Room $96BA, state $9705. Old Tourian escape shaft - event "Zebes timebomb set" is set
 $B4:810A             db 73,66,32,5F,30,30,20 ; "sf2_00 "
-
-; Room $96BA, state $9705: Enemy set
-$B4:8111             dw F613,0002, FFFF
-
+$B4:8111             dw F613, 0002,          ; Silver ninja space pirate
+                        FFFF
 $B4:8117             db 00
 
-; Unused enemy set name
+; Unused
 $B4:8118             db 73,66,31,5F,30,33,20 ; "sf1_03 "
-
-; Unused enemy set
 $B4:811F             dw FFFF
-
 $B4:8121             db 00
 
-; Room $93D5, state $93E2: Enemy set name
+; Room $93D5. Crateria save station
 $B4:8122             db 53,46,31,5F,30,35,20 ; "SF1_05 "
-
-; Room $93D5, state $93E2: Enemy set
 $B4:8129             dw FFFF
-
 $B4:812B             db 00
 
-; Room $95A8, state $95B5: Enemy set name
+; Room $95A8. Forgotten highway elbow
 $B4:812C             db 53,46,31,5F,31,33,20 ; "SF1_13 "
-
-; Room $95A8, state $95B5: Enemy set
-$B4:8133             dw EA7F,0001, FFFF
-
+$B4:8133             dw EA7F, 0001,          ; Blue Brinstar face block
+                        FFFF
 $B4:8139             db 00
 
-; Room $95FF, state $960C: Enemy set name
+; Room $95FF. Moat
 $B4:813A             db 53,46,31,5F,31,35,20 ; "SF1_15 "
-
-; Room $95FF, state $960C: Enemy set
-$B4:8141             dw EA7F,0001, FFFF
-
+$B4:8141             dw EA7F, 0001,          ; Blue Brinstar face block
+                        FFFF
 $B4:8147             db 00
 
-; Room $96BA, state $96D1: Enemy set name
+; Room $96BA, state $96D1. Old Tourian escape shaft - default
 $B4:8148             db 73,66,32,5F,30,30,20 ; "sf2_00 "
-
-; Room $96BA, state $96D1: Enemy set
-$B4:814F             dw D87F,0007, EA7F,0007, FFFF
-
+$B4:814F             dw D87F, 0007,          ; Roach
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:8159             db 00
 
-; Room $93FE, state $940B: Enemy set name
+; Room $93FE. Wrecked Ship entrance
 $B4:815A             db 53,46,31,5F,30,36,20 ; "SF1_06 "
-
-; Room $93FE, state $940B: Enemy set
-$B4:8161             dw D6FF,0001, F193,0002, D3FF,0003, D7FF,0007, FFFF
-
+$B4:8161             dw D6FF, 0001,          ; Skultera
+                        F193, 0002,          ; Zeb
+                        D3FF, 0003,          ; Gripper
+                        D7FF, 0007,          ; Tripper
+                        FFFF
 $B4:8173             db 00
 
-; Unused enemy set name
+; Unused
 $B4:8174             db 53,46,31,5F,32,30,20 ; "SF1_20 "
-
-; Unused enemy set
 $B4:817B             dw FFFF
-
 $B4:817D             db 00
 
-; Room $92FD, state $9314: Enemy set name
+; Room $92FD, state $9314. Crateria mainstreet - default
 $B4:817E             db 73,66,31,5F,30,32,20 ; "sf1_02 "
-
-; Room $92FD, state $9314: Enemy set
-$B4:8185             dw D87F,0007, FFFF
-
+$B4:8185             dw D87F, 0007,          ; Roach
+                        FFFF
 $B4:818B             db 00
 
-; Room $91F8, state $9213: Enemy set name
-; Room $91F8, state $922D: Enemy set name
-; Room $91F8, state $9247: Enemy set name
+; Room $91F8, state $9213. Landing site - default
+; Room $91F8, state $922D. Landing site - event "Zebes is awake" is set
+; Room $91F8, state $9247. Landing site - power bombs have been collected
 $B4:818C             db 73,66,31,5F,30,30,20 ; "sf1_00 "
-
-; Room $91F8, state $9213: Enemy set
-; Room $91F8, state $922D: Enemy set
-; Room $91F8, state $9247: Enemy set
-$B4:8193             dw D07F,0002, D0BF,0007, FFFF
-
+$B4:8193             dw D07F, 0002,          ; Gunship top
+                        D0BF, 0007,          ; Gunship bottom / entrance pad
+                        FFFF
 $B4:819D             db 00
 
-; Room $99F9, state $9A06: Enemy set name
+; Room $99F9. Crateria spike floor room
 $B4:819E             db 53,46,32,5F,31,31,20 ; "SF2_11 "
-
-; Room $99F9, state $9A06: Enemy set
-$B4:81A5             dw CEBF,0001, E7BF,0002, FFFF
-
+$B4:81A5             dw CEBF, 0001,          ; Boyon
+                        E7BF, 0002,          ; Yapping maw
+                        FFFF
 $B4:81AF             db 00
 
-; Unused enemy set name
+; Unused
 $B4:81B0             db 53,46,31,5F,31,39,20 ; "SF1_19 "
-
-; Unused enemy set
 $B4:81B7             dw FFFF
-
 $B4:81B9             db 00
 
-; Room $968F, state $969C: Enemy set name
+; Room $968F. Orange zoomer hall
 $B4:81BA             db 53,46,31,5F,31,38,20 ; "SF1_18 "
-
-; Room $968F, state $969C: Enemy set
-$B4:81C1             dw DC3F,0001, DCBF,0001, FFFF
-
+$B4:81C1             dw DC3F, 0001,          ; Wrecked Ship orange zoomer
+                        DCBF, 0001,          ; Sova
+                        FFFF
 $B4:81CB             db 00
 
-; Room $96BA, state $96EB: Enemy set name
+; Room $96BA, state $96EB. Old Tourian escape shaft - event "Zebes is awake" is set
 $B4:81CC             db 73,66,32,5F,30,30,41 ; "sf2_00A"
-
-; Room $96BA, state $96EB: Enemy set
-$B4:81D3             dw F353,0001, FFFF
-
+$B4:81D3             dw F353, 0001,          ; Grey wall space pirate
+                        FFFF
 $B4:81D9             db 00
 
-; Room $9461, state $946E: Enemy set name
+; Room $9461. Pre orange zoomer hall
 $B4:81DA             db 53,46,31,5F,30,37,20 ; "SF1_07 "
-
-; Room $9461, state $946E: Enemy set
-$B4:81E1             dw D63F,0001, D3BF,0007, FFFF
-
+$B4:81E1             dw D63F, 0001,          ; Waver
+                        D3BF, 0007,          ; Choot
+                        FFFF
 $B4:81EB             db 00
 
-; Room $962A, state $9637: Enemy set name
+; Room $962A. Crateria -> Red Brinstar elevator
 $B4:81EC             db 53,46,31,5F,31,36,20 ; "SF1_16 "
-
-; Room $962A, state $9637: Enemy set
 $B4:81F3             dw FFFF
-
 $B4:81F5             db 00
 
-; Room $965B, state $9668: Enemy set name
+; Room $965B. Gauntlet west
 $B4:81F6             db 53,46,31,5F,31,37,20 ; "SF1_17 "
-
-; Room $965B, state $9668: Enemy set
-$B4:81FD             dw E7BF,0001, F1D3,0002, FFFF
-
+$B4:81FD             dw E7BF, 0001,          ; Yapping maw
+                        F1D3, 0002,          ; Zebbo
+                        FFFF
 $B4:8207             db 00
 
-; Room $975C, state $976D: Enemy set name
+; Room $975C, state $976D. Old Mother Brain room - default
 $B4:8208             db 73,66,32,5F,30,31,20 ; "sf2_01 "
-
-; Room $975C, state $976D: Enemy set
-$B4:820F             dw D87F,0007, EA7F,0007, FFFF
-
+$B4:820F             dw D87F, 0007,          ; Roach
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:8219             db 00
 
-; Room $957D, state $958A: Enemy set name
+; Room $957D. Crab maze
 $B4:821A             db 53,46,31,5F,31,32,20 ; "SF1_12 "
-
-; Room $957D, state $958A: Enemy set
-$B4:8221             dw D77F,0007, CFBF,0007, FFFF
-
+$B4:8221             dw D77F, 0007,          ; Sciser
+                        CFBF, 0007,          ; Puyo
+                        FFFF
 $B4:822B             db 00
 
-; Room $95D4, state $95E1: Enemy set name
+; Room $95D4. Crateria tube
 $B4:822C             db 53,46,31,5F,31,34,20 ; "SF1_14 "
-
-; Room $95D4, state $95E1: Enemy set
 $B4:8233             dw FFFF
-
 $B4:8235             db 00
 
-; Room $9552, state $955F: Enemy set name
+; Room $9552. Forgotten highway kago shaft
 $B4:8236             db 53,46,31,5F,31,31,20 ; "SF1_11 "
-
-; Room $9552, state $955F: Enemy set
-$B4:823D             dw E7FF,0001, FFFF
-
+$B4:823D             dw E7FF, 0001,          ; Kago
+                        FFFF
 $B4:8243             db 00
 
-; Room $97B5, state $97C6: Enemy set name
-; Room $97B5, state $97E0: Enemy set name
+; Room $97B5. Crateria -> Blue Brinstar elevator
 $B4:8244             db 73,66,32,5F,30,32,20 ; "sf2_02 "
-
-; Room $97B5, state $97C6: Enemy set
-; Room $97B5, state $97E0: Enemy set
 $B4:824B             dw FFFF
-
 $B4:824D             db 00
 
-; Room $94CC, state $94D9: Enemy set name
+; Room $94CC. Crateria -> Maridia elevator
 $B4:824E             db 53,46,31,5F,30,39,20 ; "SF1_09 "
-
-; Room $94CC, state $94D9: Enemy set
 $B4:8255             dw FFFF
-
 $B4:8257             db 00
 
-; Room $98E2, state $98EF: Enemy set name
+; Room $98E2. Pre Crateria map station hall
 $B4:8258             db 73,66,32,5F,30,35,20 ; "sf2_05 "
-
-; Room $98E2, state $98EF: Enemy set
-$B4:825F             dw D0FF,0001, D27F,0002, FFFF
-
+$B4:825F             dw D0FF, 0001,          ; Mellow
+                        D27F, 0002,          ; Rio
+                        FFFF
 $B4:8269             db 00
 
-; Room $9969, state $9976: Enemy set name
+; Room $9969. West Crateria kago hall
 $B4:826A             db 73,66,32,5F,30,38,20 ; "sf2_08 "
-
-; Room $9969, state $9976: Enemy set
-$B4:8271             dw E7FF,0002, DD3F,0003, FFFF
-
+$B4:8271             dw E7FF, 0002,          ; Kago
+                        DD3F, 0003,          ; Stone zoomer
+                        FFFF
 $B4:827B             db 00
 
-; Room $91F8, state $9261: Enemy set name
+; Room $91F8, state $9261. Landing site - event "Zebes timebomb set" is set
 $B4:827C             db 73,66,31,5F,30,30,20 ; "sf1_00 "
-
-; Room $91F8, state $9261: Enemy set
-$B4:8283             dw D07F,0002, D0BF,0007, FFFF
-
+$B4:8283             dw D07F, 0002,          ; Gunship top
+                        D0BF, 0007,          ; Gunship bottom / entrance pad
+                        FFFF
 $B4:828D             db 00
 
-; Room $92FD, state $9348: Enemy set name
+; Room $92FD, state $9348. Crateria mainstreet - event "Zebes timebomb set" is set
 $B4:828E             db 73,66,31,5F,30,32,20 ; "sf1_02 "
-
-; Room $92FD, state $9348: Enemy set
-$B4:8295             dw D87F,0007, FFFF
-
+$B4:8295             dw D87F, 0007,          ; Roach
+                        FFFF
 $B4:829B             db 00
 
-; Room $9804, state $984F: Enemy set name
+; Room $9804, state $984F. Bomb Torizo - event "Zebes timebomb set" is set
 $B4:829C             db 73,66,32,5F,30,33,20 ; "sf2_03 "
-
-; Room $9804, state $984F: Enemy set
-$B4:82A3             dw F2D3,0001, F313,0007, FFFF
-
+$B4:82A3             dw F2D3, 0001,          ; Escape etecoon
+                        F313, 0007,          ; Escape dachora
+                        FFFF
 $B4:82AD             db 00
 
-; Room $9879, state $98C4: Enemy set name
+; Room $9879, state $98C4. Pre Bomb Torizo hall - event "Zebes timebomb set" is set
 $B4:82AE             db 73,66,32,5F,30,34,20 ; "sf2_04 "
-
-; Room $9879, state $98C4: Enemy set
 $B4:82B5             dw FFFF
-
 $B4:82B7             db 00
 
-; Room $948C, state $9499: Enemy set name
+; Room $948C. Pre moat room
 $B4:82B8             db 53,46,31,5F,30,38,20 ; "SF1_08 "
-
-; Room $948C, state $9499: Enemy set
-$B4:82BF             dw EABF,0001, D77F,0002, D7BF,0002, FFFF
-
+$B4:82BF             dw EABF, 0001,          ; Green ki-hunter
+                        D77F, 0002,          ; Sciser
+                        D7BF, 0002,          ; Zero
+                        FFFF
 $B4:82CD             db 00
 
-; Room $9B9D, state $9BAA: Enemy set name
+; Room $9B9D. Pre Brinstar map room hall
 $B4:82CE             db 62,6C,31,5F,30,32,20 ; "bl1_02 "
-
-; Room $9B9D, state $9BAA: Enemy set
-$B4:82D5             dw D93F,0001, DC7F,0002, FFFF
-
+$B4:82D5             dw D93F, 0001,          ; Sidehopper
+                        DC7F, 0002,          ; Zeela
+                        FFFF
 $B4:82DF             db 00
 
-; Room $9C35, state $9C42: Enemy set name
+; Room $9C35. Brinstar map station
 $B4:82E0             db 62,6C,31,5F,30,35,20 ; "bl1_05 "
-
-; Room $9C35, state $9C42: Enemy set
 $B4:82E7             dw FFFF
-
 $B4:82E9             db 00
 
-; Room $9C89, state $9C96: Enemy set name
+; Room $9C89. Green Brinstar missile station
 $B4:82EA             db 62,6C,31,5F,30,37,20 ; "bl1_07 "
-
-; Room $9C89, state $9C96: Enemy set
 $B4:82F1             dw FFFF
-
 $B4:82F3             db 00
 
-; Room $9D9C, state $9DA9: Enemy set name
+; Room $9D9C. Pre Spore Spawn hall
 $B4:82F4             db 42,4C,31,5F,31,30,20 ; "BL1_10 "
-
-; Room $9D9C, state $9DA9: Enemy set
-$B4:82FB             dw EABF,0007, FFFF
-
+$B4:82FB             dw EABF, 0007,          ; Green ki-hunter
+                        FFFF
 $B4:8301             db 00
 
-; Room $A051, state $A05E: Enemy set name
+; Room $A051. Etecoon area super missiles
 $B4:8302             db 42,4C,31,5F,32,30,20 ; "BL1_20 "
-
-; Room $A051, state $A05E: Enemy set
 $B4:8309             dw FFFF
-
 $B4:830B             db 00
 
-; Room $A07B, state $A088: Enemy set name
+; Room $A07B. Dachora energy station
 $B4:830C             db 42,4C,31,5F,32,31,20 ; "BL1_21 "
-
-; Room $A07B, state $A088: Enemy set
-$B4:8313             dw EA7F,0001, FFFF
-
+$B4:8313             dw EA7F, 0001,          ; Blue Brinstar face block
+                        FFFF
 $B4:8319             db 00
 
-; Room $A0A4, state $A0B1: Enemy set name
+; Room $A0A4. Post Spore Spawn supers hall
 $B4:831A             db 42,4C,31,5F,32,32,20 ; "BL1_22 "
-
-; Room $A0A4, state $A0B1: Enemy set
-$B4:8321             dw F193,0001, DC7F,0002, FFFF
-
+$B4:8321             dw F193, 0001,          ; Zeb
+                        DC7F, 0002,          ; Zeela
+                        FFFF
 $B4:832B             db 00
 
-; Room $A66A, state $A677: Enemy set name
+; Room $A66A. Tourian entrance
 $B4:832C             db 42,4C,32,5F,31,39,20 ; "BL2_19 "
-
-; Room $A66A, state $A677: Enemy set
-$B4:8333             dw EFFF,0001, F03F,D003, FFFF
-
+$B4:8333             dw EFFF, 0001,          ; Tourian entrance statue
+                        F03F, D003,          ; Tourian entrance statue ghost
+                        FFFF
 $B4:833D             db 00
 
-; Room $A15B, state $A168: Enemy set name
+; Room $A15B. Brinstar wave-gate energy tank
 $B4:833E             db 42,4C,31,5F,32,36,20 ; "BL1_26 "
-
-; Room $A15B, state $A168: Enemy set
 $B4:8345             dw FFFF
-
 $B4:8347             db 00
 
-; Room $A37C, state $A389: Enemy set name
+; Room $A37C. Red Brinstar power bomb floor room
 $B4:8348             db 42,4C,32,5F,30,35,20 ; "BL2_05 "
-
-; Room $A37C, state $A389: Enemy set
-$B4:834F             dw E7BF,0001, D9BF,0002, FFFF
-
+$B4:834F             dw E7BF, 0001,          ; Yapping maw
+                        D9BF, 0002,          ; Super-sidehopper
+                        FFFF
 $B4:8359             db 00
 
-; Room $A0D2, state $A0DF: Enemy set name
+; Room $A0D2. Pink Brinstar flooded hall
 $B4:835A             db 42,4C,31,5F,32,33,20 ; "BL1_23 "
-
-; Room $A0D2, state $A0DF: Enemy set
-$B4:8361             dw D6FF,0001, CFBF,0002, D7BF,0003, FFFF
-
+$B4:8361             dw D6FF, 0001,          ; Skultera
+                        CFBF, 0002,          ; Puyo
+                        D7BF, 0003,          ; Zero
+                        FFFF
 $B4:836F             db 00
 
-; Room $9F11, state $9F3D: Enemy set name
+; Room $9F11, state $9F3D. Old Kraid entrance - event "Zebes is awake" is set
 $B4:8370             db 42,4C,31,5F,31,35,41 ; "BL1_15A"
-
-; Room $9F11, state $9F3D: Enemy set
-$B4:8377             dw DCFF,0001, EA7F,0002, FFFF
-
+$B4:8377             dw DCFF, 0001,          ; Zoomer
+                        EA7F, 0002,          ; Blue Brinstar face block
+                        FFFF
 $B4:8381             db 00
 
-; Room $9F64, state $9F90: Enemy set name
+; Room $9F64, state $9F90. Blue Brinstar ceiling e-tank hall - event "Zebes is awake" is set
 $B4:8382             db 42,4C,31,5F,31,36,41 ; "BL1_16A"
-
-; Room $9F64, state $9F90: Enemy set
-$B4:8389             dw EA7F,0001, DCFF,0002, DB7F,0003, D27F,0007, FFFF
-
+$B4:8389             dw EA7F, 0001,          ; Blue Brinstar face block
+                        DCFF, 0002,          ; Zoomer
+                        DB7F, 0003,          ; Skree
+                        D27F, 0007,          ; Rio
+                        FFFF
 $B4:839B             db 00
 
-; Room $9FBA, state $9FC7: Enemy set name
+; Room $9FBA. n00b bridge
 $B4:839C             db 42,4C,31,5F,31,37,20 ; "BL1_17 "
-
-; Room $9FBA, state $9FC7: Enemy set
-$B4:83A3             dw CFFF,0001, DC7F,0002, FFFF
-
+$B4:83A3             dw CFFF, 0001,          ; Cacatac
+                        DC7F, 0002,          ; Zeela
+                        FFFF
 $B4:83AD             db 00
 
-; Room $9E9F, state $9ECB: Enemy set name
+; Room $9E9F, state $9ECB. Morph ball room - event "Zebes is awake" is set
 $B4:83AE             db 42,4C,31,5F,31,34,41 ; "BL1_14A"
-
-; Room $9E9F, state $9ECB: Enemy set
-$B4:83B5             dw D9BF,0002, EA7F,0007, FFFF
-
+$B4:83B5             dw D9BF, 0002,          ; Super-sidehopper
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:83BF             db 00
 
-; Room $A70B, state $A718: Enemy set name
+; Room $A70B. Kraid's lair save station
 $B4:83C0             db 42,4C,32,5F,32,32,20 ; "BL2_22 "
-
-; Room $A70B, state $A718: Enemy set
 $B4:83C7             dw FFFF
-
 $B4:83C9             db 00
 
-; Room $9E9F, state $9EB1: Enemy set name
+; Room $9E9F, state $9EB1. Morph ball room - default
 $B4:83CA             db 42,4C,31,5F,31,34,20 ; "BL1_14 "
-
-; Room $9E9F, state $9EB1: Enemy set
-$B4:83D1             dw E6BF,0007, EA7F,0007, FFFF
-
+$B4:83D1             dw E6BF, 0007,          ; Morph ball eye
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:83DB             db 00
 
-; Room $A471, state $A47E: Enemy set name
+; Room $A471. Kraid's lair zeela room
 $B4:83DC             db 42,4C,32,5F,31,30,20 ; "BL2_10 "
-
-; Room $A471, state $A47E: Enemy set
-$B4:83E3             dw DC7F,0001, FFFF
-
+$B4:83E3             dw DC7F, 0001,          ; Zeela
+                        FFFF
 $B4:83E9             db 00
 
-; Room $A253, state $A260: Enemy set name
+; Room $A253. Red Brinstar mainstreet
 $B4:83EA             db 42,4C,32,5F,30,30,20 ; "BL2_00 "
-
-; Room $A253, state $A260: Enemy set
-$B4:83F1             dw D47F,0001, E87F,0002, F253,0003, FFFF
-
+$B4:83F1             dw D47F, 0001,          ; Ripper
+                        E87F, 0002,          ; Beetom
+                        F253, 0003,          ; Geega
+                        FFFF
 $B4:83FF             db 00
 
-; Room $A1AD, state $A1BA: Enemy set name
+; Room $A1AD. Blue Brinstar boulder room
 $B4:8400             db 62,6C,31,5F,32,38,20 ; "bl1_28 "
-
-; Room $A1AD, state $A1BA: Enemy set
-$B4:8407             dw DFBF,0001, FFFF
-
+$B4:8407             dw DFBF, 0001,          ; Boulder
+                        FFFF
 $B4:840D             db 00
 
-; Room $A1D8, state $A1E5: Enemy set name
+; Room $A1D8. Blue Brinstar double missile room
 $B4:840E             db 62,6C,31,5F,32,39,20 ; "bl1_29 "
-
-; Room $A1D8, state $A1E5: Enemy set
 $B4:8415             dw FFFF
-
 $B4:8417             db 00
 
-; Room $A184, state $A191: Enemy set name
+; Room $A184. Spore Spawn save station
 $B4:8418             db 62,6C,31,5F,32,37,20 ; "bl1_27 "
-
-; Room $A184, state $A191: Enemy set
 $B4:841F             dw FFFF
-
 $B4:8421             db 00
 
-; Room $9D19, state $9D26: Enemy set name
+; Room $9D19. Charge beam room
 $B4:8422             db 42,4C,31,5F,30,39,20 ; "BL1_09 "
-
-; Room $9D19, state $9D26: Enemy set
-$B4:8429             dw D27F,0001, D93F,0002, F193,0003, FFFF
-
+$B4:8429             dw D27F, 0001,          ; Rio
+                        D93F, 0002,          ; Sidehopper
+                        F193, 0003,          ; Zeb
+                        FFFF
 $B4:8437             db 00
 
-; Room $A22A, state $A237: Enemy set name
+; Room $A22A. Etecoon area save station
 $B4:8438             db 62,6C,31,5F,33,31,20 ; "bl1_31 "
-
-; Room $A22A, state $A237: Enemy set
 $B4:843F             dw FFFF
-
 $B4:8441             db 00
 
-; Room $A408, state $A415: Enemy set name
+; Room $A408. Pre spazer room
 $B4:8442             db 42,4C,32,5F,30,38,20 ; "BL2_08 "
-
-; Room $A408, state $A415: Enemy set
-$B4:8449             dw E7BF,0001, CFFF,0002, FFFF
-
+$B4:8449             dw E7BF, 0001,          ; Yapping maw
+                        CFFF, 0002,          ; Cacatac
+                        FFFF
 $B4:8453             db 00
 
-; Room $A201, state $A20E: Enemy set name
+; Room $A201. Green Brinstar mainstreet save station
 $B4:8454             db 62,6C,31,5F,33,30,20 ; "bl1_30 "
-
-; Room $A201, state $A20E: Enemy set
 $B4:845B             dw FFFF
-
 $B4:845D             db 00
 
-; Room $A447, state $A454: Enemy set name
+; Room $A447. Spazer room
 $B4:845E             db 42,4C,32,5F,30,39,20 ; "BL2_09 "
-
-; Room $A447, state $A454: Enemy set
 $B4:8465             dw FFFF
-
 $B4:8467             db 00
 
-; Room $9E11, state $9E1E: Enemy set name
+; Room $9E11. Brinstar super-sidehopper power bomb room
 $B4:8468             db 42,4C,31,5F,31,32,20 ; "BL1_12 "
-
-; Room $9E11, state $9E1E: Enemy set
-$B4:846F             dw D53F,0001, D67F,0001, D9BF,0002, FFFF
-
+$B4:846F             dw D53F, 0001,          ; Shootable shutter
+                        D67F, 0001,          ; Metaree
+                        D9BF, 0002,          ; Super-sidehopper
+                        FFFF
 $B4:847D             db 00
 
-; Room $A618, state $A625: Enemy set name
+; Room $A618. Red Brinstar energy station
 $B4:847E             db 42,4C,32,5F,31,37,20 ; "BL2_17 "
-
-; Room $A618, state $A625: Enemy set
 $B4:8485             dw FFFF
-
 $B4:8487             db 00
 
-; Room $A641, state $A64E: Enemy set name
+; Room $A641. Kraid's lair refill station
 $B4:8488             db 42,4C,32,5F,31,38,20 ; "BL2_18 "
-
-; Room $A641, state $A64E: Enemy set
 $B4:848F             dw FFFF
-
 $B4:8491             db 00
 
-; Room $A6E2, state $A6EF: Enemy set name
+; Room $A6E2. Varia suit room
 $B4:8492             db 42,4C,32,5F,32,31,20 ; "BL2_21 "
-
-; Room $A6E2, state $A6EF: Enemy set
 $B4:8499             dw FFFF
-
 $B4:849B             db 00
 
-; Room $A734, state $A741: Enemy set name
+; Room $A734. Red Brinstar save station
 $B4:849C             db 42,4C,32,5F,32,33,20 ; "BL2_23 "
-
-; Room $A734, state $A741: Enemy set
 $B4:84A3             dw FFFF
-
 $B4:84A5             db 00
 
-; Unused enemy set name
+; Unused
 $B4:84A6             db 42,4C,31,5F,32,34,61 ; "BL1_24a"
-
-; Unused enemy set
 $B4:84AD             dw FFFF
-
 $B4:84AF             db 00
 
-; Room $9F64, state $9F76: Enemy set name
+; Room $9F64, state $9F76. Blue Brinstar ceiling e-tank hall - default
 $B4:84B0             db 42,4C,31,5F,31,36,20 ; "BL1_16 "
-
-; Room $9F64, state $9F76: Enemy set
-$B4:84B7             dw E6BF,0007, EA7F,0007, FFFF
-
+$B4:84B7             dw E6BF, 0007,          ; Morph ball eye
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:84C1             db 00
 
-; Room $9C5E, state $9C6B: Enemy set name
+; Room $9C5E. Fireflea room
 $B4:84C2             db 62,6C,31,5F,30,36,20 ; "bl1_06 "
-
-; Room $9C5E, state $9C6B: Enemy set
-$B4:84C9             dw D6BF,0002, FFFF
-
+$B4:84C9             dw D6BF, 0002,          ; Fireflea
+                        FFFF
 $B4:84CF             db 00
 
-; Room $9FE5, state $9FF2: Enemy set name
+; Room $9FE5. Etecoon area beetom room
 $B4:84D0             db 42,4C,31,5F,31,38,20 ; "BL1_18 "
-
-; Room $9FE5, state $9FF2: Enemy set
-$B4:84D7             dw E87F,0001, FFFF
-
+$B4:84D7             dw E87F, 0001,          ; Beetom
+                        FFFF
 $B4:84DD             db 00
 
-; Room $A011, state $A01E: Enemy set name
+; Room $A011. Etecoon area spike hall
 $B4:84DE             db 42,4C,31,5F,31,39,20 ; "BL1_19 "
-
-; Room $A011, state $A01E: Enemy set
-$B4:84E5             dw F1D3,0001, E87F,0002, FFFF
-
+$B4:84E5             dw F1D3, 0001,          ; Zebbo
+                        E87F, 0002,          ; Beetom
+                        FFFF
 $B4:84EF             db 00
 
-; Room $A130, state $A13D: Enemy set name
+; Room $A130. Brinstar wave-gate sidehopper room
 $B4:84F0             db 42,4C,31,5F,32,35,20 ; "BL1_25 "
-
-; Room $A130, state $A13D: Enemy set
-$B4:84F7             dw D9BF,0001, D93F,0002, D53F,0003, FFFF
-
+$B4:84F7             dw D9BF, 0001,          ; Super-sidehopper
+                        D93F, 0002,          ; Sidehopper
+                        D53F, 0003,          ; Shootable shutter
+                        FFFF
 $B4:8505             db 00
 
-; Room $A4B1, state $A4BE: Enemy set name
+; Room $A4B1. Kraid's lair beetom room
 $B4:8506             db 42,4C,32,5F,31,31,20 ; "BL2_11 "
-
-; Room $A4B1, state $A4BE: Enemy set
-$B4:850D             dw DBFF,0001, E87F,0002, FFFF
-
+$B4:850D             dw DBFF, 0001,          ; Reflec
+                        E87F, 0002,          ; Beetom
+                        FFFF
 $B4:8517             db 00
 
-; Unused enemy set name
+; Unused
 $B4:8518             db 42,4C,32,5F,32,30,61 ; "BL2_20a"
-
-; Unused enemy set
 $B4:851F             dw FFFF
-
 $B4:8521             db 00
 
-; Room $A6A1, state $A6AE: Enemy set name
+; Room $A6A1. Kraid's lair entrance
 $B4:8522             db 42,4C,32,5F,32,30,20 ; "BL2_20 "
-
-; Room $A6A1, state $A6AE: Enemy set
 $B4:8529             dw FFFF
-
 $B4:852B             db 00
 
-; Room $A4DA, state $A4E7: Enemy set name
+; Room $A4DA. Kraid's lair kihunter hall
 $B4:852C             db 42,4C,32,5F,31,32,20 ; "BL2_12 "
-
-; Room $A4DA, state $A4E7: Enemy set
-$B4:8533             dw EABF,0001, FFFF
-
+$B4:8533             dw EABF, 0001,          ; Green ki-hunter
+                        FFFF
 $B4:8539             db 00
 
-; Room $9AD9, state $9AE6: Enemy set name
+; Room $9AD9. Green Brinstar mainstreet
 $B4:853A             db 62,6C,31,5F,30,30,20 ; "bl1_00 "
-
-; Room $9AD9, state $9AE6: Enemy set
-$B4:8541             dw E5BF,0001, DC7F,0002, D43F,0003, FFFF
-
+$B4:8541             dw E5BF, 0001,          ; Etecoon
+                        DC7F, 0002,          ; Zeela
+                        D43F, 0003,          ; Ripper ii
+                        FFFF
 $B4:854F             db 00
 
-; Room $9B5B, state $9B68: Enemy set name
+; Room $9B5B. Spore Spawn's super missile shaft
 $B4:8550             db 62,6C,31,5F,30,31,20 ; "bl1_01 "
-
-; Room $9B5B, state $9B68: Enemy set
-$B4:8557             dw F193,0001, FFFF
-
+$B4:8557             dw F193, 0001,          ; Zeb
+                        FFFF
 $B4:855D             db 00
 
-; Room $9BC8, state $9BD5: Enemy set name
+; Room $9BC8. Early supers room
 $B4:855E             db 62,6C,31,5F,30,33,20 ; "bl1_03 "
-
-; Room $9BC8, state $9BD5: Enemy set
-$B4:8565             dw D93F,0001, D4FF,0002, D63F,0003, F193,0007, FFFF
-
+$B4:8565             dw D93F, 0001,          ; Sidehopper
+                        D4FF, 0002,          ; Timed shutter
+                        D63F, 0003,          ; Waver
+                        F193, 0007,          ; Zeb
+                        FFFF
 $B4:8577             db 00
 
-; Room $A293, state $A2A0: Enemy set name
+; Room $A293. Pre x-ray spike hall
 $B4:8578             db 42,4C,32,5F,30,31,20 ; "BL2_01 "
-
-; Room $A293, state $A2A0: Enemy set
-$B4:857F             dw D6BF,0001, D63F,0002, E7BF,0003, FFFF
-
+$B4:857F             dw D6BF, 0001,          ; Fireflea
+                        D63F, 0002,          ; Waver
+                        E7BF, 0003,          ; Yapping maw
+                        FFFF
 $B4:858D             db 00
 
-; Room $9F11, state $9F23: Enemy set name
+; Room $9F11, state $9F23. Old Kraid entrance - default
 $B4:858E             db 42,4C,31,5F,31,35,20 ; "BL1_15 "
-
-; Room $9F11, state $9F23: Enemy set
-$B4:8595             dw D87F,0007, EA7F,0007, FFFF
-
+$B4:8595             dw D87F, 0007,          ; Roach
+                        EA7F, 0007,          ; Blue Brinstar face block
+                        FFFF
 $B4:859F             db 00
 
-; Room $9E52, state $9E5F: Enemy set name
+; Room $9E52. Brinstar diagonal room
 $B4:85A0             db 42,4C,31,5F,31,33,20 ; "BL1_13 "
-
-; Room $9E52, state $9E5F: Enemy set
-$B4:85A7             dw D93F,0001, F253,0002, FFFF
-
+$B4:85A7             dw D93F, 0001,          ; Sidehopper
+                        F253, 0002,          ; Geega
+                        FFFF
 $B4:85B1             db 00
 
-; Room $9CB3, state $9CC0: Enemy set name
+; Room $9CB3. Dachora room
 $B4:85B2             db 42,4C,31,5F,30,38,20 ; "BL1_08 "
-
-; Room $9CB3, state $9CC0: Enemy set
-$B4:85B9             dw DC7F,0001, D67F,0002, D27F,0003, E5FF,0007, FFFF
-
+$B4:85B9             dw DC7F, 0001,          ; Zeela
+                        D67F, 0002,          ; Metaree
+                        D27F, 0003,          ; Rio
+                        E5FF, 0007,          ; Dachora
+                        FFFF
 $B4:85CB             db 00
 
-; Room $A2F7, state $A304: Enemy set name
+; Room $A2F7. Red Brinstar damage boost hall
 $B4:85CC             db 42,4C,32,5F,30,33,20 ; "BL2_03 "
-
-; Room $A2F7, state $A304: Enemy set
-$B4:85D3             dw DC7F,0001, F1D3,0002, FFFF
-
+$B4:85D3             dw DC7F, 0001,          ; Zeela
+                        F1D3, 0002,          ; Zebbo
+                        FFFF
 $B4:85DD             db 00
 
-; Room $A107, state $A114: Enemy set name
+; Room $A107. Blue Brinstar missile room
 $B4:85DE             db 42,4C,31,5F,32,34,20 ; "BL1_24 "
-
-; Room $A107, state $A114: Enemy set
 $B4:85E5             dw FFFF
-
 $B4:85E7             db 00
 
-; Room $A59F, state $A5B1: Enemy set name
-; Room $A59F, state $A5CB: Enemy set name
+; Room $A59F. Kraid
 $B4:85E8             db 42,4C,32,5F,31,35,20 ; "BL2_15 "
-
-; Room $A59F, state $A5B1: Enemy set
-; Room $A59F, state $A5CB: Enemy set
-$B4:85EF             dw E2BF,0007, FFFF
-
+$B4:85EF             dw E2BF, 0007,          ; Kraid
+                        FFFF
 $B4:85F5             db 00
 
-; Room $9C07, state $9C14: Enemy set name
+; Room $9C07. Brinstar reserve tank room
 $B4:85F6             db 62,6C,31,5F,30,34,20 ; "bl1_04 "
-
-; Room $9C07, state $9C14: Enemy set
 $B4:85FD             dw FFFF
-
 $B4:85FF             db 00
 
-; Room $A2CE, state $A2DB: Enemy set name
+; Room $A2CE. X-ray room
 $B4:8600             db 42,4C,32,5F,30,32,20 ; "BL2_02 "
-
-; Room $A2CE, state $A2DB: Enemy set
-$B4:8607             dw D53F,0001, FFFF
-
+$B4:8607             dw D53F, 0001,          ; Shootable shutter
+                        FFFF
 $B4:860D             db 00
 
-; Room $A5ED, state $A5FA: Enemy set name
+; Room $A5ED. Pre Tourian entrance hall
 $B4:860E             db 42,4C,32,5F,31,36,20 ; "BL2_16 "
-
-; Room $A5ED, state $A5FA: Enemy set
 $B4:8615             dw FFFF
-
 $B4:8617             db 00
 
-; Room $A3AE, state $A3BB: Enemy set name
+; Room $A3AE. Red Brinstar power bomb wall room
 $B4:8618             db 42,4C,32,5F,30,36,20 ; "BL2_06 "
-
-; Room $A3AE, state $A3BB: Enemy set
-$B4:861F             dw CEBF,0001, FFFF
-
+$B4:861F             dw CEBF, 0001,          ; Boyon
+                        FFFF
 $B4:8625             db 00
 
-; Room $A56B, state $A578: Enemy set name
+; Room $A56B. Pre Kraid room
 $B4:8626             db 42,4C,32,5F,31,34,20 ; "BL2_14 "
-
-; Room $A56B, state $A578: Enemy set
-$B4:862D             dw F193,0001, D87F,0002, FFFF
-
+$B4:862D             dw F193, 0001,          ; Zeb
+                        D87F, 0002,          ; Roach
+                        FFFF
 $B4:8637             db 00
 
-; Room $A322, state $A32F: Enemy set name
+; Room $A322. Red Brinstar -> Crateria elevator
 $B4:8638             db 42,4C,32,5F,30,34,20 ; "BL2_04 "
-
-; Room $A322, state $A32F: Enemy set
-$B4:863F             dw D7BF,0002, CFFF,0003, FFFF
-
+$B4:863F             dw D7BF, 0002,          ; Zero
+                        CFFF, 0003,          ; Cacatac
+                        FFFF
 $B4:8649             db 00
 
-; Room $A521, state $A533: Enemy set name
-; Room $A521, state $A54D: Enemy set name
+; Room $A521. Fake Kraid's room
 $B4:864A             db 42,4C,32,5F,31,33,20 ; "BL2_13 "
-
-; Room $A521, state $A533: Enemy set
-; Room $A521, state $A54D: Enemy set
-$B4:8651             dw F693,0001, E0FF,0003, FFFF
-
+$B4:8651             dw F693, 0001,          ; Green walking space pirate
+                        E0FF, 0003,          ; Fake Kraid
+                        FFFF
 $B4:865B             db 00
 
-; Room $9DC7, state $9DD9: Enemy set name
-; Room $9DC7, state $9DF3: Enemy set name
+; Room $9DC7. Spore Spawn
 $B4:865C             db 42,4C,31,5F,31,31,20 ; "BL1_11 "
-
-; Room $9DC7, state $9DD9: Enemy set
-; Room $9DC7, state $9DF3: Enemy set
-$B4:8663             dw DF3F,0001, FFFF
-
+$B4:8663             dw DF3F, 0001,          ; Spore Spawn
+                        FFFF
 $B4:8669             db 00
 
-; Room $A3DD, state $A3EA: Enemy set name
+; Room $A3DD. Red Brinstar skree-duo hall
 $B4:866A             db 42,4C,32,5F,30,37,20 ; "BL2_07 "
-
-; Room $A3DD, state $A3EA: Enemy set
-$B4:8671             dw DB7F,0001, CEBF,0007, FFFF
-
+$B4:8671             dw DB7F, 0001,          ; Skree
+                        CEBF, 0007,          ; Boyon
+                        FFFF
 $B4:867B             db 00
 
-; Room $AB64, state $AB71: Enemy set name
+; Room $AB64. Double lake grapple practice room
 $B4:867C             db 4E,4F,31,5F,31,39,20 ; "NO1_19 "
-
-; Room $AB64, state $AB71: Enemy set
-$B4:8683             dw F213,0001, CFBF,0002, FFFF
-
+$B4:8683             dw F213, 0001,          ; Gamet
+                        CFBF, 0002,          ; Puyo
+                        FFFF
 $B4:868D             db 00
 
-; Room $AB07, state $AB14: Enemy set name
+; Room $AB07. Post Crocomire shaft
 $B4:868E             db 4E,4F,31,5F,31,37,20 ; "NO1_17 "
-
-; Room $AB07, state $AB14: Enemy set
-$B4:8695             dw DABF,0001, FFFF
-
+$B4:8695             dw DABF, 0001,          ; Viola
+                        FFFF
 $B4:869B             db 00
 
-; Room $B62B, state $B638: Enemy set name
+; Room $B62B. Ninja space pirate hall
 $B4:869C             db 4E,4F,32,5F,31,38,20 ; "NO2_18 "
-
-; Room $B62B, state $B638: Enemy set
-$B4:86A3             dw F593,0001, FFFF
-
+$B4:86A3             dw F593, 0001,          ; Gold ninja space pirate
+                        FFFF
 $B4:86A9             db 00
 
-; Room $B1E5, state $B1F2: Enemy set name
+; Room $B1E5. Lower Norfair chozo room
 $B4:86AA             db 4E,4F,32,5F,30,30,20 ; "NO2_00 "
-
-; Room $B1E5, state $B1F2: Enemy set
-$B4:86B1             dw F0FF,0001, E83F,0003, D33F,0007, FFFF
-
+$B4:86B1             dw F0FF, 0001,          ; Chozo statue
+                        E83F, 0003,          ; Magdollite
+                        D33F, 0007,          ; Holtz
+                        FFFF
 $B4:86BF             db 00
 
-; Room $B051, state $B05E: Enemy set name
+; Room $B051. Purple farming room
 $B4:86C0             db 4E,4F,31,5F,34,34,20 ; "NO1_44 "
-
-; Room $B051, state $B05E: Enemy set
-$B4:86C7             dw F213,0001, FFFF
-
+$B4:86C7             dw F213, 0001,          ; Gamet
+                        FFFF
 $B4:86CD             db 00
 
-; Room $A815, state $A822: Enemy set name
+; Room $A815. Ice beam mockball hall
 $B4:86CE             db 4E,4F,31,5F,30,34,20 ; "NO1_04 "
-
-; Room $A815, state $A822: Enemy set
-$B4:86D5             dw D4FF,0001, D97F,0002, D13F,0003, DCBF,0007, FFFF
-
+$B4:86D5             dw D4FF, 0001,          ; Timed shutter
+                        D97F, 0002,          ; Desgeega
+                        D13F, 0003,          ; Mella
+                        DCBF, 0007,          ; Sova
+                        FFFF
 $B4:86E7             db 00
 
-; Room $AFFB, state $B008: Enemy set name
+; Room $AFFB. Norfair lava-spike hall
 $B4:86E8             db 4E,4F,31,5F,34,32,20 ; "NO1_42 "
-
-; Room $AFFB, state $B008: Enemy set
-$B4:86EF             dw E7BF,0001, FFFF
-
+$B4:86EF             dw E7BF, 0001,          ; Yapping maw
+                        FFFF
 $B4:86F5             db 00
 
-; Room $B585, state $B592: Enemy set name
+; Room $B585. Lower Norfair south kihunter shaft
 $B4:86F6             db 4E,4F,32,5F,31,36,20 ; "NO2_16 "
-
-; Room $B585, state $B592: Enemy set
-$B4:86FD             dw EBBF,0001, DBFF,0002, FFFF
-
+$B4:86FD             dw EBBF, 0001,          ; Red ki-hunter
+                        DBFF, 0002,          ; Reflec
+                        FFFF
 $B4:8707             db 00
 
-; Room $B2DA, state $B2E7: Enemy set name
+; Room $B2DA. Ripper ii room
 $B4:8708             db 4E,4F,32,5F,30,33,20 ; "NO2_03 "
-
-; Room $B2DA, state $B2E7: Enemy set
-$B4:870F             dw D43F,0001, FFFF
-
+$B4:870F             dw D43F, 0001,          ; Ripper ii
+                        FFFF
 $B4:8715             db 00
 
-; Room $ADDE, state $ADEB: Enemy set name
+; Room $ADDE. Wave beam room
 $B4:8716             db 4E,4F,31,5F,33,31,20 ; "NO1_31 "
-
-; Room $ADDE, state $ADEB: Enemy set
 $B4:871D             dw FFFF
-
 $B4:871F             db 00
 
-; Room $B3A5, state $B3B2: Enemy set name
+; Room $B3A5. Pre pillars hall
 $B4:8720             db 4E,4F,32,5F,30,37,20 ; "NO2_07 "
-
-; Room $B3A5, state $B3B2: Enemy set
-$B4:8727             dw F413,0001, F713,0002, DABF,0003, FFFF
-
+$B4:8727             dw F413, 0001,          ; Gold wall space pirate
+                        F713, 0002,          ; Gold walking space pirate
+                        DABF, 0003,          ; Viola
+                        FFFF
 $B4:8735             db 00
 
-; Room $AF3F, state $AF4C: Enemy set name
+; Room $AF3F. Norfair -> Lower Norfair elevator
 $B4:8736             db 4E,4F,31,5F,33,38,20 ; "NO1_38 "
-
-; Room $AF3F, state $AF4C: Enemy set
 $B4:873D             dw FFFF
-
 $B4:873F             db 00
 
-; Room $B741, state $B74E: Enemy set name
+; Room $B741. Lower Norfair save station
 $B4:8740             db 4E,4F,32,5F,32,33,20 ; "NO2_23 "
-
-; Room $B741, state $B74E: Enemy set
 $B4:8747             dw FFFF
-
 $B4:8749             db 00
 
-; Room $B026, state $B033: Enemy set name
+; Room $B026. Norfair energy station
 $B4:874A             db 4E,4F,31,5F,34,33,20 ; "NO1_43 "
-
-; Room $B026, state $B033: Enemy set
 $B4:8751             dw FFFF
-
 $B4:8753             db 00
 
-; Room $B0B4, state $B0C1: Enemy set name
+; Room $B0B4. Norfair map station
 $B4:8754             db 4E,4F,31,5F,34,36,20 ; "NO1_46 "
-
-; Room $B0B4, state $B0C1: Enemy set
 $B4:875B             dw FFFF
-
 $B4:875D             db 00
 
-; Room $B40A, state $B417: Enemy set name
+; Room $B40A. Lower Norfair multi-level one-way shaft
 $B4:875E             db 4E,4F,32,5F,30,39,20 ; "NO2_09 "
-
-; Room $B40A, state $B417: Enemy set
-$B4:8765             dw DA3F,0001, D1BF,0002, FFFF
-
+$B4:8765             dw DA3F, 0001,          ; Super-desgeega
+                        D1BF, 0002,          ; Multiviola
+                        FFFF
 $B4:876F             db 00
 
-; Room $B305, state $B312: Enemy set name
+; Room $B305. Lower Norfair energy station
 $B4:8770             db 4E,4F,32,5F,30,34,20 ; "NO2_04 "
-
-; Room $B305, state $B312: Enemy set
 $B4:8777             dw FFFF
-
 $B4:8779             db 00
 
-; Room $B32E, state $B340: Enemy set name
-; Room $B32E, state $B35A: Enemy set name
+; Room $B32E. Ridley
 $B4:877A             db 4E,4F,32,5F,30,35,20 ; "NO2_05 "
-
-; Room $B32E, state $B340: Enemy set
-; Room $B32E, state $B35A: Enemy set
-$B4:8781             dw E17F,0001, E1BF,E001, FFFF
-
+$B4:8781             dw E17F, 0001,          ; Ridley
+                        E1BF, E001,          ; Ridley explosion
+                        FFFF
 $B4:878B             db 00
 
-; Room $AADE, state $AAEB: Enemy set name
+; Room $AADE. Post Crocomire power bombs room
 $B4:878C             db 4E,4F,31,5F,31,36,20 ; "NO1_16 "
-
-; Room $AADE, state $AAEB: Enemy set
 $B4:8793             dw FFFF
-
 $B4:8795             db 00
 
-; Room $A890, state $A89D: Enemy set name
+; Room $A890. Ice beam room
 $B4:8796             db 4E,4F,31,5F,30,36,20 ; "NO1_06 "
-
-; Room $A890, state $A89D: Enemy set
 $B4:879D             dw FFFF
-
 $B4:879F             db 00
 
-; Room $A9E5, state $A9F2: Enemy set name
+; Room $A9E5. Hi-jump room
 $B4:87A0             db 4E,4F,31,5F,31,31,20 ; "NO1_11 "
-
-; Room $A9E5, state $A9F2: Enemy set
 $B4:87A7             dw FFFF
-
 $B4:87A9             db 00
 
-; Room $AAB5, state $AAC2: Enemy set name
+; Room $AAB5. Post Crocomire save station
 $B4:87AA             db 4E,4F,31,5F,31,35,20 ; "NO1_15 "
-
-; Room $AAB5, state $AAC2: Enemy set
 $B4:87B1             dw FFFF
-
 $B4:87B3             db 00
 
-; Room $B106, state $B113: Enemy set name
+; Room $B106. Norfair speed blockade hall
 $B4:87B4             db 4E,4F,31,5F,34,38,20 ; "NO1_48 "
-
-; Room $B106, state $B113: Enemy set
-$B4:87BB             dw E87F,0001, FFFF
-
+$B4:87BB             dw E87F, 0001,          ; Beetom
+                        FFFF
 $B4:87C1             db 00
 
-; Room $AFA3, state $AFB0: Enemy set name
+; Room $AFA3. Norfair long lavaquake hall
 $B4:87C2             db 4E,4F,31,5F,34,30,20 ; "NO1_40 "
-
-; Room $AFA3, state $AFB0: Enemy set
-$B4:87C9             dw D2BF,0001, DCBF,0002, D4BF,0003, FFFF
-
+$B4:87C9             dw D2BF, 0001,          ; Squeept
+                        DCBF, 0002,          ; Sova
+                        D4BF, 0003,          ; Dragon
+                        FFFF
 $B4:87D7             db 00
 
-; Room $AA82, state $AA8F: Enemy set name
+; Room $AA82. Post Crocomire room
 $B4:87D8             db 4E,4F,31,5F,31,34,20 ; "NO1_14 "
-
-; Room $AA82, state $AA8F: Enemy set
-$B4:87DF             dw F213,0001, D3FF,0002, D83F,0003, FFFF
-
+$B4:87DF             dw F213, 0001,          ; Gamet
+                        D3FF, 0002,          ; Gripper
+                        D83F, 0003,          ; Suspensor platform
+                        FFFF
 $B4:87ED             db 00
 
-; Room $B4AD, state $B4BA: Enemy set name
+; Room $B4AD. Lower Norfair wall space pirates shaft
 $B4:87EE             db 4E,4F,32,5F,31,32,20 ; "NO2_12 "
-
-; Room $B4AD, state $B4BA: Enemy set
-$B4:87F5             dw E73F,0001, F413,0002, F713,0003, FFFF
-
+$B4:87F5             dw E73F, 0001,          ; Namihe
+                        F413, 0002,          ; Gold wall space pirate
+                        F713, 0003,          ; Gold walking space pirate
+                        FFFF
 $B4:8803             db 00
 
-; Room $ADAD, state $ADBA: Enemy set name
+; Room $ADAD. Pre wave beam room
 $B4:8804             db 4E,4F,31,5F,33,30,20 ; "NO1_30 "
-
-; Room $ADAD, state $ADBA: Enemy set
-$B4:880B             dw E6FF,0001, D5FF,0002, E7FF,0003, D3FF,0007, FFFF
-
+$B4:880B             dw E6FF, 0001,          ; Fune
+                        D5FF, 0002,          ; Rising and falling platform
+                        E7FF, 0003,          ; Kago
+                        D3FF, 0007,          ; Gripper
+                        FFFF
 $B4:881D             db 00
 
-; Room $AC2B, state $AC38: Enemy set name
+; Room $AC2B. Grapple room
 $B4:881E             db 4E,4F,31,5F,32,33,20 ; "NO1_23 "
-
-; Room $AC2B, state $AC38: Enemy set
-$B4:8825             dw D1BF,0001, FFFF
-
+$B4:8825             dw D1BF, 0001,          ; Multiviola
+                        FFFF
 $B4:882B             db 00
 
-; Room $B139, state $B146: Enemy set name
+; Room $B139. Norfair stone zoomer shaft
 $B4:882C             db 4E,4F,31,5F,34,39,20 ; "NO1_49 "
-
-; Room $B139, state $B146: Enemy set
-$B4:8833             dw F6D3,0001, DD3F,0003, FFFF
-
+$B4:8833             dw F6D3, 0001,          ; Red walking space pirate
+                        DD3F, 0003,          ; Stone zoomer
+                        FFFF
 $B4:883D             db 00
 
-; Room $A923, state $A930: Enemy set name
+; Room $A923. Norfair slope
 $B4:883E             db 4E,4F,31,5F,30,39,20 ; "NO1_09 "
-
-; Room $A923, state $A930: Enemy set
-$B4:8845             dw F6D3,0001, D1BF,0002, CFFF,0003, DCBF,0003, FFFF
-
+$B4:8845             dw F6D3, 0001,          ; Red walking space pirate
+                        D1BF, 0002,          ; Multiviola
+                        CFFF, 0003,          ; Cacatac
+                        DCBF, 0003,          ; Sova
+                        FFFF
 $B4:8857             db 00
 
-; Room $B482, state $B48F: Enemy set name
+; Room $B482. Lower Norfair holtz room
 $B4:8858             db 4E,4F,32,5F,31,31,20 ; "NO2_11 "
-
-; Room $B482, state $B48F: Enemy set
-$B4:885F             dw F1D3,0001, D33F,0007, FFFF
-
+$B4:885F             dw F1D3, 0001,          ; Zebbo
+                        D33F, 0007,          ; Holtz
+                        FFFF
 $B4:8869             db 00
 
-; Room $B6EE, state $B6FB: Enemy set name
+; Room $B6EE. Norfair rolling boulder shaft
 $B4:886A             db 4E,4F,32,5F,32,32,20 ; "NO2_22 "
-
-; Room $B6EE, state $B6FB: Enemy set
-$B4:8871             dw D6BF,0001, DFBF,0002, E6FF,0003, FFFF
-
+$B4:8871             dw D6BF, 0001,          ; Fireflea
+                        DFBF, 0002,          ; Boulder
+                        E6FF, 0003,          ; Fune
+                        FFFF
 $B4:887F             db 00
 
-; Room $AEB4, state $AEC1: Enemy set name
+; Room $AEB4. Magdollite multiviola hall
 $B4:8880             db 4E,4F,31,5F,33,35,20 ; "NO1_35 "
-
-; Room $AEB4, state $AEC1: Enemy set
-$B4:8887             dw D1BF,0001, E83F,0007, FFFF
-
+$B4:8887             dw D1BF, 0001,          ; Multiviola
+                        E83F, 0007,          ; Magdollite
+                        FFFF
 $B4:8891             db 00
 
-; Room $B3E1, state $B3EE: Enemy set name
+; Room $B3E1. Unused room
 $B4:8892             db 4E,4F,32,5F,30,38,20 ; "NO2_08 "
-
-; Room $B3E1, state $B3EE: Enemy set
 $B4:8899             dw FFFF
-
 $B4:889B             db 00
 
-; Room $AF14, state $AF21: Enemy set name
+; Room $AF14. Lava dive room
 $B4:889C             db 4E,4F,31,5F,33,37,20 ; "NO1_37 "
-
-; Room $AF14, state $AF21: Enemy set
-$B4:88A3             dw E73F,0001, FFFF
-
+$B4:88A3             dw E73F, 0001,          ; Namihe
+                        FFFF
 $B4:88A9             db 00
 
-; Room $B457, state $B464: Enemy set name
+; Room $B457. Pillars hall
 $B4:88AA             db 4E,4F,32,5F,31,30,20 ; "NO2_10 "
-
-; Room $B457, state $B464: Enemy set
-$B4:88B1             dw E0BF,0007, FFFF
-
+$B4:88B1             dw E0BF, 0007,          ; Fire arc
+                        FFFF
 $B4:88B7             db 00
 
-; Room $AA0E, state $AA1B: Enemy set name
+; Room $AA0E. Norfair grapple ceiling room
 $B4:88B8             db 4E,4F,31,5F,31,32,20 ; "NO1_12 "
-
-; Room $AA0E, state $AA1B: Enemy set
-$B4:88BF             dw D4BF,0001, D2FF,0002, FFFF
-
+$B4:88BF             dw D4BF, 0001,          ; Dragon
+                        D2FF, 0002,          ; Geruta
+                        FFFF
 $B4:88C9             db 00
 
-; Room $B510, state $B51D: Enemy set name
+; Room $B510. Lower Norfair spring ball maze room
 $B4:88CA             db 4E,4F,32,5F,31,34,20 ; "NO2_14 "
-
-; Room $B510, state $B51D: Enemy set
-$B4:88D1             dw E9BF,0001, FFFF
-
+$B4:88D1             dw E9BF, 0001,          ; Alcoon
+                        FFFF
 $B4:88D7             db 00
 
-; Room $B55A, state $B567: Enemy set name
+; Room $B55A. Lower Norfair escape power bomb room
 $B4:88D8             db 4E,4F,32,5F,31,35,20 ; "NO2_15 "
-
-; Room $B55A, state $B567: Enemy set
 $B4:88DF             dw FFFF
-
 $B4:88E1             db 00
 
-; Room $AEDF, state $AEEC: Enemy set name
+; Room $AEDF. Purple shaft
 $B4:88E2             db 4E,4F,31,5F,33,36,20 ; "NO1_36 "
-
-; Room $AEDF, state $AEEC: Enemy set
 $B4:88E9             dw FFFF
-
 $B4:88EB             db 00
 
-; Room $B698, state $B6A5: Enemy set name
+; Room $B698. Ridley's energy tank
 $B4:88EC             db 4E,4F,32,5F,32,30,20 ; "NO2_20 "
-
-; Room $B698, state $B6A5: Enemy set
 $B4:88F3             dw FFFF
-
 $B4:88F5             db 00
 
-; Room $B6C1, state $B6CE: Enemy set name
+; Room $B6C1. Screw attack room
 $B4:88F6             db 4E,4F,32,5F,32,31,20 ; "NO2_21 "
-
-; Room $B6C1, state $B6CE: Enemy set
 $B4:88FD             dw FFFF
-
 $B4:88FF             db 00
 
-; Room $AC83, state $AC90: Enemy set name
+; Room $AC83. Pre Bubble Norfair reserve tank room
 $B4:8900             db 4E,4F,31,5F,32,35,20 ; "NO1_25 "
-
-; Room $AC83, state $AC90: Enemy set
-$B4:8907             dw D53F,0007, DCBF,0002, D2FF,0003, FFFF
-
+$B4:8907             dw D53F, 0007,          ; Shootable shutter
+                        DCBF, 0002,          ; Sova
+                        D2FF, 0003,          ; Geruta
+                        FFFF
 $B4:8915             db 00
 
-; Room $B4E5, state $B4F2: Enemy set name
+; Room $B4E5. Lower Norfair rising acid room
 $B4:8916             db 4E,4F,32,5F,31,33,20 ; "NO2_13 "
-
-; Room $B4E5, state $B4F2: Enemy set
-$B4:891D             dw F713,0007, FFFF
-
+$B4:891D             dw F713, 0007,          ; Gold walking space pirate
+                        FFFF
 $B4:8923             db 00
 
-; Room $A7B3, state $A7C0: Enemy set name
+; Room $A7B3. First hot room
 $B4:8924             db 4E,4F,31,5F,30,32,20 ; "NO1_02 "
-
-; Room $A7B3, state $A7C0: Enemy set
-$B4:892B             dw DCBF,0001, D97F,0002, FFFF
-
+$B4:892B             dw DCBF, 0001,          ; Sova
+                        D97F, 0002,          ; Desgeega
+                        FFFF
 $B4:8935             db 00
 
-; Room $B236, state $B243: Enemy set name
+; Room $B236. Lower Norfair mainstreet
 $B4:8936             db 4E,4F,32,5F,30,31,20 ; "NO2_01 "
-
-; Room $B236, state $B243: Enemy set
-$B4:893D             dw E07F,0001, D4BF,0007, F213,0007, FFFF
-
+$B4:893D             dw E07F, 0001,          ; Fire pillar
+                        D4BF, 0007,          ; Dragon
+                        F213, 0007,          ; Gamet
+                        FFFF
 $B4:894B             db 00
 
-; Room $AB8F, state $AB9C: Enemy set name
+; Room $AB8F. Huge jump room
 $B4:894C             db 4E,4F,31,5F,32,30,20 ; "NO1_20 "
-
-; Room $AB8F, state $AB9C: Enemy set
-$B4:8953             dw D13F,0001, D3FF,0002, D83F,0003, FFFF
-
+$B4:8953             dw D13F, 0001,          ; Mella
+                        D3FF, 0002,          ; Gripper
+                        D83F, 0003,          ; Suspensor platform
+                        FFFF
 $B4:8961             db 00
 
-; Room $B167, state $B174: Enemy set name
+; Room $B167. Rock Norfair save station
 $B4:8962             db 4E,4F,31,5F,35,30,20 ; "NO1_50 "
-
-; Room $B167, state $B174: Enemy set
 $B4:8969             dw FFFF
-
 $B4:896B             db 00
 
-; Room $B192, state $B19F: Enemy set name
+; Room $B192. Pre Crocomire save station
 $B4:896C             db 4E,4F,31,5F,35,31,20 ; "NO1_51 "
-
-; Room $B192, state $B19F: Enemy set
 $B4:8973             dw FFFF
-
 $B4:8975             db 00
 
-; Room $A8F8, state $A905: Enemy set name
+; Room $A8F8. Crumble block platform shaft
 $B4:8976             db 4E,4F,31,5F,30,38,20 ; "NO1_08 "
-
-; Room $A8F8, state $A905: Enemy set
-$B4:897D             dw DCBF,0001, FFFF
-
+$B4:897D             dw DCBF, 0001,          ; Sova
+                        FFFF
 $B4:8983             db 00
 
-; Room $B5D5, state $B5E2: Enemy set name
+; Room $B5D5. Lower Norfair spike platform room
 $B4:8984             db 4E,4F,32,5F,31,37,20 ; "NO2_17 "
-
-; Room $B5D5, state $B5E2: Enemy set
-$B4:898B             dw E07F,0001, DA3F,0002, D53F,0003, DFFF,0007, FFFF
-
+$B4:898B             dw E07F, 0001,          ; Fire pillar
+                        DA3F, 0002,          ; Super-desgeega
+                        D53F, 0003,          ; Shootable shutter
+                        DFFF, 0007,          ; Spike platform top
+                        FFFF
 $B4:899D             db 00
 
-; Room $AFCE, state $AFDB: Enemy set name
+; Room $AFCE. Norfair metal floor hall
 $B4:899E             db 4E,4F,31,5F,34,31,20 ; "NO1_41 "
-
-; Room $AFCE, state $AFDB: Enemy set
-$B4:89A5             dw D4BF,0001, F213,0002, FFFF
-
+$B4:89A5             dw D4BF, 0001,          ; Dragon
+                        F213, 0002,          ; Gamet
+                        FFFF
 $B4:89AF             db 00
 
-; Room $AC00, state $AC0D: Enemy set name
+; Room $AC00. Single lake grapple practice room
 $B4:89B0             db 4E,4F,31,5F,32,32,20 ; "NO1_22 "
-
-; Room $AC00, state $AC0D: Enemy set
 $B4:89B7             dw FFFF
-
 $B4:89B9             db 00
 
-; Room $B0DD, state $B0EA: Enemy set name
+; Room $B0DD. Bubble Norfair save station
 $B4:89BA             db 4E,4F,31,5F,34,37,20 ; "NO1_47 "
-
-; Room $B0DD, state $B0EA: Enemy set
 $B4:89C1             dw FFFF
-
 $B4:89C3             db 00
 
-; Room $AA41, state $AA4E: Enemy set name
+; Room $AA41. Pre hi-jump room
 $B4:89C4             db 4E,4F,31,5F,31,33,20 ; "NO1_13 "
-
-; Room $AA41, state $AA4E: Enemy set
-$B4:89CB             dw DCBF,0001, FFFF
-
+$B4:89CB             dw DCBF, 0001,          ; Sova
+                        FFFF
 $B4:89D1             db 00
 
-; Room $ACB3, state $ACC0: Enemy set name
+; Room $ACB3. Bubble Norfair mainstreet
 $B4:89D2             db 4E,4F,31,5F,32,36,20 ; "NO1_26 "
-
-; Room $ACB3, state $ACC0: Enemy set
-$B4:89D9             dw D63F,0001, D43F,0001, CFFF,0002, DCBF,0002, FFFF
-
+$B4:89D9             dw D63F, 0001,          ; Waver
+                        D43F, 0001,          ; Ripper ii
+                        CFFF, 0002,          ; Cacatac
+                        DCBF, 0002,          ; Sova
+                        FFFF
 $B4:89EB             db 00
 
-; Room $A75D, state $A76A: Enemy set name
+; Room $A75D. Ice beam tripper hall
 $B4:89EC             db 4E,4F,31,5F,30,30,20 ; "NO1_00 "
-
-; Room $A75D, state $A76A: Enemy set
-$B4:89F3             dw D7FF,0007, FFFF
-
+$B4:89F3             dw D7FF, 0007,          ; Tripper
+                        FFFF
 $B4:89F9             db 00
 
-; Room $A865, state $A872: Enemy set name
+; Room $A865. Ice beam practice room
 $B4:89FA             db 4E,4F,31,5F,30,35,20 ; "NO1_05 "
-
-; Room $A865, state $A872: Enemy set
-$B4:8A01             dw CEBF,0001, D43F,0002, FFFF
-
+$B4:8A01             dw CEBF, 0001,          ; Boyon
+                        D43F, 0002,          ; Ripper ii
+                        FFFF
 $B4:8A0B             db 00
 
-; Room $AB3B, state $AB48: Enemy set name
+; Room $AB3B. Post Crocomire tidal acid cave
 $B4:8A0C             db 4E,4F,31,5F,31,38,20 ; "NO1_18 "
-
-; Room $AB3B, state $AB48: Enemy set
-$B4:8A13             dw D67F,0001, F213,0002, FFFF
-
+$B4:8A13             dw D67F, 0001,          ; Metaree
+                        F213, 0002,          ; Gamet
+                        FFFF
 $B4:8A1D             db 00
 
-; Room $A788, state $A795: Enemy set name
+; Room $A788. Lava missile room
 $B4:8A1E             db 4E,4F,31,5F,30,31,20 ; "NO1_01 "
-
-; Room $A788, state $A795: Enemy set
-$B4:8A25             dw DCBF,0001, D2FF,0002, FFFF
-
+$B4:8A25             dw DCBF, 0001,          ; Sova
+                        D2FF, 0002,          ; Geruta
+                        FFFF
 $B4:8A2F             db 00
 
-; Room $AC5A, state $AC67: Enemy set name
+; Room $AC5A. Bubble Norfair reserve tank room
 $B4:8A30             db 4E,4F,31,5F,32,34,20 ; "NO1_24 "
-
-; Room $AC5A, state $AC67: Enemy set
-$B4:8A37             dw D4BF,0001, DCBF,0002, FFFF
-
+$B4:8A37             dw D4BF, 0001,          ; Dragon
+                        DCBF, 0002,          ; Sova
+                        FFFF
 $B4:8A41             db 00
 
-; Room $ABD2, state $ABDF: Enemy set name
+; Room $ABD2. Grapple practice shaft
 $B4:8A42             db 4E,4F,31,5F,32,31,20 ; "NO1_21 "
-
-; Room $ABD2, state $ABDF: Enemy set
-$B4:8A49             dw E6FF,0001, D1BF,0002, FFFF
-
+$B4:8A49             dw E6FF, 0001,          ; Fune
+                        D1BF, 0002,          ; Multiviola
+                        FFFF
 $B4:8A53             db 00
 
-; Room $A8B9, state $A8C6: Enemy set name
+; Room $A8B9. Pre ice beam shaft
 $B4:8A54             db 4E,4F,31,5F,30,37,20 ; "NO1_07 "
-
-; Room $A8B9, state $A8C6: Enemy set
-$B4:8A5B             dw DCBF,0001, E6FF,0002, FFFF
-
+$B4:8A5B             dw DCBF, 0001,          ; Sova
+                        E6FF, 0002,          ; Fune
+                        FFFF
 $B4:8A65             db 00
 
-; Room $B283, state $B295: Enemy set name
-; Room $B283, state $B2AF: Enemy set name
+; Room $B283. Golden Torizo
 $B4:8A66             db 4E,4F,32,5F,30,32,20 ; "NO2_02 "
-
-; Room $B283, state $B295: Enemy set
-; Room $B283, state $B2AF: Enemy set
-$B4:8A6D             dw EF7F,0001, FFFF
-
+$B4:8A6D             dw EF7F, 0001,          ; Golden Torizo
+                        FFFF
 $B4:8A73             db 00
 
-; Room $AE07, state $AE14: Enemy set name
+; Room $AE07. Norfair sinking tripper hall
 $B4:8A74             db 4E,4F,31,5F,33,32,20 ; "NO1_32 "
-
-; Room $AE07, state $AE14: Enemy set
-$B4:8A7B             dw D7FF,0007, D53F,0002, FFFF
-
+$B4:8A7B             dw D7FF, 0007,          ; Tripper
+                        D53F, 0002,          ; Shootable shutter
+                        FFFF
 $B4:8A85             db 00
 
-; Room $AD1B, state $AD28: Enemy set name
+; Room $AD1B. Speed booster room
 $B4:8A86             db 4E,4F,31,5F,32,38,20 ; "NO1_28 "
-
-; Room $AD1B, state $AD28: Enemy set
 $B4:8A8D             dw FFFF
-
 $B4:8A8F             db 00
 
-; Room $B37A, state $B387: Enemy set name
+; Room $B37A. Pre Ridley hall
 $B4:8A90             db 4E,4F,32,5F,30,36,20 ; "NO2_06 "
-
-; Room $B37A, state $B387: Enemy set
-$B4:8A97             dw DABF,0001, F1D3,0007, FFFF
-
+$B4:8A97             dw DABF, 0001,          ; Viola
+                        F1D3, 0007,          ; Zebbo
+                        FFFF
 $B4:8AA1             db 00
 
-; Room $AD5E, state $AD6B: Enemy set name
+; Room $AD5E. Alcoon shaft
 $B4:8AA2             db 4E,4F,31,5F,32,39,20 ; "NO1_29 "
-
-; Room $AD5E, state $AD6B: Enemy set
-$B4:8AA9             dw D1BF,0001, E9BF,0002, FFFF
-
+$B4:8AA9             dw D1BF, 0001,          ; Multiviola
+                        E9BF, 0002,          ; Alcoon
+                        FFFF
 $B4:8AB3             db 00
 
-; Room $ACF0, state $ACFD: Enemy set name
+; Room $ACF0. Speed booster lavaquake
 $B4:8AB4             db 4E,4F,31,5F,32,37,20 ; "NO1_27 "
-
-; Room $ACF0, state $ACFD: Enemy set
-$B4:8ABB             dw D2FF,0001, D67F,0002, FFFF
-
+$B4:8ABB             dw D2FF, 0001,          ; Geruta
+                        D67F, 0002,          ; Metaree
+                        FFFF
 $B4:8AC5             db 00
 
-; Room $B07A, state $B087: Enemy set name
+; Room $B07A. Speed booster lavaquake room
 $B4:8AC6             db 4E,4F,31,5F,34,35,20 ; "NO1_45 "
-
-; Room $B07A, state $B087: Enemy set
-$B4:8ACD             dw F213,0001, DB7F,0002, FFFF
-
+$B4:8ACD             dw F213, 0001,          ; Gamet
+                        DB7F, 0002,          ; Skree
+                        FFFF
 $B4:8AD7             db 00
 
-; Room $AE74, state $AE81: Enemy set name
+; Room $AE74. Pre lava dive shaft
 $B4:8AD8             db 4E,4F,31,5F,33,34,20 ; "NO1_34 "
-
-; Room $AE74, state $AE81: Enemy set
-$B4:8ADF             dw DABF,0001, FFFF
-
+$B4:8ADF             dw DABF, 0001,          ; Viola
+                        FFFF
 $B4:8AE5             db 00
 
-; Room $A7DE, state $A7EB: Enemy set name
+; Room $A7DE. Norfair mainstreet
 $B4:8AE6             db 4E,4F,31,5F,30,33,20 ; "NO1_03 "
-
-; Room $A7DE, state $A7EB: Enemy set
-$B4:8AED             dw DCBF,0002, FFFF
-
+$B4:8AED             dw DCBF, 0002,          ; Sova
+                        FFFF
 $B4:8AF3             db 00
 
-; Room $B656, state $B663: Enemy set name
+; Room $B656. Lower Norfair north kihunter shaft
 $B4:8AF4             db 4E,4F,32,5F,31,39,20 ; "NO2_19 "
-
-; Room $B656, state $B663: Enemy set
-$B4:8AFB             dw E07F,0001, EBBF,0002, D53F,0003, FFFF
-
+$B4:8AFB             dw E07F, 0001,          ; Fire pillar
+                        EBBF, 0002,          ; Red ki-hunter
+                        D53F, 0003,          ; Shootable shutter
+                        FFFF
 $B4:8B09             db 00
 
-; Room $A98D, state $A99F: Enemy set name
-; Room $A98D, state $A9B9: Enemy set name
+; Room $A98D. Crocomire
 $B4:8B0A             db 4E,4F,31,5F,31,30,20 ; "NO1_10 "
-
-; Room $A98D, state $A99F: Enemy set
-; Room $A98D, state $A9B9: Enemy set
-$B4:8B11             dw DDBF,D007, FFFF
-
+$B4:8B11             dw DDBF, D007,          ; Crocomire
+                        FFFF
 $B4:8B17             db 00
 
-; Room $B1BB, state $B1C8: Enemy set name
+; Room $B1BB. Pre Lower Norfair save station
 $B4:8B18             db 4E,4F,31,5F,35,32,20 ; "NO1_52 "
-
-; Room $B1BB, state $B1C8: Enemy set
 $B4:8B1F             dw FFFF
-
 $B4:8B21             db 00
 
-; Room $AE32, state $AE3F: Enemy set name
+; Room $AE32. Volcano room
 $B4:8B22             db 4E,4F,31,5F,33,33,20 ; "NO1_33 "
-
-; Room $AE32, state $AE3F: Enemy set
-$B4:8B29             dw E6FF,0001, D1FF,0002, FFFF
-
+$B4:8B29             dw E6FF, 0001,          ; Fune
+                        D1FF, 0002,          ; Polyp
+                        FFFF
 $B4:8B33             db 00
 
-; Room $AF72, state $AF7F: Enemy set name
+; Room $AF72. Norfair wave gate room
 $B4:8B34             db 4E,4F,31,5F,33,39,20 ; "NO1_39 "
-
-; Room $AF72, state $AF7F: Enemy set
-$B4:8B3B             dw E6FF,0001, F213,0002, FFFF
-
+$B4:8B3B             dw E6FF, 0001,          ; Fune
+                        F213, 0002,          ; Gamet
+                        FFFF
 $B4:8B45             db 00
 
-; Room $CD5C, state $CD88: Enemy set name
+; Room $CD5C, state $CD88. Wrecked Ship first flooded room - main area boss is dead
 $B4:8B46             db 4E,50,31,5F,31,31,61 ; "NP1_11a"
-
-; Room $CD5C, state $CD88: Enemy set
-$B4:8B4D             dw E97F,0001, FFFF
-
+$B4:8B4D             dw E97F, 0001,          ; Bull
+                        FFFF
 $B4:8B53             db 00
 
-; Room $CC27, state $CC53: Enemy set name
+; Room $CC27, state $CC53. Wrecked Ship chozo energy tank room - main area boss is dead
 $B4:8B54             db 4E,50,31,5F,30,37,61 ; "NP1_07a"
-
-; Room $CC27, state $CC53: Enemy set
-$B4:8B5B             dw D83F,0001, D6FF,0002, FFFF
-
+$B4:8B5B             dw D83F, 0001,          ; Suspensor platform
+                        D6FF, 0002,          ; Skultera
+                        FFFF
 $B4:8B65             db 00
 
-; Room $CAF6, state $CB08: Enemy set name
+; Room $CAF6, state $CB08. Wrecked Ship mainstreet - default
 $B4:8B66             db 4E,50,31,5F,30,34,20 ; "NP1_04 "
-
-; Room $CAF6, state $CB08: Enemy set
-$B4:8B6D             dw E77F,0001, DFFF,0002, E9FF,0003, D87F,0003, FFFF
-
+$B4:8B6D             dw E77F, 0001,          ; Coven
+                        DFFF, 0002,          ; Spike platform top
+                        E9FF, 0003,          ; Atomic
+                        D87F, 0003,          ; Roach
+                        FFFF
 $B4:8B7F             db 00
 
-; Room $C98E, state $C9A0: Enemy set name
+; Room $C98E, state $C9A0. Wrecked Ship chozo room - default
 $B4:8B80             db 4E,50,31,5F,30,30,20 ; "NP1_00 "
-
-; Room $C98E, state $C9A0: Enemy set
-$B4:8B87             dw F0FF,0001, D87F,0007, FFFF
-
+$B4:8B87             dw F0FF, 0001,          ; Chozo statue
+                        D87F, 0007,          ; Roach
+                        FFFF
 $B4:8B91             db 00
 
-; Room $CA52, state $CA7E: Enemy set name
+; Room $CA52, state $CA7E. Wrecked Ship attic - main area boss is dead
 $B4:8B92             db 4E,50,31,5F,30,32,61 ; "NP1_02a"
-
-; Room $CA52, state $CA7E: Enemy set
-$B4:8B99             dw EB3F,0001, E9FF,0002, EA3F,0003, FFFF
-
+$B4:8B99             dw EB3F, 0001,          ; Yellow ki-hunter
+                        E9FF, 0002,          ; Atomic
+                        EA3F, 0003,          ; Wrecked Ship spark
+                        FFFF
 $B4:8BA7             db 00
 
-; Room $CC6F, state $CC9B: Enemy set name
+; Room $CC6F, state $CC9B. Pre Phantoon hall - main area boss is dead
 $B4:8BA8             db 4E,50,31,5F,30,38,61 ; "NP1_08a"
-
-; Room $CC6F, state $CC9B: Enemy set
-$B4:8BAF             dw E8FF,0001, E9FF,0002, EA3F,0003, FFFF
-
+$B4:8BAF             dw E8FF, 0001,          ; Work robot
+                        E9FF, 0002,          ; Atomic
+                        EA3F, 0003,          ; Wrecked Ship spark
+                        FFFF
 $B4:8BBD             db 00
 
-; Room $CCCB, state $CCF7: Enemy set name
+; Room $CCCB, state $CCF7. Wrecked Ship map station - main area boss is dead
 $B4:8BBE             db 4E,50,31,5F,30,39,61 ; "NP1_09a"
-
-; Room $CCCB, state $CCF7: Enemy set
 $B4:8BC5             dw FFFF
-
 $B4:8BC7             db 00
 
-; Room $CDA8, state $CDBA: Enemy set name
+; Room $CDA8, state $CDBA. Wrecked Ship west super missile room - default
 $B4:8BC8             db 4E,50,31,5F,31,32,20 ; "NP1_12 "
-
-; Room $CDA8, state $CDBA: Enemy set
 $B4:8BCF             dw FFFF
-
 $B4:8BD1             db 00
 
-; Room $CB8B, state $CB9D: Enemy set name
+; Room $CB8B, state $CB9D. Wrecked Ship spike platform hall - default
 $B4:8BD2             db 4E,50,31,5F,30,35,20 ; "NP1_05 "
-
-; Room $CB8B, state $CB9D: Enemy set
 $B4:8BD9             dw FFFF
-
 $B4:8BDB             db 00
 
-; Room $CD5C, state $CD6E: Enemy set name
+; Room $CD5C, state $CD6E. Wrecked Ship first flooded room - default
 $B4:8BDC             db 4E,50,31,5F,31,31,20 ; "NP1_11 "
-
-; Room $CD5C, state $CD6E: Enemy set
 $B4:8BE3             dw FFFF
-
 $B4:8BE5             db 00
 
-; Room $CA08, state $CA34: Enemy set name
+; Room $CA08, state $CA34. Wrecked Ship entrance treadmill - main area boss is dead
 $B4:8BE6             db 4E,50,31,5F,30,31,61 ; "NP1_01a"
-
-; Room $CA08, state $CA34: Enemy set
 $B4:8BED             dw FFFF
-
 $B4:8BEF             db 00
 
-; Room $CBD5, state $CBE7: Enemy set name
+; Room $CBD5, state $CBE7. Wrecked Ship east exit - default
 $B4:8BF0             db 4E,50,31,5F,30,36,20 ; "NP1_06 "
-
-; Room $CBD5, state $CBE7: Enemy set
 $B4:8BF7             dw FFFF
-
 $B4:8BF9             db 00
 
-; Room $C98E, state $C9BA: Enemy set name
+; Room $C98E, state $C9BA. Wrecked Ship chozo room - main area boss is dead
 $B4:8BFA             db 4E,50,31,5F,30,30,61 ; "NP1_00a"
-
-; Room $C98E, state $C9BA: Enemy set
-$B4:8C01             dw F0FF,0001, E8FF,0003, FFFF
-
+$B4:8C01             dw F0FF, 0001,          ; Chozo statue
+                        E8FF, 0003,          ; Work robot
+                        FFFF
 $B4:8C0B             db 00
 
-; Room $CAAE, state $CAC0: Enemy set name
+; Room $CAAE, state $CAC0. Wrecked Ship attic missile tank room - default
 $B4:8C0C             db 4E,50,31,5F,30,33,20 ; "NP1_03 "
-
-; Room $CAAE, state $CAC0: Enemy set
 $B4:8C13             dw FFFF
-
 $B4:8C15             db 00
 
-; Room $CD13, state $CD3F: Enemy set name
+; Room $CD13, state $CD3F. Phantoon - main area boss is dead
 $B4:8C16             db 4E,50,31,5F,31,30,61 ; "NP1_10a"
-
-; Room $CD13, state $CD3F: Enemy set
 $B4:8C1D             dw FFFF
-
 $B4:8C1F             db 00
 
-; Room $CC27, state $CC39: Enemy set name
+; Room $CC27, state $CC39. Wrecked Ship chozo energy tank room - default
 $B4:8C20             db 4E,50,31,5F,30,37,20 ; "NP1_07 "
-
-; Room $CC27, state $CC39: Enemy set
 $B4:8C27             dw FFFF
-
 $B4:8C29             db 00
 
-; Room $CE40, state $CE52: Enemy set name
+; Room $CE40, state $CE52. Gravity suit room - default
 $B4:8C2A             db 4E,50,31,5F,31,34,20 ; "NP1_14 "
-
-; Room $CE40, state $CE52: Enemy set
 $B4:8C31             dw FFFF
-
 $B4:8C33             db 00
 
-; Room $CCCB, state $CCDD: Enemy set name
+; Room $CCCB, state $CCDD. Wrecked Ship map station - default
 $B4:8C34             db 4E,50,31,5F,30,39,20 ; "NP1_09 "
-
-; Room $CCCB, state $CCDD: Enemy set
-$B4:8C3B             dw E77F,0001, D87F,0007, E97F,0007, FFFF
-
+$B4:8C3B             dw E77F, 0001,          ; Coven
+                        D87F, 0007,          ; Roach
+                        E97F, 0007,          ; Bull
+                        FFFF
 $B4:8C49             db 00
 
-; Room $CE40, state $CE6C: Enemy set name
+; Room $CE40, state $CE6C. Gravity suit room - main area boss is dead
 $B4:8C4A             db 4E,50,31,5F,31,34,61 ; "NP1_14a"
-
-; Room $CE40, state $CE6C: Enemy set
 $B4:8C51             dw FFFF
-
 $B4:8C53             db 00
 
-; Room $CC6F, state $CC81: Enemy set name
+; Room $CC6F, state $CC81. Pre Phantoon hall - default
 $B4:8C54             db 4E,50,31,5F,30,38,20 ; "NP1_08 "
-
-; Room $CC6F, state $CC81: Enemy set
-$B4:8C5B             dw E93F,0007, D87F,0007, FFFF
-
+$B4:8C5B             dw E93F, 0007,          ; Work robot deactivated
+                        D87F, 0007,          ; Roach
+                        FFFF
 $B4:8C65             db 00
 
-; Room $CA08, state $CA1A: Enemy set name
+; Room $CA08, state $CA1A. Wrecked Ship entrance treadmill - default
 $B4:8C66             db 4E,50,31,5F,30,31,20 ; "NP1_01 "
-
-; Room $CA08, state $CA1A: Enemy set
-$B4:8C6D             dw D87F,0001, FFFF
-
+$B4:8C6D             dw D87F, 0001,          ; Roach
+                        FFFF
 $B4:8C73             db 00
 
-; Room $CAAE, state $CADA: Enemy set name
+; Room $CAAE, state $CADA. Wrecked Ship attic missile tank room - main area boss is dead
 $B4:8C74             db 4E,50,31,5F,30,33,61 ; "NP1_03a"
-
-; Room $CAAE, state $CADA: Enemy set
-$B4:8C7B             dw EA3F,0001, CFBF,0002, E8FF,0003, FFFF
-
+$B4:8C7B             dw EA3F, 0001,          ; Wrecked Ship spark
+                        CFBF, 0002,          ; Puyo
+                        E8FF, 0003,          ; Work robot
+                        FFFF
 $B4:8C89             db 00
 
-; Room $CE8A, state $CEB6: Enemy set name
+; Room $CE8A, state $CEB6. Wrecked Ship save station - main area boss is dead
 $B4:8C8A             db 4E,50,31,5F,31,35,61 ; "NP1_15a"
-
-; Room $CE8A, state $CEB6: Enemy set
 $B4:8C91             dw FFFF
-
 $B4:8C93             db 00
 
-; Room $CDA8, state $CDD4: Enemy set name
+; Room $CDA8, state $CDD4. Wrecked Ship west super missile room - main area boss is dead
 $B4:8C94             db 4E,50,31,5F,31,32,61 ; "NP1_12a"
-
-; Room $CDA8, state $CDD4: Enemy set
-$B4:8C9B             dw EA3F,0001, FFFF
-
+$B4:8C9B             dw EA3F, 0001,          ; Wrecked Ship spark
+                        FFFF
 $B4:8CA1             db 00
 
-; Room $CA52, state $CA64: Enemy set name
+; Room $CA52, state $CA64. Wrecked Ship attic - default
 $B4:8CA2             db 4E,50,31,5F,30,32,20 ; "NP1_02 "
-
-; Room $CA52, state $CA64: Enemy set
-$B4:8CA9             dw E77F,0001, E9FF,0002, D87F,0002, FFFF
-
+$B4:8CA9             dw E77F, 0001,          ; Coven
+                        E9FF, 0002,          ; Atomic
+                        D87F, 0002,          ; Roach
+                        FFFF
 $B4:8CB7             db 00
 
-; Room $CDF1, state $CE03: Enemy set name
+; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
 $B4:8CB8             db 4E,50,31,5F,31,33,20 ; "NP1_13 "
-
-; Room $CDF1, state $CE03: Enemy set
-$B4:8CBF             dw E77F,0001, E9FF,0002, D87F,0002, E93F,0007, FFFF
-
+$B4:8CBF             dw E77F, 0001,          ; Coven
+                        E9FF, 0002,          ; Atomic
+                        D87F, 0002,          ; Roach
+                        E93F, 0007,          ; Work robot deactivated
+                        FFFF
 $B4:8CD1             db 00
 
-; Room $CE8A, state $CE9C: Enemy set name
+; Room $CE8A, state $CE9C. Wrecked Ship save station - default
 $B4:8CD2             db 4E,50,31,5F,31,35,20 ; "NP1_15 "
-
-; Room $CE8A, state $CE9C: Enemy set
-$B4:8CD9             dw E77F,0001, D87F,0002, FFFF
-
+$B4:8CD9             dw E77F, 0001,          ; Coven
+                        D87F, 0002,          ; Roach
+                        FFFF
 $B4:8CE3             db 00
 
-; Room $CBD5, state $CC01: Enemy set name
+; Room $CBD5, state $CC01. Wrecked Ship east exit - main area boss is dead
 $B4:8CE4             db 4E,50,31,5F,30,36,61 ; "NP1_06a"
-
-; Room $CBD5, state $CC01: Enemy set
-$B4:8CEB             dw EA3F,0001, FFFF
-
+$B4:8CEB             dw EA3F, 0001,          ; Wrecked Ship spark
+                        FFFF
 $B4:8CF1             db 00
 
-; Room $CB8B, state $CBB7: Enemy set name
+; Room $CB8B, state $CBB7. Wrecked Ship spike platform hall - main area boss is dead
 $B4:8CF2             db 4E,50,31,5F,30,35,61 ; "NP1_05a"
-
-; Room $CB8B, state $CBB7: Enemy set
-$B4:8CF9             dw DFFF,0007, FFFF
-
+$B4:8CF9             dw DFFF, 0007,          ; Spike platform top
+                        FFFF
 $B4:8CFF             db 00
 
-; Room $CDF1, state $CE1D: Enemy set name
+; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
 $B4:8D00             db 4E,50,31,5F,31,33,61 ; "NP1_13a"
-
-; Room $CDF1, state $CE1D: Enemy set
-$B4:8D07             dw E8FF,0001, E97F,0002, EA3F,0003, FFFF
-
+$B4:8D07             dw E8FF, 0001,          ; Work robot
+                        E97F, 0002,          ; Bull
+                        EA3F, 0003,          ; Wrecked Ship spark
+                        FFFF
 $B4:8D15             db 00
 
-; Room $CD13, state $CD25: Enemy set name
+; Room $CD13, state $CD25. Phantoon - default
 $B4:8D16             db 4E,50,31,5F,31,30,20 ; "NP1_10 "
-
-; Room $CD13, state $CD25: Enemy set
-$B4:8D1D             dw E4BF,0007, FFFF
-
+$B4:8D1D             dw E4BF, 0007,          ; Phantoon body
+                        FFFF
 $B4:8D23             db 00
 
-; Room $CAF6, state $CB22: Enemy set name
+; Room $CAF6, state $CB22. Wrecked Ship mainstreet - main area boss is dead
 $B4:8D24             db 4E,50,31,5F,30,34,61 ; "NP1_04a"
-
-; Room $CAF6, state $CB22: Enemy set
-$B4:8D2B             dw EA3F,0001, E9FF,0002, DFFF,0003, FFFF
-
+$B4:8D2B             dw EA3F, 0001,          ; Wrecked Ship spark
+                        E9FF, 0002,          ; Atomic
+                        DFFF, 0003,          ; Spike platform top
+                        FFFF
 $B4:8D39             db 00
 
-; Room $D0B9, state $D0C6: Enemy set name
+; Room $D0B9. Mt. Doom
 $B4:8D3A             db 4D,4C,31,5F,30,38,20 ; "ML1_08 "
-
-; Room $D0B9, state $D0C6: Enemy set
-$B4:8D41             dw E8BF,0001, D77F,0003, FFFF
-
+$B4:8D41             dw E8BF, 0001,          ; Powamp
+                        D77F, 0003,          ; Sciser
+                        FFFF
 $B4:8D4B             db 00
 
-; Room $D913, state $D920: Enemy set name
+; Room $D913. Maridia grapple wall shaft
 $B4:8D4C             db 4D,4C,32,5F,32,35,20 ; "ML2_25 "
-
-; Room $D913, state $D920: Enemy set
-$B4:8D53             dw D37F,0001, D8FF,0002, FFFF
-
+$B4:8D53             dw D37F, 0001,          ; Oum
+                        D8FF, 0002,          ; Mochtroid
+                        FFFF
 $B4:8D5D             db 00
 
-; Room $D13B, state $D148: Enemy set name
+; Room $D13B. Sandy Maridia missile and super missile room
 $B4:8D5E             db 4D,4C,31,5F,31,30,20 ; "ML1_10 "
-
-; Room $D13B, state $D148: Enemy set
-$B4:8D65             dw D3BF,0001, F193,0002, FFFF
-
+$B4:8D65             dw D3BF, 0001,          ; Choot
+                        F193, 0002,          ; Zeb
+                        FFFF
 $B4:8D6F             db 00
 
-; Room $D1A3, state $D1B0: Enemy set name
+; Room $D1A3. Maridia crab shaft
 $B4:8D70             db 4D,4C,31,5F,31,32,20 ; "ML1_12 "
-
-; Room $D1A3, state $D1B0: Enemy set
-$B4:8D77             dw D77F,0001, FFFF
-
+$B4:8D77             dw D77F, 0001,          ; Sciser
+                        FFFF
 $B4:8D7D             db 00
 
-; Room $D30B, state $D318: Enemy set name
+; Room $D30B. Maridia -> Crateria elevator
 $B4:8D7E             db 4D,4C,31,5F,31,39,20 ; "ML1_19 "
-
-; Room $D30B, state $D318: Enemy set
-$B4:8D85             dw D47F,0003, D03F,0007, FFFF
-
+$B4:8D85             dw D47F, 0003,          ; Ripper
+                        D03F, 0007,          ; Owtch
+                        FFFF
 $B4:8D8F             db 00
 
-; Room $D72A, state $D737: Enemy set name
+; Room $D72A. Maridia grapple room
 $B4:8D90             db 4D,4C,32,5F,31,36,20 ; "ML2_16 "
-
-; Room $D72A, state $D737: Enemy set
-$B4:8D97             dw D8FF,0001, FFFF
-
+$B4:8D97             dw D8FF, 0001,          ; Mochtroid
+                        FFFF
 $B4:8D9D             db 00
 
-; Room $D765, state $D772: Enemy set name
+; Room $D765. Snail room save station
 $B4:8D9E             db 4D,4C,32,5F,31,37,20 ; "ML2_17 "
-
-; Room $D765, state $D772: Enemy set
 $B4:8DA5             dw FFFF
-
 $B4:8DA7             db 00
 
-; Room $D78F, state $D7A1: Enemy set name
-; Room $D78F, state $D7BB: Enemy set name
+; Room $D78F. Pre Draygon room
 $B4:8DA8             db 4D,4C,32,5F,31,38,20 ; "ML2_18 "
-
-; Room $D78F, state $D7A1: Enemy set
-; Room $D78F, state $D7BB: Enemy set
 $B4:8DAF             dw FFFF
-
 $B4:8DB1             db 00
 
-; Room $D7E4, state $D7F1: Enemy set name
+; Room $D7E4. Maridia speed blockade hall
 $B4:8DB2             db 4D,4C,32,5F,31,39,20 ; "ML2_19 "
-
-; Room $D7E4, state $D7F1: Enemy set
-$B4:8DB9             dw CFBF,0001, D77F,0001, DA7F,0002, FFFF
-
+$B4:8DB9             dw CFBF, 0001,          ; Puyo
+                        D77F, 0001,          ; Sciser
+                        DA7F, 0002,          ; Zoa
+                        FFFF
 $B4:8DC7             db 00
 
-; Room $D81A, state $D827: Enemy set name
+; Room $D81A. Draygon save station
 $B4:8DC8             db 4D,4C,32,5F,32,30,20 ; "ML2_20 "
-
-; Room $D81A, state $D827: Enemy set
 $B4:8DCF             dw FFFF
-
 $B4:8DD1             db 00
 
-; Room $D845, state $D852: Enemy set name
+; Room $D845. Maridia missile station
 $B4:8DD2             db 4D,4C,32,5F,32,31,20 ; "ML2_21 "
-
-; Room $D845, state $D852: Enemy set
 $B4:8DD9             dw FFFF
-
 $B4:8DDB             db 00
 
-; Room $D86E, state $D87B: Enemy set name
+; Room $D86E. Sandy Maridia quicksand fall
 $B4:8DDC             db 4D,4C,32,5F,32,32,20 ; "ML2_22 "
-
-; Room $D86E, state $D87B: Enemy set
-$B4:8DE3             dw E97F,0001, FFFF
-
+$B4:8DE3             dw E97F, 0001,          ; Bull
+                        FFFF
 $B4:8DE9             db 00
 
-; Room $D898, state $D8A5: Enemy set name
+; Room $D898. Maridia speed blockade quicksand fall
 $B4:8DEA             db 4D,4C,32,5F,32,33,20 ; "ML2_23 "
-
-; Room $D898, state $D8A5: Enemy set
-$B4:8DF1             dw E97F,0001, FFFF
-
+$B4:8DF1             dw E97F, 0001,          ; Bull
+                        FFFF
 $B4:8DF7             db 00
 
-; Room $D8C5, state $D8D7: Enemy set name
-; Room $D8C5, state $D8F1: Enemy set name
+; Room $D8C5. Shaktool
 $B4:8DF8             db 4D,4C,32,5F,32,34,20 ; "ML2_24 "
+$B4:8DFF             dw F07F, 0001,          ; Shaktool
+                        DBBF, 0002,          ; Yard
+                        FFFF
 
-; Room $D8C5, state $D8D7: Enemy set
-; Room $D8C5, state $D8F1: Enemy set
-$B4:8DFF             dw F07F,0001, DBBF,0002, FFFF
-
-; Room $DA60, state $DA72: Enemy set name
+; Room $DA60, state $DA72. Draygon - default
 $B4:8E09             db 00,4D,4C,42,5F,30,30 ; " MLB_00"
-
-; Room $DA60, state $DA72: Enemy set
-$B4:8E10             dw DE3F,0007, FFFF
-
+$B4:8E10             dw DE3F, 0007,          ; Draygon body
+                        FFFF
 $B4:8E16             db 00
 
-; Room $D5A7, state $D5B4: Enemy set name
+; Room $D5A7. Snail room
 $B4:8E17             db 4D,4C,32,5F,30,39,20 ; "ML2_09 "
-
-; Room $D5A7, state $D5B4: Enemy set
-$B4:8E1E             dw DBBF,0001, FFFF
-
+$B4:8E1E             dw DBBF, 0001,          ; Yard
+                        FFFF
 $B4:8E24             db 00
 
-; Room $D104, state $D111: Enemy set name
+; Room $D104. Maridia -> Red Brinstar room
 $B4:8E25             db 4D,4C,31,5F,30,39,20 ; "ML1_09 "
-
-; Room $D104, state $D111: Enemy set
-$B4:8E2C             dw D6FF,0001, D77F,0001, F1D3,0002, FFFF
-
+$B4:8E2C             dw D6FF, 0001,          ; Skultera
+                        D77F, 0001,          ; Sciser
+                        F1D3, 0002,          ; Zebbo
+                        FFFF
 $B4:8E3A             db 00
 
-; Room $D2AA, state $D2B7: Enemy set name
+; Room $D2AA. Plasma beam room
 $B4:8E3B             db 4D,4C,31,5F,31,37,20 ; "ML1_17 "
-
-; Room $D2AA, state $D2B7: Enemy set
-$B4:8E42             dw F753,0001, F453,0002, FFFF
-
+$B4:8E42             dw F753, 0001,          ; Magenta walking space pirate
+                        F453, 0002,          ; Magenta wall space pirate
+                        FFFF
 $B4:8E4C             db 00
 
-; Room $D9AA, state $D9B7: Enemy set name
+; Room $D9AA. Space jump room
 $B4:8E4D             db 4D,4C,32,5F,32,37,20 ; "ML2_27 "
-
-; Room $D9AA, state $D9B7: Enemy set
 $B4:8E54             dw FFFF
-
 $B4:8E56             db 00
 
-; Room $D646, state $D653: Enemy set name
+; Room $D646. Pants room
 $B4:8E57             db 4D,4C,32,5F,31,32,20 ; "ML2_12 "
-
-; Room $D646, state $D653: Enemy set
-$B4:8E5E             dw D17F,0001, CFBF,0002, D7FF,0002, FFFF
-
+$B4:8E5E             dw D17F, 0001,          ; Memu
+                        CFBF, 0002,          ; Puyo
+                        D7FF, 0002,          ; Tripper
+                        FFFF
 $B4:8E6C             db 00
 
-; Room $CED2, state $CEDF: Enemy set name
+; Room $CED2. n00b tube save station
 $B4:8E6D             db 4D,4C,31,5F,30,30,20 ; "ML1_00 "
-
-; Room $CED2, state $CEDF: Enemy set
 $B4:8E74             dw FFFF
-
 $B4:8E76             db 00
 
-; Room $CEFB, state $CF0D: Enemy set name
-; Room $CEFB, state $CF27: Enemy set name
+; Room $CEFB. n00b tube
 $B4:8E77             db 4D,4C,31,5F,30,31,20 ; "ML1_01 "
-
-; Room $CEFB, state $CF0D: Enemy set
-; Room $CEFB, state $CF27: Enemy set
-$B4:8E7E             dw F0BF,0007, FFFF
-
+$B4:8E7E             dw F0BF, 0007,          ; n00b tube cracks
+                        FFFF
 $B4:8E84             db 00
 
-; Room $CF54, state $CF61: Enemy set name
+; Room $CF54. n00b tube west
 $B4:8E85             db 4D,4C,31,5F,30,32,20 ; "ML1_02 "
-
-; Room $CF54, state $CF61: Enemy set
 $B4:8E8C             dw FFFF
-
 $B4:8E8E             db 00
 
-; Room $CF80, state $CF8D: Enemy set name
+; Room $CF80. n00b tube east
 $B4:8E8F             db 4D,4C,31,5F,30,33,20 ; "ML1_03 "
-
-; Room $CF80, state $CF8D: Enemy set
-$B4:8E96             dw CEBF,0001, F1D3,0002, FFFF
-
+$B4:8E96             dw CEBF, 0001,          ; Boyon
+                        F1D3, 0002,          ; Zebbo
+                        FFFF
 $B4:8EA0             db 00
 
-; Room $D055, state $D062: Enemy set name
+; Room $D055. Tatori room
 $B4:8EA1             db 4D,4C,31,5F,30,36,20 ; "ML1_06 "
-
-; Room $D055, state $D062: Enemy set
-$B4:8EA8             dw CF3F,0001, FFFF
-
+$B4:8EA8             dw CF3F, 0001,          ; Tatori
+                        FFFF
 $B4:8EAE             db 00
 
-; Room $D08A, state $D097: Enemy set name
+; Room $D08A. Maridia green gate hall
 $B4:8EAF             db 4D,4C,31,5F,30,37,20 ; "ML1_07 "
-
-; Room $D08A, state $D097: Enemy set
-$B4:8EB6             dw D77F,0001, FFFF
-
+$B4:8EB6             dw D77F, 0001,          ; Sciser
+                        FFFF
 $B4:8EBC             db 00
 
-; Room $D16D, state $D17A: Enemy set name
+; Room $D16D. Sandy Maridia memu room
 $B4:8EBD             db 4D,4C,31,5F,31,31,20 ; "ML1_11 "
-
-; Room $D16D, state $D17A: Enemy set
-$B4:8EC4             dw D03F,0001, D17F,0002, FFFF
-
+$B4:8EC4             dw D03F, 0001,          ; Owtch
+                        D17F, 0002,          ; Memu
+                        FFFF
 $B4:8ECE             db 00
 
-; Room $D1DD, state $D1EA: Enemy set name
+; Room $D1DD. Beach
 $B4:8ECF             db 4D,4C,31,5F,31,33,20 ; "ML1_13 "
-
-; Room $D1DD, state $D1EA: Enemy set
-$B4:8ED6             dw D03F,0001, D3BF,0002, D6FF,0003, FFFF
-
+$B4:8ED6             dw D03F, 0001,          ; Owtch
+                        D3BF, 0002,          ; Choot
+                        D6FF, 0003,          ; Skultera
+                        FFFF
 $B4:8EE4             db 00
 
-; Room $D252, state $D25F: Enemy set name
+; Room $D252. Maridia broken glass tube room east
 $B4:8EE5             db 4D,4C,31,5F,31,35,20 ; "ML1_15 "
-
-; Room $D252, state $D25F: Enemy set
-$B4:8EEC             dw D77F,0001, FFFF
-
+$B4:8EEC             dw D77F, 0001,          ; Sciser
+                        FFFF
 $B4:8EF2             db 00
 
-; Room $D27E, state $D28B: Enemy set name
+; Room $D27E. Plasma beam puyo room
 $B4:8EF3             db 4D,4C,31,5F,31,36,20 ; "ML1_16 "
-
-; Room $D27E, state $D28B: Enemy set
-$B4:8EFA             dw CFBF,0001, DD3F,0001, FFFF
-
+$B4:8EFA             dw CFBF, 0001,          ; Puyo
+                        DD3F, 0001,          ; Stone zoomer
+                        FFFF
 $B4:8F04             db 00
 
-; Room $D2D9, state $D2E6: Enemy set name
+; Room $D2D9. Sandy Maridia choot-puyo hall
 $B4:8F05             db 4D,4C,31,5F,31,38,20 ; "ML1_18 "
-
-; Room $D2D9, state $D2E6: Enemy set
-$B4:8F0C             dw CFBF,0001, CEBF,0001, D3BF,0002, FFFF
-
+$B4:8F0C             dw CFBF, 0001,          ; Puyo
+                        CEBF, 0001,          ; Boyon
+                        D3BF, 0002,          ; Choot
+                        FFFF
 $B4:8F1A             db 00
 
-; Room $D340, state $D34D: Enemy set name
+; Room $D340. Sandy Maridia mainstreet
 $B4:8F1B             db 4D,4C,31,5F,32,30,20 ; "ML1_20 "
-
-; Room $D340, state $D34D: Enemy set
-$B4:8F22             dw D03F,0001, D3BF,0002, D6FF,0003, FFFF
-
+$B4:8F22             dw D03F, 0001,          ; Owtch
+                        D3BF, 0002,          ; Choot
+                        D6FF, 0003,          ; Skultera
+                        FFFF
 $B4:8F30             db 00
 
-; Room $D408, state $D415: Enemy set name
+; Room $D408. Maridia elevatube
 $B4:8F31             db 4D,4C,32,5F,30,30,20 ; "ML2_00 "
-
-; Room $D408, state $D415: Enemy set
-$B4:8F38             dw D8FF,0001, CFBF,0002, D77F,0002, DBBF,0003, FFFF
-
+$B4:8F38             dw D8FF, 0001,          ; Mochtroid
+                        CFBF, 0002,          ; Puyo
+                        D77F, 0002,          ; Sciser
+                        DBBF, 0003,          ; Yard
+                        FFFF
 $B4:8F4A             db 00
 
-; Room $D461, state $D46E: Enemy set name
+; Room $D461. Evir hall west
 $B4:8F4B             db 4D,4C,32,5F,30,32,20 ; "ML2_02 "
-
-; Room $D461, state $D46E: Enemy set
-$B4:8F52             dw E63F,0001, FFFF
-
+$B4:8F52             dw E63F, 0001,          ; Evir
+                        FFFF
 $B4:8F58             db 00
 
-; Room $D48E, state $D49B: Enemy set name
+; Room $D48E. Elevatube south
 $B4:8F59             db 4D,4C,32,5F,30,33,20 ; "ML2_03 "
-
-; Room $D48E, state $D49B: Enemy set
 $B4:8F60             dw FFFF
-
 $B4:8F62             db 00
 
-; Room $D4C2, state $D4CF: Enemy set name
+; Room $D4C2. Evir hall east
 $B4:8F63             db 4D,4C,32,5F,30,34,20 ; "ML2_04 "
-
-; Room $D4C2, state $D4CF: Enemy set
-$B4:8F6A             dw E63F,0001, FFFF
-
+$B4:8F6A             dw E63F, 0001,          ; Evir
+                        FFFF
 $B4:8F70             db 00
 
-; Room $D54D, state $D55A: Enemy set name
+; Room $D54D. Snail room quicksand fall west
 $B4:8F71             db 4D,4C,32,5F,30,37,20 ; "ML2_07 "
-
-; Room $D54D, state $D55A: Enemy set
-$B4:8F78             dw E97F,0001, FFFF
-
+$B4:8F78             dw E97F, 0001,          ; Bull
+                        FFFF
 $B4:8F7E             db 00
 
-; Room $D57A, state $D587: Enemy set name
+; Room $D57A. Snail room quicksand fall east
 $B4:8F7F             db 4D,4C,32,5F,30,38,20 ; "ML2_08 "
-
-; Room $D57A, state $D587: Enemy set
-$B4:8F86             dw E97F,0001, FFFF
-
+$B4:8F86             dw E97F, 0001,          ; Bull
+                        FFFF
 $B4:8F8C             db 00
 
-; Room $D5EC, state $D5F9: Enemy set name
+; Room $D5EC. Sandy Maridia quicksand bottom
 $B4:8F8D             db 4D,4C,32,5F,31,30,20 ; "ML2_10 "
-
-; Room $D5EC, state $D5F9: Enemy set
-$B4:8F94             dw DA7F,0001, FFFF
-
+$B4:8F94             dw DA7F, 0001,          ; Zoa
+                        FFFF
 $B4:8F9A             db 00
 
-; Room $D617, state $D624: Enemy set name
+; Room $D617. Mochtroid room
 $B4:8F9B             db 4D,4C,32,5F,31,31,20 ; "ML2_11 "
-
-; Room $D617, state $D624: Enemy set
-$B4:8FA2             dw D8FF,0001, CFBF,0002, D77F,0002, FFFF
-
+$B4:8FA2             dw D8FF, 0001,          ; Mochtroid
+                        CFBF, 0002,          ; Puyo
+                        D77F, 0002,          ; Sciser
+                        FFFF
 $B4:8FB0             db 00
 
-; Room $D69A, state $D6A7: Enemy set name
+; Room $D69A. Pants room section
 $B4:8FB1             db 4D,4C,32,5F,31,33,20 ; "ML2_13 "
-
-; Room $D69A, state $D6A7: Enemy set
-$B4:8FB8             dw CFBF,0001, D7FF,0001, FFFF
-
+$B4:8FB8             dw CFBF, 0001,          ; Puyo
+                        D7FF, 0001,          ; Tripper
+                        FFFF
 $B4:8FC2             db 00
 
-; Room $D6D0, state $D6DD: Enemy set name
+; Room $D6D0. Spring ball room
 $B4:8FC3             db 4D,4C,32,5F,31,34,20 ; "ML2_14 "
-
-; Room $D6D0, state $D6DD: Enemy set
 $B4:8FCA             dw FFFF
-
 $B4:8FCC             db 00
 
-; Room $D6FD, state $D70A: Enemy set name
+; Room $D6FD. Maridia speed blockade quicksand bottom
 $B4:8FCD             db 4D,4C,32,5F,31,35,20 ; "ML2_15 "
-
-; Room $D6FD, state $D70A: Enemy set
-$B4:8FD4             dw DA7F,0001, D03F,0002, FFFF
-
+$B4:8FD4             dw DA7F, 0001,          ; Zoa
+                        D03F, 0002,          ; Owtch
+                        FFFF
 $B4:8FDE             db 00
 
-; Room $D387, state $D394: Enemy set name
+; Room $D387. Pre plasma beam shaft
 $B4:8FDF             db 4D,4C,31,5F,32,31,20 ; "ML1_21 "
-
-; Room $D387, state $D394: Enemy set
-$B4:8FE6             dw D3BF,0001, CFBF,0002, CEBF,0002, FFFF
-
+$B4:8FE6             dw D3BF, 0001,          ; Choot
+                        CFBF, 0002,          ; Puyo
+                        CEBF, 0002,          ; Boyon
+                        FFFF
 $B4:8FF4             db 00
 
-; Room $D3DF, state $D3EC: Enemy set name
+; Room $D3DF. Sandy Maridia save station
 $B4:8FF5             db 4D,4C,31,5F,32,33,20 ; "ML1_23 "
-
-; Room $D3DF, state $D3EC: Enemy set
 $B4:8FFC             dw FFFF
-
 $B4:8FFE             db 00
 
-; Room $D9D4, state $D9E1: Enemy set name
+; Room $D9D4. Maridia energy station
 $B4:8FFF             db 4D,4C,32,5F,32,38,20 ; "ML2_28 "
-
-; Room $D9D4, state $D9E1: Enemy set
 $B4:9006             dw FFFF
-
 $B4:9008             db 00
 
-; Room $D3B6, state $D3C3: Enemy set name
+; Room $D3B6. Maridia map station
 $B4:9009             db 4D,4C,31,5F,32,32,20 ; "ML1_22 "
-
-; Room $D3B6, state $D3C3: Enemy set
 $B4:9010             dw FFFF
-
 $B4:9012             db 00
 
-; Room $D21C, state $D229: Enemy set name
+; Room $D21C. Maridia broken glass tube room
 $B4:9013             db 4D,4C,31,5F,31,34,20 ; "ML1_14 "
-
-; Room $D21C, state $D229: Enemy set
-$B4:901A             dw D77F,0001, FFFF
-
+$B4:901A             dw D77F, 0001,          ; Sciser
+                        FFFF
 $B4:9020             db 00
 
-; Room $D95E, state $D970: Enemy set name
-; Room $D95E, state $D98A: Enemy set name
+; Room $D95E. Botwoon
 $B4:9021             db 4D,4C,32,5F,32,36,20 ; "ML2_26 "
-
-; Room $D95E, state $D970: Enemy set
-; Room $D95E, state $D98A: Enemy set
-$B4:9028             dw D03F,0001, F293,0007, FFFF
-
+$B4:9028             dw D03F, 0001,          ; Owtch
+                        F293, 0007,          ; Botwoon
+                        FFFF
 $B4:9032             db 00
 
-; Room $CFC9, state $CFD6: Enemy set name
+; Room $CFC9. Maridia mainstreet
 $B4:9033             db 4D,4C,31,5F,30,34,20 ; "ML1_04 "
-
-; Room $CFC9, state $CFD6: Enemy set
-$B4:903A             dw D6FF,0001, D77F,0002, FFFF
-
+$B4:903A             dw D6FF, 0001,          ; Skultera
+                        D77F, 0002,          ; Sciser
+                        FFFF
 $B4:9044             db 00
 
-; Room $D433, state $D440: Enemy set name
+; Room $D433. Sandy Maridia quicksand top
 $B4:9045             db 4D,4C,32,5F,30,31,20 ; "ML2_01 "
-
-; Room $D433, state $D440: Enemy set
-$B4:904C             dw E7BF,0001, DA7F,0007, FFFF
-
+$B4:904C             dw E7BF, 0001,          ; Yapping maw
+                        DA7F, 0007,          ; Zoa
+                        FFFF
 $B4:9056             db 00
 
-; Room $D51E, state $D52B: Enemy set name
+; Room $D51E. Snail room quicksand items east
 $B4:9057             db 4D,4C,32,5F,30,36,20 ; "ML2_06 "
-
-; Room $D51E, state $D52B: Enemy set
-$B4:905E             dw DFBF,0001, FFFF
-
+$B4:905E             dw DFBF, 0001,          ; Boulder
+                        FFFF
 $B4:9064             db 00
 
-; Room $D4EF, state $D4FC: Enemy set name
+; Room $D4EF. Snail room quicksand items west
 $B4:9065             db 4D,4C,32,5F,30,35,20 ; "ML2_05 "
-
-; Room $D4EF, state $D4FC: Enemy set
-$B4:906C             dw DFBF,0001, FFFF
-
+$B4:906C             dw DFBF, 0001,          ; Boulder
+                        FFFF
 $B4:9072             db 00
 
-; Room $D9FE, state $DA0B: Enemy set name
+; Room $D9FE. Maridia cacatac room west
 $B4:9073             db 4D,4C,32,5F,32,39,20 ; "ML2_29 "
-
-; Room $D9FE, state $DA0B: Enemy set
-$B4:907A             dw CFFF,0007, DA7F,0007, FFFF
-
+$B4:907A             dw CFFF, 0007,          ; Cacatac
+                        DA7F, 0007,          ; Zoa
+                        FFFF
 $B4:9084             db 00
 
-; Room $DA2B, state $DA38: Enemy set name
+; Room $DA2B. Maridia cacatac room east
 $B4:9085             db 4D,4C,32,5F,33,30,20 ; "ML2_30 "
-
-; Room $DA2B, state $DA38: Enemy set
-$B4:908C             dw CFFF,0001, DA7F,0001, FFFF
-
+$B4:908C             dw CFFF, 0001,          ; Cacatac
+                        DA7F, 0001,          ; Zoa
+                        FFFF
 $B4:9096             db 00
 
-; Room $D017, state $D024: Enemy set name
+; Room $D017. Maridia space pirate room
 $B4:9097             db 4D,4C,31,5F,30,35,20 ; "ML1_05 "
-
-; Room $D017, state $D024: Enemy set
-$B4:909E             dw D6FF,0001, F753,0002, FFFF
-
+$B4:909E             dw D6FF, 0001,          ; Skultera
+                        F753, 0002,          ; Magenta walking space pirate
+                        FFFF
 $B4:90A8             db 00
 
-; Room $DEDE, state $DEEB: Enemy set name
+; Room $DEDE. Escape room 4
 $B4:90A9             db 54,53,31,5F,31,37,20 ; "TS1_17 "
-
-; Room $DEDE, state $DEEB: Enemy set
-$B4:90B0             dw F493,0001, F793,0002, FFFF
-
+$B4:90B0             dw F493, 0001,          ; Silver wall space pirate
+                        F793, 0002,          ; Silver walking space pirate
+                        FFFF
 $B4:90BA             db 00
 
-; Room $DE23, state $DE30: Enemy set name
+; Room $DE23. Mother Brain save station
 $B4:90BB             db 54,53,31,5F,31,33,20 ; "TS1_13 "
-
-; Room $DE23, state $DE30: Enemy set
 $B4:90C2             dw FFFF
-
 $B4:90C4             db 00
 
-; Room $DAE1, state $DAF3: Enemy set name
+; Room $DAE1, state $DAF3. Metroid room 1 - default
 $B4:90C5             db 54,53,31,5F,30,31,20 ; "TS1_01 "
-
-; Room $DAE1, state $DAF3: Enemy set
-$B4:90CC             dw DD7F,0001, D23F,0002, FFFF
-
+$B4:90CC             dw DD7F, 0001,          ; Metroid
+                        D23F, 0002,          ; Rinka
+                        FFFF
 $B4:90D6             db 00
 
-; Room $DC65, state $DC77: Enemy set name
-; Room $DC65, state $DC91: Enemy set name
+; Room $DC65. Torizo corpse room
 $B4:90D7             db 54,53,31,5F,30,36,20 ; "TS1_06 "
-
-; Room $DC65, state $DC77: Enemy set
-; Room $DC65, state $DC91: Enemy set
-$B4:90DE             dw ED3F,0001, FFFF
-
+$B4:90DE             dw ED3F, 0001,          ; Torizo corpse
+                        FFFF
 $B4:90E4             db 00
 
-; Room $DCB1, state $DCC3: Enemy set name
-; Room $DCB1, state $DCDD: Enemy set name
+; Room $DCB1. Shitroid room
 $B4:90E5             db 54,53,31,5F,30,37,20 ; "TS1_07 "
-
-; Room $DCB1, state $DCC3: Enemy set
-; Room $DCB1, state $DCDD: Enemy set
-$B4:90EC             dw ED7F,0001, EDBF,0001, EEBF,0001, FFFF
-
+$B4:90EC             dw ED7F, 0001,          ; Sidehopper corpse
+                        EDBF, 0001,          ; Sidehopper corpse
+                        EEBF, 0001,          ; Shitroid
+                        FFFF
 $B4:90FA             db 00
 
-; Room $DD58, state $DD6E: Enemy set name
-; Room $DD58, state $DD88: Enemy set name
+; Room $DD58, state $DD6E. Mother Brain - default
+; Room $DD58, state $DD88. Mother Brain - event "Mother Brain's glass is broken" is set
 $B4:90FB             db 54,53,31,5F,31,30,20 ; "TS1_10 "
-
-; Room $DD58, state $DD6E: Enemy set
-; Room $DD58, state $DD88: Enemy set
-$B4:9102             dw EC3F,0001, D23F,0002, EC7F,D001, FFFF
-
+$B4:9102             dw EC3F, 0001,          ; Mother Brain brain
+                        D23F, 0002,          ; Rinka
+                        EC7F, D001,          ; Mother Brain body
+                        FFFF
 $B4:9110             db 00
 
-; Room $DDC4, state $DDD1: Enemy set name
+; Room $DDC4. Tourian eye-door room
 $B4:9111             db 54,53,31,5F,31,31,20 ; "TS1_11 "
-
-; Room $DDC4, state $DDD1: Enemy set
 $B4:9118             dw FFFF
-
 $B4:911A             db 00
 
-; Room $DC19, state $DC2B: Enemy set name
-; Room $DC19, state $DC45: Enemy set name
+; Room $DC19. Tourian super-sidehopper room
 $B4:911B             db 54,53,31,5F,30,35,20 ; "TS1_05 "
-
-; Room $DC19, state $DC2B: Enemy set
-; Room $DC19, state $DC45: Enemy set
-$B4:9122             dw D9FF,0001, FFFF
-
+$B4:9122             dw D9FF, 0001,          ; Tourian super-sidehopper
+                        FFFF
 $B4:9128             db 00
 
-; Room $DE4D, state $DE5A: Enemy set name
+; Room $DE4D. Escape room 1
 $B4:9129             db 54,53,31,5F,31,34,20 ; "TS1_14 "
-
-; Room $DE4D, state $DE5A: Enemy set
-$B4:9130             dw D5BF,0001, FFFF
-
+$B4:9130             dw D5BF, 0001,          ; Destroyable timed shutter
+                        FFFF
 $B4:9136             db 00
 
-; Room $DAAE, state $DABB: Enemy set name
+; Room $DAAE. Tourian -> Crateria elevator
 $B4:9137             db 54,53,31,5F,30,30,20 ; "TS1_00 "
-
-; Room $DAAE, state $DABB: Enemy set
 $B4:913E             dw FFFF
-
 $B4:9140             db 00
 
-; Room $DB31, state $DB43: Enemy set name
+; Room $DB31, state $DB43. Metroid room 2 - default
 $B4:9141             db 54,53,31,5F,30,32,20 ; "TS1_02 "
-
-; Room $DB31, state $DB43: Enemy set
-$B4:9148             dw DD7F,0001, D23F,0002, FFFF
-
+$B4:9148             dw DD7F, 0001,          ; Metroid
+                        D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9152             db 00
 
-; Room $DBCD, state $DBDF: Enemy set name
+; Room $DBCD, state $DBDF. Metroid room 4 - default
 $B4:9153             db 54,53,31,5F,30,34,20 ; "TS1_04 "
-
-; Room $DBCD, state $DBDF: Enemy set
-$B4:915A             dw DD7F,0001, D23F,0002, FFFF
-
+$B4:915A             dw DD7F, 0001,          ; Metroid
+                        D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9164             db 00
 
-; Room $DAE1, state $DB0D: Enemy set name
+; Room $DAE1, state $DB0D. Metroid room 1 - event "1st metroid hall cleared" is set
 $B4:9165             db 54,53,31,5F,30,31,20 ; "TS1_01 "
-
-; Room $DAE1, state $DB0D: Enemy set
-$B4:916C             dw D23F,0002, FFFF
-
+$B4:916C             dw D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9172             db 00
 
-; Room $DB31, state $DB5D: Enemy set name
+; Room $DB31, state $DB5D. Metroid room 2 - event "1st metroid shaft cleared" is set
 $B4:9173             db 54,53,31,5F,30,32,20 ; "TS1_02 "
-
-; Room $DB31, state $DB5D: Enemy set
-$B4:917A             dw D23F,0002, FFFF
-
+$B4:917A             dw D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9180             db 00
 
-; Room $DE7A, state $DE87: Enemy set name
+; Room $DE7A. Escape room 2
 $B4:9181             db 54,53,31,5F,31,35,20 ; "TS1_15 "
-
-; Room $DE7A, state $DE87: Enemy set
-$B4:9188             dw F493,0001, FFFF
-
+$B4:9188             dw F493, 0001,          ; Silver wall space pirate
+                        FFFF
 $B4:918E             db 00
 
-; Room $DB7D, state $DBA9: Enemy set name
+; Room $DB7D, state $DBA9. Metroid room 3 - event "2nd metroid hall cleared" is set
 $B4:918F             db 54,53,31,5F,30,33,20 ; "TS1_03 "
-
-; Room $DB7D, state $DBA9: Enemy set
-$B4:9196             dw D23F,0002, FFFF
-
+$B4:9196             dw D23F, 0002,          ; Rinka
+                        FFFF
 $B4:919C             db 00
 
-; Room $DBCD, state $DBF9: Enemy set name
+; Room $DBCD, state $DBF9. Metroid room 4 - event "2nd metroid shaft cleared" is set
 $B4:919D             db 54,53,31,5F,30,34,20 ; "TS1_04 "
-
-; Room $DBCD, state $DBF9: Enemy set
-$B4:91A4             dw D23F,0002, FFFF
-
+$B4:91A4             dw D23F, 0002,          ; Rinka
+                        FFFF
 $B4:91AA             db 00
 
-; Room $DEA7, state $DEB4: Enemy set name
+; Room $DEA7. Escape room 3
 $B4:91AB             db 54,53,31,5F,31,36,20 ; "TS1_16 "
-
-; Room $DEA7, state $DEB4: Enemy set
-$B4:91B2             dw F793,0001, D4FF,0002, FFFF
-
+$B4:91B2             dw F793, 0001,          ; Silver walking space pirate
+                        D4FF, 0002,          ; Timed shutter
+                        FFFF
 $B4:91BC             db 00
 
-; Room $DCFF, state $DD0C: Enemy set name
+; Room $DCFF. Post Shitroid room
 $B4:91BD             db 54,53,31,5F,30,38,20 ; "TS1_08 "
-
-; Room $DCFF, state $DD0C: Enemy set
 $B4:91C4             dw FFFF
-
 $B4:91C6             db 00
 
-; Room $DD2E, state $DD3B: Enemy set name
+; Room $DD2E. Tourian refill station
 $B4:91C7             db 54,53,31,5F,30,39,20 ; "TS1_09 "
-
-; Room $DD2E, state $DD3B: Enemy set
 $B4:91CE             dw FFFF
-
 $B4:91D0             db 00
 
-; Unused enemy set name
+; Unused
 $B4:91D1             db 54,53,31,5F,30,37,20 ; "TS1_07 "
-
-; Unused enemy set
-$B4:91D8             dw ED7F,0001, EDBF,0001, EEBF,0001, FFFF
-
+$B4:91D8             dw ED7F, 0001,          ; Sidehopper corpse
+                        EDBF, 0001,          ; Sidehopper corpse
+                        EEBF, 0001,          ; Shitroid
+                        FFFF
 $B4:91E6             db 00
 
-; Room $DF1B, state $DF28: Enemy set name
+; Room $DF1B. Tourian elevator save station
 $B4:91E7             db 54,53,31,5F,31,38,20 ; "TS1_18 "
-
-; Room $DF1B, state $DF28: Enemy set
 $B4:91EE             dw FFFF
-
 $B4:91F0             db 00
 
-; Room $DB7D, state $DB8F: Enemy set name
+; Room $DB7D, state $DB8F. Metroid room 3 - default
 $B4:91F1             db 54,53,31,5F,30,33,20 ; "TS1_03 "
-
-; Room $DB7D, state $DB8F: Enemy set
-$B4:91F8             dw DD7F,0001, D23F,0002, FFFF
-
+$B4:91F8             dw DD7F, 0001,          ; Metroid
+                        D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9202             db 00
 
-; Room $DDF3, state $DE00: Enemy set name
+; Room $DDF3. Pre Mother Brain shaft
 $B4:9203             db 54,53,31,5F,31,32,20 ; "TS1_12 "
-
-; Room $DDF3, state $DE00: Enemy set
-$B4:920A             dw D23F,0002, FFFF
-
+$B4:920A             dw D23F, 0002,          ; Rinka
+                        FFFF
 $B4:9210             db 00
 
-; Room $DF45, state $DF57: Enemy set name
+; Room $DF45, state $DF57. Ceres elevator shaft - default
 $B4:9211             db 63,6C,31,5F,30,30,20 ; "cl1_00 "
-
-; Room $DF45, state $DF57: Enemy set
-$B4:9218             dw E23F,D002, FFFF
-
+$B4:9218             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:921E             db 00
 
-; Room $DF8D, state $DF9F: Enemy set name
+; Room $DF8D, state $DF9F. Ceres pre elevator hall - default
 $B4:921F             db 63,6C,31,5F,30,31,20 ; "cl1_01 "
-
-; Room $DF8D, state $DF9F: Enemy set
-$B4:9226             dw E23F,D002, FFFF
-
+$B4:9226             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:922C             db 00
 
-; Room $DFD7, state $DFE9: Enemy set name
+; Room $DFD7, state $DFE9. Ceres stairs - default
 $B4:922D             db 63,6C,31,5F,30,32,20 ; "cl1_02 "
-
-; Room $DFD7, state $DFE9: Enemy set
-$B4:9234             dw E23F,D002, FFFF
-
+$B4:9234             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:923A             db 00
 
-; Room $E021, state $E033: Enemy set name
+; Room $E021, state $E033. Ceres baby metroid hall - default
 $B4:923B             db 63,6C,31,5F,30,33,20 ; "cl1_03 "
-
-; Room $E021, state $E033: Enemy set
-$B4:9242             dw E23F,D002, FFFF
-
+$B4:9242             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9248             db 00
 
-; Room $E06B, state $E07D: Enemy set name
+; Room $E06B, state $E07D. Pre Ceres Ridley hall - default
 $B4:9249             db 63,6C,31,5F,30,34,20 ; "cl1_04 "
-
-; Room $E06B, state $E07D: Enemy set
-$B4:9250             dw E23F,D002, FFFF
-
+$B4:9250             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9256             db 00
 
-; Room $E0B5, state $E0C7: Enemy set name
+; Room $E0B5, state $E0C7. Ceres Ridley - default
 $B4:9257             db 63,6C,31,5F,30,35,20 ; "cl1_05 "
-
-; Room $E0B5, state $E0C7: Enemy set
-$B4:925E             dw E13F,0001, E23F,D002, FFFF
-
+$B4:925E             dw E13F, 0001,          ; Ceres Ridley
+                        E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9268             db 00
 
-; Room $DF45, state $DF71: Enemy set name
+; Room $DF45, state $DF71. Ceres elevator shaft - main area boss is dead
 $B4:9269             db 63,6C,31,5F,30,30,20 ; "cl1_00 "
-
-; Room $DF45, state $DF71: Enemy set
-$B4:9270             dw E23F,D002, FFFF
-
+$B4:9270             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9276             db 00
 
-; Room $DF8D, state $DFB9: Enemy set name
+; Room $DF8D, state $DFB9. Ceres pre elevator hall - main area boss is dead
 $B4:9277             db 63,6C,31,5F,30,31,20 ; "cl1_01 "
-
-; Room $DF8D, state $DFB9: Enemy set
-$B4:927E             dw E23F,D002, FFFF
-
+$B4:927E             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9284             db 00
 
-; Room $DFD7, state $E003: Enemy set name
+; Room $DFD7, state $E003. Ceres stairs - main area boss is dead
 $B4:9285             db 63,6C,31,5F,30,32,20 ; "cl1_02 "
-
-; Room $DFD7, state $E003: Enemy set
-$B4:928C             dw E23F,D002, FFFF
-
+$B4:928C             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:9292             db 00
 
-; Room $E021, state $E04D: Enemy set name
+; Room $E021, state $E04D. Ceres baby metroid hall - main area boss is dead
 $B4:9293             db 63,6C,31,5F,30,33,20 ; "cl1_03 "
-
-; Room $E021, state $E04D: Enemy set
-$B4:929A             dw E23F,D002, FFFF
-
+$B4:929A             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:92A0             db 00
 
-; Room $E06B, state $E097: Enemy set name
+; Room $E06B, state $E097. Pre Ceres Ridley hall - main area boss is dead
 $B4:92A1             db 63,6C,31,5F,30,34,20 ; "cl1_04 "
-
-; Room $E06B, state $E097: Enemy set
-$B4:92A8             dw E23F,D002, FFFF
-
+$B4:92A8             dw E23F, D002,          ; Ceres door
+                        FFFF
 $B4:92AE             db 00
 
-; Room $E0B5, state $E0E1: Enemy set name
+; Room $E0B5, state $E0E1. Ceres Ridley - main area boss is dead
 $B4:92AF             db 63,6C,31,5F,30,35,20 ; "cl1_05 "
+$B4:92B6             dw E23F, D002,          ; Ceres door
+                        FFFF
 
-; Room $E0B5, state $E0E1: Enemy set
-$B4:92B6             dw E23F,D002, FFFF
-
-; Room $E82C, state $E839: Enemy set name
+; Room $E82C. Debug room
 $B4:92BC             db 00,54,54,5F,30,30,20 ; " TT_00 "
-
-; Room $E82C, state $E839: Enemy set
 $B4:92C3             dw FFFF
-
 $B4:92C5             db 00
 }
 
