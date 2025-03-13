@@ -153,9 +153,9 @@ $81:80F1 AD 18 D9    LDA $D918  [$7E:D918]  ;\
 $81:80F4 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [SRAM area index]
 $81:80F7 7A          PLY
 $81:80F8 FA          PLX
-$81:80F9 18          CLC                    ; Return carry clear
-$81:80FA AB          PLB
-$81:80FB 6B          RTL                    ; Return
+$81:80F9 18          CLC                    ;\
+$81:80FA AB          PLB                    ;} Return carry clear
+$81:80FB 6B          RTL                    ;/
 
 ; BRANCH_CORRUPT
 $81:80FC 64 14       STZ $14    [$7E:0014]  ; $14 = 0
@@ -180,9 +180,9 @@ $81:8120 8D 8B 07    STA $078B  [$7E:078B]  ;} Load station index = 0
 $81:8123 8D 9F 07    STA $079F  [$7E:079F]  ; Area index = Crateria
 $81:8126 7A          PLY
 $81:8127 FA          PLX
-$81:8128 38          SEC                    ; Return carry set
-$81:8129 AB          PLB
-$81:812A 6B          RTL
+$81:8128 38          SEC                    ;\
+$81:8129 AB          PLB                    ;} Return carry set
+$81:812A 6B          RTL                    ;/
 }
 
 
