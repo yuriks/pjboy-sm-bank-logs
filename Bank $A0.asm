@@ -5903,7 +5903,6 @@ $A0:AE4F 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $A0:AE53 10 03       BPL $03    [$AE58]     ;} If Samus is above enemy:
 $A0:AE55 A0 00 00    LDY #$0000             ; Y = 0
 
-
 $A0:AE58 98          TYA                    ; A = [Y]
 $A0:AE59 6B          RTL                    ; Return
 
