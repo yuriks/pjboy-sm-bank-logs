@@ -261,7 +261,7 @@ $A0:809B 6B          RTL
 }
 
 
-;;; $809C: Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
+;;; $809C: Unused. Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
 {
 $A0:809C B9 00 00    LDA $0000,y
 $A0:809F 85 12       STA $12    [$7E:0012]
@@ -331,7 +331,7 @@ $A0:80F1 6B          RTL
 }
 
 
-;;; $80F2: Instruction - go to [[Y]] + ±[[Y]] ;;;
+;;; $80F2: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
 $A0:80F2 84 12       STY $12    [$7E:0012]
 $A0:80F4 88          DEY
@@ -350,7 +350,7 @@ $A0:8107 6B          RTL
 }
 
 
-;;; $8108: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
+;;; $8108: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
 $A0:8108 DE 90 0F    DEC $0F90,x
 $A0:810B D0 E0       BNE $E0    [$80ED]
@@ -370,7 +370,7 @@ $A0:8117 6B          RTL
 }
 
 
-;;; $8118: Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
+;;; $8118: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
 $A0:8118 E2 20       SEP #$20
 $A0:811A DE 90 0F    DEC $0F90,x
@@ -391,7 +391,7 @@ $A0:812B 6B          RTL
 }
 
 
-;;; $812C: Instruction - skip next instruction ;;;
+;;; $812C: Unused. Instruction - skip next instruction ;;;
 {
 $A0:812C C8          INY
 $A0:812D C8          INY
