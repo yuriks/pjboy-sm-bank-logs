@@ -560,7 +560,7 @@ $83:88EC             dx 0000, FFFF,FFFF, 0000, 00, 02, 02,1E, 01, 00,00, 02
 ;                       |     |   |   |  |   |  |    _________ 8: Distance from door to spawn Samus
 ;                       |     |   |   |  |   |  |   |      ___ Ah: Custom door ASM to execute (bank $8F)
 ;                       |     |   |   |  |   |  |   |     |
-;                       rrrr  ee  oo  xx yy  XX YY  dddd  aaaa
+;                       rrrr, ee, oo, xx,yy, XX,YY, dddd, aaaa
 
 ; Room $94CC, door 2. Crateria -> Maridia elevator
 ; Room $962A, door 2. Crateria -> Red Brinstar elevator

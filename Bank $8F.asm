@@ -1,542 +1,1231 @@
 ;;; $8000: PLM populations ;;;
 {
-; Room $91F8, state $9213: PLM
-; Room $91F8, state $922D: PLM
-; Room $91F8, state $9247: PLM
-$8F:8000             dx B703,1E,28,92B0, B647,1E,27,8000, B647,1E,26,8000, B647,1E,25,8000, C872,8E,46,0000, C85A,8E,16,0001, 0000
+;                        ________________ 0: PLM ID. 0 = terminator
+;                       |      __________ 2: X position in blocks
+;                       |     |   _______ 3: Y position in blocks
+;                       |     |  |    ___ 4: Parameter
+;                       |     |  |   |
+;                       rrrr, xx,yy, pppp
 
-; Room $91F8, state $9261: PLM
-$8F:8026             dx B703,1E,28,92B0, B647,1E,27,8000, B647,1E,26,8000, B647,1E,25,8000, DB44,08,08,0008, C848,01,26,9002, C842,8E,46,9003, C842,8E,16,9004, 0000
+; Room $91F8, state $9213. Landing site - default
+; Room $91F8, state $922D. Landing site - event "Zebes is awake" is set
+; Room $91F8, state $9247. Landing site - power bombs have been collected
+$8F:8000             dx B703, 1E,28, 92B0, ; Scroll PLM
+                        B647, 1E,27, 8000, ; Upwards extension
+                        B647, 1E,26, 8000, ; Upwards extension
+                        B647, 1E,25, 8000, ; Upwards extension
+                        C872, 8E,46, 0000, ; Door. Green door facing left
+                        C85A, 8E,16, 0001, ; Door. Yellow door facing left
+                        0000
 
-; Room $92B3, state $92C5: PLM
-; Room $92B3, state $92DF: PLM
+; Room $91F8, state $9261. Landing site - event "Zebes timebomb set" is set
+$8F:8026             dx B703, 1E,28, 92B0, ; Scroll PLM
+                        B647, 1E,27, 8000, ; Upwards extension
+                        B647, 1E,26, 8000, ; Upwards extension
+                        B647, 1E,25, 8000, ; Upwards extension
+                        DB44, 08,08, 0008, ; Sets Metroids cleared states when required
+                        C848, 01,26, 9002, ; Door. Grey door facing right
+                        C842, 8E,46, 9003, ; Door. Grey door facing left
+                        C842, 8E,16, 9004, ; Door. Grey door facing left
+                        0000
+
+; Room $92B3. Gauntlet east
 $8F:8058             dx 0000
 
-; Room $92FD, state $9314: PLM
-; Room $92FD, state $932E: PLM
-$8F:805A             dx B703,3F,0B,9389, B703,43,0B,938C, B703,16,0D,938F, B63B,17,0D,8000, B63B,18,0D,8000, B63B,19,0D,8000, B703,16,0B,9396, B63B,17,0B,8000, B63B,18,0B,8000, B63B,19,0B,8000, B703,0E,09,9399, B647,0E,08,8000, B647,0E,07,8000, B703,1C,0A,939C, B647,1C,09,8000, B647,1C,08,8000, B647,1C,07,8000, B647,1C,06,8000, B647,1C,05,8000, B703,32,0B,939F, B703,3C,0B,939F, B703,3A,11,93A2, B63B,3B,11,8000, B63B,3C,11,8000, B63B,3D,11,8000, B63B,3E,11,8000, B703,34,0E,93A5, C88A,1E,36,0005, 0000
+; Room $92FD, state $9314. Crateria mainstreet - default
+; Room $92FD, state $932E. Crateria mainstreet - event "Zebes is awake" is set
+$8F:805A             dx B703, 3F,0B, 9389, ; Scroll PLM
+                        B703, 43,0B, 938C, ; Scroll PLM
+                        B703, 16,0D, 938F, ; Scroll PLM
+                        B63B, 17,0D, 8000, ; Rightwards extension
+                        B63B, 18,0D, 8000, ; Rightwards extension
+                        B63B, 19,0D, 8000, ; Rightwards extension
+                        B703, 16,0B, 9396, ; Scroll PLM
+                        B63B, 17,0B, 8000, ; Rightwards extension
+                        B63B, 18,0B, 8000, ; Rightwards extension
+                        B63B, 19,0B, 8000, ; Rightwards extension
+                        B703, 0E,09, 9399, ; Scroll PLM
+                        B647, 0E,08, 8000, ; Upwards extension
+                        B647, 0E,07, 8000, ; Upwards extension
+                        B703, 1C,0A, 939C, ; Scroll PLM
+                        B647, 1C,09, 8000, ; Upwards extension
+                        B647, 1C,08, 8000, ; Upwards extension
+                        B647, 1C,07, 8000, ; Upwards extension
+                        B647, 1C,06, 8000, ; Upwards extension
+                        B647, 1C,05, 8000, ; Upwards extension
+                        B703, 32,0B, 939F, ; Scroll PLM
+                        B703, 3C,0B, 939F, ; Scroll PLM
+                        B703, 3A,11, 93A2, ; Scroll PLM
+                        B63B, 3B,11, 8000, ; Rightwards extension
+                        B63B, 3C,11, 8000, ; Rightwards extension
+                        B63B, 3D,11, 8000, ; Rightwards extension
+                        B63B, 3E,11, 8000, ; Rightwards extension
+                        B703, 34,0E, 93A5, ; Scroll PLM
+                        C88A, 1E,36, 0005, ; Door. Red door facing left
+                        0000
 
-; Room $92FD, state $9348: PLM
-$8F:8104             dx B703,3F,0B,9389, B703,43,0B,938C, B703,16,0D,938F, B63B,17,0D,8000, B63B,18,0D,8000, B63B,19,0D,8000, B703,16,0B,9396, B63B,17,0B,8000, B63B,18,0B,8000, B63B,19,0B,8000, B703,0E,09,9399, B647,0E,08,8000, B647,0E,07,8000, B703,1C,0A,939C, B647,1C,09,8000, B647,1C,08,8000, B647,1C,07,8000, B647,1C,06,8000, B647,1C,05,8000, B703,32,0B,939F, B703,3C,0B,939F, B703,3A,11,93A2, B63B,3B,11,8000, B63B,3C,11,8000, B63B,3D,11,8000, B63B,3E,11,8000, B703,34,0E,93A5, DB44,08,08,000A, C848,01,06,9006, C848,11,26,9007, C848,11,36,9008, C842,1E,36,9009, C84E,16,4D,900A, 0000
+; Room $92FD, state $9348. Crateria mainstreet - event "Zebes timebomb set" is set
+$8F:8104             dx B703, 3F,0B, 9389, ; Scroll PLM
+                        B703, 43,0B, 938C, ; Scroll PLM
+                        B703, 16,0D, 938F, ; Scroll PLM
+                        B63B, 17,0D, 8000, ; Rightwards extension
+                        B63B, 18,0D, 8000, ; Rightwards extension
+                        B63B, 19,0D, 8000, ; Rightwards extension
+                        B703, 16,0B, 9396, ; Scroll PLM
+                        B63B, 17,0B, 8000, ; Rightwards extension
+                        B63B, 18,0B, 8000, ; Rightwards extension
+                        B63B, 19,0B, 8000, ; Rightwards extension
+                        B703, 0E,09, 9399, ; Scroll PLM
+                        B647, 0E,08, 8000, ; Upwards extension
+                        B647, 0E,07, 8000, ; Upwards extension
+                        B703, 1C,0A, 939C, ; Scroll PLM
+                        B647, 1C,09, 8000, ; Upwards extension
+                        B647, 1C,08, 8000, ; Upwards extension
+                        B647, 1C,07, 8000, ; Upwards extension
+                        B647, 1C,06, 8000, ; Upwards extension
+                        B647, 1C,05, 8000, ; Upwards extension
+                        B703, 32,0B, 939F, ; Scroll PLM
+                        B703, 3C,0B, 939F, ; Scroll PLM
+                        B703, 3A,11, 93A2, ; Scroll PLM
+                        B63B, 3B,11, 8000, ; Rightwards extension
+                        B63B, 3C,11, 8000, ; Rightwards extension
+                        B63B, 3D,11, 8000, ; Rightwards extension
+                        B63B, 3E,11, 8000, ; Rightwards extension
+                        B703, 34,0E, 93A5, ; Scroll PLM
+                        DB44, 08,08, 000A, ; Sets Metroids cleared states when required
+                        C848, 01,06, 9006, ; Door. Grey door facing right
+                        C848, 11,26, 9007, ; Door. Grey door facing right
+                        C848, 11,36, 9008, ; Door. Grey door facing right
+                        C842, 1E,36, 9009, ; Door. Grey door facing left
+                        C84E, 16,4D, 900A, ; Door. Grey door facing up
+                        0000
 
-; Room $93AA, state $93B7: PLM
-$8F:81CC             dx EEE3,1D,07,0000, 0000
+; Room $93AA. Landing site power bombs cave
+$8F:81CC             dx EEE3, 1D,07, 0000, ; Power bomb tank
+                        0000
 
-; Room $93D5, state $93E2: PLM
-$8F:81D4             dx B76F,05,0B,0001, 0000
+; Room $93D5. Crateria save station
+$8F:81D4             dx B76F, 05,0B, 0001, ; Save station
+                        0000
 
-; Room $93FE, state $940B: PLM
-$8F:81DC             dx C842,5E,36,900B, C872,7E,46,000C, EEDB,02,5B,0001, EF83,1C,03,0002, EEDB,01,2F,0003, 0000
+; Room $93FE. Wrecked Ship entrance
+$8F:81DC             dx C842, 5E,36, 900B, ; Door. Grey door facing left
+                        C872, 7E,46, 000C, ; Door. Green door facing left
+                        EEDB, 02,5B, 0001, ; Missile tank
+                        EF83, 1C,03, 0002, ; Missile tank, shot block
+                        EEDB, 01,2F, 0003, ; Missile tank
+                        0000
 
-; Room $9461, state $946E: PLM
+; Room $9461. Pre orange zoomer hall
 $8F:81FC             dx 0000
 
-; Room $948C, state $9499: PLM
-$8F:81FE             dx B703,17,0F,94C2, B63B,18,0F,8000, B703,16,0C,94C7, B63B,17,0C,8000, B63B,18,0C,8000, B63B,19,0C,8000, C85A,2E,06,000D, C866,16,2D,000E, 0000
+; Room $948C. Pre moat room
+$8F:81FE             dx B703, 17,0F, 94C2, ; Scroll PLM
+                        B63B, 18,0F, 8000, ; Rightwards extension
+                        B703, 16,0C, 94C7, ; Scroll PLM
+                        B63B, 17,0C, 8000, ; Rightwards extension
+                        B63B, 18,0C, 8000, ; Rightwards extension
+                        B63B, 19,0C, 8000, ; Rightwards extension
+                        C85A, 2E,06, 000D, ; Door. Yellow door facing left
+                        C866, 16,2D, 000E, ; Door. Yellow door facing up
+                        0000
 
-; Room $94CC, state $94D9: PLM
-$8F:8230             dx B703,08,0D,94FA, 0000
+; Room $94CC. Crateria -> Maridia elevator
+$8F:8230             dx B703, 08,0D, 94FA, ; Scroll PLM
+                        0000
 
-; Room $94FD, state $950A: PLM
+; Room $94FD. Wrecked Ship back door
 $8F:8238             dx 0000
 
-; Room $9552, state $955F: PLM
+; Room $9552. Forgotten highway kago shaft
 $8F:823A             dx 0000
 
-; Room $957D, state $958A: PLM
+; Room $957D. Crab maze
 $8F:823C             dx 0000
 
-; Room $95A8, state $95B5: PLM
-$8F:823E             dx C866,06,0D,000F, 0000
+; Room $95A8. Forgotten highway elbow
+$8F:823E             dx C866, 06,0D, 000F, ; Door. Yellow door facing up
+                        0000
 
-; Room $95D4, state $95E1: PLM
+; Room $95D4. Crateria tube
 $8F:8246             dx 0000
 
-; Room $95FF, state $960C: PLM
-$8F:8248             dx EEDB,0E,09,0004, 0000
+; Room $95FF. Moat
+$8F:8248             dx EEDB, 0E,09, 0004, ; Missile tank
+                        0000
 
-; Room $962A, state $9637: PLM
-$8F:8250             dx B703,08,0D,9658, C86C,06,02,0010, 0000
+; Room $962A. Crateria -> Red Brinstar elevator
+$8F:8250             dx B703, 08,0D, 9658, ; Scroll PLM
+                        C86C, 06,02, 0010, ; Door. Yellow door facing down
+                        0000
 
-; Room $965B, state $9668: PLM
-$8F:825E             dx B703,54,0C,968C, EED7,53,08,0005, 0000
+; Room $965B. Gauntlet west
+$8F:825E             dx B703, 54,0C, 968C, ; Scroll PLM
+                        EED7, 53,08, 0005, ; Energy tank
+                        0000
 
-; Room $968F, state $969C: PLM
+; Room $968F. Orange zoomer hall
 $8F:826C             dx 0000
 
-; Room $96BA, state $96D1: PLM
-; Room $96BA, state $96EB: PLM
-$8F:826E             dx B703,1D,05,9747, B703,20,05,9744, B703,1D,76,974D, B703,20,76,974A, B63F,12,85,8000, B63F,13,85,8000, B647,14,85,8000, B647,14,86,8000, B647,14,87,8000, B647,14,88,8000, B703,14,89,9753, B647,0F,86,8000, B647,0F,87,8000, B647,0F,88,8000, B703,0F,89,9750, B647,0D,86,8000, B647,0D,87,8000, B647,0D,88,8000, B703,0D,89,9756, B647,08,86,8000, B647,08,87,8000, B647,08,88,8000, B703,08,89,9759, C842,2E,06,9011, C848,01,86,9012, C85A,2E,76,0013, 0000
+; Room $96BA, state $96D1. Old Tourian escape shaft - default
+; Room $96BA, state $96EB. Old Tourian escape shaft - event "Zebes is awake" is set
+$8F:826E             dx B703, 1D,05, 9747, ; Scroll PLM
+                        B703, 20,05, 9744, ; Scroll PLM
+                        B703, 1D,76, 974D, ; Scroll PLM
+                        B703, 20,76, 974A, ; Scroll PLM
+                        B63F, 12,85, 8000, ; Leftwards extension
+                        B63F, 13,85, 8000, ; Leftwards extension
+                        B647, 14,85, 8000, ; Upwards extension
+                        B647, 14,86, 8000, ; Upwards extension
+                        B647, 14,87, 8000, ; Upwards extension
+                        B647, 14,88, 8000, ; Upwards extension
+                        B703, 14,89, 9753, ; Scroll PLM
+                        B647, 0F,86, 8000, ; Upwards extension
+                        B647, 0F,87, 8000, ; Upwards extension
+                        B647, 0F,88, 8000, ; Upwards extension
+                        B703, 0F,89, 9750, ; Scroll PLM
+                        B647, 0D,86, 8000, ; Upwards extension
+                        B647, 0D,87, 8000, ; Upwards extension
+                        B647, 0D,88, 8000, ; Upwards extension
+                        B703, 0D,89, 9756, ; Scroll PLM
+                        B647, 08,86, 8000, ; Upwards extension
+                        B647, 08,87, 8000, ; Upwards extension
+                        B647, 08,88, 8000, ; Upwards extension
+                        B703, 08,89, 9759, ; Scroll PLM
+                        C842, 2E,06, 9011, ; Door. Grey door facing left
+                        C848, 01,86, 9012, ; Door. Grey door facing right
+                        C85A, 2E,76, 0013, ; Door. Yellow door facing left
+                        0000
 
-; Room $96BA, state $9705: PLM
-$8F:830C             dx B703,1D,05,9747, B703,20,05,9744, B703,1D,76,974D, B703,20,76,974A, B63F,12,85,8000, B63F,13,85,8000, B647,14,85,8000, B647,14,86,8000, B647,14,87,8000, B647,14,88,8000, B703,14,89,9753, B647,0F,86,8000, B647,0F,87,8000, B647,0F,88,8000, B703,0F,89,9750, B647,0D,86,8000, B647,0D,87,8000, B647,0D,88,8000, B703,0D,89,9756, B647,08,86,8000, B647,08,87,8000, B647,08,88,8000, B703,08,89,9759, DB44,08,08,000C, C842,2E,06,9014, C842,2E,76,9015, C842,1E,86,9016, C848,01,86,9017, 0000
+; Room $96BA, state $9705. Old Tourian escape shaft - event "Zebes timebomb set" is set
+$8F:830C             dx B703, 1D,05, 9747, ; Scroll PLM
+                        B703, 20,05, 9744, ; Scroll PLM
+                        B703, 1D,76, 974D, ; Scroll PLM
+                        B703, 20,76, 974A, ; Scroll PLM
+                        B63F, 12,85, 8000, ; Leftwards extension
+                        B63F, 13,85, 8000, ; Leftwards extension
+                        B647, 14,85, 8000, ; Upwards extension
+                        B647, 14,86, 8000, ; Upwards extension
+                        B647, 14,87, 8000, ; Upwards extension
+                        B647, 14,88, 8000, ; Upwards extension
+                        B703, 14,89, 9753, ; Scroll PLM
+                        B647, 0F,86, 8000, ; Upwards extension
+                        B647, 0F,87, 8000, ; Upwards extension
+                        B647, 0F,88, 8000, ; Upwards extension
+                        B703, 0F,89, 9750, ; Scroll PLM
+                        B647, 0D,86, 8000, ; Upwards extension
+                        B647, 0D,87, 8000, ; Upwards extension
+                        B647, 0D,88, 8000, ; Upwards extension
+                        B703, 0D,89, 9756, ; Scroll PLM
+                        B647, 08,86, 8000, ; Upwards extension
+                        B647, 08,87, 8000, ; Upwards extension
+                        B647, 08,88, 8000, ; Upwards extension
+                        B703, 08,89, 9759, ; Scroll PLM
+                        DB44, 08,08, 000C, ; Sets Metroids cleared states when required
+                        C842, 2E,06, 9014, ; Door. Grey door facing left
+                        C842, 2E,76, 9015, ; Door. Grey door facing left
+                        C842, 1E,86, 9016, ; Door. Grey door facing left
+                        C848, 01,86, 9017, ; Door. Grey door facing right
+                        0000
 
-; Room $975C, state $976D: PLM
-$8F:83B6             dx B703,04,0F,97AB, B703,06,0F,97AB, B703,05,09,97B0, C848,01,06,9018, 0000
+; Room $975C, state $976D. Old Mother Brain room - default
+$8F:83B6             dx B703, 04,0F, 97AB, ; Scroll PLM
+                        B703, 06,0F, 97AB, ; Scroll PLM
+                        B703, 05,09, 97B0, ; Scroll PLM
+                        C848, 01,06, 9018, ; Door. Grey door facing right
+                        0000
 
-; Room $975C, state $9787: PLM
-$8F:83D0             dx B703,04,0F,97AB, B703,06,0F,97AB, B703,05,09,97B0, C842,2E,06,0C19, C848,01,06,0C1A, EEDB,05,1A,0006, 0000
+; Room $975C, state $9787. Old Mother Brain room - morph ball and missiles have been collected
+$8F:83D0             dx B703, 04,0F, 97AB, ; Scroll PLM
+                        B703, 06,0F, 97AB, ; Scroll PLM
+                        B703, 05,09, 97B0, ; Scroll PLM
+                        C842, 2E,06, 0C19, ; Door. Grey door facing left
+                        C848, 01,06, 0C1A, ; Door. Grey door facing right
+                        EEDB, 05,1A, 0006, ; Missile tank
+                        0000
 
-; Room $97B5, state $97C6: PLM
-; Room $97B5, state $97E0: PLM
-$8F:83F6             dx B703,07,0D,9801, 0000
+; Room $97B5. Crateria -> Blue Brinstar elevator
+$8F:83F6             dx B703, 07,0D, 9801, ; Scroll PLM
+                        0000
 
-; Room $9804, state $981B: PLM
-; Room $9804, state $9835: PLM
-$8F:83FE             dx BAF4,01,06,081B, EF3B,0C,0A,0007, D6EA,0D,0B,0000, 0000
+; Room $9804, state $981B. Bomb Torizo - default
+; Room $9804, state $9835. Bomb Torizo - area torizo is dead
+$8F:83FE             dx BAF4, 01,06, 081B, ; Bomb torizo grey door
+                        EF3B, 0C,0A, 0007, ; Bombs, chozo orb
+                        D6EA, 0D,0B, 0000, ; Bomb Torizo's crumbling chozo
+                        0000
 
-; Room $9804, state $984F: PLM
-$8F:8412             dx DB44,08,08,000E, C848,01,06,181C, 0000
+; Room $9804, state $984F. Bomb Torizo - event "Zebes timebomb set" is set
+$8F:8412             dx DB44, 08,08, 000E, ; Sets Metroids cleared states when required
+                        C848, 01,06, 181C, ; Door. Grey door facing right
+                        0000
 
-; Room $9879, state $9890: PLM
-; Room $9879, state $98AA: PLM
-$8F:8420             dx C88A,2E,06,001D, 0000
+; Room $9879, state $9890. Pre Bomb Torizo hall - default
+; Room $9879, state $98AA. Pre Bomb Torizo hall - area torizo is dead
+$8F:8420             dx C88A, 2E,06, 001D, ; Door. Red door facing left
+                        0000
 
-; Room $9879, state $98C4: PLM
-$8F:8428             dx DB44,08,08,0010, 0000
+; Room $9879, state $98C4. Pre Bomb Torizo hall - event "Zebes timebomb set" is set
+$8F:8428             dx DB44, 08,08, 0010, ; Sets Metroids cleared states when required
+                        0000
 
-; Room $98E2, state $98EF: PLM
+; Room $98E2. Pre Crateria map station hall
 $8F:8430             dx 0000
 
-; Room $990D, state $991A: PLM
-$8F:8432             dx EED7,07,2A,0008, 0000
+; Room $990D. Crateria slope
+$8F:8432             dx EED7, 07,2A, 0008, ; Energy tank
+                        0000
 
-; Room $9938, state $9945: PLM
-$8F:843A             dx B703,07,0D,9966, 0000
+; Room $9938. Crateria -> Green Brinstar elevator
+$8F:843A             dx B703, 07,0D, 9966, ; Scroll PLM
+                        0000
 
-; Room $9969, state $9976: PLM
+; Room $9969. West Crateria kago hall
 $8F:8442             dx 0000
 
-; Room $9994, state $99A1: PLM
-$8F:8444             dx B6D3,0B,0A,8000, 0000
+; Room $9994. Crateria map station
+$8F:8444             dx B6D3, 0B,0A, 8000, ; Map station
+                        0000
 
-; Room $99BD, state $99CA: PLM
-$8F:844C             dx B703,07,43,99F3, B63B,08,43,8000, B703,09,46,99F6, B63B,0A,46,8000, EEDB,0D,1B,0009, EEDB,02,1B,000A, C88A,0E,66,001E, 0000
+; Room $99BD. Crateria space pirate shaft
+$8F:844C             dx B703, 07,43, 99F3, ; Scroll PLM
+                        B63B, 08,43, 8000, ; Rightwards extension
+                        B703, 09,46, 99F6, ; Scroll PLM
+                        B63B, 0A,46, 8000, ; Rightwards extension
+                        EEDB, 0D,1B, 0009, ; Missile tank
+                        EEDB, 02,1B, 000A, ; Missile tank
+                        C88A, 0E,66, 001E, ; Door. Red door facing left
+                        0000
 
-; Room $99F9, state $9A06: PLM
-$8F:8478             dx EEDF,3B,09,000B, 0000
+; Room $99F9. Crateria spike floor room
+$8F:8478             dx EEDF, 3B,09, 000B, ; Super missile tank
+                        0000
 
-; Room $9A44, state $9A56: PLM
+; Room $9A44, state $9A56. Crateria bomb block hall - default
 $8F:8480             dx 0000
 
-; Room $9A44, state $9A70: PLM
+; Room $9A44, state $9A70. Crateria bomb block hall - event "Zebes is awake" is set
 $8F:8482             dx 0000
 
-; Room $9A90, state $9AA2: PLM
+; Room $9A90, state $9AA2. Crateria chozo missile - default
 $8F:8484             dx 0000
 
-; Room $9A90, state $9ABC: PLM
-$8F:8486             dx EEDB,04,07,000C, 0000
+; Room $9A90, state $9ABC. Crateria chozo missile - event "Zebes is awake" is set
+$8F:8486             dx EEDB, 04,07, 000C, ; Missile tank
+                        0000
 
-; Room $9AD9, state $9AE6: PLM
-$8F:848E             dx B703,07,71,9B46, B703,10,A8,9B4B, B703,21,A8,9B4B, B703,0D,AC,9B52, B70B,06,2C,8000, EF37,3C,7A,000D, C890,01,56,001F, C890,01,46,0020, C88A,0E,46,0021, C88A,0E,66,0022, C890,01,66,0023, C842,0E,76,9024, 0000
+; Room $9AD9. Green Brinstar mainstreet
+$8F:848E             dx B703, 07,71, 9B46, ; Scroll PLM
+                        B703, 10,A8, 9B4B, ; Scroll PLM
+                        B703, 21,A8, 9B4B, ; Scroll PLM
+                        B703, 0D,AC, 9B52, ; Scroll PLM
+                        B70B, 06,2C, 8000, ; Elevator platform
+                        EF37, 3C,7A, 000D, ; Power bomb tank, chozo orb
+                        C890, 01,56, 001F, ; Door. Red door facing right
+                        C890, 01,46, 0020, ; Door. Red door facing right
+                        C88A, 0E,46, 0021, ; Door. Red door facing left
+                        C88A, 0E,66, 0022, ; Door. Red door facing left
+                        C890, 01,66, 0023, ; Door. Red door facing right
+                        C842, 0E,76, 9024, ; Door. Grey door facing left
+                        0000
 
-; Room $9B5B, state $9B68: PLM
-$8F:84D8             dx B703,17,0B,9B98, B63B,18,0B,8000, EF33,1A,87,000E, 0000
+; Room $9B5B. Spore Spawn's super missile shaft
+$8F:84D8             dx B703, 17,0B, 9B98, ; Scroll PLM
+                        B63B, 18,0B, 8000, ; Rightwards extension
+                        EF33, 1A,87, 000E, ; Super missile tank, chozo orb
+                        0000
 
-; Room $9B9D, state $9BAA: PLM
-$8F:84EC             dx C842,2E,06,0C25, 0000
+; Room $9B9D. Pre Brinstar map room hall
+$8F:84EC             dx C842, 2E,06, 0C25, ; Door. Grey door facing left
+                        0000
 
-; Room $9BC8, state $9BD5: PLM
-$8F:84F4             dx B703,29,0E,9BF9, B63B,2A,0E,8000, B63B,2B,0E,8000, B703,04,13,9C00, B703,04,0F,9BF9, C88A,2E,16,0026, EEDB,13,1B,000F, EEDF,04,06,0010, 0000
+; Room $9BC8. Early supers room
+$8F:84F4             dx B703, 29,0E, 9BF9, ; Scroll PLM
+                        B63B, 2A,0E, 8000, ; Rightwards extension
+                        B63B, 2B,0E, 8000, ; Rightwards extension
+                        B703, 04,13, 9C00, ; Scroll PLM
+                        B703, 04,0F, 9BF9, ; Scroll PLM
+                        C88A, 2E,16, 0026, ; Door. Red door facing left
+                        EEDB, 13,1B, 000F, ; Missile tank
+                        EEDF, 04,06, 0010, ; Super missile tank
+                        0000
 
-; Room $9C07, state $9C14: PLM
-$8F:8526             dx B703,0E,0B,9C32, EF7B,0B,07,0011, EF83,1E,07,0012, EEDB,19,07,0013, 0000
+; Room $9C07. Brinstar reserve tank room
+$8F:8526             dx B703, 0E,0B, 9C32, ; Scroll PLM
+                        EF7B, 0B,07, 0011, ; Reserve tank, chozo orb
+                        EF83, 1E,07, 0012, ; Missile tank, shot block
+                        EEDB, 19,07, 0013, ; Missile tank
+                        0000
 
-; Room $9C35, state $9C42: PLM
-$8F:8540             dx B6D3,05,0A,8000, 0000
+; Room $9C35. Brinstar map station
+$8F:8540             dx B6D3, 05,0A, 8000, ; Map station
+                        0000
 
-; Room $9C5E, state $9C6B: PLM
-$8F:8548             dx C878,01,26,0027, 0000
+; Room $9C5E. Fireflea room
+$8F:8548             dx C878, 01,26, 0027, ; Door. Green door facing right
+                        0000
 
-; Room $9C89, state $9C96: PLM
-$8F:8550             dx B6EB,04,0A,0014, 0000
+; Room $9C89. Green Brinstar missile station
+$8F:8550             dx B6EB, 04,0A, 0014, ; Missile station
+                        0000
 
-; Room $9CB3, state $9CC0: PLM
-$8F:8558             dx B643,45,0E,8000, B63F,45,0D,8000, B63F,46,0D,8000, B63F,47,0D,8000, B63F,48,0D,8000, B63F,49,0D,8000, B703,4A,0D,9D11, B647,40,08,8000, B647,40,09,8000, B647,40,0A,8000, B703,40,0B,9D14, B643,4B,0B,8000, B643,4B,0A,8000, B63B,4B,09,8000, B63B,4A,09,8000, B63B,49,09,8000, B63B,48,09,8000, B63B,47,09,8000, B63B,46,09,8000, B63B,45,09,8000, B647,44,09,8000, B647,44,0A,8000, B703,44,0B,9D14, 0000
+; Room $9CB3. Dachora room
+$8F:8558             dx B643, 45,0E, 8000, ; Downwards extension
+                        B63F, 45,0D, 8000, ; Leftwards extension
+                        B63F, 46,0D, 8000, ; Leftwards extension
+                        B63F, 47,0D, 8000, ; Leftwards extension
+                        B63F, 48,0D, 8000, ; Leftwards extension
+                        B63F, 49,0D, 8000, ; Leftwards extension
+                        B703, 4A,0D, 9D11, ; Scroll PLM
+                        B647, 40,08, 8000, ; Upwards extension
+                        B647, 40,09, 8000, ; Upwards extension
+                        B647, 40,0A, 8000, ; Upwards extension
+                        B703, 40,0B, 9D14, ; Scroll PLM
+                        B643, 4B,0B, 8000, ; Downwards extension
+                        B643, 4B,0A, 8000, ; Downwards extension
+                        B63B, 4B,09, 8000, ; Rightwards extension
+                        B63B, 4A,09, 8000, ; Rightwards extension
+                        B63B, 49,09, 8000, ; Rightwards extension
+                        B63B, 48,09, 8000, ; Rightwards extension
+                        B63B, 47,09, 8000, ; Rightwards extension
+                        B63B, 46,09, 8000, ; Rightwards extension
+                        B63B, 45,09, 8000, ; Rightwards extension
+                        B647, 44,09, 8000, ; Upwards extension
+                        B647, 44,0A, 8000, ; Upwards extension
+                        B703, 44,0B, 9D14, ; Scroll PLM
+                        0000
 
-; Room $9D19, state $9D26: PLM
-$8F:85E4             dx B703,2E,6B,9D84, B703,20,7A,9D8B, B703,3D,57,9D8E, B703,40,57,9D91, B703,1F,08,9D96, B703,21,08,9D99, EEDB,24,32,0015, EEDB,22,67,0016, EF3F,25,76,0017, C85A,3E,46,0028, C872,3E,66,0029, C88A,3E,06,002A, C890,01,96,002B, 0000
+; Room $9D19. Charge beam room
+$8F:85E4             dx B703, 2E,6B, 9D84, ; Scroll PLM
+                        B703, 20,7A, 9D8B, ; Scroll PLM
+                        B703, 3D,57, 9D8E, ; Scroll PLM
+                        B703, 40,57, 9D91, ; Scroll PLM
+                        B703, 1F,08, 9D96, ; Scroll PLM
+                        B703, 21,08, 9D99, ; Scroll PLM
+                        EEDB, 24,32, 0015, ; Missile tank
+                        EEDB, 22,67, 0016, ; Missile tank
+                        EF3F, 25,76, 0017, ; Charge beam, chozo orb
+                        C85A, 3E,46, 0028, ; Door. Yellow door facing left
+                        C872, 3E,66, 0029, ; Door. Green door facing left
+                        C88A, 3E,06, 002A, ; Door. Red door facing left
+                        C890, 01,96, 002B, ; Door. Red door facing right
+                        0000
 
-; Room $9D9C, state $9DA9: PLM
-$8F:8634             dx C848,01,06,0C2C, C854,36,03,0C2D, 0000
+; Room $9D9C. Pre Spore Spawn hall
+$8F:8634             dx C848, 01,06, 0C2C, ; Door. Grey door facing right
+                        C854, 36,03, 0C2D, ; Door. Grey door facing down
+                        0000
 
-; Room $9DC7, state $9DD9: PLM
-; Room $9DC7, state $9DF3: PLM
-$8F:8642             dx C87E,06,2E,002E, 0000
+; Room $9DC7. Spore Spawn
+$8F:8642             dx C87E, 06,2E, 002E, ; Door. Green door facing up
+                        0000
 
-; Room $9E11, state $9E1E: PLM
-$8F:864A             dx B703,08,0E,9E40, B703,08,0B,9E49, C842,1E,06,0C2F, EEE3,06,17,0018, 0000
+; Room $9E11. Brinstar super-sidehopper power bomb room
+$8F:864A             dx B703, 08,0E, 9E40, ; Scroll PLM
+                        B703, 08,0B, 9E49, ; Scroll PLM
+                        C842, 1E,06, 0C2F, ; Door. Grey door facing left
+                        EEE3, 06,17, 0018, ; Power bomb tank
+                        0000
 
-; Room $9E52, state $9E5F: PLM
-$8F:8664             dx C82A,64,37,8000, C836,64,37,0000, C85A,1E,06,0030, EEDB,3D,18,0019, 0000
+; Room $9E52. Brinstar diagonal room
+$8F:8664             dx C82A, 64,37, 8000, ; Downwards closed gate
+                        C836, 64,37, 0000, ; Downwards gate shotblock
+                        C85A, 1E,06, 0030, ; Door. Yellow door facing left
+                        EEDB, 3D,18, 0019, ; Missile tank
+                        0000
 
-; Room $9E9F, state $9EB1: PLM
-$8F:867E             dx B703,1F,2B,9F05, B647,08,23,8000, B647,08,24,8000, B647,08,25,8000, B647,08,26,8000, B647,08,27,8000, B647,08,28,8000, B647,08,29,8000, B647,08,2A,8000, B703,08,2B,9F08, B63B,58,21,8000, B703,57,21,9F0B, B63B,58,0A,8000, B703,57,0A,9F0B, B63B,58,26,8000, B703,57,26,9F0E, EF23,45,29,001A, 0000
+; Room $9E9F, state $9EB1. Morph ball room - default
+$8F:867E             dx B703, 1F,2B, 9F05, ; Scroll PLM
+                        B647, 08,23, 8000, ; Upwards extension
+                        B647, 08,24, 8000, ; Upwards extension
+                        B647, 08,25, 8000, ; Upwards extension
+                        B647, 08,26, 8000, ; Upwards extension
+                        B647, 08,27, 8000, ; Upwards extension
+                        B647, 08,28, 8000, ; Upwards extension
+                        B647, 08,29, 8000, ; Upwards extension
+                        B647, 08,2A, 8000, ; Upwards extension
+                        B703, 08,2B, 9F08, ; Scroll PLM
+                        B63B, 58,21, 8000, ; Rightwards extension
+                        B703, 57,21, 9F0B, ; Scroll PLM
+                        B63B, 58,0A, 8000, ; Rightwards extension
+                        B703, 57,0A, 9F0B, ; Scroll PLM
+                        B63B, 58,26, 8000, ; Rightwards extension
+                        B703, 57,26, 9F0E, ; Scroll PLM
+                        EF23, 45,29, 001A, ; Morph ball
+                        0000
 
-; Room $9E9F, state $9ECB: PLM
-$8F:86E6             dx B703,1F,2B,9F05, B647,08,23,8000, B647,08,24,8000, B647,08,25,8000, B647,08,26,8000, B647,08,27,8000, B647,08,28,8000, B647,08,29,8000, B647,08,2A,8000, B703,08,2B,9F08, B63B,58,21,8000, B703,57,21,9F0B, B63B,58,0A,8000, B703,57,0A,9F0B, B63B,58,26,8000, B703,57,26,9F0E, C848,01,26,0C31, EEE3,28,2A,001B, 0000
+; Room $9E9F, state $9ECB. Morph ball room - event "Zebes is awake" is set
+$8F:86E6             dx B703, 1F,2B, 9F05, ; Scroll PLM
+                        B647, 08,23, 8000, ; Upwards extension
+                        B647, 08,24, 8000, ; Upwards extension
+                        B647, 08,25, 8000, ; Upwards extension
+                        B647, 08,26, 8000, ; Upwards extension
+                        B647, 08,27, 8000, ; Upwards extension
+                        B647, 08,28, 8000, ; Upwards extension
+                        B647, 08,29, 8000, ; Upwards extension
+                        B647, 08,2A, 8000, ; Upwards extension
+                        B703, 08,2B, 9F08, ; Scroll PLM
+                        B63B, 58,21, 8000, ; Rightwards extension
+                        B703, 57,21, 9F0B, ; Scroll PLM
+                        B63B, 58,0A, 8000, ; Rightwards extension
+                        B703, 57,0A, 9F0B, ; Scroll PLM
+                        B63B, 58,26, 8000, ; Rightwards extension
+                        B703, 57,26, 9F0E, ; Scroll PLM
+                        C848, 01,26, 0C31, ; Door. Grey door facing right
+                        EEE3, 28,2A, 001B, ; Power bomb tank
+                        0000
 
-; Room $9F11, state $9F23: PLM
-; Room $9F11, state $9F3D: PLM
-$8F:8754             dx B703,04,0B,9F5F, B63B,05,0B,8000, B63B,06,0B,8000, B63B,07,0B,8000, B63B,08,0B,8000, B63B,09,0B,8000, B63B,0A,0B,8000, B63B,0B,0B,8000, C88A,0E,06,0032, 0000
+; Room $9F11. Old Kraid entrance
+$8F:8754             dx B703, 04,0B, 9F5F, ; Scroll PLM
+                        B63B, 05,0B, 8000, ; Rightwards extension
+                        B63B, 06,0B, 8000, ; Rightwards extension
+                        B63B, 07,0B, 8000, ; Rightwards extension
+                        B63B, 08,0B, 8000, ; Rightwards extension
+                        B63B, 09,0B, 8000, ; Rightwards extension
+                        B63B, 0A,0B, 8000, ; Rightwards extension
+                        B63B, 0B,0B, 8000, ; Rightwards extension
+                        C88A, 0E,06, 0032, ; Door. Red door facing left
+                        0000
 
-; Room $9F64, state $9F76: PLM
-; Room $9F64, state $9F90: PLM
-$8F:878C             dx B703,27,0B,9FB7, B703,27,26,9FB7, EEDB,2E,29,001C, EF7F,1C,22,001D, 0000
+; Room $9F64. Blue Brinstar ceiling e-tank hall
+$8F:878C             dx B703, 27,0B, 9FB7, ; Scroll PLM
+                        B703, 27,26, 9FB7, ; Scroll PLM
+                        EEDB, 2E,29, 001C, ; Missile tank
+                        EF7F, 1C,22, 001D, ; Energy tank, shot block
+                        0000
 
-; Room $9FBA, state $9FC7: PLM
-$8F:87A6             dx C872,5E,06,0033, 0000
+; Room $9FBA. n00b bridge
+$8F:87A6             dx C872, 5E,06, 0033, ; Door. Green door facing left
+                        0000
 
-; Room $9FE5, state $9FF2: PLM
+; Room $9FE5. Etecoon area beetom room
 $8F:87AE             dx 0000
 
-; Room $A011, state $A01E: PLM
-$8F:87B0             dx B703,07,0B,A04A, B63B,08,0B,8000, B63B,09,0B,8000, EED7,05,09,001E, C878,01,06,0034, 0000
+; Room $A011. Etecoon area spike hall
+$8F:87B0             dx B703, 07,0B, A04A, ; Scroll PLM
+                        B63B, 08,0B, 8000, ; Rightwards extension
+                        B63B, 09,0B, 8000, ; Rightwards extension
+                        EED7, 05,09, 001E, ; Energy tank
+                        C878, 01,06, 0034, ; Door. Green door facing right
+                        0000
 
-; Room $A051, state $A05E: PLM
-$8F:87D0             dx EEDF,07,09,001F, 0000
+; Room $A051. Etecoon area super missiles
+$8F:87D0             dx EEDF, 07,09, 001F, ; Super missile tank
+                        0000
 
-; Room $A07B, state $A088: PLM
-$8F:87D8             dx B6DF,04,0A,0020, 0000
+; Room $A07B. Dachora energy station
+$8F:87D8             dx B6DF, 04,0A, 0020, ; Energy station
+                        0000
 
-; Room $A0A4, state $A0B1: PLM
-$8F:87E0             dx C878,01,06,0035, 0000
+; Room $A0A4. Post Spore Spawn supers hall
+$8F:87E0             dx C878, 01,06, 0035, ; Door. Green door facing right
+                        0000
 
-; Room $A0D2, state $A0DF: PLM
-$8F:87E8             dx B647,0F,09,8000, B647,0F,0A,8000, B703,0F,0B,A104, EED7,04,09,0021, 0000
+; Room $A0D2. Pink Brinstar flooded hall
+$8F:87E8             dx B647, 0F,09, 8000, ; Upwards extension
+                        B647, 0F,0A, 8000, ; Upwards extension
+                        B703, 0F,0B, A104, ; Scroll PLM
+                        EED7, 04,09, 0021, ; Energy tank
+                        0000
 
-; Room $A107, state $A114: PLM
-$8F:8802             dx EF2F,04,07,0022, 0000
+; Room $A107. Blue Brinstar missile room
+$8F:8802             dx EF2F, 04,07, 0022, ; Missile tank, chozo orb
+                        0000
 
-; Room $A130, state $A13D: PLM
-$8F:880A             dx C82A,11,04,8000, C836,11,04,0002, C848,01,16,0C36, C842,1E,16,0C37, 0000
+; Room $A130. Brinstar wave-gate sidehopper room
+$8F:880A             dx C82A, 11,04, 8000, ; Downwards closed gate
+                        C836, 11,04, 0002, ; Downwards gate shotblock
+                        C848, 01,16, 0C36, ; Door. Grey door facing right
+                        C842, 1E,16, 0C37, ; Door. Grey door facing left
+                        0000
 
-; Room $A15B, state $A168: PLM
-$8F:8824             dx EED7,0B,09,0023, 0000
+; Room $A15B. Brinstar wave-gate energy tank
+$8F:8824             dx EED7, 0B,09, 0023, ; Energy tank
+                        0000
 
-; Room $A184, state $A191: PLM
-$8F:882C             dx B76F,05,0B,0000, 0000
+; Room $A184. Spore Spawn save station
+$8F:882C             dx B76F, 05,0B, 0000, ; Save station
+                        0000
 
-; Room $A1AD, state $A1BA: PLM
+; Room $A1AD. Blue Brinstar boulder room
 $8F:8834             dx 0000
 
-; Room $A1D8, state $A1E5: PLM
-$8F:8836             dx EEDB,07,09,0024, EF83,05,0C,0025, 0000
+; Room $A1D8. Blue Brinstar double missile room
+$8F:8836             dx EEDB, 07,09, 0024, ; Missile tank
+                        EF83, 05,0C, 0025, ; Missile tank, shot block
+                        0000
 
-; Room $A201, state $A20E: PLM
-$8F:8844             dx B76F,05,0B,0001, 0000
+; Room $A201. Green Brinstar mainstreet save station
+$8F:8844             dx B76F, 05,0B, 0001, ; Save station
+                        0000
 
-; Room $A22A, state $A237: PLM
-$8F:884C             dx B76F,05,0B,0002, 0000
+; Room $A22A. Etecoon area save station
+$8F:884C             dx B76F, 05,0B, 0002, ; Save station
+                        0000
 
-; Room $A253, state $A260: PLM
-$8F:8854             dx B703,09,6A,A28E, B63B,0A,6A,8000, C878,01,96,0038, C860,01,66,0039, 0000
+; Room $A253. Red Brinstar mainstreet
+$8F:8854             dx B703, 09,6A, A28E, ; Scroll PLM
+                        B63B, 0A,6A, 8000, ; Rightwards extension
+                        C878, 01,96, 0038, ; Door. Green door facing right
+                        C860, 01,66, 0039, ; Door. Yellow door facing right
+                        0000
 
-; Room $A293, state $A2A0: PLM
-$8F:886E             dx C890,01,06,003A, 0000
+; Room $A293. Pre x-ray spike hall
+$8F:886E             dx C890, 01,06, 003A, ; Door. Red door facing right
+                        0000
 
-; Room $A2CE, state $A2DB: PLM
-$8F:8876             dx EF63,05,07,0026, 0000
+; Room $A2CE. X-ray room
+$8F:8876             dx EF63, 05,07, 0026, ; X-ray scope, chozo orb
+                        0000
 
-; Room $A2F7, state $A304: PLM
+; Room $A2F7. Red Brinstar damage boost hall
 $8F:887E             dx 0000
 
-; Room $A322, state $A32F: PLM
-$8F:8880             dx B703,05,5E,A36F, B63B,06,5E,8000, B703,10,37,A374, B703,0D,37,A379, B70B,06,2C,8000, C82A,26,35,8000, C836,26,35,000A, C878,01,36,003B, C860,01,56,003C, C878,01,76,003D, 0000
+; Room $A322. Red Brinstar -> Crateria elevator
+$8F:8880             dx B703, 05,5E, A36F, ; Scroll PLM
+                        B63B, 06,5E, 8000, ; Rightwards extension
+                        B703, 10,37, A374, ; Scroll PLM
+                        B703, 0D,37, A379, ; Scroll PLM
+                        B70B, 06,2C, 8000, ; Elevator platform
+                        C82A, 26,35, 8000, ; Downwards closed gate
+                        C836, 26,35, 000A, ; Downwards gate shotblock
+                        C878, 01,36, 003B, ; Door. Green door facing right
+                        C860, 01,56, 003C, ; Door. Yellow door facing right
+                        C878, 01,76, 003D, ; Door. Green door facing right
+                        0000
 
-; Room $A37C, state $A389: PLM
-$8F:88BE             dx B703,07,0E,A3A9, B63B,08,0E,8000, EEE3,04,13,0027, C842,1E,06,0C3E, 0000
+; Room $A37C. Red Brinstar power bomb floor room
+$8F:88BE             dx B703, 07,0E, A3A9, ; Scroll PLM
+                        B63B, 08,0E, 8000, ; Rightwards extension
+                        EEE3, 04,13, 0027, ; Power bomb tank
+                        C842, 1E,06, 0C3E, ; Door. Grey door facing left
+                        0000
 
-; Room $A3AE, state $A3BB: PLM
-$8F:88D8             dx B647,0F,04,8000, B647,0F,05,8000, B647,0F,06,8000, B647,0F,07,8000, B647,0F,08,8000, B647,0F,09,8000, B647,0F,0A,8000, B647,0F,0B,8000, B703,0F,0C,A3DA, EF37,14,09,0028, EEDB,02,08,0029, 0000
+; Room $A3AE. Red Brinstar power bomb wall room
+$8F:88D8             dx B647, 0F,04, 8000, ; Upwards extension
+                        B647, 0F,05, 8000, ; Upwards extension
+                        B647, 0F,06, 8000, ; Upwards extension
+                        B647, 0F,07, 8000, ; Upwards extension
+                        B647, 0F,08, 8000, ; Upwards extension
+                        B647, 0F,09, 8000, ; Upwards extension
+                        B647, 0F,0A, 8000, ; Upwards extension
+                        B647, 0F,0B, 8000, ; Upwards extension
+                        B703, 0F,0C, A3DA, ; Scroll PLM
+                        EF37, 14,09, 0028, ; Power bomb tank, chozo orb
+                        EEDB, 02,08, 0029, ; Missile tank
+                        0000
 
-; Room $A3DD, state $A3EA: PLM
+; Room $A3DD. Red Brinstar skree-duo hall
 $8F:891C             dx 0000
 
-; Room $A408, state $A415: PLM
-$8F:891E             dx B703,10,11,A439, B63B,11,11,8000, B63B,12,11,8000, B63B,13,11,8000, B703,10,14,A43E, B63B,11,14,8000, B63B,12,14,8000, B63B,13,14,8000, B703,08,11,A439, B703,08,14,A43E, B703,02,11,A439, B703,02,14,A43E, C872,1E,06,003F, 0000
+; Room $A408. Pre spazer room
+$8F:891E             dx B703, 10,11, A439, ; Scroll PLM
+                        B63B, 11,11, 8000, ; Rightwards extension
+                        B63B, 12,11, 8000, ; Rightwards extension
+                        B63B, 13,11, 8000, ; Rightwards extension
+                        B703, 10,14, A43E, ; Scroll PLM
+                        B63B, 11,14, 8000, ; Rightwards extension
+                        B63B, 12,14, 8000, ; Rightwards extension
+                        B63B, 13,14, 8000, ; Rightwards extension
+                        B703, 08,11, A439, ; Scroll PLM
+                        B703, 08,14, A43E, ; Scroll PLM
+                        B703, 02,11, A439, ; Scroll PLM
+                        B703, 02,14, A43E, ; Scroll PLM
+                        C872, 1E,06, 003F, ; Door. Green door facing left
+                        0000
 
-; Room $A447, state $A454: PLM
-$8F:896E             dx EF53,0B,09,002A, 0000
+; Room $A447. Spazer room
+$8F:896E             dx EF53, 0B,09, 002A, ; Spazer beam, chozo orb
+                        0000
 
-; Room $A471, state $A47E: PLM
-$8F:8976             dx B703,02,0B,A4A2, B703,02,19,A4A9, B703,07,19,A4AE, B703,15,19,A4A9, C848,01,16,0040, 0000
+; Room $A471. Kraid's lair zeela room
+$8F:8976             dx B703, 02,0B, A4A2, ; Scroll PLM
+                        B703, 02,19, A4A9, ; Scroll PLM
+                        B703, 07,19, A4AE, ; Scroll PLM
+                        B703, 15,19, A4A9, ; Scroll PLM
+                        C848, 01,16, 0040, ; Door. Grey door facing right
+                        0000
 
-; Room $A4B1, state $A4BE: PLM
-$8F:8996             dx C842,0E,06,0C41, EF7F,05,04,002B, 0000
+; Room $A4B1. Kraid's lair beetom room
+$8F:8996             dx C842, 0E,06, 0C41, ; Door. Grey door facing left
+                        EF7F, 05,04, 002B, ; Energy tank, shot block
+                        0000
 
-; Room $A4DA, state $A4E7: PLM
-$8F:89A4             dx B703,17,0B,A50F, B703,17,0E,A514, B647,0B,04,8000, B647,0B,05,8000, B647,0B,06,8000, B647,0B,07,8000, B647,0B,08,8000, B647,0B,09,8000, B647,0B,0A,8000, B703,0B,0B,A519, B703,27,0C,A51C, B703,2E,0C,A51C, EF83,2E,08,002C, 0000
+; Room $A4DA. Kraid's lair kihunter hall
+$8F:89A4             dx B703, 17,0B, A50F, ; Scroll PLM
+                        B703, 17,0E, A514, ; Scroll PLM
+                        B647, 0B,04, 8000, ; Upwards extension
+                        B647, 0B,05, 8000, ; Upwards extension
+                        B647, 0B,06, 8000, ; Upwards extension
+                        B647, 0B,07, 8000, ; Upwards extension
+                        B647, 0B,08, 8000, ; Upwards extension
+                        B647, 0B,09, 8000, ; Upwards extension
+                        B647, 0B,0A, 8000, ; Upwards extension
+                        B703, 0B,0B, A519, ; Scroll PLM
+                        B703, 27,0C, A51C, ; Scroll PLM
+                        B703, 2E,0C, A51C, ; Scroll PLM
+                        EF83, 2E,08, 002C, ; Missile tank, shot block
+                        0000
 
-; Room $A521, state $A533: PLM
-; Room $A521, state $A54D: PLM
-$8F:89F4             dx C842,5E,06,0C42, C848,01,06,0C43, 0000
+; Room $A521. Fake Kraid's room
+$8F:89F4             dx C842, 5E,06, 0C42, ; Door. Grey door facing left
+                        C848, 01,06, 0C43, ; Door. Grey door facing right
+                        0000
 
-; Room $A56B, state $A578: PLM
-$8F:8A02             dx B703,03,12,A59C, B63B,04,12,8000, B63B,05,12,8000, C872,0E,06,0044, DB5A,1E,16,0045, DB60,1E,19,0045, DB56,1E,17,0045, 0000
+; Room $A56B. Pre Kraid room
+$8F:8A02             dx B703, 03,12, A59C, ; Scroll PLM
+                        B63B, 04,12, 8000, ; Rightwards extension
+                        B63B, 05,12, 8000, ; Rightwards extension
+                        C872, 0E,06, 0044, ; Door. Green door facing left
+                        DB5A, 1E,16, 0045, ; Door. Eye door, facing left
+                        DB60, 1E,19, 0045, ; Eye door bottom, facing left
+                        DB56, 1E,17, 0045, ; Eye door eye, facing left
+                        0000
 
-; Room $A59F, state $A5B1: PLM
-; Room $A59F, state $A5CB: PLM
-$8F:8A2E             dx C842,1E,16,0046, C848,01,16,0047, 0000
+; Room $A59F. Kraid
+$8F:8A2E             dx C842, 1E,16, 0046, ; Door. Grey door facing left
+                        C848, 01,16, 0047, ; Door. Grey door facing right
+                        0000
 
-; Room $A5ED, state $A5FA: PLM
+; Room $A5ED. Pre Tourian entrance hall
 $8F:8A3C             dx 0000
 
-; Room $A618, state $A625: PLM
-$8F:8A3E             dx B6DF,04,0A,002D, 0000
+; Room $A618. Red Brinstar energy station
+$8F:8A3E             dx B6DF, 04,0A, 002D, ; Energy station
+                        0000
 
-; Room $A641, state $A64E: PLM
-$8F:8A46             dx B6EB,09,0A,002E, B6DF,07,0A,002F, 0000
+; Room $A641. Kraid's lair refill station
+$8F:8A46             dx B6EB, 09,0A, 002E, ; Missile station
+                        B6DF, 07,0A, 002F, ; Energy station
+                        0000
 
-; Room $A66A, state $A677: PLM
-$8F:8A54             dx C848,01,06,9448, 0000
+; Room $A66A. Tourian entrance
+$8F:8A54             dx C848, 01,06, 9448, ; Door. Grey door facing right
+                        0000
 
-; Room $A6A1, state $A6AE: PLM
-$8F:8A5C             dx B703,07,0C,A6D6, B63B,08,0C,8000, B703,10,09,A6D9, B647,10,08,8000, B647,10,07,8000, B703,12,09,A6DC, B647,12,08,8000, B647,12,07,8000, B647,12,06,8000, B703,13,0B,A6DF, B63B,14,0B,8000, B647,14,0A,8000, B647,14,09,8000, B647,14,08,8000, B647,14,07,8000, B647,14,06,8000, B647,14,05,8000, B647,14,04,8000, 0000
+; Room $A6A1. Kraid's lair entrance
+$8F:8A5C             dx B703, 07,0C, A6D6, ; Scroll PLM
+                        B63B, 08,0C, 8000, ; Rightwards extension
+                        B703, 10,09, A6D9, ; Scroll PLM
+                        B647, 10,08, 8000, ; Upwards extension
+                        B647, 10,07, 8000, ; Upwards extension
+                        B703, 12,09, A6DC, ; Scroll PLM
+                        B647, 12,08, 8000, ; Upwards extension
+                        B647, 12,07, 8000, ; Upwards extension
+                        B647, 12,06, 8000, ; Upwards extension
+                        B703, 13,0B, A6DF, ; Scroll PLM
+                        B63B, 14,0B, 8000, ; Rightwards extension
+                        B647, 14,0A, 8000, ; Upwards extension
+                        B647, 14,09, 8000, ; Upwards extension
+                        B647, 14,08, 8000, ; Upwards extension
+                        B647, 14,07, 8000, ; Upwards extension
+                        B647, 14,06, 8000, ; Upwards extension
+                        B647, 14,05, 8000, ; Upwards extension
+                        B647, 14,04, 8000, ; Upwards extension
+                        0000
 
-; Room $A6E2, state $A6EF: PLM
-$8F:8ACA             dx EF5B,07,09,0030, 0000
+; Room $A6E2. Varia suit room
+$8F:8ACA             dx EF5B, 07,09, 0030, ; Varia suit, chozo orb
+                        0000
 
-; Room $A70B, state $A718: PLM
-$8F:8AD2             dx B76F,07,0B,0003, 0000
+; Room $A70B. Kraid's lair save station
+$8F:8AD2             dx B76F, 07,0B, 0003, ; Save station
+                        0000
 
-; Room $A734, state $A741: PLM
-$8F:8ADA             dx B76F,07,0B,0004, 0000
+; Room $A734. Red Brinstar save station
+$8F:8ADA             dx B76F, 07,0B, 0004, ; Save station
+                        0000
 
-; Room $A75D, state $A76A: PLM
+; Room $A75D. Ice beam tripper hall
 $8F:8AE2             dx 0000
 
-; Room $A788, state $A795: PLM
-$8F:8AE4             dx EF83,22,1C,0031, C872,2E,16,0049, 0000
+; Room $A788. Lava missile room
+$8F:8AE4             dx EF83, 22,1C, 0031, ; Missile tank, shot block
+                        C872, 2E,16, 0049, ; Door. Green door facing left
+                        0000
 
-; Room $A7B3, state $A7C0: PLM
-$8F:8AF2             dx C88A,2E,06,004A, 0000
+; Room $A7B3. First hot room
+$8F:8AF2             dx C88A, 2E,06, 004A, ; Door. Red door facing left
+                        0000
 
-; Room $A7DE, state $A7EB: PLM
-$8F:8AFA             dx B70B,06,2C,8000, C878,01,36,004B, C860,01,46,004C, C890,01,56,004D, 0000
+; Room $A7DE. Norfair mainstreet
+$8F:8AFA             dx B70B, 06,2C, 8000, ; Elevator platform
+                        C878, 01,36, 004B, ; Door. Green door facing right
+                        C860, 01,46, 004C, ; Door. Yellow door facing right
+                        C890, 01,56, 004D, ; Door. Red door facing right
+                        0000
 
-; Room $A815, state $A822: PLM
-$8F:8B14             dx B703,37,2D,A860, B63B,38,2D,8000, 0000
+; Room $A815. Ice beam mockball hall
+$8F:8B14             dx B703, 37,2D, A860, ; Scroll PLM
+                        B63B, 38,2D, 8000, ; Rightwards extension
+                        0000
 
-; Room $A865, state $A872: PLM
+; Room $A865. Ice beam practice room
 $8F:8B22             dx 0000
 
-; Room $A890, state $A89D: PLM
-$8F:8B24             dx EF43,0C,07,0032, 0000
+; Room $A890. Ice beam room
+$8F:8B24             dx EF43, 0C,07, 0032, ; Ice beam, chozo orb
+                        0000
 
-; Room $A8B9, state $A8C6: PLM
-$8F:8B2C             dx B703,0F,17,A8EC, B703,0D,17,A8EF, B703,11,17,A8F2, B703,13,17,A8F5, 0000
+; Room $A8B9. Pre ice beam shaft
+$8F:8B2C             dx B703, 0F,17, A8EC, ; Scroll PLM
+                        B703, 0D,17, A8EF, ; Scroll PLM
+                        B703, 11,17, A8F2, ; Scroll PLM
+                        B703, 13,17, A8F5, ; Scroll PLM
+                        0000
 
-; Room $A8F8, state $A905: PLM
-$8F:8B46             dx EF83,01,08,0033, 0000
+; Room $A8F8. Crumble block platform shaft
+$8F:8B46             dx EF83, 01,08, 0033, ; Missile tank, shot block
+                        0000
 
-; Room $A923, state $A930: PLM
-$8F:8B4E             dx B703,9E,28,A980, B647,9E,27,8000, B647,9E,26,8000, B647,9E,25,8000, B647,9E,24,8000, B703,BE,29,A987, B647,BE,28,8000, B647,BE,27,8000, B703,C2,29,A98A, B647,C2,28,8000, B647,C2,27,8000, B647,C2,26,8000, C87E,C6,2D,004E, 0000
+; Room $A923. Norfair slope
+$8F:8B4E             dx B703, 9E,28, A980, ; Scroll PLM
+                        B647, 9E,27, 8000, ; Upwards extension
+                        B647, 9E,26, 8000, ; Upwards extension
+                        B647, 9E,25, 8000, ; Upwards extension
+                        B647, 9E,24, 8000, ; Upwards extension
+                        B703, BE,29, A987, ; Scroll PLM
+                        B647, BE,28, 8000, ; Upwards extension
+                        B647, BE,27, 8000, ; Upwards extension
+                        B703, C2,29, A98A, ; Scroll PLM
+                        B647, C2,28, 8000, ; Upwards extension
+                        B647, C2,27, 8000, ; Upwards extension
+                        B647, C2,26, 8000, ; Upwards extension
+                        C87E, C6,2D, 004E, ; Door. Green door facing up
+                        0000
 
-; Room $A98D, state $A99F: PLM
-; Room $A98D, state $A9B9: PLM
-$8F:8B9E             dx C854,36,02,044F, EED7,7D,06,0034, 0000
+; Room $A98D. Crocomire
+$8F:8B9E             dx C854, 36,02, 044F, ; Door. Grey door facing down
+                        EED7, 7D,06, 0034, ; Energy tank
+                        0000
 
-; Room $A9E5, state $A9F2: PLM
-$8F:8BAC             dx EF47,03,0A,0035, 0000
+; Room $A9E5. Hi-jump room
+$8F:8BAC             dx EF47, 03,0A, 0035, ; Hi-jump, chozo orb
+                        0000
 
-; Room $AA0E, state $AA1B: PLM
-$8F:8BB4             dx C82A,06,05,8000, C836,06,05,000A, EEDB,0D,09,0036, 0000
+; Room $AA0E. Norfair grapple ceiling room
+$8F:8BB4             dx C82A, 06,05, 8000, ; Downwards closed gate
+                        C836, 06,05, 000A, ; Downwards gate shotblock
+                        EEDB, 0D,09, 0036, ; Missile tank
+                        0000
 
-; Room $AA41, state $AA4E: PLM
-$8F:8BC8             dx B703,10,0C,AA75, B703,0F,05,AA70, B703,08,1C,AA7C, B703,0B,12,AA7F, C842,1E,06,0C50, EEDB,09,06,0037, EED7,17,08,0038, 0000
+; Room $AA41. Pre hi-jump room
+$8F:8BC8             dx B703, 10,0C, AA75, ; Scroll PLM
+                        B703, 0F,05, AA70, ; Scroll PLM
+                        B703, 08,1C, AA7C, ; Scroll PLM
+                        B703, 0B,12, AA7F, ; Scroll PLM
+                        C842, 1E,06, 0C50, ; Door. Grey door facing left
+                        EEDB, 09,06, 0037, ; Missile tank
+                        EED7, 17,08, 0038, ; Energy tank
+                        0000
 
-; Room $AA82, state $AA8F: PLM
-$8F:8BF4             dx C890,01,06,0051, 0000
+; Room $AA82. Post Crocomire room
+$8F:8BF4             dx C890, 01,06, 0051, ; Door. Red door facing right
+                        0000
 
-; Room $AAB5, state $AAC2: PLM
-$8F:8BFC             dx B76F,07,0B,0000, 0000
+; Room $AAB5. Post Crocomire save station
+$8F:8BFC             dx B76F, 07,0B, 0000, ; Save station
+                        0000
 
-; Room $AADE, state $AAEB: PLM
-$8F:8C04             dx EEE3,07,08,0039, 0000
+; Room $AADE. Post Crocomire power bombs room
+$8F:8C04             dx EEE3, 07,08, 0039, ; Power bomb tank
+                        0000
 
-; Room $AB07, state $AB14: PLM
-$8F:8C0C             dx C88A,0E,36,0052, 0000
+; Room $AB07. Post Crocomire shaft
+$8F:8C0C             dx C88A, 0E,36, 0052, ; Door. Red door facing left
+                        0000
 
-; Room $AB3B, state $AB48: PLM
-$8F:8C14             dx EEDB,3C,09,003A, 0000
+; Room $AB3B. Post Crocomire tidal acid cave
+$8F:8C14             dx EEDB, 3C,09, 003A, ; Missile tank
+                        0000
 
-; Room $AB64, state $AB71: PLM
-$8F:8C1C             dx C82A,2A,05,8000, C836,2A,05,0008, 0000
+; Room $AB64. Double lake grapple practice room
+$8F:8C1C             dx C82A, 2A,05, 8000, ; Downwards closed gate
+                        C836, 2A,05, 0008, ; Downwards gate shotblock
+                        0000
 
-; Room $AB8F, state $AB9C: PLM
-$8F:8C2A             dx EEDB,43,09,003B, 0000
+; Room $AB8F. Huge jump room
+$8F:8C2A             dx EEDB, 43,09, 003B, ; Missile tank
+                        0000
 
-; Room $ABD2, state $ABDF: PLM
+; Room $ABD2. Grapple practice shaft
 $8F:8C32             dx 0000
 
-; Room $AC00, state $AC0D: PLM
+; Room $AC00. Single lake grapple practice room
 $8F:8C34             dx 0000
 
-; Room $AC2B, state $AC38: PLM
-$8F:8C36             dx EF6B,04,27,003C, 0000
+; Room $AC2B. Grapple room
+$8F:8C36             dx EF6B, 04,27, 003C, ; Grapple beam, chozo orb
+                        0000
 
-; Room $AC5A, state $AC67: PLM
-$8F:8C3E             dx EF7B,02,07,003D, EF83,07,0B,003E, 0000
+; Room $AC5A. Bubble Norfair reserve tank room
+$8F:8C3E             dx EF7B, 02,07, 003D, ; Reserve tank, chozo orb
+                        EF83, 07,0B, 003E, ; Missile tank, shot block
+                        0000
 
-; Room $AC83, state $AC90: PLM
-$8F:8C4C             dx B703,10,05,ACB0, EEDB,14,0A,003F, 0000
+; Room $AC83. Pre Bubble Norfair reserve tank room
+$8F:8C4C             dx B703, 10,05, ACB0, ; Scroll PLM
+                        EEDB, 14,0A, 003F, ; Missile tank
+                        0000
 
-; Room $ACB3, state $ACC0: PLM
-$8F:8C5A             dx C878,01,06,0053, C872,1E,06,0054, EEDB,14,3C,0040, 0000
+; Room $ACB3. Bubble Norfair mainstreet
+$8F:8C5A             dx C878, 01,06, 0053, ; Door. Green door facing right
+                        C872, 1E,06, 0054, ; Door. Green door facing left
+                        EEDB, 14,3C, 0040, ; Missile tank
+                        0000
 
-; Room $ACF0, state $ACFD: PLM
-$8F:8C6E             dx B8AC,00,00,8000, EF83,BC,13,0041, C88A,BE,16,0055, 0000
+; Room $ACF0. Speed booster lavaquake
+$8F:8C6E             dx B8AC, 00,00, 8000, ; Speed booster escape
+                        EF83, BC,13, 0041, ; Missile tank, shot block
+                        C88A, BE,16, 0055, ; Door. Red door facing left
+                        0000
 
-; Room $AD1B, state $AD28: PLM
-$8F:8C82             dx EF4B,0B,06,0042, 0000
+; Room $AD1B. Speed booster room
+$8F:8C82             dx EF4B, 0B,06, 0042, ; Speed booster, chozo orb
+                        0000
 
-; Room $AD5E, state $AD6B: PLM
-$8F:8C8A             dx B703,0D,08,ADA7, B703,10,08,ADAA, B647,4D,0A,8000, B647,4D,0B,8000, B703,4D,0C,ADAA, C88A,0E,16,0056, 0000
+; Room $AD5E. Alcoon shaft
+$8F:8C8A             dx B703, 0D,08, ADA7, ; Scroll PLM
+                        B703, 10,08, ADAA, ; Scroll PLM
+                        B647, 4D,0A, 8000, ; Upwards extension
+                        B647, 4D,0B, 8000, ; Upwards extension
+                        B703, 4D,0C, ADAA, ; Scroll PLM
+                        C88A, 0E,16, 0056, ; Door. Red door facing left
+                        0000
 
-; Room $ADAD, state $ADBA: PLM
-$8F:8CB0             dx C82A,1A,05,8000, C836,1A,05,0000, EEDB,1F,09,0043, C88A,3E,06,0057, 0000
+; Room $ADAD. Pre wave beam room
+$8F:8CB0             dx C82A, 1A,05, 8000, ; Downwards closed gate
+                        C836, 1A,05, 0000, ; Downwards gate shotblock
+                        EEDB, 1F,09, 0043, ; Missile tank
+                        C88A, 3E,06, 0057, ; Door. Red door facing left
+                        0000
 
-; Room $ADDE, state $ADEB: PLM
-$8F:8CCA             dx EF4F,0B,06,0044, 0000
+; Room $ADDE. Wave beam room
+$8F:8CCA             dx EF4F, 0B,06, 0044, ; Wave beam, chozo orb
+                        0000
 
-; Room $AE07, state $AE14: PLM
+; Room $AE07. Norfair sinking tripper hall
 $8F:8CD2             dx 0000
 
-; Room $AE32, state $AE3F: PLM
-$8F:8CD4             dx B703,20,29,AE66, B703,1F,29,AE6B, B647,19,24,8000, B647,19,25,8000, B647,19,26,8000, B647,19,27,8000, B647,19,28,8000, B703,19,29,AE6E, B647,26,26,8000, B647,26,27,8000, B647,26,28,8000, B703,26,29,AE71, 0000
+; Room $AE32. Volcano room
+$8F:8CD4             dx B703, 20,29, AE66, ; Scroll PLM
+                        B703, 1F,29, AE6B, ; Scroll PLM
+                        B647, 19,24, 8000, ; Upwards extension
+                        B647, 19,25, 8000, ; Upwards extension
+                        B647, 19,26, 8000, ; Upwards extension
+                        B647, 19,27, 8000, ; Upwards extension
+                        B647, 19,28, 8000, ; Upwards extension
+                        B703, 19,29, AE6E, ; Scroll PLM
+                        B647, 26,26, 8000, ; Upwards extension
+                        B647, 26,27, 8000, ; Upwards extension
+                        B647, 26,28, 8000, ; Upwards extension
+                        B703, 26,29, AE71, ; Scroll PLM
+                        0000
 
-; Room $AE74, state $AE81: PLM
-$8F:8D1E             dx B703,0F,17,AEA9, B703,11,17,AEAC, B647,08,15,8000, B647,08,16,8000, B647,08,17,8000, B703,08,18,AEB1, C82A,07,14,8000, C836,07,14,0000, C860,11,26,0058, 0000
+; Room $AE74. Pre lava dive shaft
+$8F:8D1E             dx B703, 0F,17, AEA9, ; Scroll PLM
+                        B703, 11,17, AEAC, ; Scroll PLM
+                        B647, 08,15, 8000, ; Upwards extension
+                        B647, 08,16, 8000, ; Upwards extension
+                        B647, 08,17, 8000, ; Upwards extension
+                        B703, 08,18, AEB1, ; Scroll PLM
+                        C82A, 07,14, 8000, ; Downwards closed gate
+                        C836, 07,14, 0000, ; Downwards gate shotblock
+                        C860, 11,26, 0058, ; Door. Yellow door facing right
+                        0000
 
-; Room $AEB4, state $AEC1: PLM
+; Room $AEB4. Magdollite multiviola hall
 $8F:8D56             dx 0000
 
-; Room $AEDF, state $AEEC: PLM
-$8F:8D58             dx B703,02,0B,AF0F, B63B,03,0B,8000, B63B,04,0B,8000, B703,0B,0B,AF0F, B63B,0C,0B,8000, B63B,0D,0B,8000, 0000
+; Room $AEDF. Purple shaft
+$8F:8D58             dx B703, 02,0B, AF0F, ; Scroll PLM
+                        B63B, 03,0B, 8000, ; Rightwards extension
+                        B63B, 04,0B, 8000, ; Rightwards extension
+                        B703, 0B,0B, AF0F, ; Scroll PLM
+                        B63B, 0C,0B, 8000, ; Rightwards extension
+                        B63B, 0D,0B, 8000, ; Rightwards extension
+                        0000
 
-; Room $AF14, state $AF21: PLM
+; Room $AF14. Lava dive room
 $8F:8D7E             dx 0000
 
-; Room $AF3F, state $AF4C: PLM
-$8F:8D80             dx B703,08,0B,AF6F, 0000
+; Room $AF3F. Norfair -> Lower Norfair elevator
+$8F:8D80             dx B703, 08,0B, AF6F, ; Scroll PLM
+                        0000
 
-; Room $AF72, state $AF7F: PLM
-$8F:8D88             dx C82A,06,15,8000, C836,06,15,0000, 0000
+; Room $AF72. Norfair wave gate room
+$8F:8D88             dx C82A, 06,15, 8000, ; Downwards closed gate
+                        C836, 06,15, 0000, ; Downwards gate shotblock
+                        0000
 
-; Room $AFA3, state $AFB0: PLM
+; Room $AFA3. Norfair long lavaquake hall
 $8F:8D96             dx 0000
 
-; Room $AFCE, state $AFDB: PLM
+; Room $AFCE. Norfair metal floor hall
 $8F:8D98             dx 0000
 
-; Room $AFFB, state $B008: PLM
+; Room $AFFB. Norfair lava-spike hall
 $8F:8D9A             dx 0000
 
-; Room $B026, state $B033: PLM
-$8F:8D9C             dx B6DF,07,0A,0045, 0000
+; Room $B026. Norfair energy station
+$8F:8D9C             dx B6DF, 07,0A, 0045, ; Energy station
+                        0000
 
-; Room $B051, state $B05E: PLM
+; Room $B051. Purple farming room
 $8F:8DA4             dx 0000
 
-; Room $B07A, state $B087: PLM
-$8F:8DA6             dx B703,09,0C,B0A7, B63B,0A,0C,8000, B703,09,10,B0AC, B63B,0A,10,8000, B703,06,13,B0B1, B63B,07,13,8000, B63B,08,13,8000, B63B,09,13,8000, 0000
+; Room $B07A. Speed booster lavaquake room
+$8F:8DA6             dx B703, 09,0C, B0A7, ; Scroll PLM
+                        B63B, 0A,0C, 8000, ; Rightwards extension
+                        B703, 09,10, B0AC, ; Scroll PLM
+                        B63B, 0A,10, 8000, ; Rightwards extension
+                        B703, 06,13, B0B1, ; Scroll PLM
+                        B63B, 07,13, 8000, ; Rightwards extension
+                        B63B, 08,13, 8000, ; Rightwards extension
+                        B63B, 09,13, 8000, ; Rightwards extension
+                        0000
 
-; Room $B0B4, state $B0C1: PLM
-$8F:8DD8             dx B6D3,05,0A,8000, 0000
+; Room $B0B4. Norfair map station
+$8F:8DD8             dx B6D3, 05,0A, 8000, ; Map station
+                        0000
 
-; Room $B0DD, state $B0EA: PLM
-$8F:8DE0             dx B76F,05,0B,0001, 0000
+; Room $B0DD. Bubble Norfair save station
+$8F:8DE0             dx B76F, 05,0B, 0001, ; Save station
+                        0000
 
-; Room $B106, state $B113: PLM
+; Room $B106. Norfair speed blockade hall
 $8F:8DE8             dx 0000
 
-; Room $B139, state $B146: PLM
+; Room $B139. Norfair stone zoomer shaft
 $8F:8DEA             dx 0000
 
-; Room $B167, state $B174: PLM
-$8F:8DEC             dx B76F,07,0B,0002, 0000
+; Room $B167. Rock Norfair save station
+$8F:8DEC             dx B76F, 07,0B, 0002, ; Save station
+                        0000
 
-; Room $B192, state $B19F: PLM
-$8F:8DF4             dx B76F,07,0B,0003, 0000
+; Room $B192. Pre Crocomire save station
+$8F:8DF4             dx B76F, 07,0B, 0003, ; Save station
+                        0000
 
-; Room $B1BB, state $B1C8: PLM
-$8F:8DFC             dx B76F,05,0B,0004, 0000
+; Room $B1BB. Pre Lower Norfair save station
+$8F:8DFC             dx B76F, 05,0B, 0004, ; Save station
+                        0000
 
-; Room $B1E5, state $B1F2: PLM
-$8F:8E04             dx B703,0C,1E,B224, B703,0C,23,B22D, 0000
+; Room $B1E5. Lower Norfair chozo room
+$8F:8E04             dx B703, 0C,1E, B224, ; Scroll PLM
+                        B703, 0C,23, B22D, ; Scroll PLM
+                        0000
 
-; Room $B236, state $B243: PLM
-$8F:8E12             dx B703,47,08,B27D, B63B,48,08,8000, B703,47,23,B27D, B63B,48,23,8000, B703,47,29,B280, B63B,48,29,8000, B70B,46,2A,8000, 0000
+; Room $B236. Lower Norfair mainstreet
+$8F:8E12             dx B703, 47,08, B27D, ; Scroll PLM
+                        B63B, 48,08, 8000, ; Rightwards extension
+                        B703, 47,23, B27D, ; Scroll PLM
+                        B63B, 48,23, 8000, ; Rightwards extension
+                        B703, 47,29, B280, ; Scroll PLM
+                        B63B, 48,29, 8000, ; Rightwards extension
+                        B70B, 46,2A, 8000, ; Elevator platform
+                        0000
 
-; Room $B283, state $B295: PLM
-; Room $B283, state $B2AF: PLM
-$8F:8E3E             dx B703,04,0C,B2D1, B63B,05,0C,8000, B63B,06,0C,8000, B63B,07,0C,8000, B63B,08,0C,8000, B63B,09,0C,8000, B63B,0A,0C,8000, B63B,0B,0C,8000, EEDB,0D,08,0046, EF87,15,08,0047, C842,1E,16,0859, 0000
+; Room $B283. Golden Torizo
+$8F:8E3E             dx B703, 04,0C, B2D1, ; Scroll PLM
+                        B63B, 05,0C, 8000, ; Rightwards extension
+                        B63B, 06,0C, 8000, ; Rightwards extension
+                        B63B, 07,0C, 8000, ; Rightwards extension
+                        B63B, 08,0C, 8000, ; Rightwards extension
+                        B63B, 09,0C, 8000, ; Rightwards extension
+                        B63B, 0A,0C, 8000, ; Rightwards extension
+                        B63B, 0B,0C, 8000, ; Rightwards extension
+                        EEDB, 0D,08, 0046, ; Missile tank
+                        EF87, 15,08, 0047, ; Super missile tank, shot block
+                        C842, 1E,16, 0859, ; Door. Grey door facing left
+                        0000
 
-; Room $B2DA, state $B2E7: PLM
-$8F:8E82             dx C82A,34,05,8000, C836,34,05,0008, 0000
+; Room $B2DA. Ripper ii room
+$8F:8E82             dx C82A, 34,05, 8000, ; Downwards closed gate
+                        C836, 34,05, 0008, ; Downwards gate shotblock
+                        0000
 
-; Room $B305, state $B312: PLM
-$8F:8E90             dx B6DF,08,0A,0048, 0000
+; Room $B305. Lower Norfair energy station
+$8F:8E90             dx B6DF, 08,0A, 0048, ; Energy station
+                        0000
 
-; Room $B32E, state $B340: PLM
-; Room $B32E, state $B35A: PLM
-$8F:8E98             dx C842,0E,06,005A, C848,01,16,005B, 0000
+; Room $B32E. Ridley
+$8F:8E98             dx C842, 0E,06, 005A, ; Door. Grey door facing left
+                        C848, 01,16, 005B, ; Door. Grey door facing right
+                        0000
 
-; Room $B37A, state $B387: PLM
-$8F:8EA6             dx DB4C,01,06,005C, DB52,01,09,005C, DB48,01,07,005C, 0000
+; Room $B37A. Pre Ridley hall
+$8F:8EA6             dx DB4C, 01,06, 005C, ; Door. Eye door, facing right
+                        DB52, 01,09, 005C, ; Eye door bottom, facing right
+                        DB48, 01,07, 005C, ; Eye door eye, facing right
+                        0000
 
-; Room $B3A5, state $B3B2: PLM
-$8F:8EBA             dx B703,07,21,B3D9, B63B,08,21,8000, B703,07,1B,B3DC, B63B,08,1B,8000, 0000
+; Room $B3A5. Pre pillars hall
+$8F:8EBA             dx B703, 07,21, B3D9, ; Scroll PLM
+                        B63B, 08,21, 8000, ; Rightwards extension
+                        B703, 07,1B, B3DC, ; Scroll PLM
+                        B63B, 08,1B, 8000, ; Rightwards extension
+                        0000
 
-; Room $B3E1, state $B3EE: PLM
+; Room $B3E1. Unused room
 $8F:8ED4             dx 0000
 
-; Room $B40A, state $B417: PLM
-$8F:8ED6             dx B703,30,16,B445, B703,32,16,B448, B703,2D,16,B44B, B647,2B,14,8000, B647,2B,15,8000, B647,2B,16,8000, B703,2B,17,B44E, B647,38,36,8000, B647,38,37,8000, B647,38,38,8000, B703,38,39,B451, B63B,3D,34,8000, B63B,3C,34,8000, B703,3B,34,B454, C848,01,36,0C5D, EEDB,27,1B,0049, 0000
+; Room $B40A. Lower Norfair multi-level one-way shaft
+$8F:8ED6             dx B703, 30,16, B445, ; Scroll PLM
+                        B703, 32,16, B448, ; Scroll PLM
+                        B703, 2D,16, B44B, ; Scroll PLM
+                        B647, 2B,14, 8000, ; Upwards extension
+                        B647, 2B,15, 8000, ; Upwards extension
+                        B647, 2B,16, 8000, ; Upwards extension
+                        B703, 2B,17, B44E, ; Scroll PLM
+                        B647, 38,36, 8000, ; Upwards extension
+                        B647, 38,37, 8000, ; Upwards extension
+                        B647, 38,38, 8000, ; Upwards extension
+                        B703, 38,39, B451, ; Scroll PLM
+                        B63B, 3D,34, 8000, ; Rightwards extension
+                        B63B, 3C,34, 8000, ; Rightwards extension
+                        B703, 3B,34, B454, ; Scroll PLM
+                        C848, 01,36, 0C5D, ; Door. Grey door facing right
+                        EEDB, 27,1B, 0049, ; Missile tank
+                        0000
 
-; Room $B457, state $B464: PLM
+; Room $B457. Pillars hall
 $8F:8F38             dx 0000
 
-; Room $B482, state $B48F: PLM
+; Room $B482. Lower Norfair holtz room
 $8F:8F3A             dx 0000
 
-; Room $B4AD, state $B4BA: PLM
-$8F:8F3C             dx B703,03,10,B4E0, B63B,04,10,8000, B63B,05,10,8000, B63B,06,10,8000, B63B,07,10,8000, B63B,08,10,8000, B63B,09,10,8000, B63B,0A,10,8000, B63B,0B,10,8000, B63B,0C,10,8000, 0000
+; Room $B4AD. Lower Norfair wall space pirates shaft
+$8F:8F3C             dx B703, 03,10, B4E0, ; Scroll PLM
+                        B63B, 04,10, 8000, ; Rightwards extension
+                        B63B, 05,10, 8000, ; Rightwards extension
+                        B63B, 06,10, 8000, ; Rightwards extension
+                        B63B, 07,10, 8000, ; Rightwards extension
+                        B63B, 08,10, 8000, ; Rightwards extension
+                        B63B, 09,10, 8000, ; Rightwards extension
+                        B63B, 0A,10, 8000, ; Rightwards extension
+                        B63B, 0B,10, 8000, ; Rightwards extension
+                        B63B, 0C,10, 8000, ; Rightwards extension
+                        0000
 
-; Room $B4E5, state $B4F2: PLM
+; Room $B4E5. Lower Norfair rising acid room
 $8F:8F7A             dx 0000
 
-; Room $B510, state $B51D: PLM
-$8F:8F7C             dx B703,0C,09,B547, B647,0C,08,8000, B647,0C,07,8000, B647,0C,06,8000, B703,03,12,B54E, B63B,04,12,8000, B63B,05,12,8000, B63B,06,12,8000, B63B,07,12,8000, B63B,08,12,8000, B63B,09,12,8000, B63B,0A,12,8000, B703,2F,03,B555, EEDB,2B,07,004A, 0000
+; Room $B510. Lower Norfair spring ball maze room
+$8F:8F7C             dx B703, 0C,09, B547, ; Scroll PLM
+                        B647, 0C,08, 8000, ; Upwards extension
+                        B647, 0C,07, 8000, ; Upwards extension
+                        B647, 0C,06, 8000, ; Upwards extension
+                        B703, 03,12, B54E, ; Scroll PLM
+                        B63B, 04,12, 8000, ; Rightwards extension
+                        B63B, 05,12, 8000, ; Rightwards extension
+                        B63B, 06,12, 8000, ; Rightwards extension
+                        B63B, 07,12, 8000, ; Rightwards extension
+                        B63B, 08,12, 8000, ; Rightwards extension
+                        B63B, 09,12, 8000, ; Rightwards extension
+                        B63B, 0A,12, 8000, ; Rightwards extension
+                        B703, 2F,03, B555, ; Scroll PLM
+                        EEDB, 2B,07, 004A, ; Missile tank
+                        0000
 
-; Room $B55A, state $B567: PLM
-$8F:8FD2             dx EEE3,0C,08,004B, 0000
+; Room $B55A. Lower Norfair escape power bomb room
+$8F:8FD2             dx EEE3, 0C,08, 004B, ; Power bomb tank
+                        0000
 
-; Room $B585, state $B592: PLM
-$8F:8FDA             dx B703,11,48,B5C3, B63B,09,46,8000, B647,08,46,8000, B703,08,47,B5C8, B703,1F,48,B5C3, B703,24,48,B5C8, B703,06,0E,B5CD, B63B,07,0E,8000, B63B,08,0E,8000, B63B,09,0E,8000, B703,06,0B,B5D2, B63B,07,0B,8000, B63B,08,0B,8000, B63B,09,0B,8000, C866,26,4D,005E, 0000
+; Room $B585. Lower Norfair south kihunter shaft
+$8F:8FDA             dx B703, 11,48, B5C3, ; Scroll PLM
+                        B63B, 09,46, 8000, ; Rightwards extension
+                        B647, 08,46, 8000, ; Upwards extension
+                        B703, 08,47, B5C8, ; Scroll PLM
+                        B703, 1F,48, B5C3, ; Scroll PLM
+                        B703, 24,48, B5C8, ; Scroll PLM
+                        B703, 06,0E, B5CD, ; Scroll PLM
+                        B63B, 07,0E, 8000, ; Rightwards extension
+                        B63B, 08,0E, 8000, ; Rightwards extension
+                        B63B, 09,0E, 8000, ; Rightwards extension
+                        B703, 06,0B, B5D2, ; Scroll PLM
+                        B63B, 07,0B, 8000, ; Rightwards extension
+                        B63B, 08,0B, 8000, ; Rightwards extension
+                        B63B, 09,0B, 8000, ; Rightwards extension
+                        C866, 26,4D, 005E, ; Door. Yellow door facing up
+                        0000
 
-; Room $B5D5, state $B5E2: PLM
-$8F:9036             dx B703,17,0D,B612, B63B,18,0D,8000, B703,15,08,B615, B63B,16,08,8000, B63B,17,08,8000, B63B,18,08,8000, B63B,19,08,8000, B63B,1A,08,8000, B703,4F,09,B61A, B703,51,09,B622, B703,0F,0B,B61D, B703,3C,09,B622, B703,3F,09,B61A, B703,14,07,B625, B647,14,06,8000, B647,14,05,8000, B647,14,04,8000, B703,09,09,B628, B647,09,08,8000, B647,09,07,8000, B647,09,06,8000, B647,09,05,8000, C878,11,26,005F, EEE3,07,08,004C, 0000
+; Room $B5D5. Lower Norfair spike platform room
+$8F:9036             dx B703, 17,0D, B612, ; Scroll PLM
+                        B63B, 18,0D, 8000, ; Rightwards extension
+                        B703, 15,08, B615, ; Scroll PLM
+                        B63B, 16,08, 8000, ; Rightwards extension
+                        B63B, 17,08, 8000, ; Rightwards extension
+                        B63B, 18,08, 8000, ; Rightwards extension
+                        B63B, 19,08, 8000, ; Rightwards extension
+                        B63B, 1A,08, 8000, ; Rightwards extension
+                        B703, 4F,09, B61A, ; Scroll PLM
+                        B703, 51,09, B622, ; Scroll PLM
+                        B703, 0F,0B, B61D, ; Scroll PLM
+                        B703, 3C,09, B622, ; Scroll PLM
+                        B703, 3F,09, B61A, ; Scroll PLM
+                        B703, 14,07, B625, ; Scroll PLM
+                        B647, 14,06, 8000, ; Upwards extension
+                        B647, 14,05, 8000, ; Upwards extension
+                        B647, 14,04, 8000, ; Upwards extension
+                        B703, 09,09, B628, ; Scroll PLM
+                        B647, 09,08, 8000, ; Upwards extension
+                        B647, 09,07, 8000, ; Upwards extension
+                        B647, 09,06, 8000, ; Upwards extension
+                        B647, 09,05, 8000, ; Upwards extension
+                        C878, 11,26, 005F, ; Door. Green door facing right
+                        EEE3, 07,08, 004C, ; Power bomb tank
+                        0000
 
-; Room $B62B, state $B638: PLM
-$8F:90C8             dx C848,01,06,0C60, 0000
+; Room $B62B. Ninja space pirate hall
+$8F:90C8             dx C848, 01,06, 0C60, ; Door. Grey door facing right
+                        0000
 
-; Room $B656, state $B663: PLM
-$8F:90D0             dx B703,0B,2A,B68D, B647,0B,29,8000, B647,0B,28,8000, B647,0B,27,8000, B647,0B,26,8000, B647,0B,25,8000, B703,0F,2A,B690, B703,14,2A,B695, EEDB,08,29,004D, 0000
+; Room $B656. Lower Norfair north kihunter shaft
+$8F:90D0             dx B703, 0B,2A, B68D, ; Scroll PLM
+                        B647, 0B,29, 8000, ; Upwards extension
+                        B647, 0B,28, 8000, ; Upwards extension
+                        B647, 0B,27, 8000, ; Upwards extension
+                        B647, 0B,26, 8000, ; Upwards extension
+                        B647, 0B,25, 8000, ; Upwards extension
+                        B703, 0F,2A, B690, ; Scroll PLM
+                        B703, 14,2A, B695, ; Scroll PLM
+                        EEDB, 08,29, 004D, ; Missile tank
+                        0000
 
-; Room $B698, state $B6A5: PLM
-$8F:9108             dx EF7F,0E,0B,004E, 0000
+; Room $B698. Ridley's energy tank
+$8F:9108             dx EF7F, 0E,0B, 004E, ; Energy tank, shot block
+                        0000
 
-; Room $B6C1, state $B6CE: PLM
-$8F:9110             dx EF73,0B,28,004F, 0000
+; Room $B6C1. Screw attack room
+$8F:9110             dx EF73, 0B,28, 004F, ; Screw attack, chozo orb
+                        0000
 
-; Room $B6EE, state $B6FB: PLM
-$8F:9118             dx B647,1F,36,8000, B647,1F,37,8000, B703,1F,38,B72D, B63B,2D,39,8000, B63B,2C,39,8000, B703,2B,39,B730, B647,0F,06,8000, B647,0F,07,8000, B647,0F,08,8000, B703,0F,09,B737, B63B,1B,0B,8000, B63B,1A,0B,8000, B63B,19,0B,8000, B63B,18,0B,8000, B63B,17,0B,8000, B63B,16,0B,8000, B63B,15,0B,8000, B703,14,0B,B73C, EED7,2A,51,0050, 0000
+; Room $B6EE. Norfair rolling boulder shaft
+$8F:9118             dx B647, 1F,36, 8000, ; Upwards extension
+                        B647, 1F,37, 8000, ; Upwards extension
+                        B703, 1F,38, B72D, ; Scroll PLM
+                        B63B, 2D,39, 8000, ; Rightwards extension
+                        B63B, 2C,39, 8000, ; Rightwards extension
+                        B703, 2B,39, B730, ; Scroll PLM
+                        B647, 0F,06, 8000, ; Upwards extension
+                        B647, 0F,07, 8000, ; Upwards extension
+                        B647, 0F,08, 8000, ; Upwards extension
+                        B703, 0F,09, B737, ; Scroll PLM
+                        B63B, 1B,0B, 8000, ; Rightwards extension
+                        B63B, 1A,0B, 8000, ; Rightwards extension
+                        B63B, 19,0B, 8000, ; Rightwards extension
+                        B63B, 18,0B, 8000, ; Rightwards extension
+                        B63B, 17,0B, 8000, ; Rightwards extension
+                        B63B, 16,0B, 8000, ; Rightwards extension
+                        B63B, 15,0B, 8000, ; Rightwards extension
+                        B703, 14,0B, B73C, ; Scroll PLM
+                        EED7, 2A,51, 0050, ; Energy tank
+                        0000
 
-; Room $B741, state $B74E: PLM
-$8F:918C             dx B76F,07,0B,0005, 0000
+; Room $B741. Lower Norfair save station
+$8F:918C             dx B76F, 07,0B, 0005, ; Save station
+                        0000
 }
 
 
@@ -3456,7 +4145,7 @@ $8F:BA36 60          RTS
 }
 
 
-;;; $BA37: Library background ;;;
+;;; $BA37: Library backgrounds ;;;
 {
 ; Room $9AD9, state $9AE6: Green Brinstar mainstreet
 $8F:BA37             dx 0004,B9C972,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
@@ -3844,7 +4533,7 @@ $8F:BE3E 60          RTS
 }
 
 
-;;; $BE3F: Library background ;;;
+;;; $BE3F: Library backgrounds ;;;
 {
 ; Room $A75D, state $A76A: Post ice beam mockball hall
 ; Room $A865, state $A872: Ice beam practice room
@@ -4420,357 +5109,591 @@ $8F:C209             dw 0051, ; "Next" item / refill station index (50h is the l
 
 ;;; $C215: PLM populations ;;;
 {
-; Room $C98E, state $C9A0: PLM
-$8F:C215             dx B703,1F,2D,C9EC, B647,41,26,8000, B647,41,27,8000, B703,41,28,C9F1, 0000
+;                        ________________ 0: PLM ID. 0 = terminator
+;                       |      __________ 2: X position in blocks
+;                       |     |   _______ 3: Y position in blocks
+;                       |     |  |    ___ 4: Parameter
+;                       |     |  |   |
+;                       rrrr, xx,yy, pppp
 
-; Room $CA08, state $CA1A: PLM
+; Room $C98E, state $C9A0. Wrecked Ship chozo room - default
+$8F:C215             dx B703, 1F,2D, C9EC, ; Scroll PLM
+                        B647, 41,26, 8000, ; Upwards extension
+                        B647, 41,27, 8000, ; Upwards extension
+                        B703, 41,28, C9F1, ; Scroll PLM
+                        0000
+
+; Room $CA08, state $CA1A. Wrecked Ship entrance treadmill - default
 $8F:C22F             dx 0000
 
-; Room $CA52, state $CA64: PLM
-$8F:C231             dx C848,01,06,0080, C842,6E,06,0081, BB05,08,08,8000, 0000
+; Room $CA52, state $CA64. Wrecked Ship attic - default
+$8F:C231             dx C848, 01,06, 0080, ; Door. Grey door facing right
+                        C842, 6E,06, 0081, ; Door. Grey door facing left
+                        BB05, 08,08, 8000, ; Wrecked Ship attic
+                        0000
 
-; Room $CAAE, state $CAC0: PLM
+; Room $CAAE, state $CAC0. Wrecked Ship attic missile tank room - default
 $8F:C245             dx 0000
 
-; Room $CAF6, state $CB08: PLM
-; Room $CAF6, state $CB22: PLM
-$8F:C247             dx B703,3E,57,CB7A, B703,51,69,CB7D, B703,41,57,CB80, B703,4E,69,CB83, B703,47,6D,CB86, EEDB,02,59,0080, C848,41,66,0082, C842,4E,46,0083, C87E,46,7D,0084, 0000
+; Room $CAF6. Wrecked Ship mainstreet
+$8F:C247             dx B703, 3E,57, CB7A, ; Scroll PLM
+                        B703, 51,69, CB7D, ; Scroll PLM
+                        B703, 41,57, CB80, ; Scroll PLM
+                        B703, 4E,69, CB83, ; Scroll PLM
+                        B703, 47,6D, CB86, ; Scroll PLM
+                        EEDB, 02,59, 0080, ; Missile tank
+                        C848, 41,66, 0082, ; Door. Grey door facing right
+                        C842, 4E,46, 0083, ; Door. Grey door facing left
+                        C87E, 46,7D, 0084, ; Door. Green door facing up
+                        0000
 
-; Room $CB8B, state $CB9D: PLM
+; Room $CB8B, state $CB9D. Wrecked Ship spike platform hall - default
 $8F:C27F             dx 0000
 
-; Room $CBD5, state $CBE7: PLM
-$8F:C281             dx B703,07,10,CC24, B63B,08,10,8000, 0000
+; Room $CBD5, state $CBE7. Wrecked Ship east exit - default
+$8F:C281             dx B703, 07,10, CC24, ; Scroll PLM
+                        B63B, 08,10, 8000, ; Rightwards extension
+                        0000
 
-; Room $CC27, state $CC39: PLM
+; Room $CC27, state $CC39. Wrecked Ship chozo energy tank room - default
 $8F:C28F             dx 0000
 
-; Room $CC6F, state $CC81: PLM
-$8F:C291             dx B703,40,0C,CCC0, B703,46,0C,CCC5, DB5A,4E,06,0085, DB60,4E,09,0085, DB56,4E,07,0085, 0000
+; Room $CC6F, state $CC81. Pre Phantoon hall - default
+$8F:C291             dx B703, 40,0C, CCC0, ; Scroll PLM
+                        B703, 46,0C, CCC5, ; Scroll PLM
+                        DB5A, 4E,06, 0085, ; Door. Eye door, facing left
+                        DB60, 4E,09, 0085, ; Eye door bottom, facing left
+                        DB56, 4E,07, 0085, ; Eye door eye, facing left
+                        0000
 
-; Room $CCCB, state $CCDD: PLM
+; Room $CCCB, state $CCDD. Wrecked Ship map station - default
 $8F:C2B1             dx 0000
 
-; Room $CD13, state $CD25: PLM
-; Room $CD13, state $CD3F: PLM
-$8F:C2B3             dx C848,01,06,0086, 0000
+; Room $CD13. Phantoon
+$8F:C2B3             dx C848, 01,06, 0086, ; Door. Grey door facing right
+                        0000
 
-; Room $CD5C, state $CD6E: PLM
+; Room $CD5C, state $CD6E. Wrecked Ship first flooded room - default
 $8F:C2BB             dx 0000
 
-; Room $CDA8, state $CDBA: PLM
+; Room $CDA8, state $CDBA. Wrecked Ship west super missile room - default
 $8F:C2BD             dx 0000
 
-; Room $CDF1, state $CE03: PLM
-$8F:C2BF             dx B703,2F,07,CE3D, 0000
+; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+$8F:C2BF             dx B703, 2F,07, CE3D, ; Scroll PLM
+                        0000
 
-; Room $CE40, state $CE52: PLM
-; Room $CE8A, state $CE9C: PLM
+; Room $CE40, state $CE52. Gravity suit room - default
+; Room $CE8A, state $CE9C. Wrecked Ship save station - default
 $8F:C2C7             dx 0000
 
-; Room $CE8A, state $CEB6: PLM
-$8F:C2C9             dx B76F,07,0B,0000, 0000
+; Room $CE8A, state $CEB6. Wrecked Ship save station - main area boss is dead
+$8F:C2C9             dx B76F, 07,0B, 0000, ; Save station
+                        0000
 
-; Room $C98E, state $C9BA: PLM
-$8F:C2D1             dx B703,1F,2D,C9EC, B647,41,26,8000, B647,41,27,8000, B703,41,28,C9F1, EF7B,53,0B,0081, EEDB,3C,26,0082, C848,01,16,9087, 0000
+; Room $C98E, state $C9BA. Wrecked Ship chozo room - main area boss is dead
+$8F:C2D1             dx B703, 1F,2D, C9EC, ; Scroll PLM
+                        B647, 41,26, 8000, ; Upwards extension
+                        B647, 41,27, 8000, ; Upwards extension
+                        B703, 41,28, C9F1, ; Scroll PLM
+                        EF7B, 53,0B, 0081, ; Reserve tank, chozo orb
+                        EEDB, 3C,26, 0082, ; Missile tank
+                        C848, 01,16, 9087, ; Door. Grey door facing right
+                        0000
 
-; Room $CA08, state $CA34: PLM
+; Room $CA08, state $CA34. Wrecked Ship entrance treadmill - main area boss is dead
 $8F:C2FD             dx 0000
 
-; Room $CA52, state $CA7E: PLM
-$8F:C2FF             dx C848,01,06,0C88, C842,6E,06,0C89, C84E,46,0E,0C8A, BB05,08,08,8000, 0000
+; Room $CA52, state $CA7E. Wrecked Ship attic - main area boss is dead
+$8F:C2FF             dx C848, 01,06, 0C88, ; Door. Grey door facing right
+                        C842, 6E,06, 0C89, ; Door. Grey door facing left
+                        C84E, 46,0E, 0C8A, ; Door. Grey door facing up
+                        BB05, 08,08, 8000, ; Wrecked Ship attic
+                        0000
 
-; Room $CAAE, state $CADA: PLM
-$8F:C319             dx EEDB,2D,08,0083, 0000
+; Room $CAAE, state $CADA. Wrecked Ship attic missile tank room - main area boss is dead
+$8F:C319             dx EEDB, 2D,08, 0083, ; Missile tank
+                        0000
 
-; Room $CB8B, state $CBB7: PLM
+; Room $CB8B, state $CBB7. Wrecked Ship spike platform hall - main area boss is dead
 $8F:C321             dx 0000
 
-; Room $CBD5, state $CC01: PLM
-$8F:C323             dx B703,07,10,CC24, B63B,08,10,8000, C890,01,06,008B, 0000
+; Room $CBD5, state $CC01. Wrecked Ship east exit - main area boss is dead
+$8F:C323             dx B703, 07,10, CC24, ; Scroll PLM
+                        B63B, 08,10, 8000, ; Rightwards extension
+                        C890, 01,06, 008B, ; Door. Red door facing right
+                        0000
 
-; Room $CC27, state $CC53: PLM
-$8F:C337             dx EED7,03,06,0084, 0000
+; Room $CC27, state $CC53. Wrecked Ship chozo energy tank room - main area boss is dead
+$8F:C337             dx EED7, 03,06, 0084, ; Energy tank
+                        0000
 
-; Room $CC6F, state $CC9B: PLM
-$8F:C33F             dx B703,40,0C,CCC0, B703,46,0C,CCC5, 0000
+; Room $CC6F, state $CC9B. Pre Phantoon hall - main area boss is dead
+$8F:C33F             dx B703, 40,0C, CCC0, ; Scroll PLM
+                        B703, 46,0C, CCC5, ; Scroll PLM
+                        0000
 
-; Room $CCCB, state $CCF7: PLM
-$8F:C34D             dx B6D3,05,0A,8000, 0000
+; Room $CCCB, state $CCF7. Wrecked Ship map station - main area boss is dead
+$8F:C34D             dx B6D3, 05,0A, 8000, ; Map station
+                        0000
 
-; Room $CD5C, state $CD88: PLM
+; Room $CD5C, state $CD88. Wrecked Ship first flooded room - main area boss is dead
 $8F:C355             dx 0000
 
-; Room $CDA8, state $CDD4: PLM
-$8F:C357             dx EEDF,02,07,0085, 0000
+; Room $CDA8, state $CDD4. Wrecked Ship west super missile room - main area boss is dead
+$8F:C357             dx EEDF, 02,07, 0085, ; Super missile tank
+                        0000
 
-; Room $CDF1, state $CE1D: PLM
-$8F:C35F             dx B703,2F,07,CE3D, EEDF,38,09,0086, 0000
+; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+$8F:C35F             dx B703, 2F,07, CE3D, ; Scroll PLM
+                        EEDF, 38,09, 0086, ; Super missile tank
+                        0000
 
-; Room $CE40, state $CE6C: PLM
-$8F:C36D             dx EF5F,07,09,0087, 0000
+; Room $CE40, state $CE6C. Gravity suit room - main area boss is dead
+$8F:C36D             dx EF5F, 07,09, 0087, ; Gravity suit, chozo orb
+                        0000
 
-; Room $CED2, state $CEDF: PLM
-$8F:C375             dx B76F,07,0B,0000, 0000
+; Room $CED2. n00b tube save station
+$8F:C375             dx B76F, 07,0B, 0000, ; Save station
+                        0000
 
-; Room $CEFB, state $CF0D: PLM
-; Room $CEFB, state $CF27: PLM
-$8F:C37D             dx B703,03,14,CF4C, B63B,04,14,8000, B63B,05,14,8000, B63B,06,14,8000, B703,09,14,CF4C, B63B,0A,14,8000, B63B,0B,14,8000, B63B,0C,14,8000, B703,05,1D,CF4F, B63B,06,1D,8000, B63B,07,1D,8000, B63B,08,1D,8000, B63B,09,1D,8000, B63B,0A,1D,8000, D70C,02,15,0080, C88A,0E,26,008C, 0000
+; Room $CEFB. n00b tube
+$8F:C37D             dx B703, 03,14, CF4C, ; Scroll PLM
+                        B63B, 04,14, 8000, ; Rightwards extension
+                        B63B, 05,14, 8000, ; Rightwards extension
+                        B63B, 06,14, 8000, ; Rightwards extension
+                        B703, 09,14, CF4C, ; Scroll PLM
+                        B63B, 0A,14, 8000, ; Rightwards extension
+                        B63B, 0B,14, 8000, ; Rightwards extension
+                        B63B, 0C,14, 8000, ; Rightwards extension
+                        B703, 05,1D, CF4F, ; Scroll PLM
+                        B63B, 06,1D, 8000, ; Rightwards extension
+                        B63B, 07,1D, 8000, ; Rightwards extension
+                        B63B, 08,1D, 8000, ; Rightwards extension
+                        B63B, 09,1D, 8000, ; Rightwards extension
+                        B63B, 0A,1D, 8000, ; Rightwards extension
+                        D70C, 02,15, 0080, ; n00b tube
+                        C88A, 0E,26, 008C, ; Door. Red door facing left
+                        0000
 
-; Room $CF54, state $CF61: PLM
+; Room $CF54. n00b tube west
 $8F:C3DF             dx 0000
 
-; Room $CF80, state $CF8D: PLM
-$8F:C3E1             dx B703,05,09,CFB5, B703,05,10,CFBC, B703,05,16,CFC1, B647,0A,03,8000, B647,0A,04,8000, B647,0A,05,8000, B647,0A,06,8000, B647,0A,07,8000, B647,0A,08,8000, B703,0A,09,CFC6, C82A,16,05,8000, C836,16,05,000A, 0000
+; Room $CF80. n00b tube east
+$8F:C3E1             dx B703, 05,09, CFB5, ; Scroll PLM
+                        B703, 05,10, CFBC, ; Scroll PLM
+                        B703, 05,16, CFC1, ; Scroll PLM
+                        B647, 0A,03, 8000, ; Upwards extension
+                        B647, 0A,04, 8000, ; Upwards extension
+                        B647, 0A,05, 8000, ; Upwards extension
+                        B647, 0A,06, 8000, ; Upwards extension
+                        B647, 0A,07, 8000, ; Upwards extension
+                        B647, 0A,08, 8000, ; Upwards extension
+                        B703, 0A,09, CFC6, ; Scroll PLM
+                        C82A, 16,05, 8000, ; Downwards closed gate
+                        C836, 16,05, 000A, ; Downwards gate shotblock
+                        0000
 
-; Room $CFC9, state $CFD6: PLM
-$8F:C42B             dx B703,25,29,D012, C88A,1E,76,008D, EEDB,0E,35,0088, EEDF,16,28,0089, 0000
+; Room $CFC9. Maridia mainstreet
+$8F:C42B             dx B703, 25,29, D012, ; Scroll PLM
+                        C88A, 1E,76, 008D, ; Door. Red door facing left
+                        EEDB, 0E,35, 0088, ; Missile tank
+                        EEDF, 16,28, 0089, ; Super missile tank
+                        0000
 
-; Room $D017, state $D024: PLM
-$8F:C445             dx B647,1F,26,8000, B647,1F,27,8000, B647,1F,28,8000, B703,1F,29,D052, B647,30,26,8000, B647,30,27,8000, B647,30,28,8000, B703,30,29,D052, C88A,3E,26,008E, 0000
+; Room $D017. Maridia space pirate room
+$8F:C445             dx B647, 1F,26, 8000, ; Upwards extension
+                        B647, 1F,27, 8000, ; Upwards extension
+                        B647, 1F,28, 8000, ; Upwards extension
+                        B703, 1F,29, D052, ; Scroll PLM
+                        B647, 30,26, 8000, ; Upwards extension
+                        B647, 30,27, 8000, ; Upwards extension
+                        B647, 30,28, 8000, ; Upwards extension
+                        B703, 30,29, D052, ; Scroll PLM
+                        C88A, 3E,26, 008E, ; Door. Red door facing left
+                        0000
 
-; Room $D055, state $D062: PLM
-$8F:C47D             dx EED7,1F,0A,008A, EF83,2C,1D,008B, 0000
+; Room $D055. Tatori room
+$8F:C47D             dx EED7, 1F,0A, 008A, ; Energy tank
+                        EF83, 2C,1D, 008B, ; Missile tank, shot block
+                        0000
 
-; Room $D08A, state $D097: PLM
-$8F:C48B             dx C82A,0E,07,8000, C836,0E,07,0008, 0000
+; Room $D08A. Maridia green gate hall
+$8F:C48B             dx C82A, 0E,07, 8000, ; Downwards closed gate
+                        C836, 0E,07, 0008, ; Downwards gate shotblock
+                        0000
 
-; Room $D0B9, state $D0C6: PLM
+; Room $D0B9. Mt. Doom
 $8F:C499             dx 0000
 
-; Room $D104, state $D111: PLM
-$8F:C49B             dx B703,20,06,D135, B703,1E,06,D138, 0000
+; Room $D104. Maridia -> Red Brinstar room
+$8F:C49B             dx B703, 20,06, D135, ; Scroll PLM
+                        B703, 1E,06, D138, ; Scroll PLM
+                        0000
 
-; Room $D13B, state $D148: PLM
-$8F:C4A9             dx B703,07,1F,D16A, EEDF,04,26,008C, EEDB,0B,27,008D, 0000
+; Room $D13B. Sandy Maridia missile and super missile room
+$8F:C4A9             dx B703, 07,1F, D16A, ; Scroll PLM
+                        EEDF, 04,26, 008C, ; Super missile tank
+                        EEDB, 0B,27, 008D, ; Missile tank
+                        0000
 
-; Room $D16D, state $D17A: PLM
-$8F:C4BD             dx B647,20,16,8000, B647,20,17,8000, B647,20,18,8000, B703,20,19,D1A0, B647,0F,16,8000, B647,0F,17,8000, B647,0F,18,8000, B703,0F,19,D1A0, 0000
+; Room $D16D. Sandy Maridia memu room
+$8F:C4BD             dx B647, 20,16, 8000, ; Upwards extension
+                        B647, 20,17, 8000, ; Upwards extension
+                        B647, 20,18, 8000, ; Upwards extension
+                        B703, 20,19, D1A0, ; Scroll PLM
+                        B647, 0F,16, 8000, ; Upwards extension
+                        B647, 0F,17, 8000, ; Upwards extension
+                        B647, 0F,18, 8000, ; Upwards extension
+                        B703, 0F,19, D1A0, ; Scroll PLM
+                        0000
 
-; Room $D1A3, state $D1B0: PLM
-$8F:C4EF             dx B703,07,2D,D1D8, B63B,08,2D,8000, C872,1E,36,008F, 0000
+; Room $D1A3. Maridia crab shaft
+$8F:C4EF             dx B703, 07,2D, D1D8, ; Scroll PLM
+                        B63B, 08,2D, 8000, ; Rightwards extension
+                        C872, 1E,36, 008F, ; Door. Green door facing left
+                        0000
 
-; Room $D1DD, state $D1EA: PLM
-$8F:C503             dx B647,1F,26,8000, B647,1F,27,8000, B647,1F,28,8000, B703,1F,29,D216, B647,1D,26,8000, B647,1D,27,8000, B647,1D,28,8000, B703,1D,29,D219, EEDB,2C,28,008E, 0000
+; Room $D1DD. Beach
+$8F:C503             dx B647, 1F,26, 8000, ; Upwards extension
+                        B647, 1F,27, 8000, ; Upwards extension
+                        B647, 1F,28, 8000, ; Upwards extension
+                        B703, 1F,29, D216, ; Scroll PLM
+                        B647, 1D,26, 8000, ; Upwards extension
+                        B647, 1D,27, 8000, ; Upwards extension
+                        B647, 1D,28, 8000, ; Upwards extension
+                        B703, 1D,29, D219, ; Scroll PLM
+                        EEDB, 2C,28, 008E, ; Missile tank
+                        0000
 
-; Room $D21C, state $D229: PLM
-$8F:C53B             dx B703,08,0E,D24D, B703,08,11,D24D, C88A,0E,16,0090, 0000
+; Room $D21C. Maridia broken glass tube room
+$8F:C53B             dx B703, 08,0E, D24D, ; Scroll PLM
+                        B703, 08,11, D24D, ; Scroll PLM
+                        C88A, 0E,16, 0090, ; Door. Red door facing left
+                        0000
 
-; Room $D252, state $D25F: PLM
+; Room $D252. Maridia broken glass tube room east
 $8F:C54F             dx 0000
 
-; Room $D27E, state $D28B: PLM
+; Room $D27E. Plasma beam puyo room
 $8F:C551             dx 0000
 
-; Room $D2AA, state $D2B7: PLM
-$8F:C553             dx C848,01,06,0C91, EF67,19,26,008F, 0000
+; Room $D2AA. Plasma beam room
+$8F:C553             dx C848, 01,06, 0C91, ; Door. Grey door facing right
+                        EF67, 19,26, 008F, ; Plasma beam, chozo orb
+                        0000
 
-; Room $D2D9, state $D2E6: PLM
+; Room $D2D9. Sandy Maridia choot-puyo hall
 $8F:C561             dx 0000
 
-; Room $D30B, state $D318: PLM
-$8F:C563             dx B70B,06,2C,8000, C88A,0E,46,0092, 0000
+; Room $D30B. Maridia -> Crateria elevator
+$8F:C563             dx B70B, 06,2C, 8000, ; Elevator platform
+                        C88A, 0E,46, 0092, ; Door. Red door facing left
+                        0000
 
-; Room $D340, state $D34D: PLM
-$8F:C571             dx C842,2E,16,0093, C87E,06,2D,0094, 0000
+; Room $D340. Sandy Maridia mainstreet
+$8F:C571             dx C842, 2E,16, 0093, ; Door. Grey door facing left
+                        C87E, 06,2D, 0094, ; Door. Green door facing up
+                        0000
 
-; Room $D387, state $D394: PLM
+; Room $D387. Pre plasma beam shaft
 $8F:C57F             dx 0000
 
-; Room $D3B6, state $D3C3: PLM
-$8F:C581             dx B6D3,0B,0A,8000, 0000
+; Room $D3B6. Maridia map station
+$8F:C581             dx B6D3, 0B,0A, 8000, ; Map station
+                        0000
 
-; Room $D3DF, state $D3EC: PLM
-$8F:C589             dx B76F,07,0B,0001, 0000
+; Room $D3DF. Sandy Maridia save station
+$8F:C589             dx B76F, 07,0B, 0001, ; Save station
+                        0000
 
-; Room $D408, state $D415: PLM
+; Room $D408. Maridia elevatube
 $8F:C591             dx 0000
 
-; Room $D433, state $D440: PLM
+; Room $D433. Sandy Maridia quicksand top
 $8F:C593             dx 0000
 
-; Room $D461, state $D46E: PLM
+; Room $D461. Evir hall west
 $8F:C595             dx 0000
 
-; Room $D48E, state $D49B: PLM
-$8F:C597             dx B703,03,14,D4BD, B63B,04,14,8000, B63B,05,14,8000, B63B,06,14,8000, B63B,07,14,8000, B63B,08,14,8000, B63B,09,14,8000, B63B,0A,14,8000, B63B,0B,14,8000, B63B,0C,14,8000, C884,06,02,0095, 0000
+; Room $D48E. Elevatube south
+$8F:C597             dx B703, 03,14, D4BD, ; Scroll PLM
+                        B63B, 04,14, 8000, ; Rightwards extension
+                        B63B, 05,14, 8000, ; Rightwards extension
+                        B63B, 06,14, 8000, ; Rightwards extension
+                        B63B, 07,14, 8000, ; Rightwards extension
+                        B63B, 08,14, 8000, ; Rightwards extension
+                        B63B, 09,14, 8000, ; Rightwards extension
+                        B63B, 0A,14, 8000, ; Rightwards extension
+                        B63B, 0B,14, 8000, ; Rightwards extension
+                        B63B, 0C,14, 8000, ; Rightwards extension
+                        C884, 06,02, 0095, ; Door. Green door facing down
+                        0000
 
-; Room $D4C2, state $D4CF: PLM
+; Room $D4C2. Evir hall east
 $8F:C5DB             dx 0000
 
-; Room $D4EF, state $D4FC: PLM
-$8F:C5DD             dx EEDB,06,04,0090, EF7B,0F,04,0091, 0000
+; Room $D4EF. Snail room quicksand items west
+$8F:C5DD             dx EEDB, 06,04, 0090, ; Missile tank
+                        EF7B, 0F,04, 0091, ; Reserve tank, chozo orb
+                        0000
 
-; Room $D51E, state $D52B: PLM
-$8F:C5EB             dx EEDB,03,07,0092, EEE3,19,10,0093, 0000
+; Room $D51E. Snail room quicksand items east
+$8F:C5EB             dx EEDB, 03,07, 0092, ; Missile tank
+                        EEE3, 19,10, 0093, ; Power bomb tank
+                        0000
 
-; Room $D54D, state $D55A: PLM
+; Room $D54D. Snail room quicksand fall west
 $8F:C5F9             dx 0000
 
-; Room $D57A, state $D587: PLM
+; Room $D57A. Snail room quicksand fall east
 $8F:C5FB             dx 0000
 
-; Room $D5A7, state $D5B4: PLM
-$8F:C5FD             dx C890,01,26,0096, EEDB,4C,09,0094, EEDF,5C,08,0095, 0000
+; Room $D5A7. Snail room
+$8F:C5FD             dx C890, 01,26, 0096, ; Door. Red door facing right
+                        EEDB, 4C,09, 0094, ; Missile tank
+                        EEDF, 5C,08, 0095, ; Super missile tank
+                        0000
 
-; Room $D5EC, state $D5F9: PLM
-$8F:C611             dx C842,0E,06,0097, 0000
+; Room $D5EC. Sandy Maridia quicksand bottom
+$8F:C611             dx C842, 0E,06, 0097, ; Door. Grey door facing left
+                        0000
 
-; Room $D617, state $D624: PLM
+; Room $D617. Mochtroid room
 $8F:C619             dx 0000
 
-; Room $D646, state $D653: PLM
-$8F:C61B             dx B703,06,32,D67D, B63B,07,32,8000, B63B,08,32,8000, B63B,09,32,8000, B703,0D,0C,D67D, B647,0D,0B,8000, B647,0D,0A,8000, B647,0D,09,8000, B647,0D,08,8000, B647,0D,07,8000, B647,0D,06,8000, B647,0D,05,8000, B647,0D,04,8000, B703,12,0E,D68A, B647,12,0D,8000, B647,12,0C,8000, B647,12,0B,8000, B647,12,0A,8000, B647,12,09,8000, B647,12,08,8000, B647,12,07,8000, B703,15,2B,D695, B63B,16,2B,8000, B63B,17,2B,8000, 0000
+; Room $D646. Pants room
+$8F:C61B             dx B703, 06,32, D67D, ; Scroll PLM
+                        B63B, 07,32, 8000, ; Rightwards extension
+                        B63B, 08,32, 8000, ; Rightwards extension
+                        B63B, 09,32, 8000, ; Rightwards extension
+                        B703, 0D,0C, D67D, ; Scroll PLM
+                        B647, 0D,0B, 8000, ; Upwards extension
+                        B647, 0D,0A, 8000, ; Upwards extension
+                        B647, 0D,09, 8000, ; Upwards extension
+                        B647, 0D,08, 8000, ; Upwards extension
+                        B647, 0D,07, 8000, ; Upwards extension
+                        B647, 0D,06, 8000, ; Upwards extension
+                        B647, 0D,05, 8000, ; Upwards extension
+                        B647, 0D,04, 8000, ; Upwards extension
+                        B703, 12,0E, D68A, ; Scroll PLM
+                        B647, 12,0D, 8000, ; Upwards extension
+                        B647, 12,0C, 8000, ; Upwards extension
+                        B647, 12,0B, 8000, ; Upwards extension
+                        B647, 12,0A, 8000, ; Upwards extension
+                        B647, 12,09, 8000, ; Upwards extension
+                        B647, 12,08, 8000, ; Upwards extension
+                        B647, 12,07, 8000, ; Upwards extension
+                        B703, 15,2B, D695, ; Scroll PLM
+                        B63B, 16,2B, 8000, ; Rightwards extension
+                        B63B, 17,2B, 8000, ; Rightwards extension
+                        0000
 
-; Room $D69A, state $D6A7: PLM
-$8F:C6AD             dx B703,05,22,D6C8, B63B,06,22,8000, B63B,07,22,8000, B63B,08,22,8000, B63B,09,22,8000, B63B,0A,12,8000, B703,05,1B,D6CB, B63B,06,1B,8000, B63B,07,1B,8000, 0000
+; Room $D69A. Pants room section
+$8F:C6AD             dx B703, 05,22, D6C8, ; Scroll PLM
+                        B63B, 06,22, 8000, ; Rightwards extension
+                        B63B, 07,22, 8000, ; Rightwards extension
+                        B63B, 08,22, 8000, ; Rightwards extension
+                        B63B, 09,22, 8000, ; Rightwards extension
+                        B63B, 0A,12, 8000, ; Rightwards extension
+                        B703, 05,1B, D6CB, ; Scroll PLM
+                        B63B, 06,1B, 8000, ; Rightwards extension
+                        B63B, 07,1B, 8000, ; Rightwards extension
+                        0000
 
-; Room $D6D0, state $D6DD: PLM
-$8F:C6E5             dx EF57,18,16,0096, 0000
+; Room $D6D0. Spring ball room
+$8F:C6E5             dx EF57, 18,16, 0096, ; Spring ball, chozo orb
+                        0000
 
-; Room $D6FD, state $D70A: PLM
+; Room $D6FD. Maridia speed blockade quicksand bottom
 $8F:C6ED             dx 0000
 
-; Room $D72A, state $D737: PLM
-$8F:C6EF             dx C88A,6E,06,0098, C872,4E,26,0099, C872,6E,16,009A, 0000
+; Room $D72A. Maridia grapple room
+$8F:C6EF             dx C88A, 6E,06, 0098, ; Door. Red door facing left
+                        C872, 4E,26, 0099, ; Door. Green door facing left
+                        C872, 6E,16, 009A, ; Door. Green door facing left
+                        0000
 
-; Room $D765, state $D772: PLM
-$8F:C703             dx B76F,05,0B,0002, 0000
+; Room $D765. Snail room save station
+$8F:C703             dx B76F, 05,0B, 0002, ; Save station
+                        0000
 
-; Room $D78F, state $D7A1: PLM
-; Room $D78F, state $D7BB: PLM
-$8F:C70B             dx B703,04,0E,D7DF, B63B,05,0E,8000, B63B,06,0E,8000, B63B,07,0E,8000, B63B,08,0E,8000, B63B,09,0E,8000, B63B,0A,0E,8000, B63B,0B,0E,8000, DB4C,01,26,009B, DB52,01,29,009B, DB48,01,27,009B, EF83,1C,06,0097, 0000
+; Room $D78F. Pre Draygon room
+$8F:C70B             dx B703, 04,0E, D7DF, ; Scroll PLM
+                        B63B, 05,0E, 8000, ; Rightwards extension
+                        B63B, 06,0E, 8000, ; Rightwards extension
+                        B63B, 07,0E, 8000, ; Rightwards extension
+                        B63B, 08,0E, 8000, ; Rightwards extension
+                        B63B, 09,0E, 8000, ; Rightwards extension
+                        B63B, 0A,0E, 8000, ; Rightwards extension
+                        B63B, 0B,0E, 8000, ; Rightwards extension
+                        DB4C, 01,26, 009B, ; Door. Eye door, facing right
+                        DB52, 01,29, 009B, ; Eye door bottom, facing right
+                        DB48, 01,27, 009B, ; Eye door eye, facing right
+                        EF83, 1C,06, 0097, ; Missile tank, shot block
+                        0000
 
-; Room $D7E4, state $D7F1: PLM
-$8F:C755             dx EED7,32,05,0098, 0000
+; Room $D7E4. Maridia speed blockade hall
+$8F:C755             dx EED7, 32,05, 0098, ; Energy tank
+                        0000
 
-; Room $D81A, state $D827: PLM
-$8F:C75D             dx B76F,07,0B,0003, 0000
+; Room $D81A. Draygon save station
+$8F:C75D             dx B76F, 07,0B, 0003, ; Save station
+                        0000
 
-; Room $D845, state $D852: PLM
-$8F:C765             dx B6EB,08,0A,0099, 0000
+; Room $D845. Maridia missile station
+$8F:C765             dx B6EB, 08,0A, 0099, ; Missile station
+                        0000
 
-; Room $D86E, state $D87B: PLM
+; Room $D86E. Sandy Maridia quicksand fall
 $8F:C76D             dx 0000
 
-; Room $D898, state $D8A5: PLM
+; Room $D898. Maridia speed blockade quicksand fall
 $8F:C76F             dx 0000
 
-; Room $D8C5, state $D8D7: PLM
-; Room $D8C5, state $D8F1: PLM
+; Room $D8C5. Shaktool
 $8F:C771             dx 0000
 
-; Room $D913, state $D920: PLM
-$8F:C773             dx B703,10,29,D951, B703,0B,29,D956, B647,0B,28,8000, B647,0B,27,8000, B647,0B,26,8000, B703,0E,29,D95B, C848,01,16,009C, 0000
+; Room $D913. Maridia grapple wall shaft
+$8F:C773             dx B703, 10,29, D951, ; Scroll PLM
+                        B703, 0B,29, D956, ; Scroll PLM
+                        B647, 0B,28, 8000, ; Upwards extension
+                        B647, 0B,27, 8000, ; Upwards extension
+                        B647, 0B,26, 8000, ; Upwards extension
+                        B703, 0E,29, D95B, ; Scroll PLM
+                        C848, 01,16, 009C, ; Door. Grey door facing right
+                        0000
 
-; Room $D95E, state $D970: PLM
-; Room $D95E, state $D98A: PLM
-$8F:C79F             dx C848,01,06,049D, 0000
+; Room $D95E. Botwoon
+$8F:C79F             dx C848, 01,06, 049D, ; Door. Grey door facing right
+                        0000
 
-; Room $D9AA, state $D9B7: PLM
-$8F:C7A7             dx EF6F,04,08,009A, 0000
+; Room $D9AA. Space jump room
+$8F:C7A7             dx EF6F, 04,08, 009A, ; Space jump, chozo orb
+                        0000
 
-; Room $D9D4, state $D9E1: PLM
-$8F:C7AF             dx B6DF,08,0A,009B, 0000
+; Room $D9D4. Maridia energy station
+$8F:C7AF             dx B6DF, 08,0A, 009B, ; Energy station
+                        0000
 
-; Room $D9FE, state $DA0B: PLM
+; Room $D9FE. Maridia cacatac room west
 $8F:C7B7             dx 0000
 
-; Room $DA2B, state $DA38: PLM
+; Room $DA2B. Maridia cacatac room east
 $8F:C7B9             dx 0000
 
-; Room $DA60, state $DA72: PLM
-; Room $DA60, state $DA8C: PLM
-$8F:C7BB             dx C842,1E,06,009E, C848,01,16,009F, DF65,02,0B,8802, DF59,02,12,8804, DF71,1D,0F,8806, DF71,1D,15,8808, 0000
+; Room $DA60. Draygon
+$8F:C7BB             dx C842, 1E,06, 009E, ; Door. Grey door facing left
+                        C848, 01,16, 009F, ; Door. Grey door facing right
+                        DF65, 02,0B, 8802, ; Draygon cannon, facing right
+                        DF59, 02,12, 8804, ; Draygon cannon, with shield, facing right
+                        DF71, 1D,0F, 8806, ; Draygon cannon, with shield, facing left
+                        DF71, 1D,15, 8808, ; Draygon cannon, with shield, facing left
+                        0000
 
-; Room $DAAE, state $DABB: PLM
-$8F:C7E1             dx B70B,06,2C,8000, 0000
+; Room $DAAE. Tourian -> Crateria elevator
+$8F:C7E1             dx B70B, 06,2C, 8000, ; Elevator platform
+                        0000
 
-; Room $DAE1, state $DAF3: PLM
-; Room $DAE1, state $DB0D: PLM
-$8F:C7E9             dx DB44,08,08,0012, C848,01,06,0CA0, 0000
+; Room $DAE1. Metroid room 1
+$8F:C7E9             dx DB44, 08,08, 0012, ; Sets Metroids cleared states when required
+                        C848, 01,06, 0CA0, ; Door. Grey door facing right
+                        0000
 
-; Room $DB31, state $DB43: PLM
-; Room $DB31, state $DB5D: PLM
-$8F:C7F7             dx DB44,08,08,0014, C842,0E,16,0CA1, 0000
+; Room $DB31. Metroid room 2
+$8F:C7F7             dx DB44, 08,08, 0014, ; Sets Metroids cleared states when required
+                        C842, 0E,16, 0CA1, ; Door. Grey door facing left
+                        0000
 
-; Room $DB7D, state $DB8F: PLM
-; Room $DB7D, state $DBA9: PLM
-$8F:C805             dx DB44,08,08,0016, C842,5E,06,0CA2, 0000
+; Room $DB7D. Metroid room 3
+$8F:C805             dx DB44, 08,08, 0016, ; Sets Metroids cleared states when required
+                        C842, 5E,06, 0CA2, ; Door. Grey door facing left
+                        0000
 
-; Room $DBCD, state $DBDF: PLM
-; Room $DBCD, state $DBF9: PLM
-$8F:C813             dx DB44,08,08,0018, C84E,06,1E,0CA3, 0000
+; Room $DBCD. Metroid room 4
+$8F:C813             dx DB44, 08,08, 0018, ; Sets Metroids cleared states when required
+                        C84E, 06,1E, 0CA3, ; Door. Grey door facing up
+                        0000
 
-; Room $DC19, state $DC2B: PLM
-; Room $DC19, state $DC45: PLM
+; Room $DC19. Tourian super-sidehopper room
 $8F:C821             dx 0000
 
-; Room $DC65, state $DC77: PLM
-; Room $DC65, state $DC91: PLM
-$8F:C823             dx C842,1E,06,90A4, C848,01,06,0CA5, 0000
+; Room $DC65. Torizo corpse room
+$8F:C823             dx C842, 1E,06, 90A4, ; Door. Grey door facing left
+                        C848, 01,06, 0CA5, ; Door. Grey door facing right
+                        0000
 
-; Room $DCB1, state $DCC3: PLM
-; Room $DCB1, state $DCDD: PLM
-$8F:C831             dx C842,3E,06,90A6, 0000
+; Room $DCB1. Shitroid room
+$8F:C831             dx C842, 3E,06, 90A6, ; Door. Grey door facing left
+                        0000
 
-; Room $DCFF, state $DD0C: PLM
-$8F:C839             dx C88A,0E,16,00A7, 0000
+; Room $DCFF. Post Shitroid room
+$8F:C839             dx C88A, 0E,16, 00A7, ; Door. Red door facing left
+                        0000
 
-; Room $DD2E, state $DD3B: PLM
-$8F:C841             dx B6EB,08,0A,009C, B6DF,06,0A,009D, 0000
+; Room $DD2E. Tourian refill station
+$8F:C841             dx B6EB, 08,0A, 009C, ; Missile station
+                        B6DF, 06,0A, 009D, ; Energy station
+                        0000
 
-; Room $DD58, state $DD6E: PLM
-; Room $DD58, state $DD88: PLM
-; Room $DD58, state $DDA2: PLM
-$8F:C84F             dx D6DE,09,05,8000, 0000
+; Room $DD58. Mother Brain
+$8F:C84F             dx D6DE, 09,05, 8000, ; Mother Brain's glass
+                        0000
 
-; Room $DDC4, state $DDD1: PLM
-$8F:C857             dx DB5A,3E,06,00A8, DB60,3E,09,00A8, DB56,3E,07,00A8, 0000
+; Room $DDC4. Tourian eye-door room
+$8F:C857             dx DB5A, 3E,06, 00A8, ; Door. Eye door, facing left
+                        DB60, 3E,09, 00A8, ; Eye door bottom, facing left
+                        DB56, 3E,07, 00A8, ; Eye door eye, facing left
+                        0000
 
-; Room $DDF3, state $DE00: PLM
-$8F:C86B             dx C890,01,26,00A9, 0000
+; Room $DDF3. Pre Mother Brain shaft
+$8F:C86B             dx C890, 01,26, 00A9, ; Door. Red door facing right
+                        0000
 
-; Room $DE23, state $DE30: PLM
-$8F:C873             dx B76F,05,0B,0000, 0000
+; Room $DE23. Mother Brain save station
+$8F:C873             dx B76F, 05,0B, 0000, ; Save station
+                        0000
 
-; Room $DE4D, state $DE5A: PLM
-$8F:C87B             dx DB44,08,08,0000, C8CA,1F,06,8000, 0000
+; Room $DE4D. Escape room 1
+$8F:C87B             dx DB44, 08,08, 0000, ; Sets Metroids cleared states when required
+                        C8CA, 1F,06, 8000, ; Door. Gate that closes during escape in room after Mother Brain
+                        0000
 
-; Room $DE7A, state $DE87: PLM
-$8F:C889             dx DB44,08,08,0002, C854,06,03,90AA, 0000
+; Room $DE7A. Escape room 2
+$8F:C889             dx DB44, 08,08, 0002, ; Sets Metroids cleared states when required
+                        C854, 06,03, 90AA, ; Door. Grey door facing down
+                        0000
 
-; Room $DEA7, state $DEB4: PLM
-$8F:C897             dx DB44,08,08,0004, C848,01,16,90AB, 0000
+; Room $DEA7. Escape room 3
+$8F:C897             dx DB44, 08,08, 0004, ; Sets Metroids cleared states when required
+                        C848, 01,16, 90AB, ; Door. Grey door facing right
+                        0000
 
-; Room $DEDE, state $DEEB: PLM
-$8F:C8A5             dx DB44,08,08,0006, C848,01,36,90AC, 0000
+; Room $DEDE. Escape room 4
+$8F:C8A5             dx DB44, 08,08, 0006, ; Sets Metroids cleared states when required
+                        C848, 01,36, 90AC, ; Door. Grey door facing right
+                        0000
 
-; Room $DF1B, state $DF28: PLM
-$8F:C8B3             dx B76F,07,0B,0001, 0000
+; Room $DF1B. Tourian elevator save station
+$8F:C8B3             dx B76F, 07,0B, 0001, ; Save station
+                        0000
 
-; Room $DF45, state $DF57: PLM
-; Room $DF45, state $DF71: PLM
+; Room $DF45. Ceres elevator shaft
 $8F:C8BB             dx 0000
 
-; Room $DF8D, state $DF9F: PLM
-; Room $DF8D, state $DFB9: PLM
+; Room $DF8D. Ceres pre elevator hall
 $8F:C8BD             dx 0000
 
-; Room $DFD7, state $DFE9: PLM
-; Room $DFD7, state $E003: PLM
+; Room $DFD7. Ceres stairs
 $8F:C8BF             dx 0000
 
-; Room $E021, state $E033: PLM
-; Room $E021, state $E04D: PLM
+; Room $E021. Ceres baby metroid hall
 $8F:C8C1             dx 0000
 
-; Room $E06B, state $E07D: PLM
-; Room $E06B, state $E097: PLM
+; Room $E06B. Pre Ceres Ridley hall
 $8F:C8C3             dx 0000
 
-; Room $E0B5, state $E0C7: PLM
-; Room $E0B5, state $E0E1: PLM
+; Room $E0B5. Ceres Ridley
 $8F:C8C5             dx 0000
 }
 
@@ -6427,7 +7350,7 @@ $8F:E0FB             dw ABB8
 }
 
 
-;;; $E0FD: Library background ;;;
+;;; $E0FD: Library backgrounds ;;;
 {
 ; Room $CD13, state $CD25: Phantoon
 $8F:E0FD             dx 0002,7E2000,4800,1000, 0000
@@ -6577,7 +7500,7 @@ $8F:E247 60          RTS
 }
 
 
-;;; $E248: Library background ;;;
+;;; $E248: Library backgrounds ;;;
 {
 ; Room $D08A, state $D097: Maridia green gate hall
 $8F:E248             dx 0004,BAA475,4000, 0002,7E4000,4800,1000, 0000
@@ -6875,7 +7798,7 @@ $8F:E3E7 60          RTS
 }
 
 
-;;; $E3E8: Library background ;;;
+;;; $E3E8: Library backgrounds ;;;
 {
 ; Room $DAAE, state $DABB: Tourian -> Crateria elevator
 ; Room $DB31, state $DB43: Metroid room 2
