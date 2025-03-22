@@ -3871,103 +3871,127 @@ $8F:B768             dw 9AB6
 
 ;;; $B76A: Library backgrounds ;;;
 {
-; Room $91F8, state $9213: Landing site
-; Room $91F8, state $922D: Landing site
-; Room $91F8, state $9247: Landing site
-; Room $91F8, state $9261: Landing site
-;                                                   ; Y position (in scrolls) of door in room
-$8F:B76A             dx 000E,8946,8AC180,4800,0800, ; 2
-                        000E,896A,8AD180,4800,0800, ; 4
-                        000E,89B2,8AB980,4C00,0800, ; 1
-                        000E,8AC6,8AD180,4800,0800, ; 4
-                        000E,88FE,8AB180,4800,0800, ; 0
-                        000E,890A,8AC180,4800,0800, ; 2
+; Room $91F8. Landing site
+$8F:B76A             dx 000E, 8946, 8AC180, 4800, 0800, ; Transfer 800h from $8A:C180 to VRAM $4800 if door pointer = $8946
+                        000E, 896A, 8AD180, 4800, 0800, ; Transfer 800h from $8A:D180 to VRAM $4800 if door pointer = $896A
+                        000E, 89B2, 8AB980, 4C00, 0800, ; Transfer 800h from $8A:B980 to VRAM $4C00 if door pointer = $89B2
+                        000E, 8AC6, 8AD180, 4800, 0800, ; Transfer 800h from $8A:D180 to VRAM $4800 if door pointer = $8AC6
+                        000E, 88FE, 8AB180, 4800, 0800, ; Transfer 800h from $8A:B180 to VRAM $4800 if door pointer = $88FE
+                        000E, 890A, 8AC180, 4800, 0800, ; Transfer 800h from $8A:C180 to VRAM $4800 if door pointer = $890A
                         0000
 
-; Room $93FE, state $940B: Wrecked Ship entrance
-$8F:B7AE             dx 000E,8A12,8AC180,4800,0800, ; 2
-                        000E,8AEA,8AD980,4800,0800, ; 4
-                        000E,A18C,8AB980,4C00,0800, ; 1
-                        000E,A1B0,8AD980,4800,0800, ; 4
-                        000E,A1E0,8AB180,4800,0800, ; 0
-                        000E,A300,8AC980,4C00,0800, ; 3
+; Room $93FE. Wrecked Ship entrance
+$8F:B7AE             dx 000E, 8A12, 8AC180, 4800, 0800, ; Transfer 800h from $8A:C180 to VRAM $4800 if door pointer = $8A12
+                        000E, 8AEA, 8AD980, 4800, 0800, ; Transfer 800h from $8A:D980 to VRAM $4800 if door pointer = $8AEA
+                        000E, A18C, 8AB980, 4C00, 0800, ; Transfer 800h from $8A:B980 to VRAM $4C00 if door pointer = $A18C
+                        000E, A1B0, 8AD980, 4800, 0800, ; Transfer 800h from $8A:D980 to VRAM $4800 if door pointer = $A1B0
+                        000E, A1E0, 8AB180, 4800, 0800, ; Transfer 800h from $8A:B180 to VRAM $4800 if door pointer = $A1E0
+                        000E, A300, 8AC980, 4C00, 0800, ; Transfer 800h from $8A:C980 to VRAM $4C00 if door pointer = $A300
                         0000
 
-; Room $94FD, state $950A: Wrecked Ship back door
-$8F:B7F2             dx 000E,8A7E,8AD980,4800,0800, ; 4
-                        000E,A264,8AD980,4800,0800, ; 4
+; Room $94FD. Wrecked Ship back door
+$8F:B7F2             dx 000E, 8A7E, 8AD980, 4800, 0800, ; Transfer 800h from $8A:D980 to VRAM $4800 if door pointer = $8A7E
+                        000E, A264, 8AD980, 4800, 0800, ; Transfer 800h from $8A:D980 to VRAM $4800 if door pointer = $A264
                         0000
 
-; Room $968F, state $969C: Orange zoomer hall
-$8F:B80A             dx 0002,8AC180,4800,0800, 0000
+; Room $968F. Orange zoomer hall
+$8F:B80A             dx 0002, 8AC180, 4800, 0800, ; Transfer 800h from $8A:C180 to VRAM $4800
+                        0000
 
-; Room $A59F, state $A5B1: Kraid
-$8F:B815             dx 0008,9AB200,2000,1000, 0004,B9FA38,4000, 0002,7E4000,4000,1000, 0004,B9FE3E,4000, 0002,7E4000,4800,1000, 0000
+; Room $A59F, state $A5B1. Kraid - default
+$8F:B815             dx 0008, 9AB200, 2000, 1000, ; Transfer 1000h from $9A:B200 to VRAM $2000 and set BG3 tiles base address = $2000
+                        0004, B9FA38, 4000,       ; Decompress $B9:FA38 to $7E:4000
+                        0002, 7E4000, 4000, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4000
+                        0004, B9FE3E, 4000,       ; Decompress $B9:FE3E to $7E:4000
+                        0002, 7E4000, 4800, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4800
+                        0000
 
-; Room $A59F, state $A5CB: Kraid
-$8F:B840             dx 0008,9AB200,2000,1000, 000C, 0000
+; Room $A59F, state $A5CB. Kraid - main area boss is dead
+$8F:B840             dx 0008, 9AB200, 2000, 1000, ; Transfer 1000h from $9A:B200 to VRAM $2000 and set BG3 tiles base address = $2000
+                        000C,                     ; Clear Kraid's BG2 tilemap
+                        0000
 
-; Room $A98D, state $A99F: Crocomire
-$8F:B84D             dx 0002,7E2000,4800,1000, 0000
+; Room $A98D, state $A99F. Crocomire - default
+$8F:B84D             dx 0002, 7E2000, 4800, 1000, ; Transfer 1000h from $7E:2000 to VRAM $4800
+                        0000
 
-; Room $A98D, state $A9B9: Crocomire
-$8F:B858             dx 0002,7E2000,4800,1000, 0000
+; Room $A98D, state $A9B9. Crocomire - area mini-boss is dead
+$8F:B858             dx 0002, 7E2000, 4800, 1000, ; Transfer 1000h from $7E:2000 to VRAM $4800
+                        0000
 
 ; Unused
-$8F:B863             dx 0004,B9FF4E,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:B863             dx 0004, B9FF4E, 4000,       ; Decompress $B9:FF4E to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9552, state $955F: East Crateria kago shaft
-; Room $95A8, state $95B5: Post Crateria maze yellow door
-$8F:B87E             dx 0004,BA807E,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9552. Forgotten highway kago shaft
+; Room $95A8. Forgotten highway elbow
+$8F:B87E             dx 0004, BA807E, 4000,       ; Decompress $BA:807E to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $92B3, state $92C5: Gauntlet east
-; Room $92B3, state $92DF: Gauntlet east
-; Room $9461, state $946E: Pre orange zoomer hall
-; Room $965B, state $9668: Gauntlet west
-$8F:B899             dx 0004,BA82C4,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $92B3. Gauntlet east
+; Room $9461. Pre orange zoomer hall
+; Room $965B. Gauntlet west
+$8F:B899             dx 0004, BA82C4, 4000,       ; Decompress $BA:82C4 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $92FD, state $9314: Crateria mainstreet
-; Room $92FD, state $932E: Crateria mainstreet
-; Room $92FD, state $9348: Crateria mainstreet
-; Room $93AA, state $93B7: Landing site power bombs cave
-; Room $948C, state $9499: Pre moat room
-; Room $957D, state $958A: East Crateria maze
-; Room $95FF, state $960C: Moat
-$8F:B8B4             dx 0004,BA8437,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $92FD. Crateria mainstreet
+; Room $93AA. Landing site power bombs cave
+; Room $948C. Pre moat room
+; Room $957D. Crab maze
+; Room $95FF. Moat
+$8F:B8B4             dx 0004, BA8437, 4000,       ; Decompress $BA:8437 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $990D, state $991A: Crateria slope
-; Room $9969, state $9976: West Crateria kago hall
-$8F:B8CF             dx 0004,BA85BA,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $990D. Crateria slope
+; Room $9969. West Crateria kago hall
+$8F:B8CF             dx 0004, BA85BA, 4000,       ; Decompress $BA:85BA to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9879, state $9890: Pre Bomb Torizo hall
-; Room $9879, state $98AA: Pre Bomb Torizo hall
-; Room $9879, state $98C4: Pre Bomb Torizo hall
-$8F:B8EA             dx 0004,BA86FC,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9879. Pre Bomb Torizo hall
+$8F:B8EA             dx 0004, BA86FC, 4000,       ; Decompress $BA:86FC to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $96BA, state $96D1: Old Tourian escape shaft
-; Room $96BA, state $96EB: Old Tourian escape shaft
-; Room $96BA, state $9705: Old Tourian escape shaft
-; Room $975C, state $976D: Old Mother Brain room
-; Room $975C, state $9787: Old Mother Brain room
-; Room $9804, state $981B: Bomb Torizo
-; Room $9804, state $9835: Bomb Torizo
-; Room $9804, state $984F: Bomb Torizo
-; Room $99F9, state $9A06: Crateria spike floor room
-; Room $9A90, state $9AA2: Crateria chozo missile
-; Room $9A90, state $9ABC: Crateria chozo missile
-$8F:B905             dx 0004,BA8780,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $96BA. Old Tourian escape shaft
+; Room $975C. Old Mother Brain room
+; Room $9804. Bomb Torizo
+; Room $99F9. Crateria spike floor room
+; Room $9A90. Crateria chozo missile
+$8F:B905             dx 0004, BA8780, 4000,       ; Decompress $BA:8780 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $98E2, state $98EF: Pre Crateria map station hall
-$8F:B920             dx 0004,BA8A49,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $98E2. Pre Crateria map station hall
+$8F:B920             dx 0004, BA8A49, 4000,       ; Decompress $BA:8A49 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $94CC, state $94D9: Crateria -> Maridia elevator
-; Room $962A, state $9637: Crateria -> Red Brinstar elevator
-$8F:B93B             dx 0004,BA8ACD,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $94CC. Crateria -> Maridia elevator
+; Room $962A. Crateria -> Red Brinstar elevator
+$8F:B93B             dx 0004, BA8ACD, 4000,       ; Decompress $BA:8ACD to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $99BD, state $99CA: Crateria space pirate shaft
-; Room $9A44, state $9A56: Crateria bomb block hall
-; Room $9A44, state $9A70: Crateria bomb block hall
-$8F:B956             dx 0004,BA8DBD,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $99BD. Crateria space pirate shaft
+; Room $9A44. Crateria bomb block hall
+$8F:B956             dx 0004, BA8DBD, 4000,       ; Decompress $BA:8DBD to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 }
 
 
@@ -4147,98 +4171,180 @@ $8F:BA36 60          RTS
 
 ;;; $BA37: Library backgrounds ;;;
 {
-; Room $9AD9, state $9AE6: Green Brinstar mainstreet
-$8F:BA37             dx 0004,B9C972,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9AD9. Green Brinstar mainstreet
+$8F:BA37             dx 0004, B9C972, 4000,       ; Decompress $B9:C972 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9D9C, state $9DA9: Pre Spore Spawn hall
-; Room $9FBA, state $9FC7: n00b bridge
-; Room $9FE5, state $9FF2: Brinstar false floor beetom room
-; Room $A011, state $A01E: Brinstar false floor spike hall
-; Room $A051, state $A05E: Brinstar post false floor super missiles
-$8F:BA52             dx 0004,B9CD01,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9D9C. Pre Spore Spawn hall
+; Room $9FBA. n00b bridge
+; Room $9FE5. Etecoon area beetom room
+; Room $A011. Etecoon area spike hall
+; Room $A051. Etecoon area super missiles
+$8F:BA52             dx 0004, B9CD01, 4000,       ; Decompress $B9:CD01 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9C07, state $9C14: Brinstar reserve tank room
-$8F:BA6D             dx 0004,B9CE9F,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9C07. Brinstar reserve tank room
+$8F:BA6D             dx 0004, B9CE9F, 4000,       ; Decompress $B9:CE9F to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9B9D, state $9BAA: Pre Brinstar map room hall
-$8F:BA88             dx 0004,B9CFF8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9B9D. Pre Brinstar map room hall
+$8F:BA88             dx 0004, B9CFF8, 4000,       ; Decompress $B9:CFF8 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9BC8, state $9BD5: Early supers room
-; Room $9E11, state $9E1E: Brinstar false wall super-sidehopper power bomb room
-; Room $A0D2, state $A0DF: Pink Brinstar flooded hall
-; Room $A130, state $A13D: Brinstar sidehopper wave-gate room
-$8F:BAA3             dx 0004,B9D1FB,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9BC8. Early supers room
+; Room $9E11. Brinstar super-sidehopper power bomb room
+; Room $A0D2. Pink Brinstar flooded hall
+; Room $A130. Brinstar wave-gate sidehopper room
+$8F:BAA3             dx 0004, B9D1FB, 4000,       ; Decompress $B9:D1FB to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9B5B, state $9B68: Spore Spawn's super missile shaft
-; Room $9F11, state $9F23: Old Kraid entrance
-; Room $9F11, state $9F3D: Old Kraid entrance
-; Room $A107, state $A114: Blue Brinstar missile room
-$8F:BABE             dx 0004,B9D38F,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9B5B. Spore Spawn's super missile shaft
+; Room $9F11. Old Kraid entrance
+; Room $A107. Blue Brinstar missile room
+$8F:BABE             dx 0004, B9D38F, 4000,       ; Decompress $B9:D38F to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9E52, state $9E5F: Brinstar diagonal room
-$8F:BAD9             dx 0004,B9D3C5,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9E52. Brinstar diagonal room
+$8F:BAD9             dx 0004, B9D3C5, 4000,       ; Decompress $B9:D3C5 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $9E9F, state $9EB1: Morph ball room
-; Room $9E9F, state $9ECB: Morph ball room
-; Room $9F64, state $9F76: Blue Brinstar ceiling e-tank hall
-; Room $9F64, state $9F90: Blue Brinstar ceiling e-tank hall
-; Room $A1AD, state $A1BA: Blue Brinstar boulder room
-; Room $A1D8, state $A1E5: Blue Brinstar double missile room
-$8F:BAF4             dx 0004,B9D3FB,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Unused
-$8F:BB0F             dx 0004,B9D56A,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-$8F:BB2A             dx 0004,B9D5A1,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $9D19, state $9D26: Charge beam room
-$8F:BB45             dx 0004,B9D5D8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A66A, state $A677: Tourian entrance
-$8F:BB60             dx 0004,BAC4BC,4000, 0002,7E4000,4800,1000, 0002,87AD64,6D00,0600, 0000
-
-; Room $A253, state $A260: Red Brinstar mainstreet
-$8F:BB7B             dx 0004,B9D715,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Unused
-$8F:BB96             dx 0004,B9D99C,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-$8F:BBB1             dx 0004,B9DE11,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A2F7, state $A304: Red Brinstar damage boost hall
-$8F:BBCC             dx 0004,B9E1B3,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A37C, state $A389: Red Brinstar super-sidehopper power bomb floor room
-; Room $A3DD, state $A3EA: Red Brinstar skree-duo hall
-$8F:BBE7             dx 0004,B9E61C,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A408, state $A415: Pre spazer room
-$8F:BC02             dx 0004,B9E885,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $9E9F. Morph ball room
+; Room $9F64. Blue Brinstar ceiling e-tank hall
+; Room $A1AD. Blue Brinstar boulder room
+; Room $A1D8. Blue Brinstar double missile room
+$8F:BAF4             dx 0004, B9D3FB, 4000,       ; Decompress $B9:D3FB to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
 ; Unused
-$8F:BC1D             dx 0004,B9E94F,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A2CE, state $A2DB: X-ray room
-$8F:BC38             dx 0004,B9EA80,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A6A1, state $A6AE: Kraid's lair entrance
-$8F:BC53             dx 0004,B9EBC7,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-
-; Room $A521, state $A533: Fake Kraid's room
-; Room $A521, state $A54D: Fake Kraid's room
-$8F:BC6E             dx 0004,B9EE52,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:BB0F             dx 0004, B9D56A, 4000,       ; Decompress $B9:D56A to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
 ; Unused
-$8F:BC89             dx 0004,B9F11D,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:BB2A             dx 0004, B9D5A1, 4000,       ; Decompress $B9:D5A1 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $A5ED, state $A5FA: Pre Tourian hall
-$8F:BCA4             dx 0004,B9F1C8,4000, 0002,7E4000,4800,1000, 0000
+; Room $9D19. Charge beam room
+$8F:BB45             dx 0004, B9D5D8, 4000,       ; Decompress $B9:D5D8 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A66A. Tourian entrance
+$8F:BB60             dx 0004, BAC4BC, 4000,       ; Decompress $BA:C4BC to $7E:4000
+                        0002, 7E4000, 4800, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4800
+                        0002, 87AD64, 6D00, 0600, ; Transfer 600h from $87:AD64 to VRAM $6D00
+                        0000
+
+; Room $A253. Red Brinstar mainstreet
+$8F:BB7B             dx 0004, B9D715, 4000,       ; Decompress $B9:D715 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
 ; Unused
-$8F:BCB6             dx 0004,B9F70D,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
-$8F:BCD1             dx 0004,B9F72E,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:BB96             dx 0004, B9D99C, 4000,       ; Decompress $B9:D99C to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $A3AE, state $A3BB: Early power bombs room
-; Room $A447, state $A454: Spazer room
-$8F:BCEC             dx 0004,B9F94F,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Unused
+$8F:BBB1             dx 0004, B9DE11, 4000,       ; Decompress $B9:DE11 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A2F7. Red Brinstar damage boost hall
+$8F:BBCC             dx 0004, B9E1B3, 4000,       ; Decompress $B9:E1B3 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A37C. Red Brinstar power bomb floor room
+; Room $A3DD. Red Brinstar skree-duo hall
+$8F:BBE7             dx 0004, B9E61C, 4000,       ; Decompress $B9:E61C to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A408. Pre spazer room
+$8F:BC02             dx 0004, B9E885, 4000,       ; Decompress $B9:E885 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Unused
+$8F:BC1D             dx 0004, B9E94F, 4000,       ; Decompress $B9:E94F to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A2CE. X-ray room
+$8F:BC38             dx 0004, B9EA80, 4000,       ; Decompress $B9:EA80 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A6A1. Kraid's lair entrance
+$8F:BC53             dx 0004, B9EBC7, 4000,       ; Decompress $B9:EBC7 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A521. Fake Kraid's room
+$8F:BC6E             dx 0004, B9EE52, 4000,       ; Decompress $B9:EE52 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Unused
+$8F:BC89             dx 0004, B9F11D, 4000,       ; Decompress $B9:F11D to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A5ED. Pre Tourian entrance hall
+$8F:BCA4             dx 0004, B9F1C8, 4000,       ; Decompress $B9:F1C8 to $7E:4000
+                        0002, 7E4000, 4800, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4800
+                        0000
+
+; Unused
+$8F:BCB6             dx 0004, B9F70D, 4000,       ; Decompress $B9:F70D to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Unused
+$8F:BCD1             dx 0004, B9F72E, 4000,       ; Decompress $B9:F72E to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
+
+; Room $A3AE. Red Brinstar power bomb wall room
+; Room $A447. Spazer room
+$8F:BCEC             dx 0004, B9F94F, 4000,       ; Decompress $B9:F94F to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 }
 
 
@@ -4535,86 +4641,124 @@ $8F:BE3E 60          RTS
 
 ;;; $BE3F: Library backgrounds ;;;
 {
-; Room $A75D, state $A76A: Post ice beam mockball hall
-; Room $A865, state $A872: Ice beam practice room
-; Room $A9E5, state $A9F2: Hi-jump room
-; Room $AD1B, state $AD28: Speed booster room
-; Room $B106, state $B113: Norfair speed blockade hall
-$8F:BE3F             dx 0004,B9A634,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $A75D. Ice beam tripper hall
+; Room $A865. Ice beam practice room
+; Room $A9E5. Hi-jump room
+; Room $AD1B. Speed booster room
+; Room $B106. Norfair speed blockade hall
+$8F:BE3F             dx 0004, B9A634, 4000,       ; Decompress $B9:A634 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $A815, state $A822: Ice beam mockball hall
-; Room $A890, state $A89D: Ice beam room
-; Room $A8B9, state $A8C6: Pre ice beam shaft
-; Room $A923, state $A930: Norfair slope
-; Room $AB64, state $AB71: Double lake grapple practice room
-; Room $ACF0, state $ACFD: Speed booster lavaquake
-; Room $AF14, state $AF21: Lower Norfair entrance
-; Room $B4E5, state $B4F2: Lower Norfair lavaquake room
-; Room $B585, state $B592: Lower Norfair kihunter shaft
-$8F:BE5A             dx 0004,B9A714,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $A815. Ice beam mockball hall
+; Room $A890. Ice beam room
+; Room $A8B9. Pre ice beam shaft
+; Room $A923. Norfair slope
+; Room $AB64. Double lake grapple practice room
+; Room $ACF0. Speed booster lavaquake
+; Room $AF14. Lava dive room
+; Room $B4E5. Lower Norfair rising acid room
+; Room $B585. Lower Norfair south kihunter shaft
+$8F:BE5A             dx 0004, B9A714, 4000,       ; Decompress $B9:A714 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
 ; Unused
-$8F:BE75             dx 0004,B9A75E,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:BE75             dx 0004, B9A75E, 4000,       ; Decompress $B9:A75E to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B3E1, state $B3EE: Unused room
-$8F:BE90             dx 0004,B9A7A8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B3E1. Unused room
+$8F:BE90             dx 0004, B9A7A8, 4000,       ; Decompress $B9:A7A8 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B3A5, state $B3B2: Lower Norfair power bomb floor shaft
-$8F:BEAB             dx 0004,B9A83A,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B3A5. Pre pillars hall
+$8F:BEAB             dx 0004, B9A83A, 4000,       ; Decompress $B9:A83A to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $AADE, state $AAEB: Post Crocomire power bombs room
-; Room $AB3B, state $AB48: Post Crocomire fluctuating acid missiles cave
-; Room $AC00, state $AC0D: Single lake grapple practice room
-; Room $ADDE, state $ADEB: Wave beam room
-; Room $AE07, state $AE14: Norfair sinking kamer hall
-; Room $AEB4, state $AEC1: Norfair multiviola and lavamen hall
-; Room $AF3F, state $AF4C: Norfair -> Lower Norfair elevator
-; Room $AFA3, state $AFB0: Norfair long lavaquake hall
-; Room $AFCE, state $AFDB: Boring near-Crocomire hall
-; Room $AFFB, state $B008: Norfair spike floor hall
-$8F:BEC6             dx 0004,B9AC83,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $AADE. Post Crocomire power bombs room
+; Room $AB3B. Post Crocomire tidal acid cave
+; Room $AC00. Single lake grapple practice room
+; Room $ADDE. Wave beam room
+; Room $AE07. Norfair sinking tripper hall
+; Room $AEB4. Magdollite multiviola hall
+; Room $AF3F. Norfair -> Lower Norfair elevator
+; Room $AFA3. Norfair long lavaquake hall
+; Room $AFCE. Norfair metal floor hall
+; Room $AFFB. Norfair lava-spike hall
+$8F:BEC6             dx 0004, B9AC83, 4000,       ; Decompress $B9:AC83 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $A7DE, state $A7EB: Norfair mainstreet
-; Room $A8F8, state $A905: Crumble block platform shaft
-; Room $AB07, state $AB14: Post Crocomire shaft
-; Room $ABD2, state $ABDF: Grapple practice shaft
-; Room $AC2B, state $AC38: Grapple room
-; Room $B139, state $B146: Norfair stone zoomer shaft
-$8F:BEE1             dx 0004,B9AEFF,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $A7DE. Norfair mainstreet
+; Room $A8F8. Crumble block platform shaft
+; Room $AB07. Post Crocomire shaft
+; Room $ABD2. Grapple practice shaft
+; Room $AC2B. Grapple room
+; Room $B139. Norfair stone zoomer shaft
+$8F:BEE1             dx 0004, B9AEFF, 4000,       ; Decompress $B9:AEFF to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B4AD, state $B4BA: Lower Norfair wall jumping space pirates shaft
-$8F:BEFC             dx 0004,B9B2F0,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B4AD. Lower Norfair wall space pirates shaft
+$8F:BEFC             dx 0004, B9B2F0, 4000,       ; Decompress $B9:B2F0 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B236, state $B243: Lower Norfair mainstreet
-; Room $B2DA, state $B2E7: Screw attack practice
-; Room $B457, state $B464: Lower Norfair breakable pillars hall
-$8F:BF17             dx 0004,B9B6BB,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B236. Lower Norfair mainstreet
+; Room $B2DA. Ripper ii room
+; Room $B457. Pillars hall
+$8F:BF17             dx 0004, B9B6BB, 4000,       ; Decompress $B9:B6BB to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B1E5, state $B1F2: Golden chozo statue lava lake
-; Room $B32E, state $B340: Ridley
-; Room $B32E, state $B35A: Ridley
-; Room $B55A, state $B567: Lower Norfair crumble walls power bomb room
-; Room $B5D5, state $B5E2: Lower Norfair super desgeega hall
-; Room $B698, state $B6A5: Ridley's energy tank
-; Room $B6C1, state $B6CE: Screw attack shaft
-$8F:BF32             dx 0004,B9BBA5,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B1E5. Lower Norfair chozo room
+; Room $B32E. Ridley
+; Room $B55A. Lower Norfair escape power bomb room
+; Room $B5D5. Lower Norfair spike platform room
+; Room $B698. Ridley's energy tank
+; Room $B6C1. Screw attack room
+$8F:BF32             dx 0004, B9BBA5, 4000,       ; Decompress $B9:BBA5 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $B37A, state $B387: Pre Ridley hall
-; Room $B482, state $B48F: Lower Norfair holtz room
-; Room $B62B, state $B638: Elite pirate hall
-$8F:BF4D             dx 0004,B9BF3B,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $B37A. Pre Ridley hall
+; Room $B482. Lower Norfair holtz room
+; Room $B62B. Ninja space pirate hall
+$8F:BF4D             dx 0004, B9BF3B, 4000,       ; Decompress $B9:BF3B to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $AC5A, state $AC67: Bubble Norfair reserve tank room
-; Room $AEDF, state $AEEC: Pre "useless cave" shaft
-; Room $B051, state $B05E: "useless cave"
-; Room $B40A, state $B417: Lower Norfair multi-level one-way shaft
-; Room $B510, state $B51D: Lower Norfair mini metal maze room
-; Room $B656, state $B663: Impossible's x-ray room
-$8F:BF68             dx 0004,B9C26F,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $AC5A. Bubble Norfair reserve tank room
+; Room $AEDF. Purple shaft
+; Room $B051. Purple farming room
+; Room $B40A. Lower Norfair multi-level one-way shaft
+; Room $B510. Lower Norfair spring ball maze room
+; Room $B656. Lower Norfair north kihunter shaft
+$8F:BF68             dx 0004, B9C26F, 4000,       ; Decompress $B9:C26F to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $AC83, state $AC90: Bubble Norfair pre reserve tank room
-; Room $ACB3, state $ACC0: Bubble Norfair mainstreet
-$8F:BF83             dx 0004,B9C5C8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $AC83. Pre Bubble Norfair reserve tank room
+; Room $ACB3. Bubble Norfair mainstreet
+$8F:BF83             dx 0004, B9C5C8, 4000,       ; Decompress $B9:C5C8 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 }
 
 
@@ -7352,57 +7496,71 @@ $8F:E0FB             dw ABB8
 
 ;;; $E0FD: Library backgrounds ;;;
 {
-; Room $CD13, state $CD25: Phantoon
-$8F:E0FD             dx 0002,7E2000,4800,1000, 0000
+; Room $CD13, state $CD25. Phantoon - default
+$8F:E0FD             dx 0002, 7E2000, 4800, 1000, ; Transfer 1000h from $7E:2000 to VRAM $4800
+                        0000
 
-; Room $DA60, state $DA72: Draygon
-$8F:E108             dx 0002,7E2000,4800,1000, 0000
+; Room $DA60, state $DA72. Draygon - default
+$8F:E108             dx 0002, 7E2000, 4800, 1000, ; Transfer 1000h from $7E:2000 to VRAM $4800
+                        0000
 
-; Room $CD13, state $CD3F: Phantoon
-; Room $DA60, state $DA8C: Draygon
-$8F:E113             dx 000A, 0000
+; Room $CD13, state $CD3F. Phantoon - main area boss is dead
+; Room $DA60, state $DA8C. Draygon - main area boss is dead
+$8F:E113             dx 000A,                     ; Clear BG2 tilemap
+                        0000
 
-; Room $CA08, state $CA1A: Wrecked Ship entrance treadmill
-; Room $CA08, state $CA34: Wrecked Ship entrance treadmill
-; Room $E82C, state $E839: Debug room
-$8F:E117             dx 0004,BA8DE7,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CA08. Wrecked Ship entrance treadmill
+; Room $E82C. Debug room
+$8F:E117             dx 0004, BA8DE7, 4000,       ; Decompress $BA:8DE7 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
 ; Unused
-$8F:E132             dx 0004,BA9023,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:E132             dx 0004, BA9023, 4000,       ; Decompress $BA:9023 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $CB8B, state $CB9D: Wrecked Ship flooded spikey hall
-; Room $CB8B, state $CBB7: Wrecked Ship flooded spikey hall
-; Room $CC6F, state $CC81: Pre Phantoon hall
-; Room $CC6F, state $CC9B: Pre Phantoon hall
-$8F:E14D             dx 0004,BA9386,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CB8B. Wrecked Ship spike platform hall
+; Room $CC6F. Pre Phantoon hall
+$8F:E14D             dx 0004, BA9386, 4000,       ; Decompress $BA:9386 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $CA52, state $CA64: Wrecked Ship attic
-; Room $CA52, state $CA7E: Wrecked Ship attic
-$8F:E168             dx 0004,BA988D,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CA52. Wrecked Ship attic
+$8F:E168             dx 0004, BA988D, 4000,       ; Decompress $BA:988D to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $CD5C, state $CD6E: Wrecked Ship first flooded room
-; Room $CD5C, state $CD88: Wrecked Ship first flooded room
-; Room $CDA8, state $CDBA: Wrecked Ship obvious super missile room
-; Room $CDA8, state $CDD4: Wrecked Ship obvious super missile room
-; Room $CDF1, state $CE1D: Wrecked Ship hidden super missile hall
-; Room $CE40, state $CE52: Gravity suit room
-; Room $CE40, state $CE6C: Gravity suit room
-$8F:E183             dx 0004,BA9C35,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CD5C. Wrecked Ship first flooded room
+; Room $CDA8. Wrecked Ship west super missile room
+; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CE40. Gravity suit room
+$8F:E183             dx 0004, BA9C35, 4000,       ; Decompress $BA:9C35 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $CAF6, state $CB08: Wrecked Ship mainstreet
-; Room $CAF6, state $CB22: Wrecked Ship mainstreet
-; Room $CBD5, state $CBE7: Wrecked Ship east exit
-; Room $CBD5, state $CC01: Wrecked Ship east exit
-; Room $CDF1, state $CE03: Wrecked Ship hidden super missile hall
-$8F:E19E             dx 0004,BA9F12,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CAF6. Wrecked Ship mainstreet
+; Room $CBD5. Wrecked Ship east exit
+; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+$8F:E19E             dx 0004, BA9F12, 4000,       ; Decompress $BA:9F12 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $CAAE, state $CAC0: Wrecked Ship attic missile tank room
-; Room $CAAE, state $CADA: Wrecked Ship attic missile tank room
-$8F:E1B9             dx 0004,BAA119,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $CAAE. Wrecked Ship attic missile tank room
+$8F:E1B9             dx 0004, BAA119, 4000,       ; Decompress $BA:A119 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DF45, state $DF57: Ceres elevator shaft
-; Room $DF45, state $DF71: Ceres elevator shaft
-$8F:E1D4             dx 000A, 0000
+; Room $DF45. Ceres elevator shaft
+$8F:E1D4             dx 000A,                     ; Clear BG2 tilemap
+                        0000
 }
 
 
@@ -7502,12 +7660,16 @@ $8F:E247 60          RTS
 
 ;;; $E248: Library backgrounds ;;;
 {
-; Room $D08A, state $D097: Maridia green gate hall
-$8F:E248             dx 0004,BAA475,4000, 0002,7E4000,4800,1000, 0000
+; Room $D08A. Maridia green gate hall
+$8F:E248             dx 0004, BAA475, 4000,       ; Decompress $BA:A475 to $7E:4000
+                        0002, 7E4000, 4800, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4800
+                        0000
 
-; Room $D461, state $D46E: Sand falls west
-; Room $D4C2, state $D4CF: Sand falls east
-$8F:E25A             dx 0004,BAA69F,4000, 0002,7E4000,4800,1000, 0000
+; Room $D461. Evir hall west
+; Room $D4C2. Evir hall east
+$8F:E25A             dx 0004, BAA69F, 4000,       ; Decompress $BA:A69F to $7E:4000
+                        0002, 7E4000, 4800, 1000, ; Transfer 1000h from $7E:4000 to VRAM $4800
+                        0000
 }
 
 
@@ -7800,52 +7962,64 @@ $8F:E3E7 60          RTS
 
 ;;; $E3E8: Library backgrounds ;;;
 {
-; Room $DAAE, state $DABB: Tourian -> Crateria elevator
-; Room $DB31, state $DB43: Metroid room 2
-; Room $DB31, state $DB5D: Metroid room 2
-; Room $DBCD, state $DBDF: Metroid room 4
-; Room $DBCD, state $DBF9: Metroid room 4
-$8F:E3E8             dx 0004,BAAA78,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DAAE. Tourian -> Crateria elevator
+; Room $DB31. Metroid room 2
+; Room $DBCD. Metroid room 4
+$8F:E3E8             dx 0004, BAAA78, 4000,       ; Decompress $BA:AA78 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DAE1, state $DAF3: Metroid room 1
-; Room $DAE1, state $DB0D: Metroid room 1
-; Room $DB7D, state $DB8F: Metroid room 3
-; Room $DB7D, state $DBA9: Metroid room 3
-$8F:E403             dx 0004,BAADF0,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DAE1. Metroid room 1
+; Room $DB7D. Metroid room 3
+$8F:E403             dx 0004, BAADF0, 4000,       ; Decompress $BA:ADF0 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DC19, state $DC2B: Tourian super-sidehopper room
-; Room $DC19, state $DC45: Tourian super-sidehopper room
-; Room $DC65, state $DC77: Drained Torizo room
-; Room $DC65, state $DC91: Drained Torizo room
-; Room $DCB1, state $DCC3: Shitroid room
-; Room $DCB1, state $DCDD: Shitroid room
-; Room $DCFF, state $DD0C: Post Shitroid room
-; Room $DDC4, state $DDD1: Tourian eye-door room
-$8F:E41E             dx 0004,BAAFE6,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DC19. Tourian super-sidehopper room
+; Room $DC65. Torizo corpse room
+; Room $DCB1. Shitroid room
+; Room $DCFF. Post Shitroid room
+; Room $DDC4. Tourian eye-door room
+$8F:E41E             dx 0004, BAAFE6, 4000,       ; Decompress $BA:AFE6 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DE4D, state $DE5A: Escape room 1
-$8F:E439             dx 0004,BAB36B,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DE4D. Escape room 1
+$8F:E439             dx 0004, BAB36B, 4000,       ; Decompress $BA:B36B to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DDF3, state $DE00: Pre Mother Brain shaft
-; Room $DE7A, state $DE87: Escape room 2
-$8F:E454             dx 0004,BAB5D8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DDF3. Pre Mother Brain shaft
+; Room $DE7A. Escape room 2
+$8F:E454             dx 0004, BAB5D8, 4000,       ; Decompress $BA:B5D8 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DEA7, state $DEB4: Escape room 3
-; Room $DEDE, state $DEEB: Escape room 4
-$8F:E46F             dx 0004,BAB9A3,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DEA7. Escape room 3
+; Room $DEDE. Escape room 4
+$8F:E46F             dx 0004, BAB9A3, 4000,       ; Decompress $BA:B9A3 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DD58, state $DD6E: Mother Brain
-; Room $DD58, state $DD88: Mother Brain
-; Room $DD58, state $DDA2: Mother Brain
-$8F:E48A             dx 0004,BABDD9,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DD58. Mother Brain
+$8F:E48A             dx 0004, BABDD9, 4000,       ; Decompress $BA:BDD9 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $DF8D, state $DF9F: Ceres pre elevator hall
-; Room $DF8D, state $DFB9: Ceres pre elevator hall
-; Room $DFD7, state $DFE9: Ceres stairs
-; Room $DFD7, state $E003: Ceres stairs
-; Room $E06B, state $E07D: Pre Ceres Ridley hall
-; Room $E06B, state $E097: Pre Ceres Ridley hall
-$8F:E4A5             dx 0004,BAC22A,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Room $DF8D. Ceres pre elevator hall
+; Room $DFD7. Ceres stairs
+; Room $E06B. Pre Ceres Ridley hall
+$8F:E4A5             dx 0004, BAC22A, 4000,       ; Decompress $BA:C22A to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 }
 
 

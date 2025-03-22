@@ -10925,7 +10925,7 @@ $82:E651 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $E652: Load library background - command Ch: clear Kraid's layer 2 ;;;
+;;; $E652: Load library background - command Ch: clear Kraid's BG2 tilemap ;;;
 {
 ;; Returns:
 ;;     Carry: Clear. Not finished list
@@ -11593,7 +11593,7 @@ $82:EA5D 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA5E: Load library background - command Ch: clear Kraid's layer 2 ;;;
+;;; $EA5E: Load library background - command Ch: clear Kraid's BG2 tilemap ;;;
 {
 ;; Returns:
 ;;     Carry: Clear. Not finished list
