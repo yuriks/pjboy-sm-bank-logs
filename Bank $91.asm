@@ -334,8 +334,13 @@ $91:816E 60          RTS
 
 ;;; $816F: Normal Samus pose input handler - [Samus movement type] = ran into a wall ;;;
 {
-; Note that this routine is not called when time is frozen ([$0A42] = $E713 during reserve tanks, [$0A60] = $E918 during x-ray),
-; so the broken call to $91:FCAF (x-ray) is dead code.
+; Note that this routine is not (under normal circumstances) called when time is frozen,
+; [$0A42] = $E713 during reserve tanks, [$0A60] = $E918 during x-ray,
+; so the broken call to $91:FCAF (x-ray) is (normally) not an issue
+
+; In X-mode, touching a wall (by arm pumping) *will* cause this buggy code to execute and (almost certainly) crash the game
+; This is because if x-ray is activated on the frame that knockback finishes,
+; the knockback finish installs the normal pose input handler *after* x-ray does
 $91:816F 08          PHP
 $91:8170 C2 30       REP #$30
 $91:8172 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
