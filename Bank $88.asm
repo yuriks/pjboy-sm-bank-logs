@@ -4182,7 +4182,7 @@ $88:A7D7 60          RTS
 }
 
 
-;;; $A7D8: FX type 20h: scrolling sky / room setup ASM: scrolling sky land ;;;
+;;; $A7D8: Spawn scrolling sky land HDMA object / FX type 20h: scrolling sky ;;;
 {
 $88:A7D8 08          PHP
 $88:A7D9 E2 30       SEP #$30
@@ -4203,7 +4203,7 @@ $88:A7FF 6B          RTL
 }
 
 
-;;; $A800: Room setup ASM: scrolling sky ocean ;;;
+;;; $A800: Spawn scrolling sky ocean HDMA object ;;;
 {
 $88:A800 08          PHP
 $88:A801 E2 30       SEP #$30
@@ -4675,7 +4675,7 @@ $88:AF7B             dw 0500,0000,0000,9FDC,
 }
 
 
-;;; $AF8D: Room main ASM - scrolling sky land ;;;
+;;; $AF8D: Update scrolling sky land tilemap ;;;
 {
 $88:AF8D A9 9C AD    LDA #$AD9C             ;\
 $88:AF90 85 00       STA $00    [$7E:0000]  ;|
@@ -4685,7 +4685,7 @@ $88:AF97 80 0A       BRA $0A    [$AFA3]     ; Go to room main ASM - scrolling sk
 }
 
 
-;;; $AF99: Room main ASM - scrolling sky ocean ;;;
+;;; $AF99: Update scrolling sky ocean tilemap ;;;
 {
 $88:AF99 A9 A6 AD    LDA #$ADA6             ;\
 $88:AF9C 85 00       STA $00    [$7E:0000]  ;|
@@ -4694,7 +4694,7 @@ $88:AFA1 85 02       STA $02    [$7E:0002]  ;/
 }
 
 
-;;; $AFA3: Room main ASM - scrolling sky ;;;
+;;; $AFA3: Update scrolling sky tilemap ;;;
 {
 ;; Parameters:
 ;;     $00: Address of scrolling sky chunk pointers

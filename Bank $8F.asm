@@ -1229,9 +1229,9 @@ $8F:918C             dx B76F, 07,0B, 0005, ; Save station
 }
 
 
-;;; $9194..F7: Setup ASM ;;;
+;;; $9194..F7: Room setup ASM ;;;
 {
-;;; $9194: Setup ASM: clear a few blocks after saving animals and shake screen ;;;
+;;; $9194: Room setup ASM - clear Crateria mainstreet escape passage if critters escaped and shake screen ;;;
 {
 ; Room $92FD, state $9348. Crateria mainstreet - event "Zebes timebomb set" is set
 $8F:9194 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -1244,7 +1244,7 @@ $8F:91A8 60          RTS
 }
 
 
-;;; $91A9: Setup ASM: auto-destroy the wall during escape ;;;
+;;; $91A9: Room setup ASM - make old Tourian escape shaft fake wall explode ;;;
 {
 ; Room $96BA, state $9705. Old Tourian escape shaft - event "Zebes timebomb set" is set
 $8F:91A9 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -1253,7 +1253,7 @@ $8F:91B1 60          RTS
 }
 
 
-;;; $91B2: Setup ASM: turn wall into shotblocks during escape ;;;
+;;; $91B2: Room setup ASM - spawn critters escape block ;;;
 {
 ; Room $9804, state $984F. Bomb Torizo - event "Zebes timebomb set" is set
 $8F:91B2 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -1262,27 +1262,27 @@ $8F:91BA 60          RTS
 }
 
 
-;;; $91BB: Setup ASM: RTS ;;;
+;;; $91BB: RTS. Room setup ASM ;;;
 {
 ; Room $9879, state $98C4. Pre Bomb Torizo hall - event "Zebes timebomb set" is set
 $8F:91BB 60          RTS
 }
 
 
-;;; $91BC: Setup ASM: RTS ;;;
+;;; $91BC: RTS. Room setup ASM ;;;
 {
-; Room $92FD, state $932E. Crateria mainstreet - event "Zebes is awake" is set
+; Room $92FD, state $932E. Crateria mainstreet      - event "Zebes is awake" is set
 ; Room $96BA, state $96EB. Old Tourian escape shaft - event "Zebes is awake" is set
-; Room $975C, state $9787. Old Mother Brain room - morph ball and missiles have been collected
+; Room $975C, state $9787. Old Mother Brain room              - morph ball and missiles have been collected
 ; Room $97B5, state $97E0. Crateria -> Blue Brinstar elevator - morph ball and missiles have been collected
-; Room $9E9F, state $9ECB. Morph ball room - event "Zebes is awake" is set
-; Room $9F11, state $9F3D. Old Kraid entrance - event "Zebes is awake" is set
+; Room $9E9F, state $9ECB. Morph ball room                   - event "Zebes is awake" is set
+; Room $9F11, state $9F3D. Old Kraid entrance                - event "Zebes is awake" is set
 ; Room $9F64, state $9F90. Blue Brinstar ceiling e-tank hall - event "Zebes is awake" is set
 $8F:91BC 60          RTS
 }
 
 
-;;; $91BD: Setup ASM: shake the screen and call $88A7D8 during the escape ;;;
+;;; $91BD: Room setup ASM - scrolling sky land, shake screen ;;;
 {
 ; Room $91F8, state $9261. Landing site - event "Zebes timebomb set" is set
 $8F:91BD A9 06 00    LDA #$0006             ;\
@@ -1292,27 +1292,27 @@ $8F:91C6 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 }
 
 
-;;; $91C9: Setup ASM: scrolling sky land ;;;
+;;; $91C9: Room setup ASM - scrolling sky land ;;;
 {
 ; Room $91F8, state $9213. Landing site - default
 ; Room $91F8, state $922D. Landing site - event "Zebes is awake" is set
 ; Room $91F8, state $9247. Landing site - power bombs have been collected
-$8F:91C9 22 D8 A7 88 JSL $88A7D8[$88:A7D8]
+$8F:91C9 22 D8 A7 88 JSL $88A7D8[$88:A7D8]  ; Spawn scrolling sky land HDMA object
 $8F:91CD 60          RTS
 }
 
 
-;;; $91CE: Setup ASM: scrolling sky ocean ;;;
+;;; $91CE: Room setup ASM - scrolling sky ocean ;;;
 {
 ; Room $93FE. Wrecked Ship entrance
 ; Room $94FD. Wrecked Ship back door
 ; Room $968F. Orange zoomer hall
-$8F:91CE 22 00 A8 88 JSL $88A800[$88:A800]
+$8F:91CE 22 00 A8 88 JSL $88A800[$88:A800]  ; Spawn scrolling sky ocean HDMA object
 $8F:91D2 60          RTS
 }
 
 
-;;; $91D3: Setup ASM: RTS ;;;
+;;; $91D3: RTS. Room setup ASM ;;;
 {
 ; Room $92B3. Gauntlet east
 ; Room $92FD, state $9314. Crateria mainstreet - default
@@ -1332,7 +1332,7 @@ $8F:91D3 60          RTS
 }
 
 
-;;; $91D4: Setup ASM: RTS ;;;
+;;; $91D4: RTS. Room setup ASM ;;;
 {
 ; Room $96BA, state $96D1. Old Tourian escape shaft - default
 ; Room $975C, state $976D. Old Mother Brain room - default
@@ -1354,7 +1354,7 @@ $8F:91D4 60          RTS
 }
 
 
-;;; $91D5: Setup ASM: RTS ;;;
+;;; $91D5: RTS. Room setup ASM ;;;
 {
 ; Room $9AD9. Green Brinstar mainstreet
 ; Room $9B5B. Spore Spawn's super missile shaft
@@ -1392,7 +1392,7 @@ $8F:91D5 60          RTS
 }
 
 
-;;; $91D6: Setup ASM: RTS ;;;
+;;; $91D6: RTS. Room setup ASM ;;;
 {
 ; Room $A253. Red Brinstar mainstreet
 ; Room $A293. Pre x-ray spike hall
@@ -1417,7 +1417,7 @@ $8F:91D6 60          RTS
 }
 
 
-;;; $91D7: Setup ASM: run statue unlocking animations ;;;
+;;; $91D7: Room setup ASM - run statue unlocking animations ;;;
 {
 ; Room $A66A. Tourian entrance
 $8F:91D7 A0 58 85    LDY #$8558             ;\
@@ -1432,7 +1432,7 @@ $8F:91F3 60          RTS
 }
 
 
-;;; $91F4: Setup ASM: RTS ;;;
+;;; $91F4: RTS. Room setup ASM ;;;
 {
 ; Room $A6A1. Kraid's lair entrance
 ; Room $A6E2. Varia suit room
@@ -1442,7 +1442,7 @@ $8F:91F4 60          RTS
 }
 
 
-;;; $91F5: Setup ASM: RTS ;;;
+;;; $91F5: RTS. Room setup ASM ;;;
 {
 ; Room $A75D. Ice beam tripper hall
 ; Room $A788. Lava missile room
@@ -1458,7 +1458,7 @@ $8F:91F5 60          RTS
 }
 
 
-;;; $91F6: Setup ASM: RTS ;;;
+;;; $91F6: RTS. Room setup ASM ;;;
 {
 ; Room $A98D. Crocomire
 ; Room $A9E5. Hi-jump room
@@ -1506,7 +1506,7 @@ $8F:91F6 60          RTS
 }
 
 
-;;; $91F7: Setup ASM: RTS ;;;
+;;; $91F7: RTS. Room setup ASM ;;;
 {
 ; Room $B1E5. Lower Norfair chozo room
 ; Room $B236. Lower Norfair mainstreet
@@ -1537,6 +1537,50 @@ $8F:91F7 60          RTS
 
 ;;; $91F8: Room headers, scroll data, door lists ;;;
 {
+; Room header format:
+;      __________________________________________ Room index
+;     |   _______________________________________ Area index
+;     |  |    ___________________________________ X position (of top left corner) on the map
+;     |  |   |   ________________________________ Y position (of top left corner) on the map
+;     |  |   |  |    ____________________________ Room width (in units of screens = 16 blocks = 256 pixels)
+;     |  |   |  |   |   _________________________ Room height (in units of screens = 16 blocks = 256 pixels)
+;     |  |   |  |   |  |    _____________________ Up scroller
+;     |  |   |  |   |  |   |   __________________ Down scroller
+;     |  |   |  |   |  |   |  |    ______________ CRE bitset
+;     |  |   |  |   |  |   |  |   |    __________ Door list pointer
+;     |  |   |  |   |  |   |  |   |   |      ____ State conditions list
+;     |  |   |  |   |  |   |  |   |   |     |
+;     ii,aa, xx,yy, ww,hh, uu,dd, cc, dddd, [...]
+
+; State conditions list format:
+;      ______________ State condition
+;     |     _________ State condition parameters
+;     |    |      ___ State header pointer
+;     |    |     |
+;     eeee [...] ssss ; First state condition
+;     eeee [...] ssss ; Second state condition
+;     [...]           ; Other state conditions
+;     E5E6            ; Default state condition (terminator)
+
+; State header format:
+;      ___________________________________________________________________________ Level data
+;     |        ___________________________________________________________________ Tileset
+;     |       |    _______________________________________________________________ Music data index
+;     |       |   |   ____________________________________________________________ Music track
+;     |       |   |  |    ________________________________________________________ FX ($83)
+;     |       |   |  |   |      __________________________________________________ Enemy population ($A1)
+;     |       |   |  |   |     |      ____________________________________________ Enemy set ($B4)
+;     |       |   |  |   |     |     |      ______________________________________ Layer 2 scroll X
+;     |       |   |  |   |     |     |     |   ___________________________________ Layer 2 scroll Y
+;     |       |   |  |   |     |     |     |  |    _______________________________ Scroll
+;     |       |   |  |   |     |     |     |  |   |      _________________________ Special x-ray blocks
+;     |       |   |  |   |     |     |     |  |   |     |      ___________________ Main ASM
+;     |       |   |  |   |     |     |     |  |   |     |     |      _____________ PLM population
+;     |       |   |  |   |     |     |     |  |   |     |     |     |      _______ Library background
+;     |       |   |  |   |     |     |     |  |   |     |     |     |     |      _ Setup ASM
+;     |       |   |  |   |     |     |     |  |   |     |     |     |     |     |
+;     llllll, tt, MM,mm, ffff, eeee, EEEE, xx,yy, ssss, xxxx, AAAA, pppp, bbbb, aaaa
+
 ; Room header. Landing site
 $8F:91F8             dx 00,00, 17,00, 09,05, 70,A0, 00, 927B, E612,0E,9261, E669,9247, E612,00,922D, E5E6
 
@@ -1559,7 +1603,7 @@ $8F:927B             dw 8916, 8922, 892E, 893A
 $8F:9283             db 00, 00, 02, 02, 02, 02, 02, 02, 02, 00, 00, 02, 02, 02, 02, 02, 02, 02, 01, 00, 02, 02, 02, 02, 02, 02, 02, 00, 00, 02, 02, 02, 02, 02, 02, 02, 01, 01, 01, 01, 01, 01, 01, 01, 01
 
 ; PLM scroll data. Room $91F8. Landing site (PLM index 0)
-$8F:92B0             db 13, 01, 80
+$8F:92B0             db 13,01, 80
 
 ; Room header. Gauntlet east
 $8F:92B3             dx 01,00, 12,02, 05,01, 70,A0, 00, 92F9, E612,00,92DF, E5E6
@@ -1592,31 +1636,31 @@ $8F:9362             dw 895E, 896A, 8976, 8982, 898E, 899A, 89A6
 $8F:9370             db 00, 01, 01, 01, 01, 00, 00, 00, 00, 00, 00, 02, 00, 01, 00, 00, 02, 00, 00, 00, 00, 02, 00, 00, 00
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 0)
-$8F:9389             db 08, 02, 80
+$8F:9389             db 08,02, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 1)
-$8F:938C             db 08, 00, 80
+$8F:938C             db 08,00, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 2)
-$8F:938F             db 00, 00, 02, 00, 06, 02, 80
+$8F:938F             db 00,00, 02,00, 06,02, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 6)
-$8F:9396             db 06, 00, 80
+$8F:9396             db 06,00, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index Ah)
-$8F:9399             db 00, 01, 80
+$8F:9399             db 00,01, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index Dh)
-$8F:939C             db 02, 01, 80
+$8F:939C             db 02,01, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM indices 13h/14h)
-$8F:939F             db 04, 01, 80
+$8F:939F             db 04,01, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 15h)
-$8F:93A2             db 04, 00, 80
+$8F:93A2             db 04,00, 80
 
 ; PLM scroll data. Room $92FD. Crateria mainstreet (PLM index 1Ah)
-$8F:93A5             db 04, 00, 08, 02, 80
+$8F:93A5             db 04,00, 08,02, 80
 
 ; Room header. Landing site power bombs cave
 $8F:93AA             dx 03,00, 20,01, 02,01, 70,A0, 00, 93D1, E5E6
@@ -1673,10 +1717,10 @@ $8F:94B3             dw 8A2A, 8A36, 8A42
 $8F:94B9             db 01, 01, 01, 00, 00, 00, 00, 02, 00
 
 ; PLM scroll data. Room $948C. Pre moat room (PLM index 0)
-$8F:94C2             db 01, 02, 04, 02, 80
+$8F:94C2             db 01,02, 04,02, 80
 
 ; PLM scroll data. Room $948C. Pre moat room (PLM index 2)
-$8F:94C7             db 01, 01, 04, 00, 80
+$8F:94C7             db 01,01, 04,00, 80
 
 ; Room header. Crateria -> Maridia elevator
 $8F:94CC             dx 08,00, 34,0A, 01,01, 70,A0, 00, 94F3, E5E6
@@ -1691,7 +1735,7 @@ $8F:94F3             dw 8A4E, 8A5A, 88FC
 $8F:94F9             db 01
 
 ; PLM scroll data. Room $94CC. Crateria -> Maridia elevator (PLM index 0)
-$8F:94FA             db 00, 02, 80
+$8F:94FA             db 00,02, 80
 
 ; Room header. Wrecked Ship back door
 $8F:94FD             dx 09,00, 31,00, 07,06, 70,A0, 00, 9524, E5E6
@@ -1766,7 +1810,7 @@ $8F:9651             dw 8AF6, 8B02, 88FC
 $8F:9657             db 01
 
 ; PLM scroll data. Room $962A. Crateria -> Red Brinstar elevator (PLM index 0)
-$8F:9658             db 00, 02, 80
+$8F:9658             db 00,02, 80
 
 ; Room header. Gauntlet west
 $8F:965B             dx 10,00, 0C,02, 06,01, 70,A0, 00, 9682, E5E6
@@ -1781,7 +1825,7 @@ $8F:9682             dw 8B0E, 8B1A
 $8F:9686             db 01, 01, 01, 01, 00, 01
 
 ; PLM scroll data. Room $965B. Gauntlet west (PLM index 0)
-$8F:968C             db 04, 01, 80
+$8F:968C             db 04,01, 80
 
 ; Room header. Orange zoomer hall
 $8F:968F             dx 11,00, 2B,02, 01,01, 70,A0, 00, 96B6, E5E6
@@ -1811,28 +1855,28 @@ $8F:971F             dw 8B3E, 8B4A, 8B56, 8B62, 8B6E
 $8F:9729             db 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 01, 00
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 1)
-$8F:9744             db 02, 01, 80
+$8F:9744             db 02,01, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 0)
-$8F:9747             db 02, 00, 80
+$8F:9747             db 02,00, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 3)
-$8F:974A             db 17, 01, 80
+$8F:974A             db 17,01, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 2)
-$8F:974D             db 17, 00, 80
+$8F:974D             db 17,00, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index Eh)
-$8F:9750             db 18, 01, 80
+$8F:9750             db 18,01, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index Ah)
-$8F:9753             db 18, 00, 80
+$8F:9753             db 18,00, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 12h)
-$8F:9756             db 19, 01, 80
+$8F:9756             db 19,01, 80
 
 ; PLM scroll data. Room $96BA. Old Tourian escape shaft (PLM index 16h)
-$8F:9759             db 19, 00, 80
+$8F:9759             db 19,00, 80
 
 ; Room header. Old Mother Brain room
 $8F:975C             dx 13,00, 14,11, 03,02, 70,A0, 00, 97A1, E652,9787, E5E6
@@ -1850,10 +1894,10 @@ $8F:97A1             dw 8B7A, 8B86
 $8F:97A5             db 01, 01, 01, 00, 00, 00
 
 ; PLM scroll data. Room $975C. Old Mother Brain room (PLM indices 0/1)
-$8F:97AB             db 00, 02, 03, 02, 80
+$8F:97AB             db 00,02, 03,02, 80
 
 ; PLM scroll data. Room $975C. Old Mother Brain room (PLM index 2)
-$8F:97B0             db 00, 01, 03, 00, 80
+$8F:97B0             db 00,01, 03,00, 80
 
 ; Room header. Crateria -> Blue Brinstar elevator
 $8F:97B5             dx 14,00, 17,11, 01,01, 70,A0, 00, 97FA, E652,97E0, E5E6
@@ -1871,7 +1915,7 @@ $8F:97FA             dw 8B92, 8B9E, 88FC
 $8F:9800             db 01
 
 ; PLM scroll data. Room $97B5. Crateria -> Blue Brinstar elevator (PLM index 0)
-$8F:9801             db 00, 02, 80
+$8F:9801             db 00,02, 80
 
 ; Room header. Bomb Torizo
 $8F:9804             dx 15,00, 19,06, 01,01, 70,A0, 00, 9869, E612,0E,984F, E629,04,9835, E5E6
@@ -1937,7 +1981,7 @@ $8F:995F             dw 8BFE, 8C0A, 88FC
 $8F:9965             db 01
 
 ; PLM scroll data. Room $9938. Crateria -> Green Brinstar elevator (PLM index 0)
-$8F:9966             db 00, 02, 80
+$8F:9966             db 00,02, 80
 
 ; Room header. West Crateria kago hall
 $8F:9969             dx 1A,00, 07,08, 04,01, 70,A0, 00, 9990, E5E6
@@ -1970,10 +2014,10 @@ $8F:99E4             dw 8C3A, 8C46, 8C52, 8C5E
 $8F:99EC             db 02, 02, 02, 00, 02, 02, 01
 
 ; PLM scroll data. Room $99BD. Crateria space pirate shaft (PLM index 0)
-$8F:99F3             db 03, 02, 80
+$8F:99F3             db 03,02, 80
 
 ; PLM scroll data. Room $99BD. Crateria space pirate shaft (PLM index 2)
-$8F:99F6             db 03, 00, 80
+$8F:99F6             db 03,00, 80
 
 ; Room header. Crateria spike floor room
 $8F:99F9             dx 1D,00, 15,09, 04,08, 70,A0, 00, 9A20, E5E6
@@ -2030,13 +2074,13 @@ $8F:9B00             dw 8CA6, 8CB2, 8CBE, 8CCA, 8CD6, 8CE2, 8CEE, 8CFA, 8D06, 88
 $8F:9B16             db 02, 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 01, 02, 00, 02, 00, 02, 00, 02, 00, 02, 00, 02, 00, 00, 00, 02, 00
 
 ; PLM scroll data. Room $9AD9. Green Brinstar mainstreet (PLM index 0)
-$8F:9B46             db 1C, 02, 1D, 00, 80
+$8F:9B46             db 1C,02, 1D,00, 80
 
 ; PLM scroll data. Room $9AD9. Green Brinstar mainstreet (PLM indices 1/2)
-$8F:9B4B             db 1C, 00, 1D, 01, 29, 01, 80
+$8F:9B4B             db 1C,00, 1D,01, 29,01, 80
 
 ; PLM scroll data. Room $9AD9. Green Brinstar mainstreet (PLM index 3)
-$8F:9B52             db 18, 02, 1C, 02, 1D, 00, 29, 00, 80
+$8F:9B52             db 18,02, 1C,02, 1D,00, 29,00, 80
 
 ; Room header. Spore Spawn's super missile shaft
 $8F:9B5B             dx 01,01, 17,01, 02,09, 70,A0, 00, 9B82, E5E6
@@ -2051,7 +2095,7 @@ $8F:9B82             dw 8D1E, 8D2A
 $8F:9B86             db 01, 02, 00, 02, 00, 02, 00, 02, 00, 02, 00, 02, 00, 02, 00, 02, 01, 01
 
 ; PLM scroll data. Room $9B5B. Spore Spawn's super missile shaft (PLM index 0)
-$8F:9B98             db 01, 02, 03, 02, 80
+$8F:9B98             db 01,02, 03,02, 80
 
 ; Room header. Pre Brinstar map room hall
 $8F:9B9D             dx 02,01, 06,04, 03,01, 70,A0, 00, 9BC4, E5E6
@@ -2075,10 +2119,10 @@ $8F:9BEF             dw 8D4E, 8D5A
 $8F:9BF3             db 00, 00, 00, 01, 01, 01
 
 ; PLM scroll data. Room $9BC8. Early supers room (PLM indices 0/4)
-$8F:9BF9             db 00, 02, 01, 02, 02, 02, 80
+$8F:9BF9             db 00,02, 01,02, 02,02, 80
 
 ; PLM scroll data. Room $9BC8. Early supers room (PLM index 3)
-$8F:9C00             db 00, 00, 01, 00, 02, 00, 80
+$8F:9C00             db 00,00, 01,00, 02,00, 80
 
 ; Room header. Brinstar reserve tank room
 $8F:9C07             dx 04,01, 0D,04, 02,01, 70,A0, 00, 9C2E, E5E6
@@ -2093,7 +2137,7 @@ $8F:9C2E             dw 8D66
 $8F:9C30             db 01, 00
 
 ; PLM scroll data. Room $9C07. Brinstar reserve tank room (PLM index 0)
-$8F:9C32             db 01, 01, 80
+$8F:9C32             db 01,01, 80
 
 ; Room header. Brinstar map station
 $8F:9C35             dx 05,01, 05,04, 01,01, 70,A0, 00, 9C5C, E5E6
@@ -2138,10 +2182,10 @@ $8F:9CDA             dw 8DA2, 8DAE, 8DBA
 $8F:9CE0             db 01, 01, 01, 01, 01, 01, 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 02, 00, 00, 02, 02, 02, 02, 02, 00, 00
 
 ; PLM scroll data. Room $9CB3. Dachora room (PLM index 6)
-$8F:9D11             db 0B, 02, 80
+$8F:9D11             db 0B,02, 80
 
 ; PLM scroll data. Room $9CB3. Dachora room (PLM indices Ah/16h)
-$8F:9D14             db 04, 01, 0B, 00, 80
+$8F:9D14             db 04,01, 0B,00, 80
 
 ; Room header. Charge beam room
 $8F:9D19             dx 09,01, 0F,04, 05,0A, 70,A0, 00, 9D40, E5E6
@@ -2156,22 +2200,22 @@ $8F:9D40             dw 8DC6, 8DD2, 8DDE, 8DEA, 8DF6, 8E02, 8E0E, 8E1A, 8E26
 $8F:9D52             db 00, 00, 02, 02, 00, 00, 00, 02, 02, 00, 00, 00, 02, 02, 00, 00, 00, 02, 02, 00, 00, 00, 02, 02, 00, 00, 00, 02, 02, 00, 00, 00, 01, 01, 00, 02, 00, 00, 00, 00, 02, 00, 00, 00, 00, 02, 00, 00, 00, 00
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 0)
-$8F:9D84             db 20, 02, 25, 02, 26, 02, 80
+$8F:9D84             db 20,02, 25,02, 26,02, 80
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 1)
-$8F:9D8B             db 24, 02, 80
+$8F:9D8B             db 24,02, 80
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 2)
-$8F:9D8E             db 1D, 00, 80
+$8F:9D8E             db 1D,00, 80
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 3)
-$8F:9D91             db 1C, 01, 1D, 01, 80
+$8F:9D91             db 1C,01, 1D,01, 80
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 4)
-$8F:9D96             db 01, 02, 80
+$8F:9D96             db 01,02, 80
 
 ; PLM scroll data. Room $9D19. Charge beam room (PLM index 5)
-$8F:9D99             db 01, 00, 80
+$8F:9D99             db 01,00, 80
 
 ; Room header. Pre Spore Spawn hall
 $8F:9D9C             dx 0A,01, 13,04, 04,01, 70,A0, 00, 9DC3, E5E6
@@ -2207,10 +2251,10 @@ $8F:9E38             dw 8E62, 8E6E
 $8F:9E3C             db 01, 01, 00, 00
 
 ; PLM scroll data. Room $9E11. Brinstar super-sidehopper power bomb room (PLM index 0)
-$8F:9E40             db 00, 02, 01, 00, 02, 01, 03, 01, 80
+$8F:9E40             db 00,02, 01,00, 02,01, 03,01, 80
 
 ; PLM scroll data. Room $9E11. Brinstar super-sidehopper power bomb room (PLM index 1)
-$8F:9E49             db 00, 01, 01, 01, 02, 00, 03, 00, 80
+$8F:9E49             db 00,01, 01,01, 02,00, 03,00, 80
 
 ; Room header. Brinstar diagonal room
 $8F:9E52             dx 0D,01, 13,0A, 08,04, 70,A0, 00, 9E79, E5E6
@@ -2240,16 +2284,16 @@ $8F:9EE5             dw 8E9E, 8EAA, 8EB6, 88FC
 $8F:9EED             db 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 01, 01, 01, 01, 01, 01, 01, 01
 
 ; PLM scroll data. Room $9E9F. Morph ball room (PLM index 0)
-$8F:9F05             db 12, 01, 80
+$8F:9F05             db 12,01, 80
 
 ; PLM scroll data. Room $9E9F. Morph ball room (PLM index 9)
-$8F:9F08             db 12, 00, 80
+$8F:9F08             db 12,00, 80
 
 ; PLM scroll data. Room $9E9F. Morph ball room (PLM indices Bh/Dh)
-$8F:9F0B             db 0D, 02, 80
+$8F:9F0B             db 0D,02, 80
 
 ; PLM scroll data. Room $9E9F. Morph ball room (PLM index Fh)
-$8F:9F0E             db 0D, 00, 80
+$8F:9F0E             db 0D,00, 80
 
 ; Room header. Old Kraid entrance
 $8F:9F11             dx 0F,01, 1D,0A, 01,02, 70,A0, 00, 9F57, E612,00,9F3D, E5E6
@@ -2267,7 +2311,7 @@ $8F:9F57             dw 8EC2, 8ECE, 8EDA
 $8F:9F5D             db 01, 00
 
 ; PLM scroll data. Room $9F11. Old Kraid entrance (PLM index 0)
-$8F:9F5F             db 00, 02, 01, 01, 80
+$8F:9F5F             db 00,02, 01,01, 80
 
 ; Room header. Blue Brinstar ceiling e-tank hall
 $8F:9F64             dx 10,01, 1E,08, 03,03, 70,A0, 00, 9FAA, E612,00,9F90, E5E6
@@ -2285,7 +2329,7 @@ $8F:9FAA             dw 8EE6, 8EF2
 $8F:9FAE             db 00, 00, 02, 00, 00, 00, 01, 01, 01
 
 ; PLM scroll data. Room $9F64. Blue Brinstar ceiling e-tank hall (PLM indices 0/1)
-$8F:9FB7             db 05, 02, 80
+$8F:9FB7             db 05,02, 80
 
 ; Room header. n00b bridge
 $8F:9FBA             dx 11,01, 1B,0D, 06,01, 70,A0, 00, 9FE1, E5E6
@@ -2321,7 +2365,7 @@ $8F:A038             dw 8F2E, 8F3A, 8F46, 8F52
 $8F:A040             db 01, 01, 00, 00, 00, 00, 00, 01, 01, 01
 
 ; PLM scroll data. Room $A011. Etecoon area spike hall (PLM index 0)
-$8F:A04A             db 01, 02, 05, 01, 06, 01, 80
+$8F:A04A             db 01,02, 05,01, 06,01, 80
 
 ; Room header. Etecoon area super missiles
 $8F:A051             dx 14,01, 05,0A, 01,01, 70,A0, 00, A078, E5E6
@@ -2369,7 +2413,7 @@ $8F:A0F9             dw 8F8E, 8F9A
 $8F:A0FD             db 00, 01, 01, 01, 01, 01, 01
 
 ; PLM scroll data. Room $A0D2. Pink Brinstar flooded hall (PLM index 2)
-$8F:A104             db 00, 01, 80
+$8F:A104             db 00,01, 80
 
 ; Room header. Blue Brinstar missile room
 $8F:A107             dx 18,01, 1C,0B, 01,01, 70,A0, 00, A12E, E5E6
@@ -2456,7 +2500,7 @@ $8F:A27A             dw 901E, 902A, 9036, 9042, 904E
 $8F:A284             db 02, 02, 02, 02, 02, 02, 01, 00, 02, 02
 
 ; PLM scroll data. Room $A253. Red Brinstar mainstreet (PLM index 0)
-$8F:A28E             db 06, 02, 07, 02, 80
+$8F:A28E             db 06,02, 07,02, 80
 
 ; Room header. Pre x-ray spike hall
 $8F:A293             dx 21,01, 19,0F, 08,02, 90,A0, 00, A2BA, E5E6
@@ -2501,13 +2545,13 @@ $8F:A349             dw 9096, 90A2, 90AE, 90BA, 90C6, 88FC, 90D2
 $8F:A357             db 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 01, 02, 00, 00, 01, 00, 00, 00, 00, 00, 02, 00, 00
 
 ; PLM scroll data. Room $A322. Red Brinstar -> Crateria elevator (PLM index 0)
-$8F:A36F             db 0F, 02, 12, 02, 80
+$8F:A36F             db 0F,02, 12,02, 80
 
 ; PLM scroll data. Room $A322. Red Brinstar -> Crateria elevator (PLM index 2)
-$8F:A374             db 0A, 01, 09, 02, 80
+$8F:A374             db 0A,01, 09,02, 80
 
 ; PLM scroll data. Room $A322. Red Brinstar -> Crateria elevator (PLM index 3)
-$8F:A379             db 0A, 00, 80
+$8F:A379             db 0A,00, 80
 
 ; Room header. Red Brinstar power bomb floor room
 $8F:A37C             dx 25,01, 23,07, 02,02, 70,A0, 00, A3A3, E5E6
@@ -2522,7 +2566,7 @@ $8F:A3A3             dw 90DE
 $8F:A3A5             db 01, 01, 00, 00
 
 ; PLM scroll data. Room $A37C. Red Brinstar power bomb floor room (PLM index 0)
-$8F:A3A9             db 00, 02, 02, 01, 80
+$8F:A3A9             db 00,02, 02,01, 80
 
 ; Room header. Red Brinstar power bomb wall room
 $8F:A3AE             dx 26,01, 22,0B, 03,01, 70,A0, 00, A3D5, E5E6
@@ -2537,7 +2581,7 @@ $8F:A3D5             dw 90EA
 $8F:A3D7             db 00, 01, 01
 
 ; PLM scroll data. Room $A3AE. Red Brinstar power bomb wall room (PLM index 8)
-$8F:A3DA             db 00, 01, 80
+$8F:A3DA             db 00,01, 80
 
 ; Room header. Red Brinstar skree-duo hall
 $8F:A3DD             dx 27,01, 22,12, 02,01, 70,A0, 00, A404, E5E6
@@ -2561,10 +2605,10 @@ $8F:A42F             dw 910E, 911A, 9126
 $8F:A435             db 00, 00, 01, 01
 
 ; PLM scroll data. Room $A408. Pre spazer room (PLM indices 0/8/Ah)
-$8F:A439             db 00, 02, 01, 02, 80
+$8F:A439             db 00,02, 01,02, 80
 
 ; PLM scroll data. Room $A408. Pre spazer room (PLM indices 4/9/Bh)
-$8F:A43E             db 00, 00, 01, 00, 02, 01, 03, 01, 80
+$8F:A43E             db 00,00, 01,00, 02,01, 03,01, 80
 
 ; Room header. Spazer room
 $8F:A447             dx 29,01, 26,11, 01,01, 70,A0, 00, A46E, E5E6
@@ -2591,13 +2635,13 @@ $8F:A498             dw 913E, 914A, 9156
 $8F:A49E             db 01, 00, 00, 01
 
 ; PLM scroll data. Room $A471. Kraid's lair zeela room (PLM index 0)
-$8F:A4A2             db 00, 02, 02, 01, 03, 00, 80
+$8F:A4A2             db 00,02, 02,01, 03,00, 80
 
 ; PLM scroll data. Room $A471. Kraid's lair zeela room (PLM indices 1/3)
-$8F:A4A9             db 00, 02, 02, 01, 80
+$8F:A4A9             db 00,02, 02,01, 80
 
 ; PLM scroll data. Room $A471. Kraid's lair zeela room (PLM index 2)
-$8F:A4AE             db 03, 01, 80
+$8F:A4AE             db 03,01, 80
 
 ; Room header. Kraid's lair beetom room
 $8F:A4B1             dx 2B,01, 2B,13, 01,01, 70,A0, 00, A4D8, E5E6
@@ -2621,16 +2665,16 @@ $8F:A501             dw 916E, 917A, 9186
 $8F:A507             db 02, 01, 01, 00, 00, 01, 00, 00
 
 ; PLM scroll data. Room $A4DA. Kraid's lair kihunter hall (PLM index 0)
-$8F:A50F             db 01, 01, 05, 00, 80
+$8F:A50F             db 01,01, 05,00, 80
 
 ; PLM scroll data. Room $A4DA. Kraid's lair kihunter hall (PLM index 1)
-$8F:A514             db 01, 02, 05, 01, 80
+$8F:A514             db 01,02, 05,01, 80
 
 ; PLM scroll data. Room $A4DA. Kraid's lair kihunter hall (PLM index 9)
-$8F:A519             db 05, 00, 80
+$8F:A519             db 05,00, 80
 
 ; PLM scroll data. Room $A4DA. Kraid's lair kihunter hall (PLM indices Ah/Bh)
-$8F:A51C             db 03, 01, 05, 00, 80
+$8F:A51C             db 03,01, 05,00, 80
 
 ; Room header. Fake Kraid's room
 $8F:A521             dx 2D,01, 2F,13, 06,01, 70,A0, 00, A567, E629,01,A54D, E5E6
@@ -2657,7 +2701,7 @@ $8F:A592             dw 91AA, 91B6, 91C2
 $8F:A598             db 00, 00, 01, 01
 
 ; PLM scroll data. Room $A56B. Pre Kraid room (PLM index 0)
-$8F:A59C             db 00, 02, 80
+$8F:A59C             db 00,02, 80
 
 ; Room header. Kraid
 $8F:A59F             dx 2F,01, 37,12, 02,02, 70,A0, 05, A5E5, E629,01,A5CB, E5E6
@@ -2714,10 +2758,10 @@ $8F:A691             dw 9216, 9222, 88FC
 $8F:A697             db 01, 00
 
 ; Unused PLM scroll data
-$8F:A699             db 00, 02, 01, 01, 80
+$8F:A699             db 00,02, 01,01, 80
 
 ; Unused PLM scroll data
-$8F:A69E             db 01, 02, 80
+$8F:A69E             db 01,02, 80
 
 ; Room header. Kraid's lair entrance
 $8F:A6A1             dx 34,01, 29,12, 03,02, 70,A0, 00, A6C8, E5E6
@@ -2732,16 +2776,16 @@ $8F:A6C8             dw 922E, 923A, 9246, 88FC
 $8F:A6D0             db 01, 00, 02, 00, 01, 01
 
 ; PLM scroll data. Room $A6A1. Kraid's lair entrance (PLM index 0)
-$8F:A6D6             db 00, 02, 80
+$8F:A6D6             db 00,02, 80
 
 ; PLM scroll data. Room $A6A1. Kraid's lair entrance (PLM index 2)
-$8F:A6D9             db 01, 02, 80
+$8F:A6D9             db 01,02, 80
 
 ; PLM scroll data. Room $A6A1. Kraid's lair entrance (PLM index 5)
-$8F:A6DC             db 00, 01, 80
+$8F:A6DC             db 00,01, 80
 
 ; PLM scroll data. Room $A6A1. Kraid's lair entrance (PLM index 9)
-$8F:A6DF             db 00, 00, 80
+$8F:A6DF             db 00,00, 80
 
 ; Room header. Varia suit room
 $8F:A6E2             dx 35,01, 39,13, 01,01, 70,A0, 02, A709, E5E6
@@ -2819,7 +2863,7 @@ $8F:A83C             dw 9312, 931E, 932A, 9336
 $8F:A844             db 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 01, 01, 01, 01, 01, 01, 01, 00, 00, 00, 00
 
 ; PLM scroll data. Room $A815. Ice beam mockball hall (PLM index 0)
-$8F:A860             db 11, 02, 18, 01, 80
+$8F:A860             db 11,02, 18,01, 80
 
 ; Room header. Ice beam practice room
 $8F:A865             dx 05,02, 04,01, 02,01, 70,A0, 00, A88C, E5E6
@@ -2852,16 +2896,16 @@ $8F:A8E0             dw 9366, 9372, 937E
 $8F:A8E6             db 02, 00, 02, 00, 01, 00
 
 ; PLM scroll data. Room $A8B9. Pre ice beam shaft (PLM index 0)
-$8F:A8EC             db 03, 01, 80
+$8F:A8EC             db 03,01, 80
 
 ; PLM scroll data. Room $A8B9. Pre ice beam shaft (PLM index 1)
-$8F:A8EF             db 03, 00, 80
+$8F:A8EF             db 03,00, 80
 
 ; PLM scroll data. Room $A8B9. Pre ice beam shaft (PLM index 2)
-$8F:A8F2             db 02, 02, 80
+$8F:A8F2             db 02,02, 80
 
 ; PLM scroll data. Room $A8B9. Pre ice beam shaft (PLM index 3)
-$8F:A8F5             db 02, 00, 80
+$8F:A8F5             db 02,00, 80
 
 ; Room header. Crumble block platform shaft
 $8F:A8F8             dx 08,02, 02,04, 01,04, 70,A0, 00, A91F, E5E6
@@ -2885,16 +2929,16 @@ $8F:A94A             dw 93A2, 93AE, 93BA, 93C6, 93D2
 $8F:A954             db 01, 01, 01, 02, 02, 00, 00, 00, 00, 00, 00, 00, 02, 00, 00, 00, 02, 02, 02, 02, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 02, 02, 02, 02, 02, 00, 02
 
 ; Unused PLM scroll data
-$8F:A97B             db 19, 02, 26, 02, 80
+$8F:A97B             db 19,02, 26,02, 80
 
 ; PLM scroll data. Room $A923. Norfair slope (PLM index 0)
-$8F:A980             db 19, 02, 25, 02, 26, 02, 80
+$8F:A980             db 19,02, 25,02, 26,02, 80
 
 ; PLM scroll data. Room $A923. Norfair slope (PLM index 5)
-$8F:A987             db 25, 02, 80
+$8F:A987             db 25,02, 80
 
 ; PLM scroll data. Room $A923. Norfair slope (PLM index 8)
-$8F:A98A             db 25, 00, 80
+$8F:A98A             db 25,00, 80
 
 ; Room header. Crocomire
 $8F:A98D             dx 0A,02, 0C,0A, 08,01, 70,A0, 01, A9D3, E629,02,A9B9, E5E6
@@ -2912,10 +2956,10 @@ $8F:A9D3             dw 93DE, 93EA
 $8F:A9D7             db 00, 00, 01, 01, 01, 01, 01, 01
 
 ; Unused PLM scroll data
-$8F:A9DF             db 01, 01, 80
+$8F:A9DF             db 01,01, 80
 
 ; Unused PLM scroll data
-$8F:A9E2             db 00, 01, 80
+$8F:A9E2             db 00,01, 80
 
 ; Room header. Hi-jump room
 $8F:A9E5             dx 0B,02, 07,06, 01,01, 70,A0, 00, AA0C, E5E6
@@ -2951,16 +2995,16 @@ $8F:AA68             dw 941A, 9426
 $8F:AA6C             db 00, 01, 00, 00
 
 ; PLM scroll data. Room $AA41. Pre hi-jump room (PLM index 1)
-$8F:AA70             db 00, 02, 02, 02, 80
+$8F:AA70             db 00,02, 02,02, 80
 
 ; PLM scroll data. Room $AA41. Pre hi-jump room (PLM index 0)
-$8F:AA75             db 00, 02, 02, 02, 03, 02, 80
+$8F:AA75             db 00,02, 02,02, 03,02, 80
 
 ; PLM scroll data. Room $AA41. Pre hi-jump room (PLM index 2)
-$8F:AA7C             db 03, 00, 80
+$8F:AA7C             db 03,00, 80
 
 ; PLM scroll data. Room $AA41. Pre hi-jump room (PLM index 3)
-$8F:AA7F             db 03, 02, 80
+$8F:AA7F             db 03,02, 80
 
 ; Room header. Post Crocomire room
 $8F:AA82             dx 0E,02, 0A,0A, 02,02, 90,A0, 02, AAA9, E5E6
@@ -3089,7 +3133,7 @@ $8F:ACAA             dw 953A, 9546
 $8F:ACAE             db 00, 01
 
 ; PLM scroll data. Room $AC83. Pre Bubble Norfair reserve tank room (PLM index 0)
-$8F:ACB0             db 00, 01, 80
+$8F:ACB0             db 00,01, 80
 
 ; Room header. Bubble Norfair mainstreet
 $8F:ACB3             dx 1A,02, 16,02, 02,04, 90,A0, 00, ACDA, E5E6
@@ -3137,10 +3181,10 @@ $8F:AD85             dw 95CA, 95D6, 95E2, 95EE, 95FA
 $8F:AD8F             db 02, 00, 01, 01, 01, 01, 02, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 01, 00, 00, 00, 00, 00
 
 ; PLM scroll data. Room $AD5E. Alcoon shaft (PLM index 0)
-$8F:ADA7             db 01, 00, 80
+$8F:ADA7             db 01,00, 80
 
 ; PLM scroll data. Room $AD5E. Alcoon shaft (PLM indices 1/4)
-$8F:ADAA             db 01, 01, 80
+$8F:ADAA             db 01,01, 80
 
 ; Room header. Pre wave beam room
 $8F:ADAD             dx 1E,02, 19,04, 04,02, 90,A0, 00, ADD4, E5E6
@@ -3185,16 +3229,16 @@ $8F:AE59             dw 964E, 965A
 $8F:AE5D             db 00, 00, 02, 00, 00, 02, 00, 00, 01
 
 ; PLM scroll data. Room $AE32. Volcano room (PLM index 0)
-$8F:AE66             db 06, 01, 07, 01, 80
+$8F:AE66             db 06,01, 07,01, 80
 
 ; PLM scroll data. Room $AE32. Volcano room (PLM index 1)
-$8F:AE6B             db 08, 01, 80
+$8F:AE6B             db 08,01, 80
 
 ; PLM scroll data. Room $AE32. Volcano room (PLM index 7)
-$8F:AE6E             db 08, 00, 80
+$8F:AE6E             db 08,00, 80
 
 ; PLM scroll data. Room $AE32. Volcano room (PLM index Bh)
-$8F:AE71             db 07, 00, 80
+$8F:AE71             db 07,00, 80
 
 ; Room header. Pre lava dive shaft
 $8F:AE74             dx 22,02, 19,08, 02,03, 70,A0, 00, AE9B, E5E6
@@ -3209,13 +3253,13 @@ $8F:AE9B             dw 9666, 9672, 967E, 968A
 $8F:AEA3             db 00, 02, 00, 02, 00, 01
 
 ; PLM scroll data. Room $AE74. Pre lava dive shaft (PLM index 0)
-$8F:AEA9             db 02, 01, 80
+$8F:AEA9             db 02,01, 80
 
 ; PLM scroll data. Room $AE74. Pre lava dive shaft (PLM index 1)
-$8F:AEAC             db 02, 00, 03, 02, 80
+$8F:AEAC             db 02,00, 03,02, 80
 
 ; PLM scroll data. Room $AE74. Pre lava dive shaft (PLM index 5)
-$8F:AEB1             db 03, 00, 80
+$8F:AEB1             db 03,00, 80
 
 ; Room header. Magdollite multiviola hall
 $8F:AEB4             dx 23,02, 17,08, 03,01, 70,A0, 00, AEDB, E5E6
@@ -3239,7 +3283,7 @@ $8F:AF06             dw 96AE, 96BA, 96C6
 $8F:AF0C             db 02, 02, 01
 
 ; PLM scroll data. Room $AEDF. Purple shaft (PLM indices 0/3)
-$8F:AF0F             db 00, 02, 01, 02, 80
+$8F:AF0F             db 00,02, 01,02, 80
 
 ; Room header. Lava dive room
 $8F:AF14             dx 25,02, 16,0A, 04,03, 70,A0, 00, AF3B, E5E6
@@ -3263,7 +3307,7 @@ $8F:AF66             dw 96EA, 96F6, 88FC, 9702
 $8F:AF6E             db 01
 
 ; PLM scroll data. Room $AF3F. Norfair -> Lower Norfair elevator (PLM index 0)
-$8F:AF6F             db 00, 02, 80
+$8F:AF6F             db 00,02, 80
 
 ; Room header. Norfair wave gate room
 $8F:AF72             dx 27,02, 14,05, 02,02, A0,A0, 00, AF99, E5E6
@@ -3335,13 +3379,13 @@ $8F:B0A1             dw 97AA, 97B6
 $8F:B0A5             db 00, 01
 
 ; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 0)
-$8F:B0A7             db 00, 02, 01, 02, 80
+$8F:B0A7             db 00,02, 01,02, 80
 
 ; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 2)
-$8F:B0AC             db 00, 02, 01, 01, 80
+$8F:B0AC             db 00,02, 01,01, 80
 
 ; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 4)
-$8F:B0B1             db 00, 00, 80
+$8F:B0B1             db 00,00, 80
 
 ; Room header. Norfair map station
 $8F:B0B4             dx 2E,02, 09,04, 01,01, 70,A0, 00, B0DB, E5E6
@@ -3428,13 +3472,13 @@ $8F:B20C             dw 983A, 9846
 $8F:B210             db 02, 02, 00, 01, 01, 00, 00, 00, 00
 
 ; Unused PLM scroll data
-$8F:B219             db 03, 01, 04, 01, 06, 00, 07, 00, 08, 00, 80
+$8F:B219             db 03,01, 04,01, 06,00, 07,00, 08,00, 80
 
 ; PLM scroll data. Room $B1E5. Lower Norfair chozo room (PLM index 0)
-$8F:B224             db 03, 02, 04, 02, 06, 02, 07, 02, 80
+$8F:B224             db 03,02, 04,02, 06,02, 07,02, 80
 
 ; PLM scroll data. Room $B1E5. Lower Norfair chozo room (PLM index 1)
-$8F:B22D             db 04, 00, 06, 01, 07, 01, 08, 01, 80
+$8F:B22D             db 04,00, 06,01, 07,01, 08,01, 80
 
 ; Room header. Lower Norfair mainstreet
 $8F:B236             dx 36,02, 11,0B, 08,03, 70,A0, 00, B25D, E5E6
@@ -3449,10 +3493,10 @@ $8F:B25D             dw 9852, 985E, 986A, 88FC
 $8F:B265             db 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 01, 01, 01, 01, 01, 01, 01, 01
 
 ; PLM scroll data. Room $B236. Lower Norfair mainstreet (PLM indices 0/2)
-$8F:B27D             db 0C, 02, 80
+$8F:B27D             db 0C,02, 80
 
 ; PLM scroll data. Room $B236. Lower Norfair mainstreet (PLM index 4)
-$8F:B280             db 0C, 00, 80
+$8F:B280             db 0C,00, 80
 
 ; Room header. Golden Torizo
 $8F:B283             dx 37,02, 12,0F, 02,02, 70,A0, 00, B2C9, E629,04,B2AF, E5E6
@@ -3470,7 +3514,7 @@ $8F:B2C9             dw 9876, 9882
 $8F:B2CD             db 02, 02, 01, 01
 
 ; PLM scroll data. Room $B283. Golden Torizo (PLM index 0)
-$8F:B2D1             db 00, 02, 01, 02, 02, 01, 03, 01, 80
+$8F:B2D1             db 00,02, 01,02, 02,01, 03,01, 80
 
 ; Room header. Ripper ii room
 $8F:B2DA             dx 38,02, 15,0E, 04,01, 70,A0, 00, B301, E5E6
@@ -3527,10 +3571,10 @@ $8F:B3CC             dw 98E2, 98EE, 98FA, 9906, 9912
 $8F:B3D6             db 02, 01, 00
 
 ; PLM scroll data. Room $B3A5. Pre pillars hall (PLM index 0)
-$8F:B3D9             db 01, 02, 80
+$8F:B3D9             db 01,02, 80
 
 ; PLM scroll data. Room $B3A5. Pre pillars hall (PLM index 2)
-$8F:B3DC             db 01, 02, 02, 01, 80
+$8F:B3DC             db 01,02, 02,01, 80
 
 ; Room header. Unused room
 $8F:B3E1             dx 3D,02, 1A,0B, 01,01, 70,A0, 00, B408, E5E6
@@ -3554,22 +3598,22 @@ $8F:B431             dw 992A, 9936
 $8F:B435             db 00, 00, 00, 02, 00, 00, 00, 02, 00, 00, 00, 02, 01, 01, 01, 01
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index 0)
-$8F:B445             db 06, 01, 80
+$8F:B445             db 06,01, 80
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index 1)
-$8F:B448             db 06, 00, 80
+$8F:B448             db 06,00, 80
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index 2)
-$8F:B44B             db 07, 01, 80
+$8F:B44B             db 07,01, 80
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index 6)
-$8F:B44E             db 07, 00, 80
+$8F:B44E             db 07,00, 80
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index Ah)
-$8F:B451             db 0E, 01, 80
+$8F:B451             db 0E,01, 80
 
 ; PLM scroll data. Room $B40A. Lower Norfair multi-level one-way shaft (PLM index Dh)
-$8F:B454             db 0E, 00, 80
+$8F:B454             db 0E,00, 80
 
 ; Room header. Pillars hall
 $8F:B457             dx 3F,02, 1A,0E, 04,01, 70,A0, 00, B47E, E5E6
@@ -3602,7 +3646,7 @@ $8F:B4D4             dw 9972, 997E, 998A
 $8F:B4DA             db 00, 02, 02, 02, 02, 01
 
 ; PLM scroll data. Room $B4AD. Lower Norfair wall space pirates shaft (PLM index 0)
-$8F:B4E0             db 00, 02, 01, 02, 80
+$8F:B4E0             db 00,02, 01,02, 80
 
 ; Room header. Lower Norfair rising acid room
 $8F:B4E5             dx 42,02, 1F,09, 04,05, 70,A0, 00, B50C, E5E6
@@ -3626,13 +3670,13 @@ $8F:B537             dw 99AE, 99BA, 99C6
 $8F:B53D             db 02, 00, 00, 00, 00, 01, 01, 00, 00, 00
 
 ; PLM scroll data. Room $B510. Lower Norfair spring ball maze room (PLM index 0)
-$8F:B547             db 01, 01, 02, 01, 06, 00, 80
+$8F:B547             db 01,01, 02,01, 06,00, 80
 
 ; PLM scroll data. Room $B510. Lower Norfair spring ball maze room (PLM index 4)
-$8F:B54E             db 01, 00, 02, 00, 06, 01, 80
+$8F:B54E             db 01,00, 02,00, 06,01, 80
 
 ; PLM scroll data. Room $B510. Lower Norfair spring ball maze room (PLM index Ch)
-$8F:B555             db 03, 01, 04, 02, 80
+$8F:B555             db 03,01, 04,02, 80
 
 ; Room header. Lower Norfair escape power bomb room
 $8F:B55A             dx 44,02, 25,06, 01,01, 70,A0, 00, B581, E5E6
@@ -3656,16 +3700,16 @@ $8F:B5AC             dw 99EA, 99F6, 9A02, 9A0E
 $8F:B5B4             db 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 02, 00, 02
 
 ; PLM scroll data. Room $B585. Lower Norfair south kihunter shaft (PLM indices 0/4)
-$8F:B5C3             db 0A, 02, 0D, 02, 80
+$8F:B5C3             db 0A,02, 0D,02, 80
 
 ; PLM scroll data. Room $B585. Lower Norfair south kihunter shaft (PLM indices 3/5)
-$8F:B5C8             db 0A, 00, 0D, 00, 80
+$8F:B5C8             db 0A,00, 0D,00, 80
 
 ; PLM scroll data. Room $B585. Lower Norfair south kihunter shaft (PLM index 6)
-$8F:B5CD             db 00, 02, 03, 02, 80
+$8F:B5CD             db 00,02, 03,02, 80
 
 ; PLM scroll data. Room $B585. Lower Norfair south kihunter shaft (PLM index Ah)
-$8F:B5D2             db 00, 02, 80
+$8F:B5D2             db 00,02, 80
 
 ; Room header. Lower Norfair spike platform room
 $8F:B5D5             dx 46,02, 20,0E, 06,03, 70,A0, 00, B5FC, E5E6
@@ -3680,25 +3724,25 @@ $8F:B5FC             dw 9A1A, 9A26
 $8F:B600             db 00, 01, 01, 01, 00, 01, 00, 00, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM index 0)
-$8F:B612             db 07, 02, 80
+$8F:B612             db 07,02, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM index 2)
-$8F:B615             db 01, 01, 07, 00, 80
+$8F:B615             db 01,01, 07,00, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM indices 8/Ch)
-$8F:B61A             db 04, 01, 80
+$8F:B61A             db 04,01, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM index Ah)
-$8F:B61D             db 00, 01, 01, 01, 80
+$8F:B61D             db 00,01, 01,01, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM indices 9/Bh)
-$8F:B622             db 04, 00, 80
+$8F:B622             db 04,00, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM index Dh)
-$8F:B625             db 00, 00, 80
+$8F:B625             db 00,00, 80
 
 ; PLM scroll data. Room $B5D5. Lower Norfair spike platform room (PLM index 11h)
-$8F:B628             db 01, 00, 80
+$8F:B628             db 01,00, 80
 
 ; Room header. Ninja space pirate hall
 $8F:B62B             dx 47,02, 1E,10, 03,01, 70,A0, 00, B652, E5E6
@@ -3722,13 +3766,13 @@ $8F:B67D             dw 9A4A, 9A56
 $8F:B681             db 00, 02, 00, 00, 00, 02, 00, 00, 00, 01, 01, 01
 
 ; PLM scroll data. Room $B656. Lower Norfair north kihunter shaft (PLM index 0)
-$8F:B68D             db 09, 00, 80
+$8F:B68D             db 09,00, 80
 
 ; PLM scroll data. Room $B656. Lower Norfair north kihunter shaft (PLM index 6)
-$8F:B690             db 08, 01, 09, 01, 80
+$8F:B690             db 08,01, 09,01, 80
 
 ; PLM scroll data. Room $B656. Lower Norfair north kihunter shaft (PLM index 7)
-$8F:B695             db 08, 00, 80
+$8F:B695             db 08,00, 80
 
 ; Room header. Ridley's energy tank
 $8F:B698             dx 49,02, 16,11, 01,01, 70,A0, 00, B6BF, E5E6
@@ -3761,16 +3805,16 @@ $8F:B715             dw 9A92, 9A9E, 9AAA
 $8F:B71B             db 00, 02, 00, 00, 02, 00, 00, 02, 00, 00, 01, 00, 00, 00, 00, 00, 01, 01
 
 ; PLM scroll data. Room $B6EE. Norfair rolling boulder shaft (PLM index 2)
-$8F:B72D             db 0B, 01, 80
+$8F:B72D             db 0B,01, 80
 
 ; PLM scroll data. Room $B6EE. Norfair rolling boulder shaft (PLM index 5)
-$8F:B730             db 0B, 02, 0D, 02, 0E, 02, 80
+$8F:B730             db 0B,02, 0D,02, 0E,02, 80
 
 ; PLM scroll data. Room $B6EE. Norfair rolling boulder shaft (PLM index 9)
-$8F:B737             db 00, 01, 04, 00, 80
+$8F:B737             db 00,01, 04,00, 80
 
 ; PLM scroll data. Room $B6EE. Norfair rolling boulder shaft (PLM index 11h)
-$8F:B73C             db 01, 02, 04, 02, 80
+$8F:B73C             db 01,02, 04,02, 80
 
 ; Room header. Lower Norfair save station
 $8F:B741             dx 4C,02, 24,0C, 01,01, 70,A0, 00, B768, E5E6
@@ -3911,9 +3955,10 @@ $8F:B956             dx 0004, BA8DBD, 4000,       ; Decompress $BA:8DBD to $7E:4
 
 ;;; $B971..BA36: Door ASM ;;;
 {
-;;; $B971: Door ASM: start Wrecked Ship treadmill west entrance ;;;
+;;; $B971: Door ASM - start Wrecked Ship treadmill - west entrance ;;;
 {
-; Room $93FE, door list index 1: Door
+; Door destination: Wrecked Ship entrance treadmill
+; Room $93FE, door 1. Wrecked Ship entrance
 $8F:B971 A0 75 82    LDY #$8275             ;\
 $8F:B974 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Wrecked Ship treadmill - rightwards animated tiles object
 $8F:B978 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -3922,12 +3967,13 @@ $8F:B980 60          RTS
 }
 
 
-;;; $B981: Door ASM: scroll 6 = green ;;;
+;;; $B981: Door ASM - scroll 6 = green ;;;
 {
-; Room $93D5, door list index 0: Door
-; Room $96BA, door list index 0: Door
-; Room $98E2, door list index 0: Door
-; Room $9A44, door list index 1: Door
+; Door destination: Crateria mainstreet
+; Room $93D5, door 0. Crateria save station
+; Room $96BA, door 0. Old Tourian escape shaft
+; Room $98E2, door 0. Pre Crateria map station hall
+; Room $9A44, door 1. Crateria bomb block hall
 $8F:B981 08          PHP
 $8F:B982 E2 20       SEP #$20
 $8F:B984 A9 02       LDA #$02
@@ -3937,9 +3983,10 @@ $8F:B98B 60          RTS
 }
 
 
-;;; $B98C: Door ASM: scroll 0 = blue ;;;
+;;; $B98C: Door ASM - scroll 0 = blue ;;;
 {
-; Room $990D, door list index 1: Door
+; Door destination: Crateria mainstreet
+; Room $990D, door 1. Crateria slope
 $8F:B98C 08          PHP
 $8F:B98D E2 20       SEP #$20
 $8F:B98F A9 01       LDA #$01
@@ -3949,9 +3996,10 @@ $8F:B996 60          RTS
 }
 
 
-;;; $B997: Door ASM: scroll 13h = blue ;;;
+;;; $B997: Door ASM - scroll 13h = blue ;;;
 {
-; Room $92B3, door list index 0: Door
+; Door destination: Landing site
+; Room $92B3, door 0. Gauntlet east
 $8F:B997 08          PHP
 $8F:B998 E2 20       SEP #$20
 $8F:B99A A9 01       LDA #$01
@@ -3961,9 +4009,10 @@ $8F:B9A1 60          RTS
 }
 
 
-;;; $B9A2: Door ASM: scroll 4 = red, 8 = green ;;;
+;;; $B9A2: Door ASM - scroll 4 = red, 8 = green ;;;
 {
-; Room $9879, door list index 0: Door
+; Door destination: Crateria mainstreet
+; Room $9879, door 0. Pre Bomb Torizo hall
 $8F:B9A2 08          PHP
 $8F:B9A3 E2 20       SEP #$20
 $8F:B9A5 A9 00       LDA #$00
@@ -3975,9 +4024,10 @@ $8F:B9B2 60          RTS
 }
 
 
-;;; $B9B3: Door ASM: scroll 8..Bh = red ;;;
+;;; $B9B3: Door ASM - scroll 8..Bh = red ;;;
 {
-; Room $93FE, door list index 4: Door
+; Door destination: Wrecked Ship chozo room
+; Room $93FE, door 4. Wrecked Ship entrance
 $8F:B9B3 08          PHP
 $8F:B9B4 E2 20       SEP #$20
 $8F:B9B6 A9 00       LDA #$00
@@ -3990,9 +4040,10 @@ $8F:B9C9 60          RTS
 }
 
 
-;;; $B9CA: Door ASM: scroll 2..5,Bh..Dh,11h = red ;;;
+;;; $B9CA: Door ASM - scroll 2..5,Bh..Dh,11h = red ;;;
 {
-; Room $968F, door list index 1: Door
+; Door destination: Wrecked Ship chozo room
+; Room $968F, door 1. Orange zoomer hall
 $8F:B9CA 08          PHP
 $8F:B9CB E2 20       SEP #$20
 $8F:B9CD A9 00       LDA #$00
@@ -4009,9 +4060,10 @@ $8F:B9F0 60          RTS
 }
 
 
-;;; $B9F1: Door ASM: scroll 1,4 = green ;;;
+;;; $B9F1: Door ASM - scroll 1,4 = green ;;;
 {
-; Room $962A, door list index 0: Door
+; Door destination: Pre moat room
+; Room $962A, door 0. Crateria -> Red Brinstar elevator
 $8F:B9F1 08          PHP
 $8F:B9F2 E2 20       SEP #$20
 $8F:B9F4 A9 02       LDA #$02
@@ -4022,9 +4074,10 @@ $8F:B9FF 60          RTS
 }
 
 
-;;; $BA00: Door ASM: scroll 2 = blue ;;;
+;;; $BA00: Door ASM - scroll 2 = blue ;;;
 {
-; Room $99F9, door list index 0: Door
+; Door destination: Old Tourian escape shaft
+; Room $99F9, door 0. Crateria spike floor room
 $8F:BA00 08          PHP
 $8F:BA01 E2 20       SEP #$20
 $8F:BA03 A9 01       LDA #$01
@@ -4034,9 +4087,10 @@ $8F:BA0A 60          RTS
 }
 
 
-;;; $BA0B: Door ASM: scroll 17h = blue ;;;
+;;; $BA0B: Door ASM - scroll 17h = blue ;;;
 {
-; Room $99F9, door list index 1: Door
+; Door destination: Old Tourian escape shaft
+; Room $99F9, door 1. Crateria spike floor room
 $8F:BA0B 08          PHP
 $8F:BA0C E2 20       SEP #$20
 $8F:BA0E A9 01       LDA #$01
@@ -4046,9 +4100,10 @@ $8F:BA15 60          RTS
 }
 
 
-;;; $BA16: Door ASM: scroll 4 = blue ;;;
+;;; $BA16: Door ASM - scroll 4 = blue ;;;
 {
-; Room $99BD, door list index 3: Door
+; Door destination: Gauntlet west
+; Room $99BD, door 3. Crateria space pirate shaft
 $8F:BA16 08          PHP
 $8F:BA17 E2 20       SEP #$20
 $8F:BA19 A9 01       LDA #$01
@@ -4058,9 +4113,10 @@ $8F:BA20 60          RTS
 }
 
 
-;;; $BA21: Door ASM: scroll 6 = green ;;;
+;;; $BA21: Door ASM - scroll 6 = green ;;;
 {
-; Room $962A, door list index 1: Door
+; Door destination: Red Brinstar -> Crateria elevator
+; Room $962A, door 1. Crateria -> Red Brinstar elevator
 $8F:BA21 08          PHP
 $8F:BA22 E2 20       SEP #$20
 $8F:BA24 A9 02       LDA #$02
@@ -4070,9 +4126,10 @@ $8F:BA2B 60          RTS
 }
 
 
-;;; $BA2C: Door ASM: scroll 3 = green ;;;
+;;; $BA2C: Door ASM - scroll 3 = green ;;;
 {
-; Room $965B, door list index 1: Door
+; Door destination: Crateria space pirate shaft
+; Room $965B, door 1. Gauntlet west
 $8F:BA2C 08          PHP
 $8F:BA2D E2 20       SEP #$20
 $8F:BA2F A9 02       LDA #$02
@@ -4264,10 +4321,11 @@ $8F:BCEC             dx 0004, B9F94F, 4000,       ; Decompress $B9:F94F to $7E:4
 
 ;;; $BD07..BE3E: Door ASM ;;;
 {
-;;; $BD07: Door ASM: scroll 18h,1Ch = green ;;;
+;;; $BD07: Door ASM - scroll 18h,1Ch = green ;;;
 {
-; Room $9AD9, door list index 8: Door
-; Room $9FE5, door list index 0: Door
+; Door destination: Green Brinstar mainstreet
+; Room $9AD9, door 8. Green Brinstar mainstreet
+; Room $9FE5, door 0. Etecoon area beetom room
 $8F:BD07 08          PHP
 $8F:BD08 E2 20       SEP #$20
 $8F:BD0A A9 02       LDA #$02
@@ -4278,10 +4336,11 @@ $8F:BD15 60          RTS
 }
 
 
-;;; $BD16: Door ASM: scroll 5..6 = blue ;;;
+;;; $BD16: Door ASM - scroll 5..6 = blue ;;;
 {
-; Room $9AD9, door list index 7: Door
-; Room $A22A, door list index 0: Door
+; Door destination: Etecoon area spike hall
+; Room $9AD9, door 7. Green Brinstar mainstreet
+; Room $A22A, door 0. Etecoon area save station
 $8F:BD16 08          PHP
 $8F:BD17 E2 20       SEP #$20
 $8F:BD19 A9 01       LDA #$01
@@ -4292,11 +4351,12 @@ $8F:BD24 60          RTS
 }
 
 
-;;; $BD25: Door ASM: scroll 1Dh = blue ;;;
+;;; $BD25: Door ASM - scroll 1Dh = blue ;;;
 {
-; Room $9938, door list index 1: Door
-; Room $9AD9, door list index 6: Door
-; Room $A011, door list index 2: Door
+; Door destination: Green Brinstar mainstreet
+; Room $9938, door 1. Crateria -> Green Brinstar elevator
+; Room $9AD9, door 6. Green Brinstar mainstreet
+; Room $A011, door 2. Etecoon area spike hall
 $8F:BD25 08          PHP
 $8F:BD26 E2 20       SEP #$20
 $8F:BD28 A9 01       LDA #$01
@@ -4306,9 +4366,10 @@ $8F:BD2F 60          RTS
 }
 
 
-;;; $BD30: Door ASM: scroll 2..3 = green ;;;
+;;; $BD30: Door ASM - scroll 2..3 = green ;;;
 {
-; Room $9D19, door list index 2: Door
+; Door destination: Brinstar super-sidehopper power bomb room
+; Room $9D19, door 2. Charge beam room
 $8F:BD30 08          PHP
 $8F:BD31 E2 20       SEP #$20
 $8F:BD33 A9 02       LDA #$02
@@ -4319,9 +4380,10 @@ $8F:BD3E 60          RTS
 }
 
 
-;;; $BD3F: Door ASM: scroll 0 = red, 1 = green ;;;
+;;; $BD3F: Door ASM - scroll 0 = red, 1 = green ;;;
 {
-; Room $A471, door list index 0: Door
+; Door destination: Kraid's lair entrance
+; Room $A471, door 0. Kraid's lair zeela room
 $8F:BD3F 08          PHP
 $8F:BD40 E2 20       SEP #$20
 $8F:BD42 A9 00       LDA #$00
@@ -4333,9 +4395,10 @@ $8F:BD4F 60          RTS
 }
 
 
-;;; $BD50: Door ASM: scroll Bh = green ;;;
+;;; $BD50: Door ASM - scroll Bh = green ;;;
 {
-; Room $A07B, door list index 0: Door
+; Door destination: Dachora room
+; Room $A07B, door 0. Dachora energy station
 $8F:BD50 08          PHP
 $8F:BD51 E2 20       SEP #$20
 $8F:BD53 A9 02       LDA #$02
@@ -4345,9 +4408,10 @@ $8F:BD5A 60          RTS
 }
 
 
-;;; $BD5B: Door ASM: scroll 1Ch = red, 1Dh = blue ;;;
+;;; $BD5B: Door ASM - scroll 1Ch = red, 1Dh = blue ;;;
 {
-; Room $A0A4, door list index 1: Door
+; Door destination: Charge beam room
+; Room $A0A4, door 1. Post Spore Spawn supers hall
 $8F:BD5B 08          PHP
 $8F:BD5C E2 20       SEP #$20
 $8F:BD5E A9 00       LDA #$00
@@ -4359,9 +4423,10 @@ $8F:BD6B 60          RTS
 }
 
 
-;;; $BD6C: Door ASM: scroll 4 = red ;;;
+;;; $BD6C: Door ASM - scroll 4 = red ;;;
 {
-; Room $9AD9, door list index 5: Door
+; Door destination: Dachora room
+; Room $9AD9, door 5. Green Brinstar mainstreet
 $8F:BD6C 08          PHP
 $8F:BD6D E2 20       SEP #$20
 $8F:BD6F A9 00       LDA #$00
@@ -4371,9 +4436,10 @@ $8F:BD76 60          RTS
 }
 
 
-;;; $BD77: Door ASM: scroll 20h,24h..25h = green ;;;
+;;; $BD77: Door ASM - scroll 20h,24h..25h = green ;;;
 {
-; Room $A0D2, door list index 0: Door
+; Door destination: Charge beam room
+; Room $A0D2, door 0. Pink Brinstar flooded hall
 $8F:BD77 08          PHP
 $8F:BD78 E2 20       SEP #$20
 $8F:BD7A A9 02       LDA #$02
@@ -4385,9 +4451,10 @@ $8F:BD89 60          RTS
 }
 
 
-;;; $BD8A: Door ASM: scroll 2 = blue ;;;
+;;; $BD8A: Door ASM - scroll 2 = blue ;;;
 {
-; Room $A1AD, door list index 0: Door
+; Door destination: Blue Brinstar ceiling e-tank hall
+; Room $A1AD, door 0. Blue Brinstar boulder room
 $8F:BD8A 08          PHP
 $8F:BD8B E2 20       SEP #$20
 $8F:BD8D A9 01       LDA #$01
@@ -4397,9 +4464,10 @@ $8F:BD94 60          RTS
 }
 
 
-;;; $BD95: Door ASM: scroll 0 = green ;;;
+;;; $BD95: Door ASM - scroll 0 = green ;;;
 {
-; Room $A641, door list index 0: Door
+; Door destination: Pre Kraid room
+; Room $A641, door 0. Kraid's lair refill station
 $8F:BD95 08          PHP
 $8F:BD96 E2 20       SEP #$20
 $8F:BD98 A9 02       LDA #$02
@@ -4409,10 +4477,11 @@ $8F:BD9F 60          RTS
 }
 
 
-;;; $BDA0: Door ASM: scroll 6..7 = green ;;;
+;;; $BDA0: Door ASM - scroll 6..7 = green ;;;
 {
-; Room $A3DD, door list index 0: Door
-; Room $A618, door list index 0: Door
+; Door destination: Red Brinstar mainstreet
+; Room $A3DD, door 0. Red Brinstar skree-duo hall
+; Room $A618, door 0. Red Brinstar energy station
 $8F:BDA0 08          PHP
 $8F:BDA1 E2 20       SEP #$20
 $8F:BDA3 A9 02       LDA #$02
@@ -4423,9 +4492,10 @@ $8F:BDAE 60          RTS
 }
 
 
-;;; $BDAF: Door ASM: scroll 1 = blue, 2 = red ;;;
+;;; $BDAF: Door ASM - scroll 1 = blue, 2 = red ;;;
 {
-; Room $A322, door list index 4: Door
+; Door destination: Maridia -> Red Brinstar room
+; Room $A322, door 4. Red Brinstar -> Crateria elevator
 $8F:BDAF 08          PHP
 $8F:BDB0 E2 20       SEP #$20
 $8F:BDB2 A9 01       LDA #$01
@@ -4437,9 +4507,10 @@ $8F:BDBF 60          RTS
 }
 
 
-;;; $BDC0: Door ASM: scroll 1 = blue, 3 = red ;;;
+;;; $BDC0: Door ASM - scroll 1 = blue, 3 = red ;;;
 {
-; Room $9DC7, door list index 0: Door
+; Door destination: Spore Spawn's super missile shaft
+; Room $9DC7, door 0. Spore Spawn
 $8F:BDC0 08          PHP
 $8F:BDC1 E2 20       SEP #$20
 $8F:BDC3 A9 01       LDA #$01
@@ -4451,9 +4522,10 @@ $8F:BDD0 60          RTS
 }
 
 
-;;; $BDD1: Door ASM: scroll 0 = red, 4 = blue ;;;
+;;; $BDD1: Door ASM - scroll 0 = red, 4 = blue ;;;
 {
-; Room $A6A1, door list index 0: Door
+; Door destination: n00b tube east
+; Room $A6A1, door 0. Kraid's lair entrance
 $8F:BDD1 08          PHP
 $8F:BDD2 E2 20       SEP #$20
 $8F:BDD4 A9 00       LDA #$00
@@ -4465,9 +4537,10 @@ $8F:BDE1 60          RTS
 }
 
 
-;;; $BDE2: Door ASM: scroll 2..3 = blue ;;;
+;;; $BDE2: Door ASM - scroll 2..3 = blue ;;;
 {
-; Room $A70B, door list index 0: Door
+; Door destination: Kraid's lair kihunter hall
+; Room $A70B, door 0. Kraid's lair save station
 $8F:BDE2 08          PHP
 $8F:BDE3 E2 20       SEP #$20
 $8F:BDE5 A9 01       LDA #$01
@@ -4478,9 +4551,10 @@ $8F:BDF0 60          RTS
 }
 
 
-;;; $BDF1: Door ASM: scroll 0..1 = green ;;;
+;;; $BDF1: Door ASM - scroll 0..1 = green ;;;
 {
-; Room $A447, door list index 0: Door
+; Door destination: Pre spazer room
+; Room $A447, door 0. Spazer room
 $8F:BDF1 08          PHP
 $8F:BDF2 E2 20       SEP #$20
 $8F:BDF4 A9 02       LDA #$02
@@ -4491,9 +4565,10 @@ $8F:BDFF 60          RTS
 }
 
 
-;;; $BE00: Door ASM: scroll 1 = green ;;;
+;;; $BE00: Door ASM - scroll 1 = green ;;;
 {
-; Room $A184, door list index 0: Door
+; Door destination: Charge beam room
+; Room $A184, door 0. Spore Spawn save station
 $8F:BE00 08          PHP
 $8F:BE01 E2 20       SEP #$20
 $8F:BE03 A9 02       LDA #$02
@@ -4503,9 +4578,10 @@ $8F:BE0A 60          RTS
 }
 
 
-;;; $BE0B: Door ASM: scroll Fh,12h = green ;;;
+;;; $BE0B: Door ASM - scroll Fh,12h = green ;;;
 {
-; Room $A3AE, door list index 0: Door
+; Door destination: Red Brinstar -> Crateria elevator
+; Room $A3AE, door 0. Red Brinstar power bomb wall room
 $8F:BE0B 08          PHP
 $8F:BE0C E2 20       SEP #$20
 $8F:BE0E A9 02       LDA #$02
@@ -4516,9 +4592,10 @@ $8F:BE19 60          RTS
 }
 
 
-;;; $BE1A: Door ASM: scroll 6 = green ;;;
+;;; $BE1A: Door ASM - scroll 6 = green ;;;
 {
-; Room $A2F7, door list index 1: Door
+; Door destination: Red Brinstar -> Crateria elevator
+; Room $A2F7, door 1. Red Brinstar damage boost hall
 $8F:BE1A 08          PHP
 $8F:BE1B E2 20       SEP #$20
 $8F:BE1D A9 02       LDA #$02
@@ -4528,9 +4605,10 @@ $8F:BE24 60          RTS
 }
 
 
-;;; $BE25: Door ASM: scroll 0 = green, 1 = blue ;;;
+;;; $BE25: Door ASM - scroll 0 = green, 1 = blue ;;;
 {
-; Room $A107, door list index 0: Door
+; Door destination: Old Kraid entrance
+; Room $A107, door 0. Blue Brinstar missile room
 $8F:BE25 08          PHP
 $8F:BE26 E2 20       SEP #$20
 $8F:BE28 A9 02       LDA #$02
@@ -4542,9 +4620,10 @@ $8F:BE35 60          RTS
 }
 
 
-;;; $BE36: Door ASM: scroll 2 = green ;;;
+;;; $BE36: Door ASM - scroll 2 = green ;;;
 {
-; Room $9AD9, door list index 0: Door
+; Door destination: Crateria -> Green Brinstar elevator
+; Room $9AD9, door 0. Green Brinstar mainstreet
 $8F:BE36 E2 20       SEP #$20
 $8F:BE38 A9 02       LDA #$02
 $8F:BE3A 8F 22 CD 7E STA $7ECD22[$7E:CD22]
@@ -4678,9 +4757,10 @@ $8F:BF83             dx 0004, B9C5C8, 4000,       ; Decompress $B9:C5C8 to $7E:4
 
 ;;; $BF9E..C115: Door ASM ;;;
 {
-;;; $BF9E: Door ASM: scroll 3..4 = red, 6..8 = blue ;;;
+;;; $BF9E: Door ASM - scroll 3..4 = red, 6..8 = blue ;;;
 {
-; Room $B283, door list index 0: Door
+; Door destination: Lower Norfair chozo room
+; Room $B283, door 0. Golden Torizo
 $8F:BF9E 08          PHP
 $8F:BF9F E2 20       SEP #$20
 $8F:BFA1 A9 00       LDA #$00
@@ -4695,9 +4775,10 @@ $8F:BFBA 60          RTS
 }
 
 
-;;; $BFBB: Door ASM: scroll 1..3 = blue, 4 = green, 6 = red ;;;
+;;; $BFBB: Door ASM - scroll 1..3 = blue, 4 = green, 6 = red ;;;
 {
-; Room $B55A, door list index 1: Door
+; Door destination: Lower Norfair spring ball maze room
+; Room $B55A, door 1. Lower Norfair escape power bomb room
 $8F:BFBB 08          PHP
 $8F:BFBC E2 20       SEP #$20
 $8F:BFBE A9 01       LDA #$01
@@ -4713,9 +4794,10 @@ $8F:BFD9 60          RTS
 }
 
 
-;;; $BFDA: Door ASM: scroll 0..1 = blue ;;;
+;;; $BFDA: Door ASM - scroll 0..1 = blue ;;;
 {
-; Room $AA82, door list index 0: Door
+; Door destination: Crocomire
+; Room $AA82, door 0. Post Crocomire room
 $8F:BFDA 08          PHP
 $8F:BFDB E2 20       SEP #$20
 $8F:BFDD A9 01       LDA #$01
@@ -4726,9 +4808,10 @@ $8F:BFE8 60          RTS
 }
 
 
-;;; $BFE9: Door ASM: scroll 0 = blue, 1 = red ;;;
+;;; $BFE9: Door ASM - scroll 0 = blue, 1 = red ;;;
 {
-; Room $ACF0, door list index 0: Door
+; Door destination: Speed booster lavaquake room
+; Room $ACF0, door 0. Speed booster lavaquake
 $8F:BFE9 08          PHP
 $8F:BFEA E2 20       SEP #$20
 $8F:BFEC A9 00       LDA #$00
@@ -4740,9 +4823,10 @@ $8F:BFF9 60          RTS
 }
 
 
-;;; $BFFA: Door ASM: scroll Ah = green ;;;
+;;; $BFFA: Door ASM - scroll Ah = green ;;;
 {
-; Room $A865, door list index 1: Door
+; Door destination: Ice beam mockball hall
+; Room $A865, door 1. Ice beam practice room
 $8F:BFFA 08          PHP
 $8F:BFFB E2 20       SEP #$20
 $8F:BFFD A9 02       LDA #$02
@@ -4752,7 +4836,7 @@ $8F:C004 60          RTS
 }
 
 
-;;; $C005: Unused. Door ASM: scroll 0 = blue, 2 = red ;;;
+;;; $C005: Unused. Door ASM - scroll 0 = blue, 2 = red ;;;
 {
 $8F:C005 08          PHP
 $8F:C006 E2 20       SEP #$20
@@ -4765,9 +4849,10 @@ $8F:C015 60          RTS
 }
 
 
-;;; $C016: Door ASM: scroll 0,2 = green ;;;
+;;; $C016: Door ASM - scroll 0,2 = green ;;;
 {
-; Room $A9E5, door list index 0: Door
+; Door destination: Pre hi-jump room
+; Room $A9E5, door 0. Hi-jump room
 $8F:C016 08          PHP
 $8F:C017 E2 20       SEP #$20
 $8F:C019 A9 02       LDA #$02
@@ -4778,9 +4863,10 @@ $8F:C024 60          RTS
 }
 
 
-;;; $C025: Door ASM: scroll 6..7 = blue, 8 = red ;;;
+;;; $C025: Door ASM - scroll 6..7 = blue, 8 = red ;;;
 {
-; Room $AE74, door list index 1: Door
+; Door destination: Volcano room
+; Room $AE74, door 1. Pre lava dive shaft
 $8F:C025 08          PHP
 $8F:C026 E2 20       SEP #$20
 $8F:C028 A9 01       LDA #$01
@@ -4793,9 +4879,10 @@ $8F:C039 60          RTS
 }
 
 
-;;; $C03A: Door ASM: scroll 2 = red, 3 = blue ;;;
+;;; $C03A: Door ASM - scroll 2 = red, 3 = blue ;;;
 {
-; Room $A890, door list index 0: Door
+; Door destination: Pre ice beam shaft
+; Room $A890, door 0. Ice beam room
 $8F:C03A 08          PHP
 $8F:C03B E2 20       SEP #$20
 $8F:C03D A9 00       LDA #$00
@@ -4807,9 +4894,10 @@ $8F:C04A 60          RTS
 }
 
 
-;;; $C04B: Door ASM: scroll 7 = green ;;;
+;;; $C04B: Door ASM - scroll 7 = green ;;;
 {
-; Room $B62B, door list index 1: Door
+; Door destination: Lower Norfair spike platform room
+; Room $B62B, door 1. Ninja space pirate hall
 $8F:C04B 08          PHP
 $8F:C04C E2 20       SEP #$20
 $8F:C04E A9 02       LDA #$02
@@ -4819,10 +4907,11 @@ $8F:C055 60          RTS
 }
 
 
-;;; $C056: Door ASM: scroll 1 = red, 2 = blue ;;;
+;;; $C056: Door ASM - scroll 1 = red, 2 = blue ;;;
 {
-; Room $B2DA, door list index 1: Door
-; Room $B457, door list index 0: Door
+; Door destination: Pre pillars hall
+; Room $B2DA, door 1. Ripper ii room
+; Room $B457, door 0. Pillars hall
 $8F:C056 08          PHP
 $8F:C057 E2 20       SEP #$20
 $8F:C059 A9 00       LDA #$00
@@ -4834,9 +4923,10 @@ $8F:C066 60          RTS
 }
 
 
-;;; $C067: Door ASM: scroll 0 = blue, 3 = red ;;;
+;;; $C067: Door ASM - scroll 0 = blue, 3 = red ;;;
 {
-; Room $B4E5, door list index 1: Door
+; Door destination: Lower Norfair south kihunter shaft
+; Room $B4E5, door 1. Lower Norfair rising acid room
 $8F:C067 08          PHP
 $8F:C068 E2 20       SEP #$20
 $8F:C06A A9 00       LDA #$00
@@ -4848,9 +4938,10 @@ $8F:C077 60          RTS
 }
 
 
-;;; $C078: Door ASM: scroll 1 = blue, 4 = red ;;;
+;;; $C078: Door ASM - scroll 1 = blue, 4 = red ;;;
 {
-; Room $B55A, door list index 0: Door
+; Door destination: Norfair rolling boulder shaft
+; Room $B55A, door 0. Lower Norfair escape power bomb room
 $8F:C078 08          PHP
 $8F:C079 E2 20       SEP #$20
 $8F:C07B A9 01       LDA #$01
@@ -4862,9 +4953,10 @@ $8F:C088 60          RTS
 }
 
 
-;;; $C089: Door ASM: scroll 0 = blue, 1..3 = red ;;;
+;;; $C089: Door ASM - scroll 0 = blue, 1..3 = red ;;;
 {
-; Room $B1E5, door list index 0: Door
+; Door destination: Golden Torizo
+; Room $B1E5, door 0. Lower Norfair chozo room
 $8F:C089 08          PHP
 $8F:C08A E2 20       SEP #$20
 $8F:C08C A9 01       LDA #$01
@@ -4878,9 +4970,10 @@ $8F:C0A1 60          RTS
 }
 
 
-;;; $C0A2: Door ASM: scroll 0 = green ;;;
+;;; $C0A2: Door ASM - scroll 0 = green ;;;
 {
-; Room $B40A, door list index 1: Door
+; Door destination: Lower Norfair wall space pirates shaft
+; Room $B40A, door 1. Lower Norfair multi-level one-way shaft
 $8F:C0A2 08          PHP
 $8F:C0A3 E2 20       SEP #$20
 $8F:C0A5 A9 02       LDA #$02
@@ -4890,9 +4983,10 @@ $8F:C0AC 60          RTS
 }
 
 
-;;; $C0AD: Door ASM: scroll 0..1 = blue, 4 = red ;;;
+;;; $C0AD: Door ASM - scroll 0..1 = blue, 4 = red ;;;
 {
-; Room $B510, door list index 1: Door
+; Door destination: Norfair rolling boulder shaft
+; Room $B510, door 1. Lower Norfair spring ball maze room
 $8F:C0AD 08          PHP
 $8F:C0AE E2 20       SEP #$20
 $8F:C0B0 A9 01       LDA #$01
@@ -4905,9 +4999,10 @@ $8F:C0C1 60          RTS
 }
 
 
-;;; $C0C2: Door ASM: scroll 0 = blue, 3 = red ;;;
+;;; $C0C2: Door ASM - scroll 0 = blue, 3 = red ;;;
 {
-; Room $B6EE, door list index 2: Door
+; Door destination: Lower Norfair south kihunter shaft
+; Room $B6EE, door 2. Norfair rolling boulder shaft
 $8F:C0C2 08          PHP
 $8F:C0C3 E2 20       SEP #$20
 $8F:C0C5 A9 01       LDA #$01
@@ -4919,9 +5014,10 @@ $8F:C0D2 60          RTS
 }
 
 
-;;; $C0D3: Door ASM: scroll 0 = blue ;;;
+;;; $C0D3: Door ASM - scroll 0 = blue ;;;
 {
-; Room $AC5A, door list index 0: Door
+; Door destination: Pre Bubble Norfair reserve tank room
+; Room $AC5A, door 0. Bubble Norfair reserve tank room
 $8F:C0D3 08          PHP
 $8F:C0D4 E2 20       SEP #$20
 $8F:C0D6 A9 01       LDA #$01
@@ -4931,9 +5027,10 @@ $8F:C0DD 60          RTS
 }
 
 
-;;; $C0DE: Door ASM: scroll 0 = blue, 1 = red ;;;
+;;; $C0DE: Door ASM - scroll 0 = blue, 1 = red ;;;
 {
-; Room $ACB3, door list index 3: Door
+; Door destination: Purple shaft
+; Room $ACB3, door 3. Bubble Norfair mainstreet
 $8F:C0DE 08          PHP
 $8F:C0DF E2 20       SEP #$20
 $8F:C0E1 A9 01       LDA #$01
@@ -4945,9 +5042,10 @@ $8F:C0EE 60          RTS
 }
 
 
-;;; $C0EF: Door ASM: scroll 18h = blue ;;;
+;;; $C0EF: Door ASM - scroll 18h = blue ;;;
 {
-; Room $A8F8, door list index 0: Door
+; Door destination: Ice beam mockball hall
+; Room $A8F8, door 0. Crumble block platform shaft
 $8F:C0EF 08          PHP
 $8F:C0F0 E2 20       SEP #$20
 $8F:C0F2 A9 01       LDA #$01
@@ -4957,9 +5055,10 @@ $8F:C0F9 60          RTS
 }
 
 
-;;; $C0FA: Door ASM: scroll 2 = blue, 3 = red ;;;
+;;; $C0FA: Door ASM - scroll 2 = blue, 3 = red ;;;
 {
-; Room $AFFB, door list index 1: Door
+; Door destination: Pre lava dive shaft
+; Room $AFFB, door 1. Norfair lava-spike hall
 $8F:C0FA 08          PHP
 $8F:C0FB E2 20       SEP #$20
 $8F:C0FD A9 00       LDA #$00
@@ -4971,9 +5070,10 @@ $8F:C10A 60          RTS
 }
 
 
-;;; $C10B: Door ASM: scroll Eh = red ;;;
+;;; $C10B: Door ASM - scroll Eh = red ;;;
 {
-; Room $B4AD, door list index 0: Door
+; Door destination: Lower Norfair multi-level one-way shaft
+; Room $B4AD, door 0. Lower Norfair wall space pirates shaft
 $8F:C10B 08          PHP
 $8F:C10C E2 20       SEP #$20
 $8F:C10E A9 00       LDA #$00
@@ -4986,35 +5086,35 @@ $8F:C115 60          RTS
 
 ;;; $C116..C208: Main ASM ;;;
 {
-;;; $C116: Main ASM: scrolling sky land ;;;
+;;; $C116: Main ASM - scrolling sky land ;;;
 {
 ; Room $91F8, state $9213. Landing site - default
 ; Room $91F8, state $922D. Landing site - event "Zebes is awake" is set
 ; Room $91F8, state $9247. Landing site - power bombs have been collected
 ; Room $93AA. Landing site power bombs cave
-$8F:C116 22 8D AF 88 JSL $88AF8D[$88:AF8D]
+$8F:C116 22 8D AF 88 JSL $88AF8D[$88:AF8D]  ; Update scrolling sky land tilemap
 $8F:C11A 60          RTS
 }
 
 
-;;; $C11B: Main ASM: scrolling sky ocean ;;;
+;;; $C11B: Main ASM - scrolling sky ocean ;;;
 {
 ; Room $93FE. Wrecked Ship entrance
 ; Room $94FD. Wrecked Ship back door
 ; Room $968F. Orange zoomer hall
-$8F:C11B 22 99 AF 88 JSL $88AF99[$88:AF99]
+$8F:C11B 22 99 AF 88 JSL $88AF99[$88:AF99]  ; Update scrolling sky ocean tilemap
 $8F:C11F 60          RTS
 }
 
 
-;;; $C120: Main ASM: scrolling sky land, Zebes timebomb set ;;;
+;;; $C120: Main ASM - scrolling sky land, Zebes timebomb set ;;;
 {
 ; Room $91F8, state $9261. Landing site - event "Zebes timebomb set" is set
-$8F:C120 22 8D AF 88 JSL $88AF8D[$88:AF8D]  ; Room main ASM - scrolling sky land
+$8F:C120 22 8D AF 88 JSL $88AF8D[$88:AF8D]  ; Update scrolling sky land tilemap
 }
 
 
-;;; $C124: Main ASM: set screen shaking and generate random explosions ;;;
+;;; $C124: Main ASM - shake screen and generate random explosions ;;;
 {
 ; Room $92FD, state $9348. Crateria mainstreet - event "Zebes timebomb set" is set
 ; Room $96BA, state $9705. Old Tourian escape shaft - event "Zebes timebomb set" is set
@@ -5130,7 +5230,7 @@ $8F:C1DE             db 24, 00, 00, 25, 00, 00, 00, 00
 }
 
 
-;;; $C1E6: Main ASM: scroll screen right in Dachora room ;;;
+;;; $C1E6: Main ASM - scroll screen right in Dachora room ;;;
 {
 ; Room $9CB3. Dachora room
 
@@ -5759,7 +5859,7 @@ $8F:C8C5             dx 0000
 
 ;;; $C8C7..C98D: Setup ASM ;;;
 {
-;;; $C8C7: Setup ASM: RTS ;;;
+;;; $C8C7: RTS. Room setup ASM ;;;
 {
 ; Room $C98E. Wrecked Ship chozo room
 ; Room $CA08. Wrecked Ship entrance treadmill
@@ -5773,7 +5873,7 @@ $8F:C8C7 60          RTS
 }
 
 
-;;; $C8C8: Setup ASM: spawn pre Phantoon room enemy projectile ;;;
+;;; $C8C8: Room setup ASM - spawn pre-Phantoon room enemy projectile ;;;
 {
 ; Room $CC6F. Pre Phantoon hall
 $8F:C8C8 A0 B0 A3    LDY #$A3B0             ;\
@@ -5782,7 +5882,7 @@ $8F:C8CF 60          RTS
 }
 
 
-;;; $C8D0: Setup ASM: RTS ;;;
+;;; $C8D0: RTS. Room setup ASM ;;;
 {
 ; Room $CCCB. Wrecked Ship map station
 ; Room $CD13. Phantoon
@@ -5795,7 +5895,7 @@ $8F:C8D0 60          RTS
 }
 
 
-;;; $C8D1: Setup ASM: RTS ;;;
+;;; $C8D1: RTS. Room setup ASM ;;;
 {
 ; Room $CED2. n00b tube save station
 ; Room $CEFB. n00b tube
@@ -5824,7 +5924,7 @@ $8F:C8D1 60          RTS
 }
 
 
-;;; $C8D2: Setup ASM: RTS ;;;
+;;; $C8D2: RTS. Room setup ASM ;;;
 {
 ; Room $D408. Maridia elevatube
 ; Room $D433. Sandy Maridia quicksand top
@@ -5854,16 +5954,16 @@ $8F:C8D2 60          RTS
 }
 
 
-;;; $C8D3: Setup ASM: set up Shaktool's room's PLM ;;;
+;;; $C8D3: Room setup ASM - Shaktool's room ;;;
 {
 ; Room $D8C5, state $D8D7. Shaktool - default
-$8F:C8D3 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:C8D7             dx  00, 00, B8EB
+$8F:C8D3 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:C8D7             dx  00, 00, B8EB       ;} Spawn Shaktool's room PLM
 $8F:C8DB 60          RTS
 }
 
 
-;;; $C8DC: Setup ASM: RTS ;;;
+;;; $C8DC: RTS. Room setup ASM ;;;
 {
 ; Room $D8C5, state $D8F1. Shaktool - event "Shaktool cleared a path" is set
 ; Room $D913. Maridia grapple wall shaft
@@ -5873,7 +5973,7 @@ $8F:C8DC 60          RTS
 }
 
 
-;;; $C8DD: Setup ASM: set pausing code for Draygon ;;;
+;;; $C8DD: Room setup ASM - set pausing code for Draygon ;;;
 {
 ; Room $DA60. Draygon
 $8F:C8DD A9 00 8F    LDA #$8F00             ;\
@@ -5890,7 +5990,6 @@ $8F:C8F5 60          RTS
 
 ;;; $C8F6: Pause hook - Draygon ;;;
 {
-; Set interrupt handler to main gameplay
 $8F:C8F6 A9 04 00    LDA #$0004             ;\
 $8F:C8F9 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = main gameplay
 $8F:C8FB 6B          RTL
@@ -5909,20 +6008,20 @@ $8F:C909 6B          RTL
 }
 
 
-;;; $C90A: Setup ASM: set collected map ;;;
+;;; $C90A: Room setup ASM - set collected map ;;;
 {
 ; Room $DAAE. Tourian -> Crateria elevator
 $8F:C90A C2 30       REP #$30
-$8F:C90C AE 9F 07    LDX $079F  [$7E:079F]
-$8F:C90F BF 08 D9 7E LDA $7ED908,x[$7E:D90D]
-$8F:C913 09 01 00    ORA #$0001
-$8F:C916 9F 08 D9 7E STA $7ED908,x[$7E:D90D]
-$8F:C91A 8D 89 07    STA $0789  [$7E:0789]
+$8F:C90C AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$8F:C90F BF 08 D9 7E LDA $7ED908,x[$7E:D90D];|
+$8F:C913 09 01 00    ORA #$0001             ;} Area map station byte |= 1
+$8F:C916 9F 08 D9 7E STA $7ED908,x[$7E:D90D];/
+$8F:C91A 8D 89 07    STA $0789  [$7E:0789]  ; Current area map collected flag = [area map station byte]
 $8F:C91D 60          RTS
 }
 
 
-;;; $C91E: Setup ASM: RTS ;;;
+;;; $C91E: RTS. Room setup ASM ;;;
 {
 ; Room $DAE1. Metroid room 1
 ; Room $DB31. Metroid room 2
@@ -5941,7 +6040,7 @@ $8F:C91E 60          RTS
 }
 
 
-;;; $C91F: Setup ASM: set Zebes timebomb event and set light horizontal room shaking ;;;
+;;; $C91F: Room setup ASM - set Zebes timebomb event and set light horizontal room shaking ;;;
 {
 ; Room $DE4D. Escape room 1
 
@@ -5957,7 +6056,7 @@ $8F:C932 60          RTS
 }
 
 
-;;; $C933: Setup ASM: set light horizontal room shaking ;;;
+;;; $C933: Room setup ASM - set light horizontal room shaking ;;;
 {
 ; Room $DE7A. Escape room 2
 $8F:C933 A9 12 00    LDA #$0012             ;\
@@ -5970,7 +6069,7 @@ $8F:C945 60          RTS
 }
 
 
-;;; $C946: Setup ASM: set medium horizontal room shaking ;;;
+;;; $C946: Room setup ASM - set medium horizontal room shaking ;;;
 {
 ; Room $DEA7. Escape room 3
 $8F:C946 A9 15 00    LDA #$0015             ;\
@@ -5981,7 +6080,7 @@ $8F:C952 60          RTS
 }
 
 
-;;; $C953: Setup ASM: set up escape room 4's PLM and set medium horizontal room shaking ;;;
+;;; $C953: Room setup ASM - set up rising acid and set medium horizontal room shaking ;;;
 {
 ; Room $DEDE. Escape room 4
 $8F:C953 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -5996,7 +6095,7 @@ $8F:C96D 60          RTS
 }
 
 
-;;; $C96E: Setup ASM: turn Ceres door to solid blocks and spawn Ceres haze ;;;
+;;; $C96E: Room setup ASM - turn Ceres door to solid blocks and spawn Ceres haze ;;;
 {
 ; Room $DF45, state $DF71. Ceres elevator shaft - main area boss is dead
 $8F:C96E 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -6004,7 +6103,7 @@ $8F:C972             dx  0F, 26, BA48       ;} Spawn PLM to turn Ceres elevator 
 }
 
 
-;;; $C976: Setup ASM: Spawn Ceres haze ;;;
+;;; $C976: Room setup ASM - spawn Ceres haze ;;;
 {
 ; Room $DF45, state $DF57. Ceres elevator shaft - default
 ; Room $DF8D. Ceres pre elevator hall
@@ -6016,7 +6115,7 @@ $8F:C97A 60          RTS
 }
 
 
-;;; $C97B: Setup ASM: Set BG1/2 tiles base address and spawn Ceres haze ;;;
+;;; $C97B: Room setup ASM - set BG1/2 tiles base address and spawn Ceres haze ;;;
 {
 ; Room $E0B5. Ceres Ridley
 $8F:C97B 08          PHP                    ;\
@@ -6034,6 +6133,50 @@ $8F:C98D 60          RTS
 
 ;;; $C98E: Room headers, scroll data, door lists ;;;
 {
+; Room header format:
+;      __________________________________________ Room index
+;     |   _______________________________________ Area index
+;     |  |    ___________________________________ X position (of top left corner) on the map
+;     |  |   |   ________________________________ Y position (of top left corner) on the map
+;     |  |   |  |    ____________________________ Room width (in units of screens = 16 blocks = 256 pixels)
+;     |  |   |  |   |   _________________________ Room height (in units of screens = 16 blocks = 256 pixels)
+;     |  |   |  |   |  |    _____________________ Up scroller
+;     |  |   |  |   |  |   |   __________________ Down scroller
+;     |  |   |  |   |  |   |  |    ______________ CRE bitset
+;     |  |   |  |   |  |   |  |   |    __________ Door list pointer
+;     |  |   |  |   |  |   |  |   |   |      ____ State conditions list
+;     |  |   |  |   |  |   |  |   |   |     |
+;     ii,aa, xx,yy, ww,hh, uu,dd, cc, dddd, [...]
+
+; State conditions list format:
+;      ______________ State condition
+;     |     _________ State condition parameters
+;     |    |      ___ State header pointer
+;     |    |     |
+;     eeee [...] ssss ; First state condition
+;     eeee [...] ssss ; Second state condition
+;     [...]           ; Other state conditions
+;     E5E6            ; Default state condition (terminator)
+
+; State header format:
+;      ___________________________________________________________________________ Level data
+;     |        ___________________________________________________________________ Tileset
+;     |       |    _______________________________________________________________ Music data index
+;     |       |   |   ____________________________________________________________ Music track
+;     |       |   |  |    ________________________________________________________ FX ($83)
+;     |       |   |  |   |      __________________________________________________ Enemy population ($A1)
+;     |       |   |  |   |     |      ____________________________________________ Enemy set ($B4)
+;     |       |   |  |   |     |     |      ______________________________________ Layer 2 scroll X
+;     |       |   |  |   |     |     |     |   ___________________________________ Layer 2 scroll Y
+;     |       |   |  |   |     |     |     |  |    _______________________________ Scroll
+;     |       |   |  |   |     |     |     |  |   |      _________________________ Special x-ray blocks
+;     |       |   |  |   |     |     |     |  |   |     |      ___________________ Main ASM
+;     |       |   |  |   |     |     |     |  |   |     |     |      _____________ PLM population
+;     |       |   |  |   |     |     |     |  |   |     |     |     |      _______ Library background
+;     |       |   |  |   |     |     |     |  |   |     |     |     |     |      _ Setup ASM
+;     |       |   |  |   |     |     |     |  |   |     |     |     |     |     |
+;     llllll, tt, MM,mm, ffff, eeee, EEEE, xx,yy, ssss, xxxx, AAAA, pppp, bbbb, aaaa
+
 ; Room header. Wrecked Ship chozo room
 $8F:C98E             dx 00,03, 0A,0B, 06,03, 70,A0, 00, C9D4, E629,01,C9BA, E5E6
 
@@ -6050,22 +6193,22 @@ $8F:C9D4             dw A18C, A198, A1A4
 $8F:C9DA             db 00, 00, 01, 01, 01, 02, 01, 01, 01, 01, 01, 02, 00, 01, 00, 00, 00, 02
 
 ; PLM scroll data. Room $C98E. Wrecked Ship chozo room (PLM index 0)
-$8F:C9EC             db 0E, 01, 0F, 01, 80
+$8F:C9EC             db 0E,01, 0F,01, 80
 
 ; PLM scroll data. Room $C98E. Wrecked Ship chozo room (PLM index 3)
-$8F:C9F1             db 04, 00, 05, 02, 0B, 02, 10, 01, 11, 01, 80
+$8F:C9F1             db 04,00, 05,02, 0B,02, 10,01, 11,01, 80
 
 ; Unused PLM scroll data
-$8F:C9FC             db 05, 01, 80
+$8F:C9FC             db 05,01, 80
 
 ; Unused PLM scroll data
-$8F:C9FF             db 04, 01, 80
+$8F:C9FF             db 04,01, 80
 
 ; Unused PLM scroll data
-$8F:CA02             db 05, 00, 80
+$8F:CA02             db 05,00, 80
 
 ; Unused PLM scroll data
-$8F:CA05             db 04, 00, 80
+$8F:CA05             db 04,00, 80
 
 ; Room header. Wrecked Ship entrance treadmill
 $8F:CA08             dx 01,03, 0C,0E, 04,01, 70,A0, 00, CA4E, E629,01,CA34, E5E6
@@ -6095,13 +6238,13 @@ $8F:CA98             dw A1C8, A1D4, A1E0
 $8F:CA9E             db 02, 02, 02, 02, 02, 02, 02
 
 ; Unused PLM scroll data
-$8F:CAA5             db 00, 01, 80
+$8F:CAA5             db 00,01, 80
 
 ; Unused PLM scroll data
-$8F:CAA8             db 03, 01, 80
+$8F:CAA8             db 03,01, 80
 
 ; Unused PLM scroll data
-$8F:CAAB             db 03, 02, 80
+$8F:CAAB             db 03,02, 80
 
 ; Room header. Wrecked Ship attic missile tank room
 $8F:CAAE             dx 03,03, 13,0A, 03,01, 70,A0, 00, CAF4, E629,01,CADA, E5E6
@@ -6131,19 +6274,19 @@ $8F:CB3C             dw A1F8, A204, A210, A21C, A228, A234, A240
 $8F:CB4A             db 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 00, 00, 00, 00, 00, 02, 00, 01, 01, 01, 00, 02, 00, 00, 00, 00, 00, 01, 00, 00, 00, 00, 00, 00, 00
 
 ; PLM scroll data. Room $CAF6. Wrecked Ship mainstreet (PLM index 0)
-$8F:CB7A             db 21, 01, 80
+$8F:CB7A             db 21,01, 80
 
 ; PLM scroll data. Room $CAF6. Wrecked Ship mainstreet (PLM index 1)
-$8F:CB7D             db 29, 01, 80
+$8F:CB7D             db 29,01, 80
 
 ; PLM scroll data. Room $CAF6. Wrecked Ship mainstreet (PLM index 2)
-$8F:CB80             db 21, 00, 80
+$8F:CB80             db 21,00, 80
 
 ; PLM scroll data. Room $CAF6. Wrecked Ship mainstreet (PLM index 3)
-$8F:CB83             db 29, 00, 80
+$8F:CB83             db 29,00, 80
 
 ; PLM scroll data. Room $CAF6. Wrecked Ship mainstreet (PLM index 4)
-$8F:CB86             db 28, 02, 2E, 02, 80
+$8F:CB86             db 28,02, 2E,02, 80
 
 ; Room header. Wrecked Ship spike platform hall
 $8F:CB8B             dx 05,03, 13,0F, 02,01, 70,A0, 00, CBD1, E629,01,CBB7, E5E6
@@ -6173,7 +6316,7 @@ $8F:CC1B             dw A264, A270, A27C
 $8F:CC21             db 00, 02, 02
 
 ; PLM scroll data. Room $CBD5. Wrecked Ship east exit (PLM index 0)
-$8F:CC24             db 00, 02, 80
+$8F:CC24             db 00,02, 80
 
 ; Room header. Wrecked Ship chozo energy tank room
 $8F:CC27             dx 07,03, 12,0D, 03,02, 90,A0, 00, CC6D, E629,01,CC53, E5E6
@@ -6203,13 +6346,13 @@ $8F:CCB5             dw A294, A2A0, A2AC
 $8F:CCBB             db 01, 01, 01, 01, 00
 
 ; PLM scroll data. Room $CC6F. Pre Phantoon hall (PLM index 0)
-$8F:CCC0             db 03, 01, 04, 01, 80
+$8F:CCC0             db 03,01, 04,01, 80
 
 ; PLM scroll data. Room $CC6F. Pre Phantoon hall (PLM index 1)
-$8F:CCC5             db 03, 00, 80
+$8F:CCC5             db 03,00, 80
 
 ; Unused PLM scroll data
-$8F:CCC8             db 04, 00, 80
+$8F:CCC8             db 04,00, 80
 
 ; Room header. Wrecked Ship map station
 $8F:CCCB             dx 09,03, 0D,13, 01,01, 70,A0, 00, CD11, E629,01,CCF7, E5E6
@@ -6284,7 +6427,7 @@ $8F:CE37             dw A2F4
 $8F:CE39             db 01, 01, 01, 00
 
 ; PLM scroll data. Room $CDF1. Wrecked Ship easy super missile hall (PLM index 0)
-$8F:CE3D             db 03, 01, 80
+$8F:CE3D             db 03,01, 80
 
 ; Room header. Gravity suit room
 $8F:CE40             dx 0E,03, 0A,0D, 01,01, 70,A0, 00, CE86, E629,01,CE6C, E5E6
@@ -6335,10 +6478,10 @@ $8F:CF41             dw A330, A33C, A348, A354
 $8F:CF49             db 02, 02, 02
 
 ; PLM scroll data. Room $CEFB. n00b tube (PLM indices 0/4)
-$8F:CF4C             db 00, 02, 80
+$8F:CF4C             db 00,02, 80
 
 ; PLM scroll data. Room $CEFB. n00b tube (PLM index 8)
-$8F:CF4F             db 01, 02, 02, 02, 80
+$8F:CF4F             db 01,02, 02,02, 80
 
 ; Room header. n00b tube west
 $8F:CF54             dx 02,04, 0A,12, 01,01, 70,A0, 00, CF7B, E5E6
@@ -6365,16 +6508,16 @@ $8F:CFA7             dw A378, A384, A390
 $8F:CFAD             db 01, 01, 01, 01, 00, 00, 00, 00
 
 ; PLM scroll data. Room $CF80. n00b tube east (PLM index 0)
-$8F:CFB5             db 00, 01, 01, 00, 04, 00, 80
+$8F:CFB5             db 00,01, 01,00, 04,00, 80
 
 ; PLM scroll data. Room $CF80. n00b tube east (PLM index 1)
-$8F:CFBC             db 00, 02, 04, 01, 80
+$8F:CFBC             db 00,02, 04,01, 80
 
 ; PLM scroll data. Room $CF80. n00b tube east (PLM index 2)
-$8F:CFC1             db 00, 00, 04, 01, 80
+$8F:CFC1             db 00,00, 04,01, 80
 
 ; PLM scroll data. Room $CF80. n00b tube east (PLM index 9)
-$8F:CFC6             db 01, 01, 80
+$8F:CFC6             db 01,01, 80
 
 ; Room header. Maridia mainstreet
 $8F:CFC9             dx 04,04, 0A,09, 03,08, 70,A0, 00, CFF0, E5E6
@@ -6389,7 +6532,7 @@ $8F:CFF0             dw A39C, A3A8, A3B4, A3C0, A3CC
 $8F:CFFA             db 02, 02, 00, 02, 02, 00, 02, 02, 01, 02, 02, 00, 02, 02, 00, 02, 02, 00, 02, 02, 02, 02, 02, 00
 
 ; PLM scroll data. Room $CFC9. Maridia mainstreet (PLM index 0)
-$8F:D012             db 07, 01, 0A, 00, 80
+$8F:D012             db 07,01, 0A,00, 80
 
 ; Room header. Maridia space pirate room
 $8F:D017             dx 05,04, 0D,0D, 04,03, 70,A0, 00, D03E, E5E6
@@ -6404,7 +6547,7 @@ $8F:D03E             dw A3D8, A3E4, A3F0, A3FC
 $8F:D046             db 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 00, 02
 
 ; PLM scroll data. Room $D017. Maridia space pirate room (PLM indices 3/7)
-$8F:D052             db 0A, 02, 80
+$8F:D052             db 0A,02, 80
 
 ; Room header. Tatori room
 $8F:D055             dx 06,04, 11,0C, 03,04, 70,A0, 00, D07C, E5E6
@@ -6455,10 +6598,10 @@ $8F:D12B             dw A474, A480
 $8F:D12F             db 01, 00, 02, 00, 00, 02
 
 ; PLM scroll data. Room $D104. Maridia -> Red Brinstar room (PLM index 0)
-$8F:D135             db 02, 02, 80
+$8F:D135             db 02,02, 80
 
 ; PLM scroll data. Room $D104. Maridia -> Red Brinstar room (PLM index 1)
-$8F:D138             db 01, 01, 80
+$8F:D138             db 01,01, 80
 
 ; Room header. Sandy Maridia missile and super missile room
 $8F:D13B             dx 0A,04, 0C,04, 02,03, 70,A0, 00, D162, E5E6
@@ -6473,7 +6616,7 @@ $8F:D162             dw A48C
 $8F:D164             db 02, 01, 02, 00, 00, 00
 
 ; PLM scroll data. Room $D13B. Sandy Maridia missile and super missile room (PLM index 0)
-$8F:D16A             db 04, 01, 80
+$8F:D16A             db 04,01, 80
 
 ; Room header. Sandy Maridia memu room
 $8F:D16D             dx 0B,04, 0E,04, 04,02, 70,A0, 00, D194, E5E6
@@ -6488,7 +6631,7 @@ $8F:D194             dw A498, A4A4
 $8F:D198             db 02, 00, 00, 00, 01, 00, 01, 01
 
 ; PLM scroll data. Room $D16D. Sandy Maridia memu room (PLM indices 3/7)
-$8F:D1A0             db 05, 01, 80
+$8F:D1A0             db 05,01, 80
 
 ; Room header. Maridia crab shaft
 $8F:D1A3             dx 0C,04, 12,07, 02,04, 70,A0, 00, D1CA, E5E6
@@ -6503,7 +6646,7 @@ $8F:D1CA             dw A4B0, A4BC, A4C8
 $8F:D1D0             db 02, 00, 02, 00, 01, 00, 00, 01
 
 ; PLM scroll data. Room $D1A3. Maridia crab shaft (PLM index 0)
-$8F:D1D8             db 04, 02, 06, 01, 80
+$8F:D1D8             db 04,02, 06,01, 80
 
 ; Room header. Beach
 $8F:D1DD             dx 0D,04, 12,04, 04,03, 70,A0, 00, D204, E5E6
@@ -6518,10 +6661,10 @@ $8F:D204             dw A4D4, A4E0, A4EC
 $8F:D20A             db 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 00, 00
 
 ; PLM scroll data. Room $D1DD. Beach (PLM index 3)
-$8F:D216             db 0A, 02, 80
+$8F:D216             db 0A,02, 80
 
 ; PLM scroll data. Room $D1DD. Beach (PLM index 7)
-$8F:D219             db 0A, 00, 80
+$8F:D219             db 0A,00, 80
 
 ; Room header. Maridia broken glass tube room
 $8F:D21C             dx 0E,04, 10,10, 01,02, 70,A0, 00, D243, E5E6
@@ -6536,7 +6679,7 @@ $8F:D243             dw A4F8, A504, A510, A51C
 $8F:D24B             db 01, 00
 
 ; PLM scroll data. Room $D21C. Maridia broken glass tube room (PLM indices 0/1)
-$8F:D24D             db 00, 02, 01, 01, 80
+$8F:D24D             db 00,02, 01,01, 80
 
 ; Room header. Maridia broken glass tube room east
 $8F:D252             dx 0F,04, 11,10, 01,01, 70,A0, 00, D279, E5E6
@@ -6683,7 +6826,7 @@ $8F:D4B5             dw A660, A66C, A678
 $8F:D4BB             db 00, 01
 
 ; PLM scroll data. Room $D48E. Elevatube south (PLM index 0)
-$8F:D4BD             db 00, 02, 01, 02, 80
+$8F:D4BD             db 00,02, 01,02, 80
 
 ; Room header. Evir hall east
 $8F:D4C2             dx 1C,04, 17,10, 03,01, 70,A0, 00, D4E9, E5E6
@@ -6788,13 +6931,13 @@ $8F:D66D             dw A780, A78C, A798, A7A4
 $8F:D675             db 02, 02, 02, 02, 02, 01, 01, 00
 
 ; PLM scroll data. Room $D646. Pants room (PLM indices 0/4)
-$8F:D67D             db 02, 02, 03, 00, 04, 02, 05, 00, 06, 01, 07, 00, 80
+$8F:D67D             db 02,02, 03,00, 04,02, 05,00, 06,01, 07,00, 80
 
 ; PLM scroll data. Room $D646. Pants room (PLM index Dh)
-$8F:D68A             db 02, 00, 03, 02, 04, 00, 05, 01, 06, 00, 80
+$8F:D68A             db 02,00, 03,02, 04,00, 05,01, 06,00, 80
 
 ; PLM scroll data. Room $D646. Pants room (PLM index 15h)
-$8F:D695             db 05, 02, 07, 01, 80
+$8F:D695             db 05,02, 07,01, 80
 
 ; Room header. Pants room section
 $8F:D69A             dx 25,04, 1B,0E, 01,03, 70,A0, 00, D6C1, E5E6
@@ -6809,10 +6952,10 @@ $8F:D6C1             dw A7B0, A7BC
 $8F:D6C5             db 02, 00, 01
 
 ; PLM scroll data. Room $D69A. Pants room section (PLM index 0)
-$8F:D6C8             db 01, 02, 80
+$8F:D6C8             db 01,02, 80
 
 ; PLM scroll data. Room $D69A. Pants room section (PLM index 6)
-$8F:D6CB             db 01, 02, 02, 01, 80
+$8F:D6CB             db 01,02, 02,01, 80
 
 ; Room header. Spring ball room
 $8F:D6D0             dx 26,04, 20,0F, 02,02, 70,A0, 00, D6F7, E5E6
@@ -6878,7 +7021,7 @@ $8F:D7D5             dw A834, A840
 $8F:D7D9             db 01, 01, 00, 00, 01, 00
 
 ; PLM scroll data. Room $D78F. Pre Draygon room (PLM index 0)
-$8F:D7DF             db 00, 02, 02, 02, 80
+$8F:D7DF             db 00,02, 02,02, 80
 
 ; Room header. Maridia speed blockade hall
 $8F:D7E4             dx 2B,04, 1A,08, 07,01, 70,A0, 00, D80B, E5E6
@@ -6962,13 +7105,13 @@ $8F:D93A             dw A8DC, A8E8, A8F4, A900
 $8F:D942             db 02, 00, 00, 00, 00, 02, 00, 00, 00, 00, 01, 00, 01, 01, 01
 
 ; PLM scroll data. Room $D913. Maridia grapple wall shaft (PLM index 0)
-$8F:D951             db 05, 00, 0B, 01, 80
+$8F:D951             db 05,00, 0B,01, 80
 
 ; PLM scroll data. Room $D913. Maridia grapple wall shaft (PLM index 1)
-$8F:D956             db 05, 01, 0B, 00, 80
+$8F:D956             db 05,01, 0B,00, 80
 
 ; PLM scroll data. Room $D913. Maridia grapple wall shaft (PLM index 5)
-$8F:D95B             db 0A, 01, 80
+$8F:D95B             db 0A,01, 80
 
 ; Room header. Botwoon
 $8F:D95E             dx 32,04, 18,08, 02,01, 70,A0, 00, D9A4, E629,02,D98A, E5E6
@@ -7449,9 +7592,10 @@ $8F:E1D4             dx 000A,                     ; Clear BG2 tilemap
 
 ;;; $E1D8..E247: Door ASM ;;;
 {
-;;; $E1D8: Door ASM: start Wrecked Ship treadmill east entrance ;;;
+;;; $E1D8: Door ASM - start Wrecked Ship treadmill - east entrance ;;;
 {
-; Room $CAF6, door list index 0: Door
+; Door destination: Wrecked Ship entrance treadmill
+; Room $CAF6, door 0. Wrecked Ship mainstreet
 $8F:E1D8 A0 7B 82    LDY #$827B             ;\
 $8F:E1DB 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Wrecked Ship treadmill - leftwards animated tiles object
 $8F:E1DF 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -7460,9 +7604,10 @@ $8F:E1E7 60          RTS
 }
 
 
-;;; $E1E8: Door ASM: scroll 1 = blue ;;;
+;;; $E1E8: Door ASM - scroll 1 = blue ;;;
 {
-; Room $CB8B, door list index 0: Door
+; Door destination: Wrecked Ship first flooded room
+; Room $CB8B, door 0. Wrecked Ship spike platform hall
 $8F:E1E8 08          PHP
 $8F:E1E9 E2 20       SEP #$20
 $8F:E1EB A9 01       LDA #$01
@@ -7472,9 +7617,10 @@ $8F:E1F2 60          RTS
 }
 
 
-;;; $E1F3: Door ASM: scroll 0 = green ;;;
+;;; $E1F3: Door ASM - scroll 0 = green ;;;
 {
-; Room $CC27, door list index 0: Door
+; Door destination: Wrecked Ship east exit
+; Room $CC27, door 0. Wrecked Ship chozo energy tank room
 $8F:E1F3 08          PHP
 $8F:E1F4 E2 20       SEP #$20
 $8F:E1F6 A9 02       LDA #$02
@@ -7484,9 +7630,10 @@ $8F:E1FD 60          RTS
 }
 
 
-;;; $E1FE: Door ASM: scroll 3 = red, 4 = blue ;;;
+;;; $E1FE: Door ASM - scroll 3 = red, 4 = blue ;;;
 {
-; Room $CD13, door list index 0: Door
+; Door destination: Pre Phantoon hall
+; Room $CD13, door 0. Phantoon
 $8F:E1FE 08          PHP
 $8F:E1FF E2 20       SEP #$20
 $8F:E201 A9 00       LDA #$00
@@ -7498,9 +7645,10 @@ $8F:E20E 60          RTS
 }
 
 
-;;; $E20F: Door ASM: scroll 29h = blue ;;;
+;;; $E20F: Door ASM - scroll 29h = blue ;;;
 {
-; Room $CDF1, door list index 0: Door
+; Door destination: Wrecked Ship mainstreet
+; Room $CDF1, door 0. Wrecked Ship easy super missile hall
 $8F:E20F 08          PHP
 $8F:E210 E2 20       SEP #$20
 $8F:E212 A9 01       LDA #$01
@@ -7510,9 +7658,10 @@ $8F:E219 60          RTS
 }
 
 
-;;; $E21A: Door ASM: scroll 28h,2E = green ;;;
+;;; $E21A: Door ASM - scroll 28h,2E = green ;;;
 {
-; Room $CC6F, door list index 0: Door
+; Door destination: Wrecked Ship mainstreet
+; Room $CC6F, door 0. Pre Phantoon hall
 $8F:E21A 08          PHP
 $8F:E21B E2 20       SEP #$20
 $8F:E21D A9 02       LDA #$02
@@ -7523,9 +7672,10 @@ $8F:E228 60          RTS
 }
 
 
-;;; $E229: Door ASM: scroll 6..Bh = red ;;;
+;;; $E229: Door ASM - scroll 6..Bh = red ;;;
 {
-; Room $CE40, door list index 1: Door
+; Door destination: Wrecked Ship chozo room
+; Room $CE40, door 1. Gravity suit room
 $8F:E229 08          PHP
 $8F:E22A E2 20       SEP #$20
 $8F:E22C A9 00       LDA #$00
@@ -7558,9 +7708,10 @@ $8F:E25A             dx 0004, BAA69F, 4000,       ; Decompress $BA:A69F to $7E:4
 
 ;;; $E26C..B5: Door ASM ;;;
 {
-;;; $E26C: Door ASM: set up elevatube from south ;;;
+;;; $E26C: Door ASM - set up elevatube from south ;;;
 {
-; Room $D48E, door list index 2: Door
+; Door destination: Maridia elevatube
+; Room $D48E, door 2. Elevatube south
 $8F:E26C A9 00 FF    LDA #$FF00             ;\
 $8F:E26F 8D E5 07    STA $07E5  [$7E:07E5]  ;} Room elevatube velocity = -100h
 $8F:E272 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
@@ -7576,9 +7727,10 @@ $8F:E290 60          RTS
 }
 
 
-;;; $E291: Door ASM: set up elevatube from north ;;;
+;;; $E291: Door ASM - set up elevatube from north ;;;
 {
-; Room $D340, door list index 1: Door
+; Door destination: Maridia elevatube
+; Room $D340, door 1. Sandy Maridia mainstreet
 $8F:E291 A9 00 01    LDA #$0100             ;\
 $8F:E294 8D E5 07    STA $07E5  [$7E:07E5]  ;} Room elevatube velocity = 100h
 $8F:E297 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
@@ -7595,7 +7747,7 @@ $8F:E2B5 60          RTS
 }
 
 
-;;; $E2B6: Main ASM: elevatube ;;;
+;;; $E2B6: Main ASM - elevatube ;;;
 {
 ; Room $D408. Maridia elevatube
 $8F:E2B6 A9 80 00    LDA #$0080             ;\
@@ -7637,18 +7789,20 @@ $8F:E300 60          RTS
 
 ;;; $E301..E7: Door ASM ;;;
 {
-;;; $E301: Door ASM: reset elevatube on north exit ;;;
+;;; $E301: Door ASM - reset elevatube on north exit ;;;
 {
-; Room $D408, door list index 1: Door
+; Door destination: Sandy Maridia mainstreet
+; Room $D408, door 1. Maridia elevatube
 $8F:E301 A9 01 00    LDA #$0001             ;\
 $8F:E304 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $8F:E308 60          RTS
 }
 
 
-;;; $E309: Door ASM: reset elevatube on south exit ;;;
+;;; $E309: Door ASM - reset elevatube on south exit ;;;
 {
-; Room $D408, door list index 0: Door
+; Door destination: Elevatube south
+; Room $D408, door 0. Maridia elevatube
 $8F:E309 A9 02 02    LDA #$0202             ;\
 $8F:E30C 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scroll 0..1 = green
 $8F:E310 A9 01 00    LDA #$0001             ;\
@@ -7657,9 +7811,10 @@ $8F:E317 60          RTS
 }
 
 
-;;; $E318: Door ASM: scroll Ah = red, Bh = blue ;;;
+;;; $E318: Door ASM - scroll Ah = red, Bh = blue ;;;
 {
-; Room $D845, door list index 0: Door
+; Door destination: Maridia grapple wall shaft
+; Room $D845, door 0. Maridia missile station
 $8F:E318 08          PHP
 $8F:E319 E2 20       SEP #$20
 $8F:E31B A9 00       LDA #$00
@@ -7671,7 +7826,7 @@ $8F:E328 60          RTS
 }
 
 
-;;; $E329: Unused. Door ASM: scroll 10h = blue, 11h = red ;;;
+;;; $E329: Unused. Door ASM - scroll 10h = blue, 11h = red ;;;
 {
 $8F:E329 08          PHP
 $8F:E32A E2 20       SEP #$20
@@ -7684,7 +7839,7 @@ $8F:E339 60          RTS
 }
 
 
-;;; $E33A: Unused. Door ASM: scroll 4 = green ;;;
+;;; $E33A: Unused. Door ASM - scroll 4 = green ;;;
 {
 $8F:E33A 08          PHP
 $8F:E33B E2 20       SEP #$20
@@ -7695,9 +7850,10 @@ $8F:E344 60          RTS
 }
 
 
-;;; $E345: Door ASM: scroll 0 = red, 4 = blue ;;;
+;;; $E345: Door ASM - scroll 0 = red, 4 = blue ;;;
 {
-; Room $CEFB, door list index 2: Door
+; Door destination: n00b tube east
+; Room $CEFB, door 2. n00b tube
 $8F:E345 08          PHP
 $8F:E346 E2 20       SEP #$20
 $8F:E348 A9 00       LDA #$00
@@ -7709,10 +7865,11 @@ $8F:E355 60          RTS
 }
 
 
-;;; $E356: Door ASM: scroll 0 = red, 1 = blue ;;;
+;;; $E356: Door ASM - scroll 0 = red, 1 = blue ;;;
 {
-; Room $CF80, door list index 2: Door
-; Room $D3B6, door list index 0: Door
+; Door destination: Maridia broken glass tube room
+; Room $CF80, door 2. n00b tube east
+; Room $D3B6, door 0. Maridia map station
 $8F:E356 08          PHP
 $8F:E357 E2 20       SEP #$20
 $8F:E359 A9 00       LDA #$00
@@ -7724,9 +7881,10 @@ $8F:E366 60          RTS
 }
 
 
-;;; $E367: Door ASM: scroll 9 = red, Ah = blue ;;;
+;;; $E367: Door ASM - scroll 9 = red, Ah = blue ;;;
 {
-; Room $D104, door list index 1: Door
+; Door destination: Red Brinstar -> Crateria elevator
+; Room $D104, door 1. Maridia -> Red Brinstar room
 $8F:E367 08          PHP
 $8F:E368 E2 20       SEP #$20
 $8F:E36A A9 00       LDA #$00
@@ -7738,10 +7896,11 @@ $8F:E377 60          RTS
 }
 
 
-;;; $E378: Door ASM: scroll 0,2 = red, 1 = blue ;;;
+;;; $E378: Door ASM - scroll 0,2 = red, 1 = blue ;;;
 {
-; Room $CF54, door list index 0: Door
-; Room $CF80, door list index 0: Door
+; Door destination: n00b tube
+; Room $CF54, door 0. n00b tube west
+; Room $CF80, door 0. n00b tube east
 $8F:E378 08          PHP
 $8F:E379 E2 20       SEP #$20
 $8F:E37B A9 00       LDA #$00
@@ -7754,9 +7913,10 @@ $8F:E38C 60          RTS
 }
 
 
-;;; $E38D: Door ASM: scroll 1 = blue ;;;
+;;; $E38D: Door ASM - scroll 1 = blue ;;;
 {
-; Room $D7E4, door list index 0: Door
+; Door destination: Botwoon
+; Room $D7E4, door 0. Maridia speed blockade hall
 $8F:E38D 08          PHP
 $8F:E38E E2 20       SEP #$20
 $8F:E390 A9 01       LDA #$01
@@ -7766,9 +7926,10 @@ $8F:E397 60          RTS
 }
 
 
-;;; $E398: Door ASM: scroll 6 = blue ;;;
+;;; $E398: Door ASM - scroll 6 = blue ;;;
 {
-; Room $D5A7, door list index 0: Door
+; Door destination: Maridia crab shaft
+; Room $D5A7, door 0. Snail room
 $8F:E398 08          PHP
 $8F:E399 E2 20       SEP #$20
 $8F:E39B A9 01       LDA #$01
@@ -7778,10 +7939,11 @@ $8F:E3A2 60          RTS
 }
 
 
-;;; $E3A3: Door ASM: scroll 4 = red ;;;
+;;; $E3A3: Door ASM - scroll 4 = red ;;;
 {
-; Room $D4C2, door list index 1: Door
-; Room $D69A, door list index 0: Door
+; Door destination: Pants room
+; Room $D4C2, door 1. Evir hall east
+; Room $D69A, door 0. Pants room section
 $8F:E3A3 08          PHP
 $8F:E3A4 E2 20       SEP #$20
 $8F:E3A6 A9 00       LDA #$00
@@ -7791,7 +7953,7 @@ $8F:E3AD 60          RTS
 }
 
 
-;;; $E3AE: Unused. Door ASM: scroll 1 = red ;;;
+;;; $E3AE: Unused. Door ASM - scroll 1 = red ;;;
 {
 $8F:E3AE 08          PHP
 $8F:E3AF E2 20       SEP #$20
@@ -7802,9 +7964,10 @@ $8F:E3B8 60          RTS
 }
 
 
-;;; $E3B9: Door ASM: scroll 4,7 = red ;;;
+;;; $E3B9: Door ASM - scroll 4,7 = red ;;;
 {
-; Room $D646, door list index 3: Door
+; Door destination: Pants room
+; Room $D646, door 3. Pants room
 $8F:E3B9 08          PHP
 $8F:E3BA E2 20       SEP #$20
 $8F:E3BC A9 00       LDA #$00
@@ -7815,9 +7978,10 @@ $8F:E3C7 60          RTS
 }
 
 
-;;; $E3C8: Door ASM: scroll 1 = blue, 2 = red ;;;
+;;; $E3C8: Door ASM - scroll 1 = blue, 2 = red ;;;
 {
-; Room $D8C5, door list index 0: Door
+; Door destination: Pants room section
+; Room $D8C5, door 0. Shaktool
 $8F:E3C8 08          PHP
 $8F:E3C9 E2 20       SEP #$20
 $8F:E3CB A9 00       LDA #$00
@@ -7829,9 +7993,10 @@ $8F:E3D8 60          RTS
 }
 
 
-;;; $E3D9: Door ASM: scroll 0,2 = green ;;;
+;;; $E3D9: Door ASM - scroll 0,2 = green ;;;
 {
-; Room $DA60, door list index 0: Door
+; Door destination: Pre Draygon room
+; Room $DA60, door 0. Draygon
 $8F:E3D9 08          PHP
 $8F:E3DA E2 20       SEP #$20
 $8F:E3DC A9 02       LDA #$02
@@ -7908,9 +8073,10 @@ $8F:E4A5             dx 0004, BAC22A, 4000,       ; Decompress $BA:C22A to $7E:4
 
 ;;; $E4C0..E51E: Door ASM ;;;
 {
-;;; $E4C0: Door ASM: scroll 0..1 = green ;;;
+;;; $E4C0: Door ASM - scroll 0..1 = green ;;;
 {
-; Room $DAAE, door list index 1: Door
+; Door destination: Tourian entrance
+; Room $DAAE, door 1. Tourian -> Crateria elevator
 $8F:E4C0 08          PHP
 $8F:E4C1 E2 20       SEP #$20
 $8F:E4C3 A9 02       LDA #$02
@@ -7921,9 +8087,10 @@ $8F:E4CE 60          RTS
 }
 
 
-;;; $E4CF: Door ASM: scroll 8 = blue, 9 = red ;;;
+;;; $E4CF: Door ASM - scroll 8 = blue, 9 = red ;;;
 {
-; Room $DEDE, door list index 1: Door
+; Door destination: Old Tourian escape shaft
+; Room $DEDE, door 1. Escape room 4
 $8F:E4CF 08          PHP
 $8F:E4D0 E2 20       SEP #$20
 $8F:E4D2 A9 01       LDA #$01
@@ -7935,9 +8102,10 @@ $8F:E4DF 60          RTS
 }
 
 
-;;; $E4E0: Door ASM: to Ceres elevator shaft ;;;
+;;; $E4E0: Door ASM - to Ceres elevator shaft ;;;
 {
-; Room $DF8D, door list index 0: Door
+; Door destination: Ceres elevator shaft
+; Room $DF8D, door 0. Ceres pre elevator hall
 $8F:E4E0 E2 20       SEP #$20
 $8F:E4E2 A9 07       LDA #$07               ;\
 $8F:E4E4 85 56       STA $56    [$7E:0056]  ;} Fake mode = 7
@@ -7962,9 +8130,10 @@ $8F:E512 60          RTS
 }
 
 
-;;; $E513: Door ASM: from Ceres elevator shaft ;;;
+;;; $E513: Door ASM - from Ceres elevator shaft ;;;
 {
-; Room $DF45, door list index 0: Door
+; Door destination: Ceres pre elevator hall
+; Room $DF45, door 0. Ceres elevator shaft
 $8F:E513 E2 20       SEP #$20
 $8F:E515 A9 09       LDA #$09               ;\
 $8F:E517 85 56       STA $56    [$7E:0056]  ;} Fake mode = 9
@@ -7977,7 +8146,7 @@ $8F:E51E 60          RTS
 
 ;;; $E51F..D1: Main ASM ;;;
 {
-;;; $E51F: Main ASM: Ceres elevator shaft ;;;
+;;; $E51F: Main ASM - Ceres elevator shaft ;;;
 {
 ; Room $DF45. Ceres elevator shaft
 
@@ -7987,7 +8156,7 @@ $8F:E523 60          RTS
 }
 
 
-;;; $E524: Main ASM: RTS ;;;
+;;; $E524: RTS. Main ASM ;;;
 {
 ; Room $DFD7. Ceres stairs
 ; Room $E021. Ceres baby metroid hall
@@ -7996,7 +8165,7 @@ $8F:E524 60          RTS
 }
 
 
-;;; $E525: Main ASM: spawn Ceres pre elevator hall falling debris ;;;
+;;; $E525: Main ASM - spawn Ceres pre elevator hall falling debris ;;;
 {
 ; Room $DF8D. Ceres pre elevator hall
 $8F:E525 AD 3F 09    LDA $093F  [$7E:093F]  ;\
@@ -8024,7 +8193,7 @@ $8F:E551             dw 0050, 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, 00
 }
 
 
-;;; $E571: Main ASM: handle Ceres Ridley getaway cutscene ;;;
+;;; $E571: Main ASM - handle Ceres Ridley getaway cutscene ;;;
 {
 ; Room $E0B5. Ceres Ridley
 $8F:E571 AD 3F 09    LDA $093F  [$7E:093F]  ;\
@@ -8036,7 +8205,7 @@ $8F:E57B 60          RTS
 }
 
 
-;;; $E57C: Main ASM: shake screen switching between light horizontal and medium diagonal ;;;
+;;; $E57C: Main ASM - shake screen switching between light horizontal and medium diagonal ;;;
 {
 ; Room $DE7A. Escape room 2
 
@@ -8061,7 +8230,7 @@ $8F:E59D 8D 3E 18    STA $183E  [$7E:183E]
 }
 
 
-;;; $E5A0: Main ASM: generate random explosion on every fourth frame ;;;
+;;; $E5A0: Main ASM - generate random explosion on every fourth frame ;;;
 {
 ; Room $DE4D. Escape room 1
 ; Room $DEA7. Escape room 3
@@ -8070,7 +8239,7 @@ $8F:E5A3 60          RTS
 }
 
 
-;;; $E5A4: Main ASM: shake screen switching between medium horizontal and strong diagonal ;;;
+;;; $E5A4: Main ASM - shake screen switching between medium horizontal and strong diagonal ;;;
 {
 ; Room $DEDE. Escape room 4
 
@@ -8104,32 +8273,41 @@ $8F:E5D1 60          RTS
 {
 ;;; $E5D2: Room state checking handler ;;;
 {
+;; Parameters:
+;;     X: Room pointer
+
+; A matching state conditions will return out of *this* routine by popping the return address pushed to the stack by $E5E0
 $8F:E5D2 8A          TXA                    ;\
 $8F:E5D3 18          CLC                    ;|
-$8F:E5D4 69 0B 00    ADC #$000B             ;} X += Bh
+$8F:E5D4 69 0B 00    ADC #$000B             ;} X += Bh (offset to state conditions list)
 $8F:E5D7 AA          TAX                    ;/
 
 ; LOOP
 $8F:E5D8 BD 00 00    LDA $0000,x[$8F:DF50]  ;\
-$8F:E5DB 8D B7 07    STA $07B7  [$7E:07B7]  ;} Event pointer = [[X]]
+$8F:E5DB 8D B7 07    STA $07B7  [$7E:07B7]  ;} State condition = [[X]]
 $8F:E5DE E8          INX                    ;\
 $8F:E5DF E8          INX                    ;} X += 2
 $8F:E5E0 F4 D7 E5    PEA $E5D7              ; Return to LOOP
-$8F:E5E3 6C B7 07    JMP ($07B7)[$8F:E629]  ; Go to [event pointer]
+$8F:E5E3 6C B7 07    JMP ($07B7)[$8F:E629]  ; Go to [state condition]
 }
 
 
-;;; $E5E6: Use state pointer [X] ;;;
+;;; $E5E6: State condition - default ;;;
 {
-; Room state check: default
+;; Parameters:
+;;     X: Pointer to after this state condition
 $8F:E5E6 8E BB 07    STX $07BB  [$7E:07BB]  ; State pointer = [X]
 $8F:E5E9 68          PLA                    ; Terminate processing room state checks
 $8F:E5EA 6B          RTL
 }
 
 
-;;; $E5EB: Unused. Room state check: door ;;;
+;;; $E5EB: Unused. State condition - door pointer = [[X]] ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E5EB BD 00 00    LDA $0000,x            ;\
 $8F:E5EE CD 8D 07    CMP $078D  [$7E:078D]  ;} If [[X]] = [door pointer]:
 $8F:E5F1 D0 07       BNE $07    [$E5FA]     ;/
@@ -8145,8 +8323,12 @@ $8F:E5FE 60          RTS
 }
 
 
-;;; $E5FF: Room state check: main area boss is dead ;;;
+;;; $E5FF: State condition - main area boss is dead ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E5FF A9 01 00    LDA #$0001             ;\
 $8F:E602 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area main boss is dead:
 $8F:E606 90 07       BCC $07    [$E60F]     ;/
@@ -8160,8 +8342,12 @@ $8F:E611 60          RTS
 }
 
 
-;;; $E612: Room state check: event has been set ;;;
+;;; $E612: State condition - event [[X]] is set ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E612 BD 00 00    LDA $0000,x[$8F:9205]  ;\
 $8F:E615 29 FF 00    AND #$00FF             ;|
 $8F:E618 22 33 82 80 JSL $808233[$80:8233]  ;} If event [[X]] is marked:
@@ -8177,8 +8363,12 @@ $8F:E628 60          RTS
 }
 
 
-;;; $E629: Room state check: boss is dead ;;;
+;;; $E629: State condition - boss [[X]] is dead ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E629 BD 00 00    LDA $0000,x[$8F:DF52]  ;\
 $8F:E62C 29 FF 00    AND #$00FF             ;|
 $8F:E62F 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If any of the boss bits [[X]] are set:
@@ -8194,8 +8384,12 @@ $8F:E63F 60          RTS
 }
 
 
-;;; $E640: Unused. Room state check: morphball ;;;
+;;; $E640: Unused. State condition - morph ball has been collected ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E640 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
 $8F:E643 29 04 00    AND #$0004             ;} If morph ball collected:
 $8F:E646 F0 07       BEQ $07    [$E64F]     ;/
@@ -8209,8 +8403,12 @@ $8F:E651 60          RTS
 }
 
 
-;;; $E652: Room state check: morphball and missiles ;;;
+;;; $E652: State condition - morph ball and missiles have been collected ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E652 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
 $8F:E655 89 04 00    BIT #$0004             ;} If morph ball collected:
 $8F:E658 F0 0C       BEQ $0C    [$E666]     ;/
@@ -8226,8 +8424,12 @@ $8F:E668 60          RTS
 }
 
 
-;;; $E669: Room state check: power bombs ;;;
+;;; $E669: State condition - power bombs have been collected ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E669 AD D0 09    LDA $09D0  [$7E:09D0]  ;\
 $8F:E66C F0 07       BEQ $07    [$E675]     ;} If [Samus max power bombs] != 0:
 $8F:E66E BD 00 00    LDA $0000,x[$8F:920A]  ;\
@@ -8240,8 +8442,12 @@ $8F:E677 60          RTS
 }
 
 
-;;; $E678: Unused. Room state check: speed booster ;;;
+;;; $E678: Unused. State condition - speed booster has been collected ;;;
 {
+;; Parameters:
+;;     X: Pointer to state condition arguments
+;; Returns:
+;;     X: Pointer to next state condition
 $8F:E678 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
 $8F:E67B 29 00 20    AND #$2000             ;} If speed booster collected:
 $8F:E67E F0 07       BEQ $07    [$E687]     ;/
@@ -8321,55 +8527,59 @@ $8F:E7A7             dw E6A2, E6AB, E6B4, E6BD, E6C6, E6CF, E6D8, E6E1, E6EA, E6
 
 ;;; $E7E1: Music pointers ;;;
 {
-$8F:E7E1             dl CF8000, ; 0   - SPC engine
-                        D0E20D, ; 3   - Title sequence
-                        D1B62A, ; 6   - Empty Crateria
-                        D288CA, ; 9   - Lower Crateria
-                        D2D9B6, ; Ch  - Upper Crateria
-                        D3933C, ; Fh  - Green Brinstar
-                        D3E812, ; 12h - Red Brinstar
-                        D4B86C, ; 15h - Upper Norfair
-                        D4F420, ; 18h - Lower Norfair
-                        D5C844, ; 1Bh - Maridia
-                        D698B7, ; 1Eh - Tourian
-                        D6EF9D, ; 21h - Mother Brain
-                        D7BF73, ; 24h - Boss fight 1
-                        D899B2, ; 27h - Boss fight 2
-                        D8EA8B, ; 2Ah - Miniboss fight
-                        D9B67B, ; 2Dh - Ceres
-                        D9F5DD, ; 30h - Wrecked Ship
-                        DAB650, ; 33h - Zebes boom
-                        DAD63B, ; 36h - Intro
-                        DBA40F, ; 39h - Death
-                        DBDF4F, ; 3Ch - Credits
-                        DCAF6C, ; 3Fh - "The last Metroid is in captivity"
-                        DCFAC7, ; 42h - "The galaxy is at peace"
-                        DDB104, ; 45h - Shitroid (same as boss fight 2)
-                        DE81C1  ; 48h - Samus theme (same as upper Crateria)
+$8F:E7E1             dl CF8000, ; 0:   SPC engine
+                        D0E20D, ; 3:   Title sequence
+                        D1B62A, ; 6:   Empty Crateria
+                        D288CA, ; 9:   Lower Crateria
+                        D2D9B6, ; Ch:  Upper Crateria
+                        D3933C, ; Fh:  Green Brinstar
+                        D3E812, ; 12h: Red Brinstar
+                        D4B86C, ; 15h: Upper Norfair
+                        D4F420, ; 18h: Lower Norfair
+                        D5C844, ; 1Bh: Maridia
+                        D698B7, ; 1Eh: Tourian
+                        D6EF9D, ; 21h: Mother Brain
+                        D7BF73, ; 24h: Boss fight 1
+                        D899B2, ; 27h: Boss fight 2
+                        D8EA8B, ; 2Ah: Miniboss fight
+                        D9B67B, ; 2Dh: Ceres
+                        D9F5DD, ; 30h: Wrecked Ship
+                        DAB650, ; 33h: Zebes boom
+                        DAD63B, ; 36h: Intro
+                        DBA40F, ; 39h: Death
+                        DBDF4F, ; 3Ch: Credits
+                        DCAF6C, ; 3Fh: "The last Metroid is in captivity"
+                        DCFAC7, ; 42h: "The galaxy is at peace"
+                        DDB104, ; 45h: Shitroid (same as boss fight 2)
+                        DE81C1  ; 48h: Samus theme (same as upper Crateria)
 }
 
 
 ;;; $E82C: Debug room ;;;
 {
-; Room $E82C: Header
-$8F:E82C             dx 00, 07, 00, 00, 06, 02, 70, A0, 00, E853, E5E6
+; Room header. Debug room
+$8F:E82C             dx 00,07, 00,00, 06,02, 70,A0, 00, E853, E5E6
 
-; Room $E82C, state $E839: Header
-$8F:E839             dx CEAE3E, 0B, 00, 00, A188, EBCE, 92C3, C1C1, 0001, 0000, 0000, E87F, E117, 0000
+; State header. Room $E82C. Debug room - default
+$8F:E839             dx CEAE3E, 0B, 00,00, A188, EBCE, 92C3, C1,C1, 0001, 0000, 0000, E87F, E117, 0000
 
-; Room $E82C: Door list
+; Door list. Room $E82C. Debug room
 $8F:E853             dw ABC4, ABCF, ABDA, ABE5
 
 ; Unused library background. Same as the library background $B8B4 used by rooms:
 ;     $92FD: Crateria mainstreet
-;     $93AA: Landing site power bomb room
+;     $93AA: Landing site power bombs cave
 ;     $948C: Pre moat room
-;     $957D: East Crateria maze
+;     $957D: Crab maze
 ;     $95FF: Moat
 ; Except that this one additionally (incorrectly) loads the water FX tilemap
-$8F:E85B             dx 0002,8A9080,5880,0F00, 0004,BA8437,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+$8F:E85B             dx 0002, 8A9080, 5880, 0F00, ; Transfer F00h from $8A:9080 to VRAM $5880
+                        0004, BA8437, 4000,       ; Decompress $BA:8437 to $7E:4000
+                        0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
+                        0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
+                        0000
 
-; Room $E82C, state $E839: PLM
+; PLM population. Room $E82C. Debug room
 $8F:E87F             dx 0000
 }
 
@@ -8387,7 +8597,7 @@ $8F:E881             dw 009E, ; "Next" item / refill station index (9Dh is the l
 }
 
 
-;;; $E88F: Execute setup ASM ;;;
+;;; $E88F: Execute room setup ASM ;;;
 {
 $8F:E88F 08          PHP
 $8F:E890 8B          PHB
@@ -8442,7 +8652,7 @@ $8F:E8CC 6B          RTL
 
 ;;; $E8CD..E99A: Main ASM ;;;
 {
-;;; $E8CD: Main ASM: Crocomire's room shaking ;;;
+;;; $E8CD: Main ASM - Crocomire's room shaking ;;;
 {
 ; Room $A98D. Crocomire
 $8F:E8CD AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -8515,7 +8725,7 @@ $8F:E94F 60          RTS
 }
 
 
-;;; $E950: Main ASM: Ridley's room shaking ;;;
+;;; $E950: Main ASM - Ridley's room shaking ;;;
 {
 ; Room $B32E. Ridley
 
