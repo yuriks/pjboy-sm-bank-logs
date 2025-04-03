@@ -1247,7 +1247,7 @@ $A2:90AA 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 $A2:90AD 6B          RTL                    ; Return
 
 $A2:90AE AD 64 8D    LDA $8D64  [$A2:8D64]  ;\
-$A2:90B1 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy function timer = 1Eh
+$A2:90B1 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy function timer = 30
 $A2:90B5 A9 CC 90    LDA #$90CC             ; Enemy function = $90CC (hovering at peak)
 
 ; BRANCH_MERGE

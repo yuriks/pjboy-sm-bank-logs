@@ -4,14 +4,14 @@
 {
 $90:8000 08          PHP
 $90:8001 C2 30       REP #$30
-$90:8003 22 58 EC 90 JSL $90EC58[$90:EC58]  ; $14 = Samus top boundary
+$90:8003 22 58 EC 90 JSL $90EC58[$90:EC58]  ; $12 / $14 = Samus bottom / top boundary
 $90:8007 AD 6E 19    LDA $196E  [$7E:196E]  ;\
 $90:800A 29 0F 00    AND #$000F             ;|
 $90:800D AA          TAX                    ;} Execute [$8067 + ([FX type] & Fh)]
 $90:800E FC 67 80    JSR ($8067,x)[$90:8078];/
 $90:8011 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8014 C9 4D 00    CMP #$004D             ;|
-$90:8017 F0 19       BEQ $19    [$8032]     ;} If Samus pose is normal jump - not aiming - not moving - gun not extended: go to BRANCH_NEUTRAL_JUMP
+$90:8017 F0 19       BEQ $19    [$8032]     ;} If [Samus pose] = normal jump - not aiming - not moving - gun not extended: go to BRANCH_NEUTRAL_JUMP
 $90:8019 C9 4E 00    CMP #$004E             ;|
 $90:801C F0 14       BEQ $14    [$8032]     ;/
 $90:801E AD 94 0A    LDA $0A94  [$7E:0A94]  ;\
@@ -78,8 +78,11 @@ $90:8077 60          RTS
 
 ; 0: None
 ; 20h: Scrolling sky
+
+; Called by the subroutines for the other FX types too if the FX doesn't affect Samus
+
 $90:8078 AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
-$90:807B 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Animation frames buffer = [Samus X speed divisor]
+$90:807B 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Samus animation frame buffer = [Samus X speed divisor]
 $90:807E AD D2 0A    LDA $0AD2  [$7E:0AD2]  ;\
 $90:8081 F0 34       BEQ $34    [$80B7]     ;} If [liquid physics type] = air: return
 $90:8083 89 01 00    BIT #$0001             ;\
@@ -8807,7 +8810,7 @@ $90:BB9C DA          PHX                    ;\
 $90:BB9D 20 E1 BB    JSR $BBE1  [$90:BBE1]  ;} Draw flare animation component
 $90:BBA0 FA          PLX                    ;/
 $90:BBA1 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$90:BBA4 C9 1E 00    CMP #$001E             ;} If [beam charge counter] < 1Eh: return
+$90:BBA4 C9 1E 00    CMP #$001E             ;} If [beam charge counter] < 30: return
 $90:BBA7 30 07       BMI $07    [$BBB0]     ;/
 $90:BBA9 E8          INX                    ;\
 $90:BBAA E8          INX                    ;} X += 2 (next charge beam animation component)

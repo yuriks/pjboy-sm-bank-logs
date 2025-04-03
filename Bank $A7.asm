@@ -2829,7 +2829,7 @@ $A7:B859 30 0C       BMI $0C    [$B867]     ;} If [Kraid lint spawning X speed] 
 $A7:B85B A9 68 B8    LDA #$B868             ;\
 $A7:B85E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Kraid enemy function = charge lint
 $A7:B861 A9 1E 00    LDA #$001E             ;\
-$A7:B864 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Kraid enemy function timer = 1Eh
+$A7:B864 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Kraid enemy function timer = 30
 
 $A7:B867 6B          RTL
 }
@@ -6306,7 +6306,7 @@ $A7:D4B6 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon starting flames en
 $A7:D4BA A9 1D 00    LDA #$001D             ;\
 $A7:D4BD 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 1Dh, sound library 3, max queued sounds allowed = 6 (Phantoon's flame)
 $A7:D4C1 A9 1E 00    LDA #$001E             ;\
-$A7:D4C4 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 1Eh
+$A7:D4C4 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 30
 $A7:D4C7 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A7:D4CA 1A          INC A                  ;} Increment Phantoon flame counter
 $A7:D4CB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
@@ -6317,7 +6317,7 @@ $A7:D4D6 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 $A7:D4D9 A9 EE D4    LDA #$D4EE             ;\
 $A7:D4DC 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D4EE
 $A7:D4DF A9 1E 00    LDA #$001E             ;\
-$A7:D4E2 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 1Eh
+$A7:D4E2 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 30
 $A7:D4E5 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A7:D4E9             dx 00, 06, B781        ;} Spawn PLM to draw Phantoon's door during boss fight
 
@@ -6396,7 +6396,7 @@ $A7:D571 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D596
 $A7:D574 A9 01 00    LDA #$0001             ;\
 $A7:D577 8D 74 10    STA $1074  [$7E:1074]  ;} Phantoon semi-transparency HDMA object control = 1 (normal)
 $A7:D57A A9 1E 00    LDA #$001E             ;\
-$A7:D57D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 1Eh
+$A7:D57D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 30
 
 $A7:D580 60          RTS
 }

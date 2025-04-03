@@ -6919,7 +6919,7 @@ $A3:CE7F F0 18       BEQ $18    [$CE99]     ;} If [enemy behaviour] = kicked int
 $A3:CE81 C9 05 00    CMP #$0005             ;\
 $A3:CE84 F0 13       BEQ $13    [$CE99]     ;} If [enemy behaviour] = shot into air: return
 $A3:CE86 AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A3:CE89 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:CE89 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:CE8C D0 0B       BNE $0B    [$CE99]     ;/
 $A3:CE8E AD 3E 18    LDA $183E  [$7E:183E]  ;\
 $A3:CE91 C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
@@ -8713,7 +8713,7 @@ $A3:E08E 7C B2 0F    JMP ($0FB2,x)[$A3:E08A]; Go to [enemy function]
 ;;; $E091: Wrecked Ship orange zoomer function - crawling vertically ;;;
 {
 $A3:E091 AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A3:E094 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E094 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E097 D0 15       BNE $15    [$E0AE]     ;/
 $A3:E099 AD 3E 18    LDA $183E  [$7E:183E]  ;\
 $A3:E09C C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
@@ -8819,7 +8819,7 @@ $A3:E167 6B          RTL
 ;;; $E168: Wrecked Ship orange zoomer function - crawling horizontally ;;;
 {
 $A3:E168 AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A3:E16B C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E16B C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E16E D0 15       BNE $15    [$E185]     ;/
 $A3:E170 AD 3E 18    LDA $183E  [$7E:183E]  ;\
 $A3:E173 C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
@@ -9180,7 +9180,7 @@ $A3:E6C5 7C B2 0F    JMP ($0FB2,x)[$A3:E6C1]; Go to [enemy function]
 ;;; $E6C8: Creepy crawly function - crawling vertically ;;;
 {
 $A3:E6C8 AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A3:E6CB C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E6CB C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E6CE D0 15       BNE $15    [$E6E5]     ;/
 $A3:E6D0 AD 3E 18    LDA $183E  [$7E:183E]  ;\
 $A3:E6D3 C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
@@ -9319,7 +9319,7 @@ $A3:E7F1 6B          RTL
 ;;; $E7F2: Creepy crawly function - crawling horizontally ;;;
 {
 $A3:E7F2 AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A3:E7F5 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E7F5 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E7F8 D0 15       BNE $15    [$E80F]     ;/
 $A3:E7FA AD 3E 18    LDA $183E  [$7E:183E]  ;\
 $A3:E7FD C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):

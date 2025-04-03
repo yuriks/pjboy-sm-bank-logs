@@ -6480,7 +6480,11 @@ $A0:B133             dw 0E84, 0EA4, 0EA6, 0EC6, 0EC8, 0EE8, 0F28, 0F48
 ; Generate sign-extended 8-bit tables with
 ;     [0x100 * math.sin(i * math.pi / 0x80) for i in range(0x40 * n_quadrants)]
 
-; Unsigned 8-bit table is the same as the signed-extended first half, except cos(0) is capped at FFh
+; 8-bit table is the same as the 8-bit signed-extended first half, except cos(0) is capped at FFh
+
+; "8-bit" table range = 0..FFh, positive values only (i.e. the first two quadrants only)
+; "16-bit" table range = -7FFFh..7FFFh
+; "16-bit sign-extended" table range = -100h..100h
 
 ; 8-bit sine
 $A0:B143             db 00, 06, 0C, 12, 19, 1F, 25, 2B, 31, 38, 3E, 44, 4A, 50, 56, 5C, 61, 67, 6D, 73, 78, 7E, 83, 88, 8E, 93, 98, 9D, A2, A7, AB, B0, B5, B9, BD, C1, C5, C9, CD, D1, D4, D8, DB, DE, E1, E4, E7, EA, EC, EE, F1, F3, F4, F6, F8, F9, FB, FC, FD, FE, FE, FF, FF, FF

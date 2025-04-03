@@ -3355,7 +3355,7 @@ $9B:C819 D0 0D       BNE $0D    [$C828]     ;/
 
 ; BRANCH_CANCEL
 $9B:C81B A9 1E 00    LDA #$001E             ;\
-$9B:C81E 8D 9E 0A    STA $0A9E  [$7E:0A9E]  ;} Grapple walljump timer = 1Eh
+$9B:C81E 8D 9E 0A    STA $0A9E  [$7E:0A9E]  ;} Grapple walljump timer = 30
 $9B:C821 A9 32 C8    LDA #$C832             ;\
 $9B:C824 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = wallgrab release
 $9B:C827 60          RTS                    ; Return
