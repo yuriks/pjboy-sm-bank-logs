@@ -121,7 +121,7 @@ $90:80B7 60          RTS
 ; 6h: Water
 ; 26h: Tourian entrance statue
 $90:80B8 AD 5E 19    LDA $195E  [$7E:195E]  ;\
-$90:80BB 30 BB       BMI $BB    [$8078]     ;} [FX Y position] < 0: go to animate Samus - FX = none
+$90:80BB 30 BB       BMI $BB    [$8078]     ;} If [FX Y position] < 0: go to animate Samus - FX = none
 $90:80BD C5 12       CMP $12    [$7E:0012]  ;\
 $90:80BF 30 02       BMI $02    [$80C3]     ;} If [FX Y position] >= [Samus bottom boundary]:
 $90:80C1 80 B5       BRA $B5    [$8078]     ; Go to animate Samus - FX = none
@@ -130,7 +130,7 @@ $90:80C3 AD 7E 19    LDA $197E  [$7E:197E]  ;\
 $90:80C6 89 04 00    BIT #$0004             ;} If liquid physics are disabled: go to animate Samus - FX = none
 $90:80C9 D0 AD       BNE $AD    [$8078]     ;/
 $90:80CB AD 93 9E    LDA $9E93  [$90:9E93]  ;\
-$90:80CE 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Animation frames buffer = 3
+$90:80CE 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Samus animation frame buffer = 3
 $90:80D1 AD D2 0A    LDA $0AD2  [$7E:0AD2]  ;\
 $90:80D4 C9 01 00    CMP #$0001             ;} If [liquid physics type] = water: go to spawn air bubbles
 $90:80D7 F0 65       BEQ $65    [$813E]     ;/
@@ -150,7 +150,7 @@ $90:80E2 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Dh, sound library 2, 
 $90:80E6 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:80E9 29 FF 00    AND #$00FF             ;|
 $90:80EC AA          TAX                    ;|
-$90:80ED BD A4 81    LDA $81A4,x[$90:81A7]  ;} If [$81A4 + [Samus movement type] = 0: (airborne)
+$90:80ED BD A4 81    LDA $81A4,x[$90:81A7]  ;} If [$81A4 + [Samus movement type]] = 0: (airborne)
 $90:80F0 29 FF 00    AND #$00FF             ;|
 $90:80F3 D0 1A       BNE $1A    [$810F]     ;/
 $90:80F5 A9 00 03    LDA #$0300             ;\
@@ -163,7 +163,7 @@ $90:8107 AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $90:810A 8D E4 0A    STA $0AE4  [$7E:0AE4]  ;} Atmospheric graphics 0 Y position = [FX Y position]
 $90:810D 80 2F       BRA $2F    [$813E]
 
-$90:810F A9 00 01    LDA #$0100             ;\ Else ([$81A4 + [Samus movement type] != 0): (grounded)
+$90:810F A9 00 01    LDA #$0100             ;\ Else ([$81A4 + [Samus movement type]] != 0): (grounded)
 $90:8112 8D EC 0A    STA $0AEC  [$7E:0AEC]  ;} Atmospheric graphics 0/1 animation frame = 0, type = 1 (footstep splashes)
 $90:8115 8D EE 0A    STA $0AEE  [$7E:0AEE]  ;/
 $90:8118 A9 03 00    LDA #$0003             ;\
@@ -217,7 +217,6 @@ $90:817A 89 01 00    BIT #$0001             ;\
 $90:817D F0 05       BEQ $05    [$8184]     ;} If [random number] % 2 != 0:
 $90:817F A9 0F 00    LDA #$000F             ; A = Fh (low pitched air bubbles)
 $90:8182 80 03       BRA $03    [$8187]
-
                                             ; Else ([random number] % 2 = 0):
 $90:8184 A9 11 00    LDA #$0011             ; A = 11h (high pitched air bubbles)
 
@@ -281,7 +280,9 @@ $90:81A4             db 01, ;* 0: Standing
 
 ; 2: Lava
 ; 22h: Unused
+
 ; Contains lava damage / gravity suit check
+
 $90:81C0 AD 62 19    LDA $1962  [$7E:1962]  ;\
 $90:81C3 30 47       BMI $47    [$820C]     ;} If [lava Y position] < 0: go to animate Samus - FX = none
 $90:81C5 C5 12       CMP $12    [$7E:0012]  ;\
@@ -316,7 +317,7 @@ $90:820A 80 40       BRA $40    [$824C]     ; Go to animate Samus - Samus is sub
 $90:820C 4C 78 80    JMP $8078  [$90:8078]
 
 ; BRANCH_GRAVITY_SUIT_EQUIPPED
-$90:820F 9C 9C 0A    STZ $0A9C  [$7E:0A9C]  ; Animation frames buffer = 0
+$90:820F 9C 9C 0A    STZ $0A9C  [$7E:0A9C]  ; Samus animation frame buffer = 0
 $90:8212 A9 02 00    LDA #$0002             ;\
 $90:8215 8D D2 0A    STA $0AD2  [$7E:0AD2]  ;} Liquid physics type = lava/acid
 $90:8218 60          RTS
@@ -361,7 +362,7 @@ $90:8249 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 ;;     $14: Samus top boundary
 
 $90:824C AD 95 9E    LDA $9E95  [$90:9E95]  ;\
-$90:824F 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Animation frames buffer = 2
+$90:824F 8D 9C 0A    STA $0A9C  [$7E:0A9C]  ;} Samus animation frame buffer = 2
 $90:8252 A9 02 00    LDA #$0002             ;\
 $90:8255 8D D2 0A    STA $0AD2  [$7E:0AD2]  ;} Liquid physics type = lava/acid
 $90:8258 A5 14       LDA $14    [$7E:0014]  ;\
@@ -380,8 +381,8 @@ $90:8276 A9 03 00    LDA #$0003             ;\
 $90:8279 8D D4 0A    STA $0AD4  [$7E:0AD4]  ;} Atmospheric graphics 0 animation timer = 3
 $90:827C 8D DA 0A    STA $0ADA  [$7E:0ADA]  ; Atmospheric graphics 3 animation timer = 3
 $90:827F A9 02 80    LDA #$8002             ;\
-$90:8282 8D D6 0A    STA $0AD6  [$7E:0AD6]  ;} Atmospheric graphics 1 animation timer = 8002h
-$90:8285 8D D8 0A    STA $0AD8  [$7E:0AD8]  ; Atmospheric graphics 2 animation timer = 8002h
+$90:8282 8D D6 0A    STA $0AD6  [$7E:0AD6]  ;} Atmospheric graphics 1 animation timer = 2 | 8000h
+$90:8285 8D D8 0A    STA $0AD8  [$7E:0AD8]  ; Atmospheric graphics 2 animation timer = 2 | 8000h
 $90:8288 AD 62 19    LDA $1962  [$7E:1962]  ;\
 $90:828B 8D E4 0A    STA $0AE4  [$7E:0AE4]  ;} Atmospheric graphics 0 Y position = [lava/acid Y position]
 $90:828E 8D E6 0A    STA $0AE6  [$7E:0AE6]  ; Atmospheric graphics 1 Y position = [lava/acid Y position]
@@ -414,7 +415,7 @@ $90:82D0 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:82D3 89 20 00    BIT #$0020             ;} If gravity suit not equipped: return
 $90:82D6 F0 03       BEQ $03    [$82DB]     ;/
 
-$90:82D8 9C 9C 0A    STZ $0A9C  [$7E:0A9C]  ; Animation frames buffer = 0
+$90:82D8 9C 9C 0A    STZ $0A9C  [$7E:0A9C]  ; Samus animation frame buffer = 0
 
 $90:82DB 60          RTS
 }
@@ -1820,7 +1821,7 @@ $90:8A95 B9 EC 0A    LDA $0AEC,y[$7E:0AF2]  ;\
 $90:8A98 1A          INC A                  ;} Increment atmospheric graphics animation frame
 $90:8A99 99 EC 0A    STA $0AEC,y[$7E:0AF2]  ;/
 $90:8A9C 29 FF 00    AND #$00FF             ;\
-$90:8A9F DD EF 8B    CMP $8BEF,x[$90:8BFB]  ;} If [atmospheric graphics animation frame] >= [$8BEF + [atmospheric graphic type] * 2]
+$90:8A9F DD EF 8B    CMP $8BEF,x[$90:8BFB]  ;} If [atmospheric graphics animation frame] >= [$8BEF + [atmospheric graphic type] * 2]:
 $90:8AA2 30 08       BMI $08    [$8AAC]     ;/
 $90:8AA4 A9 00 00    LDA #$0000             ;\
 $90:8AA7 99 EC 0A    STA $0AEC,y[$7E:0AF2]  ;} Atmospheric graphic animation frame / type = 0
