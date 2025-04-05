@@ -4600,7 +4600,7 @@ $A0:A57E 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 5
 $A0:A581 A0 00 00    LDY #$0000             ; Knockback X direction = left
 $A0:A584 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A587 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
-$A0:A58A 38          SEC                    ;} If [enemy projectile X position] <= [Samus X position]:
+$A0:A58A 38          SEC                    ;} If [enemy X position] <= [Samus X position]:
 $A0:A58B FD 7A 0F    SBC $0F7A,x[$7E:107A]  ;|
 $A0:A58E 30 03       BMI $03    [$A593]     ;/
 $A0:A590 A0 01 00    LDY #$0001             ; Knockback X direction = right
