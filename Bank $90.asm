@@ -2,6 +2,15 @@
 {
 ;;; $8000: Animate Samus ;;;
 {
+; Calls code to check FX for liquid physics (which affects the Samus animation frame buffer variable)
+; That code also handles lava/acid damage and water splash / air bubble graphics
+; Some special case code for keeping to frame 1 of neutral jump animation whilst rising
+; Decrement the Samus animation frame timer,
+; if zero then Samus animation frame is incremented, some special handling for speed booster running is called,
+; and Samus animation delay table is processed, which may cause looping or branching of the animation
+
+; The actual drawing of Samus (using the Samus pose and Samus animation frame) happens elsewhere (draw Samus routines $85E2..8A4B)
+
 $90:8000 08          PHP
 $90:8001 C2 30       REP #$30
 $90:8003 22 58 EC 90 JSL $90EC58[$90:EC58]  ; $12 / $14 = Samus bottom / top boundary
@@ -468,6 +477,9 @@ $90:8324             dw 8344, 8344, 8344, 8344, 8344, 8344, 8346, 8360, 8370, 83
 
 ;;; $8344: Clear carry. Animation delay instruction 0..5 ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 $90:8344 18          CLC
 $90:8345 60          RTS
 }
@@ -475,6 +487,10 @@ $90:8345 60          RTS
 
 ;;; $8346: Animation delay instruction 6 - go to beginning if [Samus health] >= 30 ;;;
 {
+;; Returns:
+;;     Carry: Set. Samus animation frame is changed
+;;     Y: New Samus animation frame
+
 ; Used by:
 ;     1: Facing right - normal
 ;     2: Facing left  - normal
@@ -500,6 +516,10 @@ $90:835F 60          RTS                    ;} Return carry set
 
 ;;; $8360: Animation delay instruction 7 - set drained Samus movement handler ;;;
 {
+;; Returns:
+;;     Carry: Set. Samus animation frame is changed
+;;     Y: New Samus animation frame
+
 ; Used by:
 ;     E8h: Facing right - Samus drained - crouching
 ;     E9h: Facing left  - Samus drained - crouching
@@ -517,6 +537,9 @@ $90:836F 60          RTS                    ;} Return carry set
 
 ;;; $8370: Animation delay instruction 8 - enable auto-jump hack and transition to pose if not jumping ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 ; Used by:
 ;     25h/26h / 2Fh/30h / 43h/44h / 87h/88h / 8Bh..9Ah / 9Ch..A3h: Turning -> 2/1 / 52h/51h / 28h/27h / 2Ah/29h / 4/3/8/7/16h/15h/18h/17h/2Ch/2Bh/2Eh/2Dh/86h/85h/74h/73h/6/5/6Ah/69h/6Eh/6Dh/72h/71h
 ;         1: Facing right - normal
@@ -580,6 +603,9 @@ $90:8399 60          RTS
 
 ;;; $839A: Animation delay instruction 9 - transition to pose depending on item equipped and Y speed ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 ; Used by:
 ;     37h: Facing right - morphing transition. F9,0002,1D,31,79,7D
 ;         1Dh: Facing right - morph ball - no springball - on ground
@@ -652,6 +678,9 @@ $90:83F5 60          RTS                    ;} Return carry clear
 
 ;;; $83F6: Unused. Animation delay instruction Ah - transition to pose depending on Y speed ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 $90:83F6 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $90:83F9 D0 10       BNE $10    [$840B]     ;|
 $90:83FB AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;} If [Samus Y speed] = 0:
@@ -677,6 +706,10 @@ $90:841C 60          RTS                    ;} Return carry clear
 
 ;;; $841D: Animation delay instruction Bh - select animation delay sequence for wall-jump ;;;
 {
+;; Returns:
+;;     Carry: Set. Samus animation frame is changed
+;;     Y: New Samus animation frame
+
 ; Used by:
 ;     83h: Facing right - wall jump
 ;     84h: Facing left  - wall jump
@@ -742,6 +775,9 @@ $90:848A 60          RTS                    ;} Return carry set
 
 ;;; $848B: Unused. Animation delay instruction Ch - transition to pose depending on item equipped ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 ; Used by:
 ;     3Fh: Unused. FC,0002,1D,79
 ;         1Dh: Facing right - morph ball - no springball - on ground
@@ -781,6 +817,9 @@ $90:84B5 60          RTS                    ;} Return carry clear
 
 ;;; $84B6: Animation delay instruction Dh - transition to pose ;;;
 {
+;; Returns:
+;;     Carry: Clear. Samus animation frame is unchanged
+
 ; Also see instruction 8, which calls this instruction.
 
 ; Used by:
@@ -838,6 +877,10 @@ $90:84C6 60          RTS                    ;} Return carry clear
 
 ;;; $84C7: Animation delay instruction Eh - go to [Y] - [[$00] + [Y] + 1] ;;;
 {
+;; Returns:
+;;     Carry: Set. Samus animation frame is changed
+;;     Y: New Samus animation frame
+
 $90:84C7 C8          INY                    ;\
 $90:84C8 B7 00       LDA [$00],y[$91:B34E]  ;|
 $90:84CA 29 FF 00    AND #$00FF             ;|
@@ -854,6 +897,10 @@ $90:84DA 60          RTS                    ;} Return carry set
 
 ;;; $84DB: Animation delay instruction Fh - go to beginning ;;;
 {
+;; Returns:
+;;     Carry: Set. Samus animation frame is changed
+;;     Y: New Samus animation frame
+
 $90:84DB A0 00 00    LDY #$0000             ;\
 $90:84DE 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
 $90:84E1 38          SEC                    ;\
@@ -8764,7 +8811,7 @@ $90:BB47 A2 00 00    LDX #$0000             ; X = 0 (charge beam animation compo
 ; LOOP_CHARGE_BEAM
 $90:BB4A E2 20       SEP #$20
 $90:BB4C A9 90       LDA #$90               ;\
-$90:BB4E 85 02       STA $02    [$7E:0002]  ;} $00 bank = $90
+$90:BB4E 85 02       STA $02    [$7E:0002]  ;} $02 = $90
 $90:BB50 C2 20       REP #$20
 $90:BB52 BD DC 0C    LDA $0CDC,x[$7E:0CDC]  ;\
 $90:BB55 3A          DEC A                  ;} Decrement charge beam animation component timer
@@ -8934,7 +8981,7 @@ $90:BC75 ED 15 09    SBC $0915  [$7E:0915]  ;|
 $90:BC78 85 12       STA $12    [$7E:0012]  ;/
 $90:BC7A 80 1C       BRA $1C    [$BC98]
 
-$90:BC7C BD DC C1    LDA $C1DC,x[$90:C1E0]  ;\ ([Samus movement type] = running):
+$90:BC7C BD DC C1    LDA $C1DC,x[$90:C1E0]  ;\ Else ([Samus movement type] = running):
 $90:BC7F 18          CLC                    ;|
 $90:BC80 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
 $90:BC83 38          SEC                    ;} $14 = [Samus X position] + [$C1DC + [X]] - [layer 1 X position]
