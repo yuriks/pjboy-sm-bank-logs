@@ -1051,11 +1051,11 @@ $89:AB34 29 FF 00    AND #$00FF             ;} FX timer = [[X] + 8]
 $89:AB37 8D 80 19    STA $1980  [$7E:1980]  ;/
 $89:AB3A BD 0A 00    LDA $000A,x[$83:A0BE]  ;\
 $89:AB3D 29 FF 00    AND #$00FF             ;} Default layer blending configuration = [[X] + Ah]
-$89:AB40 8D 82 19    STA $1982  [$7E:1982]  ;/ 
-$89:AB43 BD 0B 00    LDA $000B,x[$83:A0BF]  ;\ 
+$89:AB40 8D 82 19    STA $1982  [$7E:1982]  ;/
+$89:AB43 BD 0B 00    LDA $000B,x[$83:A0BF]  ;\
 $89:AB46 29 FF 00    AND #$00FF             ;} FX layer 3 layer blending configuration = [[X] + Bh]
-$89:AB49 8D 84 19    STA $1984  [$7E:1984]  ;/ 
-$89:AB4C BD 0C 00    LDA $000C,x[$83:A0C0]  ;\ 
+$89:AB49 8D 84 19    STA $1984  [$7E:1984]  ;/
+$89:AB4C BD 0C 00    LDA $000C,x[$83:A0C0]  ;\
 $89:AB4F 29 FF 00    AND #$00FF             ;} FX liquid options = [[X] + Ch]
 $89:AB52 8D 7E 19    STA $197E  [$7E:197E]  ;/
 $89:AB55 BD 0F 00    LDA $000F,x[$83:A0C3]  ;\

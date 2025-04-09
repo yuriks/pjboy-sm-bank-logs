@@ -165,7 +165,7 @@ $85:8150 A9 19       LDA #$19               ;\
 $85:8152 8D 21 21    STA $2121              ;|
 $85:8155 A9 B1       LDA #$B1               ;|
 $85:8157 8D 22 21    STA $2122              ;} CGRAM BG3 palette 6 colour 1 = 0BB1h (green for Y button)
-$85:815A A9 0B       LDA #$0B               ;| 
+$85:815A A9 0B       LDA #$0B               ;|
 $85:815C 8D 22 21    STA $2122              ;/
 $85:815F A9 1F       LDA #$1F               ;\
 $85:8161 8D 22 21    STA $2122              ;|
@@ -340,7 +340,7 @@ $85:82B1 E8          INX                    ;|
 $85:82B2 E8          INX                    ;|
 $85:82B3 C6 16       DEC $16    [$7E:0016]  ;|
 $85:82B5 D0 F1       BNE $F1    [$82A8]     ;/
-$85:82B7 60          RTS                    
+$85:82B7 60          RTS
 }
 
 
@@ -865,7 +865,7 @@ $85:8671 A9 19       LDA #$19               ;\
 $85:8673 8D 21 21    STA $2121              ;|
 $85:8676 AF 32 C0 7E LDA $7EC032[$7E:C032]  ;|
 $85:867A 8D 22 21    STA $2122              ;} CGRAM BG3 palette 6 colour 1 = [BG3 palette 6 colour 1] (palette blend colour 0)
-$85:867D AF 33 C0 7E LDA $7EC033[$7E:C033]  ;| 
+$85:867D AF 33 C0 7E LDA $7EC033[$7E:C033]  ;|
 $85:8681 8D 22 21    STA $2122              ;/
 $85:8684 AF 34 C0 7E LDA $7EC034[$7E:C034]  ;\
 $85:8688 8D 22 21    STA $2122              ;|

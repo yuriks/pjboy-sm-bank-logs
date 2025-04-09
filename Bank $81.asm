@@ -1043,15 +1043,15 @@ $81:89E2 B2 16       LDA ($16)  [$7E:0572]  ;} Set OAM entry high X position bit
 $81:89E4 1F A1 85 81 ORA $8185A1,x[$81:85C1];|
 $81:89E8 92 16       STA ($16)  [$7E:0572]  ;/
 $81:89EA 4C 11 8A    JMP $8A11  [$81:8A11]  ; Go to BRANCH_MERGE
-                                            
+
 $81:89ED BF 9F 85 81 LDA $81859F,x[$81:85C7];\
 $81:89F1 85 16       STA $16    [$7E:0016]  ;|
 $81:89F3 B2 16       LDA ($16)  [$7E:0572]  ;} Set OAM entry high X position bit
 $81:89F5 1F 9F 83 81 ORA $81839F,x[$81:83C7];|
 $81:89F9 92 16       STA ($16)  [$7E:0572]  ;/
 $81:89FB 4C 11 8A    JMP $8A11  [$81:8A11]  ; Go to BRANCH_MERGE
-                                            
-; BRANCH_X_HIGH_CLEAR                       
+
+; BRANCH_X_HIGH_CLEAR
 $81:89FE B9 00 00    LDA $0000,y[$92:A0B6]  ;\
 $81:8A01 10 0E       BPL $0E    [$8A11]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8A03 BF 9F 85 81 LDA $81859F,x[$81:859F];\
@@ -1256,7 +1256,7 @@ $81:8AD7 85 16       STA $16    [$7E:0016]  ;|
 $81:8AD9 B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry high X position bit
 $81:8ADB 1F 9F 83 81 ORA $81839F,x[$81:83A7];|
 $81:8ADF 92 16       STA ($16)  [$7E:0570]  ;/
-                                            
+
 $81:8AE1 B9 00 00    LDA $0000,y[$A6:F923]  ;\
 $81:8AE4 10 0E       BPL $0E    [$8AF4]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8AE6 BF 9F 85 81 LDA $81859F,x[$81:859F];\
@@ -1317,7 +1317,7 @@ $81:8B23 B9 00 00    LDA $0000,y[$A6:ED29]  ; $18 = [[Y]] (number of entries)
 $81:8B26 F0 6C       BEQ $6C    [$8B94]     ; If [$18] = 0: return
 $81:8B28 C8          INY                    ;\
 $81:8B29 C8          INY                    ;} Y += 2
-$81:8B2A 85 18       STA $18    [$7E:0018]  
+$81:8B2A 85 18       STA $18    [$7E:0018]
 $81:8B2C AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8B2F 18          CLC
 
@@ -1396,7 +1396,7 @@ $81:8B97 B9 00 00    LDA $0000,y[$A6:EC5B]  ; $18 = [[Y]] (number of entries)
 $81:8B9A F0 6C       BEQ $6C    [$8C08]     ; If [$18] = 0: return
 $81:8B9C C8          INY                    ;\
 $81:8B9D C8          INY                    ;} Y += 2
-$81:8B9E 85 18       STA $18    [$7E:0018]  
+$81:8B9E 85 18       STA $18    [$7E:0018]
 $81:8BA0 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8BA3 18          CLC
 
@@ -1411,7 +1411,7 @@ $81:8BB5 85 16       STA $16    [$7E:0016]  ;|
 $81:8BB7 B2 16       LDA ($16)  [$7E:0574]  ;} Set OAM entry high X position bit
 $81:8BB9 1F 9F 83 81 ORA $81839F,x[$81:83FB];|
 $81:8BBD 92 16       STA ($16)  [$7E:0574]  ;/
-                                            
+
 $81:8BBF B9 00 00    LDA $0000,y[$A6:EC5D]  ;\
 $81:8BC2 10 0E       BPL $0E    [$8BD2]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8BC4 BF 9F 85 81 LDA $81859F,x[$81:861F];\
@@ -1434,7 +1434,7 @@ $81:8BE3 A9 F0       LDA #$F0               ; Use F0h as Y position
 
 ; BRANCH_ON_SCREEN
 $81:8BE5 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = (Y position)
-$81:8BE8 C2 21       REP #$21               
+$81:8BE8 C2 21       REP #$21
 $81:8BEA B9 03 00    LDA $0003,y[$A6:EC60]  ;\
 $81:8BED 65 00       ADC $00    [$7E:0000]  ;|
 $81:8BEF 05 03       ORA $03    [$7E:0003]  ;} OAM entry tile number and attributes = [[Y] + 3] + [$00] | [$03]
@@ -1584,7 +1584,7 @@ $81:8CBB A9 F0       LDA #$F0               ; Use F0h as Y position
 
 ; BRANCH_ON_SCREEN
 $81:8CBD 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = (Y position)
-$81:8CC0 C2 21       REP #$21               
+$81:8CC0 C2 21       REP #$21
 $81:8CC2 B9 00 00    LDA $0000,y[$8D:B252]  ;\
 $81:8CC5 10 0E       BPL $0E    [$8CD5]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8CC7 BF 9F 85 81 LDA $81859F,x[$81:8603];\
@@ -1592,7 +1592,7 @@ $81:8CCB 85 16       STA $16    [$7E:0016]  ;|
 $81:8CCD B2 16       LDA ($16)  [$7E:0576]  ;} Set OAM entry size bit
 $81:8CCF 1F A1 83 81 ORA $8183A1,x[$81:8405];|
 $81:8CD3 92 16       STA ($16)  [$7E:0576]  ;/
-                                            
+
 $81:8CD5 B9 03 00    LDA $0003,y[$8D:B255]  ;\
 $81:8CD8 65 1A       ADC $1A    [$7E:001A]  ;|
 $81:8CDA 05 1C       ORA $1C    [$7E:001C]  ;} OAM entry tile number and attributes = [[Y] + 3] + [$1A] | [$1C]
@@ -4645,11 +4645,11 @@ $81:A696 8D 23 43    STA $4323              ;|
 $81:A699 A9 7E       LDA #$7E               ;|
 $81:A69B 8D 24 43    STA $4324              ;|
 $81:A69E 8D 27 43    STA $4327              ;/
-$81:A6A1 9C 25 43    STZ $4325            
-$81:A6A4 9C 26 43    STZ $4326            
-$81:A6A7 9C 28 43    STZ $4328            
-$81:A6AA 9C 29 43    STZ $4329            
-$81:A6AD 9C 2A 43    STZ $432A            
+$81:A6A1 9C 25 43    STZ $4325
+$81:A6A4 9C 26 43    STZ $4326
+$81:A6A7 9C 28 43    STZ $4328
+$81:A6AA 9C 29 43    STZ $4329
+$81:A6AD 9C 2A 43    STZ $432A
 $81:A6B0 A9 6F       LDA #$6F               ;\
 $81:A6B2 8F 10 9E 7E STA $7E9E10[$7E:9E10]  ;|
 $81:A6B6 A9 20       LDA #$20               ;|
@@ -4685,11 +4685,11 @@ $81:A709 8D 33 43    STA $4333              ;|
 $81:A70C A9 7E       LDA #$7E               ;|
 $81:A70E 8D 34 43    STA $4334              ;|
 $81:A711 8D 37 43    STA $4337              ;/
-$81:A714 9C 35 43    STZ $4335            
-$81:A717 9C 36 43    STZ $4336            
-$81:A71A 9C 38 43    STZ $4338            
-$81:A71D 9C 39 43    STZ $4339            
-$81:A720 9C 3A 43    STZ $433A            
+$81:A714 9C 35 43    STZ $4335
+$81:A717 9C 36 43    STZ $4336
+$81:A71A 9C 38 43    STZ $4338
+$81:A71D 9C 39 43    STZ $4339
+$81:A720 9C 3A 43    STZ $433A
 $81:A723 60          RTS
 }
 

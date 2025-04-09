@@ -16532,8 +16532,8 @@ $86:ED3B B9 00 00    LDA $0000,y[$86:ECB1]  ;\
 $86:ED3E 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]]
 $86:ED40 64 18       STZ $18    [$7E:0018]  ; $18 = 0
 $86:ED42 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object at position ([$12], [$14])
-$86:ED46 7A          PLY                    
-$86:ED47 FA          PLX                    
+$86:ED46 7A          PLY
+$86:ED47 FA          PLX
 $86:ED48 C8          INY                    ;\
 $86:ED49 C8          INY                    ;} Y += 2
 $86:ED4A 60          RTS

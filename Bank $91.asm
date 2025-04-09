@@ -4633,11 +4633,11 @@ $91:B5D3             db 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, FF
 ; Indexed by [speed boost counter] * 2
 $91:B5DE             dw B5E8, B5F3, B5FE, B609, B614
 
-$91:B5E8             db 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, FF
-$91:B5F3             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF
-$91:B5FE             db 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, FF
-$91:B609             db 01, 02, 01, 02, 01, 02, 01, 02, 01, 02, FF
-$91:B614             db 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FF
+$91:B5E8             db 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, FF ; Unused, except for the first speed boosting animation cycle sometimes due to a bug (see $90:852C)
+$91:B5F3             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF ; Speed booster stage 1 (after the first run button check)
+$91:B5FE             db 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, FF ; Speed booster stage 2
+$91:B609             db 01, 02, 01, 02, 01, 02, 01, 02, 01, 02, FF ; Speed booster stage 3
+$91:B614             db 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FF ; Speed boosting (after the first speed boosting animation cycle)
 }
 
 

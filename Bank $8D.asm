@@ -1598,14 +1598,14 @@ $8D:C52B C2 30       REP #$30
 $8D:C52D 2C 79 1E    BIT $1E79  [$7E:1E79]  ;\
 $8D:C530 10 15       BPL $15    [$C547]     ;} If palette FX objects not enabled: return
 $8D:C532 A2 0E 00    LDX #$000E             ; X = Eh (palette FX object index)
-                                            
-; LOOP                                      
+
+; LOOP
 $8D:C535 8E 7B 1E    STX $1E7B  [$7E:1E7B]  ; Palette FX object index = [X]
 $8D:C538 BD 7D 1E    LDA $1E7D,x[$7E:1E8B]  ;\
 $8D:C53B F0 06       BEQ $06    [$C543]     ;} If [palette FX object ID] != 0:
 $8D:C53D 20 4A C5    JSR $C54A  [$8D:C54A]  ; Process palette FX object
 $8D:C540 AE 7B 1E    LDX $1E7B  [$7E:1E7B]  ; X = [palette FX object index]
-                                            
+
 $8D:C543 CA          DEX                    ;\
 $8D:C544 CA          DEX                    ;} X -= 2
 $8D:C545 10 EE       BPL $EE    [$C535]     ; If [X] >= 0: go to LOOP
@@ -3374,12 +3374,12 @@ $8D:E443 89 20 00    BIT #$0020             ;} If gravity suit equipped:
 $8D:E446 F0 05       BEQ $05    [$E44D]     ;/
 $8D:E448 A9 B6 E8    LDA #$E8B6             ; A = $E8B6
 $8D:E44B 80 0D       BRA $0D    [$E45A]     ; Go to BRANCH_SET_INSTRUCTION_LIST_POINTER
-                                            
+
 $8D:E44D 89 01 00    BIT #$0001             ;\
 $8D:E450 F0 05       BEQ $05    [$E457]     ;} If varia suit equipped:
 $8D:E452 A9 8A E6    LDA #$E68A             ; A = $E68A
 $8D:E455 80 03       BRA $03    [$E45A]     ; Go to BRANCH_SET_INSTRUCTION_LIST_POINTER
-                                            
+
 $8D:E457 A9 5E E4    LDA #$E45E             ; A = $E45E
 
 $8D:E45A 99 BD 1E    STA $1EBD,y[$7E:1ECB]  ; Palette FX object instruction list pointer = [A]

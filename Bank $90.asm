@@ -6,8 +6,11 @@
 ; That code also handles lava/acid damage and water splash / air bubble graphics
 ; Some special case code for keeping to frame 1 of neutral jump animation whilst rising
 ; Decrement the Samus animation frame timer,
-; if zero then Samus animation frame is incremented, some special handling for speed booster running is called,
-; and Samus animation delay table is processed, which may cause looping or branching of the animation
+; if zero then Samus animation frame is incremented and the Samus animation delay table is processed
+; If an instruction is encountered in the animation delay table,
+; some handling for speed booster running is called that deals with incrementing the speed booster stage
+; If speed booster handling is not applicable, then the animation delay instruction is processed,
+; which may cause looping or branching of the animation
 
 ; The actual drawing of Samus (using the Samus pose and Samus animation frame) happens elsewhere (draw Samus routines $85E2..8A4B)
 
@@ -914,7 +917,7 @@ $90:84E2 60          RTS                    ;} Return carry set
 ;;     Y: Samus animation frame
 ;;     $00: Samus animation delay data pointer
 
-; If check enabled and running:
+; If Samus has running momentum and running:
 ;     If speed booster equipped:
 ;         Load animation delay data pointer from $91:B5DE table
 ;     Else:
@@ -966,28 +969,38 @@ $90:852B 60          RTS
 ;; Parameters:
 ;;     Y: Samus animation frame
 ;;     $00: Samus animation delay data pointer
+;; Returns:
+;;     A: 0 if Samus animation frame timer is set by this routine, otherwise animation delay
+;;     $00: Samus animation delay data pointer
 
-; If check enabled and running and pressing run:
-;     If speed booster not equipped:
-;         Samus animation frame = 0
-;         Load animation delay data pointer from $91:B5D1
-;         A = 0
+; Called when an instruction is encountered in the Samus animation delay table
+; If speed booster handling is applicable, the instruction is ignored and Samus animation frame reset to 0
+
+; If Samus has no running momentum or not running or not pressing run:
+;     A = [[$00] + [Samus animation frame]]
+; Else if speed booster not equipped:
+;     Samus animation frame = 0
+;     Load animation delay data pointer from $91:B5D1
+;     A = 0
+;     Set animation frame timer
+; Else:
+;     Decrement speed boost timer
+;     If [speed boost timer] != 0:
+;         A = [[$00] + [Samus animation frame]]
 ;     Else:
-;         Decrement speed boost timer
-;         If [speed boost timer] = 0:
-;             If [speed boost counter] != 4:
-;                 Increment speed boost counter
-;                 If [speed boost counter] = 4:
-;                     Play speed echo sound effect
-;                     BUG: This overwrites A with the number of sounds queued if the queue is not full
-;                          Causing the index for the $91:B61F table to be 5 sometimes, which greater than the table size,
-;                          which causes the blue suit fail when speed boosting sometimes (mostly in heated rooms)
-;             Load speed boost timer from $91:B61F table
-;             Samus animation frame = 0
-;             Load animation delay data pointer from $91:B5DE
-;             A = 0
-; Set animation frame timer
-; A = [[$00] + [Samus animation frame]]
+;         If [speed boost counter] != 4:
+;             Increment speed boost counter
+;             If [speed boost counter] = 4:
+;                 Play speed echo sound effect
+;                 BUG: This clobbers A. If the sound queue is not full, A high is the number of sounds queued,
+;                      which can be greater than the $91:B61F table size 4,
+;                      which causes the blue suit fail when speed boosting sometimes (mostly in heated rooms)
+;                      If the speed boost timer ends up being set to 0, it lasts 100h frames, which causes the apparent sliding-on-one-leg pose
+;         Load speed boost timer from $91:B61F table
+;         Samus animation frame = 0
+;         Load animation delay data pointer from $91:B5DE
+;         A = 0
+;         Set animation frame timer
 
 $90:852C 08          PHP
 $90:852D E2 20       SEP #$20
@@ -1008,7 +1021,7 @@ $90:8547 4C DA 85    JMP $85DA  [$90:85DA]  ; Go to BRANCH_RETURN
 
 $90:854A AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:854D 29 FF 00    AND #$00FF             ;|
-$90:8550 C9 01 00    CMP #$0001             ;} If [movement type] != running:
+$90:8550 C9 01 00    CMP #$0001             ;} If [Samus movement type] != running:
 $90:8553 F0 03       BEQ $03    [$8558]     ;/
 $90:8555 4C DA 85    JMP $85DA  [$90:85DA]  ; Go to BRANCH_RETURN
 
@@ -1018,10 +1031,10 @@ $90:855E D0 1D       BNE $1D    [$857D]     ;/
 $90:8560 A0 00 00    LDY #$0000             ;\
 $90:8563 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
 $90:8566 AF D1 B5 91 LDA $91B5D1[$91:B5D1]  ;\
-$90:856A 85 00       STA $00    [$7E:0000]  ;} $00 = $B5D3
-$90:856C B7 00       LDA [$00],y[$91:B5D3]  ;\
-$90:856E 29 FF 00    AND #$00FF             ;|
-$90:8571 18          CLC                    ;} Samus animation frame timer = [[$00]] + [Samus animation frame buffer]
+$90:856A 85 00       STA $00    [$7E:0000]  ;|
+$90:856C B7 00       LDA [$00],y[$91:B5D3]  ;|
+$90:856E 29 FF 00    AND #$00FF             ;} Samus animation frame timer = 2 + [Samus animation frame buffer]
+$90:8571 18          CLC                    ;|
 $90:8572 6D 9C 0A    ADC $0A9C  [$7E:0A9C]  ;|
 $90:8575 8D 94 0A    STA $0A94  [$7E:0A94]  ;/
 $90:8578 A9 00 00    LDA #$0000             ; A = 0
@@ -10859,27 +10872,27 @@ $90:CC89 60          RTS
 ; Angle [X] / 2 must be less than 80h, as this routine does unsigned multiplication
 $90:CC8A E2 20       SEP #$20
 $90:CC8C BF 43 B4 A0 LDA $A0B443,x[$A0:B503]
-$90:CC90 8D 02 42    STA $4202            
+$90:CC90 8D 02 42    STA $4202
 $90:CC93 A5 18       LDA $18    [$7E:0018]
-$90:CC95 8D 03 42    STA $4203            
+$90:CC95 8D 03 42    STA $4203
 $90:CC98 EA          NOP
 $90:CC99 EA          NOP
 $90:CC9A EA          NOP
 $90:CC9B C2 20       REP #$20
-$90:CC9D AD 16 42    LDA $4216            
+$90:CC9D AD 16 42    LDA $4216
 $90:CCA0 EB          XBA
 $90:CCA1 29 FF 00    AND #$00FF
 $90:CCA4 85 12       STA $12    [$7E:0012]
 $90:CCA6 E2 20       SEP #$20
 $90:CCA8 BF 44 B4 A0 LDA $A0B444,x[$A0:B504]
-$90:CCAC 8D 02 42    STA $4202            
+$90:CCAC 8D 02 42    STA $4202
 $90:CCAF A5 18       LDA $18    [$7E:0018]
-$90:CCB1 8D 03 42    STA $4203            
+$90:CCB1 8D 03 42    STA $4203
 $90:CCB4 EA          NOP
 $90:CCB5 EA          NOP
 $90:CCB6 EA          NOP
 $90:CCB7 C2 20       REP #$20
-$90:CCB9 AD 16 42    LDA $4216            
+$90:CCB9 AD 16 42    LDA $4216
 $90:CCBC 18          CLC
 $90:CCBD 65 12       ADC $12    [$7E:0012]
 $90:CCBF 60          RTS
@@ -11174,7 +11187,7 @@ $90:CEED C9 04 00    CMP #$0004             ;} If facing right:
 $90:CEF0 F0 08       BEQ $08    [$CEFA]     ;/
 $90:CEF2 A9 04 00    LDA #$0004             ;\
 $90:CEF5 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = 4
-$90:CEF8 80 06       BRA $06    [$CF00]     
+$90:CEF8 80 06       BRA $06    [$CF00]
 
 $90:CEFA A9 FC FF    LDA #$FFFC             ;\ Else (facing left):
 $90:CEFD 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = -4
@@ -12058,7 +12071,7 @@ $90:D5F3 C9 04 00    CMP #$0004             ;} If facing right:
 $90:D5F6 F0 05       BEQ $05    [$D5FD]     ;/
 $90:D5F8 A9 D3 00    LDA #$00D3             ; Samus pose = D3h (facing right - crystal flash)
 $90:D5FB 80 03       BRA $03    [$D600]
-                                            ; Else (facing left): 
+                                            ; Else (facing left):
 $90:D5FD A9 D4 00    LDA #$00D4             ; Samus pose = D4h (facing left  - crystal flash)
 
 $90:D600 8D 1C 0A    STA $0A1C  [$7E:0A1C]

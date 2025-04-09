@@ -1446,7 +1446,7 @@ $88:8659 29 FF 00    AND #$00FF
 $88:865C AA          TAX
 $88:865D E2 20       SEP #$20
 $88:865F B9 00 00    LDA $0000,y[$88:EB75]
-$88:8662 9D 04 43    STA $4304,x          
+$88:8662 9D 04 43    STA $4304,x
 $88:8665 C2 20       REP #$20
 $88:8667 FA          PLX
 $88:8668 C8          INY
@@ -1467,7 +1467,7 @@ $88:866E 29 FF 00    AND #$00FF
 $88:8671 AA          TAX
 $88:8672 E2 20       SEP #$20
 $88:8674 B9 00 00    LDA $0000,y[$88:DED8]
-$88:8677 9D 07 43    STA $4307,x          
+$88:8677 9D 07 43    STA $4307,x
 $88:867A C2 20       REP #$20
 $88:867C FA          PLX
 $88:867D C8          INY
@@ -2921,18 +2921,18 @@ $88:8FB9 6B          RTL
 ; Clone of $8CC6
 
 $88:8FBA B9 26 A2    LDA $A226,y
-$88:8FBD 8D 03 42    STA $4203            
+$88:8FBD 8D 03 42    STA $4203
 $88:8FC0 EA          NOP
 $88:8FC1 EA          NOP
 $88:8FC2 EA          NOP
-$88:8FC3 AD 17 42    LDA $4217            
+$88:8FC3 AD 17 42    LDA $4217
 $88:8FC6 85 14       STA $14    [$7E:0014]
 $88:8FC8 B9 06 A2    LDA $A206,y
-$88:8FCB 8D 03 42    STA $4203            
+$88:8FCB 8D 03 42    STA $4203
 $88:8FCE EA          NOP
 $88:8FCF AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:8FD2 18          CLC
-$88:8FD3 6D 17 42    ADC $4217            
+$88:8FD3 6D 17 42    ADC $4217
 $88:8FD6 B0 07       BCS $07    [$8FDF]
 $88:8FD8 A9 00       LDA #$00
 $88:8FDA EB          XBA
@@ -2962,25 +2962,25 @@ $88:8FF7 60          RTS
 ; Clone of $8D04
 
 $88:8FF8 B9 26 A2    LDA $A226,y
-$88:8FFB 8D 03 42    STA $4203            
+$88:8FFB 8D 03 42    STA $4203
 $88:8FFE EA          NOP
 $88:8FFF EA          NOP
 $88:9000 EA          NOP
-$88:9001 AD 17 42    LDA $4217            
+$88:9001 AD 17 42    LDA $4217
 $88:9004 85 14       STA $14    [$7E:0014]
 $88:9006 B9 06 A2    LDA $A206,y
-$88:9009 8D 03 42    STA $4203            
+$88:9009 8D 03 42    STA $4203
 $88:900C EA          NOP
 $88:900D AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:9010 18          CLC
-$88:9011 6D 17 42    ADC $4217            
+$88:9011 6D 17 42    ADC $4217
 $88:9014 90 02       BCC $02    [$9018]
 $88:9016 A9 FF       LDA #$FF
 
 $88:9018 EB          XBA
 $88:9019 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:901C 38          SEC
-$88:901D ED 17 42    SBC $4217            
+$88:901D ED 17 42    SBC $4217
 $88:9020 B0 02       BCS $02    [$9024]
 $88:9022 A9 00       LDA #$00
 
@@ -3004,18 +3004,18 @@ $88:9039 60          RTS
 ; Clone of $8D46
 
 $88:903A B9 26 A2    LDA $A226,y
-$88:903D 8D 03 42    STA $4203            
+$88:903D 8D 03 42    STA $4203
 $88:9040 EA          NOP
 $88:9041 EA          NOP
 $88:9042 EA          NOP
-$88:9043 AD 17 42    LDA $4217            
+$88:9043 AD 17 42    LDA $4217
 $88:9046 85 14       STA $14    [$7E:0014]
 $88:9048 B9 06 A2    LDA $A206,y
-$88:904B 8D 03 42    STA $4203            
+$88:904B 8D 03 42    STA $4203
 $88:904E EA          NOP
 $88:904F AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:9052 38          SEC
-$88:9053 ED 17 42    SBC $4217            
+$88:9053 ED 17 42    SBC $4217
 $88:9056 90 07       BCC $07    [$905F]
 $88:9058 A9 FF       LDA #$FF
 $88:905A EB          XBA
@@ -3678,18 +3678,18 @@ $88:A492 6B          RTL
 ; Clone of $8CC6
 
 $88:A493 B9 26 A2    LDA $A226,y
-$88:A496 8D 03 42    STA $4203            
+$88:A496 8D 03 42    STA $4203
 $88:A499 EA          NOP
 $88:A49A EA          NOP
 $88:A49B EA          NOP
-$88:A49C AD 17 42    LDA $4217            
+$88:A49C AD 17 42    LDA $4217
 $88:A49F 85 14       STA $14    [$7E:0014]
 $88:A4A1 B9 06 A2    LDA $A206,y
-$88:A4A4 8D 03 42    STA $4203            
+$88:A4A4 8D 03 42    STA $4203
 $88:A4A7 EA          NOP
 $88:A4A8 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4AB 18          CLC
-$88:A4AC 6D 17 42    ADC $4217            
+$88:A4AC 6D 17 42    ADC $4217
 $88:A4AF B0 07       BCS $07    [$A4B8]
 $88:A4B1 A9 00       LDA #$00
 $88:A4B3 EB          XBA
@@ -3719,25 +3719,25 @@ $88:A4D0 60          RTS
 ; Clone of $8D04
 
 $88:A4D1 B9 26 A2    LDA $A226,y[$88:A286]
-$88:A4D4 8D 03 42    STA $4203            
+$88:A4D4 8D 03 42    STA $4203
 $88:A4D7 EA          NOP
 $88:A4D8 EA          NOP
 $88:A4D9 EA          NOP
-$88:A4DA AD 17 42    LDA $4217            
+$88:A4DA AD 17 42    LDA $4217
 $88:A4DD 85 14       STA $14    [$7E:0014]
 $88:A4DF B9 06 A2    LDA $A206,y[$88:A266]
-$88:A4E2 8D 03 42    STA $4203            
+$88:A4E2 8D 03 42    STA $4203
 $88:A4E5 EA          NOP
 $88:A4E6 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4E9 18          CLC
-$88:A4EA 6D 17 42    ADC $4217            
+$88:A4EA 6D 17 42    ADC $4217
 $88:A4ED 90 02       BCC $02    [$A4F1]
 $88:A4EF A9 FF       LDA #$FF
 
 $88:A4F1 EB          XBA
 $88:A4F2 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A4F5 38          SEC
-$88:A4F6 ED 17 42    SBC $4217            
+$88:A4F6 ED 17 42    SBC $4217
 $88:A4F9 B0 02       BCS $02    [$A4FD]
 $88:A4FB A9 00       LDA #$00
 
@@ -3761,18 +3761,18 @@ $88:A512 60          RTS
 ; Clone of $8D46
 
 $88:A513 B9 26 A2    LDA $A226,y
-$88:A516 8D 03 42    STA $4203            
+$88:A516 8D 03 42    STA $4203
 $88:A519 EA          NOP
 $88:A51A EA          NOP
 $88:A51B EA          NOP
-$88:A51C AD 17 42    LDA $4217            
+$88:A51C AD 17 42    LDA $4217
 $88:A51F 85 14       STA $14    [$7E:0014]
 $88:A521 B9 06 A2    LDA $A206,y
-$88:A524 8D 03 42    STA $4203            
+$88:A524 8D 03 42    STA $4203
 $88:A527 EA          NOP
 $88:A528 AD E6 0C    LDA $0CE6  [$7E:0CE6]
 $88:A52B 38          SEC
-$88:A52C ED 17 42    SBC $4217            
+$88:A52C ED 17 42    SBC $4217
 $88:A52F 90 07       BCC $07    [$A538]
 $88:A531 A9 FF       LDA #$FF
 $88:A533 EB          XBA

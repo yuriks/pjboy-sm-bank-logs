@@ -594,7 +594,7 @@ $87:82E7             dw 82CF,0050,4280
 ; LOOP
 $87:82ED             dw 000A,A7E4,
                         000A,A814,
-                        000A,A844,                       
+                        000A,A844,
                         80B7,82ED    ; Go to LOOP
 }
 
@@ -817,30 +817,30 @@ $87:840A             dw 8352,8001,       ; Set Tourian statue not processing Pha
 {
 $87:8414             dw 8349,0002,       ; Set Tourian statue to process Ridley
                         813F,0007,8472,  ; Go to BRANCH_STATUE_IS_GREY if Ridley statue is grey
-                        000A,94E4        
-; LOOP_WAIT                              
-$87:8422             dx 000C,9524,       
-                        000C,9564,       
-                        000C,9524,       
-                        0010,94E4,       
+                        000A,94E4
+; LOOP_WAIT
+$87:8422             dx 000C,9524,
+                        000C,9564,
+                        000C,9524,
+                        0010,94E4,
                         8303,01,02,8440, ; Go to BRANCH_RIDLEY_IS_DEAD if Ridley is dead
                         8352,0002,       ; Set Tourian statue to stop processing Ridley
                         80B7,8422        ; Go to LOOP
-; BRANCH_RIDLEY_IS_DEAD                  
+; BRANCH_RIDLEY_IS_DEAD
 $87:8440             dw 833E,8422,       ; Go to LOOP if Tourian statue is busy releasing lock
                         8349,8000,       ; Set Tourian statue busy releasing lock
                         835B,0132,       ; Clear 3 colours of palette data at $7E:C132
-                        0010,9524,       
-                        0010,9564,       
+                        0010,9524,
+                        0010,9564,
                         8320,0002,       ; Spawn Tourian statue eye glow enemy projectile with parameter 2
-                        00C0,9864,       
+                        00C0,9864,
                         832F,0002,       ; Spawn Tourian statue's soul enemy projectile with parameter 2
                         8372,F751,       ; Spawn palette FX object $F751 (grey out Tourian statue - Ridley)
-                        0080,9864,       
+                        0080,9864,
                         8150,0007,       ; Set Ridley statue is grey event
                         8352,8002,       ; Set Tourian statue not processing Ridley and not busy
                         80B2             ; Delete
-; BRANCH_STATUE_IS_GREY                  
+; BRANCH_STATUE_IS_GREY
 $87:8472             dw 8352,8002,       ; Set Tourian statue not processing Ridley and not busy
                         837F,0120,       ; Write 8 colours of target palette data to $7E:C320
                         80B2             ; Delete
@@ -851,30 +851,30 @@ $87:8472             dw 8352,8002,       ; Set Tourian statue not processing Rid
 {
 $87:847C             dw 8349,0004,       ; Set Tourian statue to process Kraid
                         813F,0009,84DA,  ; Go to BRANCH_STATUE_IS_GREY if Kraid statue is grey
-                        0004,9724        
-; LOOP_WAIT                              
-$87:848A             dx 000C,9764,       
-                        000C,97A4,       
-                        000C,9764,       
-                        0010,9724,       
+                        0004,9724
+; LOOP_WAIT
+$87:848A             dx 000C,9764,
+                        000C,97A4,
+                        000C,9764,
+                        0010,9724,
                         8303,01,01,84A8, ; Go to BRANCH_KRAID_IS_DEAD if Kraid is dead
                         8352,0004,       ; Set Tourian statue to stop processing Kraid
                         80B7,848A        ; Go to LOOP
-; BRANCH_KRAID_IS_DEAD                   
+; BRANCH_KRAID_IS_DEAD
 $87:84A8             dw 833E,848A,       ; Go to LOOP if Tourian statue is busy releasing lock
                         8349,8000,       ; Set Tourian statue busy releasing lock
                         835B,00F8,       ; Clear 3 colours of palette data at $7E:C0F8
-                        0010,9764,       
-                        0010,97A4,       
+                        0010,9764,
+                        0010,97A4,
                         8320,0006,       ; Spawn Tourian statue eye glow enemy projectile with parameter 6
-                        00C0,98A4,       
+                        00C0,98A4,
                         832F,0006,       ; Spawn Tourian statue's soul enemy projectile with parameter 6
                         8372,F74D,       ; Spawn palette FX object $F74D (grey out Tourian statue - Kraid)
-                        0080,98A4,       
+                        0080,98A4,
                         8150,0009,       ; Set Kraid statue is grey event
                         8352,8004,       ; Set Tourian statue not processing Kraid and not busy
                         80B2             ; Delete
-; BRANCH_STATUE_IS_GREY                  
+; BRANCH_STATUE_IS_GREY
 $87:84DA             dw 8352,8004,       ; Set Tourian statue not processing Kraid and not busy
                         837F,00E0,       ; Write 8 colours of target palette data to $7E:C2E0
                         80B2             ; Delete
@@ -885,30 +885,30 @@ $87:84DA             dw 8352,8004,       ; Set Tourian statue not processing Kra
 {
 $87:84E4             dw 8349,0008,       ; Set Tourian statue to process Draygon
                         813F,0008,8542,  ; Go to BRANCH_STATUE_IS_GREY if Draygon statue is grey
-                        0008,95A4        
-; LOOP_WAIT                              
-$87:84F2             dx 000C,9624,       
-                        000C,96A4,       
-                        000C,9624,       
-                        0010,95A4,       
+                        0008,95A4
+; LOOP_WAIT
+$87:84F2             dx 000C,9624,
+                        000C,96A4,
+                        000C,9624,
+                        0010,95A4,
                         8303,01,04,8510, ; Go to BRANCH_DRAYGON_IS_DEAD if Draygon is dead
                         8352,0008,       ; Set Tourian statue to stop processing Draygon
                         80B7,84F2        ; Go to LOOP
-; BRANCH_DRAYGON_IS_DEAD                 
+; BRANCH_DRAYGON_IS_DEAD
 $87:8510             dw 833E,84F2,       ; Go to LOOP if Tourian statue is busy releasing lock
                         8349,8000,       ; Set Tourian statue busy releasing lock
                         835B,00D2,       ; Clear 3 colours of palette data at $7E:C0D2
-                        0010,9624,       
-                        0010,96A4,       
+                        0010,9624,
+                        0010,96A4,
                         8320,0004,       ; Spawn Tourian statue eye glow enemy projectile with parameter 4
-                        00C0,98E4,       
+                        00C0,98E4,
                         832F,0004,       ; Spawn Tourian statue's soul enemy projectile with parameter 4
                         8372,F749,       ; Spawn palette FX object $F749 (grey out Tourian statue - Draygon)
-                        0080,98E4,       
+                        0080,98E4,
                         8150,0008,       ; Set Draygon statue is grey event
                         8352,8008,       ; Set Tourian statue not processing Draygon and not busy
                         80B2             ; Delete
-; BRANCH_STATUE_IS_GREY                  
+; BRANCH_STATUE_IS_GREY
 $87:8542             dw 8352,8008,       ; Set Tourian statue not processing Draygon and not busy
                         837F,00C0,       ; Write 8 colours of target palette data to $7E:C2C0
                         80B2             ; Delete
@@ -1123,12 +1123,12 @@ $87:8EE4             db FF,FF,FF,87,FF,F0,FD,E2,FF,F8,FE,F9,FC,F3,FA,05,01,01,07
                         FF,FF,D0,2F,00,FF,FF,1F,02,FF,8F,78,37,FF,5E,FE,80,80,00,00,00,00,00,E0,00,00,00,07,00,00,01,01,
                         8F,7F,17,FF,AF,7F,1F,FF,C7,FE,EB,DF,FF,83,DF,FF,00,00,00,00,00,00,00,00,00,01,00,00,00,7C,00,00,
                         FD,80,D6,C0,C9,C0,C0,C0,F0,00,A9,85,40,00,60,00,03,7F,3F,3F,7F,7F,7D,7F,0D,FF,7D,7F,E3,FF,FF,FF
-                        
+
 $87:8F64             db FF,FF,FF,0F,FF,FC,FF,F8,FC,E3,FA,E5,F7,C8,E9,97,00,00,03,F3,0C,0C,18,18,20,20,60,60,40,47,80,80,
                         FF,F0,F4,CB,C0,3F,7F,83,0B,FF,37,FF,DC,3C,7B,F8,60,6F,C0,C0,00,00,00,7C,00,00,00,00,03,C3,07,07,
                         E3,9F,C5,BF,AB,5F,F7,0F,1F,FF,AF,70,3D,FC,7D,FC,80,80,80,80,00,00,00,F0,00,00,00,0F,03,03,03,03,
                         F6,F0,FD,C0,F2,F0,F0,F0,09,08,A0,04,43,03,83,03,0F,0F,07,3F,1F,1F,1D,1F,FC,FF,7D,FF,E3,FF,FF,FF
-                        
+
 $87:8FE4             db FF,FF,FF,FF,FF,E1,FF,FE,FF,F8,FE,F9,FF,01,A5,5F,01,01,0F,0F,01,1F,06,06,08,08,18,18,00,3E,00,00,
                         FF,FF,D0,2F,F8,07,C9,37,02,FF,9D,63,70,F0,EF,E0,80,80,00,00,00,18,00,00,00,00,00,1C,0F,0F,1F,1F,
                         8F,7F,17,FF,EB,D6,E1,DF,C7,3F,EB,DF,FF,E0,F6,F0,00,00,00,00,00,01,00,00,00,C0,00,00,00,1F,0F,0F,
@@ -1248,12 +1248,12 @@ $87:9364             db 57,D6,CB,F8,9D,C0,41,3E,84,40,15,95,41,26,26,C8,EF,00,87
                         9D,01,62,80,39,80,02,FC,01,82,A0,A1,82,66,64,17,9D,62,FE,01,FF,00,FF,00,A3,5C,89,56,E4,F9,F3,F8,
                         04,C8,09,80,08,00,04,08,06,08,01,86,01,A1,28,A0,4F,3F,CE,3E,0F,FF,0F,FF,0F,FF,07,7F,81,5E,81,56,
                         20,12,10,01,10,00,20,10,60,10,81,61,84,85,10,91,F3,FC,F3,FC,F0,FF,F0,FF,F0,FF,E0,FE,81,7A,85,6A
-                        
+
 $87:93E4             db 57,D6,CB,F8,9D,C0,41,3E,84,40,15,95,44,27,29,CE,EF,00,87,00,3F,00,FF,00,C1,3A,81,6A,27,9F,CF,1F,
                         9D,01,62,80,39,80,02,FC,01,82,A0,A1,22,E6,94,77,9D,62,FE,01,FF,00,FF,00,A3,5C,89,56,E4,F9,F3,F8,
                         03,CC,07,88,07,08,03,0C,09,0E,04,87,01,A1,28,A0,4F,3F,CE,3E,0F,FF,0F,FF,0F,FF,07,7F,81,5E,81,56,
                         C0,32,E0,11,E0,10,C0,30,90,70,21,E1,84,85,10,91,F3,FC,F3,FC,F0,FF,F0,FF,F0,FF,E0,FE,81,7A,85,6A
-                        
+
 $87:9464             db 57,D6,CB,F8,9D,C0,41,3E,84,40,15,95,44,27,28,CF,EF,00,87,00,3F,00,FF,00,C1,3A,81,6A,27,9F,CF,1F,
                         9D,01,62,80,39,80,02,FC,01,82,A0,A1,22,E6,14,F7,9D,62,FE,01,FF,00,FF,00,A3,5C,89,56,E4,F9,F3,F8,
                         01,CE,03,8C,01,0E,00,0F,08,0F,04,87,01,A1,28,A0,4F,3F,CE,3E,0F,FF,0F,FF,0F,FF,07,7F,81,5E,81,56,
@@ -1275,10 +1275,10 @@ $87:9464             db 57,D6,CB,F8,9D,C0,41,3E,84,40,15,95,44,27,28,CF,EF,00,87
 ; |--------|--------|    |--------|--------|    |--------|--------|
 $87:94E4             db 16,2E,A7,DC,5F,88,BF,10,9F,C7,39,9E,68,71,A3,C5,3E,41,FC,02,F8,05,F0,0F,47,38,9F,60,7F,80,FF,00,
                         64,64,CD,0D,91,1D,2C,32,92,E1,EE,2D,81,87,BB,0B,64,FB,0D,F2,1D,E2,3E,C1,FF,00,CF,10,A7,58,BB,44
-                        
+
 $87:9524             db 16,2E,A5,DE,5A,8D,B0,1F,87,DF,19,BE,68,71,A3,C5,3E,41,FC,02,F8,05,F0,0F,47,38,9F,60,7F,80,FF,00,
                         64,64,0D,CD,11,9D,2C,32,92,E1,EE,2D,81,87,BB,0B,64,FB,0D,F2,1D,E2,3E,C1,FF,00,CF,10,A7,58,BB,44
-                        
+
 $87:9564             db 16,2E,A7,DE,5F,8D,BF,1F,9F,DF,39,BE,68,71,A3,C5,3E,41,FC,02,F8,05,F0,0F,47,38,9F,60,7F,80,FF,00,
                         64,64,CD,CD,91,9D,2C,32,92,E1,EE,2D,81,87,BB,0B,64,FB,0D,F2,1D,E2,3E,C1,FF,00,CF,10,A7,58,BB,44
 }
@@ -1309,12 +1309,12 @@ $87:95A4             db B9,FD,59,7D,6D,7D,3D,3D,1D,1D,01,01,01,0F,0E,11,FD,02,7D
                         E6,48,EE,50,B3,01,07,A3,6F,8D,CE,8C,B2,C1,4D,73,AF,10,BF,00,FE,00,FC,00,F2,00,F3,00,FF,00,7F,80,
                         1F,00,0F,10,E6,69,C7,9F,6B,49,B0,32,C5,88,84,08,00,FD,00,FF,E0,1F,FF,00,77,80,F3,0C,EF,10,8C,73,
                         32,BE,1C,9C,60,60,18,38,18,88,40,10,10,00,00,C0,3E,C1,1C,E2,60,9C,38,C0,F8,00,D0,28,18,E4,C0,3C
-                        
+
 $87:9624             db B9,FD,59,7D,6D,7D,3D,3D,1D,1D,01,01,01,0F,00,1F,FD,02,7D,82,7D,82,3D,C2,1D,E2,01,FE,01,FE,00,FF,
                         E6,48,EE,50,B3,01,07,A3,6F,8D,CE,8C,B2,C1,4D,73,AF,10,BF,00,FE,00,FC,00,F2,00,F3,00,FF,00,7F,80,
                         02,1D,00,1F,E0,6F,C7,9F,6B,49,B0,32,C5,88,84,08,00,FD,00,FF,E0,1F,FF,00,77,80,F3,0C,EF,10,8C,73,
                         32,BE,1C,9C,60,60,18,38,18,88,40,10,10,00,00,C0,3E,C1,1C,E2,60,9C,38,C0,F8,00,D0,28,18,E4,C0,3C
-                        
+
 $87:96A4             db B9,FD,59,7D,6D,7D,3D,3D,1D,1D,01,01,0F,0F,1F,1F,FD,02,7D,82,7D,82,3D,C2,1D,E2,01,FE,01,FE,00,FF,
                         E6,48,EE,50,B3,01,07,A3,6F,8D,CE,8C,B2,C1,4D,73,AF,10,BF,00,FE,00,FC,00,F2,00,F3,00,FF,00,7F,80,
                         1F,1D,1F,1F,EF,6F,C7,9F,6B,49,B0,32,C5,88,84,08,00,FD,00,FF,E0,1F,FF,00,77,80,F3,0C,EF,10,8C,73,
@@ -1336,10 +1336,10 @@ $87:96A4             db B9,FD,59,7D,6D,7D,3D,3D,1D,1D,01,01,0F,0F,1F,1F,FD,02,7D
 ; |--------|--------|    |--------|--------|    |--------|--------|
 $87:9724             db 01,03,00,00,00,00,02,00,00,00,00,40,04,05,00,27,02,00,02,05,01,07,01,05,03,47,42,27,45,22,67,18,
                         27,6F,0E,0C,48,09,42,00,00,82,22,89,04,00,70,80,CF,10,2A,D1,53,A4,42,BD,BA,7D,DB,5C,07,F8,FC,03
-                        
+
 $87:9764             db 01,03,00,00,01,00,03,00,03,00,02,40,04,05,00,27,02,00,02,05,01,07,01,05,03,47,42,27,45,22,67,18,
                         27,6F,0E,0C,48,09,42,00,38,82,72,81,04,00,70,80,CF,10,2A,D1,53,A4,42,BD,BA,7D,D3,5C,07,F8,FC,03
-                        
+
 $87:97A4             db 01,03,00,00,00,01,02,01,00,03,00,42,04,05,00,27,02,00,02,05,01,07,01,05,03,47,42,27,45,22,67,18,
                         27,6F,0E,0C,48,09,42,00,00,BA,22,D1,04,00,70,80,CF,10,2A,D1,53,A4,42,BD,BA,7D,D3,5C,07,F8,FC,03
 }
@@ -1463,7 +1463,7 @@ $87:9964             db 00,00,00,00,00,00,00,00,00,00,01,01,0F,0F,1E,1F,00,00,00
                         3D,3E,3A,3F,3D,3E,3A,3F,3D,3F,1F,1F,1F,1F,3B,3F,00,20,00,00,00,00,00,00,00,20,00,10,00,1E,00,3F,
                         55,AA,AA,55,55,AF,AB,FF,5F,FF,FC,FF,F1,FC,C0,F2,00,00,00,00,00,00,00,00,00,03,00,0F,00,3F,00,FF,
                         57,F8,EB,FC,51,FE,EB,FC,D5,FF,6A,FF,3D,7F,0F,9F,00,00,00,00,00,00,00,00,00,80,00,C0,00,E0,00,F8
-                        
+
 $87:9A44             db 00,00,00,00,00,00,00,00,03,03,1F,1F,3E,3F,3D,3E,00,00,00,00,00,00,00,00,00,00,00,13,00,3C,00,20,
                         00,00,00,00,00,00,7F,7F,FF,FF,F5,FF,AA,F5,5F,A0,00,00,00,00,00,00,00,41,00,3E,00,C0,00,00,00,00,
                         00,00,00,00,00,00,97,9F,FF,FF,FF,FF,FF,FF,78,FF,00,00,00,00,00,00,00,93,00,63,00,3F,00,61,00,00,
@@ -1471,7 +1471,7 @@ $87:9A44             db 00,00,00,00,00,00,00,00,03,03,1F,1F,3E,3F,3D,3E,00,00,00
                         2A,3D,35,3E,3A,3F,3D,3F,3F,3F,3F,3F,3F,3F,3B,7F,00,20,00,00,00,00,00,20,00,30,00,3F,00,3F,40,3F,
                         AA,55,54,AB,AF,FF,57,FF,FF,FF,FC,FF,F1,FC,C0,F2,00,00,00,00,00,00,00,00,00,07,00,FF,00,FF,00,FF,
                         67,F8,F7,F8,E9,FE,F7,FC,FA,FF,7D,FF,3F,7F,0F,9F,00,00,00,00,00,00,00,C0,00,C0,00,E0,00,F8,00,FF
-                        
+
 $87:9B24             db 00,00,00,00,00,00,0F,0F,3C,3F,6F,7F,7D,7F,7A,7D,00,00,00,00,00,00,00,0F,00,30,00,47,00,78,00,40,
                         00,00,00,00,78,78,FF,FF,FF,FF,EB,FF,55,EB,BE,41,00,00,00,00,00,78,00,AB,00,7C,00,C0,00,00,00,00,
                         00,00,00,00,01,01,2F,3F,FF,FF,FF,FF,FF,FF,F1,FF,00,00,00,00,00,01,00,26,00,C7,00,7F,00,C1,00,00,
@@ -1507,12 +1507,12 @@ $87:9C04             db 00,00,00,00,28,28,28,28,00,28,00,28,44,6C,6C,44,10,00,10
                         00,00,00,00,00,00,28,28,28,28,28,28,00,28,00,28,00,00,00,00,10,00,38,00,38,00,38,00,38,10,38,10,
                         6C,44,44,44,6C,7C,AA,C6,00,EE,C6,EE,FF,FF,C7,6F,7C,10,7C,10,7C,44,FE,00,FE,10,FE,C6,FF,FF,7C,44,
                         44,6C,6C,44,6C,44,44,44,6C,7C,AA,C6,01,EF,C7,EE,7C,10,7C,10,7C,10,7C,10,7C,44,FE,00,FF,11,FE,C6
-                        
+
 $87:9C84             db 00,00,00,00,28,28,28,28,28,28,00,28,00,28,44,6C,00,00,10,00,38,00,38,00,38,00,38,10,38,10,7C,10,
                         00,00,00,00,28,28,28,28,28,28,00,28,00,28,44,6C,00,00,10,00,38,00,38,00,38,00,38,10,38,10,7C,10,
                         6C,44,6C,44,44,44,6C,7C,AA,C6,00,EE,C7,EF,7C,FF,7C,10,7C,10,7C,10,7C,44,FE,00,FE,10,FF,C7,7C,44,
                         6C,44,6C,44,44,44,6C,7C,AA,C6,00,EE,C7,EF,FE,FF,7C,10,7C,10,7C,10,7C,44,FE,00,FE,10,FF,C7,FE,C6
-                        
+
 $87:9D04             db 00,00,00,00,00,00,28,28,28,28,28,28,00,28,00,28,00,00,00,00,10,00,38,00,38,00,38,00,38,10,38,10,
                         00,00,28,28,28,28,28,28,00,28,00,28,44,6C,6C,44,10,00,38,00,38,00,38,00,38,10,38,10,7C,10,7C,10,
                         44,6C,6C,44,6C,44,44,44,6C,7C,AB,C7,01,EF,C7,EC,7C,10,7C,10,7C,10,7C,10,7C,44,FF,01,FF,11,7C,44,
@@ -1545,12 +1545,12 @@ $87:9D84             db 00,00,00,00,00,00,1C,1F,00,00,1C,1F,00,00,00,00,00,00,00
                         03,02,05,07,F9,FF,6C,8B,00,08,6C,8B,F9,FF,05,07,02,02,07,01,FF,09,FF,00,FF,F2,FF,00,FF,09,07,01,
                         00,00,00,00,03,03,31,3E,00,00,31,3E,03,03,00,00,00,00,00,00,03,00,3F,00,FF,0F,3F,00,03,00,00,00,
                         03,03,17,1F,E7,FF,B2,2F,02,22,B2,2F,E7,FF,17,1E,02,02,1E,06,FF,27,FF,02,FF,CA,FF,02,FF,27,1E,06
-                        
+
 $87:9E04             db 00,00,00,00,01,01,38,3F,00,00,38,3F,01,01,00,00,00,00,00,00,01,00,3F,00,7F,07,3F,00,01,00,00,00,
                         02,03,0B,0F,F3,FF,D9,17,01,11,D9,17,F3,FF,0B,0F,02,02,0F,03,FF,13,FF,00,FF,E4,FF,00,FF,13,0F,03,
                         00,00,00,00,01,01,38,3F,00,00,38,3F,01,01,00,00,00,00,00,00,01,00,3F,00,7F,07,3F,00,01,00,00,00,
                         02,03,0A,0F,F3,FF,D9,17,01,11,D9,17,F3,FF,0A,0F,02,02,0E,02,FF,13,FF,00,FF,E4,FF,00,FF,13,0E,02
-                        
+
 $87:9E84             db 00,00,00,00,03,03,71,7E,00,00,71,7E,03,03,00,00,00,00,00,00,03,00,7F,00,FF,0F,7F,00,03,00,00,00,
                         03,03,17,1F,E7,FF,B2,2F,02,22,B2,2F,E7,FF,17,1F,02,02,1F,07,FF,27,FF,02,FF,CA,FF,02,FF,27,1F,07,
                         00,00,00,00,00,00,1C,1F,00,00,1C,1F,00,00,00,00,00,00,00,00,00,00,1F,00,3F,03,1F,00,00,00,00,00,
@@ -1658,22 +1658,22 @@ $87:A564             db FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,C3,FF,B9,C7,60,9F,
                         DF,FF,FF,FD,FF,FF,FF,BF,77,FF,FF,2A,D9,A6,01,FF,
                         FF,FF,FF,FF,FF,FF,FF,FF,7F,FF,7F,FF,EF,FF,52,FF,
                         00,FF,00,FF,02,FD,80,7F,00,FF,00,FF,10,EF,00,FF
-                        
+
 $87:A5A4             db FF,FF,FF,FF,FF,FF,C3,FF,BD,C3,70,8F,60,9F,00,FF,
                         FF,FF,FF,FF,FF,FF,F7,FF,7E,FF,EF,FF,D6,FF,24,DB,
                         FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,E7,FF,DB,E7,60,9F,
                         02,FD,80,7F,00,FF,00,FF,08,F7,00,FF,00,FF,00,FF
-                        
+
 $87:A5E4             db DF,FF,FF,FD,FF,FF,FE,BF,36,FF,95,6A,C1,BE,00,FF,
                         FF,FF,FF,FF,FF,FF,FF,FF,7F,FF,7F,FF,EF,FF,52,FF,
                         FF,FF,FF,FF,FF,FF,FF,FF,C3,FF,B1,CF,A1,DF,00,FF,
                         80,7F,00,FF,00,FF,08,F7,00,FF,00,FF,02,FD,00,FF
-                        
+
 $87:A624             db FF,FF,FF,FF,FF,FF,F7,FF,7E,FF,EF,FF,56,FF,24,DB,
                         FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,C3,FF,B9,C7,60,9F,
                         DF,FF,FF,FD,FF,FF,FF,BF,F7,FF,7F,AA,DD,A2,01,FF,
                         00,FF,00,FF,10,EF,00,FF,00,FF,02,FD,00,FF,80,7F
-                        
+
 $87:A664             db FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,FF,EF,FF,52,FF,
                         FF,FF,FF,FF,FF,FF,C3,FF,BD,C3,70,8F,60,9F,00,FF,
                         FF,FF,FF,FF,FF,FF,F7,FF,7E,FF,EF,FF,D6,FF,24,DB,
@@ -1697,22 +1697,22 @@ $87:A6A4             db 23,FF,19,E7,2B,D7,93,EE,D4,FF,FA,FF,EF,FF,FE,FF,
                         F5,FB,EE,F1,24,FB,79,BF,96,7F,5B,FF,AE,FF,FF,FF,
                         C7,FF,E9,F7,CC,F3,20,FF,1D,FF,57,FF,EF,FF,B7,FF,
                         FF,FF,FF,FF,FD,FF,7F,FF,FF,FF,FF,FF,EF,FF,FF,FF
-                        
+
 $87:A6E4             db 8F,FF,37,CF,2C,DF,4A,FD,F0,FF,B9,FF,EF,FF,FF,FF,
                         D7,EF,BB,C7,93,EF,E4,FF,59,FF,BD,FF,6F,FF,FF,FF,
                         3C,FF,94,FF,29,F6,52,EF,C5,FF,D7,FF,7D,FF,FF,FF,
                         FD,FF,7F,FF,FF,FF,FF,FF,F7,FF,FF,FF,FF,FF,FF,FF
-                        
+
 $87:A724             db 3F,FF,9E,FF,72,FF,37,FB,D1,FF,EF,FF,7E,FF,F7,FF,
                         9D,7F,1E,FF,6D,FE,D6,F9,65,FB,76,FF,AF,FF,FF,FF,
                         72,FF,94,FB,6E,F1,25,FB,2B,FF,CC,FF,B7,FF,FF,FF,
                         7F,FF,FF,FF,FF,FF,F7,FF,FF,FF,FF,FF,FD,FF,FF,FF
-                        
+
 $87:A764             db FD,FE,7B,FC,C9,FE,EE,9F,07,FF,9A,FF,EF,FF,FF,FF,
                         71,FF,B9,7F,35,FB,41,FF,86,FF,DD,FF,AA,FF,FD,FF,
                         CE,FF,D4,EF,0A,FD,2C,FF,57,FF,8B,FF,DE,FF,F7,FF,
                         FF,FF,FF,FF,EF,FF,FF,FF,FF,FF,FD,FF,FF,FF,7F,FF
-                        
+
 $87:A7A4             db 71,FF,3B,FF,B6,7B,52,FF,9C,FF,DF,FF,7D,FF,FF,FF,
                         C8,FF,DA,ED,08,FF,AC,7F,7F,FF,EB,FF,D6,FF,FD,FF,
                         FD,FE,7B,FC,C8,FF,AE,DF,07,FF,9D,FF,F7,FF,7D,FF,
@@ -1763,7 +1763,7 @@ $87:A874             db FF,FF,DF,FD,FF,FF,FB,FF,FF,BF,FF,EF,FF,FD,FF,FF,
                         FF,FF,EF,FF,FD,FF,FF,BF,FF,FF,FF,FF,FB,DF,FF,FF,
                         FF,FF,FB,FF,BF,EF,FF,FF,FF,FF,FB,FF,FF,DF,FF,FF,
                         FF,FF,FF,EF,FF,FF,FD,FF,FF,FF,FF,DF,FB,FF,FF,FF
-                        
+
 $87:A8C4             db F7,FF,BF,FD,FF,FF,FB,FF,FF,FF,7F,EF,FD,FF,FF,FF,
                         FF,FF,EF,FF,FD,FF,FF,BF,FF,FF,FF,FF,FB,DF,FF,FF,
                         FF,FF,FB,FF,BF,EF,FF,FF,FF,FF,FB,FF,FF,DF,FF,FF,

@@ -269,7 +269,7 @@ $82:8231 8D 0A 21    STA $210A              ;/
 $82:8234 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
 $82:8237 9C 23 21    STZ $2123              ;\
 $82:823A 64 60       STZ $60    [$7E:0060]  ;} Disable BG1/2 windowing
-$82:823C 9C 23 21    STZ $2123            
+$82:823C 9C 23 21    STZ $2123
 $82:823F 64 60       STZ $60    [$7E:0060]
 $82:8241 9C 24 21    STZ $2124              ;\
 $82:8244 64 61       STZ $61    [$7E:0061]  ;} Disable BG3/4 windowing
@@ -4188,15 +4188,15 @@ $82:A2BD 60          RTS
 $82:A2BE 08          PHP
 $82:A2BF E2 30       SEP #$30
 $82:A2C1 A9 00       LDA #$00
-$82:A2C3 8D 16 21    STA $2116            
+$82:A2C3 8D 16 21    STA $2116
 $82:A2C6 A9 60       LDA #$60
-$82:A2C8 8D 17 21    STA $2117            
+$82:A2C8 8D 17 21    STA $2117
 $82:A2CB A9 80       LDA #$80
-$82:A2CD 8D 15 21    STA $2115            
+$82:A2CD 8D 15 21    STA $2115
 $82:A2D0 22 A9 91 80 JSL $8091A9[$80:91A9]  ; Set up a (H)DMA transfer
 $82:A2D4             dx 01,01,18,9AD200,1000
 $82:A2DC A9 02       LDA #$02
-$82:A2DE 8D 0B 42    STA $420B            
+$82:A2DE 8D 0B 42    STA $420B
 $82:A2E1 28          PLP
 $82:A2E2 60          RTS
 }
