@@ -64,7 +64,7 @@
 ;     1Ch: Normal, but BG2 and BG3 have reversed roles, colour addition is halved and backdrop is disabled
 ;         Unused
 
-;     24h: BG1/BG2/sprites are drawn the backdrop is added on top inside window 1
+;     24h: BG1/BG2/sprites are drawn. Within window 1, the backdrop is added on top
 ;         Used by Mother Brain
 
 ;     26h: Normal, but colour addition is halved

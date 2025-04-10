@@ -16731,6 +16731,11 @@ $86:EEAE 60          RTS
 ;;     X: Enemy projectile index
 ;; Returns:
 ;;     Y: Pointer to next instruction
+
+; BUG: The BEQ after the JSR $F106 causes enemy projectile 0 to be unable to become a pickup
+;      The intention I guess is to check if the returned drop type in A is zero,
+;      although zero isn't even one of the drop types that can be returned
+
 $86:EEAF DA          PHX
 $86:EEB0 5A          PHY
 $86:EEB1 20 06 F1    JSR $F106  [$86:F106]  ; Random drop routine
@@ -16812,6 +16817,11 @@ $86:EF28 60          RTS
 ;;     $12: X position
 ;;     $14: Y position
 ;;     $0E24: Enemy header pointer (to check drop rates)
+
+; BUG: The BEQ after the JSR $F106 causes enemy projectile 0 to be unable to become a pickup
+;      The intention I guess is to check if the returned drop type in A is zero,
+;      although zero isn't even one of the drop types that can be returned
+
 $86:EF29 DA          PHX
 $86:EF2A 5A          PHY
 $86:EF2B A5 12       LDA $12    [$7E:0012]  ;\
