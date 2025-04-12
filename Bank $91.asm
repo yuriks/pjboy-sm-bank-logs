@@ -7385,7 +7385,7 @@ $91:CB8D 6B          RTL
 
 ;;; $CB8E: X-ray setup stage 4 - build x-ray BG2 tilemap, read BG2 tilemap - 1st screen ;;;
 {
-; Calls the $84 X-ray block graphics lookup
+; Calls $84:831A to load item x-ray blocks
 $91:CB8E 08          PHP
 $91:CB8F C2 30       REP #$30
 $91:CB91 AD 1F 09    LDA $091F  [$7E:091F]  ;\
@@ -8488,24 +8488,24 @@ $91:D222 6B          RTL
 {
 $91:D223             dx 8655,00,    ; HDMA table bank = $00
                         866A,7E,    ; Indirect HDMA data bank = $7E
-                        8570,91D27F,; Pre-instruction = $91:D27F
-                        85B4,91CAF9,; X-ray setup stage 1
+                        8570,91D27F,; Pre-instruction = $91:D27F (x-ray setup)
+                        85B4,91CAF9,; X-ray setup stage 1 - freeze time and backup BG2 registers
                         0001,0A88,
-                        85B4,91CB1C,; X-ray setup stage 2
+                        85B4,91CB1C,; X-ray setup stage 2 - read BG1 tilemap - 2nd screen
                         0001,0A88,
-                        85B4,91CB57,; X-ray setup stage 3
+                        85B4,91CB57,; X-ray setup stage 3 - read BG1 tilemap - 1st screen
                         0001,0A88,
-                        85B4,91CB8E,; X-ray setup stage 4
+                        85B4,91CB8E,; X-ray setup stage 4 - build x-ray BG2 tilemap, read BG2 tilemap - 1st screen
                         0001,0A88,
-                        85B4,91D0D3,; X-ray setup stage 5
+                        85B4,91D0D3,; X-ray setup stage 5 - read BG2 tilemap - 2nd screen
                         0001,0A88,
-                        85B4,91D173,; X-ray setup stage 6
+                        85B4,91D173,; X-ray setup stage 6 - transfer x-ray tilemap - 1st screen
                         0001,0A88,
-                        85B4,91D1A0,; X-ray setup stage 7
+                        85B4,91D1A0,; X-ray setup stage 7 - initialise x-ray beam, transfer x-ray tilemap - 2nd screen
                         0001,0A88,
-                        85B4,91D2BC,; X-ray setup stage 8
-                        8570,8886EF ; Pre-instruction = $88:86EF
-$91:D277             dx 0001,0A88,
+                        85B4,91D2BC,; X-ray setup stage 8 - backdrop colour = (3, 3, 3)
+                        8570,8886EF ; Pre-instruction = $88:86EF (x-ray main)
+$91:D277             dw 0001,0A88,
                         85EC,D277   ; Go to $D277
 }
 
@@ -8521,7 +8521,7 @@ $91:D289 C9 24 00    CMP #$0024             ;} If [FX type] = fireflea: go to BR
 $91:D28C F0 22       BEQ $22    [$D2B0]     ;/
 $91:D28E A2 00 20    LDX #$2000             ; X = 2000h
 $91:D291 22 43 D1 91 JSL $91D143[$91:D143]  ;\
-$91:D295 F0 12       BEQ $12    [$D2A9]     ;} If x-ray can show blocks:
+$91:D295 F0 12       BEQ $12    [$D2A9]     ;} If x-ray should not show any blocks: go to BRANCH_SET_BACKDROP_COLOUR_END
 $91:D297 A2 00 40    LDX #$4000             ; X = 4000h
 
 ; BRANCH_SET_BACKDROP_COLOUR
