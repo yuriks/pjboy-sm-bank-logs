@@ -11,15 +11,15 @@
 ; | Ah          | BG1/BG2/    sprites |         BG3         | Additive    |     BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | Ch          | BG1/BG2/    sprites |         BG3         | Subtractive |     BG2            /backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 10h/12h     | BG1/BG2/    sprites |         BG3         | Additive    | BG1/BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  enable BG3 / colour math window 1 inclusive mask, disable BG3 in window area subscreen
-; | 14h/22h     | BG1/BG2/    sprites |         BG3         | Subtractive |     BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
+; | 14h/22h     | BG1/BG2/    sprites |         BG3         | Subtractive | BG1/BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 16h         | BG1    /    sprites |     BG2/BG3         | Subtractive | BG1        /sprites/backdrop | 4 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 18h/1Eh/30h |         BG3         | BG1/BG2    /sprites | Additive    |         BG3        /backdrop | 2 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 1Ah         | BG1    /BG3/sprites |     BG2             | Additive    | BG1    /BG3/sprites/backdrop | 4 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 1Ch         | BG1    /BG3/sprites |     BG2             | Halved      | BG1    /BG3/sprites          | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 24h         | BG1/BG2/    sprites |         BG3         | Additive    | BG1/BG2    /sprites/backdrop | 0 | Restrict colour math to inside window, disable BG1/BG2 window 1/2 masking, enable BG3/colour math window 1 inclusive mask, disable BG1/BG2/sprites in window area main screen, disable BG3 in window area subscreen
 ; | 26h         | BG1/BG2/    sprites |         BG3         | Halved      | BG1/BG2/BG3/sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
-; | 28h         | BG1/BG2/    sprites |         BG3         | Subtractive |     BG2    /sprites/backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area, if [$1987] & 80h = 0: colour math subscreen backdrop colour = (5, 0, 0) (red)
-; | 2Ah         | BG1/BG2/    sprites |         BG3         | Subtractive |     BG2    /sprites/backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area, if [$1987] & 80h = 0: colour math subscreen backdrop colour = (6, 2, 0) (orange)
+; | 28h         | BG1/BG2/    sprites |         BG3         | Subtractive | BG1/BG2    /sprites/backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area, if [$1987] & 80h = 0: colour math subscreen backdrop colour = (5, 0, 0) (red)
+; | 2Ah         | BG1/BG2/    sprites |         BG3         | Subtractive | BG1/BG2    /sprites/backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area, if [$1987] & 80h = 0: colour math subscreen backdrop colour = (6, 2, 0) (orange)
 ; | 2Ch         | BG1/BG2/    sprites |         BG3         | Additive    | BG1/BG2    /sprites/backdrop | 0 | Disable colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 2Eh         | BG1/BG2/    sprites |         BG3         | Subtractive | BG1/BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
 ; | 32h         | BG1/BG2/    sprites |         BG3         | Subtractive |     BG2    /sprites/backdrop | 0 | Enable  colour math subscreen layers,  disable window masking, enable all layers in window area
@@ -48,7 +48,7 @@
 ;     10h/12h: Normal, but BG3 is disabled inside window 1
 ;         Used by morph ball eye and varia/gravity suit pickup
 
-;     14h/22h: Normal, but BG1 isn't affected by BG3 and colour math is subtractive
+;     14h/22h: Normal, but colour math is subtractive
 ;         Sometimes use with FX type = water
 
 ;     16h: BG1/sprites are drawn after the result of drawing BG2/BG3 is subtracted and Y = 4
@@ -172,8 +172,9 @@ $88:803E             dw 8074, 8074, 8090, 8099, 80A2, 80AB, 80B0, 80B7, 80B8, 80
 }
 
 
-;;; $8074: RTS. Layer blending configuration 0/2 ;;;
+;;; $8074: RTS. Layer blending configuration 2 ;;;
 {
+
 $88:8074 60          RTS
 }
 
@@ -276,7 +277,7 @@ $88:80C4 60          RTS
 {
 ; 14h is sometimes used with FX type = water
 $88:80C5 A9 B3       LDA #$B3               ;\
-$88:80C7 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/sprites/backdrop
+$88:80C7 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
 $88:80C9 60          RTS
 }
 
@@ -330,7 +331,7 @@ $88:80F4 60          RTS
 $88:80F5 A0 02       LDY #$02               ; Y = 2
 $88:80F7 A5 84       LDA $84    [$7E:0084]  ;\
 $88:80F9 29 30       AND #$30               ;|
-$88:80FB 49 30       EOR #$30               ;} If IRQ mode != v-count/h-count: return
+$88:80FB 49 30       EOR #$30               ;} If h/v-counter interrupts are disabled: return
 $88:80FD D0 0C       BNE $0C    [$810B]     ;/
 $88:80FF A9 24       LDA #$24               ;\
 $88:8101 85 71       STA $71    [$7E:0071]  ;} Enable colour math on BG3/backdrop
@@ -369,7 +370,7 @@ $88:8111 60          RTS
 ;     Room D387 ; Pre plasma beam shaft
 $88:8112 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:8114 A9 B3       LDA #$B3               ;\
-$88:8116 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/sprites/backdrop
+$88:8116 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
 $88:8118 2C 87 19    BIT $1987  [$7E:1987]  ;\
 $88:811B 30 0C       BMI $0C    [$8129]     ;} If power bomb explosion active: return
 $88:811D A9 25       LDA #$25               ;\
@@ -400,7 +401,7 @@ $88:8129 60          RTS
 ;     Room D898 ; Sand falls
 $88:812A 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:812C A9 B3       LDA #$B3               ;\
-$88:812E 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/sprites/backdrop
+$88:812E 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
 $88:8130 2C 87 19    BIT $1987  [$7E:1987]  ;\
 $88:8133 30 0C       BMI $0C    [$8141]     ;} If power bomb explosion active: return
 $88:8135 A9 26       LDA #$26               ;\
