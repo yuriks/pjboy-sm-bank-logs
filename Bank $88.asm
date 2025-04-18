@@ -31,7 +31,7 @@
 ;     2/Eh/20h: Normal
 
 ;     4: Normal, but BG2 is disabled
-;         Used by Phantoon intro
+;         Used by Phantoon when hidden
 
 ;     6: Normal, but sprites aren't affected by BG3 and sprites are added to BG1/BG2 (instead of hidden)
 ;         Unused
@@ -99,35 +99,34 @@
 
 ; $1986: Layer blending configuration
 {
-;     Set to [FX A] at the start of the HDMA object handler. See "FX per room.asm"
+;     Set to [FX A] at the start of the HDMA object handler. See "rooms by FX A.asm"
 ;     Set to [FX B] by:
-;         $B3B0 ; HDMA object $C3E1, FX layer 3 lava and acid
-;         $C48E ; HDMA object $D847 / $D856, FX layer 3 water / Tourian entrance statue
-;         $D9A1 ; HDMA object $D96C, FX layer 3 rain
-;         $DA47 ; HDMA object $DA2D, FX layer 3 spores
-;         $DB36 ; HDMA object $DB19, FX layer 3 fog
+;         $B3B0: FX type 2 / 4: lava / acid
+;         $C48E: FX type 6 / 26h: water / Tourian entrance statue
+;         $D9A1: FX type Ah: rain
+;         $DA47: FX type 8: spores
+;         $DB36: FX type Ch: fog
 
-;     Set to 4/1Ah by $E449, Phantoon
-;     Set to Ch by $B0BC, HDMA object $B0AC, FX layer 3 fireflea
-;     Set to 10h by $E917, $E9E6, $EA3C, $EACB, HDMA object $E8EC, morph ball eye
+;     Set to 4/1Ah by $E449: Phantoon semi-transparency
+;     Set to Ch by $B0BC: FX type 24h: fireflea
+;     Set to 10h by $E917, $E9E6, $EA3C, $EACB: morph ball eye beam
 ;     Set to 12h by:
-;         $E026, HDMA object $D5A2, varia suit pickup
-;         $E05C, HDMA object $D67A, gravity suit pickup
-;     Set to 24h by $E767, $E7BC, HDMA object $E751, Mother Brain
+;         $E026: varia suit pickup
+;         $E05C: gravity suit pickup
+;     Set to 24h by $E767, $E7BC: Mother Brain rainbow beam
 ;     Set to 2Ch by:
-;         $DE18/96, HDMA object $DEEB, FX layer 3 haze
-;         $DD43, HDMA object $DD4A, torizos
+;         $DE18, $DE96: FX type 2Ch: Ceres haze
+;         $DD43: Bomb Torizo haze
 }
 
-; The following is a list of what FX B values are used with each FX type (only FX B is used with FX layer 3)
+; $1984: FX layer 3 layer blending configuration (FX B)
 {
-;     FX type = fireflea/both Ceres:     FX B = 2
 ;     FX type = spores:                  FX B = Ah
 ;     FX type = rain:                    FX B = Eh
 ;     FX type = water:                   FX B = 14h/16h/18h
+;     FX type = Tourian entrance statue: FX B = 18h
 ;     FX type = lava/acid:               FX B = 1Eh
 ;     FX type = fog:                     FX B = 30h
-;     FX type = Tourian entrance statue: FX B = 18h
 }
 }
 
@@ -174,7 +173,7 @@ $88:803E             dw 8074, 8074, 8090, 8099, 80A2, 80AB, 80B0, 80B7, 80B8, 80
 
 ;;; $8074: RTS. Layer blending configuration 2 ;;;
 {
-
+; This appears to be the default for rooms that have FX data (74 such rooms)
 $88:8074 60          RTS
 }
 
@@ -198,9 +197,8 @@ $88:808F 60          RTS
 }
 
 
-;;; $8090: Layer blending configuration 4 ;;;
+;;; $8090: Layer blending configuration 4 - Phantoon - hidden (BG2 disabled) ;;;
 {
-; Used by Phantoon
 $88:8090 A9 11       LDA #$11               ;\
 $88:8092 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $88:8094 A9 04       LDA #$04               ;\
@@ -209,7 +207,7 @@ $88:8098 60          RTS
 }
 
 
-;;; $8099: Unused. Layer blending configuration 6 ;;;
+;;; $8099: Unused. Layer blending configuration 6 - semi-transparent sprites on BG1/BG2 ;;;
 {
 $88:8099 A9 14       LDA #$14               ;\
 $88:809B 85 6B       STA $6B    [$7E:006B]  ;} Subscreen layers = BG3/sprites
@@ -219,12 +217,12 @@ $88:80A1 60          RTS
 }
 
 
-;;; $80A2: Layer blending configuration 8 ;;;
+;;; $80A2: Layer blending configuration 8 - coven (semi-transparent sprites on BG2) ;;;
 {
 ; Used in:
-;     Room CA52, state $CA64 ; Wrecked Ship attic, power off
-;     Room CAF6, state $CB08 ; Wrecked Ship mainstreet, power off
-;     Room CCCB, state $CCDD ; Wrecked Ship map station, power off
+;     Room $CA52, state $CA64. Wrecked Ship attic - default
+;     Room $CAF6, state $CB08. Wrecked Ship mainstreet - default
+;     Room $CCCB, state $CCDD. Wrecked Ship map station - default
 $88:80A2 A9 14       LDA #$14               ;\
 $88:80A4 85 6B       STA $6B    [$7E:006B]  ;} Subscreen layers = BG3/sprites
 $88:80A6 A9 22       LDA #$22               ;\
@@ -233,18 +231,16 @@ $88:80AA 60          RTS
 }
 
 
-;;; $80AB: Layer blending configuration Ah ;;;
+;;; $80AB: Layer blending configuration Ah - spores (BG3 hidden by BG1) ;;;
 {
-; Used with spores
 $88:80AB A9 32       LDA #$32               ;\
 $88:80AD 85 71       STA $71    [$7E:0071]  ;} Enable colour math on BG2/sprites/backdrop
 $88:80AF 60          RTS
 }
 
 
-;;; $80B0: Layer blending configuration Ch ;;;
+;;; $80B0: Layer blending configuration Ch - fireflea (BG3 disabled, BG2 dimmed by subscreen backdrop) ;;;
 {
-; Used with FX type = fireflea
 $88:80B0 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:80B2 A9 A2       LDA #$A2               ;\
 $88:80B4 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/backdrop
@@ -252,17 +248,20 @@ $88:80B6 60          RTS
 }
 
 
-;;; $80B7: RTS. Layer blending configuration Eh ;;;
+;;; $80B7: RTS. Layer blending configuration Eh - rain ;;;
 {
-; Used with FX type = rain
 $88:80B7 60          RTS
 }
 
 
-;;; $80B8: Layer blending configuration 10h/12h ;;;
+;;; $80B8: Layer blending configuration 10h/12h - subscreen backdrop window (BG3 disabled, colour math disabled outside window 1) ;;;
 {
 ; 10h is used by morph ball eye
 ; 12h is used by varia/gravity suit pickup
+
+; The BG3 hides the subscreen backdrop, so the BG3 window mask is used to reveal the subscreen backdrop inside the window
+; The colour math window mask disables the blending of BG3 outside the window (note subscreen backdrop is not affected by windowing and must be hidden by BG3)
+
 $88:80B8 A9 02       LDA #$02               ;\
 $88:80BA 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 1 inclusive mask
 $88:80BC A9 20       LDA #$20               ;\
@@ -273,19 +272,26 @@ $88:80C4 60          RTS
 }
 
 
-;;; $80C5: Layer blending configuration 14h/22h ;;;
+;;; $80C5: Layer blending configuration 14h/22h - water - dimmed by BG3 ;;;
 {
 ; 14h is sometimes used with FX type = water
+; 22h is unused
 $88:80C5 A9 B3       LDA #$B3               ;\
 $88:80C7 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
 $88:80C9 60          RTS
 }
 
 
-;;; $80CA: Layer blending configuration 16h ;;;
+;;; $80CA: Layer blending configuration 16h - water - background waterfalls (dimmed by BG2/BG3) ;;;
 {
-; Sometimes used with FX type = water
-$88:80CA A0 04       LDY #$04               ; Y = 4
+;; Returns:
+;;     Y: Layer blending power bomb configuration
+
+; Used with FX type = water in:
+;     Room $D72A. Maridia grapple room
+;     Room $D913. Maridia grapple wall shaft
+;     Room $DA2B. Maridia cacatac room east
+$88:80CA A0 04       LDY #$04               ; Y = 4 (BG2 not rendered in power bomb explosion)
 $88:80CC A9 11       LDA #$11               ;\
 $88:80CE 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $88:80D0 A9 06       LDA #$06               ;\
@@ -296,10 +302,12 @@ $88:80D8 60          RTS
 }
 
 
-;;; $80D9: Layer blending configuration 1Ah ;;;
+;;; $80D9: Layer blending configuration 1Ah - Phantoon - semi-transparent (semi-transparent BG2 on BG1) ;;;
 {
-; Used by Phantoon
-$88:80D9 A0 04       LDY #$04               ; Y = 4
+;; Returns:
+;;     Y: Layer blending power bomb configuration
+
+$88:80D9 A0 04       LDY #$04               ; Y = 4 (BG2 not rendered in power bomb explosion)
 $88:80DB A9 15       LDA #$15               ;\
 $88:80DD 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/BG3/sprites
 $88:80DF A9 02       LDA #$02               ;\
@@ -310,7 +318,7 @@ $88:80E7 60          RTS
 }
 
 
-;;; $80E8: Layer blending configuration 1Ch ;;;
+;;; $80E8: Unused. Layer blending configuration 1Ch - semi-transparent BG2 on semi-transparent BG1/BG3/sprites ;;;
 {
 $88:80E8 A9 15       LDA #$15               ;\
 $88:80EA 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/BG3/sprites
@@ -322,13 +330,19 @@ $88:80F4 60          RTS
 }
 
 
-;;; $80F5: Layer blending configuration 18h/1Eh/30h ;;;
+;;; $80F5: Layer blending configuration 18h/1Eh/30h - colour math affects all sprite palettes (semi-transparent BG1/BG2/sprites on BG3) ;;;
 {
+;; Returns:
+;;     Y: Layer blending power bomb configuration
+
 ; 18h is sometimes used with FX type = water
-; 18h might be used with FX type = tourian entrance statue?
+; 18h is used with FX type = Tourian entrance statue
 ; 1Eh is used with FX type = lava/acid
 ; 30h is used with FX type = fog
-$88:80F5 A0 02       LDY #$02               ; Y = 2
+
+; Unsure of the significance of h/v-counter interrupts being disabled...
+
+$88:80F5 A0 02       LDY #$02               ; Y = 2 (ignored for Tourian entrance, see $81FE)
 $88:80F7 A5 84       LDA $84    [$7E:0084]  ;\
 $88:80F9 29 30       AND #$30               ;|
 $88:80FB 49 30       EOR #$30               ;} If h/v-counter interrupts are disabled: return
@@ -344,13 +358,13 @@ $88:810B 60          RTS
 }
 
 
-;;; $810C: RTS. Layer blending configuration 20h ;;;
+;;; $810C: Unused. RTS. Layer blending configuration 20h ;;;
 {
 $88:810C 60          RTS
 }
 
 
-;;; $810D: Layer blending configuration 26h ;;;
+;;; $810D: Unused. Layer blending configuration 26h - semi-transparent BG3 on semi-transparent BG1/BG2/sprites ;;;
 {
 $88:810D A9 77       LDA #$77               ;\
 $88:810F 85 71       STA $71    [$7E:0071]  ;} Enable halved colour math on BG1/BG2/BG3/sprites/backdrop
@@ -358,16 +372,16 @@ $88:8111 60          RTS
 }
 
 
-;;; $8112: Layer blending configuration 28h ;;;
+;;; $8112: Layer blending configuration 28h - red desaturation (BG3 disabled, dimmed by red subscreen backdrop) ;;;
 {
 ; Used in:
-;     Room 92FD, state $9314 ; Crateria mainstreet, default state
-;     Room 9A44, state $9A56 ; Crateria bomb block hall, default state
-;     Room 9A90, state $9AA2 ; Crateria chozo missile, default state
-;     Room C98E, state $C9A0 ; Wrecked Ship spike floor hall, power off
-;     Room CC6F, state $CC81 ; Pre Phantoon hall, power off
-;     Room D27E ; Plasma beam puyo room
-;     Room D387 ; Pre plasma beam shaft
+;     Room $92FD, state $9314. Crateria mainstreet - default
+;     Room $9A44, state $9A56. Crateria bomb block hall - default
+;     Room $9A90, state $9AA2. Crateria chozo missile - default
+;     Room $C98E, state $C9A0. Wrecked Ship chozo room - default
+;     Room $CC6F, state $CC81. Pre Phantoon hall - default
+;     Room $D27E. Plasma beam puyo room
+;     Room $D387. Pre plasma beam shaft
 $88:8112 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:8114 A9 B3       LDA #$B3               ;\
 $88:8116 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
@@ -384,21 +398,21 @@ $88:8129 60          RTS
 }
 
 
-;;; $812A: Layer blending configuration 2Ah ;;;
+;;; $812A: Layer blending configuration 2Ah - orange desaturation (BG3 disabled, dimmed by orange subscreen backdrop) ;;;
 {
 ; Used in:
-;     Room 97B5, state $97C6 ; Crateria -> Blue Brinstar elevator, default state
-;     Room 9E9F, state $9EB1 ; Morph ball room, default state
-;     Room 9F11, state $9F23 ; Old Kraid entrance, default state
-;     Room 9F64, state $9F76 ; Blue Brinstar ceiling e-tank hall, default state
-;     Room A6A1 ; Kraid's lair entrance
-;     Room CF54 ; n00b tube west
-;     Room CF80 ; n00b tube east
-;     Room D2AA ; Plasma beam room
-;     Room D54D ; Pre Maridia reserve tank room sand fall room
-;     Room D57A ; Pre PB #66 room sand fall room
-;     Room D86E ; Sandy Maridia sand falls room
-;     Room D898 ; Sand falls
+;     Room $97B5, state $97C6. Crateria -> Blue Brinstar elevator - default
+;     Room $9E9F, state $9EB1. Morph ball room - default
+;     Room $9F11, state $9F23. Old Kraid entrance - default
+;     Room $9F64, state $9F76. Blue Brinstar ceiling e-tank hall - default
+;     Room $A6A1. Kraid's lair entrance
+;     Room $CF54. n00b tube west
+;     Room $CF80. n00b tube east
+;     Room $D2AA. Plasma beam room
+;     Room $D54D. Snail room quicksand fall west
+;     Room $D57A. Snail room quicksand fall east
+;     Room $D86E. Sandy Maridia quicksand fall
+;     Room $D898. Maridia speed blockade quicksand fall
 $88:812A 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:812C A9 B3       LDA #$B3               ;\
 $88:812E 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
@@ -415,23 +429,24 @@ $88:8141 60          RTS
 }
 
 
-;;; $8142: Layer blending configuration 2Ch ;;;
+;;; $8142: Layer blending configuration 2Ch - haze (BG3 disabled) ;;;
 {
-; Use by FX type = haze and torizos
+; Used by FX type = Ceres haze and Bomb Torizo haze
 $88:8142 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen layers
 $88:8144 60          RTS
 }
 
 
-;;; $8145: Layer blending configuration 2Eh ;;;
+;;; $8145: Unused. Layer blending configuration 2Eh - dimmed by BG3 ;;;
 {
+; Clone of $80C5
 $88:8145 A9 B3       LDA #$B3               ;\
 $88:8147 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG1/BG2/sprites/backdrop
 $88:8149 60          RTS
 }
 
 
-;;; $814A: Layer blending configuration 32h ;;;
+;;; $814A: Unused. Layer blending configuration 32h - dimmed by BG3, BG3 hidden by BG1 ;;;
 {
 $88:814A A9 44       LDA #$44               ;\
 $88:814C 85 6B       STA $6B    [$7E:006B]  ;} Subscreen layers = BG3 (and sets an unused bit)
@@ -441,16 +456,18 @@ $88:8152 60          RTS
 }
 
 
-;;; $8153: Layer blending configuration 34h ;;;
+;;; $8153: Layer blending configuration 34h - Mother Brain phase 2 (power bomb explosion doesn't affect BG2) ;;;
 {
-$88:8153 A0 06       LDY #$06               ; Y = 6
+;; Returns:
+;;     Y: Layer blending power bomb configuration
+
+$88:8153 A0 06       LDY #$06               ; Y = 6 (BG2 isn't affected by BG3)
 $88:8155 60          RTS
 }
 
 
-;;; $8156: Layer blending configuration 24h ;;;
+;;; $8156: Layer blending configuration 24h - Mother Brain rainbow beam (BG3 disabled, colour math disabled outside window 1) ;;;
 {
-; Used by Mother Brain
 $88:8156 A9 00       LDA #$00               ;\
 $88:8158 85 60       STA $60    [$7E:0060]  ;} Disable BG1/BG2 window 1/2 masking
 $88:815A A9 02       LDA #$02               ;\
@@ -8724,13 +8741,13 @@ $88:E8EB 6B          RTL
 $88:E8EC             dx 866A,7E,    ; Indirect HDMA data bank = $7E
                         8655,7E,    ; HDMA table bank = $7E
                         E917,       ; Initialise morph ball eye beam HDMA
-                        8570,88E9E6,; Pre-instruction = $88:E9E6
+                        8570,88E9E6,; Pre-instruction = $88:E9E6 (beam is widening)
                         0001,9000,
                         8682,       ; Sleep
-                        8570,88EA3C,; Pre-instruction = $88:EA3C
+                        8570,88EA3C,; Pre-instruction = $88:EA3C (full beam)
                         0001,9000,
                         8682,       ; Sleep
-                        8570,88EACB,; Pre-instruction = $88:EACB
+                        8570,88EACB,; Pre-instruction = $88:EACB (deactivate beam)
                         0001,9000,
                         8682,       ; Sleep
                         8569        ; Delete
