@@ -492,6 +492,10 @@ $88:817A 60          RTS
 
 ;;; $817B: Handle layer blending x-ray - can show blocks ;;;
 {
+; Disable BG1 inside window
+; Disable BG2 outside window
+; Disable BG3
+; Enabled halved colour math outside window
 $88:817B A9 C8       LDA #$C8               ;\
 $88:817D 85 60       STA $60    [$7E:0060]  ;} Enable BG1 window 2 inclusive mask and BG2 window 2 exclusive mask
 $88:817F A9 08       LDA #$08               ;\
@@ -518,6 +522,9 @@ $88:81A3 60          RTS
 
 ;;; $81A4: Handle layer blending x-ray - can't show blocks ;;;
 {
+; Disable BG3
+; Enabled halved colour math outside window
+; If n00b tube room, disable BG2
 $88:81A4 64 60       STZ $60    [$7E:0060]  ; Disable BG1/2 window masks
 $88:81A6 A9 08       LDA #$08               ;\
 $88:81A8 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 2 inclusive mask
@@ -551,6 +558,8 @@ $88:81DA 60          RTS
 
 ;;; $81DB: Handle layer blending x-ray - fireflea room ;;;
 {
+; Disable BG3
+; Enabled subtractive colour math outside window
 $88:81DB 64 60       STZ $60    [$7E:0060]  ; Disable BG1/2 window masks
 $88:81DD A9 08       LDA #$08               ;\
 $88:81DF 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 2 inclusive mask
@@ -591,7 +600,7 @@ $88:8211             dw 8219, 8219, 823E, 8263
 }
 
 
-;;; $8219: Handle layer blending power bomb configuration 0/2 ;;;
+;;; $8219: Handle layer blending power bomb configuration 0/2 - normal ;;;
 {
 $88:8219 A9 00       LDA #$00               ;\
 $88:821B 85 60       STA $60    [$7E:0060]  ;} Disable BG1/BG2 window 1/2 masking
@@ -615,8 +624,11 @@ $88:823D 60          RTS
 }
 
 
-;;; $823E: Handle layer blending power bomb configuration 4 ;;;
+;;; $823E: Handle layer blending power bomb configuration 4 - BG2 hidden by explosion ;;;
 {
+; Used by:
+;    Layer blending configuration 16h - water - background waterfalls
+;    Layer blending configuration 1Ah - Phantoon - semi-transparent
 $88:823E A9 80       LDA #$80               ;\
 $88:8240 85 60       STA $60    [$7E:0060]  ;} Enable BG2 window 2 inclusive mask
 $88:8242 A9 08       LDA #$08               ;\
@@ -639,8 +651,11 @@ $88:8262 60          RTS
 }
 
 
-;;; $8263: Handle layer blending power bomb configuration 6 ;;;
+;;; $8263: Handle layer blending power bomb configuration 6 - explosion hidden by BG2 ;;;
 {
+; Used by:
+;     Layer blending configuration 34h - Mother Brain phase 2
+
 ; Compared with config 0/2, this one disables colour math on BG2/BG3
 $88:8263 A9 00       LDA #$00               ;\
 $88:8265 85 60       STA $60    [$7E:0060]  ;} Disable BG1/BG2 window 1/2 masking

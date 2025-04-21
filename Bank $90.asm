@@ -1151,39 +1151,42 @@ $90:864D 60          RTS
 
 ;;; $864E: Function pointer table - check if Samus bottom half drawn ;;;
 {
-$90:864E             dw 868D, ; 0: Standing
-                        8686, ; 1: Running
-                        8686, ; 2: Normal jumping
-                        86C6, ; 3: Spin jumping
-                        8688, ; 4: Morph ball - on ground
-                        8686, ; 5: Crouching
-                        8686, ; 6: Falling
-                        8688, ; 7: Unused
-                        8688, ; 8: Morph ball - falling
-                        8688, ; 9: Unused
-                        86EE, ; Ah: Knockback
-                        8686, ; Bh: Unused
-                        8686, ; Ch: Unused
-                        874C, ; Dh: Unused
-                        8686, ; Eh: Turning around - on ground
-                        870C, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        8686, ; 10h: Moonwalking
-                        8688, ; 11h: Spring ball - on ground
-                        8688, ; 12h: Spring ball - in air
-                        8688, ; 13h: Spring ball - falling
-                        8768, ; 14h: Wall jumping
-                        8686, ; 15h: Ran into a wall
-                        8686, ; 16h: Grappling
-                        8686, ; 17h: Turning around - jumping
-                        8686, ; 18h: Turning around - falling
-                        877C, ; 19h: Damage boost
-                        8686, ; 1Ah: Grabbed by Draygon
-                        8790  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+$90:864E             dw 868D, ; *0: Standing
+                        8686, ;  1: Running
+                        8686, ;  2: Normal jumping
+                        86C6, ; *3: Spin jumping
+                        8688, ;  4: Morph ball - on ground
+                        8686, ;  5: Crouching
+                        8686, ;  6: Falling
+                        8688, ;  7: Unused
+                        8688, ;  8: Morph ball - falling
+                        8688, ;  9: Unused
+                        86EE, ; *Ah: Knockback
+                        8686, ;  Bh: Unused
+                        8686, ;  Ch: Unused
+                        874C, ; *Dh: Unused
+                        8686, ;  Eh: Turning around - on ground
+                        870C, ; *Fh: Crouching/standing/morphing/unmorphing transition
+                        8686, ;  10h: Moonwalking
+                        8688, ;  11h: Spring ball - on ground
+                        8688, ;  12h: Spring ball - in air
+                        8688, ;  13h: Spring ball - falling
+                        8768, ; *14h: Wall jumping
+                        8686, ;  15h: Ran into a wall
+                        8686, ;  16h: Grappling
+                        8686, ;  17h: Turning around - jumping
+                        8686, ;  18h: Turning around - falling
+                        877C, ; *19h: Damage boost
+                        8686, ;  1Ah: Grabbed by Draygon
+                        8790  ; *1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
 
 
 ;;; $8686: Flag that Samus bottom half is drawn ;;;
 {
+;; Returns:
+;;     Carry: Set. Bottom spritemap is drawn
+
 ; 1: Running
 ; 2: Normal jumping
 ; 5: Crouching
@@ -1205,6 +1208,9 @@ $90:8687 60          RTS
 
 ;;; $8688: Flag that Samus bottom half is not drawn ;;;
 {
+;; Returns:
+;;     Carry: Clear. Bottom spritemap is not drawn
+
 ; 4: Morph ball - on ground
 ; 7: Unused
 ; 8: Morph ball - falling
@@ -1220,6 +1226,9 @@ $90:868C 60          RTS
 
 ;;; $868D: Determine if Samus bottom half is drawn - standing ;;;
 {
+;; Returns:
+;;     Carry: Set. Bottom spritemap is drawn
+
 ; If Samus is facing forward without varia/suit, spawns an extra sprite to cover the left part of her chest
 $90:868D AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8690 C9 00 00    CMP #$0000             ;} If [Samus pose] = facing forward - power suit: go to BRANCH_FACING_FORWARD
@@ -1254,6 +1263,9 @@ $90:86C4 80 CF       BRA $CF    [$8695]     ; Return carry set
 
 ;;; $86C6: Determine if Samus bottom half is drawn - spin jumping ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
+
 ; Samus animation frame is 0 during the spin jump start-up
 ; Samus animation frame is >= Bh during the wall jump eligible animation
 $90:86C6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -1282,6 +1294,8 @@ $90:86ED 60          RTS                    ;} Return carry clear
 
 ;;; $86EE: Determine if Samus bottom half is drawn - knockback / crystal flash ending ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
 $90:86EE AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:86F1 C9 D7 00    CMP #$00D7             ;|
 $90:86F4 F0 07       BEQ $07    [$86FD]     ;} If [Samus pose] != crystal flash ending:
@@ -1305,6 +1319,9 @@ $90:870B 60          RTS                    ;} Return carry clear
 
 ;;; $870C: Determine if Samus bottom half is drawn - crouching/standing/morphing/unmorphing transition ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
+
 ; BRANCH_NO_BOTTOM is used for poses 37h..3Ah / 3Dh..40h (morphing/unmorphing transition and some unused poses)
 ; BRANCH_UNUSED is used for poses DBh..DEh (unused)
 $90:870C AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -1346,6 +1363,8 @@ $90:874A 80 E5       BRA $E5    [$8731]     ; Go to BRANCH_NO_BOTTOM
 
 ;;; $874C: Determine if Samus bottom half is drawn - unused movement type Dh ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
 $90:874C AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:874F C9 65 00    CMP #$0065             ;|
 $90:8752 F0 05       BEQ $05    [$8759]     ;} If [Samus pose] != 65h/66h: return carry set
@@ -1368,6 +1387,8 @@ $90:8767 60          RTS                    ;} Return carry clear
 
 ;;; $8768: Determine if Samus bottom half is drawn - wall jumping ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
 $90:8768 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:876B C9 03 00    CMP #$0003             ;} If [Samus animation frame] >= 3: go to BRANCH_SPINNING
 $90:876E 10 02       BPL $02    [$8772]     ;/
@@ -1386,6 +1407,8 @@ $90:877B 60          RTS                    ;} Return carry clear
 
 ;;; $877C: Determine if Samus bottom half is drawn - damage boost ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
 $90:877C AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:877F C9 02 00    CMP #$0002             ;} If [Samus animation frame] >= 2: go to BRANCH_SPINNING
 $90:8782 10 02       BPL $02    [$8786]     ;/
@@ -1404,6 +1427,8 @@ $90:878F 60          RTS                    ;} Return carry clear
 
 ;;; $8790: Determine if Samus bottom half is drawn - shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
+;; Returns:
+;;     Carry: Set if bottom spritemap is drawn, clear otherwise
 $90:8790 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8793 C9 CF 00    CMP #$00CF             ;} If [Samus pose] = shinespark:
 $90:8796 10 0C       BPL $0C    [$87A4]     ;/
