@@ -1930,6 +1930,8 @@ $90:8AB5             dw 0000, 8AC5, 8AC5, 8B16, 8B2E, 8B64, 8B57, 8B57
 ;; Parameters:
 ;;     X: Atmospheric graphic type
 ;;     Y: Atmospheric graphic index
+
+; Called by the subroutines for other atmospheric graphic types too
 $90:8AC5 5A          PHY
 $90:8AC6 B9 EC 0A    LDA $0AEC,y[$7E:0AF2]  ;\
 $90:8AC9 29 FF 00    AND #$00FF             ;|
@@ -1976,7 +1978,6 @@ $90:8B15 60          RTS
 ;;; $8B16: Handle atmospheric effects - [atmospheric graphic type] = 3 (diving splash) ;;;
 {
 ;; Parameters:
-;;     X: Atmospheric graphic type
 ;;     Y: Atmospheric graphic index
 $90:8B16 5A          PHY
 $90:8B17 B9 EC 0A    LDA $0AEC,y[$7E:0AEC]  ;\
@@ -2035,7 +2036,6 @@ $90:8B61 4C C5 8A    JMP $8AC5  [$90:8AC5]  ; Go to handle atmospheric effects -
 ;;; $8B64: Handle atmospheric effects - [atmospheric graphic type] = 5 (bubbles) ;;;
 {
 ;; Parameters:
-;;     X: Atmospheric graphic type
 ;;     Y: Atmospheric graphic index
 $90:8B64 5A          PHY
 $90:8B65 B9 EC 0A    LDA $0AEC,y[$7E:0AF0]  ;\
@@ -2050,6 +2050,11 @@ $90:8B73 48          PHA                    ;/
 
 ;;; $8B74: Add atmospheric spritemap to OAM ;;;
 {
+;; Parameters:
+;;     Y: Atmospheric graphic index
+;;     [[S] + 1] + 1: Samus spritemap table index
+
+; Expects a pushed Y (in addition to the pushed table index)
 $90:8B74 B9 DC 0A    LDA $0ADC,y[$7E:0ADC]  ;\
 $90:8B77 38          SEC                    ;|
 $90:8B78 ED 11 09    SBC $0911  [$7E:0911]  ;} Spritemap X position = [atmospheric graphics X position] - [layer 1 X position]
@@ -2289,6 +2294,13 @@ $90:8D28             db 03,06,00,00, ; Facing right - landing from normal jump
 
 ;;; $8D38: Go to calculate usual Samus spritemap position ;;;
 {
+;; Parameters:
+;;     Y: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
+
+; Expects pushed DB
 $90:8D38 AB          PLB
 $90:8D39 4C 94 8C    JMP $8C94  [$90:8C94]
 }
@@ -2501,6 +2513,7 @@ $90:8E74 60          RTS
 
 ;;; $8E75: Unused ;;;
 {
+; Seems vaguely close to falling X movement, $919F in particular
 $90:8E75 08          PHP
 $90:8E76 C2 30       REP #$30
 $90:8E78 20 D1 9B    JSR $9BD1  [$90:9BD1]  ; Determine Samus X speed table entry pointer
@@ -2517,7 +2530,7 @@ $90:8E91 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:8E93 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:8E96 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:8E99 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
-$90:8E9C 80 09       BRA $09    [$8EA7]
+$90:8E9C 80 09       BRA $09    [$8EA7]     ; Return
 
 $90:8E9E A9 02 00    LDA #$0002             ;\
 $90:8EA1 8D 4A 0B    STA $0B4A  [$7E:0B4A]  ;} Samus X acceleration mode = decelerating
@@ -2939,7 +2952,7 @@ $90:9189 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:918C 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:918F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:9192 80 03       BRA $03    [$9197]
-                                            ; Else (pressing left/right):
+                                            ; Else ([Samus X acceleration mode] != accelerating or pressing right/left):
 $90:9194 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
 
 $90:9197 20 C4 90    JSR $90C4  [$90:90C4]  ; Check if Samus has started falling
