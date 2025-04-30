@@ -2908,18 +2908,25 @@ $83:AC56             dw AC76, AC96, ACB6, ACD6, ACF6, AD16, AD36, AD56 ; Animate
 ; Indexed by bit index of set bits in FX palette FX / animated tiles bitset
 $83:AC66             dw F765, FFE5, FFE9, FFD9, FFDD, FFE1, FFED, F781 ; Crateria palette FX
 $83:AC76             dw 8257, 8251, 825D, 8263, 824B, 824B, 824B, 824B ; Crateria animated tiles
+
 $83:AC86             dw F775, F77D, F781, F779, F745, F745, F745, F745 ; Brinstar palette FX
 $83:AC96             dw 8257, 8251, 8281, 824B, 824B, 824B, 824B, 824B ; Brinstar animated tiles
+
 $83:ACA6             dw F761, F785, F789, F78D, F791, F745, F745, F745 ; Norfair palette FX
 $83:ACB6             dw 8257, 8251, 824B, 824B, 824B, 824B, 824B, 824B ; Norfair animated tiles
+
 $83:ACC6             dw F76D, F745, F745, F745, F745, F745, F745, F745 ; Wrecked Ship palette FX
 $83:ACD6             dw 8257, 8251, 8275, 827B, 826F, 824B, 824B, 824B ; Wrecked Ship animated tiles
+
 $83:ACE6             dw F795, F799, F79D, F745, F745, F745, F745, F745 ; Maridia palette FX
 $83:ACF6             dw 8257, 8251, 8287, 828D, 824B, 824B, 824B, 824B ; Maridia animated tiles
+
 $83:AD06             dw F761, F7A1, F7A5, FFC9, FFCD, FFD1, FFD5, F745 ; Tourian palette FX
 $83:AD16             dw 8257, 8251, 824B, 824B, 824B, 824B, 824B, 824B ; Tourian animated tiles
+
 $83:AD26             dw F745, F745, F745, F745, F745, F745, F745, F745 ; Ceres palette FX
 $83:AD36             dw 8257, 8251, 824B, 824B, 824B, 824B, 824B, 824B ; Ceres animated tiles
+
 $83:AD46             dw F745, F745, F745, F745, F745, F745, F745, F745 ; Debug palette FX
 $83:AD56             dw 8257, 8251, 824B, 824B, 824B, 824B, 824B, 824B ; Debug animated tiles
 }

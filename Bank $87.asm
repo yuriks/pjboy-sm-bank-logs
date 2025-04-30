@@ -377,7 +377,7 @@ $87:8169 60          RTS
 
 ;;; $816A..B9: Instruction lists - FX ;;;
 {
-;;; $816A: Instruction list - animated tiles object $8251 (vertical spikes) ;;;
+;;; $816A: Instruction list - animated tiles object $8251 (all areas 1 - vertical spikes) ;;;
 {
 ; LOOP
 $87:816A             dw 0008,9C04,
@@ -388,7 +388,7 @@ $87:816A             dw 0008,9C04,
 }
 
 
-;;; $817E: Instruction list - animated tiles object $8257 (horizontal spikes) ;;;
+;;; $817E: Instruction list - animated tiles object $8257 (all areas 2 - horizontal spikes) ;;;
 {
 ; LOOP
 $87:817E             dw 0008,9D84,
@@ -399,7 +399,7 @@ $87:817E             dw 0008,9D84,
 }
 
 
-;;; $8192: Instruction list - animated tiles object $825D (Crateria lake) ;;;
+;;; $8192: Instruction list - animated tiles object $825D (Crateria 4 - Crateria lake) ;;;
 {
 ; LOOP
 $87:8192             dw 000A,8564,
@@ -410,7 +410,7 @@ $87:8192             dw 000A,8564,
 }
 
 
-;;; $81A6: Instruction list - animated tiles object $8263/$8269 (Crateria lava) ;;;
+;;; $81A6: Instruction list - animated tiles object $8263/$8269 (Crateria 8 - unused Crateria lava) ;;;
 {
 ; LOOP
 $87:81A6             dw 000A,8B64,
@@ -439,7 +439,7 @@ $87:81CA 60          RTS
 
 ;;; $81CB..824A: Instruction lists - FX ;;;
 {
-;;; $81CB: Instruction list - animated tiles object $826F (Wrecked Ship screen) ;;;
+;;; $81CB: Instruction list - animated tiles object $826F (Wrecked Ship 10h - Wrecked Ship screen) ;;;
 {
 $87:81CB             dw 81BA,        ; Wait until area boss is dead
 ; LOOP
@@ -451,7 +451,7 @@ $87:81CD             dw 000A,8EE4,
 }
 
 
-;;; $81E1: Instruction list - animated tiles object $8275 (Wrecked Ship treadmill - rightwards) ;;;
+;;; $81E1: Instruction list - animated tiles object $8275 (Wrecked Ship 4 - Wrecked Ship treadmill - rightwards) ;;;
 {
 $87:81E1             dw 81BA,        ; Wait until area boss is dead
 ; LOOP
@@ -463,7 +463,7 @@ $87:81E3             dw 0001,8E64,
 }
 
 
-;;; $81F7: Instruction list - animated tiles object $827B (Wrecked Ship treadmill - leftwards) ;;;
+;;; $81F7: Instruction list - animated tiles object $827B (Wrecked Ship 8 - Wrecked Ship treadmill - leftwards) ;;;
 {
 $87:81F7             dw 81BA,        ; Wait until area boss is dead
 ; LOOP
@@ -475,7 +475,7 @@ $87:81F9             dw 0001,8EC4,
 }
 
 
-;;; $820D: Instruction list - animated tiles object $8281 (Brinstar mouth) ;;;
+;;; $820D: Instruction list - animated tiles object $8281 (Brinstar 4 - Brinstar plant) ;;;
 {
 ; LOOP
 $87:820D             dw 0010,9964,
@@ -486,7 +486,7 @@ $87:820D             dw 0010,9964,
 }
 
 
-;;; $8221: Instruction list - animated tiles object $8287 (Maridia sand ceiling) ;;;
+;;; $8221: Instruction list - animated tiles object $8287 (Maridia 4 - Maridia sand ceiling) ;;;
 {
 ; LOOP
 $87:8221             dw 000A,91E4,
@@ -497,7 +497,7 @@ $87:8221             dw 000A,91E4,
 }
 
 
-;;; $8235: Instruction list - animated tiles object $828D (Maridia sand falling) ;;;
+;;; $8235: Instruction list - animated tiles object $828D (Maridia 8 - Maridia sand falling) ;;;
 {
 ; LOOP
 $87:8235             dw 000A,9164,
@@ -519,17 +519,17 @@ $87:8249             dw 80B2         ; Delete
 {
 ; Instruction list, size, VRAM address
 $87:824B             dw 8249,0000,0000 ; Nothing
-$87:8251             dw 816A,0080,3880 ; Vertical spikes
-$87:8257             dw 817E,0080,3D60 ; Horizontal spikes
-$87:825D             dw 8192,0200,1B00 ; Crateria lake
-$87:8263             dw 81A6,00C0,0A00 ; Unused: Crateria lava
-$87:8269             dw 81A6,00C0,0640 ; Unused: Crateria lava
-$87:826F             dw 81CB,0080,19C0 ; Wrecked Ship screen
-$87:8275             dw 81E1,0020,00E0 ; Wrecked Ship treadmill (rightwards)
-$87:827B             dw 81F7,0020,00E0 ; Wrecked Ship treadmill (leftwards)
-$87:8281             dw 820D,00E0,0410 ; Brinstar mouth
-$87:8287             dw 8221,0040,1000 ; Maridia sand ceiling
-$87:828D             dw 8235,0020,1020 ; Maridia sand falling
+$87:8251             dw 816A,0080,3880 ; All areas 1 - vertical spikes
+$87:8257             dw 817E,0080,3D60 ; All areas 2 - horizontal spikes
+$87:825D             dw 8192,0200,1B00 ; Crateria 4 - Crateria lake
+$87:8263             dw 81A6,00C0,0A00 ; Crateria 8 - unused Crateria lava
+$87:8269             dw 81A6,00C0,0640 ; Unused. Crateria lava
+$87:826F             dw 81CB,0080,19C0 ; Wrecked Ship 10h - Wrecked Ship screen
+$87:8275             dw 81E1,0020,00E0 ; Wrecked Ship 4 - Wrecked Ship treadmill - rightwards
+$87:827B             dw 81F7,0020,00E0 ; Wrecked Ship 8 - Wrecked Ship treadmill - leftwards
+$87:8281             dw 820D,00E0,0410 ; Brinstar 4 - Brinstar plant
+$87:8287             dw 8221,0040,1000 ; Maridia 4 - Maridia sand ceiling
+$87:828D             dw 8235,0020,1020 ; Maridia 8 - Maridia sand falling
 }
 
 
@@ -927,7 +927,7 @@ $87:855E             dw 84E4,0080,0CA0 ; Tourian statue - Draygon
 
 ;;; $8564..AA03: Animated tiles ;;;
 {
-;;; $8564: Crateria lake ;;;
+;;; $8564: Crateria 4 - Crateria lake ;;;
 {
 ; |--------|--------|--------|--------|    |--------|--------|--------|--------|    |--------|--------|--------|--------|
 ; |FF7777FF|FF77777F|F777FFFF|F777777F|    |FF7777FF|FF77777F|F777FFFF|F777777F|    |FF7777FF|FF77777F|F777FFFF|F777777F|
@@ -1019,7 +1019,7 @@ $87:8964             db FF,FF,FF,FF,07,FF,C0,FF,FC,03,00,FF,FF,00,FF,00,FF,C3,FF
 }
 
 
-;;; $8B64: Unused. Crateria lava ;;;
+;;; $8B64: Crateria 8 - unused Crateria lava ;;;
 {
 ; |--------|--------|    |--------|--------|    |--------|--------|    |--------|--------|
 ; |        |        |    |        |        |    |        |        |    |        |        |
@@ -1079,7 +1079,7 @@ $87:8DA4             db 00,00,00,00,00,00,00,00,00,00,40,00,00,00,06,00,00,00,00
 }
 
 
-;;; $8E64: Wrecked Ship treadmill ;;;
+;;; $8E64: Wrecked Ship 4/8 - Wrecked Ship treadmill ;;;
 {
 ; |--------|    |--------|    |--------|    |--------|
 ; | AAAAAA |    |A  AAAAA|    |AAA  AAA|    |AAAAA  A|
@@ -1098,7 +1098,7 @@ $87:8EC4             db 00,F9,00,87,FF,06,06,FF,FF,FF,FF,FF,80,E0,FF,80,00,F9,81
 }
 
 
-;;; $8EE4: Wrecked Ship screen ;;;
+;;; $8EE4: Wrecked Ship 10h - Wrecked Ship screen ;;;
 {
 ; |--------|--------|    |--------|--------|    |--------|--------|
 ; |3333333F|F3333333|    |33333333|3FF39999|    |3333333F|F3333333|
@@ -1136,7 +1136,7 @@ $87:8FE4             db FF,FF,FF,FF,FF,E1,FF,FE,FF,F8,FE,F9,FF,01,A5,5F,01,01,0F
 }
 
 
-;;; $9064: "X" ;;;
+;;; $9064: Unused. "X" ;;;
 {
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |        |        |
@@ -1159,7 +1159,7 @@ $87:9064             db 00,00,00,44,00,28,00,10,00,28,00,44,00,00,00,00,00,00,44
 }
 
 
-;;; $9164: Maridia sand falling ;;;
+;;; $9164: Maridia 8 - Maridia sand falling ;;;
 {
 ; |--------|    |--------|    |--------|    |--------|
 ; |5 7 5 5 |    | 5 7 7 7|    | 6 6 6  |    |  6 7 7 |
@@ -1178,7 +1178,7 @@ $87:91C4             db 0A,2A,45,40,02,A0,00,54,80,02,55,15,A8,20,00,14,2A,00,55
 }
 
 
-;;; $91E4: Maridia sand ceiling ;;;
+;;; $91E4: Maridia 4 - Maridia sand ceiling ;;;
 {
 ; |--------|--------|    |--------|--------|    |--------|--------|    |--------|--------|
 ; |99B99898|998A9999|    |99B99898|998A9999|    |99B99898|998A9999|    |99B99898|998A9999|
@@ -1204,7 +1204,7 @@ $87:92A4             db FA,20,26,C8,85,1A,85,58,2B,47,36,1C,90,60,E2,E2,00,FF,08
 }
 
 
-;;; $92E4: "X" ;;;
+;;; $92E4: Unused. "X" ;;;
 {
 ; |--------|--------|--------|--------|
 ; |        |        |        |        |
@@ -1435,7 +1435,7 @@ $87:98E4             db B9,FD,59,7D,6D,7D,3D,3D,1D,1D,01,01,01,01,00,00,FD,02,7D
 }
 
 
-;;; $9964: Brinstar mouth ;;;
+;;; $9964: Brinstar 4 - Brinstar plant ;;;
 {
 ; |--------|--------|--------|--------|    |--------|--------|--------|--------|    |--------|--------|--------|--------|
 ; |        |        |        | BBB BB |    |        |        |        | BBB BB |    |        |        |        | BBB BB |
@@ -1482,7 +1482,7 @@ $87:9B24             db 00,00,00,00,00,00,0F,0F,3C,3F,6F,7F,7D,7F,7A,7D,00,00,00
 }
 
 
-;;; $9C04: Vertical spikes ;;;
+;;; $9C04: All areas 1 - vertical spikes ;;;
 {
 ; |--------|--------|    |--------|--------|    |--------|--------|
 ; |   4    |        |    |        |        |    |        |   4    |
@@ -1520,7 +1520,7 @@ $87:9D04             db 00,00,00,00,00,00,28,28,28,28,28,28,00,28,00,28,00,00,00
 }
 
 
-;;; $9D84: Horizontal spikes ;;;
+;;; $9D84: All areas 2 - horizontal spikes ;;;
 {
 ; |--------|--------|    |--------|--------|    |--------|--------|
 ; |        |      F1|    |        |      F2|    |        |      F3|
@@ -1558,7 +1558,7 @@ $87:9E84             db 00,00,00,00,03,03,71,7E,00,00,71,7E,03,03,00,00,00,00,00
 }
 
 
-;;; $9F04: "X" ;;;
+;;; $9F04: Unused. "X" ;;;
 {
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |

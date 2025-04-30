@@ -3555,7 +3555,7 @@ $8D:EABC             dx 0010,
 }
 
 
-;;; $EAE2: Instruction list - palette FX object $F76D/$F771 (Wrecked Ship 1) ;;;
+;;; $EAE2: Instruction list - palette FX object $F76D/$F771 (Wrecked Ship 1 - green lights) ;;;
 {
 ; Green lights (BG1/2 palette 4 colours Ch..Dh)
 ; Used by most Wrecked Ship rooms in powered on state
@@ -3603,7 +3603,7 @@ $8D:EB3A 60          RTS
 }
 
 
-;;; $EB3B: Instruction list - palette FX object $F765 (Crateria 1) ;;;
+;;; $EB3B: Instruction list - palette FX object $F765 (Crateria 1 - lightning) ;;;
 {
 ; Lightning (BG1/2 palette 5 colours 4..Bh)
 ; Used by landing site prior to acquiring power bombs
@@ -3742,7 +3742,7 @@ $8D:ED98 60          RTS
 }
 
 
-;;; $ED99: Instruction list - palette FX object $F775 (Brinstar 1) ;;;
+;;; $ED99: Instruction list - palette FX object $F775 (Brinstar 1 - blue background spores) ;;;
 {
 ; Blue background spores (BG1/2 palette 7 colours 1..3)
 ; Used by Brinstar rooms with the blue spores background (e.g. Green Brinstar mainstreet, n00b bridge)
@@ -3793,7 +3793,7 @@ $8D:ED9D             dx 000A,
 }
 
 
-;;; $EE2D: Instruction list - palette FX object $F779 (Brinstar 8) ;;;
+;;; $EE2D: Instruction list - palette FX object $F779 (Brinstar 8 - Spore Spawn blue background spores) ;;;
 {
 ; Spore Spawn blue background spores (BG1/2 palette 7 colours 1..3)
 ; Used by Spore Spawn's room
@@ -3862,7 +3862,7 @@ $8D:EED6 60          RTS
 }
 
 
-;;; $EED7: Instruction list - palette FX object $F77D (Brinstar 2) ;;;
+;;; $EED7: Instruction list - palette FX object $F77D (Brinstar 2 - red background glow) ;;;
 {
 ; Red background glow (BG1/2 palette 6 colours 4..Bh)
 ; Used by Red Brinstar rooms with red background (mainstreet, damage boost hall, -> Crateria elevator)
@@ -3913,7 +3913,7 @@ $8D:EEDB             dx 000A,
 }
 
 
-;;; $EFF7: Instruction list - palette FX object $F781 (Crateria 80h / Brinstar 4) ;;;
+;;; $EFF7: Instruction list - palette FX object $F781 (Crateria 80h / Brinstar 4 - beacon flashing) ;;;
 {
 ; Beacon flashing (BG1/2 palette 7 colours 1..3 / Dh)
 ; Used by pre Tourian hall, red Brinstar mainstreet, red Brinstar -> Crateria elevator and the first three rooms of Kraid's lair
@@ -4351,7 +4351,7 @@ $8D:F3E5             dx 0010,
 }
 
 
-;;; $F4E9: Instruction list - palette FX object $F795 (Maridia 1) ;;;
+;;; $F4E9: Instruction list - palette FX object $F795 (Maridia 1 - sand pits) ;;;
 {
 ; Sand pits (BG1/2 palette 2 colours 4..Bh)
 ; Used by rooms with sand pits
@@ -4372,7 +4372,7 @@ $8D:F4ED             dx 000A,
 }
 
 
-;;; $F541: Instruction list - palette FX object $F799 (Maridia 2) ;;;
+;;; $F541: Instruction list - palette FX object $F799 (Maridia 2 - sand falls) ;;;
 {
 ; Sand falls (BG1/2 palette 2 colours 8..Bh)
 ; Used by sand fall rooms, snail room save station and Botwoon's room
@@ -4393,7 +4393,7 @@ $8D:F545             dx 000A,
 }
 
 
-;;; $F579: Instruction list - palette FX object $F79D (Maridia 4) ;;;
+;;; $F579: Instruction list - palette FX object $F79D (Maridia 4 - background waterfalls) ;;;
 {
 ; Background waterfalls (BG1/2 palette 3 colours 8..Fh)
 ; Used by the spike room and two grapple rooms near Draygon
@@ -4440,7 +4440,7 @@ $8D:F629 60          RTS
 }
 
 
-;;; $F62A: Instruction list - palette FX object $F7A5 (Tourian 4) ;;;
+;;; $F62A: Instruction list - palette FX object $F7A5 (Tourian 4 - unused clone of Tourian 2) ;;;
 {
 ; Clone of Tourian 2
 $8D:F62A             dx C655,00E8,  ; Palette FX object colour index = E8h
@@ -4448,7 +4448,7 @@ $8D:F62A             dx C655,00E8,  ; Palette FX object colour index = E8h
 }
 
 
-;;; $F632: Instruction list - palette FX object $F7A1 (Tourian 2) ;;;
+;;; $F632: Instruction list - palette FX object $F7A1 (Tourian 2 - glowing arkanoid blocks and red orbs) ;;;
 {
 ; Glowing arkanoid blocks and red orbs (BG1/2 palette 7 colours 4 / 8..Eh)
 ; Used by most Tourian rooms
@@ -4518,7 +4518,7 @@ $8D:F63A             dx 000A,
 }
 
 
-;;; $F730: Setup - palette FX object $F779 (Brinstar 8) ;;;
+;;; $F730: Setup - palette FX object $F779 (Brinstar 8 - Spore Spawn blue background spores) ;;;
 {
 ;; Parameters:
 ;;     Y: Palette FX object index
@@ -4548,7 +4548,7 @@ $8D:F761             dw E440,E45E ; Norfair 1 / Tourian 1
 $8D:F765             dw C685,EB3B ; Crateria 1 - lightning
 $8D:F769             dw C685,EC6E ; Unused. Dark lightning
 $8D:F76D             dw C685,EAE2 ; Wrecked Ship 1 - green lights
-$8D:F771             dw C685,EAE2
+$8D:F771             dw C685,EAE2 ; Unused clone of Wrecked Ship 1
 $8D:F775             dw C685,ED99 ; Brinstar 1 - blue background spores
 $8D:F779             dw F730,EE2D ; Brinstar 8 - Spore Spawn blue background spores
 $8D:F77D             dw C685,EED7 ; Brinstar 2 - red background glow
@@ -4565,9 +4565,9 @@ $8D:F7A5             dw C685,F62A ; Tourian 4 - unused clone of Tourian 2
 }
 
 
-;;; $F7A9..FFC8: Instruction lists ;;;
+;;; $F7A9..FFC8: Instruction lists - escape sequence ;;;
 {
-;;; $F7A9: Instruction list - palette FX object $FFC9 (Tourian 8) ;;;
+;;; $F7A9: Instruction list - palette FX object $FFC9 (Tourian 8 - shutter red flashing) ;;;
 {
 ; Shutter red flashing (sprite palette 1 colours 9..Eh)
 ; Used by escape room 1
@@ -4618,7 +4618,7 @@ $8D:F7AD             dx 0002,
 }
 
 
-;;; $F891: Instruction list - palette FX object $FFCD (Tourian 10h) ;;;
+;;; $F891: Instruction list - palette FX object $FFCD (Tourian 10h - background red flashing) ;;;
 {
 ; Background red flashing (BG1/2 palette 3 colours 8..Bh)
 $8D:F891             dx C655,0070,  ; Palette FX object colour index = 70h
@@ -4668,7 +4668,7 @@ $8D:F895             dx 0004,
 }
 
 
-;;; $F941: Instruction list - palette FX object $FFD1 (Tourian 20h) ;;;
+;;; $F941: Instruction list - palette FX object $FFD1 (Tourian 20h - general level red flashing) ;;;
 {
 ; General level red flashing (BG1/2 palette 5 colours 4..9 / Eh)
 ; Used by Tourian escape rooms
@@ -4677,7 +4677,7 @@ $8D:F941             dx C655,00A8,  ; Palette FX object colour index = A8h
 }
 
 
-;;; $F949: Instruction list - palette FX object $FFD5 (Tourian 40h) ;;;
+;;; $F949: Instruction list - palette FX object $FFD5 (Tourian 40h - red flashing arkanoid blocks and red orbs) ;;;
 {
 ; Red flashing arkanoid blocks and red orbs (BG1/2 palette 7 colours 4..9 / Eh)
 ; Used by Tourian escape rooms
@@ -4761,7 +4761,7 @@ $8D:F94D             dx 0002,
 }
 
 
-;;; $FA69: Instruction list - palette FX object $FFD9 (Crateria 8) ;;;
+;;; $FA69: Instruction list - palette FX object $FFD9 (Crateria 8 - old Tourian red flashing) ;;;
 {
 ; Old Tourian red flashing (BG1/2 palette 5 colours 1..3 / 8..Bh / Eh)
 ; Used by old Tourian escape shaft during escape
@@ -4868,7 +4868,7 @@ $8D:FA6D             dx 0003,
 }
 
 
-;;; $FBC1: Instruction list - palette FX object $FFDD (Crateria 10h) ;;;
+;;; $FBC1: Instruction list - palette FX object $FFDD (Crateria 10h - old Tourian background railings flash orange) ;;;
 {
 ; Old Tourian background railings flash orange (BG1/2 palette 6 colours 9..Bh)
 ; Used by old Tourian escape shaft during escape
@@ -4922,7 +4922,7 @@ $8D:FBC5             dx 0010,
 }
 
 
-;;; $FC5F: Instruction list - palette FX object $FFE1 (Crateria 20h) ;;;
+;;; $FC5F: Instruction list - palette FX object $FFE1 (Crateria 20h - old Tourian background panels flash yellow) ;;;
 {
 ; Used by old Tourian escape shaft during escape
 $8D:FC5F             dx C655,00AA,  ; Palette FX object colour index = AAh
@@ -4975,7 +4975,7 @@ $8D:FC63             dx 0010,
 }
 
 
-;;; $FCFD: Instruction list - palette FX object $FFE5 (Crateria 2) ;;;
+;;; $FCFD: Instruction list - palette FX object $FFE5 (Crateria 2 - upper Crateria red flashing) ;;;
 {
 ; Upper Crateria red flashing (BG1/2 palette 4 colours 1..7)
 ; Used by landing site and Crateria mainstreet during escape
@@ -5026,7 +5026,7 @@ $8D:FD01             dx 0008,
 }
 
 
-;;; $FE01: Instruction list - palette FX object $FFE9 (Crateria 4) ;;;
+;;; $FE01: Instruction list - palette FX object $FFE9 (Crateria 4 - yellow lightning) ;;;
 {
 ; Yellow lightning (BG1/2 palette 5 colours 1..Bh)
 ; Used by landing site during escape
@@ -5068,7 +5068,7 @@ $8D:FE05             dx 0031,
 }
 
 
-;;; $FF27: Instruction list - palette FX object $FFED (Crateria 40h) ;;;
+;;; $FF27: Instruction list - palette FX object $FFED (Crateria 40h - slightly modifies an unnoticeable pixel in a CRE block) ;;;
 {
 ; Slightly modifies an unnoticeable pixel in a CRE block (BG1/2 palette 5 colours 7..Bh)
 ; Used by Crateria mainstreet during escape
@@ -5111,7 +5111,7 @@ $8D:FF2B             dx 0031,
 }
 
 
-;;; $FFC9: Palette FX objects ;;;
+;;; $FFC9: Palette FX objects - escape sequence ;;;
 {
 $8D:FFC9             dw C685,F7A9 ; Tourian 8 - shutter red flashing
 $8D:FFCD             dw C685,F891 ; Tourian 10h - background red flashing
