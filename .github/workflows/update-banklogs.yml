@@ -22,7 +22,9 @@ jobs:
           unzip -ao banklogs.zip \*.asm
       - name: Fetch additional files
         run: |
-          wget https://patrickjohnston.org/ASM/Lists/Super%20Metroid/{RAM%20map,SRAM%20map,VRAM%20map,Enemy%20RAM}.asm
+          for f in "RAM map.asm" "SRAM map.asm" "VRAM map.asm" "Enemy RAM.asm"; do
+            curl "https://patrickjohnston.org/ASM/Lists/Super%20Metroid/${f// /%20}" -o "$f"
+          done
       - name: Commit new changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
