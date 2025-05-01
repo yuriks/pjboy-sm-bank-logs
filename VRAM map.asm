@@ -4,7 +4,7 @@ Gameplay
 {
     $0000..3FFF: BG1/2 tiles (4-bit) / mode 7 graphics
     {
-        $0000..27FF: Room tiles
+        $0000..27FF: Room tiles. Only $0000..23FF used by non-Kraid tilesets
         {
             $00E0..EF: Animated tiles - Wrecked Ship treadmill
 
@@ -122,7 +122,7 @@ Gameplay
             $5C00: Liquid hitbox starts here
         }
     }
-    $6000..7FFF: Sprite tiles (4-bit). Standard sprite tiles are $9A:D200..F1FF, initially loaded to $6000..6FFF, of which only $6200..6CFF is non "X" tiles
+    $6000..7FFF: Sprite tiles (4-bit). Used for BG1/2 tiles in Ceres Ridley's room. Standard sprite tiles are $9A:D200..F1FF, initially loaded to $6000..6FFF, of which only $6200..6CFF is non "X" tiles
     {
         $6000..61FF: Samus graphics
         {
@@ -241,4 +241,100 @@ Menu
     $5800..5BFF: BG2 tilemap
     $5C00..5FFF: BG3 tilemap
     $6000..6FFF: Sprite tiles
+}
+
+Nintendo logo
+{
+    $6000..7FFF: Sprite tiles
+}
+
+Anti-piracy screens
+{
+    $0000..1FFF: BG1 tiles
+    
+    $4000..47FF: BG1 tilemap
+}
+
+Title sequence
+{
+    $0000..3FFF: Mode 7 BG
+    {
+        $3800..FF: Baby metroid
+    }
+    
+    $6000..7FFF: Sprite tiles
+}
+
+Intro
+{
+    $0000..3FFF: BG1/2 tiles
+    $4000..447F: BG3 tiles (font 1)
+    {
+        $4180..447F: Japanese text (font 2)
+    }
+    $4800..4BFF: BG2 tilemap (Samus head)
+    $4C00..4FFF: BG3 tilemap (text)
+    $5000..5FFF: BG1 tilemaps
+    {
+        $5000..53FF: Old Mother Brain's room
+        $5400..57FF: Baby metroid discovery
+        $5800..5BFF: Baby metroid being delivered
+        $5C00..5FFF: Baby metroid being examined
+    }
+    $6000..7FFF: Sprite tiles
+    {
+        $6000..6DFF: Standard sprite tiles
+        $6E00..7FFF: Intro sprite tiles
+    }
+}
+
+Ceres / Samus goes to Zebes cutscene
+{
+    $0000..3FFF: Mode 7 BG (gunship)
+    
+    $5C00..5FFF: BG1 tilemap (space colony text, Zebes during mosaic effect)
+    $6000..7FFF: BG1/sprite tiles
+}
+
+Zebes destruction cutscene
+{
+    $0000..3FFF: Mode 7 BG (Zebes / grey clouds)
+    $4000..5FFF: BG1/2 tiles
+    
+    $6000..7FFF: Sprite tiles (yellow clouds)
+    $7000..77FF: BG1 tilemaps
+    {
+        $7000..73FF: Wide part of Zebes explosion
+        $7400..77FF: Concentric wide part of Zebes explosion
+    }
+    $7800..7FFF: BG2 tilemaps
+    {
+        $7800..7BFF: Eclipse of Zebes during explosion
+        $7C00..7FFF: Blank
+    }
+}
+
+Credits
+{
+    $0000..1FFF: Sprite tiles (post-credits ending Samus)
+    $2000..207F: BG3 tiles
+    $2400..27FF: BG3 tilemap (post-credits Samus transformation effect)
+    $4000..47FF: BG1 tiles (font 3)
+    $4800..4BFF: BG1 tilemap (text)
+    $4C00..4FFF: BG2 tilemap (post-credits suited Samus)
+    $5000..5FFF: BG2 tiles
+}
+
+Samus shooting the screen / Super Metroid icon
+{
+    $0000..3FFF: Mode 7 BG (post-credits Samus beam)
+    $4000..47FF: BG1 tiles
+    {
+        $4000..47FF: Font 3
+        $4800..49FF: Item percentage Japanese text
+    }
+    
+    $5400..57FF: BG2 tilemap. Super Metroid icon tilemap
+    
+    $6000..7FFF: BG2/sprite tiles (post-credits Samus shooting the screen, Super Metroid icon)
 }
