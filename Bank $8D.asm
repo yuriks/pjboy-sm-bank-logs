@@ -460,19 +460,19 @@ $8D:9078             dx 0001, 01FC,FC,2A2E
 ; Unused
 $8D:907F             dx 0001, 01FC,FC,2A2F
 
-; Enemy projectile $BA5C (Tourian statue unlocking particle water splash)
+; Enemy projectile $BA5C (Tourian entrance statue unlocking particle water splash)
 $8D:9086             dx 0001, 01FC,FC,7E2C
 $8D:908D             dx 0001, 01FC,FC,7E2D
 $8D:9094             dx 0001, 01FC,FC,7E2E
 $8D:909B             dx 0001, 01FC,FC,7E2F
 
-; Enemy projectile $BA86 (Tourian statue unlocking particle tail)
+; Enemy projectile $BA86 (Tourian entrance statue unlocking particle tail)
 $8D:90A2             dx 0001, 01FC,FC,3EDA
 $8D:90A9             dx 0001, 01FC,FC,3EDB
 $8D:90B0             dx 0001, 01FC,FC,3EDC
 $8D:90B7             dx 0001, 01FC,FC,3EDD
 
-; Enemy projectile $BA6A (Tourian statue eye glow)
+; Enemy projectile $BA6A (Tourian entrance statue eye glow)
 $8D:90BE             dx 0001, 01FC,FC,3ED0
 $8D:90C5             dx 0001, 01FC,FC,3ED1
 $8D:90CC             dx 0001, 01FC,FC,3ED2
@@ -483,23 +483,23 @@ $8D:90E8             dx 0001, C3F8,F8,3EE8
 $8D:90EF             dx 0006, 0003,04,FEEA, 0003,FC,7EFA, 0003,F4,7EEA, 01FC,04,BEEB, 01F4,04,BEEA, C3F4,F4,3EEA
 $8D:910F             dx 0004, C200,00,7EEE, C3F0,00,3EEE, C200,F0,7EEC, C3F0,F0,3EEC
 
-; Enemy projectile $BA78 (Tourian statue unlocking particle)
+; Enemy projectile $BA78 (Tourian entrance statue unlocking particle)
 $8D:9125             dx 0001, 01FC,FC,3ED3
 $8D:912C             dx 0001, 01FC,FC,7ED3
 $8D:9133             dx 0001, 01FC,FC,BED3
 $8D:913A             dx 0001, 01FC,FC,FED3
 
-; Enemy projectile $BA94 (Tourian statue's soul)
+; Enemy projectile $BA94 (Tourian entrance statue's soul)
 $8D:9141             dx 0004, 0000,00,3ED6, 01F8,00,3ED5, 01FC,08,3ED4, C3F8,F8,3EE0
 $8D:9157             dx 0004, 01FC,08,3ED9, 0000,00,3ED8, 01F8,00,3ED7, C3F8,F8,3EE0
 
-; Enemy projectile $BABE (Tourian statue - base decoration)
+; Enemy projectile $BABE (Tourian entrance statue - base decoration)
 $8D:916D             dx 0007, C228,F8,1F9C, C218,F8,1F9A, C208,F8,1F98, C3F8,F8,1F96, C3E8,F8,1F94, C3D8,F8,1F92, C3C8,F8,1F90
 
-; Enemy projectile $BAA2 (Tourian statue - Ridley)
+; Enemy projectile $BAA2 (Tourian entrance statue - Ridley)
 $8D:9192             dx 0017, C3E5,18,2344, C3E5,08,232C, C3F5,18,2346, 000D,20,237D, 000D,18,236D, 0005,18,2348, C215,08,2342, C205,08,2340, C3F5,08,232E, C3D5,08,232A, C215,F8,2328, C205,F8,2326, C3F5,F8,2324, C3E5,F8,2322, C3D5,F8,2320, C215,E8,230E, C205,E8,230C, C3F5,E8,230A, C3E5,E8,2308, C215,D8,2306, C205,D8,2304, C3F5,D8,2302, C3E5,D8,2300
 
-; Enemy projectile $BAB0 (Tourian statue - Phantoon)
+; Enemy projectile $BAB0 (Tourian entrance statue - Phantoon)
 $8D:9207             dx 0013, 0008,1C,2587, 0000,1C,2586, 01F8,1C,2585, 01F0,1C,2584, 0000,04,2583, 0000,FC,2581, 01F8,04,2582, 01F8,FC,2580, C208,EC,2561, C3E8,EC,254D, C208,FC,2565, C208,0C,256B, C3F8,0C,2569, C3E8,0C,2567, C3E8,FC,2563, C200,EC,2560, C3F0,EC,254E, C200,DC,254B, C3F0,DC,2549
 
 ; Enemy projectile $BB50 (unused)
@@ -902,7 +902,7 @@ $8D:AC85             dx 0004, 0018,0A,7A28, 0012,18,7A28, 01E0,0A,3A28, 01E6,18,
 
 ; Big dust cloud
 ; Enemy projectile $AF68 (Wrecked Ship chozo spike clearing footsteps)
-; Enemy projectile $AF84 (Tourian statue dust clouds)
+; Enemy projectile $AF84 (Tourian entrance statue dust clouds)
 ; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:AC9B             dx 0001, 01F7,F7,3A48
 $8D:ACA2             dx 0002, 0001,01,3A48, 81F3,F3,3A7C
@@ -2038,7 +2038,7 @@ $8D:C686             dw 1000, C690, C595, C61E, C686, 0180, 0000, 0000
 }
 
 
-;;; $C696..E193: Instruction lists ;;;
+;;; $C696..E193: Instruction lists - misc. ;;;
 {
 ;;; $C696: Instruction list - palette FX object $E194 (fade in Super Metroid title logo) ;;;
 {
@@ -3119,7 +3119,7 @@ $8D:E192             dx C5CF        ; Delete
 }
 
 
-;;; $E194: Palette FX objects ;;;
+;;; $E194: Palette FX objects - misc. ;;;
 {
 $8D:E194             dw C685,C696 ; Fade in Super Metroid title logo
 $8D:E198             dw C685,C7AC ; Fade in Nintendo boot logo (for unused code)
@@ -3178,34 +3178,36 @@ $8D:E21F 60          RTS
 }
 
 
+;;; $E220..E378: Tourian entrance statue / torizo belly ;;;
+{
 ;;; $E220: Instruction list - palette FX object $F745 (nothing) ;;;
 {
 $8D:E220             dx C5CF        ; Delete
 }
 
 
-;;; $E222: Instruction list - palette FX object $F749 (grey out Tourian statue - Draygon) ;;;
+;;; $E222: Instruction list - palette FX object $F749 (grey out Tourian entrance statue - Draygon) ;;;
 {
 $8D:E222             dx C655,00C0,  ; Palette FX object colour index = 00C0h
                         C61E,E23E   ; Go to $E23E
 }
 
 
-;;; $E22A: Instruction list - palette FX object $F74D (grey out Tourian statue - Kraid) ;;;
+;;; $E22A: Instruction list - palette FX object $F74D (grey out Tourian entrance statue - Kraid) ;;;
 {
 $8D:E22A             dx C655,00E0,  ; Palette FX object colour index = 00E0h
                         C61E,E23E   ; Go to $E23E
 }
 
 
-;;; $E232: Instruction list - palette FX object $F751 (grey out Tourian statue - Ridley) ;;;
+;;; $E232: Instruction list - palette FX object $F751 (grey out Tourian entrance statue - Ridley) ;;;
 {
 $8D:E232             dx C655,0120,  ; Palette FX object colour index = 0120h
                         C61E,E23E   ; Go to $E23E
 }
 
 
-;;; $E23A: Instruction list - palette FX object $F755 (grey out Tourian statue - Phantoon) ;;;
+;;; $E23A: Instruction list - palette FX object $F755 (grey out Tourian entrance statue - Phantoon) ;;;
 {
 $8D:E23A             dx C655,0140,  ; Palette FX object colour index = 0140h
 }
@@ -3303,8 +3305,11 @@ $8D:E339             dx 000A,
                             C595,       ; Done
                         C61E,E339   ; Go to $E339
 }
+}
 
 
+;;; $E379..F744: FX ;;;
+{
 ;;; $E379: Pre-instruction - Samus in heat ;;;
 {
 ;; Parameters:
@@ -4533,17 +4538,23 @@ $8D:F741 99 7D 1E    STA $1E7D,y            ;} Delete palette FX object
 
 $8D:F744 60          RTS
 }
+}
 
 
-;;; $F745: Palette FX objects ;;;
+;;; $F745: Palette FX objects - Tourian entrance statue / torizo belly ;;;
 {
 $8D:F745             dw C685,E220 ; Nothing
-$8D:F749             dw C685,E222 ; Grey out Tourian statue - Draygon
-$8D:F74D             dw C685,E22A ; Grey out Tourian statue - Kraid
-$8D:F751             dw C685,E232 ; Grey out Tourian statue - Ridley
-$8D:F755             dw C685,E23A ; Grey out Tourian statue - Phantoon
+$8D:F749             dw C685,E222 ; Grey out Tourian entrance statue - Draygon
+$8D:F74D             dw C685,E22A ; Grey out Tourian entrance statue - Kraid
+$8D:F751             dw C685,E232 ; Grey out Tourian entrance statue - Ridley
+$8D:F755             dw C685,E23A ; Grey out Tourian entrance statue - Phantoon
 $8D:F759             dw C685,E2E9 ; Bomb Torizo belly
 $8D:F75D             dw C685,E331 ; Golden Torizo belly
+}
+
+
+;;; $F761: Palette FX objects - FX - non escape sequence ;;;
+{
 $8D:F761             dw E440,E45E ; Norfair 1 / Tourian 1
 $8D:F765             dw C685,EB3B ; Crateria 1 - lightning
 $8D:F769             dw C685,EC6E ; Unused. Dark lightning
@@ -4565,7 +4576,7 @@ $8D:F7A5             dw C685,F62A ; Tourian 4 - unused clone of Tourian 2
 }
 
 
-;;; $F7A9..FFC8: Instruction lists - escape sequence ;;;
+;;; $F7A9..FFC8: Instruction lists - FX - escape sequence ;;;
 {
 ;;; $F7A9: Instruction list - palette FX object $FFC9 (Tourian 8 - shutter red flashing) ;;;
 {
@@ -5111,7 +5122,7 @@ $8D:FF2B             dx 0031,
 }
 
 
-;;; $FFC9: Palette FX objects - escape sequence ;;;
+;;; $FFC9: Palette FX objects - FX - escape sequence ;;;
 {
 $8D:FFC9             dw C685,F7A9 ; Tourian 8 - shutter red flashing
 $8D:FFCD             dw C685,F891 ; Tourian 10h - background red flashing

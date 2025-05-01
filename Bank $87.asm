@@ -375,7 +375,7 @@ $87:8169 60          RTS
 }
 
 
-;;; $816A..B9: Instruction lists - FX ;;;
+;;; $816A..824A: Instruction lists - FX ;;;
 {
 ;;; $816A: Instruction list - animated tiles object $8251 (all areas 1 - vertical spikes) ;;;
 {
@@ -419,7 +419,6 @@ $87:81A6             dw 000A,8B64,
                         000A,8DA4,
                         80B7,81A6    ; Go to LOOP
 }
-}
 
 
 ;;; $81BA: Instruction - wait until area boss is dead ;;;
@@ -437,8 +436,6 @@ $87:81CA 60          RTS
 }
 
 
-;;; $81CB..824A: Instruction lists - FX ;;;
-{
 ;;; $81CB: Instruction list - animated tiles object $826F (Wrecked Ship 10h - Wrecked Ship screen) ;;;
 {
 $87:81CB             dw 81BA,        ; Wait until area boss is dead
@@ -606,7 +603,7 @@ $87:82FD             dw 82ED,0030,4280
 }
 
 
-;;; $8303..83AB: Instructions ;;;
+;;; $8303..83AB: Instructions - Tourian entrance statue ;;;
 {
 ;;; $8303: Instruction - go to [[Y] + 2] if any of the boss bits [[Y]] for area [[Y] + 1] are set ;;;
 {
@@ -633,7 +630,7 @@ $87:831F 60          RTS
 }
 
 
-;;; $8320: Instruction - spawn Tourian statue eye glow enemy projectile with parameter [[Y]] ;;;
+;;; $8320: Instruction - spawn Tourian entrance statue eye glow enemy projectile with parameter [[Y]] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -642,7 +639,7 @@ $87:831F 60          RTS
 $87:8320 5A          PHY
 $87:8321 B9 00 00    LDA $0000,y[$87:84BE]
 $87:8324 A0 6A BA    LDY #$BA6A             ;\
-$87:8327 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue eye glow enemy projectile
+$87:8327 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian entrance statue eye glow enemy projectile
 $87:832B 7A          PLY
 $87:832C C8          INY
 $87:832D C8          INY
@@ -650,7 +647,7 @@ $87:832E 60          RTS
 }
 
 
-;;; $832F: Instruction - spawn Tourian statue's soul enemy projectile with parameter [[Y]] ;;;
+;;; $832F: Instruction - spawn Tourian entrance statue's soul enemy projectile with parameter [[Y]] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -659,7 +656,7 @@ $87:832E 60          RTS
 $87:832F 5A          PHY
 $87:8330 B9 00 00    LDA $0000,y[$87:84C6]
 $87:8333 A0 94 BA    LDY #$BA94             ;\
-$87:8336 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue's soul enemy projectile
+$87:8336 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian entrance statue's soul enemy projectile
 $87:833A 7A          PLY
 $87:833B C8          INY
 $87:833C C8          INY
@@ -667,7 +664,7 @@ $87:833D 60          RTS
 }
 
 
-;;; $833E: Instruction - go to [[Y]] if Tourian statue is busy releasing lock ;;;
+;;; $833E: Instruction - go to [[Y]] if Tourian entrance statue is busy releasing lock ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -683,7 +680,7 @@ $87:8348 60          RTS
 }
 
 
-;;; $8349: Instruction - Tourian statue animation state |= [[Y]] ;;;
+;;; $8349: Instruction - Tourian entrance statue animation state |= [[Y]] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -697,7 +694,7 @@ $87:8351 60          RTS
 }
 
 
-;;; $8352: Instruction - Tourian statue animation state &= ~[[Y]] ;;;
+;;; $8352: Instruction - Tourian entrance statue animation state &= ~[[Y]] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -777,11 +774,11 @@ $87:839C             dw 3800, 7F58, 6ED5, 5A71, 49EE, 356A, 24E7, 1083
 }
 
 
-;;; $83AC..854B: Instruction lists - Tourian statue ;;;
+;;; $83AC..854B: Instruction lists - Tourian entrance statue ;;;
 {
-;;; $83AC: Instruction list - animated tiles object $854C (Tourian statue - Phantoon) ;;;
+;;; $83AC: Instruction list - animated tiles object $854C (Tourian entrance statue - Phantoon) ;;;
 {
-$87:83AC             dw 8349,0001,       ; Set Tourian statue to process Phantoon
+$87:83AC             dw 8349,0001,       ; Set Tourian entrance statue to process Phantoon
                         813F,0006,840A,  ; Go to BRANCH_STATUE_IS_GREY if Phantoon statue is grey
                         0006,9364
 ; LOOP
@@ -790,32 +787,32 @@ $87:83BA             dx 000C,93E4,
                         000C,93E4,
                         0010,9364,
                         8303,01,03,83D8, ; Go to BRANCH_PHANTOON_IS_DEAD if Phantoon is dead
-                        8352,0001,       ; Set Tourian statue to stop processing Phantoon
+                        8352,0001,       ; Set Tourian entrance statue to stop processing Phantoon
                         80B7,83BA        ; Go to LOOP
 ; BRANCH_PHANTOON_IS_DEAD
-$87:83D8             dw 833E,83BA,       ; Go to LOOP if Tourian statue is busy releasing lock
-                        8349,8000,       ; Set Tourian statue busy releasing lock
+$87:83D8             dw 833E,83BA,       ; Go to LOOP if Tourian entrance statue is busy releasing lock
+                        8349,8000,       ; Set Tourian entrance statue busy releasing lock
                         835B,0158,       ; Clear 3 colours of palette data at $7E:C158
                         0010,93E4,
                         0010,9464,
-                        8320,0000,       ; Spawn Tourian statue eye glow enemy projectile with parameter 0
+                        8320,0000,       ; Spawn Tourian entrance statue eye glow enemy projectile with parameter 0
                         00C0,97E4,
-                        832F,0000,       ; Spawn Tourian statue's soul enemy projectile with parameter 0
-                        8372,F755,       ; Spawn palette FX object $F755 (grey out Tourian statue - Phantoon)
+                        832F,0000,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 0
+                        8372,F755,       ; Spawn palette FX object $F755 (grey out Tourian entrance statue - Phantoon)
                         0080,97E4,
                         8150,0006,       ; Set Phantoon statue is grey event
-                        8352,8001,       ; Set Tourian statue not processing Phantoon and not busy
+                        8352,8001,       ; Set Tourian entrance statue not processing Phantoon and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
-$87:840A             dw 8352,8001,       ; Set Tourian statue not processing Phantoon and not busy
+$87:840A             dw 8352,8001,       ; Set Tourian entrance statue not processing Phantoon and not busy
                         837F,0140,       ; Write 8 colours of target palette data to $7E:C340
                         80B2             ; Delete
 }
 
 
-;;; $8414: Instruction list - animated tiles object $8552 (Tourian statue - Ridley) ;;;
+;;; $8414: Instruction list - animated tiles object $8552 (Tourian entrance statue - Ridley) ;;;
 {
-$87:8414             dw 8349,0002,       ; Set Tourian statue to process Ridley
+$87:8414             dw 8349,0002,       ; Set Tourian entrance statue to process Ridley
                         813F,0007,8472,  ; Go to BRANCH_STATUE_IS_GREY if Ridley statue is grey
                         000A,94E4
 ; LOOP_WAIT
@@ -824,32 +821,32 @@ $87:8422             dx 000C,9524,
                         000C,9524,
                         0010,94E4,
                         8303,01,02,8440, ; Go to BRANCH_RIDLEY_IS_DEAD if Ridley is dead
-                        8352,0002,       ; Set Tourian statue to stop processing Ridley
+                        8352,0002,       ; Set Tourian entrance statue to stop processing Ridley
                         80B7,8422        ; Go to LOOP
 ; BRANCH_RIDLEY_IS_DEAD
-$87:8440             dw 833E,8422,       ; Go to LOOP if Tourian statue is busy releasing lock
-                        8349,8000,       ; Set Tourian statue busy releasing lock
+$87:8440             dw 833E,8422,       ; Go to LOOP if Tourian entrance statue is busy releasing lock
+                        8349,8000,       ; Set Tourian entrance statue busy releasing lock
                         835B,0132,       ; Clear 3 colours of palette data at $7E:C132
                         0010,9524,
                         0010,9564,
-                        8320,0002,       ; Spawn Tourian statue eye glow enemy projectile with parameter 2
+                        8320,0002,       ; Spawn Tourian entrance statue eye glow enemy projectile with parameter 2
                         00C0,9864,
-                        832F,0002,       ; Spawn Tourian statue's soul enemy projectile with parameter 2
-                        8372,F751,       ; Spawn palette FX object $F751 (grey out Tourian statue - Ridley)
+                        832F,0002,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 2
+                        8372,F751,       ; Spawn palette FX object $F751 (grey out Tourian entrance statue - Ridley)
                         0080,9864,
                         8150,0007,       ; Set Ridley statue is grey event
-                        8352,8002,       ; Set Tourian statue not processing Ridley and not busy
+                        8352,8002,       ; Set Tourian entrance statue not processing Ridley and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
-$87:8472             dw 8352,8002,       ; Set Tourian statue not processing Ridley and not busy
+$87:8472             dw 8352,8002,       ; Set Tourian entrance statue not processing Ridley and not busy
                         837F,0120,       ; Write 8 colours of target palette data to $7E:C320
                         80B2             ; Delete
 }
 
 
-;;; $847C: Instruction list - animated tiles object $8558 (Tourian statue - Kraid) ;;;
+;;; $847C: Instruction list - animated tiles object $8558 (Tourian entrance statue - Kraid) ;;;
 {
-$87:847C             dw 8349,0004,       ; Set Tourian statue to process Kraid
+$87:847C             dw 8349,0004,       ; Set Tourian entrance statue to process Kraid
                         813F,0009,84DA,  ; Go to BRANCH_STATUE_IS_GREY if Kraid statue is grey
                         0004,9724
 ; LOOP_WAIT
@@ -858,32 +855,32 @@ $87:848A             dx 000C,9764,
                         000C,9764,
                         0010,9724,
                         8303,01,01,84A8, ; Go to BRANCH_KRAID_IS_DEAD if Kraid is dead
-                        8352,0004,       ; Set Tourian statue to stop processing Kraid
+                        8352,0004,       ; Set Tourian entrance statue to stop processing Kraid
                         80B7,848A        ; Go to LOOP
 ; BRANCH_KRAID_IS_DEAD
-$87:84A8             dw 833E,848A,       ; Go to LOOP if Tourian statue is busy releasing lock
-                        8349,8000,       ; Set Tourian statue busy releasing lock
+$87:84A8             dw 833E,848A,       ; Go to LOOP if Tourian entrance statue is busy releasing lock
+                        8349,8000,       ; Set Tourian entrance statue busy releasing lock
                         835B,00F8,       ; Clear 3 colours of palette data at $7E:C0F8
                         0010,9764,
                         0010,97A4,
-                        8320,0006,       ; Spawn Tourian statue eye glow enemy projectile with parameter 6
+                        8320,0006,       ; Spawn Tourian entrance statue eye glow enemy projectile with parameter 6
                         00C0,98A4,
-                        832F,0006,       ; Spawn Tourian statue's soul enemy projectile with parameter 6
-                        8372,F74D,       ; Spawn palette FX object $F74D (grey out Tourian statue - Kraid)
+                        832F,0006,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 6
+                        8372,F74D,       ; Spawn palette FX object $F74D (grey out Tourian entrance statue - Kraid)
                         0080,98A4,
                         8150,0009,       ; Set Kraid statue is grey event
-                        8352,8004,       ; Set Tourian statue not processing Kraid and not busy
+                        8352,8004,       ; Set Tourian entrance statue not processing Kraid and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
-$87:84DA             dw 8352,8004,       ; Set Tourian statue not processing Kraid and not busy
+$87:84DA             dw 8352,8004,       ; Set Tourian entrance statue not processing Kraid and not busy
                         837F,00E0,       ; Write 8 colours of target palette data to $7E:C2E0
                         80B2             ; Delete
 }
 
 
-;;; $84E4: Instruction list - animated tiles object $855E (Tourian statue - Draygon) ;;;
+;;; $84E4: Instruction list - animated tiles object $855E (Tourian entrance statue - Draygon) ;;;
 {
-$87:84E4             dw 8349,0008,       ; Set Tourian statue to process Draygon
+$87:84E4             dw 8349,0008,       ; Set Tourian entrance statue to process Draygon
                         813F,0008,8542,  ; Go to BRANCH_STATUE_IS_GREY if Draygon statue is grey
                         0008,95A4
 ; LOOP_WAIT
@@ -892,24 +889,24 @@ $87:84F2             dx 000C,9624,
                         000C,9624,
                         0010,95A4,
                         8303,01,04,8510, ; Go to BRANCH_DRAYGON_IS_DEAD if Draygon is dead
-                        8352,0008,       ; Set Tourian statue to stop processing Draygon
+                        8352,0008,       ; Set Tourian entrance statue to stop processing Draygon
                         80B7,84F2        ; Go to LOOP
 ; BRANCH_DRAYGON_IS_DEAD
-$87:8510             dw 833E,84F2,       ; Go to LOOP if Tourian statue is busy releasing lock
-                        8349,8000,       ; Set Tourian statue busy releasing lock
+$87:8510             dw 833E,84F2,       ; Go to LOOP if Tourian entrance statue is busy releasing lock
+                        8349,8000,       ; Set Tourian entrance statue busy releasing lock
                         835B,00D2,       ; Clear 3 colours of palette data at $7E:C0D2
                         0010,9624,
                         0010,96A4,
-                        8320,0004,       ; Spawn Tourian statue eye glow enemy projectile with parameter 4
+                        8320,0004,       ; Spawn Tourian entrance statue eye glow enemy projectile with parameter 4
                         00C0,98E4,
-                        832F,0004,       ; Spawn Tourian statue's soul enemy projectile with parameter 4
-                        8372,F749,       ; Spawn palette FX object $F749 (grey out Tourian statue - Draygon)
+                        832F,0004,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 4
+                        8372,F749,       ; Spawn palette FX object $F749 (grey out Tourian entrance statue - Draygon)
                         0080,98E4,
                         8150,0008,       ; Set Draygon statue is grey event
-                        8352,8008,       ; Set Tourian statue not processing Draygon and not busy
+                        8352,8008,       ; Set Tourian entrance statue not processing Draygon and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
-$87:8542             dw 8352,8008,       ; Set Tourian statue not processing Draygon and not busy
+$87:8542             dw 8352,8008,       ; Set Tourian entrance statue not processing Draygon and not busy
                         837F,00C0,       ; Write 8 colours of target palette data to $7E:C2C0
                         80B2             ; Delete
 }
@@ -918,10 +915,10 @@ $87:8542             dw 8352,8008,       ; Set Tourian statue not processing Dra
 
 ;;; $854C: Animated tiles objects - Tourian entrance statue ;;;
 {
-$87:854C             dw 83AC,0080,7800 ; Tourian statue - Phantoon
-$87:8552             dw 8414,0040,7220 ; Tourian statue - Ridley
-$87:8558             dw 847C,0040,0B40 ; Tourian statue - Kraid
-$87:855E             dw 84E4,0080,0CA0 ; Tourian statue - Draygon
+$87:854C             dw 83AC,0080,7800 ; Tourian entrance statue - Phantoon
+$87:8552             dw 8414,0040,7220 ; Tourian entrance statue - Ridley
+$87:8558             dw 847C,0040,0B40 ; Tourian entrance statue - Kraid
+$87:855E             dw 84E4,0080,0CA0 ; Tourian entrance statue - Draygon
 }
 
 
