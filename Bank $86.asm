@@ -2035,7 +2035,7 @@ $86:8A61 7D 7A 0F    ADC $0F7A,x            ;|
 $86:8A64 99 4B 1A    STA $1A4B,y            ;/
 $86:8A67 B9 DC 1A    LDA $1ADC,y            ;\
 $86:8A6A 29 06 00    AND #$0006             ;|
-$86:8A6D AA          TAX                    ;} Enemy projectile instruction list pointer = [$8A75 + [enemy projectile Y velocity] / 200h % 3 * 2]
+$86:8A6D AA          TAX                    ;} Enemy projectile instruction list pointer = [$8A75 + [enemy projectile Y velocity] / 200h % 4 * 2]
 $86:8A6E BD 75 8A    LDA $8A75,x            ;|
 $86:8A71 99 47 1B    STA $1B47,y            ;/
 $86:8A74 60          RTS

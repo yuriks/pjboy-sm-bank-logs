@@ -2500,6 +2500,15 @@ $90:8E63 60          RTS
 {
 ;;; $8E64: Samus X movement ;;;
 {
+; Called by:
+;     $A3E5: Samus movement - running
+;     $A521: Samus movement - morph ball - on ground
+;     $A67C: Samus movement - turning around - on ground
+;     $A694: Samus movement - moonwalking
+;     $A69F: Samus movement - spring ball - on ground
+;     $A790: Samus movement - turning around - jumping
+;     $A7AD: Samus movement - turning around - falling
+
 $90:8E64 08          PHP
 $90:8E65 C2 30       REP #$30
 $90:8E67 20 3E 97    JSR $973E  [$90:973E]  ; Handle Samus X extra run speed
@@ -2547,6 +2556,18 @@ $90:8EA8 60          RTS
 {
 ;; Parameters:
 ;;     $12.$14: Samus X base speed
+
+; Called by:
+;     $8E64: Samus X movement
+;     $8E75: Unused
+;     $8FB3: Samus jumping movement
+;     $9040: Samus spin jumping movement
+;     $9168: Samus falling movement
+;     $919F: Samus morphed falling movement
+;     $91D1: Samus morphed bouncing movement
+;     $9348: Move Samus horizontally with zero base X speed
+;     $946E: Samus movement handler - released from grapple swing
+
 $90:8EA9 AD 4A 0B    LDA $0B4A  [$7E:0B4A]  ;\
 $90:8EAC F0 12       BEQ $12    [$8EC0]     ;|
 $90:8EAE C9 02 00    CMP #$0002             ;} If [Samus X acceleration mode] = turning around:
@@ -2582,6 +2603,11 @@ $90:8EDE 60          RTS
 
 ;;; $8EDF: Move Samus horizontally - knockback or bomb jump ;;;
 {
+; Called by:
+;     $DF53: Knockback movement - up
+;     $DF64: Knockback movement - down
+;     $E04C: Samus movement handler - bomb jump - main - horizontal
+
 $90:8EDF 08          PHP
 $90:8EE0 C2 30       REP #$30
 $90:8EE2 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
@@ -2706,7 +2732,12 @@ $90:8FB2 60          RTS
 
 ;;; $8FB3: Samus jumping movement ;;;
 {
-; Used for normal jumping, spring ball - in air, wall jumping, damage boost
+; Called by:
+;     $A42E: Samus movement - normal jumping
+;     $A6F1: Samus movement - spring ball - in air
+;     $A734: Samus movement - wall jumping
+;     $A7CA: Samus movement - damage boost
+
 $90:8FB3 08          PHP
 $90:8FB4 C2 30       REP #$30
 $90:8FB6 20 3E 97    JSR $973E  [$90:973E]  ; Handle Samus X extra run speed
@@ -2778,6 +2809,9 @@ $90:903F 60          RTS
 
 ;;; $9040: Samus spin jumping movement ;;;
 {
+; Called by:
+;     $A436: Samus movement - spin jumping
+
 $90:9040 08          PHP
 $90:9041 C2 30       REP #$30
 $90:9043 20 3E 97    JSR $973E  [$90:973E]  ; Handle Samus X extra run speed
@@ -2866,6 +2900,21 @@ $90:90E1 60          RTS
 
 ;;; $90E2: Samus Y movement - with speed calculations ;;;
 {
+; Called by:
+;     $8FB3: Samus jumping movement
+;     $9040: Samus spin jumping movement
+;     $9168: Samus falling movement
+;     $919F: Samus morphed falling movement
+;     $91D1: Samus morphed bouncing movement
+;     $92B8: Simple Samus Y movement
+;     $92C7: Simple Samus Y movement
+;     $946E: Samus movement handler - released from grapple swing
+;     $94CB: Samus movement handler - Samus drained - falling
+;     $DF53: Knockback movement - up
+;     $DF5D: Knockback movement - straight up (unused)
+;     $E04C: Samus movement handler - bomb jump - main - horizontal
+;     $E066: Samus movement handler - bomb jump - main - straight
+
 $90:90E2 08          PHP
 $90:90E3 C2 30       REP #$30
 $90:90E5 AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;\
@@ -2934,6 +2983,9 @@ $90:9167 60          RTS
 
 ;;; $9168: Samus falling movement ;;;
 {
+; Called by:
+;     $A58D: Samus movement - falling
+
 $90:9168 08          PHP
 $90:9169 C2 30       REP #$30
 $90:916B 20 3E 97    JSR $973E  [$90:973E]  ; Handle Samus X extra run speed
@@ -2964,6 +3016,10 @@ $90:919E 60          RTS
 
 ;;; $919F: Samus morphed falling movement ;;;
 {
+; Called by:
+;     $A5CA: Samus movement - morph ball - falling
+;     $A703: Samus movement - spring ball - falling
+
 $90:919F 08          PHP
 $90:91A0 C2 30       REP #$30
 $90:91A2 20 D1 9B    JSR $9BD1  [$90:9BD1]  ; Determine Samus X speed table entry pointer
@@ -2991,6 +3047,11 @@ $90:91D0 60          RTS
 
 ;;; $91D1: Samus morphed bouncing movement ;;;
 {
+; Called by:
+;     $A5CA: Samus movement - morph ball - falling
+;     $A6F1: Samus movement - spring ball - in air
+;     $A703: Samus movement - spring ball - falling
+
 $90:91D1 08          PHP
 $90:91D2 C2 30       REP #$30
 $90:91D4 20 D1 9B    JSR $9BD1  [$90:9BD1]  ; Determine Samus X speed table entry pointer
@@ -3048,6 +3109,21 @@ $90:923E 60          RTS
 
 ;;; $923F: Samus Y movement - no speed calculations ;;;
 {
+; Called by:
+;     $A383: Samus movement - standing
+;     $A3E5: Samus movement - running
+;     $A521: Samus movement - morph ball - on ground
+;     $A573: Samus movement - crouching
+;     $A5FC: Samus movement - knockback / crystal flash ending
+;     $A61C: Samus movement - crouching/standing/morphing/unmorphing transition
+;     $A67C: Samus movement - turning around - on ground
+;     $A694: Samus movement - moonwalking
+;     $A69F: Samus movement - spring ball - on ground
+;     $A75F: Samus movement - ran into a wall
+;     $A790: Samus movement - turning around - jumping
+;     $A7AD: Samus movement - turning around - falling
+;     $DF64: Knockback movement - down
+
 ; Total X speed is added to distance moved down in an attempt to keep Samus in contact with downwards slopes
 ; (unless it's already been determined that she's on a slope, in which case no adjustment is made)
 ; You'll note that this only works up to a steepness of 45°, which may or may not be intentional...
@@ -3133,7 +3209,15 @@ $90:92B7 60          RTS
 ;;; $92B8: Simple Samus Y movement ;;;
 {
 ;; Returns:
-;;     Carry: set if [Samus Y direction] != none, clear otherwise
+;;     Carry: Set if [Samus Y direction] != none, clear otherwise
+
+; Called by:
+;     $A521: Samus movement - morph ball - on ground
+;     $A69F: Samus movement - spring ball - on ground
+;     $A790: Samus movement - turning around - jumping
+;     $A7AD: Samus movement - turning around - falling
+
+; In all cases, if this routine returns carry clear, $923F (Samus Y movement - no speed calculations) is called
 $90:92B8 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:92BB D0 02       BNE $02    [$92BF]     ;} If [Samus Y direction] = none:
 $90:92BD 18          CLC                    ;\
@@ -3149,9 +3233,12 @@ $90:92C6 60          RTS                    ;} Return carry set
 ;;; $92C7: Simple Samus Y movement ;;;
 {
 ;; Returns:
-;;     Carry: set if [Samus Y direction] != none, clear otherwise
+;;     Carry: Set if [Samus Y direction] != none, clear otherwise
 
 ; Clone of $92B8
+; Called by:
+;     $A61C: Samus movement - crouching/standing/morphing/unmorphing transition
+
 $90:92C7 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:92CA D0 02       BNE $02    [$92CE]     ;} If [Samus Y direction] = none:
 $90:92CC 18          CLC                    ;\
@@ -3166,6 +3253,8 @@ $90:92D5 60          RTS                    ;} Return carry set
 
 ;;; $92D6: Unused ;;;
 {
+;; Parameters:
+;;     $12: Samus Y velocity
 $90:92D6 08          PHP
 $90:92D7 C2 30       REP #$30
 $90:92D9 80 00       BRA $00    [$92DB]
@@ -3914,6 +4003,8 @@ $90:9825 60          RTS
 
 ;;; $9826: Move Samus right by [$12].[$14], no collision detection ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
 $90:9826 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $90:9829 18          CLC                    ;|
 $90:982A 65 14       ADC $14    [$7E:0014]  ;|
@@ -3931,6 +4022,8 @@ $90:9841 60          RTS
 
 ;;; $9842: Move Samus left by [$12].[$14], no collision detection ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
 $90:9842 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $90:9845 38          SEC                    ;|
 $90:9846 E5 14       SBC $14    [$7E:0014]  ;|
@@ -3958,6 +4051,8 @@ $90:9870 60          RTS
 
 ;;; $9871: Move Samus down by [$12].[$14], no collision detection ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
 $90:9871 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $90:9874 18          CLC                    ;|
 $90:9875 65 14       ADC $14    [$7E:0014]  ;|
@@ -3975,6 +4070,8 @@ $90:988C 60          RTS
 
 ;;; $988D: Move Samus up by [$12].[$14], no collision detection ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
 $90:988D AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $90:9890 38          SEC                    ;|
 $90:9891 E5 14       SBC $14    [$7E:0014]  ;|
@@ -4483,13 +4580,13 @@ $90:9C09 8D 6C 0A    STA $0A6C  [$7E:0A6C]  ;} Samus X speed table pointer = $A1
 
 ; BRANCH_SPEED_TABLE_SET
 $90:9C0C AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
-$90:9C0F 29 FF 00    AND #$00FF             ;} $14 = [Samus movement type]
-$90:9C12 85 14       STA $14    [$7E:0014]  ;/
-$90:9C14 0A          ASL A                  ;\
+$90:9C0F 29 FF 00    AND #$00FF             ;|
+$90:9C12 85 14       STA $14    [$7E:0014]  ;|
+$90:9C14 0A          ASL A                  ;|
 $90:9C15 18          CLC                    ;|
-$90:9C16 65 14       ADC $14    [$7E:0014]  ;|
+$90:9C16 65 14       ADC $14    [$7E:0014]  ;} X = [Samus X speed table pointer] + [Samus movement type] * Ch
 $90:9C18 0A          ASL A                  ;|
-$90:9C19 0A          ASL A                  ;} X = [Samus X speed table pointer] + [Samus movement type] * Ch
+$90:9C19 0A          ASL A                  ;|
 $90:9C1A 18          CLC                    ;|
 $90:9C1B 6D 6C 0A    ADC $0A6C  [$7E:0A6C]  ;|
 $90:9C1E AA          TAX                    ;/
@@ -5899,7 +5996,11 @@ $90:A89C             dw 0000,0000,
 
 ;;; $A8A6: Mark map tile as explored ;;;
 {
-; Set tiles explored for current area, depending on $12 and $18 (X and Y offsets from room's top-left corner).
+;; Parameters:
+;;     $12: X offset of map tile in room. Unit px
+;;     $18: Y offset of map tile in room. Unit px
+
+; Set tiles explored for current area, used only for marking boss room map tiles as explored
 ; The first row is skipped during index calculation, that is, room (0, 0) maps to $07FB rather than $07F7
 
 ; From RAM map, $07F7..08F6:
@@ -5965,7 +6066,7 @@ $90:A8EE 60          RTS
 ; Called by:
 ;     $9A79: Initialise HUD
 
-; This function isn't setting the variables needed for the call to $AA43 and otherwise unnecessary
+; This function isn't setting the variables needed for the call to $AA43 and otherwise is unnecessary
 $90:A8EF 08          PHP
 $90:A8F0 C2 30       REP #$30
 $90:A8F2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -6157,7 +6258,7 @@ $90:A9FA 29 03 00    AND #$0003             ;|
 $90:A9FD C9 03 00    CMP #$0003             ;} If [X] % 4 != 3: go to BRANCH_SINGLE_PAGE (if [X] = 3, then mini-map origin is within 8 squares of the right page boundary)
 $90:AA00 D0 2A       BNE $2A    [$AA2C]     ;/
 
-; If [X] % 3 then mini-map origin is within last 8 tiles of the row.
+; If [X] % 4 == 3 then mini-map origin is within last 8 tiles of the row.
 ; If the mini-map origin is on the same page as Samus map position,
 ; then there's a chance that at least one of the two tiles right of Samus map position spilled onto the next map page.
 ; If the mini-map origin is on a different page to Samus map position,
@@ -6175,7 +6276,6 @@ $90:AA04 F0 04       BEQ $04    [$AA0A]     ;} If [$2E] != 0: (Samus map positio
 $90:AA06 98          TYA                    ;\
 $90:AA07 4A          LSR A                  ;} A = [Y] / 2 (bit subindex of column of mini-map origin) (necessarily 6 or 7)
 $90:AA08 80 02       BRA $02    [$AA0C]
-
                                             ; Else ([$2E] = 0): (Samus map position in the same map data byte as the origin)
 $90:AA0A A5 20       LDA $20    [$7E:0020]  ; A = [$20] (bit subindex of column of Samus map position) (if 0..5, then the right-most mini-map tile is on the same page)
 
@@ -6263,9 +6363,9 @@ $90:AA78 6D 9F 07    ADC $079F  [$7E:079F]  ;|
 $90:AA7B AA          TAX                    ;|
 $90:AA7C BF 4C 96 82 LDA $82964C,x[$82:965E];|
 $90:AA80 85 02       STA $02    [$7E:0002]  ;|
-$90:AA82 85 05       STA $05    [$7E:0005]  ;} $00 = [$82:964A + [area index] * 3] (map tilemap row 0 pointer
-$90:AA84 85 08       STA $08    [$7E:0008]  ;} $03 = [$82:964A + [area index] * 3] + 40h (map tilemap row 1 pointer
-$90:AA86 BF 4A 96 82 LDA $82964A,x[$82:965C];} $06 = [$82:964A + [area index] * 3] + 80h (map tilemap row 2 pointer
+$90:AA82 85 05       STA $05    [$7E:0005]  ;} $00 = [$82:964A + [area index] * 3] (map tilemap row 0 pointer)
+$90:AA84 85 08       STA $08    [$7E:0008]  ;} $03 = [$82:964A + [area index] * 3] + 40h (map tilemap row 1 pointer)
+$90:AA86 BF 4A 96 82 LDA $82964A,x[$82:965C];} $06 = [$82:964A + [area index] * 3] + 80h (map tilemap row 2 pointer)
 $90:AA8A 85 00       STA $00    [$7E:0000]  ;|
 $90:AA8C 18          CLC                    ;|
 $90:AA8D 69 40 00    ADC #$0040             ;|
@@ -6797,6 +6897,8 @@ $90:ADB6 6B          RTL
 
 ;;; $ADB7: Clear projectile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:ADB7 08          PHP
 $90:ADB8 C2 30       REP #$30
 $90:ADBA 9E 64 0B    STZ $0B64,x[$7E:0B64]  ; Projectile X position = 0
@@ -6836,6 +6938,8 @@ $90:AE05 6B          RTL
 {
 ;;; $AE06: Kill projectile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:AE06 08          PHP
 $90:AE07 8B          PHB
 $90:AE08 4B          PHK                    ;\
@@ -6874,6 +6978,8 @@ $90:AE3A             dw AE4E, AE59, AE6E, AE79, AE8E, AE8E, AE99, AEAE, AEB9, AE
 
 ;;; $AE4E: Kill beam - up ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE4E B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
 $90:AE51 38          SEC                    ;|
 $90:AE52 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} Projectile Y position -= [projectile Y radii]
@@ -6884,6 +6990,8 @@ $90:AE58 60          RTS
 
 ;;; $AE59: Kill beam - up-right ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE59 B9 64 0B    LDA $0B64,y[$7E:0B66]  ;\
 $90:AE5C 18          CLC                    ;|
 $90:AE5D 79 B4 0B    ADC $0BB4,y[$7E:0BB6]  ;} Projectile X position += [projectile X radii]
@@ -6898,6 +7006,8 @@ $90:AE6D 60          RTS
 
 ;;; $AE6E: Kill beam - right ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE6E B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $90:AE71 18          CLC                    ;|
 $90:AE72 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} Projectile X position += [projectile X radii]
@@ -6908,6 +7018,8 @@ $90:AE78 60          RTS
 
 ;;; $AE79: Kill beam - down-right ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE79 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $90:AE7C 18          CLC                    ;|
 $90:AE7D 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} Projectile X position += [projectile X radii]
@@ -6922,6 +7034,8 @@ $90:AE8D 60          RTS
 
 ;;; $AE8E: Kill beam - down ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE8E B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
 $90:AE91 18          CLC                    ;|
 $90:AE92 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} Projectile Y position += [projectile Y radii]
@@ -6932,6 +7046,8 @@ $90:AE98 60          RTS
 
 ;;; $AE99: Kill beam - down-left ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AE99 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $90:AE9C 38          SEC                    ;|
 $90:AE9D F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
@@ -6946,6 +7062,8 @@ $90:AEAD 60          RTS
 
 ;;; $AEAE: Kill beam - left ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AEAE B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $90:AEB1 38          SEC                    ;|
 $90:AEB2 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
@@ -6956,6 +7074,8 @@ $90:AEB8 60          RTS
 
 ;;; $AEB9: Kill beam - up-left ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:AEB9 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $90:AEBC 38          SEC                    ;|
 $90:AEBD F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
@@ -6998,6 +7118,8 @@ $90:AEF2 60          RTS
 {
 ;;; $AEF3: Projectile pre-instruction - beam - no wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:AEF3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:AEF6 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:AEF9 F0 05       BEQ $05    [$AF00]     ;/
@@ -7073,6 +7195,8 @@ $90:AF67 60          RTS
 {
 ;;; $AF68: Projectile pre-instruction - missile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:AF68 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:AF6B 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:AF6E F0 05       BEQ $05    [$AF75]     ;/
@@ -7154,6 +7278,8 @@ $90:AFE4 60          RTS
 {
 ;;; $AFE5: Projectile pre-instruction - super missile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:AFE5 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:AFE8 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:AFEB F0 06       BEQ $06    [$AFF3]     ;/
@@ -7243,6 +7369,9 @@ $90:B074 60          RTS
 
 ;;; $B075: Projectile pre-instruction - super missile link ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
 ; If super missile link is flagged for deletion, clear *all* super missile projectiles
 $90:B075 BD 04 0C    LDA $0C04,x[$7E:0C06]  ;\
 $90:B078 29 F0 00    AND #$00F0             ;} If projectile is not deleted: return
@@ -7269,6 +7398,8 @@ $90:B098 60          RTS
 
 ;;; $B099: Projectile pre-instruction - bomb ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B099 BD 04 0C    LDA $0C04,x[$7E:0C0E]  ;\
 $90:B09C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:B09F F0 05       BEQ $05    [$B0A6]     ;/
@@ -7283,6 +7414,8 @@ $90:B0AD 60          RTS
 
 ;;; $B0AE: Projectile pre-instruction - power bomb ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B0AE BD 04 0C    LDA $0C04,x[$7E:0C0E]  ;\
 $90:B0B1 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:B0B4 F0 05       BEQ $05    [$B0BB]     ;/
@@ -7299,6 +7432,8 @@ $90:B0C2 60          RTS
 {
 ;;; $B0C3: Projectile pre-instruction - beam - wave + plasma/spazer / charged (ice) wave ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B0C3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:B0C6 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:B0C9 F0 05       BEQ $05    [$B0D0]     ;/
@@ -7317,6 +7452,8 @@ $90:B0E2 80 1F       BRA $1F    [$B103]     ; Go to wave beam shared pre-instruc
 
 ;;; $B0E4: Projectile pre-instruction - beam - uncharged (ice) wave ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B0E4 BD 04 0C    LDA $0C04,x            ;\
 $90:B0E7 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:B0EA F0 05       BEQ $05    [$B0F1]     ;/
@@ -7385,6 +7522,8 @@ $90:B158 60          RTS
 
 ;;; $B159: Projectile pre-instruction - hyper beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B159 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:B15C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:B15F F0 05       BEQ $05    [$B166]     ;/
@@ -7404,7 +7543,7 @@ $90:B169 60          RTS
 ;;; $B16A: Delete projectile if too far off-screen ;;;
 {
 ;; Returns:
-;;     Carry: set if projectile deleted, clear otherwise
+;;     Carry: Set if projectile deleted, clear otherwise
 $90:B16A AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:B16D BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $90:B170 38          SEC                    ;|
@@ -7436,13 +7575,15 @@ $90:B196 60          RTS                    ;} Return carry clear
 {
 ;;; $B197: Initialise beam velocities ;;;
 {
+;; Parameters:
+;;     $14: Projectile index
 $90:B197 08          PHP
 $90:B198 8B          PHB
 $90:B199 4B          PHK                    ;\
 $90:B19A AB          PLB                    ;} DB = $90
 $90:B19B C2 30       REP #$30
-$90:B19D A6 14       LDX $14    [$7E:0014]  ;\
-$90:B19F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;|
+$90:B19D A6 14       LDX $14    [$7E:0014]  ; X = [$14] (projectile index)
+$90:B19F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B1A2 29 0F 00    AND #$000F             ;|
 $90:B1A5 0A          ASL A                  ;} Y = (beam type) * 4
 $90:B1A6 0A          ASL A                  ;|
@@ -7532,7 +7673,6 @@ $90:B204             dw B218, B23D, B268, B277, B28C, B28C, B29B, B2B4, B2C7, B2
 ;;; $B218: Initialise projectile velocities - up ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 
@@ -7563,7 +7703,6 @@ $90:B23C 60          RTS
 ;;; $B23D: Initialise projectile velocities - up-right ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B23D A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7595,7 +7734,6 @@ $90:B267 60          RTS
 ;;; $B268: Initialise projectile velocities - right ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B268 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7611,7 +7749,6 @@ $90:B276 60          RTS
 ;;; $B277: Initialise projectile velocities - down-right ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B277 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7630,7 +7767,6 @@ $90:B28B 60          RTS
 ;;; $B28C: Initialise projectile velocities - down ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B28C A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7646,7 +7782,6 @@ $90:B29A 60          RTS
 ;;; $B29B: Initialise projectile velocities - down-left ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B29B A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7667,7 +7802,6 @@ $90:B2B3 60          RTS
 ;;; $B2B4: Initialise projectile velocities - left ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 
@@ -7688,7 +7822,6 @@ $90:B2C6 60          RTS
 ;;; $B2C7: Initialise projectile velocities - up-left ;;;
 {
 ;; Parameters:
-;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
 $90:B2C7 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
@@ -7722,6 +7855,8 @@ $90:B2F5 60          RTS
 
 ;;; $B2F6: Accelerate (super) missile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B2F6 08          PHP
 $90:B2F7 C2 30       REP #$30
 $90:B2F9 DA          PHX
@@ -7959,6 +8094,8 @@ $90:B4A5 60          RTS
 
 ;;; $B4A6: Unused. Clear linked super missile if super missile explosion ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B4A6 08          PHP
 $90:B4A7 C2 30       REP #$30
 $90:B4A9 BD 7C 0C    LDA $0C7C,x            ;\
@@ -8193,6 +8330,8 @@ $90:B609             dw B4C9, ;  0: Uncharged power
 
 ;;; $B657: Spawn projectile trail ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:B657 8B          PHB
 $90:B658 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B65B 89 00 0F    BIT #$0F00             ;} If projectile is beam:
@@ -9151,6 +9290,8 @@ $90:BD63 60          RTS
 {
 ;;; $BD64: Initial beam block collision - no wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:BD64 DA          PHX
 $90:BD65 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:BD68 29 0F 00    AND #$000F             ;|
@@ -9212,6 +9353,8 @@ $90:BDB1 60          RTS
 
 ;;; $BDB2: Initial wave beam block collision ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:BDB2 DA          PHX
 $90:BDB3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:BDB6 29 0F 00    AND #$000F             ;|
@@ -9274,6 +9417,8 @@ $90:BDFF 60          RTS
 
 ;;; $BE00: Projectile reflection ;;;
 {
+;; Parameters:
+;;     $14: Projectile index
 $90:BE00 08          PHP
 $90:BE01 8B          PHB
 $90:BE02 4B          PHK                    ;\
@@ -10305,6 +10450,8 @@ $90:C5EA 60          RTS
 
 ;;; $C5EB: Update arm cannon is open flag ;;;
 {
+;; Returns:
+;;     Carry: Set if arm cannon is open flag changed, otherwise clear
 $90:C5EB AD AA 0A    LDA $0AAA  [$7E:0AAA]  ;\
 $90:C5EE C9 02 00    CMP #$0002             ;} If arm cannon not toggled: return carry clear
 $90:C5F1 30 32       BMI $32    [$C625]     ;/
@@ -10541,9 +10688,19 @@ $90:C78C 8E 30 03    STX $0330  [$7E:0330]  ;/
 $90:C78F 28          PLP
 $90:C790 60          RTS
 
-; Indexed by direction (see $0C04)
-$90:C791             dw 281F, 281F, 281F, 681F, A81F, E81F, 281F, 681F, 681F, 681F ; Sprite tile number and attributes
-$90:C7A5             dw C7B9, C7D1, C7C1, C7C9, C7B9, C7B9, C7C9, C7C1, C7D1, C7B9 ; Pointers to below table
+;                        ________________________________________________ 0: Up, facing right
+;                       |     ___________________________________________ 1: Up-right
+;                       |    |     ______________________________________ 2: Right
+;                       |    |    |     _________________________________ 3: Down-right
+;                       |    |    |    |     ____________________________ 4: Down, facing right
+;                       |    |    |    |    |     _______________________ 5: Down, facing left
+;                       |    |    |    |    |    |     __________________ 6: Down-left
+;                       |    |    |    |    |    |    |     _____________ 7: Left
+;                       |    |    |    |    |    |    |    |     ________ 8: Up-left
+;                       |    |    |    |    |    |    |    |    |     ___ 9: Up, facing left
+;                       |    |    |    |    |    |    |    |    |    |
+$90:C791             dw 281F,281F,281F,681F,A81F,E81F,281F,681F,681F,681F ; Sprite tile number and attributes
+$90:C7A5             dw C7B9,C7D1,C7C1,C7C9,C7B9,C7B9,C7C9,C7C1,C7D1,C7B9 ; Pointers to below table
 
 ; Pointers to tiles in bank $9A, indexed by arm cannon frame
 $90:C7B9             dw 0000,9A00,9C00,9E00
@@ -11239,6 +11396,8 @@ $90:CF08 60          RTS
 
 ;;; $CF09: Projectile pre-instruction - ice SBA - main ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:CF09 BD 04 0C    LDA $0C04,x            ;\
 $90:CF0C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:CF0F F0 0C       BEQ $0C    [$CF1D]     ;/
@@ -11289,6 +11448,8 @@ $90:CF79 60          RTS
 
 ;;; $CF7A: Projectile pre-instruction - ice SBA - end ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:CF7A BD 04 0C    LDA $0C04,x            ;\
 $90:CF7D 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:CF80 F0 05       BEQ $05    [$CF87]     ;/
@@ -11694,6 +11855,8 @@ $90:D2B9 60          RTS
 
 ;;; $D2BA: End shinespark if collision detected or low health ;;;
 {
+;; Returns:
+;;     Carry: Set if shinespark ended, otherwise clear
 $90:D2BA AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $90:D2BD C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
 $90:D2C0 30 07       BMI $07    [$D2C9]     ;/
@@ -12312,6 +12475,8 @@ $90:D792 60          RTS
 {
 ;;; $D793: Projectile pre-instruction - plasma SBA ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:D793 BD 04 0C    LDA $0C04,x[$7E:0C0A]  ;\
 $90:D796 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:D799 F0 05       BEQ $05    [$D7A0]     ;/
@@ -12350,6 +12515,8 @@ $90:D7DB             dw D7E1, D7FA, D813
 
 ;;; $D7E1: Plasma SBA - phase 0: expanding ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:D7E1 B9 DC 0B    LDA $0BDC,y[$7E:0BE2]  ;\
 $90:D7E4 18          CLC                    ;|
 $90:D7E5 69 04 00    ADC #$0004             ;} Projectile distance = ([projectile distance] + 4) % 100h
@@ -12366,6 +12533,8 @@ $90:D7F9 60          RTS
 
 ;;; $D7FA: Plasma SBA - phase 1: contracting ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:D7FA B9 DC 0B    LDA $0BDC,y[$7E:0BE2]  ;\
 $90:D7FD 38          SEC                    ;|
 $90:D7FE E9 04 00    SBC #$0004             ;} Projectile distance = ([projectile distance] - 4) % 100h
@@ -12382,6 +12551,8 @@ $90:D812 60          RTS
 
 ;;; $D813: Plasma SBA - phase 2: dispersing ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:D813 B9 64 0B    LDA $0B64,y[$7E:0B6A]  ;\
 $90:D816 38          SEC                    ;|
 $90:D817 ED 11 09    SBC $0911  [$7E:0911]  ;|
@@ -12483,6 +12654,8 @@ $90:D8ED             dw 0000, 0000, 8000, 0000, 0000 ; Bomb Y subspeeds
 
 ;;; $D8F7: Projectile pre-instruction - spread bomb ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:D8F7 BD 04 0C    LDA $0C04,x            ;\
 $90:D8FA 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:D8FD F0 05       BEQ $05    [$D904]     ;/
@@ -12611,6 +12784,8 @@ $90:DA07 60          RTS
 
 ;;; $DA08: Projectile pre-instruction - wave SBA ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DA08 BD 04 0C    LDA $0C04,x            ;\
 $90:DA0B 89 F0 00    BIT #$00F0             ;} If projectile is not deleted:
 $90:DA0E D0 07       BNE $07    [$DA17]     ;/
@@ -12733,6 +12908,8 @@ $90:DB05 60          RTS
 
 ;;; $DB06: Projectile pre-instruction - spazer SBA ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DB06 BD 04 0C    LDA $0C04,x            ;\
 $90:DB09 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:DB0C F0 04       BEQ $04    [$DB12]     ;/
@@ -12770,8 +12947,10 @@ $90:DB4F             dw DB57, DB66, DB75, DB84
 }
 
 
-;;; $DB57: Clear spazer SBA projectile pair - [X] = 0 ;;;
+;;; $DB57: Clear spazer SBA projectile pair - projectile index 0 ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DB57 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:DB5B A2 04 00    LDX #$0004             ;\
 $90:DB5E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 4
@@ -12780,8 +12959,10 @@ $90:DB65 60          RTS
 }
 
 
-;;; $DB66: Clear spazer SBA projectile pair - [X] = 2 ;;;
+;;; $DB66: Clear spazer SBA projectile pair - projectile index 2 ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DB66 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:DB6A A2 06 00    LDX #$0006             ;\
 $90:DB6D 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 6
@@ -12790,8 +12971,10 @@ $90:DB74 60          RTS
 }
 
 
-;;; $DB75: Clear spazer SBA projectile pair - [X] = 4 ;;;
+;;; $DB75: Clear spazer SBA projectile pair - projectile index 4 ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DB75 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:DB79 A2 00 00    LDX #$0000             ;\
 $90:DB7C 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 0
@@ -12800,8 +12983,10 @@ $90:DB83 60          RTS
 }
 
 
-;;; $DB84: Clear spazer SBA projectile pair - [X] = 6 ;;;
+;;; $DB84: Clear spazer SBA projectile pair - projectile index 6 ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DB84 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:DB88 A2 02 00    LDX #$0002             ;\
 $90:DB8B 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 2
@@ -12812,6 +12997,8 @@ $90:DB92 60          RTS
 
 ;;; $DB93: Spazer SBA - phase 0: circling ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:DB93 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:DB96 18          CLC                    ;|
 $90:DB97 65 16       ADC $16    [$7E:0016]  ;} Projectile Y position = [Samus Y position] + [$16]
@@ -12840,6 +13027,8 @@ $90:DBC7             dw 0002, FFFE, 0002, FFFE
 
 ;;; $DBCF: Spazer SBA - phase 2: flying up towards point ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:DBCF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:DBD2 38          SEC                    ;|
 $90:DBD3 E9 72 00    SBC #$0072             ;|
@@ -12885,6 +13074,8 @@ $90:DC28             dw FFFE, 0002, FFFE, 0002
 
 ;;; $DC30: Spazer SBA - phase 4: flying up away from point ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:DC30 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:DC33 38          SEC                    ;|
 $90:DC34 E9 72 00    SBC #$0072             ;|
@@ -12918,6 +13109,8 @@ $90:DC66 60          RTS
 
 ;;; $DC67: Fire end of spazer SBA ;;;
 {
+;; Parameters:
+;;     Y: Projectile index
 $90:DC67 B9 64 0B    LDA $0B64,y            ;\
 $90:DC6A 18          CLC                    ;|
 $90:DC6B 79 94 DC    ADC $DC94,y            ;} Projectile X position += [$DC94 + [Y]]
@@ -12943,6 +13136,8 @@ $90:DC94             dw 0010, 0010, FFF0, FFF0
 
 ;;; $DC9C: Projectile pre-instruction - end of spazer SBA ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $90:DC9C BD 04 0C    LDA $0C04,x            ;\
 $90:DC9F 29 F0 00    AND #$00F0             ;} If projectile is deleted:
 $90:DCA2 F0 05       BEQ $05    [$DCA9]     ;/
@@ -16106,6 +16301,9 @@ $90:EFCB             dw FF80, 0080, 0080, FF80 ; Y offsets from Samus
 
 ;;; $EFD3: Projectile pre-instruction - unknown projectile 27h ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
 ; Shinespark beam code(?)
 $90:EFD3 BD 64 0B    LDA $0B64,x            ;\
 $90:EFD6 18          CLC                    ;|

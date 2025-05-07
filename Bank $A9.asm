@@ -12725,7 +12725,7 @@ $A9:F23D A9 02 00    LDA #$0002             ;\
 $A9:F240 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;} Samus Y speed = 2
 
 $A9:F243 BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
-$A9:F246 29 06 00    AND #$0006             ;} Y = [enemy frame counter] / 2 % 3 * 2
+$A9:F246 29 06 00    AND #$0006             ;} Y = [enemy frame counter] / 2 % 4 * 2
 $A9:F249 A8          TAY                    ;/
 $A9:F24A B9 BB 93    LDA $93BB,y[$A9:93BD]  ;\
 $A9:F24D 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Enemy X position = [Samus X position] + [$93BB + [Y]] (shake X offset)

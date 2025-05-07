@@ -11961,14 +11961,14 @@ $91:ECD9 60          RTS
 {
 ; Run during start of transition animations.
 ; Corrects Samus height so crouching/morphing ends on ground instead of in the air
-; Doesn't kill Samus' X speed or cancel speed boosting (because transition animations are a hack)
+; Doesn't kill Samus' X speed or cancel speed boosting
 $91:ECDA AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:ECDD C9 DB 00    CMP #$00DB             ;} If [Samus pose] >= DBh: go to BRANCH_AIMING
 $91:ECE0 10 41       BPL $41    [$ED23]     ;/
 $91:ECE2 38          SEC                    ;\
 $91:ECE3 E9 35 00    SBC #$0035             ;|
 $91:ECE6 0A          ASL A                  ;|
-$91:ECE7 AA          TAX                    ;} $12 = [$ED36 + ([Samus pose] - 35h) * 2]
+$91:ECE7 AA          TAX                    ;} $12 = [$ED36 + ([Samus pose] - 35h) * 2] (distance to check for collision)
 $91:ECE8 BD 36 ED    LDA $ED36,x[$91:ED36]  ;|
 $91:ECEB 85 12       STA $12    [$7E:0012]  ;/
 $91:ECED F0 16       BEQ $16    [$ED05]     ; If [$12] = 0: go to BRANCH_NOT_SHRINKING
@@ -11996,7 +11996,7 @@ $91:ED14 F0 0C       BEQ $0C    [$ED22]     ;} If [morph ball bounce state] != n
 $91:ED16 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 $91:ED19 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $91:ED1C 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
-$91:ED1F 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = 0
+$91:ED1F 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 
 $91:ED22 60          RTS                    ; Return
 
@@ -12006,7 +12006,7 @@ $91:ED26 30 FA       BMI $FA    [$ED22]     ;|
 $91:ED28 C9 F7 00    CMP #$00F7             ;} If not F1h <= [Samus pose] < F7h (crouching transition - aiming): return
 $91:ED2B 10 F5       BPL $F5    [$ED22]     ;/
 $91:ED2D A9 05 00    LDA #$0005             ;\
-$91:ED30 85 12       STA $12    [$7E:0012]  ;} $12 = 5
+$91:ED30 85 12       STA $12    [$7E:0012]  ;} $12 = 5 (distance to check for collision)
 $91:ED32 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:ED34 80 BB       BRA $BB    [$ECF1]     ; Go to BRANCH_SHRINKING
 
@@ -12216,7 +12216,7 @@ $91:EE6C A9 37 A3    LDA #$A337             ;\
 $91:EE6F 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $91:EE72 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $91:EE75 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
-$91:EE78 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = 0
+$91:EE78 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 $91:EE7B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
 $91:EE7F 60          RTS
 }
@@ -12740,6 +12740,7 @@ $91:F1D2 60          RTS
 
 ;;; $F1D3: Solid vertical collision - landed - set Samus as not bouncing ;;;
 {
+; More of a "set grounded state" operation
 $91:F1D3 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Set Samus as not falling
 $91:F1D6 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $91:F1D9 9C 2A 0B    STZ $0B2A  [$7E:0B2A]  ; $0B2A = 0
@@ -12922,8 +12923,8 @@ $91:F2EF 60          RTS
 
 ;;; $F2F0: Solid vertical collision - [Samus solid vertical collision result] = 6 ;;;
 {
-; Only code in the game that sets $0A46 to a non-3 value,
-; the only code in the game that checks this variable only cares if the 2 bit is set or not,
+; This is the only code in the game that sets $0A46 to a non-3 value
+; Code that checks this variable only cares if the 2 bit is set or not,
 ; so it's not known what the intended difference between 0 and 1 is here
 $91:F2F0 AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
 $91:F2F3 F0 23       BEQ $23    [$F318]     ;} If Samus X speed not killed: return

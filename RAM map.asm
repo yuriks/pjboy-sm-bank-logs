@@ -1923,7 +1923,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0B34: Samus Y acceleration (i.e. gravity) / shinespark Y acceleration delta / shinespark X acceleration
     $0B36: Samus Y direction
     {
-        0: None
+        0: None. Set when grounded and in a handful of special cases (e.g. shinespark crash)
         1: Up
         2: Down
     }
@@ -2251,20 +2251,22 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         3: Unused. Hit a ceiling but don't kill Y speed?
         4: Hit ceiling. Samus collided with block or solid enemy during up movement ("up movement" as in $90:93EC)
         5: Wall jump triggered
+        6: Unused
     }
     $0DC7: Samus downwards movement solid collision result. Used with $0DC6 = 1/2
     {
         If [$0DC6] = landed:
-            0: Grounded
+            0: Grounded (standing / running / crouching / knockback / moonwalking / ran into a wall)
             1: Morph ball grounded
-            2: Unused
+            2: Unused (unused movement type 7)
             3: Spring ball grounded
             4: No change
+            5: Unused
             
         If [$0DC6] = falling:
-            0: Airborne
+            0: Airborne (normal/spin/wall jumping / falling / knockback / damage boost)
             1: Morph ball airborne
-            2: Unused
+            2: Unused (unused movement type 9)
             3: Spring ball airborne
             4: No change
     }
