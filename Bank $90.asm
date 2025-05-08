@@ -11009,8 +11009,16 @@ $90:CC21             dw 0000, ; 0: Power
 }
 
 
-;;; $CC39: ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h)) ;;;
+;;; $CC39: Calculate X/Y components of radius [A], angle [Y] ;;;
 {
+;; Parameters:
+;;     A: Radius
+;;     Y: Angle. Origin = up, positive direction = clockwise
+;; Returns:
+;;     $14: X component of radius
+;;     $16: Y component of radius
+
+; Clone of $86:9BA2
 $90:CC39 08          PHP
 $90:CC3A C2 30       REP #$30
 $90:CC3C DA          PHX
@@ -11063,6 +11071,12 @@ $90:CC89 60          RTS
 
 ;;; $CC8A: A = [$18] * sin([X] / 2 * pi / 80h) ;;;
 {
+;; Parameters:
+;;     X: Angle * 2
+;;     $18: Radius
+;; Returns:
+;;     A: Sine component
+
 ; Clone of $8B:8EA3
 ; Angle [X] / 2 must be less than 80h, as this routine does unsigned multiplication
 $90:CC8A E2 20       SEP #$20
@@ -11161,6 +11175,8 @@ $90:CD19 60          RTS
 
 ;;; $CD1A: Fire wave SBA ;;;
 {
+;; Returns:
+;;     Carry: Set. Fire SBA succeeded
 $90:CD1A A2 06 00    LDX #$0006             ; X = 6 (projectile index)
 
 ; LOOP
@@ -11222,6 +11238,8 @@ $90:CD93             dw 0080,
 
 ;;; $CD9B: Fire ice SBA ;;;
 {
+;; Returns:
+;;     Carry: Set if succeeded
 $90:CD9B AD 68 0C    LDA $0C68  [$7E:0C68]  ;\
 $90:CD9E C9 7A CF    CMP #$CF7A             ;} If [projectile pre-instruction] = $CF7A (ice SBA - end): return carry clear
 $90:CDA1 F0 05       BEQ $05    [$CDA8]     ;/
@@ -11280,6 +11298,8 @@ $90:CE13 60          RTS                    ;} Return carry set
 
 ;;; $CE14: Fire spazer SBA ;;;
 {
+;; Returns:
+;;     Carry: Set. Fire SBA succeeded
 $90:CE14 A2 06 00    LDX #$0006             ; X = 6 (projectile index)
 
 ; LOOP
@@ -11324,8 +11344,8 @@ $90:CE79 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
 $90:CE7C 9C 60 0B    STZ $0B60  [$7E:0B60]  ; SBA angle delta = 0 (unused)
 $90:CE7F A9 25 00    LDA #$0025             ;\
 $90:CE82 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 25h, sound library 1, max queued sounds allowed = 6 (spazer SBA)
-$90:CE86 38          SEC
-$90:CE87 60          RTS
+$90:CE86 38          SEC                    ;\
+$90:CE87 60          RTS                    ;} Return carry set
 
 ; Initial trail timers
 $90:CE88             dw 0000,
@@ -11343,6 +11363,8 @@ $90:CE90             dw 0004,
 
 ;;; $CE98: Fire plasma SBA ;;;
 {
+;; Returns:
+;;     Carry: Set if succeeded
 $90:CE98 AD 68 0C    LDA $0C68  [$7E:0C68]  ;\
 $90:CE9B C9 93 D7    CMP #$D793             ;} If [projectile pre-instruction] = $D793:
 $90:CE9E D0 02       BNE $02    [$CEA2]     ;/
@@ -11389,8 +11411,8 @@ $90:CEFD 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = -4
 
 $90:CF00 A9 27 00    LDA #$0027             ;\
 $90:CF03 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 27h, sound library 1, max queued sounds allowed = 6 (plasma SBA)
-$90:CF07 38          SEC
-$90:CF08 60          RTS
+$90:CF07 38          SEC                    ;\
+$90:CF08 60          RTS                    ;} Return carry set
 }
 
 
@@ -12230,6 +12252,8 @@ $90:D5A1 60          RTS
 {
 ;;; $D5A2: Crystal flash ;;;
 {
+;; Returns:
+;;     Carry: Clear if succeeded, otherwise set
 $90:D5A2 08          PHP
 $90:D5A3 C2 30       REP #$30
 $90:D5A5 AD 98 09    LDA $0998  [$7E:0998]  ;\
@@ -12336,7 +12360,7 @@ $90:D68C 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:D68F A9 06 00    LDA #$0006             ;\
 $90:D692 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 6 (main)
 $90:D695 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D698 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} $0DF0 = [Samus Y position]
+$90:D698 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} Crystal flash Samus Y position = [Samus Y position]
 $90:D69B A9 CE D6    LDA #$D6CE             ;\
 $90:D69E 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D6CE (crystal flash - main)
 $90:D6A1 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
@@ -12445,7 +12469,7 @@ $90:D75A 60          RTS
 ;;; $D75B: Samus movement handler - crystal flash - finish ;;;
 {
 $90:D75B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D75E CD F0 0D    CMP $0DF0  [$7E:0DF0]  ;} If [Samus Y position] != [$0DF0]:
+$90:D75E CD F0 0D    CMP $0DF0  [$7E:0DF0]  ;} If [Samus Y position] != [Crystal flash Samus Y position]:
 $90:D761 F0 04       BEQ $04    [$D767]     ;/
 $90:D763 1A          INC A                  ;\
 $90:D764 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;} Samus Y position += 1
@@ -13291,7 +13315,7 @@ $90:DD97 10 10       BPL $10    [$DDA9]     ;} If [Samus pose] >= DBh (not sure 
 $90:DD99 38          SEC                    ;\
 $90:DD9A E9 35 00    SBC #$0035             ;|
 $90:DD9D AA          TAX                    ;|
-$90:DD9E BD AA DD    LDA $DDAA,x[$90:DDAA]  ;} If not crouching/standing transition: go to $DDB6
+$90:DD9E BD AA DD    LDA $DDAA,x[$90:DDAA]  ;} If not crouching/standing transition: go to HUD selection handler - cancel grapple
 $90:DDA1 29 FF 00    AND #$00FF             ;|
 $90:DDA4 D0 10       BNE $10    [$DDB6]     ;/
 
@@ -13314,7 +13338,7 @@ $90:DDAA             db 00, ; Facing right - crouching transition
 }
 
 
-;;; $DDB6: HUD selection handler - spin jumping / wall jumping / knockback / damage boosting / shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
+;;; $DDB6: HUD selection handler - cancel grapple (spin jumping / wall jumping / knockback / damage boosting / shinespark / crystal flash / drained by metroid / damaged by MB's attacks) ;;;
 {
 $90:DDB6 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:DDB9 C9 F0 C4    CMP #$C4F0             ;} If [grapple handler] = inactive: return
@@ -15245,7 +15269,7 @@ $90:E91C 60          RTS
 ;;; $E91D: Samus pose input handler - demo ;;;
 {
 $90:E91D 22 C0 83 91 JSL $9183C0[$91:83C0]  ; Demo input object handler
-$90:E921 22 00 80 91 JSL $918000[$91:8000]  ; Execute $91:8000
+$90:E921 22 00 80 91 JSL $918000[$91:8000]  ; Normal Samus pose input handler
 $90:E925 60          RTS
 }
 

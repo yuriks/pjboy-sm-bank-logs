@@ -4598,6 +4598,8 @@ $86:9BF2 60          RTS
 ;;     $18: Radius
 ;; Returns:
 ;;     A: Sine component
+
+; Angle [X] / 2 must be less than 80h, as this routine does unsigned multiplication
 $86:9BF3 E2 20       SEP #$20               ;\
 $86:9BF5 BF 43 B4 A0 LDA $A0B443,x[$A0:B443];|
 $86:9BF9 8D 02 42    STA $4202              ;|
