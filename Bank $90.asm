@@ -8123,13 +8123,13 @@ $90:B4C8 6B          RTL
 {
 ;;; $B4C9: Instruction list - beam trail - empty ;;;
 {
-$90:B4C9             dx 0000
+$90:B4C9             dw 0000
 }
 
 
 ;;; $B4CB: Instruction list - left beam trail - ice beams / charged power beam ;;;
 {
-$90:B4CB             dx 0001,2C38,
+$90:B4CB             dw 0001,2C38,
                         0001,2C38,
                         0001,2C38,
                         0001,2C38,
@@ -8162,6 +8162,8 @@ $90:B4CB             dx 0001,2C38,
 
 ;;; $B525: Instruction - move left projectile trail down one pixel ;;;
 {
+;; Parameters:
+;;     Y: Projectile trail index
 $90:B525 B9 78 D7    LDA $D778,y[$7E:D79A]
 $90:B528 1A          INC A
 $90:B529 99 78 D7    STA $D778,y[$7E:D79A]
@@ -8171,7 +8173,7 @@ $90:B52C 60          RTS
 
 ;;; $B52D: Instruction list - right beam trail - some ice beams ;;;
 {
-$90:B52D             dx 0001,2C38,
+$90:B52D             dw 0001,2C38,
                         0001,2C38,
                         0001,2C38,
                         0001,2C38,
@@ -8204,6 +8206,8 @@ $90:B52D             dx 0001,2C38,
 
 ;;; $B587: Instruction - move right projectile trail down one pixel ;;;
 {
+;; Parameters:
+;;     Y: Projectile trail index
 $90:B587 B9 9C D7    LDA $D79C,y[$7E:D7BE]
 $90:B58A 1A          INC A
 $90:B58B 99 9C D7    STA $D79C,y[$7E:D7BE]
@@ -8213,7 +8217,7 @@ $90:B58E 60          RTS
 
 ;;; $B58F: Instruction list - beam trail - wave beam ;;;
 {
-$90:B58F             dx 0004,2A3C,
+$90:B58F             dw 0004,2A3C,
                         0004,2A3D,
                         0004,2A3E,
                         0004,2A3F,
@@ -8223,7 +8227,7 @@ $90:B58F             dx 0004,2A3C,
 
 ;;; $B5A1: Instruction list - beam trail - (super) missile ;;;
 {
-$90:B5A1             dx 0004,2A48,
+$90:B5A1             dw 0004,2A48,
                         0004,2A49,
                         0004,2A4A,
                         0004,2A4B,
@@ -8233,6 +8237,8 @@ $90:B5A1             dx 0004,2A48,
 
 ;;; $B5B3: Instruction - move left projectile trail up one pixel ;;;
 {
+;; Parameters:
+;;     Y: Projectile trail index
 $90:B5B3 B9 78 D7    LDA $D778,y
 $90:B5B6 3A          DEC A
 $90:B5B7 99 78 D7    STA $D778,y
