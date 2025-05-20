@@ -2336,6 +2336,7 @@ $A4:97D2 6B          RTL
 
 ;;; $97D3: Crocomire main AI - death sequence index 3Eh - behind wall - wait for Samus ;;;
 {
+; Setting the camera distance index has no effect because the screen is locked by the red scrolls on either side >_<;
 $A4:97D3 C2 20       REP #$20
 $A4:97D5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A4:97D8 C9 80 02    CMP #$0280             ;} If [Samus X position] >= 280h: return

@@ -9675,8 +9675,8 @@ $90:BFC8 28          PLP
 $90:BFC9 60          RTS                    ; Return
 
 ; BRANCH_BOMB
-$90:BFCA 20 AB C0    JSR $C0AB  [$90:C0AB]  ; Fire bomb or bomb spread
-$90:BFCD 90 4B       BCC $4B    [$C01A]     ; If bomb not fired: return
+$90:BFCA 20 AB C0    JSR $C0AB  [$90:C0AB]  ; Charge bomb spread or reserve slot to fire bomb
+$90:BFCD 90 4B       BCC $4B    [$C01A]     ; If not reserved bomb slot: return
 $90:BFCF A2 0A 00    LDX #$000A             ; X = Ah (projectile index)
 
 ; LOOP_BOMB
@@ -9721,8 +9721,8 @@ $90:C01F 10 02       BPL $02    [$C023]     ;} If power bomb is active:
 $90:C021 28          PLP
 $90:C022 60          RTS                    ; Return
 
-$90:C023 20 E7 C0    JSR $C0E7  [$90:C0E7]  ; Fire (power) bomb
-$90:C026 90 F9       BCC $F9    [$C021]     ; If bomb not fired: return
+$90:C023 20 E7 C0    JSR $C0E7  [$90:C0E7]  ; Reserve slot to fire (power) bomb
+$90:C026 90 F9       BCC $F9    [$C021]     ; If not reserved bomb slot: return
 $90:C028 AD CE 09    LDA $09CE  [$7E:09CE]  ;\
 $90:C02B F0 7C       BEQ $7C    [$C0A9]     ;} If [Samus power bombs] = 0: return
 $90:C02D 3A          DEC A                  ;\
@@ -9786,18 +9786,18 @@ $90:C0AA 60          RTS
 }
 
 
-;;; $C0AB: Fire bomb or bomb spread ;;;
+;;; $C0AB: Charge bomb spread or reserve slot to fire bomb ;;;
 {
 ;; Returns:
-;;     Carry: set if bomb fired, clear otherwise
+;;     Carry: Set if reserved bomb slot, otherwise clear
 $90:C0AB AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:C0AE 89 00 10    BIT #$1000             ;} If bombs not equipped: return carry clear
 $90:C0B1 F0 32       BEQ $32    [$C0E5]     ;/
 $90:C0B3 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$90:C0B6 C9 3C 00    CMP #$003C             ;} If [beam charge counter] < 60: go to fire (power) bomb
+$90:C0B6 C9 3C 00    CMP #$003C             ;} If [beam charge counter] < 60: go to reserve slot to fire bomb
 $90:C0B9 30 2C       BMI $2C    [$C0E7]     ;/
 $90:C0BB AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
-$90:C0BE D0 27       BNE $27    [$C0E7]     ;} If [bomb counter] != 0: go to fire (power) bomb
+$90:C0BE D0 27       BNE $27    [$C0E7]     ;} If [bomb counter] != 0: go to reserve slot to fire bomb
 $90:C0C0 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:C0C2 89 00 04    BIT #$0400             ;} If pressing down:
 $90:C0C5 F0 10       BEQ $10    [$C0D7]     ;/
@@ -9818,13 +9818,12 @@ $90:C0E6 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $C0E7: Fire (power) bomb ;;;
+;;; $C0E7: Reserve slot to fire (power) bomb ;;;
 {
 ;; Returns:
-;;     Carry: set if bomb fired, clear otherwise
+;;     Carry: Set if reserved bomb slot, otherwise clear
 
 ; The caller routines overwrite the cooldown timer ($C017/$C089), so the (rather odd) increment done here has no effect
-
 $90:C0E7 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:C0E9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_NO_FIRE
 $90:C0EC F0 22       BEQ $22    [$C110]     ;/
@@ -9837,7 +9836,7 @@ $90:C0FB 29 FF 00    AND #$00FF             ;} If [cooldown timer] != 0: go to B
 $90:C0FE D0 10       BNE $10    [$C110]     ;/
 
 $90:C100 AD CC 0C    LDA $0CCC  [$7E:0CCC]  ;\
-$90:C103 1A          INC A                  ;} Increment cooldown timer
+$90:C103 1A          INC A                  ;} Increment cooldown timer (>_<;)
 $90:C104 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
 $90:C107 AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
 $90:C10A 1A          INC A                  ;} Increment bomb counter
@@ -13407,13 +13406,13 @@ $90:DDFF 80 1D       BRA $1D    [$DE1E]     ; Return
 $90:DE01 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $90:DE04 D0 18       BNE $18    [$DE1E]     ;} If time is frozen: return
 $90:DE06 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
-$90:DE09 D0 13       BNE $13    [$DE1E]     ;} If [knockback direction] != none: return
+$90:DE09 D0 13       BNE $13    [$DE1E]     ;} If [knockback direction] = none:
 $90:DE0B AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:DE0E 29 FF 00    AND #$00FF             ;|
 $90:DE11 0A          ASL A                  ;} Execute [$DE82 + [Samus movement type] * 2]
 $90:DE12 AA          TAX                    ;|
 $90:DE13 FC 82 DE    JSR ($DE82,x)[$90:DEFA];/
-$90:DE16 90 06       BCC $06    [$DE1E]     ; If carry set:
+$90:DE16 90 06       BCC $06    [$DE1E]     ; If carry set (start knockback):
 $90:DE18 A9 01 00    LDA #$0001             ;\
 $90:DE1B 8D 30 0A    STA $0A30  [$7E:0A30]  ;} Special prospective pose change command = start knockback
 
@@ -13504,6 +13503,9 @@ $90:DE82             dw DEFA, ; 0: Standing
 
 ;;; $DEBA: Knockback transition - set Samus drained hurt animation or ignore ;;;
 {
+;; Returns:
+;;     Carry: Clear. Ignore knockback
+
 ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 
 ; This routine checks for pose E8h, but the facing right version doesn't support these non-idle animations
@@ -13529,6 +13531,9 @@ $90:DEDC 60          RTS                    ;} Return carry clear
 
 ;;; $DEDD: Knockback transition - ignore ;;;
 {
+;; Returns:
+;;     Carry: Clear. Ignore knockback
+
 ; Ah: Knockback / crystal flash ending
 ; 16h: Grappling
 $90:DEDD 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
@@ -13539,6 +13544,9 @@ $90:DEE1 60          RTS                    ;} Return carry clear
 
 ;;; $DEE2: Knockback transition - ignore ;;;
 {
+;; Returns:
+;;     Carry: Clear. Ignore knockback
+
 ; Bh: Unused
 ; Ch: Unused
 ; Eh: Turning around - on ground
@@ -13557,6 +13565,9 @@ $90:DEE9 60          RTS                    ;} Return carry clear
 
 ;;; $DEEA: Knockback transition - normal ;;;
 {
+;; Returns:
+;;     Carry: Set to start knockback, clear to ignore
+
 ; 6: Falling
 $90:DEEA AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
 $90:DEED C9 1B E4    CMP #$E41B             ;} If [timer / Samus hack handler] = $E41B (unused):
@@ -13570,6 +13581,9 @@ $90:DEF9 60          RTS                    ;} Return carry clear
 
 ;;; $DEFA: Knockback transition - normal ;;;
 {
+;; Returns:
+;;     Carry: Set. Start knockback
+
 ; 0: Standing
 ; 1: Running
 ; 2: Normal jumping
@@ -13598,6 +13612,9 @@ $90:DF14 60          RTS                    ;} Return carry set
 
 ;;; $DF15: Knockback transition - morphed ;;;
 {
+;; Returns:
+;;     Carry: Set. Start knockback
+
 ; 4: Morph ball - on ground
 ; 8: Morph ball - falling
 ; 9: Unused
@@ -13614,6 +13631,9 @@ $90:DF1C 60          RTS                    ;} Return carry set
 
 ;;; $DF1D: Knockback transition - movement type 7 ;;;
 {
+;; Returns:
+;;     Carry: Set. Start knockback
+
 ; 7: Unused
 
 $90:DF1D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
@@ -13691,12 +13711,12 @@ $90:DF71 F0 25       BEQ $25    [$DF98]     ;} If solid collision:
 $90:DF73 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $90:DF76 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
 $90:DF79 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Samus is falling flag = 0
-$90:DF7C 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
-$90:DF7F 9C 2A 0B    STZ $0B2A  [$7E:0B2A]  ; $0B2A = 0
+$90:DF7C 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0 (never read)
+$90:DF7F 9C 2A 0B    STZ $0B2A  [$7E:0B2A]  ; $0B2A = 0 (never read)
 $90:DF82 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:DF85 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:DF88 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$90:DF8B 9C 38 0B    STZ $0B38  [$7E:0B38]  ; $0B38 = 0
+$90:DF8B 9C 38 0B    STZ $0B38  [$7E:0B38]  ; $0B38 = 0 (never read)
 $90:DF8E 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:DF91 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:DF94 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
@@ -13757,6 +13777,8 @@ $90:DFB5             dw DFED, ; 0: Standing
 
 ;;; $DFED: Set up bomb jump - standing / crouching ;;;
 {
+;; Returns:
+;;     Carry: Set if bomb jump enabled, otherwise clear
 $90:DFED AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $90:DFF0 F0 05       BEQ $05    [$DFF7]     ;} If time is frozen:
 $90:DFF2 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = 0
@@ -13767,6 +13789,8 @@ $90:DFF6 60          RTS                    ;} Return carry clear
 
 ;;; $DFF7: Set up bomb jump - running / falling / moonwalking / wall jumping / ran into a wall / grappling ;;;
 {
+;; Returns:
+;;     Carry: Set. Bomb jump enabled
 $90:DFF7 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:DFFA 29 FF 00    AND #$00FF             ;|
 $90:DFFD C9 04 00    CMP #$0004             ;} If facing right:
@@ -13785,6 +13809,8 @@ $90:E011 60          RTS                    ;} Return carry set
 
 ;;; $E012: Set up bomb jump - morphed / knockback / crystal flash ending ;;;
 {
+;; Returns:
+;;     Carry: Set. Bomb jump enabled
 $90:E012 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:E015 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = [Samus pose]
 $90:E018 38          SEC                    ;\
@@ -13794,6 +13820,8 @@ $90:E019 60          RTS                    ;} Return carry set
 
 ;;; $E01A: Set up bomb jump - jumping / turning around / damage boost / crouching/standing/morphing/unmorphing transition ;;;
 {
+;; Returns:
+;;     Carry: Clear. Bomb jump not enabled
 $90:E01A A9 13 E9    LDA #$E913             ;\
 $90:E01D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 }
@@ -13801,6 +13829,8 @@ $90:E01D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 
 
 ;;; $E020: Set up bomb jump - grabbed by Draygon / shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
+;; Returns:
+;;     Carry: Clear. Bomb jump not enabled
 $90:E020 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = 0
 $90:E023 18          CLC                    ;\
 $90:E024 60          RTS                    ;} Return carry clear
@@ -14530,15 +14560,15 @@ $90:E4E5 60          RTS
 ;; Parameters:
 ;;     $12.$14: Samus X base speed
 ;; Returns:
-;;     $12.$14: Samus X speed
+;;     $12.$14: Total Samus X speed
 
-; $0DBC.$0DBE = $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 2^min(4, [Samus X speed divisor])
+; Total Samus X speed = $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 2^min(4, [Samus X speed divisor])
 
 ; It's clear that whoever wrote this code was unaware of LSR-ROR for multi-word bitshift
 
 $90:E4E6 AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
 $90:E4E9 C9 05 00    CMP #$0005             ;|
-$90:E4EC 30 03       BMI $03    [$E4F1]     ;} A = min(4, [$0A66])
+$90:E4EC 30 03       BMI $03    [$E4F1]     ;} A = min(4, [Samus X speed divisor])
 $90:E4EE A9 04 00    LDA #$0004             ;/
 
 $90:E4F1 0A          ASL A                  ;\
@@ -14551,11 +14581,16 @@ $90:E4F6             dw E500, E516, E541, E56E, E59D
 
 ;;; $E500: Calculate Samus X speed - [Samus X speed divisor] = 0 ;;;
 {
+;; Parameters:
+;;     $12.$14: Samus X base speed
+;; Returns:
+;;     $12.$14: Total Samus X speed
+
 $90:E500 A5 14       LDA $14    [$7E:0014]  ;\
 $90:E502 18          CLC                    ;|
 $90:E503 6D 44 0B    ADC $0B44  [$7E:0B44]  ;|
 $90:E506 85 14       STA $14    [$7E:0014]  ;|
-$90:E508 8D BE 0D    STA $0DBE  [$7E:0DBE]  ;} $0DBC.$0DBE = $12.$14 += [Samus X extra run speed]
+$90:E508 8D BE 0D    STA $0DBE  [$7E:0DBE]  ;} Total Samus X speed = $12.$14 += [Samus X extra run speed]
 $90:E50B A5 12       LDA $12    [$7E:0012]  ;|
 $90:E50D 6D 42 0B    ADC $0B42  [$7E:0B42]  ;|
 $90:E510 85 12       STA $12    [$7E:0012]  ;|
@@ -14566,18 +14601,23 @@ $90:E515 60          RTS
 
 ;;; $E516: Calculate Samus X speed - [Samus X speed divisor] = 1 ;;;
 {
+;; Parameters:
+;;     $12.$14: Samus X base speed
+;; Returns:
+;;     $12.$14: Total Samus X speed
+
 ; $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 2
 ; Calculation here is only valid for [$12] + [Samus X extra run speed] < 100h
 
 $90:E516 A5 14       LDA $14    [$7E:0014]  ;\
 $90:E518 18          CLC                    ;|
-$90:E519 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [$0B44]
+$90:E519 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [Samus X extra run subspeed]
 $90:E51C 85 14       STA $14    [$7E:0014]  ;/
 $90:E51E A5 12       LDA $12    [$7E:0012]  ;\
 $90:E520 6D 42 0B    ADC $0B42  [$7E:0B42]  ;|
 $90:E523 EB          XBA                    ;|
 $90:E524 4A          LSR A                  ;|
-$90:E525 EB          XBA                    ;} $0DBC = $12 = ([$12] + [Samus X extra run speed]) / 2
+$90:E525 EB          XBA                    ;} Total Samus X speed = $12 = ([$12] + [Samus X extra run speed]) / 2
 $90:E526 48          PHA                    ;|
 $90:E527 29 FF 00    AND #$00FF             ;|
 $90:E52A 85 12       STA $12    [$7E:0012]  ;|
@@ -14588,7 +14628,7 @@ $90:E533 85 16       STA $16    [$7E:0016]  ;/
 $90:E535 A5 14       LDA $14    [$7E:0014]  ;\
 $90:E537 4A          LSR A                  ;|
 $90:E538 18          CLC                    ;|
-$90:E539 65 16       ADC $16    [$7E:0016]  ;} $0DBE = $14 = [$14] / 2 + [$16]
+$90:E539 65 16       ADC $16    [$7E:0016]  ;} Total Samus X subspeed = $14 = [$14] / 2 + [$16]
 $90:E53B 85 14       STA $14    [$7E:0014]  ;|
 $90:E53D 8D BE 0D    STA $0DBE  [$7E:0DBE]  ;/
 $90:E540 60          RTS
@@ -14597,19 +14637,24 @@ $90:E540 60          RTS
 
 ;;; $E541: Calculate Samus X speed - [Samus X speed divisor] = 2 ;;;
 {
+;; Parameters:
+;;     $12.$14: Samus X base speed
+;; Returns:
+;;     $12.$14: Total Samus X speed
+
 ; $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 4
 ; Calculation here is only valid for [$12] + [Samus X extra run speed] < 100h
 
 $90:E541 A5 14       LDA $14    [$7E:0014]  ;\
 $90:E543 18          CLC                    ;|
-$90:E544 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [$0B44]
+$90:E544 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [Samus X extra run subspeed]
 $90:E547 85 14       STA $14    [$7E:0014]  ;/
 $90:E549 A5 12       LDA $12    [$7E:0012]  ;\
 $90:E54B 6D 42 0B    ADC $0B42  [$7E:0B42]  ;|
 $90:E54E EB          XBA                    ;|
 $90:E54F 4A          LSR A                  ;|
 $90:E550 4A          LSR A                  ;|
-$90:E551 EB          XBA                    ;} $0DBC = $12 = ([$12] + [Samus X extra run speed]) / 4
+$90:E551 EB          XBA                    ;} Total Samus X speed = $12 = ([$12] + [Samus X extra run speed]) / 4
 $90:E552 48          PHA                    ;|
 $90:E553 29 FF 00    AND #$00FF             ;|
 $90:E556 85 12       STA $12    [$7E:0012]  ;|
@@ -14620,7 +14665,7 @@ $90:E55F 85 16       STA $16    [$7E:0016]  ;/
 $90:E561 A5 14       LDA $14    [$7E:0014]  ;\
 $90:E563 4A          LSR A                  ;|
 $90:E564 4A          LSR A                  ;|
-$90:E565 18          CLC                    ;} $0DBE = $14 = [$14] / 4 + [$16]
+$90:E565 18          CLC                    ;} Total Samus X subspeed = $14 = [$14] / 4 + [$16]
 $90:E566 65 16       ADC $16    [$7E:0016]  ;|
 $90:E568 85 14       STA $14    [$7E:0014]  ;|
 $90:E56A 8D BE 0D    STA $0DBE  [$7E:0DBE]  ;/
@@ -14630,19 +14675,24 @@ $90:E56D 60          RTS
 
 ;;; $E56E: Calculate Samus X speed - [Samus X speed divisor] = 3 ;;;
 {
+;; Parameters:
+;;     $12.$14: Samus X base speed
+;; Returns:
+;;     $12.$14: Total Samus X speed
+
 ; $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 8
 ; Calculation here is only valid for [$12] + [Samus X extra run speed] < 100h
 
 $90:E56E A5 14       LDA $14    [$7E:0014]  ;\
 $90:E570 18          CLC                    ;|
-$90:E571 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [$0B44]
+$90:E571 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [Samus X extra run subspeed]
 $90:E574 85 14       STA $14    [$7E:0014]  ;/
 $90:E576 A5 12       LDA $12    [$7E:0012]  ;\
 $90:E578 6D 42 0B    ADC $0B42  [$7E:0B42]  ;|
 $90:E57B EB          XBA                    ;|
 $90:E57C 4A          LSR A                  ;|
 $90:E57D 4A          LSR A                  ;|
-$90:E57E 4A          LSR A                  ;} $0DBC = $12 = ([$12] + [Samus X extra run speed]) / 8
+$90:E57E 4A          LSR A                  ;} Total Samus X speed = $12 = ([$12] + [Samus X extra run speed]) / 8
 $90:E57F EB          XBA                    ;|
 $90:E580 48          PHA                    ;|
 $90:E581 29 FF 00    AND #$00FF             ;|
@@ -14655,7 +14705,7 @@ $90:E58F A5 14       LDA $14    [$7E:0014]  ;\
 $90:E591 4A          LSR A                  ;|
 $90:E592 4A          LSR A                  ;|
 $90:E593 4A          LSR A                  ;|
-$90:E594 18          CLC                    ;} $0DBE = $14 = [$14] / 8 + [$16]
+$90:E594 18          CLC                    ;} Total Samus X subspeed = $14 = [$14] / 8 + [$16]
 $90:E595 65 16       ADC $16    [$7E:0016]  ;|
 $90:E597 85 14       STA $14    [$7E:0014]  ;|
 $90:E599 8D BE 0D    STA $0DBE  [$7E:0DBE]  ;/
@@ -14665,12 +14715,17 @@ $90:E59C 60          RTS
 
 ;;; $E59D: Calculate Samus X speed - [Samus X speed divisor] = 4 ;;;
 {
+;; Parameters:
+;;     $12.$14: Samus X base speed
+;; Returns:
+;;     $12.$14: Total Samus X speed
+
 ; $12.$14 = ([$12].[$14] + [Samus X extra run speed]) / 10h
 ; Calculation here is only valid for [$12] + [Samus X extra run speed] < 100h
 
 $90:E59D A5 14       LDA $14    [$7E:0014]  ;\
 $90:E59F 18          CLC                    ;|
-$90:E5A0 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [$0B44]
+$90:E5A0 6D 44 0B    ADC $0B44  [$7E:0B44]  ;} $14 += [Samus X extra run subspeed]
 $90:E5A3 85 14       STA $14    [$7E:0014]  ;/
 $90:E5A5 A5 12       LDA $12    [$7E:0012]  ;\
 $90:E5A7 6D 42 0B    ADC $0B42  [$7E:0B42]  ;|
@@ -14678,7 +14733,7 @@ $90:E5AA EB          XBA                    ;|
 $90:E5AB 4A          LSR A                  ;|
 $90:E5AC 4A          LSR A                  ;|
 $90:E5AD 4A          LSR A                  ;|
-$90:E5AE 4A          LSR A                  ;} $0DBC = $12 = ([$12] + [Samus X extra run speed]) / 10h
+$90:E5AE 4A          LSR A                  ;} Total Samus X speed = $12 = ([$12] + [Samus X extra run speed]) / 10h
 $90:E5AF EB          XBA                    ;|
 $90:E5B0 48          PHA                    ;|
 $90:E5B1 29 FF 00    AND #$00FF             ;|
@@ -14691,7 +14746,7 @@ $90:E5BF A5 14       LDA $14    [$7E:0014]  ;\
 $90:E5C1 4A          LSR A                  ;|
 $90:E5C2 4A          LSR A                  ;|
 $90:E5C3 4A          LSR A                  ;|
-$90:E5C4 4A          LSR A                  ;} $0DBE = $14 = [$14] / 10h + [$16]
+$90:E5C4 4A          LSR A                  ;} Total Samus X subspeed = $14 = [$14] / 10h + [$16]
 $90:E5C5 18          CLC                    ;|
 $90:E5C6 65 16       ADC $16    [$7E:0016]  ;|
 $90:E5C8 85 14       STA $14    [$7E:0014]  ;|
@@ -14742,7 +14797,7 @@ $90:E60E A9 04 00    LDA #$0004             ;\
 $90:E611 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} Samus solid vertical collision result = hit ceiling
 $90:E614 80 03       BRA $03    [$E619]     ; Return
 
-$90:E616 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; Samus solid vertical collision result = hit ceiling
+$90:E616 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; Samus solid vertical collision result = no change
 
 $90:E619 28          PLP
 $90:E61A 60          RTS
@@ -14781,63 +14836,76 @@ $90:E656 C2 30       REP #$30               ;/
 $90:E658 28          PLP
 $90:E659 60          RTS
 
-$90:E65A             db 00, ; 0: Standing
-                        00, ; 1: Running
-                        04, ; 2: Normal jumping
-                        04, ; 3: Spin jumping
-                        01, ; 4: Morph ball - on ground
-                        00, ; 5: Crouching
-                        04, ; 6: Falling
-                        02, ; 7: Unused
-                        04, ; 8: Morph ball - falling
-                        04, ; 9: Unused
-                        00, ; Ah: Knockback
-                        00, ; Bh: Unused
-                        00, ; Ch: Unused
-                        00, ; Dh: Unused
-                        04, ; Eh: Turning around - on ground
-                        04, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        00, ; 10h: Moonwalking
-                        03, ; 11h: Spring ball - on ground
-                        04, ; 12h: Spring ball - in air
-                        04, ; 13h: Spring ball - falling
-                        04, ; 14h: Wall jumping
-                        00, ; 15h: Ran into a wall
-                        04, ; 16h: Grappling
-                        04, ; 17h: Turning around - jumping
-                        04, ; 18h: Turning around - falling
-                        04, ; 19h: Damage boost
-                        04, ; 1Ah: Grabbed by Draygon
-                        04  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+; Samus downwards movement solid collision results - falling
+;     0: Airborne
+;     1: Morph ball airborne
+;     2: Unused (unused movement type 7)
+;     3: Spring ball airborne
+;     4: No change
+$90:E65A             db 00, ; *0: Standing
+                        00, ; *1: Running
+                        04, ;  2: Normal jumping
+                        04, ;  3: Spin jumping
+                        01, ; *4: Morph ball - on ground
+                        00, ; *5: Crouching
+                        04, ;  6: Falling
+                        02, ; *7: Unused
+                        04, ;  8: Morph ball - falling
+                        04, ;  9: Unused
+                        00, ; *Ah: Knockback
+                        00, ; *Bh: Unused
+                        00, ; *Ch: Unused
+                        00, ; *Dh: Unused
+                        04, ;  Eh: Turning around - on ground
+                        04, ;  Fh: Crouching/standing/morphing/unmorphing transition
+                        00, ; *10h: Moonwalking
+                        03, ; *11h: Spring ball - on ground
+                        04, ;  12h: Spring ball - in air
+                        04, ;  13h: Spring ball - falling
+                        04, ;  14h: Wall jumping
+                        00, ; *15h: Ran into a wall
+                        04, ;  16h: Grappling
+                        04, ;  17h: Turning around - jumping
+                        04, ;  18h: Turning around - falling
+                        04, ;  19h: Damage boost
+                        04, ;  1Ah: Grabbed by Draygon
+                        04  ;  1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 
-$90:E676             db 04, ; 0: Standing
-                        04, ; 1: Running
-                        00, ; 2: Normal jumping
-                        00, ; 3: Spin jumping
-                        04, ; 4: Morph ball - on ground
-                        04, ; 5: Crouching
-                        00, ; 6: Falling
-                        04, ; 7: Unused
-                        01, ; 8: Morph ball - falling
-                        02, ; 9: Unused
-                        00, ; Ah: Knockback
-                        04, ; Bh: Unused
-                        04, ; Ch: Unused
-                        00, ; Dh: Unused
-                        04, ; Eh: Turning around - on ground
-                        04, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        04, ; 10h: Moonwalking
-                        04, ; 11h: Spring ball - on ground
-                        03, ; 12h: Spring ball - in air
-                        03, ; 13h: Spring ball - falling
-                        00, ; 14h: Wall jumping
-                        04, ; 15h: Ran into a wall
-                        04, ; 16h: Grappling
-                        04, ; 17h: Turning around - jumping
-                        04, ; 18h: Turning around - falling
-                        00, ; 19h: Damage boost
-                        04, ; 1Ah: Grabbed by Draygon
-                        04  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+; Samus downwards movement solid collision results - landed
+;     0: Grounded
+;     1: Morph ball grounded
+;     2: Unused (unused movement type 9)
+;     3: Spring ball grounded
+;     4: No change
+;     5: Unused
+$90:E676             db 04, ;  0: Standing
+                        04, ;  1: Running
+                        00, ; *2: Normal jumping
+                        00, ; *3: Spin jumping
+                        04, ;  4: Morph ball - on ground
+                        04, ;  5: Crouching
+                        00, ; *6: Falling
+                        04, ;  7: Unused
+                        01, ; *8: Morph ball - falling
+                        02, ; *9: Unused
+                        00, ; *Ah: Knockback
+                        04, ;  Bh: Unused
+                        04, ;  Ch: Unused
+                        00, ; *Dh: Unused
+                        04, ;  Eh: Turning around - on ground
+                        04, ;  Fh: Crouching/standing/morphing/unmorphing transition
+                        04, ;  10h: Moonwalking
+                        04, ;  11h: Spring ball - on ground
+                        03, ; *12h: Spring ball - in air
+                        03, ; *13h: Spring ball - falling
+                        00, ; *14h: Wall jumping
+                        04, ;  15h: Ran into a wall
+                        04, ;  16h: Grappling
+                        04, ;  17h: Turning around - jumping
+                        04, ;  18h: Turning around - falling
+                        00, ; *19h: Damage boost
+                        04, ;  1Ah: Grabbed by Draygon
+                        04  ;  1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
 }
 
