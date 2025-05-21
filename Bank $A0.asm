@@ -1083,7 +1083,7 @@ $A0:8BC7 C9 FF FF    CMP #$FFFF             ;} If [$A1:0000 + [X]] != FFFFh:
 $A0:8BCA F0 03       BEQ $03    [$8BCF]     ;/
 $A0:8BCC 4C F3 8A    JMP $8AF3  [$A0:8AF3]  ; Go to LOOP
 
-$A0:8BCF 8C 4C 0E    STY $0E4C  [$7E:0E4C]  ; Next free enemy index = [Y]
+$A0:8BCF 8C 4C 0E    STY $0E4C  [$7E:0E4C]  ; First unused enemy index = [Y]
 $A0:8BD2 98          TYA                    ;\
 $A0:8BD3 4A          LSR A                  ;|
 $A0:8BD4 4A          LSR A                  ;|
@@ -4012,7 +4012,7 @@ $A0:A140 DC 84 17    JML [$1784][$A6:F920]  ; Go to [$1784]
 $A0:A143 8B          PHB
 $A0:A144 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A147 BD A6 0F    LDA $0FA6,x[$7E:0FA6]  ;\
-$A0:A14A 8D 86 17    STA $1786  [$7E:1786]  ;} $1786 = [enemy bank]
+$A0:A14A 8D 86 17    STA $1786  [$7E:1786]  ;} Enemy AI bank = [enemy bank]
 $A0:A14D EB          XBA                    ;\
 $A0:A14E 48          PHA                    ;|
 $A0:A14F AB          PLB                    ;} DB = [enemy bank]
@@ -4136,7 +4136,7 @@ $A0:A233 DC 84 17    JML [$1784][$A8:E91D]
 $A0:A236 8B          PHB
 $A0:A237 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A23A BD A6 0F    LDA $0FA6,x[$7E:0FA6]  ;\
-$A0:A23D 8D 86 17    STA $1786  [$7E:1786]  ;} $1786 = [enemy bank]
+$A0:A23D 8D 86 17    STA $1786  [$7E:1786]  ;} Enemy AI bank = [enemy bank]
 $A0:A240 EB          XBA                    ;\
 $A0:A241 48          PHA                    ;|
 $A0:A242 AB          PLB                    ;} DB = [enemy bank]

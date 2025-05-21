@@ -1081,8 +1081,8 @@ $0998: Game state
     Ah: Loading next room.                                                              Set by $82:E169 (hit a door block)
     Bh: Loading next room.                                                              Set by $82:E1B7 (game state Ah)
     Ch: Pausing, normal gameplay but darkening.                                         Set by $85:80FA (map data access completed), $90:EA45 (pause check)
-    Dh: Pausing, loading pause menu.                                                  Set by $82:8CCF (game state Ch)
-    Eh: Paused, loading pause menu.                                                   Set by $82:8CEF (game state Dh)
+    Dh: Pausing, loading pause menu.                                                    Set by $82:8CCF (game state Ch)
+    Eh: Paused, loading pause menu.                                                     Set by $82:8CEF (game state Dh)
     Fh: Paused, map and item screens.                                                   Set by $82:90C8 (game state Eh)
     10h: Unpausing, loading normal gameplay.                                            Set by $81:907E (debug game over menu continue), $82:A5B7 (pause menu, start)
     11h: Unpausing, loading normal gameplay.                                            Set by $82:9324 (game state 10h)
@@ -1601,7 +1601,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         $E8AA: Ceres
         $E8CD: RTL. Generic RTL, not checked for by anything
         $E8D6: RTL. Samus is locked into (map/energy/missile) station. Checked for by $90:F29E (unlock Samus from map station)
-        $E8D9: RTL. Samus is being drained (rainbow beam). Checked for by $90:F2E0 ($F084 - A = 10h) / $90:F411 (reserve tanks activated) / $91:D8A5 (handle misc. Samus palette)
+        $E8D9: RTL. Samus is being drained (rainbow beam). Checked for by $90:F2E0 (Samus command 10h: unlock Samus from reserve tank) / $90:F411 (Samus command 1Bh: lock Samus for reserve tank) / $91:D8A5 (handle misc. Samus palette)
         $E8DC: Samus is locked
         $E8EC: Riding elevator
         $E902: Entering/exiting gunship
@@ -1911,9 +1911,9 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         601h: Spring ball - first bounce
         602h: Spring ball - second bounce
     }
-    $0B22: Flag. Samus is falling
-    $0B24: Temp value, used during Samus' graphics calculations. Shareable.
-    $0B26: Temp value, used during Samus' graphics calculations. Shareable (even with the above byte).
+    $0B22: Flag. Samus is falling. Never read
+    $0B24: Temporary in $92:8000 (set Samus tiles definitions for current animation). [[$D94E + [Samus pose] * 2] + [Samus animation frame] * 4 + 1]
+    $0B26: Temporary in $92:8000 (set Samus tiles definitions for current animation). [[$D94E + [Samus pose] * 2] + [Samus animation frame] * 4 + 3]
     $0B28: Unused
     $0B2A: Set to 0 sometimes. Never read
     $0B2C: Samus Y subspeed
@@ -2042,8 +2042,8 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         (Super) missile: High: projectile initialised flag. Low: if not initialised, extra base speed (set to F0h by projectile reflection)
         Super missile: Low: if initialised, super missile link index
         Super missile link: 0 (Lower Norfair pirate checks this)
-        Ice/spazer/plasma SBA / speed echo: Angle of projectile from Samus (unit 2pi / 100h radians, clockwise, 0 = up)
-        Wave SBA: Projectile Y velocity
+        Ice/spazer/plasma SBA / speed echo: angle of projectile from Samus (unit 2pi / 100h radians, clockwise, 0 = up)
+        Wave SBA: projectile Y velocity
     }
     $0C86..8F: Bomb timers. Set to FFFFh by power bomb when explosion is spawned
     $0C90..99: Projectile trail timers
@@ -2482,12 +2482,12 @@ $0E20..41: Enemy temporaries
     {
         Y subspeed in $A0:B691
         [Enemy projectile $7E:F410] & 7FFFh in $86:F106. Never read
-        Metal skree particle VRAM tiles index in $A3:8B0F
+        Metaree particle VRAM tiles index in $A3:8B0F
         Row Y position in $B4:94D5/9758
     }
     $0E2C:
     {
-        Metal skree particle palette index in $A3:8B0F
+        Metaree particle palette index in $A3:8B0F
         Rows of VRAM in $B4:9758
     }
     $0E2E:
@@ -2548,7 +2548,7 @@ $0E44: Number of times main enemy routine has been executed. Actually used by so
 $0E46: Number of times $A0:8EB6 (determine which enemies to process) has been executed. Never read
 $0E48: Set to 0 when enemies are initialised (if there are enemies in the room). Never read
 $0E4A: New enemy index (when spawning an enemy)
-$0E4C: First free enemy index in the room + 1((n+1)*40). If 0, disable enemy processing (powerbombs still kill)
+$0E4C: First unused enemy index. Written as an enemy index by enemy initialisation routine ($A0:8A9E), but only checked for non-zero by main enemy routine ($A0:8FD4). If zero, main enemy routine skips enemy processing
 $0E4E: Number of enemies in the room. Never read
 $0E50: Number of enemies killed in the current room.
 $0E52: Number of enemy deaths needed to clear current room
@@ -2578,7 +2578,7 @@ $0E84..0F67: Enemy drawing queues (list of enemy indices), increasing priority
     $0F48..67: Layer 7
 }
 $0F68..77: Sizes of enemy drawing queues
-$0F78..1777: Enemy data. See "Enemy RAM.asm" for details
+$0F78..1777: Enemy data. See "enemy data.txt" from lua repo, "Enemy RAM.asm"
 {
 	$0F78..B7: Enemy 0
     {
@@ -2660,18 +2660,18 @@ $178C: Enemy graphics drawn hook (3 bytes). Executed after drawing Samus, projec
     Set to $A3:DB0C by reflec (periodically cycle between palettes)
     Set to $A5:9342 by Draygon (set BG2 X/Y scroll)
     Set to $A6:A2F2 by Ceres Ridley (draw Baby Metroid and door)
-    Set to $A8:B0B2 by Norfair lava creature (periodically cycle between palettes)
-    Set to $A8:CC67 by Wrecked Ship robot (periodically cycle between palettes)
+    Set to $A8:B0B2 by magdollite (periodically cycle between palettes)
+    Set to $A8:CC67 by work robot (periodically cycle between palettes)
     Set to $A8:E86E by blue Brinstar face block when Samus has morph ball (periodically cycle between palettes)
     Set to $A9:87C9/87DD by Mother Brain (draw brain and neck)
-    Set to $A9:D39A by dead torizo
+    Set to $A9:D39A by torizo corpse
 }
 $1790: 3 byte pointer. Set to RTL when loading enemies, otherwise unused
 $1794: Enemy palette cycle enemy palette index. Multiple of 20h. Reflec and blue Brinstar face block use base address $7E:C100, magdollite uses $7E:C000...
 $1796: Enemy palette cycle colour set index
 $1798: Enemy palette cycle timer
 $179A: Enemy BG2 tilemap size
-$179C: Boss ID. Used by $90:A7E2 for table that determines how to mark boss room as explored. Used in $91:D143 to check if x-ray should be disabled.
+$179C: Boss ID. Used by $90:A7E2 for table that determines how to mark boss room as explored. Used in $91:D143 to check if x-ray should be disabled
 {
     0: None
     1: Ceres Ridley
@@ -2694,7 +2694,7 @@ $17A8: Active enemy indices index
 $17AA: Interactive enemy indices index
 $17AC..EB: Active enemy indices, FFFFh terminated
 $17EC..182B: Interactive enemy indices, FFFFh terminated
-$182C: Enemy index when Samus moving left collides with solid enemy. FFFFh for no collision. Used by shutters and dead enemies
+$182C: Enemy index when Samus moving left collides with solid enemy. FFFFh for no collision. Used by shutters and corpse enemies
 $182E: Enemy index when Samus moving right collides with solid enemy
 $1830: Enemy index when Samus moving up collides with solid enemy
 $1832: Enemy index when Samus moving down collides with solid enemy
@@ -2742,7 +2742,7 @@ $185A: Solid enemy collision type. Never read. Debug spritemap palette bits in s
     2: Samus and the enemy were not touching
     3: Unused. Samus and the enemy were overlapping. Set by unused branch $A0:AB84. Enable by NOPing $A0:AB81, has glitchy effects when freezing enemy whilst inside hitbox.
 }
-$185C: Debug index (bank $B4)
+$185C: Debug index (bank $B4). See "debug.txt"
 {
     0: Default
     1: Palette viewer - sprite palettes
@@ -2766,7 +2766,7 @@ $185E: Debug. Time is frozen for enemies (a la $0A78)
 $1860: Debug. Text cursor X position
 $1862: Debug. Text cursor Y position
 $1864: Debug enemy set entry index
-$1866: Debug enemy population pointer / debug previous controller 2 input for Crocomire
+$1866: Debug enemy population pointer / previous controller 2 input for debug Draygon mover
 $1868: Debug enemy spawn X position
 $186A: Debug enemy spawn Y position
 $186C: Unused
@@ -2799,7 +2799,7 @@ $18A6: Collision index. Used notably for collided projectile index in enemy shot
 }
 $18A8: Samus invincibility timer
 $18AA: Samus knockback timer
-$18AC: Projectile invincibility timer (prevents bomb jump and damage from reflected projectiles). Set to 10 by shooting beam, 20 by shooting missile. AranJaeger proposes this might be to make the Draygon fight less frustrating.
+$18AC: Projectile invincibility timer (prevents bomb jump and damage from reflected projectiles). Set to 10 by shooting beam, 20 by shooting missile
 $18AE: Flag. Disable Samus / projectile interaction if non-zero. Always 0
 $18B0: HDMA objects enable flag. 8000h = enabled. Power bombs not affected
 $18B2: HDMA object index
@@ -2815,8 +2815,8 @@ $1914..1F: HDMA object variables. Cleared when HDMA object spawned
 {
     Wave phase for wavy Phantoon. Multiple of 2
     Wave phase for wavy Samus. Multiple of 2
-    BG3 Y offset for rain. Unit 1/100px
-    BG3 Y offset for fog. Unit 1/100px
+    BG3 Y offset for rain. Unit 1/100h px
+    BG3 Y offset for fog. Unit 1/100h px
     Backup BG2 X scroll for x-ray
     Wave phase for wavy lava/acid. Multiple of 2
     Wave phase for water. Multiple of 2
@@ -2830,8 +2830,8 @@ $1920..2B: HDMA object variables. Cleared when HDMA object spawned
 {
     Phase increase timer for wavy Phantoon
     Phase increase timer for wavy Samus
-    BG3 X offset for rain. Unit 1/100px
-    BG3 X offset for fog. Unit 1/100px
+    BG3 X offset for rain. Unit 1/100h px
+    BG3 X offset for fog. Unit 1/100h px
     Backup BG2 Y scroll for x-ray
     Phase decrease timer for wavy lava/acid
     Phase increase timer for water
@@ -2843,8 +2843,8 @@ $1920..2B: HDMA object variables. Cleared when HDMA object spawned
 $192C..37: HDMA object variables. Cleared when HDMA object spawned
 {
     Backup BG2 tilemap base address and size for x-ray
-    BG3 X offset for water. Unit 1/100px
-    BG3 Y offset for spores. Unit 1/100px
+    BG3 X offset for water. Unit 1/100h px
+    BG3 Y offset for spores. Unit 1/100h px
     Descent delay timer for Tourian entrance statue
     Angular width for morph ball eye beam
 }
@@ -2852,7 +2852,7 @@ $1938..43: HDMA object variables. Cleared when HDMA object spawned
 {
     BG3 X velocity for rain
     Power bomb explosion after-glow animation frame
-    BG3 X offset for spores. Unit 1/100px
+    BG3 X offset for spores. Unit 1/100h px
     Angular subwidth for morph ball eye beam
 }
 $1944..4F: HDMA object variables. *Not* cleared when HDMA object spawned
@@ -2944,7 +2944,7 @@ $1987: Layer blending window 2 configuration
     40h: X-ray active and can show blocks (and FX type != fireflea)
     80h: Power bomb explosion active
 }
-$1988: Phantoon semi-transparency flag. If 4000h bit set, changes layer blending configuration to 1Ah (normal, but BG2 and BG3 have reversed roles)
+$1988: Phantoon semi-transparency flag. If 4000h bit set, changes layer blending configuration to 1Ah (semi-transparent BG2 on BG1)
 $198A..8C: Unused
 $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
 {
@@ -2952,12 +2952,12 @@ $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
 
     $1991: Enemy projectile index
     $1993: Enemy projectile initialisation parameter 0
-    $1995: Enemy projectile initialisation parameter 1. Used by Draygon's gunk, Ridley's fireball, and Norfair lavaquake rocks
+    $1995: Enemy projectile initialisation parameter 1. Used by Draygon's gunk, Ridley's fireball, and polyp
     $1997..BA: Enemy projectile IDs
     $19BB..DE: Enemy projectile graphics indices. Low: VRAM graphics index. High: palette index (OR'd with spritemap palette)
     $19DF..1A02: Enemy projectile timers (according to instructions $81C6/$81CE/$81D5)
     {
-        Used as target Y position in $8A7D
+        Used as target Y position in $86:8A7D
         Shot gate segment distance moved. Unit 1/100h px
     }
     $1A03..26: Enemy projectile pre-instructions
@@ -2975,33 +2975,33 @@ $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
     $1A93..B6: Enemy projectile Y positions
     $1AB7..DA: Enemy projectile X velocity (unit 1/100h px/frame) for enemy projectiles that move with $86:88B6
     {
-        Crocomire spike wall pieces / lava seahorse fireball / Tourian statue unlocking particle / Norfair lavaquake rocks X velocity (unit 1/100h px/frame)
+        Crocomire spike wall pieces / dragon fireball / Tourian statue unlocking particle / polyp X velocity (unit 1/100h px/frame)
         Phantoon flame rain fall timer
         Phantoon starting flame contract timer
         Phantoon destroyable enraged flame angle delta
         Botwoon's body function
         Botwoon spit X speed
         Draygon goop X speed
-        Mini-Crocomire projectile / nami/fune fireball / lava thrown by lavaman right X velocity (unit 1/100h px/frame)
+        Mini-Crocomire projectile / namihe/fune fireball / lava thrown by magdollite right X velocity (unit 1/100h px/frame)
         Mother Brain's room turrets rotation timer
         Mother Brain's rainbow beam explosion X offset
         n00b tube shard / released air bubbles falling angle * 2
-        Spike shooting plant spike speed (unit 1/100h px/frame)
+        Cacatac spike speed (unit 1/100h px/frame)
         Falling spark Y subvelocity
     }
     $1ADB..FE: Enemy projectile Y velocity (unit 1/100h px/frame) for enemy projectiles that move with $86:897B
     {
-        Lava seahorse fireball / Tourian statue's soul / Tourian statue unlocking particle / shot gate Y velocity (unit 1/100h px/frame)
+        Dragon fireball / Tourian statue's soul / Tourian statue unlocking particle / shot gate Y velocity (unit 1/100h px/frame)
         Botwoon's body falling time counter
         Botwoon spit Y speed
         Phantoon flame radius from Phantoon
         Draygon goop Y speed
-        Mini-Crocomire projectile / nami/fune fireball / lava thrown by lavaman left X velocity (unit 1/100h px/frame)
+        Mini-Crocomire projectile / namihe/fune fireball / lava thrown by magdollite left X velocity (unit 1/100h px/frame)
         Crocomire spike wall pieces / falling spark Y velocity (unit px/frame)
-        Norfair lavaquake rocks Y speed table index
+        Polyp Y speed table index
         Mother Brain's room turrets cooldown timer
         Mother Brain's rainbow beam explosion Y offset
-        Spike shooting plant spike negated speed (unit 1/100h px/frame)
+        Cacatac spike negated speed (unit 1/100h px/frame)
     }
     $1AFF..1B22: Enemy projectile variables
     {
@@ -3018,17 +3018,17 @@ $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
         Draygon goop X subspeed / life timer
         Mini-Crocomire projectile function
         Crocomire spike wall pieces X acceleration (unit 1/10000h px/frame^2)
-        Enemy projectile $9634 movement delay timer
+        Unused enemy projectile $9634 movement delay timer
         Afterburn remaining afterburn enemy projectiles
-        Pirate / Mother Brain laser half-speed flag
-        Pirate claw X speed
+        Space pirate / Mother Brain laser half-speed flag
+        Space pirate claw X speed
         Bomb Torizo explosion / torizo sonic boom / Tourian statue dust clouds reset X position
         Old Tourian escape shaft fake wall explosion reset X position (unused)
         Golden Torizo egg direction. 8000h = rightwards, 0 = leftwards
         Golden Torizo super missile enemy index
         Tourian statue unlocking particle angle * 2
         Tourian statue - Ridley / Phantoon / base decoration X position mirror
-        Norfair lavaquake rocks function
+        Polyp rocks function
         Mother Brain's room turret bullets direction index
         Mother Brain's blue ring lasers initial delay timer
         Mother Brain's bomb post-bounce X speed
@@ -3037,9 +3037,9 @@ $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
         Mother Brain's tube falling function
         Mother Brain's glass shattering - shard angle * 2
         Kago bug sound effect timer
-        Maridia floater spike / spike shooting plant spike direction
+        Powamp spike / cacatac spike direction
         Spore movement table index
-        Nami/fune fireball / lava thrown by lavaman function
+        Namihe/fune fireball / lava thrown by magdollite function
         Shot gate PLM block index
         Falling spark X subvelocity
         Pickup type. 2 = small health, 4 = big health, 6 = power bombs, 8 = missiles, Ah = super missiles
@@ -3049,18 +3049,18 @@ $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
         n00b tube shard / released air bubbles on-screen X position
         Botwoon's body instruction list
         Botwoon spit Y subspeed
-        Bomb Torizo statue breaking Y acceleration (unit 1/100h px/frame^2)
+        Bomb Torizo statue breaking Y acceleration (unit 1/100h px/frame²)
         Draygon goop Y subspeed / Y offset
         Crocomire spike wall pieces Y subvelocity
         Ridley's fireball afterburn flag. 0 = spawn afterburn
         Afterburn next projectile ID
-        Pirate claw deceleration flag
+        Space pirate claw deceleration flag
         Bomb Torizo explosion / torizo sonic boom / Tourian statue dust clouds reset Y position
         Old Tourian escape shaft fake wall explosion reset Y position (unused)
         Golden Torizo egg hatch timer
         Eye door projectile PLM room argument
         Tourian statue - Ridley / Phantoon / base decoration Y offset
-        Norfair lavaquake rocks Y (sub)velocity. Used only as a temporary
+        Polyp rocks Y (sub)velocity. Used only as a temporary
         Mother Brain's bomb bounce counter
         Kago bug enemy index
         Spore spawn X position
@@ -3397,7 +3397,7 @@ $1F55: Demo set
 $1F57: Demo scene
 $1F59: Number of demo sets (4 if beaten game, otherwise 3)
 
-$1F??..FF: Stack. Lowest observed is $1FC5 by Kejardon, 1FB5 by Jathys
+$1F??..FF: Stack. Lowest observed is $1FB7 where IRQ fired during random drop routine ($86:F106) as part of fake Kraid death item drop routine ($A0:B8EE) in Cpadolf's snes9x 100% TAS
 
 $7E:2000..9FFF: Room tiles. Decompressed here temporarily then transferred to VRAM $0000..3FFF
 {
@@ -3476,8 +3476,6 @@ $7E:3000..37FF: Cinematic BG tilemap
         $7E:3600..FF: Japanese text region
         $7E:3700..FF: Bottom margin
     }
-
-
 }
 $7E:3000..31DF: Message box BG3 Y scroll HDMA data table
 {
@@ -3568,178 +3566,16 @@ $7E:7000..77FF: Enemy spawn data. 40h byte slots
     + 2Ch: Parameter 2
     + 2Eh..39h: Name
 }
-$7E:7800..7FFF: Extra enemy RAM (40h bytes each)
+$7E:7800..7FFF: Extra enemy RAM (40h bytes each). See "enemy data.txt" from lua repo, "Kraid.asm", "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
 {
-    Kraid:
-    {
-        $7E:7800: Next function. Kraid foot thinking timer
-        $7E:7802: Set to 2 in Kraid main loop / Kraid shot if shot with charge beam, no effect
-        $7E:7804: Initialised to 0 if Kraid is dead, otherwise unused
-        $7E:7806: Kraid thinking timer
-        $7E:7808: Minimum Y position to which Kraid will eject Samus. Initialised to 144h, then set to A4h when ceiling breaks
-        $7E:780A: Kraid mouth reopen flags
-        {
-            1: Shot body with charged beam this frame
-            2: Shot body with charged beam (during main loop - thinking)
-            4: Reopen mouth. Set when shot in mouth after being shot in body with charged beam
-        }
-        $7E:780B: Kraid mouth reopen counter. Set to 3 when shot in body with charged beam
-        $7E:780C: Kraid max health * 1/8
-        $7E:780E: Kraid max health * 2/8. Kraid fingernail orientation: 0 if diagonal, 1 if horizontal
-        $7E:7810: Kraid max health * 3/8
-        $7E:7812: Kraid max health * 4/8
-        $7E:7814: Kraid max health * 5/8
-        $7E:7816: Kraid max health * 6/8
-        $7E:7818: Kraid max health * 7/8
-        $7E:781A: Kraid max health * 8/8
-
-        $7E:781E: Kraid target X position
-        $7E:7820: Kraid max health * 1/4
-        $7E:7822: Kraid max health * 2/4
-        $7E:7824: Kraid max health * 3/4
-        $7E:7826: Kraid max health * 4/4
-
-        $7E:782A: Kraid hurt frame (flashes white on odd frames)
-        $7E:782C: Kraid hurt frame timer
-
-        $7E:783E: Initialised to 0, otherwise unused
-    }
-
     Botwoon:
     {
         $7E:7800..19: Enemy projectile indices. Dh entries. First entry is the tail
 
         $7E:7820..39: Body hidden flags. Dh entries. First entry is the tail
     }
-
-    Draygon:
-    {
-        $7E:7800: Draygon left side reset X position. Set to spawn X position (= -50h)
-        $7E:7802: Draygon reset Y position. Set to spawn Y position (= -50h)
-        $7E:7804: Draygon right side reset X position. Set to spawn X position + 2A0h (= 250h)
-        $7E:7806: Draygon goop counter. Number of remaining goops to fire, counts down from 10h
-
-        $7E:780A: Draygon spiral X radius
-        $7E:780C: Draygon spiral X position
-        $7E:780E: Draygon spiral Y position
-        $7E:7810: Draygon spiral angle
-        $7E:7812: Draygon spiral X subradius
-        $7E:7814: Draygon spiral Y subposition
-        $7E:7816: Draygon spiral angle delta. Unit 1/100h angle-unit
-        $7E:7818: Draygon tail whip timer
-        $7E:781A: Draygon goop Y oscillation angle
-        $7E:781C: Draygon health-based palette table index
-        $7E:781E: Draygon swoop Y acceleration. Unit 1/100h px/frame². Initialised to 18h. Increased by 8 in enemy shot up to 98h (even for dud shots)
-    }
-
-    Crocomire:
-    {
-        $7E:783E: Melting HDMA object index
-    }
-
-    Mother Brain:
-    {
-        $7E:7800: Mother Brain's form
-        {
-            0: First phase (in glass jar)
-            1: Fake death (from the last missile up until she's vulnerable again)
-            2: Second phase (includes being a corpse due to Shitroid)
-            3: Drained by Shitroid
-            4: Third phase
-        }
-        $7E:7802: Initialised to $9C21 (instruction list - Mother Brain's brain - initial)
-        $7E:7804: Mother Brain pose (when body is active)
-        {
-            0: Standing
-            1: Walking
-            2: Crouching transition (including uncrouching)
-            3: Crouched
-            4: Death beam mode
-            6: Leaning down (used when attacking Shitroid and when finishing off Samus)
-        }
-
-        $7E:7808: Mother Brain hitboxes enabled
-        {
-            1: Mother Brain body
-            2: Mother Brain brain
-            4: Mother Brain's neck
-        }
-
-        $7E:780C: Disable Mother Brain attacks. Third phase only
-        $7E:780E: Mother Brain walk counter. Mother Brain walks backwards if zero, forwards if 100h
-
-        $7E:7812: Mother Brain HDMA object index. Used when rising and for rainbow beam
-        $7E:7814: Set to [Mother Brain's body X position] - 50h in neck handler ($A9:91B8). See "MB reference point.png"
-        $7E:7816: Set to [Mother Brain's body Y position] + 2Eh in neck handler ($A9:91B8)
-        $7E:7818: Mother Brain's neck palette index
-        $7E:781A: Mother Brain's brain palette index
-        $7E:781C: Room palette instruction list pointer. Used for flashing effect when first phase ends. Positive instructions point to data for BG1/2 palette 3 colours 4..Fh (18h bytes) and BG1/2 palette 5/7 colours 3..Eh (18h bytes)
-        $7E:781E: Room palette instruction timer. This timer counts up from 1 rather than down to zero(!)
-
-        $7E:7826: Mother Brain Shitroid attack counter. Counts the number of times Mother Brain fires blue rings at Shitroid whilst it's refilling Samus' energy
-        $7E:7828: Flag. Play Shitroid cry
-        $7E:782A: Number of times to queue rainbow beam sound effect. Initialised to 6, not sure why this isn't just a flag...
-        $7E:782C: Flag. Mother Brain rainbow beam sound effect is playing. Used for resuming sound effect when unpausing
-        $7E:782E: Mother Brain death beam attack phase
-        {
-            0: Back up
-            1: Wait for any active bombs
-            2: Death beam mode is active
-            3: Finish
-        }
-        $7E:7830: Mother Brain attack phase
-        {
-            0: Try attack
-            1: Cooldown
-            2: End attack
-        }
-
-        $7E:7834: Mother Brain blue rings target angle. Anti-clockwise where 0 = down. Used as parameter for blue ring enemy projectile
-
-        $7E:783A: Flag to delete turrets and rinkas. Set to 1 when first phase MB health reaches zero
-        $7E:783C: Rinka counter. Number of on-screen active rinkas (active = moving)
-        $7E:783E: Mother Brain phase 2 corpse state
-        {
-            0: Initial
-            1: Turned into corpse by Shitroid
-            2: Recovered from being a corpse (started attacking Shitroid)
-        }
-        $7E:7840: Mother Brain's brain main shake timer
-        $7E:7842: Mother Brain's body rainbow beam palette animation index
-        $7E:7844: Enable unpause hook. Initialised to 0. Set to 1 when room switches to library background. Set back to 0 when escape timer starts.
-
-        $7E:784A: Mother Brain bomb counter
-        $7E:784C: Mother Brain painful walking stage. Range 0..7. MB slows down as this value increases Set to 0 when MB gets attacked by Shitroid
-        $7E:784E: Mother Brain painful walking walk animation delay. Set to 2 when MB gets attacked by Shitroid
-        {
-            2: Really fast
-            4: Fast
-            6: Medium
-            8: Slow
-            Ah: Really slow
-        }
-        $7E:7850: Mother Brain painful walking function. Set to $BFD0 when MB gets attacked by Shitroid
-        $7E:7852: Mother Brain painful walking function timer
-        $7E:7854: Shitroid enemy index
-        $7E:7856: Seemingly never read. Set to 1 when Shitroid runs out of health. Then set to 0 when Shitroid does final charge
-
-        $7E:7860: Enable Mother Brain's brain palette handling
-        $7E:7862: Enable Mother Brain health-based palette handling
-        $7E:7864: Flag. Mother Brain's drool generation is enabled
-        $7E:7866: Mother Brain's drool enemy projectile parameter, range 0..5
-        $7E:7868: Flag. Mother Brain's small purple breath generation is enabled
-        $7E:786A: Flag. Mother Brain's small purple breath is active
-        $7E:786C: Samus rainbow palette function
-
-        $7E:7870: Mother Brain neck function. Used in third phase
-        $7E:7872: Mother Brain neck function timer
-        $7E:7874: Mother Brain walking function. Used in third phase
-        $7E:7876: Mother Brain target X position. Used in third phase
-        $7E:7878: Mother Brain crouch timer. Used in third phase
-        $7E:787A: Samus rainbow palette animation counter. Incremented by 300h, animation doesn't slowing down on the frame wraparound happens...
-    }
 }
-$7E:8000..87FF: Extra enemy RAM (40h bytes each)
+$7E:8000..87FF: Extra enemy RAM (40h bytes each). See "enemy data.txt" from lua repo, "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
 {
     Typewriter text:
     {
@@ -3781,102 +3617,13 @@ $7E:8000..87FF: Extra enemy RAM (40h bytes each)
         $7E:803E: Speed table index. Used for both Botwoon movement and spit projectile movement, although Botwoon only spits when this index is 0
     }
 
-    Draygon:
-    {
-        $7E:8000: Draygon facing direction. 0 = left, 1 = right
-
-        $7E:8010: Draygon death drift X speed. Calculate on fatal damage, but never read
-        $7E:8012: Draygon death drift X subspeed. Calculate on fatal damage, but never read
-        $7E:8014: Draygon death drift Y speed. Calculate on fatal damage, but never read
-        $7E:8016: Draygon death drift Y subspeed. Calculate on fatal damage, but never read
-    }
-
-    Crocomire:
-    {
-        $7E:8000: Acid damage sound effect timer
-    }
-
     Ridley:
     {
         $7E:800A: Ridley's final attack swoop counter?
     }
-
-    Mother Brain:
-    {
-        $7E:8000: Mother Brain's brain instruction timer. This timer counts up from 1 rather than down to zero(!)
-        $7E:8002: Mother Brain's brain instruction list pointer. This seems to be used entirely in place of the usual enemy instruction pointer, and instead it's drawn in the enemy graphics drawn hook for some reason
-        $7E:8004: Sprite tiles transfer entry pointer
-        $7E:8006: Mother Brain's death beam next X subposition
-        $7E:8008: Mother Brain's death beam next X position
-        $7E:800A: Mother Brain's death beam next Y subposition
-        $7E:800C: Mother Brain's death beam next Y position
-        $7E:800E: Mother Brain's death beam next X velocity
-        $7E:8010: Mother Brain's death beam next Y velocity
-        $7E:8012: Mother Brain's death beam next angle. Units of pi/80h radians, 0 = down, increasing = anti-clockwise
-
-        $7E:8022: Mother Brain rainbow beam angle. Units of pi/80h radians, 0 = down, increasing = anti-clockwise
-
-        $7E:8026: Mother Brain rainbow beam angular width. Units of pi/8000h radians. Increased by 180h up to C00h during rainbow beam
-
-        $7E:802E: Mother Brain grey transition counter / room lights transition counter
-        $7E:8030: Mother Brain fake death explosion timer
-        $7E:8032: Mother Brain fake death explosion index (into table of explosion positions)
-        $7E:8034: Mother Brain rainbow beam right edge angle. Units of pi/80h radians, 0 = down, increasing = anti-clockwise
-        $7E:8036: Mother Brain rainbow beam left edge angle. Units of pi/80h radians, 0 = down, increasing = anti-clockwise
-        $7E:8038: Mother Brain rainbow beam right edge origin X position. Initialised to ([Mother Brain's brain X position] + Eh) * 100h
-        $7E:803A: Mother Brain rainbow beam origin Y position. Initialised to [Mother Brain's brain Y position] + 5
-        $7E:803C: Mother Brain rainbow beam left edge origin X position. Initialised to ([Mother Brain's brain X position] + Eh) * 100h
-        $7E:803E: Mother Brain rainbow beam origin Y position. Same as $803A. Used when beam is aimed right, $803A is used otherwise. Initialised to [Mother Brain's brain Y position] + 5
-        $7E:8040: Mother Brain's lower neck angle (segments 0..2). Units of pi/8000h radians, 0 = down, increasing = anti-clockwise. Initialised to 4800h
-        $7E:8042: Mother Brain's upper neck angle (segments 3..4). Units of pi/8000h radians, 0 = down, increasing = anti-clockwise. Initialised to 5000h
-        $7E:8044: Mother Brain's neck segment 0 X position
-        $7E:8046: Mother Brain's neck segment 0 Y position
-        $7E:8048: Mother Brain's neck segment 0 distance (from neck origin). Initialised to 2
-        $7E:804A: Mother Brain's neck segment 1 X position
-        $7E:804C: Mother Brain's neck segment 1 Y position
-        $7E:804E: Mother Brain's neck segment 1 distance (from neck origin). Initialised to 10
-        $7E:8050: Mother Brain's neck segment 2 X position
-        $7E:8052: Mother Brain's neck segment 2 Y position
-        $7E:8054: Mother Brain's neck segment 2 distance (from neck origin). Initialised to 20
-        $7E:8056: Mother Brain's neck segment 3 X position
-        $7E:8058: Mother Brain's neck segment 3 Y position
-        $7E:805A: Mother Brain's neck segment 3 distance (from neck origin). Initialised to 10
-        $7E:805C: Mother Brain's neck segment 4 X position
-        $7E:805E: Mother Brain's neck segment 4 Y position
-        $7E:8060: Mother Brain's neck segment 4 distance (from neck origin). Initialised to 20
-        $7E:8062: Flag to enable Mother Brain neck movement
-        $7E:8064: Mother Brain lower neck movement index. Index for $9072 jump table
-        {
-            0: Nothing
-            2: Bob down. Lower neck down to 2800h (then set index 4)
-            4: Bob up.   Raise neck up to 9000h (then set index 2)
-            6: Lower.    Lower neck down to 3000h (then set index 0)
-            8: Raise.    Raise neck up to 9000h (then set index 0)
-        }
-        $7E:8066: Mother Brain upper neck movement index. Index for $9109 jump table
-        {
-            0: Nothing
-            2: Bob down. Lower neck down to 2800h (then set index 4). Also set index 4 if [Mother Brain's brain Y position] + 4 >= [Samus Y position]
-            4: Bob up.   Raise neck up to [Mother Brain's lower neck angle] + 800h (then set index 2)
-            6: Lower.    Lower neck down to 3000h (then set index 0)
-            8: Raise.    Raise neck up to [Mother Brain's lower neck angle] + 800h (then set index 0)
-        }
-        $7E:8068: Mother Brain neck angle delta. Positive = move in current direction according to $7E:8064/66, negative = move in opposite direction
-    }
 }
-$7E:8800..8FFF: Extra enemy RAM (40h bytes each). Includes variables for corpse rotting effect
+$7E:8800..8FFF: Extra enemy RAM (40h bytes each). Includes variables for corpse rotting effect. See "enemy data.txt" from lua repo, "Draygon.asm"
 {
-    Draygon:
-    {
-        $7E:8800..0B: Draygon turret destroyed flags. Word per turret. First two entries are unused, last entry is set in Draygon init, otherwise they're set by the turret PLMs
-        $7E:8806: Angle temporary in $A5:9185 and $A5:960D. Pretty pointless in both cases
-
-        $7E:880C: Draygon fight intro dance index
-
-        $7E:883C: Draygon body graphics X displacement
-        $7E:883E: Draygon body graphics Y displacement
-    }
-
     Corpse rotting:
     {
         $7E:8802: Corpse rotting rot entry Y offset
@@ -4002,7 +3749,7 @@ $7E:9C00: Above surface water BG3 X scroll HDMA data entry (zero)
 
 $7E:9C04..23: Water BG3 X scroll HDMA data table (and would-be spores BG3 X scroll HDMA data table in unused code)
 
-$7E:9C44: Unused data entry, set to [BG2 Y scroll]. See $88:BDB1
+$7E:9C44: Unused HDMA data table entry, set to [BG2 Y scroll]. See $88:BDB1
 $7E:9C46..65: Lava/acid BG2 Y scroll HDMA data table (used also for X scroll by unused wavy effect)
 
 $7E:9C48..67: Water BG2 X scroll HDMA data table
@@ -4277,9 +4024,9 @@ $7E:D559..F1: Debug. Enemy set data. Never read. Ch byte slots. 99h bytes accord
     + Ah: Enemy palette index
 }
 $7E:D5F2..D651: Unused
-$7E:D652: Wrecked Ship robot palette animation palette index. Multiple of 200h
-$7E:D654: Wrecked Ship robot palette animation timer
-$7E:D656: Wrecked Ship robot palette animation table index
+$7E:D652: Work robot palette animation palette index. Multiple of 200h
+$7E:D654: Work robot palette animation timer
+$7E:D656: Work robot palette animation table index
 $7E:D658..D7BF: Projectile trail data
 {
     ; Some projectile trails (mostly ice beams) use two sets of data dubbed left and right (left is top if you shoot right, bottom if shoot left, etc)
@@ -4312,9 +4059,9 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
             1:   Event 0 - Zebes is awake
             2:   Event 1 - Shitroid ate sidehopper
             4:   Event 2 - Mother Brain's glass is broken
-            8:   Event 3 - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
-            10h: Event 4 - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
-            20h: Event 5 - zebetite destroyed bit 2 (true if all 4 zebetites are destroyed)
+            8:   Event 3 - zebetite destroyed bit 0 (set if 1 or 3 zebetites are destroyed)
+            10h: Event 4 - zebetite destroyed bit 1 (set if 2 or 3 zebetites are destroyed)
+            20h: Event 5 - zebetite destroyed bit 2 (set if all 4 zebetites are destroyed)
             40h: Event 6 - Phantoon statue is grey
             80h: Event 7 - Ridley statue is grey
         }
@@ -4323,7 +4070,7 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
             1:   Event 8  - Draygon statue is grey
             2:   Event 9  - Kraid statue is grey
             4:   Event Ah - entrance to Tourian is unlocked
-            8:   Event Bh - Maridia noobtube is broken
+            8:   Event Bh - n00b tube is broken
             10h: Event Ch - Lower Norfair chozo has lowered the acid
             20h: Event Dh - Shaktool cleared a path
             40h: Event Eh - Zebes timebomb set
@@ -4412,10 +4159,10 @@ $7E:EF78..F377: Sprite object RAM
     $7E:F078..F0F7: Sprite object palettes / VRAM indices
     $7E:F0F8..F137: Sprite object X positions
 
-    $7E:F178..F1F7: Sprite object X subpositions. Used only for mini-Draygon
+    $7E:F178..F1F7: Sprite object X subpositions. Used only for evir
     $7E:F1F8..F237: Sprite object Y positions
 
-    $7E:F278..F2F7: Sprite object Y subpositions. Used only for mini-Draygon
+    $7E:F278..F2F7: Sprite object Y subpositions. Used only for evir
     $7E:F2F8..F337: Sprite object disable flags. Set only by metroid for electricity and shell sprite objects when frozen
 }
 $7E:F378: Enemy processing stage. Never read, presumably used for debugging or performance profiling
@@ -4440,7 +4187,7 @@ $7E:F380..F49F: Enemy projectile data. Cleared in enemy initialisation ($A0:8A9E
 {
     $7E:F380..A3: Enemy projectile projectile collision options
     {
-        1: Enable buggy dud shot for projectile collision. Usually fails to spawn dud shot graphics (see $A0:99F9), but the sound effect works. Shot instruction list is ignored. Used by nuclear waffle body and Botwoon
+        1: Enable buggy dud shot for projectile collision. Usually fails to spawn dud shot graphics (see $A0:99F9), but the sound effect works. Shot instruction list is ignored. Used by fire arc body and Botwoon
         2: Disable interaction with projectiles. Used by Botwoon's body when in the background
     }
     $7E:F3A4..C7: Unused
