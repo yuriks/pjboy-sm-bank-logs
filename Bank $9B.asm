@@ -447,8 +447,8 @@ $9B:A380             dw 0000,6739,6F9C,5EF7,7BFF,6739,77BD,6F9C,6B7B,6B7B,6B7B,5
 $9B:A3A0             dw 3800,2DAD,52D6,1084,77FF,2DAD,677B,52D6,4252,4252,4252,1908,4252,1908,2DAD,1908
 
 ; Visor colours
-$9B:A3C0             dw 3BE0,5FF0,7FFF, ; Using x-ray
-                        43FF,2F5A,1AB5  ; In room with layer blending configuration = 28h/2Ah (with colour math backdrops)
+$9B:A3C0             dw 3BE0,5FF0,7FFF, ; Palette transition when x-ray is widening
+                        43FF,2F5A,1AB5  ; Full x-ray beam, or in room with layer blending configuration = 28h/2Ah (with colour math backdrop)
 }
 
 

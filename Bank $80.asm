@@ -3798,6 +3798,16 @@ $80:9770 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
+; The call to $80:AE4E does a non-trivial amount of work, not a particularly sensible thing to do in an interrupt
+; Of note:
+;     Multiplication registers are clobbered (by $A9DE/$AB78)
+;     Samus position is modified (by $AE7E/$AEC2/$AF02/$AF89)
+;     Layer 1 position is modified (by $AE4E)
+;     BG1/2 scroll is modified (by $A37B)
+
+; $82:E91C (set closing PLM instruction list if coloured doorcap is present) actually takes the precaution of disabling IRQ to do its multiplication,
+; I think just about every other routine that runs during door transition is susceptible to seemingly random multiplication errors due to this interrupt command
+
 $80:9771 E2 20       SEP #$20
 $80:9773 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:9776 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
@@ -3875,6 +3885,16 @@ $80:97D9 60          RTS
 ;;     A: Interrupt command
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
+
+; The call to $80:AE4E does a non-trivial amount of work, not a particularly sensible thing to do in an interrupt
+; Of note:
+;     Multiplication registers are clobbered (by $A9DE/$AB78)
+;     Samus position is modified (by $AE7E/$AEC2/$AF02/$AF89)
+;     Layer 1 position is modified (by $AE4E)
+;     BG1/2 scroll is modified (by $A37B)
+
+; $82:E91C (set closing PLM instruction list if coloured doorcap is present) actually takes the precaution of disabling IRQ to do its multiplication,
+; I think just about every other routine that runs during door transition is susceptible to seemingly random multiplication errors due to this interrupt command
 
 $80:97DA E2 20       SEP #$20
 $80:97DC AD B3 07    LDA $07B3  [$7E:07B3]  ;\

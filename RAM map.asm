@@ -1752,7 +1752,12 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         }
         $0A7C: X-ray angular width delta
         $0A7E: X-ray angular subwidth delta
-        $0A80: Used during X-Ray. Set to 0001 when beam reaches max size. Set to FFFF when ending XRay, then cleared
+        $0A80: X-ray palette mode
+        {
+            0: Beam widening (palette transition)
+            1: Full beam (palette cycle)
+            FFFFh: Stop
+        }
         $0A82: X-ray angle (clockwise, 40h = right, C0h = left)
         $0A84: X-ray angular width
         $0A86: X-ray angular subwidth
@@ -1846,7 +1851,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0ACE:
     {
         Special Samus palette frame. Index used to get current Samus palette. Used for screw attack, speed boosting, speed booster shine, shinespark, crystal flash bubble
-        X-ray palette index
+        X-ray palette index. Indexes $9B:A3C0 for Samus visor colour
         Rainbow Samus palette timer reset value
     }
     $0AD0:

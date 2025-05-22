@@ -3377,17 +3377,17 @@ $8D:E420             dw E466, E488, E4AA, E4CC, E4EE, E510, E532, E554, E576, E5
 $8D:E440 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $8D:E443 89 20 00    BIT #$0020             ;} If gravity suit equipped:
 $8D:E446 F0 05       BEQ $05    [$E44D]     ;/
-$8D:E448 A9 B6 E8    LDA #$E8B6             ; A = $E8B6
-$8D:E44B 80 0D       BRA $0D    [$E45A]     ; Go to BRANCH_SET_INSTRUCTION_LIST_POINTER
+$8D:E448 A9 B6 E8    LDA #$E8B6             ; Palette FX object instruction list pointer = $E8B6
+$8D:E44B 80 0D       BRA $0D    [$E45A]     ; Return
 
 $8D:E44D 89 01 00    BIT #$0001             ;\
 $8D:E450 F0 05       BEQ $05    [$E457]     ;} If varia suit equipped:
-$8D:E452 A9 8A E6    LDA #$E68A             ; A = $E68A
-$8D:E455 80 03       BRA $03    [$E45A]     ; Go to BRANCH_SET_INSTRUCTION_LIST_POINTER
+$8D:E452 A9 8A E6    LDA #$E68A             ; Palette FX object instruction list pointer = $E68A
+$8D:E455 80 03       BRA $03    [$E45A]     ; Return
 
-$8D:E457 A9 5E E4    LDA #$E45E             ; A = $E45E
+$8D:E457 A9 5E E4    LDA #$E45E             ; Palette FX object instruction list pointer = $E45E
 
-$8D:E45A 99 BD 1E    STA $1EBD,y[$7E:1ECB]  ; Palette FX object instruction list pointer = [A]
+$8D:E45A 99 BD 1E    STA $1EBD,y[$7E:1ECB]
 $8D:E45D 60          RTS
 }
 

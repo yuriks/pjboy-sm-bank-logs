@@ -1788,7 +1788,7 @@ $94:8EC1 F0 08       BEQ $08    [$8ECB]     ;/
 $94:8EC3 A9 01 00    LDA #$0001             ;\
 $94:8EC6 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
 $94:8EC9 80 03       BRA $03    [$8ECE]
-
+                                            ; Else (facing right):
 $94:8ECB 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = left
 
 $94:8ECE 60          RTS
@@ -1817,7 +1817,7 @@ $94:8EFC F0 08       BEQ $08    [$8F06]     ;/
 $94:8EFE A9 01 00    LDA #$0001             ;\
 $94:8F01 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
 $94:8F04 80 03       BRA $03    [$8F09]
-
+                                            ; Else (facing right):
 $94:8F06 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = left
 
 $94:8F09 60          RTS

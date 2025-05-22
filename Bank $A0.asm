@@ -5848,8 +5848,8 @@ $A0:AE1D 30 05       BMI $05    [$AE24]     ;/
 $A0:AE1F FA          PLX
 $A0:AE20 A9 00 00    LDA #$0000             ;\
 $A0:AE23 6B          RTL                    ;} Return zero set
-                                            
-$A0:AE24 FA          PLX                    
+
+$A0:AE24 FA          PLX
 $A0:AE25 A9 01 00    LDA #$0001             ;\
 $A0:AE28 6B          RTL                    ;} Return zero clear
 }
@@ -6398,9 +6398,9 @@ $A0:B0C6 18          CLC                    ;\
 $A0:B0C7 69 80 00    ADC #$0080             ;|
 $A0:B0CA 29 FF 00    AND #$00FF             ;} $0E34 = ([A] + 80h) % 100h
 $A0:B0CD 8D 34 0E    STA $0E34  [$7E:0E34]  ;/
-$A0:B0D0 DA          PHX                    
-$A0:B0D1 5A          PHY                    
-$A0:B0D2 8B          PHB                    
+$A0:B0D0 DA          PHX
+$A0:B0D1 5A          PHY
+$A0:B0D2 8B          PHB
 $A0:B0D3 20 DA B0    JSR $B0DA  [$A0:B0DA]  ; 8-bit sine multiplication
 $A0:B0D6 AB          PLB
 $A0:B0D7 7A          PLY
@@ -6836,8 +6836,8 @@ $A0:B8EF 5A          PHY
 $A0:B8F0 08          PHP
 $A0:B8F1 A9 04 00    LDA #$0004             ;\
 $A0:B8F4 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 4 (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:B8F7 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:B8FB 29 1F 00    AND #$001F             ;\
 $A0:B8FE 38          SEC                    ;|
@@ -6871,8 +6871,8 @@ $A0:B92C 5A          PHY
 $A0:B92D 08          PHP
 $A0:B92E A9 05 00    LDA #$0005             ;\
 $A0:B931 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 5 (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:B934 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:B938 29 1F 00    AND #$001F             ;\
 $A0:B93B 38          SEC                    ;|
@@ -6906,8 +6906,8 @@ $A0:B969 5A          PHY
 $A0:B96A 08          PHP
 $A0:B96B A9 05 00    LDA #$0005             ;\
 $A0:B96E 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 5 (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:B971 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:B975 29 1F 00    AND #$001F             ;\
 $A0:B978 38          SEC                    ;|
@@ -6941,8 +6941,8 @@ $A0:B9A6 5A          PHY
 $A0:B9A7 08          PHP
 $A0:B9A8 A9 10 00    LDA #$0010             ;\
 $A0:B9AB 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:B9AE 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:B9B2 29 7F 00    AND #$007F             ;\
 $A0:B9B5 18          CLC                    ;|
@@ -6972,8 +6972,8 @@ $A0:B9D9 5A          PHY
 $A0:B9DA 08          PHP
 $A0:B9DB A9 10 00    LDA #$0010             ;\
 $A0:B9DE 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:B9E1 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:B9E5 29 7F 00    AND #$007F             ;\
 $A0:B9E8 18          CLC                    ;|
@@ -7003,8 +7003,8 @@ $A0:BA0C 5A          PHY
 $A0:BA0D 08          PHP
 $A0:BA0E A9 10 00    LDA #$0010             ;\
 $A0:BA11 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:BA14 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:BA18 29 7F 00    AND #$007F             ;\
 $A0:BA1B 18          CLC                    ;|
@@ -7034,8 +7034,8 @@ $A0:BA3F 5A          PHY
 $A0:BA40 08          PHP
 $A0:BA41 A9 10 00    LDA #$0010             ;\
 $A0:BA44 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:BA47 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:BA4B 29 7F 00    AND #$007F             ;\
 $A0:BA4E 18          CLC                    ;|
@@ -7065,8 +7065,8 @@ $A0:BA72 5A          PHY
 $A0:BA73 08          PHP
 $A0:BA74 A9 10 00    LDA #$0010             ;\
 $A0:BA77 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
-                                            
-; LOOP                                      
+
+; LOOP
 $A0:BA7A 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A0:BA7E 29 FF 00    AND #$00FF             ;\
 $A0:BA81 18          CLC                    ;|
@@ -8287,7 +8287,7 @@ $A0:C10A             dw C112, C13C, C15C, C16E
 ;;; $C112: Calculate angle of (x, y) offset - bottom right upper octant ;;;
 {
 ; A = 40h + quotient / 8
-$A0:C112 AD 14 42    LDA $4214            
+$A0:C112 AD 14 42    LDA $4214
 $A0:C115 4A          LSR A
 $A0:C116 4A          LSR A
 $A0:C117 4A          LSR A
@@ -8301,7 +8301,7 @@ $A0:C11F 60          RTS
 ;;; $C120: Calculate angle of (x, y) offset - bottom right lower octant ;;;
 {
 ; A = 80h - quotient / 8
-$A0:C120 AD 14 42    LDA $4214            
+$A0:C120 AD 14 42    LDA $4214
 $A0:C123 4A          LSR A
 $A0:C124 4A          LSR A
 $A0:C125 4A          LSR A
@@ -8317,7 +8317,7 @@ $A0:C131 60          RTS
 ;;; $C132: Calculate angle of (x, y) offset - top right upper octant ;;;
 {
 ; A = quotient / 8
-$A0:C132 AD 14 42    LDA $4214            
+$A0:C132 AD 14 42    LDA $4214
 $A0:C135 4A          LSR A
 $A0:C136 4A          LSR A
 $A0:C137 4A          LSR A
@@ -8329,7 +8329,7 @@ $A0:C13B 60          RTS
 ;;; $C13C: Calculate angle of (x, y) offset - top right lower octant ;;;
 {
 ; A = 40h - quotient / 8
-$A0:C13C AD 14 42    LDA $4214            
+$A0:C13C AD 14 42    LDA $4214
 $A0:C13F 4A          LSR A
 $A0:C140 4A          LSR A
 $A0:C141 4A          LSR A
@@ -8345,7 +8345,7 @@ $A0:C14D 60          RTS
 ;;; $C14E: Calculate angle of (x, y) offset - bottom left lower octant ;;;
 {
 ; A = 80h + quotient / 8
-$A0:C14E AD 14 42    LDA $4214            
+$A0:C14E AD 14 42    LDA $4214
 $A0:C151 4A          LSR A
 $A0:C152 4A          LSR A
 $A0:C153 4A          LSR A
@@ -8359,7 +8359,7 @@ $A0:C15B 60          RTS
 ;;; $C15C: Calculate angle of (x, y) offset - bottom left upper octant ;;;
 {
 ; A = C0h - quotient / 8
-$A0:C15C AD 14 42    LDA $4214            
+$A0:C15C AD 14 42    LDA $4214
 $A0:C15F 4A          LSR A
 $A0:C160 4A          LSR A
 $A0:C161 4A          LSR A
@@ -8375,7 +8375,7 @@ $A0:C16D 60          RTS
 ;;; $C16E: Calculate angle of (x, y) offset - top left lower octant ;;;
 {
 ; A = C0h + quotient / 8
-$A0:C16E AD 14 42    LDA $4214            
+$A0:C16E AD 14 42    LDA $4214
 $A0:C171 4A          LSR A
 $A0:C172 4A          LSR A
 $A0:C173 4A          LSR A
@@ -8389,7 +8389,7 @@ $A0:C17B 60          RTS
 ;;; $C17C: Calculate angle of (x, y) offset - top left upper octant ;;;
 {
 ; A = 100h - quotient / 8
-$A0:C17C AD 14 42    LDA $4214            
+$A0:C17C AD 14 42    LDA $4214
 $A0:C17F 4A          LSR A
 $A0:C180 4A          LSR A
 $A0:C181 4A          LSR A

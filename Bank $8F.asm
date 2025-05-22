@@ -6468,7 +6468,7 @@ $8F:CEFB             dx 01,04, 0B,11, 01,03, 70,A0, 00, CF41, E612,0B,CF27, E5E6
 ; State header. Room $CEFB. n00b tube - default
 $8F:CF0D             dx C9DB52, 0B, 12,05, 9C94, D529, 8E7E, 00,C0, CF49, 0000, 0000, C37D, 0000, C8D1
 
-; State header. Room $CEFB. n00b tube - event "Maridia n00btube is broken" is set
+; State header. Room $CEFB. n00b tube - event "n00b tube is broken" is set
 $8F:CF27             dx C9E129, 0B, 12,05, 9C94, D529, 8E7E, 00,C0, CF49, 0000, 0000, C37D, 0000, C8D1
 
 ; Door list. Room $CEFB. n00b tube

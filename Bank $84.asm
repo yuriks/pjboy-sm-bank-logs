@@ -7794,16 +7794,32 @@ $84:B58F 60          RTS
 ; I wrote `[Samus X position] < PLM X position + 18h` below,
 ; but Samus X position must be less than PLM X position + 10h for the collision to happen in the first place.
 ; So save stations cruelly require Samus centre to be within the centre-left quarter of the station
+
+; All the save stations in the game are placed in rooms that only have one PLM,
+; so this (questionable) loop over all PLM slots finishes after just one iteration
+
+; Note that having two free PLM slots before a save station PLM can cause the save station triggering mechanism to fail
+; If two trigger PLMs are spawned on the same frame (e.g. the first due to vertical movement, the second due to pose change),
+; and the first one returns early (e.g. due to Samus pose), then there's two situations to analyse:
+; If the second trigger PLM doesn't return early (not sure if possible), then it finds the first trigger PLM in the loop
+; Otherwise, if the second trigger PLM also returns early, then its block index isn't cleared,
+; and a future trigger PLM will find this second trigger PLM in the loop
+
+; In the latter situation, the second trigger PLM is deleted, so advancing its instruction list has no effect
+; In the former situation (if it's possible), the first trigger PLM will not have been deleted yet (it's relying on the instruction list to do this),
+; its instruction list would advance to $AAE5, which is normally used by PLM $B773 (crumble access to Tourian elevator),
+; which would cause a bunch of blocks to be erased
+
 $84:B590 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $84:B593 D0 57       BNE $57    [$B5EC]     ;} If power bomb explosion is active: return set
 $84:B595 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:B598 C9 01 00    CMP #$0001             ;|
-$84:B59B F0 05       BEQ $05    [$B5A2]     ;} If Samus current pose is not normally standing: return set
+$84:B59B F0 05       BEQ $05    [$B5A2]     ;} If [Samus pose] != normal (standing): return set
 $84:B59D C9 02 00    CMP #$0002             ;|
 $84:B5A0 D0 4A       BNE $4A    [$B5EC]     ;/
 
 $84:B5A2 AD 75 1E    LDA $1E75  [$7E:1E75]  ;\
-$84:B5A5 D0 45       BNE $45    [$B5EC]     ;} If save station has been used: return set
+$84:B5A5 D0 45       BNE $45    [$B5EC]     ;} If [save station lockout flag] != 0: return set
 $84:B5A7 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B5AA 29 0F 00    AND #$000F             ;|
 $84:B5AD C9 03 00    CMP #$0003             ;} If [collision direction] != down: return set

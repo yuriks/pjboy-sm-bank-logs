@@ -9747,10 +9747,10 @@ $91:DCB3 60          RTS
 ;; Returns:
 ;;     Carry: Clear to use normal suit palette, set otherwise
 $91:DCB4 AD 80 0A    LDA $0A80  [$7E:0A80]  ;\
-$91:DCB7 30 6A       BMI $6A    [$DD23]     ;} If [$0A80] < 0: go to BRANCH_FINISH
-$91:DCB9 D0 3E       BNE $3E    [$DCF9]     ; If [$0A80] != 0: go to BRANCH_PALETTE_SET
+$91:DCB7 30 6A       BMI $6A    [$DD23]     ;} If [x-ray palette mode] < 0: go to BRANCH_STOP
+$91:DCB9 D0 3E       BNE $3E    [$DCF9]     ; If [x-ray palette mode] != 0: go to BRANCH_FULL_BEAM
 $91:DCBB AD 7A 0A    LDA $0A7A  [$7E:0A7A]  ;\
-$91:DCBE C9 02 00    CMP #$0002             ;} If [x-ray state] >= 2: go to BRANCH_NOT_WIDENING
+$91:DCBE C9 02 00    CMP #$0002             ;} If [x-ray state] >= 2: go to BRANCH_FINISHED_WIDENING
 $91:DCC1 10 27       BPL $27    [$DCEA]     ;/
 $91:DCC3 CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement x-ray palette timer
 $91:DCC6 F0 02       BEQ $02    [$DCCA]     ;\
@@ -9771,14 +9771,14 @@ $91:DCE5 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
 $91:DCE8 38          SEC                    ;\
 $91:DCE9 60          RTS                    ;} Return carry set
 
-; BRANCH_NOT_WIDENING
+; BRANCH_FINISHED_WIDENING
 $91:DCEA A9 06 00    LDA #$0006             ;\
 $91:DCED 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;} X-ray palette index = 6
 $91:DCF0 A9 01 00    LDA #$0001             ;\
 $91:DCF3 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} X-ray palette timer = 1
-$91:DCF6 8D 80 0A    STA $0A80  [$7E:0A80]  ; $0A80 = 1
+$91:DCF6 8D 80 0A    STA $0A80  [$7E:0A80]  ; X-ray palette mode = 1 (full beam)
 
-; BRANCH_PALETTE_SET
+; BRANCH_FULL_BEAM
 $91:DCF9 CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement x-ray palette timer
 $91:DCFC F0 02       BEQ $02    [$DD00]     ;\
 $91:DCFE 10 E8       BPL $E8    [$DCE8]     ;} If [x-ray palette timer] > 0: return set
@@ -9799,11 +9799,11 @@ $91:DD1E 8D CE 0A    STA $0ACE  [$7E:0ACE]
 $91:DD21 38          SEC                    ;\
 $91:DD22 60          RTS                    ;} Return carry set
 
-; BRANCH_FINISH
+; BRANCH_STOP
 $91:DD23 9C CC 0A    STZ $0ACC  [$7E:0ACC]  ; Special Samus palette frame = 0
 $91:DD26 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette type = 0 (screw attacking / speed boosting)
 $91:DD29 9C D0 0A    STZ $0AD0  [$7E:0AD0]  ; X-ray palette timer = 0
-$91:DD2C 9C 80 0A    STZ $0A80  [$7E:0A80]  ; Special Samus palette timer = 0
+$91:DD2C 9C 80 0A    STZ $0A80  [$7E:0A80]  ; X-ray palette mode = 0 (beam widening)
 $91:DD2F 18          CLC                    ;\
 $91:DD30 60          RTS                    ;} Return carry clear
 }
@@ -10575,7 +10575,7 @@ $91:E312 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 $91:E315 A9 13 E9    LDA #$E913             ;\
 $91:E318 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:E31B A9 FF FF    LDA #$FFFF             ;\
-$91:E31E 8D 80 0A    STA $0A80  [$7E:0A80]  ;} $0A80 = FFFFh
+$91:E31E 8D 80 0A    STA $0A80  [$7E:0A80]  ;} X-ray palette mode = FFFFh (stop)
 $91:E321 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:E324 0A          ASL A                  ;|
 $91:E325 0A          ASL A                  ;|
