@@ -4483,8 +4483,8 @@ $80:9CCC 28          PLP
 $80:9CCD 6B          RTL
 
 ; Energy tank icon tilemap offsets
-$80:9CCE             dw 0042, 0044, 0046, 0048, 004A, 004C, 004E; Bottom (first) row
-$80:9CDC             dw 0002, 0004, 0006, 0008, 000A, 000C, 000E; Top (second) row
+$80:9CCE             dw 0042, 0044, 0046, 0048, 004A, 004C, 004E ; Bottom (first) row
+$80:9CDC             dw 0002, 0004, 0006, 0008, 000A, 000C, 000E ; Top (second) row
 }
 
 

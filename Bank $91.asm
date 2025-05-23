@@ -124,9 +124,8 @@ $91:8086 60          RTS
 ;;; $8087: Normal Samus pose input handler - [Samus movement type] = crouching ;;;
 {
 ; Note that this routine is not called when time is frozen ([$0A42] = $E713 during reserve tanks, [$0A60] = $E918 during x-ray),
-; so the call to $91:FCAF (x-ray) is dead code.
-; I also don't think there's any way to transition directly from crouching to standing, (actually: check x-ray stand up)
-; so the Y position adjustment is dead code too.
+; so the call to $91:FCAF (x-ray) is dead code
+; I also don't think there's any way to transition directly from crouching to standing, so the Y position adjustment is dead code too
 
 $91:8087 08          PHP
 $91:8088 C2 30       REP #$30
@@ -765,7 +764,7 @@ $91:8397 4B          PHK                    ;\
 $91:8398 AB          PLB                    ;} DB = $91
 $91:8399 C2 30       REP #$30
 $91:839B DA          PHX
-$91:839C 8D 82 0A    STA $0A82  [$7E:0A82]  ; $0A82 = [A]
+$91:839C 8D 82 0A    STA $0A82  [$7E:0A82]  ; Demo input initialisation parameter = [A] (never read)
 $91:839F BB          TYX                    ; X = [Y]
 $91:83A0 BD 02 00    LDA $0002,x[$91:8786]  ;\
 $91:83A3 8D 7A 0A    STA $0A7A  [$7E:0A7A]  ;} Demo input pre-instruction = [[X] + 2]
@@ -820,6 +819,8 @@ $91:83F1 6B          RTL
 
 ;;; $83F2: Process demo input object ;;;
 {
+; The delete instruction pops the return address pushed to the stack by $8409 to return out of *this* routine
+; (marked "terminate processing demo input object")
 $91:83F2 A2 00 00    LDX #$0000             ;\
 $91:83F5 FC 7A 0A    JSR ($0A7A,x)[$91:83BF];} Execute [demo input pre-instruction]
 $91:83F8 CE 7C 0A    DEC $0A7C  [$7E:0A7C]  ; Decrement demo input instruction timer
@@ -862,6 +863,10 @@ $91:8433 60          RTS
 
 ;;; $8434: Instruction - pre-instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $91:8434 C2 30       REP #$30
 $91:8436 B9 00 00    LDA $0000,y
 $91:8439 8D 7A 0A    STA $0A7A  [$7E:0A7A]
@@ -882,6 +887,10 @@ $91:8447 60          RTS
 
 ;;; $8448: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $91:8448 C2 30       REP #$30
 $91:844A B9 00 00    LDA $0000,y[$91:8621]
 $91:844D A8          TAY
@@ -891,6 +900,10 @@ $91:844E 60          RTS
 
 ;;; $844F: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $91:844F C2 30       REP #$30
 $91:8451 CE 80 0A    DEC $0A80  [$7E:0A80]
 $91:8454 D0 F2       BNE $F2    [$8448]
@@ -902,6 +915,10 @@ $91:8458 60          RTS
 
 ;;; $8459: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $91:8459 C2 30       REP #$30
 $91:845B B9 00 00    LDA $0000,y
 $91:845E 8D 80 0A    STA $0A80  [$7E:0A80]
@@ -1095,7 +1112,7 @@ $91:85CD 60          RTS
 
 ;;; $85CE: Instruction list - demo input - demo input object $8778 ;;;
 {
-$91:85CE             dx 001E,0000,0000, ;
+$91:85CE             dw 001E,0000,0000, ;
                         0001,0200,0200, ;       <
                         001A,0200,0000, ;       <
                         0001,0280,0080, ;       < A
@@ -1120,28 +1137,28 @@ $91:860C 60          RTS
 
 ;;; $860D: Instruction list - demo input - baby metroid discovery - running left ;;;
 {
-$91:860D             dx 005A,0000,0000, ;
+$91:860D             dw 005A,0000,0000, ;
                         0001,0200,0200  ;       <
-$91:8619             dx 0001,0200,0000, ;       <
+$91:8619             dw 0001,0200,0000, ;       <
                         8448,8619       ; Go to $8619
 }
 
 
 ;;; $8623: Instruction list - demo input - baby metroid discovery - stop and look ;;;
 {
-$91:8623             dx 012C,0000,0000, ;
+$91:8623             dw 012C,0000,0000, ;
                         0001,0010,0010, ;            R
                         00AA,0010,0000, ;            R
                         00F0,0000,0000, ;
                         0001,0200,0200  ;       <
-$91:8641             dx 0001,0200,0000, ;       <
+$91:8641             dw 0001,0200,0000, ;       <
                         8448,8641       ; Go to $8641
 }
 
 
 ;;; $864B: Instruction list - demo input - baby metroid discovery - end ;;;
 {
-$91:864B             dx 8682,           ; End demo input
+$91:864B             dw 8682,           ; End demo input
                         8427            ; Delete
 }
 
@@ -1165,7 +1182,7 @@ $91:8669 60          RTS
 ;;; $866A: Pre-instruction - demo input - baby metroid discovery - stop and look ;;;
 {
 $91:866A AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
-$91:866D D0 12       BNE $12    [$8681]     ;} If [$1A4B] = 0:
+$91:866D D0 12       BNE $12    [$8681]     ;} If [intro cross-fade timer] = 0:
 $91:866F A9 BF 83    LDA #$83BF             ;\
 $91:8672 8D 7A 0A    STA $0A7A  [$7E:0A7A]  ;} Demo input pre-instruction = RTS
 $91:8675 A9 4B 86    LDA #$864B             ;\
@@ -1225,23 +1242,23 @@ $91:86B8             dx 0014,0000,0000, ;
 ; Clone of $8739
 $91:86FE DA          PHX
 $91:86FF 5A          PHY
-$91:8700 A9 13 E7    LDA #$E713             ;\
-$91:8703 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
-$91:8706 A9 02 00    LDA #$0002             ;\
-$91:8709 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - normal
-$91:870C 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
-$91:8710 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$91:8714 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$91:8717 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
-$91:871A AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$91:871D 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
-$91:8720 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$91:8723 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
-$91:8726 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$91:8729 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$91:872C 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
-$91:8730 A9 0E E9    LDA #$E90E             ;\
-$91:8733 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
+$91:8700 A9 13 E7    LDA #$E713
+$91:8703 8D 42 0A    STA $0A42  [$7E:0A42]
+$91:8706 A9 02 00    LDA #$0002
+$91:8709 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$91:870C 22 33 F4 91 JSL $91F433[$91:F433]
+$91:8710 22 08 FB 91 JSL $91FB08[$91:FB08]
+$91:8714 AD 20 0A    LDA $0A20  [$7E:0A20]
+$91:8717 8D 24 0A    STA $0A24  [$7E:0A24]
+$91:871A AD 22 0A    LDA $0A22  [$7E:0A22]
+$91:871D 8D 26 0A    STA $0A26  [$7E:0A26]
+$91:8720 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
+$91:8723 8D 20 0A    STA $0A20  [$7E:0A20]
+$91:8726 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
+$91:8729 8D 22 0A    STA $0A22  [$7E:0A22]
+$91:872C 22 5F 83 91 JSL $91835F[$91:835F]
+$91:8730 A9 0E E9    LDA #$E90E
+$91:8733 8D 60 0A    STA $0A60  [$7E:0A60]
 $91:8736 7A          PLY
 $91:8737 FA          PLX
 $91:8738 60          RTS
@@ -1255,7 +1272,7 @@ $91:873A 5A          PHY
 $91:873B A9 13 E7    LDA #$E713             ;\
 $91:873E 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $91:8741 A9 02 00    LDA #$0002             ;\
-$91:8744 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - normal
+$91:8744 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 $91:8747 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:874B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:874F AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
@@ -1277,13 +1294,13 @@ $91:8773 60          RTS
 
 ;;; $8774: Unused. Instruction list - demo input - delete ;;;
 {
-$91:8774             dx 8427            ; Delete
+$91:8774             dw 8427            ; Delete
 }
 
 
 ;;; $8776: Instruction list - demo input - delete ;;;
 {
-$91:8776             dx 8427            ; Delete
+$91:8776             dw 8427            ; Delete
 }
 
 
@@ -1389,12 +1406,12 @@ $91:8866 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding = R
 $91:8869 A9 20 00    LDA #$0020             ;\
 $91:886C 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down binding = L
 $91:886F A9 01 00    LDA #$0001             ;\
-$91:8872 8D E8 09    STA $09E8  [$7E:09E8]  ;} $09E8 = 1
+$91:8872 8D E8 09    STA $09E8  [$7E:09E8]  ;} $09E8 = 1 (never read)
 $91:8875 8D E6 09    STA $09E6  [$7E:09E6]  ; Disable Samus placement mode
 $91:8878 9C E4 09    STZ $09E4  [$7E:09E4]  ; Disable moonwalk
-$91:887B 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0
-$91:887E 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0
-$91:8881 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0
+$91:887B 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0 (never read)
+$91:887E 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0 (never read)
+$91:8881 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0 (never read)
 $91:8884 60          RTS
 }
 
@@ -1414,7 +1431,7 @@ $91:8885             dw 888D, 88ED, 894D, 89AD
 ;                       |    |    |    |    |    |    |    |
 $91:888D             dw 0000,0000,0000,0000,0063,0000,0000,9E52, ; Landing site
                         0004,0005,0000,0000,0063,0000,0000,9E88, ; Missile door
-                        0004,000F,0000,0000,00C7,1000,1000,9EAC, ; Pre Spore Spawn hall
+                        0004,000F,0000,0000,00C7,1000,1000,9EAC, ; Charge beam
                         2105,001E,0005,0000,012B,1004,1004,9E5E, ; Speed booster
                         6105,001E,0005,0005,018F,1006,1006,9EB2, ; Grapple beam
                         0004,0014,0000,0000,00C7,1000,1000,9E58  ; Pseudo screw attack
@@ -1422,7 +1439,7 @@ $91:888D             dw 0000,0000,0000,0000,0063,0000,0000,9E52, ; Landing site
 $91:88ED             dw 2105,001E,0005,0000,012B,1006,1006,9EB8, ; Ice beam
                         0004,000A,0000,0000,00C7,0000,0000,9E94, ; Fireflea room
                         0004,0019,0005,0000,00C7,1000,1000,9EA0, ; Brinstar diagonal room
-                        E325,004B,000F,000A,0383,1000,1000,9E76, ; Lower Norfair entrance
+                        E325,004B,000F,000A,0383,1000,1000,9E76, ; Lava dive
                         E32D,0055,000F,000A,03E7,0000,0000,9E9A, ; Screw attack
                         E105,002D,0005,0005,018F,1000,1000,9E64  ; Dachora
 
@@ -1497,6 +1514,8 @@ $91:8A53 A9 01 00    LDA #$0001             ; Initialise Samus with pose = facin
 
 ;;; $8A56: Initialise Samus with pose = [A] ;;;
 {
+;; Parameters:
+;;     A: Samus pose
 $91:8A56 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [A]
 $91:8A59 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8A5D 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
@@ -1525,7 +1544,7 @@ $91:8A81 A9 52 EB    LDA #$EB52             ;\
 $91:8A84 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $91:8A87 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
 $91:8A8B A9 CA 00    LDA #$00CA             ;\
-$91:8A8E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - shinespark - horizontal
+$91:8A8E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - shinespark - horizontal
 $91:8A91 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8A95 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:8A99 60          RTS
@@ -2576,7 +2595,7 @@ $91:9E94             dw 83BF,8A9B,946C ; Fireflea room
 $91:9E9A             dw 83BF,8A9B,950A ; Screw attack
 $91:9EA0             dw 83BF,8A9B,9560 ; Brinstar diagonal room
 $91:9EA6             dw 83BF,8A9B,95BC ; Unused
-$91:9EAC             dw 83BF,8A9B,965A ; Pre Spore Spawn hall
+$91:9EAC             dw 83BF,8A9B,965A ; Charge beam
 $91:9EB2             dw 83BF,8A9B,973A ; Grapple beam
 $91:9EB8             dw 83BF,8A9B,989E ; Ice beam
 $91:9EBE             dw 83BF,8A9B,99AE ; Gauntlet entrance
@@ -2614,6 +2633,8 @@ $91:9EDC             dw 83BF,8A9B,9DAE ; Crystal flash
 ;     0040: Shoot
 ;     0020: Aim diagonally down
 ;     0010: Aim diagonally up
+
+; See "/Other/Transition table generator/vanilla output.asm" for nicer presentation
 
 $91:9EE2             dw A0DE, A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A1F8, A242, AE94, AEDE, A1F8, A242, A1F8,
                         A242, A1F8, A242, AAC0, AB3A, A2F6, A376, ABB4, AC40, A41E, A46E, A4BE, A50E, A5FE, A618, A632,
@@ -8565,7 +8586,7 @@ $91:D2D0 6B          RTL
 }
 
 
-;;; $D2D1: RTS ;;;
+;;; $D2D1: Unused. RTS ;;;
 {
 $91:D2D1 08          PHP
 $91:D2D2 C2 30       REP #$30
@@ -8995,11 +9016,11 @@ $91:D6B6 85 62       STA $62    [$7E:0062]  ;} Enable colour math window 1 inclu
 $91:D6B8 A9 33       LDA #$33               ;\
 $91:D6BA 85 71       STA $71    [$7E:0071]  ;} Enable colour math on BG1/BG2/sprites/backdrop
 $91:D6BC AD F0 0D    LDA $0DF0  [$7E:0DF0]  ;\
-$91:D6BF 85 74       STA $74    [$7E:0074]  ;} Colour math subscreen backdrop colour 0 = [$0DF0]
+$91:D6BF 85 74       STA $74    [$7E:0074]  ;} Colour math subscreen backdrop colour 0 = [suit pickup colour math subscreen backdrop red component]
 $91:D6C1 AD F1 0D    LDA $0DF1  [$7E:0DF1]  ;\
-$91:D6C4 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour 1 = [$0DF1]
+$91:D6C4 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour 1 = [suit pickup colour math subscreen backdrop green component]
 $91:D6C6 AD F2 0D    LDA $0DF2  [$7E:0DF2]  ;\
-$91:D6C9 85 76       STA $76    [$7E:0076]  ;} Colour math subscreen backdrop colour 2 = [$0DF2]
+$91:D6C9 85 76       STA $76    [$7E:0076]  ;} Colour math subscreen backdrop colour 2 = [suit pickup colour math subscreen backdrop blue component]
 $91:D6CB C2 30       REP #$30
 $91:D6CD A9 E4 00    LDA #$00E4             ;\
 $91:D6D0 8D 88 0A    STA $0A88  [$7E:0A88]  ;|
@@ -9007,7 +9028,7 @@ $91:D6D3 A9 00 98    LDA #$9800             ;|
 $91:D6D6 8D 89 0A    STA $0A89  [$7E:0A89]  ;|
 $91:D6D9 A9 E4 00    LDA #$00E4             ;|
 $91:D6DC 8D 8B 0A    STA $0A8B  [$7E:0A8B]  ;|
-$91:D6DF A9 C8 98    LDA #$98C8             ;} $0A88..92 = E4h,$9800, E4h,$98C8, 98h,$9990, 00h,00h
+$91:D6DF A9 C8 98    LDA #$98C8             ;} $0A88..92 = E4h,$9800, E4h,$98C8, 98h,$9990, 0,0
 $91:D6E2 8D 8C 0A    STA $0A8C  [$7E:0A8C]  ;|
 $91:D6E5 A9 98 00    LDA #$0098             ;|
 $91:D6E8 8D 8E 0A    STA $0A8E  [$7E:0A8E]  ;|
@@ -9266,7 +9287,7 @@ $91:D8BD AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $91:D8C0 C9 D9 E8    CMP #$E8D9             ;} If [Samus new state handler] = $E8D9 (RTL):
 $91:D8C3 D0 08       BNE $08    [$D8CD]     ;/
 $91:D8C5 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$91:D8C8 C9 54 00    CMP #$0054             ;} If [Samus pose] = 54h (facing left  - knockback): go to BRANCH_NO_SFX
+$91:D8C8 C9 54 00    CMP #$0054             ;} If [Samus pose] = 54h (facing left - knockback): go to BRANCH_NO_SFX
 $91:D8CB F0 09       BEQ $09    [$D8D6]     ;/
 
 $91:D8CD A9 35 00    LDA #$0035             ;\ Else ([Samus new state handler] != $E8D9):

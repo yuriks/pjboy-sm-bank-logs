@@ -1563,6 +1563,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         0: None
         1: Start knockback
         3: Start bomb jump
+        4: Set by unused Samus pose input handler code $91:80BE
         5: X-ray
         9: Connecting grapple - swinging
         Ah: Connecting grapple - stuck in place
@@ -3397,7 +3398,7 @@ $1F31..3C: Animated tiles object sizes
 $1F3D..48: Animated tiles object VRAM addresses
 $1F49: Animated tiles object instruction
 $1F51: Cinematic function. Bank $8B. Used for game states 1/1Eh/22h/25h/27h (opening / intro / Ceres goes boom, Samus goes to Zebes / Ceres goes boom with Samus / ending and credits)
-$1F53: Demo timer. 15 second delay before transitioning to demos from title screen and demo scene timer otherwise
+$1F53: Demo timer. Demo scene timer when demo is playing, 15 second delay before transitioning to demos when title screen is active
 $1F55: Demo set
 $1F57: Demo scene
 $1F59: Number of demo sets (4 if beaten game, otherwise 3)
