@@ -9709,6 +9709,9 @@ $91:DC28             dw 96D4, 96F4, 9714, 9734, 9754, 9774
 
 ;;; $DC34: Set crystal flash Samus colours ;;;
 {
+;; Parameters:
+;;     Y: Pointer to crystal flash Samus colours
+
 ; Sprite palette 6 colours 0..9 = 14h bytes from $9B:[Y]
 $91:DC34 8B          PHB
 $91:DC35 F4 00 9B    PEA $9B00
@@ -9741,6 +9744,9 @@ $91:DC81 60          RTS
 
 ;;; $DC82: Set crystal flash bubble colours ;;;
 {
+;; Parameters:
+;;     Y: Pointer to crystal flash bubble colours
+
 ; Sprite palette 6 colours Ah..Fh = Ch bytes from $9B:[Y]
 $91:DC82 8B          PHB
 $91:DC83 F4 00 9B    PEA $9B00
@@ -9836,11 +9842,21 @@ $91:DD31 60          RTS
 }
 
 
-;;; $DD32:  ;;;
+;;; $DD32: Unused ;;;
 {
-; Seemingly completely unreferenced
-$91:DD32             db 01, 00, 00, 01, 00, 00, 01, 00, 00, 01, 01, 00, 01, 00, 01, 00,
-                        01, 00, 01, 00, 01, 00, 01, 00, 01, 00
+; 12 bytes of 1, 14 bytes of 0
+$91:DD32             db 01, 00, 00, 
+                        01, 00, 00, 
+                        01, 00, 00, 
+                        01, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00, 
+                        01, 00
 }
 
 
@@ -9862,6 +9878,8 @@ $91:DD5A 6B          RTL
 
 ;;; $DD5B: Samus palette = 20h bytes from $9B:[X] ;;;
 {
+;; Parameters:
+;;     X: Pointer to Samus palette
 $91:DD5B 08          PHP
 $91:DD5C C2 30       REP #$30
 $91:DD5E 8B          PHB
