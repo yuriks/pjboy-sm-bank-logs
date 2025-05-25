@@ -1232,14 +1232,14 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
 {
     $0A02: Unused
     $0A04: Auto-cancel HUD item index
-    $0A06: Samus' previous health.          Used for check to update health display
-    $0A08: Samus' previous missiles.        Used for check to update missile count
-    $0A0A: Samus' previous supers missiles. Used for check to update super count
-    $0A0C: Samus' previous power bombs.     Used for check to update power bomb count
-    $0A0E: Previous HUD item index.         Used for check to update HUD item highlight
-    $0A10: Samus' previous pose X direction. Never read. See $0A22
-    $0A11: Samus' previous movement type. Used only for an x-ray and sound effect check. See $0A23. TODO: research and rename
-    $0A12: Samus' previous health. Used to check to make hurt sound and flash.
+    $0A06: Samus HUD health
+    $0A08: Samus HUD missiles
+    $0A0A: Samus HUD supers missiles
+    $0A0C: Samus HUD power bombs
+    $0A0E: Previous HUD item index. Used for check to update HUD item highlight
+    $0A10: Samus previous pose X direction. Never read. See $0A22
+    $0A11: Samus previous movement type. Used only for an x-ray and sound effect check. See $0A23. TODO: research and rename
+    $0A12: Samus previous health. Used to check to make hurt sound and flash.
     $0A14: Backup of controller 1 input ($8B) during demo (actual hardware buttons, not game generated demo input)
     $0A16: Backup of newly pressed controller 1 input ($8F) during demo (actual hardware buttons, not game generated demo input)
     $0A18: Cleared in a few places in bank $91, never read

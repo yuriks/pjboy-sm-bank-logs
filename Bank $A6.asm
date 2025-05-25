@@ -8047,7 +8047,7 @@ $A6:D452 60          RTS
 {
 $A6:D453 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A6:D456 BD 78 0F    LDA $0F78,x            ;|
-$A6:D459 AA          TAX                    ;} A = [$A0:0008 + [enemy ID]] (enemy damage)
+$A6:D459 AA          TAX                    ;} A = [$A0:0006 + [enemy ID]] (enemy damage)
 $A6:D45A BF 06 00 A0 LDA $A00006,x          ;/
 $A6:D45E 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;\
 $A6:D462 22 51 DF 91 JSL $91DF51[$91:DF51]  ;} Deal [A] suit-adjusted damage to Samus

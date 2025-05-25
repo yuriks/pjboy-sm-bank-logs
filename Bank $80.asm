@@ -4254,10 +4254,10 @@ $80:9ADB AD D0 09    LDA $09D0  [$7E:09D0]  ;\
 $80:9ADE F0 04       BEQ $04    [$9AE4]     ;} If [Samus max power bombs] != 0:
 $80:9AE0 22 1E 9A 80 JSL $809A1E[$80:9A1E]  ; Add power bombs to HUD tilemap
 
-$80:9AE4 9C 06 0A    STZ $0A06  [$7E:0A06]  ; Samus previous health = 0
-$80:9AE7 9C 08 0A    STZ $0A08  [$7E:0A08]  ; Samus previous missiles = 0
-$80:9AEA 9C 0A 0A    STZ $0A0A  [$7E:0A0A]  ; Samus previous supers missiles = 0
-$80:9AED 9C 0C 0A    STZ $0A0C  [$7E:0A0C]  ; Samus previous power bombs = 0
+$80:9AE4 9C 06 0A    STZ $0A06  [$7E:0A06]  ; Samus HUD health = 0
+$80:9AE7 9C 08 0A    STZ $0A08  [$7E:0A08]  ; Samus HUD missiles = 0
+$80:9AEA 9C 0A 0A    STZ $0A0A  [$7E:0A0A]  ; Samus HUD supers missiles = 0
+$80:9AED 9C 0C 0A    STZ $0A0C  [$7E:0A0C]  ; Samus HUD power bombs = 0
 $80:9AF0 9C 0E 0A    STZ $0A0E  [$7E:0A0E]  ; Previous HUD item index = 0
 $80:9AF3 22 EF A8 90 JSL $90A8EF[$90:A8EF]  ; Initialise mini-map (broken)
 $80:9AF7 A9 D3 9D    LDA #$9DD3             ;\
@@ -4328,9 +4328,9 @@ $80:9B87 8F 9A C6 7E STA $7EC69A[$7E:C69A]  ;/
 ; BRANCH_NOT_AUTO_RESERVES
 ; Handle Samus health
 $80:9B8B AD C2 09    LDA $09C2  [$7E:09C2]  ;\
-$80:9B8E CD 06 0A    CMP $0A06  [$7E:0A06]  ;} If [Samus health] = [Samus previous health]: go to BRANCH_HEALTH_END
+$80:9B8E CD 06 0A    CMP $0A06  [$7E:0A06]  ;} If [Samus health] = [Samus HUD health]: go to BRANCH_HEALTH_END
 $80:9B91 F0 68       BEQ $68    [$9BFB]     ;/
-$80:9B93 8D 06 0A    STA $0A06  [$7E:0A06]  ; Samus previous health = [Samus health]
+$80:9B93 8D 06 0A    STA $0A06  [$7E:0A06]  ; Samus HUD health = [Samus health]
 $80:9B96 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $80:9B99 8D 04 42    STA $4204              ;|
 $80:9B9C E2 20       SEP #$20               ;|
@@ -4391,9 +4391,9 @@ $80:9BFE 85 00       STA $00    [$7E:0000]  ;} $00 = pointer to other (identical
 $80:9C00 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
 $80:9C03 F0 11       BEQ $11    [$9C16]     ;} If [Samus max missiles] != 0:
 $80:9C05 AD C6 09    LDA $09C6  [$7E:09C6]  ;\
-$80:9C08 CD 08 0A    CMP $0A08  [$7E:0A08]  ;} If [Samus missiles] != [Samus previous missiles]:
+$80:9C08 CD 08 0A    CMP $0A08  [$7E:0A08]  ;} If [Samus missiles] != [Samus HUD missiles]:
 $80:9C0B F0 09       BEQ $09    [$9C16]     ;/
-$80:9C0D 8D 08 0A    STA $0A08  [$7E:0A08]  ; Samus previous missiles = [Samus missiles]
+$80:9C0D 8D 08 0A    STA $0A08  [$7E:0A08]  ; Samus HUD missiles = [Samus missiles]
 $80:9C10 A2 94 00    LDX #$0094             ; X = missile count HUD tilemap destination offset
 $80:9C13 20 78 9D    JSR $9D78  [$80:9D78]  ; Draw three HUD digits
 
@@ -4401,27 +4401,27 @@ $80:9C13 20 78 9D    JSR $9D78  [$80:9D78]  ; Draw three HUD digits
 $80:9C16 AD CC 09    LDA $09CC  [$7E:09CC]  ;\
 $80:9C19 F0 24       BEQ $24    [$9C3F]     ;} If [Samus max super missiles] != 0:
 $80:9C1B AD CA 09    LDA $09CA  [$7E:09CA]  ;\
-$80:9C1E CD 0A 0A    CMP $0A0A  [$7E:0A0A]  ;} If [Samus super missiles] != [Samus previous super missiles]:
+$80:9C1E CD 0A 0A    CMP $0A0A  [$7E:0A0A]  ;} If [Samus super missiles] != [Samus HUD super missiles]:
 $80:9C21 F0 1C       BEQ $1C    [$9C3F]     ;/
-$80:9C23 8D 0A 0A    STA $0A0A  [$7E:0A0A]  ; Samus previous super missiles = [Samus super missiles]
+$80:9C23 8D 0A 0A    STA $0A0A  [$7E:0A0A]  ; Samus HUD super missiles = [Samus super missiles]
 $80:9C26 A2 9C 00    LDX #$009C             ; X = super missile count HUD tilemap destination offset
 $80:9C29 AD CF 05    LDA $05CF  [$7E:05CF]  ;\
 $80:9C2C 89 40 1F    BIT #$1F40             ;} If [debug options] & 1F40h = 0:
 $80:9C2F D0 08       BNE $08    [$9C39]     ;/
-$80:9C31 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus previous super missiles]
+$80:9C31 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus HUD super missiles]
 $80:9C34 20 98 9D    JSR $9D98  [$80:9D98]  ; Draw two HUD digits
 $80:9C37 80 06       BRA $06    [$9C3F]
                                             ; Else ([debug options] & 1F40h != 0):
-$80:9C39 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus previous super missiles]
+$80:9C39 AD 0A 0A    LDA $0A0A  [$7E:0A0A]  ; A = [Samus HUD super missiles]
 $80:9C3C 20 78 9D    JSR $9D78  [$80:9D78]  ; Draw three HUD digits
 
 ; Handle Samus power bombs
 $80:9C3F AD D0 09    LDA $09D0  [$7E:09D0]  ;\
 $80:9C42 F0 11       BEQ $11    [$9C55]     ;} If [Samus max power bombs] != 0:
 $80:9C44 AD CE 09    LDA $09CE  [$7E:09CE]  ;\
-$80:9C47 CD 0C 0A    CMP $0A0C  [$7E:0A0C]  ;} If [Samus power bombs] != [Samus previous power bombs]:
+$80:9C47 CD 0C 0A    CMP $0A0C  [$7E:0A0C]  ;} If [Samus power bombs] != [Samus HUD power bombs]:
 $80:9C4A F0 09       BEQ $09    [$9C55]     ;/
-$80:9C4C 8D 0C 0A    STA $0A0C  [$7E:0A0C]  ; Samus previous power bombs = [Samus power bombs]
+$80:9C4C 8D 0C 0A    STA $0A0C  [$7E:0A0C]  ; Samus HUD power bombs = [Samus power bombs]
 $80:9C4F A2 A2 00    LDX #$00A2             ; X = power bomb count HUD tilemap destination offset
 $80:9C52 20 98 9D    JSR $9D98  [$80:9D98]  ; Draw two HUD digits
 
