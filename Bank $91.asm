@@ -426,8 +426,8 @@ $91:81A8 60          RTS
 ; Iterate through transition table entry for current pose, if transition found with the required inputs being pressed:
 ;     If transition pose is the current pose, return carry clear
 ;     Else, set prospective pose and return carry set
-; If not pressing nothing and transition table entry is empty, return carry clear
-; Else, execute $91:82D9 and return carry clear
+; If pressing nothing or transition table entry is non-empty, execute $91:82D9
+; Return carry clear
 
 ; $12: The controller 1 input bits *not* newly pressed (not including start/select)
 ; $14: The controller 1 input bits *not* pressed (not including start/select)
@@ -11980,7 +11980,7 @@ $91:EC73 8D 4A 0B    STA $0B4A  [$7E:0B4A]  ;} Samus X acceleration mode = decel
 $91:EC76 22 53 DE 91 JSL $91DE53[$91:DE53]  ; Cancel speed boosting
 $91:EC7A 9C 44 0B    STZ $0B44  [$7E:0B44]  ;\
 $91:EC7D 9C 42 0B    STZ $0B42  [$7E:0B42]  ;} Samus X extra run speed = 0.0
-$91:EC80 22 8E FB 91 JSL $91FB8E[$91:FB8E]  ; Execute $91:FB8E
+$91:EC80 22 8E FB 91 JSL $91FB8E[$91:FB8E]  ; Kill Y speed if started falling
 $91:EC84 60          RTS
 }
 
@@ -12000,7 +12000,7 @@ $91:EC8B 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $91:EC8E 22 53 DE 91 JSL $91DE53[$91:DE53]  ; Cancel speed boosting
 $91:EC92 9C 44 0B    STZ $0B44  [$7E:0B44]  ;\
 $91:EC95 9C 42 0B    STZ $0B42  [$7E:0B42]  ;} Samus X extra run speed = 0.0
-$91:EC98 22 8E FB 91 JSL $91FB8E[$91:FB8E]  ; Execute $91:FB8E
+$91:EC98 22 8E FB 91 JSL $91FB8E[$91:FB8E]  ; Kill Y speed if started falling
 $91:EC9C 60          RTS
 }
 
@@ -14393,9 +14393,18 @@ $91:FB8D 6B          RTL
 }
 
 
-;;; $FB8E:  ;;;
+;;; $FB8E: Kill Y speed if started falling ;;;
 {
 ; Don't think this routine serves any purpose...
+; Called by:
+;     $EC50: Prospective pose change command 1 - decelerate
+;     $EC85: Prospective pose change command 6 - kill X speed
+;     $EC8E: Prospective pose change command 8 - kill run speed
+
+; In the $EC50 case, Samus movement type is running / normal jumping / morph ball in air, so this routine will never reach $FBAC
+; In the $EC85 case, Samus movement type is morph ball on ground / spring ball / wall jumping / grappling, so this routine will never reach $FBAC
+; In the $EC8E case, Samus movement type is falling, but that command is only set due to transition table lookup failure, so the previous movement type will also be falling
+
 $91:FB8E 08          PHP
 $91:FB8F 8B          PHB
 $91:FB90 4B          PHK                    ;\
@@ -14516,8 +14525,9 @@ $91:FC41 60          RTS
 
 ;;; $FC42: Handle jump transition - Samus movement type Dh (unused) ;;;
 {
+; Poses 63h..66h are all of the movement type Dh poses (and are all unused)
 $91:FC42 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$91:FC45 C9 65 00    CMP #$0065             ;} If [Samus pose] = 65h (unused):
+$91:FC45 C9 65 00    CMP #$0065             ;} If [Samus pose] = 65h:
 $91:FC48 D0 0A       BNE $0A    [$FC54]     ;/
 $91:FC4A AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:FC4D C9 64 00    CMP #$0064             ;} If [Samus previous pose] != 64h:
@@ -14525,7 +14535,7 @@ $91:FC50 F0 0F       BEQ $0F    [$FC61]     ;/
 $91:FC52 80 11       BRA $11    [$FC65]     ; Return
 
 $91:FC54 C9 66 00    CMP #$0066             ;\ Else ([Samus pose] != 65h):
-$91:FC57 D0 0C       BNE $0C    [$FC65]     ;} If [Samus pose] != 66h (unused): return
+$91:FC57 D0 0C       BNE $0C    [$FC65]     ;} If [Samus pose] != 66h: return
 $91:FC59 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:FC5C C9 63 00    CMP #$0063             ;} If [Samus previous pose] != 63h: return
 $91:FC5F D0 04       BNE $04    [$FC65]     ;/
@@ -14792,7 +14802,7 @@ $91:FE37 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
 $91:FE3A 0A          ASL A                  ;|
 $91:FE3B AA          TAX                    ;} Execute [$FE8A + [solid enemy collision flags] * 2] (handle collisions with solid enemies)
 $91:FE3C FC 8A FE    JSR ($FE8A,x)[$91:FE9A];/
-$91:FE3F B0 41       BCS $41    [$FE82]     ; If carry set: go to BRANCH_REVERT_POSE
+$91:FE3F B0 41       BCS $41    [$FE82]     ; If carry set (no space for Samus pose): go to BRANCH_REVERT_POSE
 $91:FE41 AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FE44 49 FF FF    EOR #$FFFF             ;|
 $91:FE47 1A          INC A                  ;} $12 = -[Samus Y radius difference]
@@ -14820,7 +14830,7 @@ $91:FE78 AD 36 0A    LDA $0A36  [$7E:0A36]  ;\
 $91:FE7B 0A          ASL A                  ;|
 $91:FE7C AA          TAX                    ;} Execute [$FE92 + [block collision flags] * 2] (handle collisions with blocks)
 $91:FE7D FC 92 FE    JSR ($FE92,x)[$91:FF49];/
-$91:FE80 90 06       BCC $06    [$FE88]     ; If carry clear: return
+$91:FE80 90 06       BCC $06    [$FE88]     ; If carry clear (space for Samus pose): return
 
 ; BRANCH_REVERT_POSE
 $91:FE82 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
@@ -14934,6 +14944,9 @@ $91:FF1F 60          RTS                    ;} Return carry set
 
 ;;; $FF20: Handle block collision due to pose change - collision from above ;;;
 {
+;; Returns:
+;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
 $91:FF20 AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FF23 38          SEC                    ;|
 $91:FF24 ED 38 0A    SBC $0A38  [$7E:0A38]  ;} $12 = [Samus Y radius difference] - [space to move Samus up]
@@ -14959,6 +14972,9 @@ $91:FF48 60          RTS
 
 ;;; $FF49: Handle block collision due to pose change - collision from below ;;;
 {
+;; Returns:
+;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
 $91:FF49 AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FF4C 38          SEC                    ;|
 $91:FF4D ED 3C 0A    SBC $0A3C  [$7E:0A3C]  ;|
@@ -14986,6 +15002,9 @@ $91:FF75 60          RTS
 
 ;;; $FF76: Handle block collision due to pose change - no collision ;;;
 {
+;; Returns:
+;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
 $91:FF76 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
 $91:FF79 0A          ASL A                  ;|
 $91:FF7A AA          TAX                    ;} Execute [$FF7F + [solid enemy collision flags] * 2] (handle collisions with solid enemies)
@@ -15006,6 +15025,9 @@ $91:FF88 60          RTS
 
 ;;; $FF89: Handle block collision to pose change - no collision - solid enemy collision from above ;;;
 {
+;; Returns:
+;;     Carry: Clear. There's space for Samus pose
+
 $91:FF89 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $91:FF8C 18          CLC                    ;|
 $91:FF8D 6D 3E 0A    ADC $0A3E  [$7E:0A3E]  ;} Samus Y position += [space to move Samus up due to solid enemy]
@@ -15018,6 +15040,9 @@ $91:FF97 60          RTS                    ;} Return carry clear
 
 ;;; $FF98: Handle block collision to pose change - no collision - solid enemy collision from below ;;;
 {
+;; Returns:
+;;     Carry: Clear. There's space for Samus pose
+
 $91:FF98 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $91:FF9B 38          SEC                    ;|
 $91:FF9C ED 40 0A    SBC $0A40  [$7E:0A40]  ;} Samus Y position -= [space to move Samus down due to solid enemy]
@@ -15030,6 +15055,9 @@ $91:FFA6 60          RTS                    ;} Return carry clear
 
 ;;; $FFA7: Handle collision from both sides due to pose change ;;;
 {
+;; Returns:
+;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
 $91:FFA7 AD 00 0B    LDA $0B00  [$7E:0B00]  ;\
 $91:FFAA C9 08 00    CMP #$0008             ;} If [Samus Y radius] < 8: (if Samus is in morph ball, just deny the transition)
 $91:FFAD 10 02       BPL $02    [$FFB1]     ;/
@@ -15042,7 +15070,6 @@ $91:FFB7 C9 04 00    CMP #$0004             ;} If facing right:
 $91:FFBA F0 05       BEQ $05    [$FFC1]     ;/
 $91:FFBC A9 27 00    LDA #$0027             ; Samus pose = facing right - crouching
 $91:FFBF 80 03       BRA $03    [$FFC4]
-
                                             ; Else (facing left):
 $91:FFC1 A9 28 00    LDA #$0028             ; Samus pose = facing left - crouching
 

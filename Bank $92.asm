@@ -1,5 +1,11 @@
 ;;; $8000: Set Samus tiles definitions for current animation ;;;
 {
+; $D94E is a table of pointers to animation definition lists
+; The table is indexed by Samus pose, the animation definition list is indexed by Samus animation frame
+; Animation definitions are 4 bytes
+; First byte indexes the top half tiles definitions pointer table ($D91E) for a pointer to a list of DMA entries that is indexed by the second byte
+; Third byte indexes the bottom half tiles definitions pointer table ($D938) for a pointer to a list of DMA entries that is indexed by the fourth byte
+
 $92:8000 08          PHP
 $92:8001 8B          PHB
 $92:8002 4B          PHK                    ;\
@@ -15,22 +21,22 @@ $92:800F 85 14       STA $14    [$7E:0014]  ;/
 $92:8011 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $92:8014 0A          ASL A                  ;|
 $92:8015 AA          TAX                    ;|
-$92:8016 BD 4E D9    LDA $D94E,x[$92:D952]  ;} X = [$D94E + [Samus pose] * 2] + [Samus animation frame] * 4
+$92:8016 BD 4E D9    LDA $D94E,x[$92:D952]  ;} X = [$D94E + [Samus pose] * 2] + [Samus animation frame] * 4 (animation definition pointer)
 $92:8019 18          CLC                    ;|
 $92:801A 65 12       ADC $12    [$7E:0012]  ;|
 $92:801C AA          TAX                    ;/
 $92:801D BD 00 00    LDA $0000,x[$92:DB6C]  ;\
-$92:8020 29 FF 00    AND #$00FF             ;} $16 = [[X]]
-$92:8023 85 16       STA $16    [$7E:0016]  ;/
-$92:8025 0A          ASL A                  ;\
+$92:8020 29 FF 00    AND #$00FF             ;|
+$92:8023 85 16       STA $16    [$7E:0016]  ;|
+$92:8025 0A          ASL A                  ;|
 $92:8026 A8          TAY                    ;|
 $92:8027 E8          INX                    ;|
 $92:8028 BD 00 00    LDA $0000,x[$92:DB6D]  ;|
 $92:802B 29 FF 00    AND #$00FF             ;|
 $92:802E 8D 24 0B    STA $0B24  [$7E:0B24]  ;|
-$92:8031 0A          ASL A                  ;|
+$92:8031 0A          ASL A                  ;} Samus top half tiles definition = [$D91E + [[X]] * 2] + [[X] + 1] * 7
 $92:8032 0A          ASL A                  ;|
-$92:8033 0A          ASL A                  ;} Samus top half tiles definition = [$D91E + [[X]] * 2] + [[X] + 1] * 7
+$92:8033 0A          ASL A                  ;|
 $92:8034 38          SEC                    ;|
 $92:8035 ED 24 0B    SBC $0B24  [$7E:0B24]  ;|
 $92:8038 85 12       STA $12    [$7E:0012]  ;|
