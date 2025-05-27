@@ -89,6 +89,7 @@ $92:808C 6B          RTL
 ;;; $808D: Samus spritemap table ;;;
 {
 ; Indexed by [$92:9263/945D + [Samus pose] * 2] + [Samus animation frame]
+
 $92:808D             dw 90ED, 90F4, 
 
 ; 0002. Top half - 00: Facing forward - power suit
