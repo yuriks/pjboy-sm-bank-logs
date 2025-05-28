@@ -4,11 +4,11 @@
 ;  ________________________________________ Enemy ID
 ; |      __________________________________ X position
 ; |     |     _____________________________ Y position
-; |     |    |      _______________________ Initialisation parameter (orientation in SMILE)
-; |     |    |     |      _________________ Properties (special in SMILE)
-; |     |    |     |     |     ____________ Extra properties (special graphics bitset in SMILE)
-; |     |    |     |     |    |      ______ Parameter 1 (speed in SMILE)
-; |     |    |     |     |    |     |     _ Parameter 2 (speed2 in SMILE)
+; |     |    |      _______________________ Initialisation parameter (Orientation in SMILE, Tilemaps in RF, Tilemap Parameter in SMART)
+; |     |    |     |      _________________ Properties (Special in SMILE, Properties 1 in SMART)
+; |     |    |     |     |     ____________ Extra properties (Special GFX in SMILE, Graphics in RF, Properties 2 in SMART)
+; |     |    |     |     |    |      ______ Parameter 1 (Speed in SMILE)
+; |     |    |     |     |    |     |     _ Parameter 2 (Speed 2 in SMILE)
 ; |     |    |     |     |    |     |    |
 ; iiii, xxxx,yyyy, oooo, pppp,gggg, aaaa,bbbb
 

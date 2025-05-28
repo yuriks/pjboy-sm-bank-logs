@@ -5,7 +5,7 @@ $0F7E/$0FBE/$0FFE/$103E: Y position
 $0F80/$0FC0/$1000/$1040: Y subposition
 $0F82/$0FC2/$1002/$1042: X radius
 $0F84/$0FC4/$1004/$1044: Y radius
-$0F86/$0FC6/$1006/$1046: Properties (Special in SMILE, Switch in enemy debugger)
+$0F86/$0FC6/$1006/$1046: Properties (Special in SMILE, Properties 1 in SMART, Switch in enemy debugger). Sometimes used as another initialisation parameter (creepy crawlies)
 {
     8000h: Hitbox solid to Samus
     4000h: Respawns if killed
@@ -16,7 +16,7 @@ $0F86/$0FC6/$1006/$1046: Properties (Special in SMILE, Switch in enemy debugger)
     200h: Delete
     100h: Invisible
 }
-$0F88/$0FC8/$1008/$1048: Extra properties (special GFX bitflag in SMILE, Switch2 in enemy debugger). Sometimes used as another initialisation parameter
+$0F88/$0FC8/$1008/$1048: Extra properties (Special GFX in SMILE, Graphics in RF, Properties 2 in SMART, Switch2 in enemy debugger). Sometimes used as another initialisation parameter (shutters, up/down movers)
 {
     8000h: Processed a new enemy instruction with $0F92, update graphics
     4: Enable extended spritemap format
@@ -68,7 +68,7 @@ $0F8E/$0FCE/$100E/$104E: Spritemap pointer (Patern in enemy debugger)
             }
 }
 $0F90/$0FD0/$1010/$1050: Timer (LpCnt in enemy debugger) (according to $A0:8123 and associated instructions)
-$0F92/$0FD2/$1012/$1052: Initialisation parameter (Orientation in SMILE, Tilemaps in RF) / instruction list pointer (PoseAdr in enemy debugger). Positive instructions set delay timer and $0F8E, and highest bit of $0F88
+$0F92/$0FD2/$1012/$1052: Initialisation parameter (Orientation in SMILE, Tilemaps in RF, Tilemap Parameter in SMART) / instruction list pointer (PoseAdr in enemy debugger). Positive instructions set delay timer and $0F8E, and highest bit of $0F88
 $0F94/$0FD4/$1014/$1054: Instruction timer (WaitTim in enemy debugger)
 $0F96/$0FD6/$1016/$1056: Palette index (ColorPa in enemy debugger). Multiple of 200h
 $0F98/$0FD8/$1018/$1058: VRAM tiles index (CharaOf in enemy debugger). Range 0..1FFh
@@ -103,7 +103,7 @@ $0FAE/$0FEE/$102E/$106E: AI variable (Pwork3 in enemy debugger)
 $0FB0/$0FF0/$1030/$1070: AI variable (Pwork4 in enemy debugger)
 $0FB2/$0FF2/$1032/$1072: AI variable (Pwork5 in enemy debugger). Function pointer for enemies that use instruction $806B(?)
 $0FB4/$0FF4/$1034/$1074: Parameter 1 (Speed in SMILE, InitOP0 in enemy debugger)
-$0FB6/$0FF6/$1036/$1076: Parameter 2 (Speed2 in SMILE, InitOP1 in enemy debugger)
+$0FB6/$0FF6/$1036/$1076: Parameter 2 (Speed 2 in SMILE, InitOP1 in enemy debugger)
 
 ; All AI variables are cleared on enemy spawn
 
