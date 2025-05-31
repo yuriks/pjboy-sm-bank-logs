@@ -1633,7 +1633,7 @@ $9B:B9D6 6C 82 0D    JMP ($0D82)[$9B:B9D9]  ;/
 ;;; $B9D9: Handle connecting grapple - swinging clockwise ;;;
 {
 $9B:B9D9 A9 B2 00    LDA #$00B2             ;\
-$9B:B9DC 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing clockwise - grapple - in air
+$9B:B9DC 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing clockwise - grapple swinging
 $9B:B9DF 4C 61 BA    JMP $BA61  [$9B:BA61]  ; Go to handle connecting grapple - swinging
 }
 
@@ -1641,7 +1641,7 @@ $9B:B9DF 4C 61 BA    JMP $BA61  [$9B:BA61]  ; Go to handle connecting grapple - 
 ;;; $B9E2: Handle connecting grapple - swinging anticlockwise ;;;
 {
 $9B:B9E2 A9 B3 00    LDA #$00B3             ;\
-$9B:B9E5 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing anticlockwise - grapple - in air
+$9B:B9E5 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing anticlockwise - grapple swinging
 $9B:B9E8 80 77       BRA $77    [$BA61]     ; Go to handle connecting grapple - swinging
 }
 
@@ -3442,10 +3442,10 @@ $9B:C8C4 60          RTS
 $9B:C8C5 A9 07 00    LDA #$0007             ;\
 $9B:C8C8 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 7, sound library 1, max queued sounds allowed = 15 (grapple end)
 $9B:C8CC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$9B:C8CF C9 B2 00    CMP #$00B2             ;} If [Samus pose] = facing clockwise - grapple - in air: go to BRANCH_CLOCKWISE
+$9B:C8CF C9 B2 00    CMP #$00B2             ;} If [Samus pose] = facing clockwise - grapple swinging: go to BRANCH_CLOCKWISE
 $9B:C8D2 F0 12       BEQ $12    [$C8E6]     ;/
 $9B:C8D4 C9 B3 00    CMP #$00B3             ;\
-$9B:C8D7 F0 15       BEQ $15    [$C8EE]     ;} If [Samus pose] = facing anticlockwise - grapple - in air: go to BRANCH_ANTICLOCKWISE
+$9B:C8D7 F0 15       BEQ $15    [$C8EE]     ;} If [Samus pose] = facing anticlockwise - grapple swinging: go to BRANCH_ANTICLOCKWISE
 $9B:C8D9 80 1B       BRA $1B    [$C8F6]     ; Go to BRANCH_NOT_SWINGING
 
 ; BRANCH_CANCEL

@@ -1987,7 +1987,7 @@ $90:8B1F AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $90:8B22 99 E4 0A    STA $0AE4,y[$7E:0AE4]  ;} Atmospheric graphics Y position = [FX Y position]
 $90:8B25 A9 8F 01    LDA #$018F             ;\
 $90:8B28 18          CLC                    ;|
-$90:8B29 65 12       ADC $12    [$7E:0012]  ;} Samus spritemap table index = 18Fh + [atmospheric graphic animation frame]
+$90:8B29 65 12       ADC $12    [$7E:0012]  ;} Push 18Fh + [atmospheric graphic animation frame] (Samus spritemap table index)
 $90:8B2B 48          PHA                    ;/
 $90:8B2C 80 46       BRA $46    [$8B74]     ; Add atmospheric spritemap to OAM
 }
@@ -2043,7 +2043,7 @@ $90:8B68 29 FF 00    AND #$00FF             ;} $12 = [atmospheric graphic animat
 $90:8B6B 85 12       STA $12    [$7E:0012]  ;/
 $90:8B6D A9 86 01    LDA #$0186             ;\
 $90:8B70 18          CLC                    ;|
-$90:8B71 65 12       ADC $12    [$7E:0012]  ;} Samus spritemap table index = 186h + [atmospheric graphic animation frame]
+$90:8B71 65 12       ADC $12    [$7E:0012]  ;} Push 186h + [atmospheric graphic animation frame] (Samus spritemap table index)
 $90:8B73 48          PHA                    ;/
 }
 
@@ -2057,15 +2057,15 @@ $90:8B73 48          PHA                    ;/
 ; Expects a pushed Y (in addition to the pushed table index)
 $90:8B74 B9 DC 0A    LDA $0ADC,y[$7E:0ADC]  ;\
 $90:8B77 38          SEC                    ;|
-$90:8B78 ED 11 09    SBC $0911  [$7E:0911]  ;} Spritemap X position = [atmospheric graphics X position] - [layer 1 X position]
+$90:8B78 ED 11 09    SBC $0911  [$7E:0911]  ;} X = [atmospheric graphics X position] - [layer 1 X position] (spritemap X position)
 $90:8B7B AA          TAX                    ;/
 $90:8B7C B9 E4 0A    LDA $0AE4,y[$7E:0AE4]  ;\
 $90:8B7F 38          SEC                    ;|
 $90:8B80 ED 15 09    SBC $0915  [$7E:0915]  ;} If 0 <= [atmospheric graphics Y position] - [layer 1 Y position] < 100h:
 $90:8B83 89 00 FF    BIT #$FF00             ;|
 $90:8B86 D0 08       BNE $08    [$8B90]     ;/
-$90:8B88 A8          TAY                    ; Spritemap Y position = [atmospheric graphics Y position] - [layer 1 Y position]
-$90:8B89 68          PLA
+$90:8B88 A8          TAY                    ; Y = [atmospheric graphics Y position] - [layer 1 Y position] (spritemap Y position)
+$90:8B89 68          PLA                    ; Pull to A (Samus spritemap table index)
 $90:8B8A 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap to OAM
 $90:8B8E 7A          PLY
 $90:8B8F 60          RTS                    ; Return

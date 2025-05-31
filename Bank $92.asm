@@ -6377,23 +6377,23 @@ $92:ED26 4B          PHK                    ;\
 $92:ED27 AB          PLB                    ;} DB = $92
 $92:ED28 C2 30       REP #$30
 $92:ED2A AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
-$92:ED2D D0 0C       BNE $0C    [$ED3B]     ;} If [$0DEC] = 0:
+$92:ED2D D0 0C       BNE $0C    [$ED3B]     ;} If [Samus appears fanfare timer] = 0:
 $92:ED2F A9 01 00    LDA #$0001             ;\
 $92:ED32 A0 0E 00    LDY #$000E             ;} Queue Samus fanfare music track, 14 frame delay
 $92:ED35 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;/
 $92:ED39 80 0E       BRA $0E    [$ED49]
 
-$92:ED3B C9 05 00    CMP #$0005             ;\ Else ([$0DEC] != 0):
-$92:ED3E D0 09       BNE $09    [$ED49]     ;} If [$0DEC] = 5:
+$92:ED3B C9 05 00    CMP #$0005             ;\ Else ([Samus appears fanfare timer] != 0):
+$92:ED3E D0 09       BNE $09    [$ED49]     ;} If [Samus appears fanfare timer] = 5:
 $92:ED40 A9 68 01    LDA #$0168             ;\
 $92:ED43 22 18 E1 82 JSL $82E118[$82:E118]  ;} Play room music track after 6 seconds
 $92:ED47 80 00       BRA $00    [$ED49]
 
 $92:ED49 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $92:ED4C 1A          INC A                  ;|
-$92:ED4D C9 68 01    CMP #$0168             ;} If [$0DEC] + 1 < 360:
+$92:ED4D C9 68 01    CMP #$0168             ;} If [Samus appears fanfare timer] + 1 < 360:
 $92:ED50 10 05       BPL $05    [$ED57]     ;/
-$92:ED52 8D EC 0D    STA $0DEC  [$7E:0DEC]  ; Increment $0DEC
+$92:ED52 8D EC 0D    STA $0DEC  [$7E:0DEC]  ; Increment Samus appears fanfare timer
 $92:ED55 80 1F       BRA $1F    [$ED76]     ; Return carry clear
 
 $92:ED57 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
@@ -6404,7 +6404,7 @@ $92:ED63 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $92:ED66 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
 $92:ED69 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $92:ED6C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$92:ED6F 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
+$92:ED6F 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Samus appears fanfare timer = 0
 $92:ED72 AB          PLB
 $92:ED73 28          PLP
 $92:ED74 38          SEC                    ;\

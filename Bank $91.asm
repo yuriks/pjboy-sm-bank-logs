@@ -4177,8 +4177,8 @@ $91:B2BC             db 02,
 $91:B2C0             db 02,
                         10, FE,01
 
-; B2h: Facing clockwise     - grapple - in air
-; B3h: Facing anticlockwise - grapple - in air
+; B2h: Facing clockwise     - grapple swinging
+; B3h: Facing anticlockwise - grapple swinging
 ; These delays don't really take effect, Samus animation frame is set every frame during grapple swinging
                         ; Swinging
 $91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08,
@@ -4858,8 +4858,8 @@ $91:BB99             db 08,16,2D,04,06,00,0A,00 ; AEh: Unused
 $91:BBA1             db 04,16,2E,05,06,00,0A,00 ; AFh: Unused
 $91:BBA9             db 08,16,6F,03,08,00,13,00 ; B0h: Unused
 $91:BBB1             db 04,16,70,06,08,00,13,00 ; B1h: Unused
-$91:BBB9             db 08,16,B2,FF,10,00,11,00 ; B2h: Facing clockwise     - grapple
-$91:BBC1             db 04,16,B3,FF,10,00,11,00 ; B3h: Facing anticlockwise - grapple
+$91:BBB9             db 08,16,B2,FF,10,00,11,00 ; B2h: Facing clockwise     - grapple swinging
+$91:BBC1             db 04,16,B3,FF,10,00,11,00 ; B3h: Facing anticlockwise - grapple swinging
 $91:BBC9             db 08,16,27,02,00,00,10,00 ; B4h: Unused
 $91:BBD1             db 04,16,28,07,00,00,10,00 ; B5h: Unused
 $91:BBD9             db 08,16,27,03,00,00,10,00 ; B6h: Unused

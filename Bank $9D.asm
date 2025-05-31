@@ -2719,7 +2719,7 @@ $9D:C8E0             db 31,3F,3F,7F,7F,63,7F,78,3F,3E,2F,3F,17,1F,1F,1F,00,1F,00
 }
 
 
-;;; $C980..E13F: Samus top tiles - set 5 (facing clockwise - grappling - in air - upside down) ;;;
+;;; $C980..E13F: Samus top tiles - set 5 (facing clockwise - grapple swinging - upside down) ;;;
 {
 ;;; $C980: Samus top tiles - set 5 - entry 0 ;;;
 {
@@ -2733,8 +2733,8 @@ $9D:C8E0             db 31,3F,3F,7F,7F,63,7F,78,3F,3E,2F,3F,17,1F,1F,1F,00,1F,00
 ; 60h: Unused - frame 28h
 ; 61h: Unused - frame 8
 ; 61h: Unused - frame 28h
-; B2h: Facing clockwise     - grapple - in air - frame 8
-; B2h: Facing clockwise     - grapple - in air - frame 28h
+; B2h: Facing clockwise     - grapple swinging - frame 8
+; B2h: Facing clockwise     - grapple swinging - frame 28h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        | 88     |        |
 ; |        |        |   5 333|333     |D33     |3DDDDDD3|
@@ -2779,8 +2779,8 @@ $9D:C980             db 00,00,00,00,00,00,06,06,38,3F,70,7F,E8,FF,E7,FE,00,00,00
 ; 60h: Unused - frame 27h
 ; 61h: Unused - frame 7
 ; 61h: Unused - frame 27h
-; B2h: Facing clockwise     - grapple - in air - frame 7
-; B2h: Facing clockwise     - grapple - in air - frame 27h
+; B2h: Facing clockwise     - grapple swinging - frame 7
+; B2h: Facing clockwise     - grapple swinging - frame 27h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |        |        |     333|3       |335     |    3333|
@@ -2825,8 +2825,8 @@ $9D:CAC0             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 ; 60h: Unused - frame 26h
 ; 61h: Unused - frame 6
 ; 61h: Unused - frame 26h
-; B2h: Facing clockwise     - grapple - in air - frame 6
-; B2h: Facing clockwise     - grapple - in air - frame 26h
+; B2h: Facing clockwise     - grapple swinging - frame 6
+; B2h: Facing clockwise     - grapple swinging - frame 26h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |     333|3       |
@@ -2873,8 +2873,8 @@ $9D:CC00             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 ; 60h: Unused - frame 25h
 ; 61h: Unused - frame 5
 ; 61h: Unused - frame 25h
-; B2h: Facing clockwise     - grapple - in air - frame 5
-; B2h: Facing clockwise     - grapple - in air - frame 25h
+; B2h: Facing clockwise     - grapple swinging - frame 5
+; B2h: Facing clockwise     - grapple swinging - frame 25h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |    3333|FF33F   |
@@ -2921,8 +2921,8 @@ $9D:CD80             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 ; 60h: Unused - frame 24h
 ; 61h: Unused - frame 4
 ; 61h: Unused - frame 24h
-; B2h: Facing clockwise     - grapple - in air - frame 4
-; B2h: Facing clockwise     - grapple - in air - frame 24h
+; B2h: Facing clockwise     - grapple swinging - frame 4
+; B2h: Facing clockwise     - grapple swinging - frame 24h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -2969,8 +2969,8 @@ $9D:CF00             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 ; 60h: Unused - frame 23h
 ; 61h: Unused - frame 3
 ; 61h: Unused - frame 23h
-; B2h: Facing clockwise     - grapple - in air - frame 3
-; B2h: Facing clockwise     - grapple - in air - frame 23h
+; B2h: Facing clockwise     - grapple swinging - frame 3
+; B2h: Facing clockwise     - grapple swinging - frame 23h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -3017,8 +3017,8 @@ $9D:D080             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 ; 60h: Unused - frame 22h
 ; 61h: Unused - frame 2
 ; 61h: Unused - frame 22h
-; B2h: Facing clockwise     - grapple - in air - frame 2
-; B2h: Facing clockwise     - grapple - in air - frame 22h
+; B2h: Facing clockwise     - grapple swinging - frame 2
+; B2h: Facing clockwise     - grapple swinging - frame 22h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |33FF    |
 ; |        |        |        |33      |    33FF|FFEEEE  |
@@ -3065,8 +3065,8 @@ $9D:D200             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 ; 60h: Unused - frame 21h
 ; 61h: Unused - frame 1
 ; 61h: Unused - frame 21h
-; B2h: Facing clockwise     - grapple - in air - frame 1
-; B2h: Facing clockwise     - grapple - in air - frame 21h
+; B2h: Facing clockwise     - grapple swinging - frame 1
+; B2h: Facing clockwise     - grapple swinging - frame 21h
 ; |--------|--------|--------|--------|--------|--------|
 ; |       3|3       |      33|FFFEE   | D33333 |        |
 ; |      3B|333     |    333F|FEE69E3 | D575D3 |        |
@@ -3111,8 +3111,8 @@ $9D:D380             db 01,01,03,03,06,07,0C,0F,18,1F,5C,77,16,77,8B,F3,00,00,00
 ; 60h: Unused - frame 20h
 ; 61h: Unused - frame 0
 ; 61h: Unused - frame 20h
-; B2h: Facing clockwise     - grapple - in air - frame 0
-; B2h: Facing clockwise     - grapple - in air - frame 20h
+; B2h: Facing clockwise     - grapple swinging - frame 0
+; B2h: Facing clockwise     - grapple swinging - frame 20h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 | 333333 |        |
 ; |        |333333  |       3|FEE699E3| D575D3 |        |
@@ -3157,8 +3157,8 @@ $9D:D4C0             db 00,00,00,00,00,00,00,00,01,01,01,01,07,05,07,06,00,00,00
 ; 60h: Unused - frame 3Fh
 ; 61h: Unused - frame 1Fh
 ; 61h: Unused - frame 3Fh
-; B2h: Facing clockwise     - grapple - in air - frame 1Fh
-; B2h: Facing clockwise     - grapple - in air - frame 3Fh
+; B2h: Facing clockwise     - grapple swinging - frame 1Fh
+; B2h: Facing clockwise     - grapple swinging - frame 3Fh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   | D33333 |        |
 ; |       3|33333   |     3FF|699EE   | D575D3 |        |
@@ -3203,8 +3203,8 @@ $9D:D600             db 00,00,01,01,01,01,01,01,01,01,01,01,01,01,03,02,00,00,00
 ; 60h: Unused - frame 3Eh
 ; 61h: Unused - frame 1Eh
 ; 61h: Unused - frame 3Eh
-; B2h: Facing clockwise     - grapple - in air - frame 1Eh
-; B2h: Facing clockwise     - grapple - in air - frame 3Eh
+; B2h: Facing clockwise     - grapple swinging - frame 1Eh
+; B2h: Facing clockwise     - grapple swinging - frame 3Eh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |      EE|9E3     |
 ; |        |        |    3333|33      |    FF6F|9EFF    |
@@ -3251,8 +3251,8 @@ $9D:D740             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 ; 60h: Unused - frame 3Dh
 ; 61h: Unused - frame 1Dh
 ; 61h: Unused - frame 3Dh
-; B2h: Facing clockwise     - grapple - in air - frame 1Dh
-; B2h: Facing clockwise     - grapple - in air - frame 3Dh
+; B2h: Facing clockwise     - grapple swinging - frame 1Dh
+; B2h: Facing clockwise     - grapple swinging - frame 3Dh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -3299,8 +3299,8 @@ $9D:D8C0             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 ; 60h: Unused - frame 3Ch
 ; 61h: Unused - frame 1Ch
 ; 61h: Unused - frame 3Ch
-; B2h: Facing clockwise     - grapple - in air - frame 1Ch
-; B2h: Facing clockwise     - grapple - in air - frame 3Ch
+; B2h: Facing clockwise     - grapple swinging - frame 1Ch
+; B2h: Facing clockwise     - grapple swinging - frame 3Ch
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -3347,8 +3347,8 @@ $9D:DA40             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 ; 60h: Unused - frame 3Bh
 ; 61h: Unused - frame 1Bh
 ; 61h: Unused - frame 3Bh
-; B2h: Facing clockwise     - grapple - in air - frame 1Bh
-; B2h: Facing clockwise     - grapple - in air - frame 3Bh
+; B2h: Facing clockwise     - grapple swinging - frame 1Bh
+; B2h: Facing clockwise     - grapple swinging - frame 3Bh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -3395,8 +3395,8 @@ $9D:DBC0             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 ; 60h: Unused - frame 3Ah
 ; 61h: Unused - frame 1Ah
 ; 61h: Unused - frame 3Ah
-; B2h: Facing clockwise     - grapple - in air - frame 1Ah
-; B2h: Facing clockwise     - grapple - in air - frame 3Ah
+; B2h: Facing clockwise     - grapple swinging - frame 1Ah
+; B2h: Facing clockwise     - grapple swinging - frame 3Ah
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -3443,8 +3443,8 @@ $9D:DD40             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 ; 60h: Unused - frame 39h
 ; 61h: Unused - frame 19h
 ; 61h: Unused - frame 39h
-; B2h: Facing clockwise     - grapple - in air - frame 19h
-; B2h: Facing clockwise     - grapple - in air - frame 39h
+; B2h: Facing clockwise     - grapple swinging - frame 19h
+; B2h: Facing clockwise     - grapple swinging - frame 39h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |  33    |        |        |        |335     |    3333|
@@ -3513,14 +3513,14 @@ $9D:E000             db 00,00,00,00,00,00,7C,7C,8F,FF,FF,FF,C1,FF,C1,FF,00,00,00
 }
 
 
-;;; $E140..F77F: Samus top tiles - set 6 - part 1/2 (facing anticlockwise - grappling - in air - upside down) ;;;
+;;; $E140..F77F: Samus top tiles - set 6 - part 1/2 (facing anticlockwise - grapple swinging - upside down) ;;;
 {
 ;;; $E140: Samus top tiles - set 6 - entry 0 ;;;
 {
 ; 62h: Unused - frame 18h
 ; 62h: Unused - frame 38h
-; B3h: Facing anticlockwise - grapple - in air - frame 18h
-; B3h: Facing anticlockwise - grapple - in air - frame 38h
+; B3h: Facing anticlockwise - grapple swinging - frame 18h
+; B3h: Facing anticlockwise - grapple swinging - frame 38h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        | 3B33B3 |A       | 88     |        |
 ; |        |  333B3B|   5 333|333     |  332AB |B       |D33     |3DDDDDD3|
@@ -3561,8 +3561,8 @@ $9D:E140             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 {
 ; 62h: Unused - frame 19h
 ; 62h: Unused - frame 39h
-; B3h: Facing anticlockwise - grapple - in air - frame 19h
-; B3h: Facing anticlockwise - grapple - in air - frame 39h
+; B3h: Facing anticlockwise - grapple swinging - frame 19h
+; B3h: Facing anticlockwise - grapple swinging - frame 39h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        |88      |        | 3B33B3 |A       |
 ; |        |  333B3B|   5 333|333     |335     |    3333|  332AB |B       |
@@ -3603,8 +3603,8 @@ $9D:E300             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 {
 ; 62h: Unused - frame 1Ah
 ; 62h: Unused - frame 3Ah
-; B3h: Facing anticlockwise - grapple - in air - frame 1Ah
-; B3h: Facing anticlockwise - grapple - in air - frame 3Ah
+; B3h: Facing anticlockwise - grapple swinging - frame 1Ah
+; B3h: Facing anticlockwise - grapple swinging - frame 3Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -3647,8 +3647,8 @@ $9D:E4C0             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 {
 ; 62h: Unused - frame 1Bh
 ; 62h: Unused - frame 3Bh
-; B3h: Facing anticlockwise - grapple - in air - frame 1Bh
-; B3h: Facing anticlockwise - grapple - in air - frame 3Bh
+; B3h: Facing anticlockwise - grapple swinging - frame 1Bh
+; B3h: Facing anticlockwise - grapple swinging - frame 3Bh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -3691,8 +3691,8 @@ $9D:E6C0             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 {
 ; 62h: Unused - frame 1Ch
 ; 62h: Unused - frame 3Ch
-; B3h: Facing anticlockwise - grapple - in air - frame 1Ch
-; B3h: Facing anticlockwise - grapple - in air - frame 3Ch
+; B3h: Facing anticlockwise - grapple swinging - frame 1Ch
+; B3h: Facing anticlockwise - grapple swinging - frame 3Ch
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |   B3BB3|333D8   |   3D573|        |
 ; |        |        |    3333|FF33F   |   332B3|33D8    |  3D5785|        |
@@ -3734,8 +3734,8 @@ $9D:E8C0             db 00,00,00,00,00,00,00,00,0E,0E,2F,3D,7F,7D,CF,FD,00,00,00
 {
 ; 62h: Unused - frame 1Dh
 ; 62h: Unused - frame 3Dh
-; B3h: Facing anticlockwise - grapple - in air - frame 1Dh
-; B3h: Facing anticlockwise - grapple - in air - frame 3Dh
+; B3h: Facing anticlockwise - grapple swinging - frame 1Dh
+; B3h: Facing anticlockwise - grapple swinging - frame 3Dh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |   3AAAB|        |    33  |    D585|
 ; |        |        |    33FF|FFEEEE  |   B62AB|        |   33A3 |   D5885|
@@ -3777,8 +3777,8 @@ $9D:EAA0             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 {
 ; 62h: Unused - frame 1Eh
 ; 62h: Unused - frame 3Eh
-; B3h: Facing anticlockwise - grapple - in air - frame 1Eh
-; B3h: Facing anticlockwise - grapple - in air - frame 3Eh
+; B3h: Facing anticlockwise - grapple swinging - frame 1Eh
+; B3h: Facing anticlockwise - grapple swinging - frame 3Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |D3      |   3AAAB|    D585|        |
 ; |        |        |    33FF|FFEEEE  |D3      |   B62AB|   D5885|        |
@@ -3820,8 +3820,8 @@ $9D:EC80             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 {
 ; 62h: Unused - frame 1Fh
 ; 62h: Unused - frame 3Fh
-; B3h: Facing anticlockwise - grapple - in air - frame 1Fh
-; B3h: Facing anticlockwise - grapple - in air - frame 3Fh
+; B3h: Facing anticlockwise - grapple swinging - frame 1Fh
+; B3h: Facing anticlockwise - grapple swinging - frame 3Fh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |      33|FFFEE   |BA2AB3  |       3|        |        |
 ; |     333|33      |    333F|FEE69E3 |3BAB3   |      33|33333   |       3|
@@ -3862,8 +3862,8 @@ $9D:EE60             db 00,00,07,07,0E,0F,1C,1F,1A,1F,31,3F,31,3F,3B,3F,00,00,00
 {
 ; 62h: Unused - frame 0
 ; 62h: Unused - frame 20h
-; B3h: Facing anticlockwise - grapple - in air - frame 0
-; B3h: Facing anticlockwise - grapple - in air - frame 20h
+; B3h: Facing anticlockwise - grapple swinging - frame 0
+; B3h: Facing anticlockwise - grapple swinging - frame 20h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 |62B3B3  |   33BBA| 333333 |        |
 ; |        | 33     |       3|FEE699E3|ABAB3   |   3A3B2| D575D3 |        |
@@ -3904,8 +3904,8 @@ $9D:F020             db 00,00,00,00,03,03,07,07,0E,0F,0D,0F,0D,0F,0F,0F,00,00,00
 {
 ; 62h: Unused - frame 1
 ; 62h: Unused - frame 21h
-; B3h: Facing anticlockwise - grapple - in air - frame 1
-; B3h: Facing anticlockwise - grapple - in air - frame 21h
+; B3h: Facing anticlockwise - grapple swinging - frame 1
+; B3h: Facing anticlockwise - grapple swinging - frame 21h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   |3BAAAB3 | 33B3BAB| D33333 |        |
 ; |        |        |     3FF|699EE   |B3B3BB3 |BA33A6A2| D575D3 |        |
@@ -3946,8 +3946,8 @@ $9D:F1E0             db 00,00,00,00,00,00,00,00,01,01,03,03,06,07,06,07,00,00,00
 {
 ; 62h: Unused - frame 2
 ; 62h: Unused - frame 22h
-; B3h: Facing anticlockwise - grapple - in air - frame 2
-; B3h: Facing anticlockwise - grapple - in air - frame 22h
+; B3h: Facing anticlockwise - grapple swinging - frame 2
+; B3h: Facing anticlockwise - grapple swinging - frame 22h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |       3|33      |      EE|9E3     |D3      |        |    D585|        |
 ; |     33B|BBB3    |    FF6F|9EFF    |D3      |   333  |   D5885|        |
@@ -3989,8 +3989,8 @@ $9D:F3A0             db 01,01,07,07,06,07,0E,0F,0D,0F,0F,0F,0E,08,0F,0E,00,00,00
 {
 ; 62h: Unused - frame 3
 ; 62h: Unused - frame 23h
-; B3h: Facing anticlockwise - grapple - in air - frame 3
-; B3h: Facing anticlockwise - grapple - in air - frame 23h
+; B3h: Facing anticlockwise - grapple swinging - frame 3
+; B3h: Facing anticlockwise - grapple swinging - frame 23h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        | 33     |   FFEEE|E       |D3      |    D585|        |        |
 ; |       3|BBBB3   |  3FE9EF|F4      |D3      |   D5885|        |        |
