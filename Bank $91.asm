@@ -3987,6 +3987,7 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
                         B53C, B518, B51B, B51E, B521, B524, B527, B52A, B52D, B530, B533, B536, B539
 
 ; Positive values are animation delay durations, negative values are instructions (first nybble ignored):
+;     F0:                  No-op 
 ;     F6:                  Go to beginning if [Samus health] >= 30
 ;     F7:                  Set drained Samus movement handler
 ;     F8 pp:               Enable auto-jump hack and transition to pose p if not jumping
@@ -3997,6 +3998,8 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
 ;     FD pp:               Transition to pose p
 ;     FE nn:               Go back n bytes
 ;     FF:                  Go to beginning
+
+; Animation frames that correspond to an instruction have a duration of one frame
 
 ; 9: Moving right - not aiming
 ; Ah: Moving left  - not aiming

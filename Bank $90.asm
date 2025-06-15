@@ -6,7 +6,7 @@
 ; That code also handles lava/acid damage and water splash / air bubble graphics
 ; Some special case code for keeping to frame 1 of neutral jump animation whilst rising
 ; Decrement the Samus animation frame timer,
-; if zero then Samus animation frame is incremented and the Samus animation delay table is processed
+; if zero (or less) then Samus animation frame is incremented and the Samus animation delay table is processed
 ; If an instruction is encountered in the animation delay table,
 ; some handling for speed booster running is called that deals with incrementing the speed booster stage
 ; If speed booster handling is not applicable, then the animation delay instruction is processed,
@@ -583,7 +583,7 @@ $90:836F 60          RTS                    ;} Return carry set
 ;         1Ah: Facing left  - spin jump
 
 $90:8370 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:8373 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D: (not demo)
+$90:8373 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D: (if not demo)
 $90:8376 F0 1D       BEQ $1D    [$8395]     ;/
 $90:8378 AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
 $90:837B C9 4B 00    CMP #$004B             ;|
