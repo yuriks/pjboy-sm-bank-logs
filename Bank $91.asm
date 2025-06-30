@@ -4329,7 +4329,7 @@ $91:B36E             db 06, 06, 06, 08, FF,
 ; 7Fh: Facing right - morph ball - spring ball - in air
 ; 80h: Facing left  - morph ball - spring ball - in air
 ; C5h: Unused
-; DFh: Unused. Related to Draygon
+; DFh: Unused
 $91:B378             db 03, 03, 03, 03, 03, 03, 03, 03, FF,
 
                         ; Unused. Squished morph ball
