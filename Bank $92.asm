@@ -8692,570 +8692,641 @@ $92:D94E             dw EA24, DB48, DB6C, E018, E020, E028, E02C, E030, E034, DC
 ; First byte indexes the top half tiles definitions pointer table ($D91E) for a pointer to a list of DMA entries that is indexed by the second byte
 ; Third byte indexes the bottom half tiles definitions pointer table ($D938) for a pointer to a list of DMA entries that is indexed by the fourth byte
 
-; 01: Facing right - normal
-; 47: Unused
-; 89: Facing right - ran into a wall
-; A8: Unused
-$92:DB48             db 07,0C,00,06, 07,0D,00,0E, 07,0E,00,0F, 07,0D,00,0E, 00,00,00,00, 07,0C,00,06, 07,0D,00,0E, 07,12,00,0F, 07,0D,00,0E
+; 1: Facing right - normal
+; 47h: Unused (only frame 0 used)
+; 89h: Facing right - ran into a wall (only frame 0 used)
+; A8h: Facing right - grappling (only frame 0 used)
+$92:DB48             db 07,0C,00,06, 07,0D,00,0E, 07,0E,00,0F, 07,0D,00,0E, 00,00,00,00, 07,0C,00,06, 07,0D,00,0E, 07,12,00,0F,
+                        07,0D,00,0E
 
-; 02: Facing left  - normal
-; 48: Unused
-; 8A: Facing left  - ran into a wall
-; A9: Unused
-$92:DB6C             db 07,0F,00,06, 07,10,00,10, 07,11,00,1D, 07,10,00,10, 00,00,00,00, 07,0F,00,06, 07,10,00,10, 07,13,00,1D, 07,10,00,10
+; 2: Facing left  - normal
+; 48h: Unused (only frame 0 used)
+; 8Ah: Facing left  - ran into a wall (only frame 0 used)
+; A9h: Facing left  - grappling (only frame 0 used)
+$92:DB6C             db 07,0F,00,06, 07,10,00,10, 07,11,00,1D, 07,10,00,10, 00,00,00,00, 07,0F,00,06, 07,10,00,10, 07,13,00,1D,
+                        07,10,00,10
 
-; A4: Facing right - landing from normal jump
+; A4h: Facing right - landing from normal jump
 $92:DB90             db 02,00,01,06, 02,04,00,06
 
-; A5: Facing left  - landing from normal jump
+; A5h: Facing left  - landing from normal jump
 $92:DB98             db 02,01,01,07, 02,05,00,06
 
-; A6: Facing right - landing from spin jump
+; A6h: Facing right - landing from spin jump
 $92:DBA0             db 02,04,01,19, 02,00,01,06, 02,04,00,06
 
-; A7: Facing left  - landing from spin jump
+; A7h: Facing left  - landing from spin jump
 $92:DBAC             db 02,05,01,1A, 02,01,01,07, 02,05,00,06
 
-; E0: Facing right - landing from normal jump - aiming up
+; E0h: Facing right - landing from normal jump - aiming up
 $92:DBB8             db 00,16,01,06, 00,16,00,06
 
-; E1: Facing left  - landing from normal jump - aiming up
+; E1h: Facing left  - landing from normal jump - aiming up
 $92:DBC0             db 00,17,01,07, 00,17,00,06
 
-; E2: Facing right - landing from normal jump - aiming up-right
+; E2h: Facing right - landing from normal jump - aiming up-right
 $92:DBC8             db 00,12,01,06, 00,12,00,06
 
-; E3: Facing left  - landing from normal jump - aiming up-left
+; E3h: Facing left  - landing from normal jump - aiming up-left
 $92:DBD0             db 00,13,01,07, 00,13,00,06
 
-; E4: Facing right - landing from normal jump - aiming down-right
+; E4h: Facing right - landing from normal jump - aiming down-right
 $92:DBD8             db 00,0E,01,06, 00,0E,00,06
 
-; E5: Facing left  - landing from normal jump - aiming down-left
+; E5h: Facing left  - landing from normal jump - aiming down-left
 $92:DBE0             db 00,0F,01,07, 00,0F,00,06
 
-; E6: Facing right - landing from normal jump - firing
+; E6h: Facing right - landing from normal jump - firing
 $92:DBE8             db 00,10,01,06, 00,10,00,06
 
-; E7: Facing left  - landing from normal jump - firing
+; E7h: Facing left  - landing from normal jump - firing
 $92:DBF0             db 00,11,01,07, 00,11,00,06
 
-; D5: Facing right - x-ray - standing
+; D5h: Facing right - x-ray - standing
 $92:DBF8             db 02,09,00,06, 02,08,00,06, 00,10,00,06, 02,0A,00,06, 02,0B,00,06
 
-; D6: Facing left  - x-ray - standing
+; D6h: Facing left  - x-ray - standing
 $92:DC0C             db 02,0D,00,06, 02,0C,00,06, 00,11,00,06, 02,0E,00,06, 02,0F,00,06
 
-; D9: Facing right - x-ray - crouching
+; D9h: Facing right - x-ray - crouching
 $92:DC20             db 02,09,00,07, 02,08,00,07, 00,10,00,07, 02,0A,00,07, 02,0B,00,07
 
-; DA: Facing left  - x-ray - crouching
+; DAh: Facing left  - x-ray - crouching
 $92:DC34             db 02,0D,00,07, 02,0C,00,07, 00,11,00,07, 02,0E,00,07, 02,0F,00,07
 
-; 09: Moving right - not aiming
-$92:DC48             db 00,00,00,00, 01,0D,00,08, 00,02,00,01, 00,03,00,09, 00,01,00,02, 00,00,00,03, 01,0E,00,0A, 00,05,00,04, 00,18,00,0B, 00,04,00,05
+; 9: Moving right - not aiming
+$92:DC48             db 00,00,00,00, 01,0D,00,08, 00,02,00,01, 00,03,00,09, 00,01,00,02, 00,00,00,03, 01,0E,00,0A, 00,05,00,04,
+                        00,18,00,0B, 00,04,00,05
 
-; 0A: Moving left  - not aiming
-$92:DC70             db 00,06,00,00, 01,0F,00,08, 00,08,00,01, 00,09,00,09, 00,07,00,02, 00,06,00,03, 01,10,00,0A, 00,0B,00,04, 00,19,00,0B, 00,0A,00,05
+; Ah: Moving left  - not aiming
+$92:DC70             db 00,06,00,00, 01,0F,00,08, 00,08,00,01, 00,09,00,09, 00,07,00,02, 00,06,00,03, 01,10,00,0A, 00,0B,00,04,
+                        00,19,00,0B, 00,0A,00,05
 
-; 0B: Moving right - gun extended
-$92:DC98             db 09,00,00,00, 09,0E,00,08, 09,02,00,01, 09,03,00,09, 09,01,00,02, 09,00,00,03, 09,04,00,0A, 09,05,00,04, 09,0C,00,0B, 09,04,00,05
+; Bh: Moving right - gun extended
+$92:DC98             db 09,00,00,00, 09,0E,00,08, 09,02,00,01, 09,03,00,09, 09,01,00,02, 09,00,00,03, 09,04,00,0A, 09,05,00,04,
+                        09,0C,00,0B, 09,04,00,05
 
-; 0C: Moving left  - gun extended
-$92:DCC0             db 09,06,00,00, 09,0F,00,08, 09,09,00,01, 09,08,00,09, 09,07,00,02, 09,06,00,03, 09,0A,00,0A, 09,0D,00,04, 09,0B,00,0B, 09,0A,00,05
+; Ch: Moving left  - gun extended
+$92:DCC0             db 09,06,00,00, 09,0F,00,08, 09,09,00,01, 09,08,00,09, 09,07,00,02, 09,06,00,03, 09,0A,00,0A, 09,0D,00,04,
+                        09,0B,00,0B, 09,0A,00,05
 
-; 49: Facing left  - moonwalk
+; 49h: Facing left  - moonwalk
 $92:DCE8             db 00,11,01,03, 02,1B,01,04, 02,1B,01,15, 00,11,01,00, 02,1B,01,05, 02,1B,01,16
 
-; 4A: Facing right - moonwalk
+; 4Ah: Facing right - moonwalk
 $92:DD00             db 00,10,01,03, 02,1A,01,04, 02,1A,01,17, 00,10,01,00, 02,1A,01,05, 02,1A,01,18
 
-; 17: Facing right - normal jump - aiming down
-; AE: Unused
+; 17h: Facing right - normal jump - aiming down
+; AEh: Unused. Facing right - grappling - in air - aiming down
 $92:DD18             db 00,0C,01,0A, 01,1A,01,11
 
-; 18: Facing left  - normal jump - aiming down
-; AF: Unused
+; 18h: Facing left  - normal jump - aiming down
+; AFh: Unused. Facing left  - grappling - in air - aiming down
 $92:DD20             db 00,0D,01,0B, 01,1B,01,12
 
-; 13: Facing right - normal jump - not aiming - not moving - gun extended
-; AC: Unused
+; 13h: Facing right - normal jump - not aiming - not moving - gun extended
+; ACh: Unused. Facing right - grappling - in air
 $92:DD28             db 00,10,01,0A, 00,10,01,19
 
-; 14: Facing left  - normal jump - not aiming - not moving - gun extended
-; AD: Unused
+; 14h: Facing left  - normal jump - not aiming - not moving - gun extended
+; ADh: Unused. Facing left  - grappling - in air
 $92:DD30             db 00,11,01,0B, 00,11,01,1A
 
-; 15: Facing right - normal jump - aiming up
+; 15h: Facing right - normal jump - aiming up
 $92:DD38             db 00,12,01,0A, 00,16,00,13
 
-; 16: Facing left  - normal jump - aiming up
+; 16h: Facing left  - normal jump - aiming up
 $92:DD40             db 00,13,01,0B, 00,17,00,14
 
-; 51: Facing right - normal jump - not aiming - moving forward
+; 51h: Facing right - normal jump - not aiming - moving forward
 $92:DD48             db 00,10,01,0A, 00,10,01,19
 
-; 52: Facing left  - normal jump - not aiming - moving forward
+; 52h: Facing left  - normal jump - not aiming - moving forward
 $92:DD50             db 00,11,01,0B, 00,11,01,1A
 
-; 69: Facing right - normal jump - aiming up-right
+; 69h: Facing right - normal jump - aiming up-right
 $92:DD58             db 00,1A,01,0A, 00,1A,00,13
 
-; 6A: Facing left  - normal jump - aiming up-left
+; 6Ah: Facing left  - normal jump - aiming up-left
 $92:DD60             db 00,1B,01,0B, 00,1B,00,14
 
-; 6B: Facing right - normal jump - aiming down-right
-; B0: Unused
+; 6Bh: Facing right - normal jump - aiming down-right
+; B0h: Unused. Facing right - grappling - in air - aiming down-right
 $92:DD68             db 00,0C,01,0A, 00,0C,01,19
 
-; 6C: Facing left  - normal jump - aiming down-left
-; B1: Unused
+; 6Ch: Facing left  - normal jump - aiming down-left
+; B1h: Unused. Facing left  - grappling - in air - aiming down-left
 $92:DD70             db 00,0D,01,0B, 00,0D,01,1A
 
-; 4B: Facing right - normal jump transition
+; 4Bh: Facing right - normal jump transition
 $92:DD78             db 02,00,01,06
 
-; 4C: Facing left  - normal jump transition
+; 4Ch: Facing left  - normal jump transition
 $92:DD7C             db 02,01,01,07
 
-; 55: Facing right - normal jump transition - aiming up
-; F1: Facing right - crouching transition - aiming up
-; F7: Facing right - standing transition - aiming up
+; 55h: Facing right - normal jump transition - aiming up
+; F1h: Facing right - crouching transition - aiming up
+; F7h: Facing right - standing transition - aiming up
 $92:DD80             db 00,16,01,06
 
-; 56: Facing left  - normal jump transition - aiming up
-; F2: Facing left  - crouching transition - aiming up
-; F8: Facing left  - standing transition - aiming up
+; 56h: Facing left  - normal jump transition - aiming up
+; F2h: Facing left  - crouching transition - aiming up
+; F8h: Facing left  - standing transition - aiming up
 $92:DD84             db 00,17,01,07
 
-; 57: Facing right - normal jump transition - aiming up-right
-; F3: Facing right - crouching transition - aiming up-right
-; F9: Facing right - standing transition - aiming up-right
+; 57h: Facing right - normal jump transition - aiming up-right
+; F3h: Facing right - crouching transition - aiming up-right
+; F9h: Facing right - standing transition - aiming up-right
 $92:DD88             db 00,12,01,06
 
-; 58: Facing left  - normal jump transition - aiming up-left
-; F4: Facing left  - crouching transition - aiming up-left
-; FA: Facing left  - standing transition - aiming up-left
+; 58h: Facing left  - normal jump transition - aiming up-left
+; F4h: Facing left  - crouching transition - aiming up-left
+; FAh: Facing left  - standing transition - aiming up-left
 $92:DD8C             db 00,13,01,07
 
-; 59: Facing right - normal jump transition - aiming down-right
-; F5: Facing right - crouching transition - aiming down-right
-; FB: Facing right - standing transition - aiming down-right
+; 59h: Facing right - normal jump transition - aiming down-right
+; F5h: Facing right - crouching transition - aiming down-right
+; FBh: Facing right - standing transition - aiming down-right
 $92:DD90             db 00,0E,01,06
 
-; 5A: Facing left  - normal jump transition - aiming down-left
-; F6: Facing left  - crouching transition - aiming down-left
-; FC: Facing left  - standing transition - aiming down-left
+; 5Ah: Facing left  - normal jump transition - aiming down-left
+; F6h: Facing left  - crouching transition - aiming down-left
+; FCh: Facing left  - standing transition - aiming down-left
 $92:DD94             db 00,0F,01,07
 
-; 4D: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7: Facing right - vertical shinespark windup
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
+; C7h: Facing right - vertical shinespark windup
 $92:DD98             db 00,04,00,03, 00,05,01,0E, 00,04,01,08, 00,00,01,08, 00,01,01,0A, 00,14,01,0C
 
-; 4E: Facing left  - normal jump - not aiming - not moving - gun not extended
-; C8: Facing left  - vertical shinespark windup
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended
+; C8h: Facing left  - vertical shinespark windup
 $92:DDB0             db 00,0A,00,03, 00,0B,01,0F, 00,0A,01,09, 00,06,01,09, 00,07,01,0B, 00,15,01,0D
 
-; 4F: Facing left  - damage boost
-$92:DDC8             db 02,05,00,11, 02,05,01,0B, 0A,0F,00,00, 0A,0E,00,00, 0A,0D,00,00, 0A,0C,00,00, 0A,0B,00,00, 0A,0A,00,00, 0A,09,00,00, 02,1F,01,1A
+; 4Fh: Facing left  - damage boost
+$92:DDC8             db 02,05,00,11, 02,05,01,0B, 0A,0F,00,00, 0A,0E,00,00, 0A,0D,00,00, 0A,0C,00,00, 0A,0B,00,00, 0A,0A,00,00,
+                        0A,09,00,00, 02,1F,01,1A
 
-; 50: Facing right - damage boost
-$92:DDF0             db 02,04,00,12, 02,04,01,0A, 0A,0F,00,00, 0A,0E,00,00, 0A,0D,00,00, 0A,0C,00,00, 0A,0B,00,00, 0A,0A,00,00, 0A,09,00,00, 02,1D,01,19
+; 50h: Facing right - damage boost
+$92:DDF0             db 02,04,00,12, 02,04,01,0A, 0A,0F,00,00, 0A,0E,00,00, 0A,0D,00,00, 0A,0C,00,00, 0A,0B,00,00, 0A,0A,00,00,
+                        0A,09,00,00, 02,1D,01,19
 
-; 27: Facing right - crouching
-; B4: Unused
-$92:DE18             db 07,0C,00,07, 07,0D,00,07, 07,0E,00,07, 07,0D,00,07, 00,00,00,00, 07,0C,00,07, 07,0D,00,07, 07,12,00,07, 07,0D,00,07
+; 27h: Facing right - crouching
+; B4h: Facing right - grappling - crouching (only frame 0 used)
+$92:DE18             db 07,0C,00,07, 07,0D,00,07, 07,0E,00,07, 07,0D,00,07, 00,00,00,00, 07,0C,00,07, 07,0D,00,07, 07,12,00,07,
+                        07,0D,00,07
 
-; 28: Facing left  - crouching
-; B5: Unused
-$92:DE3C             db 07,0F,00,07, 07,10,00,07, 07,11,00,07, 07,10,00,07, 00,00,00,00, 07,0F,00,07, 07,10,00,07, 07,13,00,07, 07,10,00,07
+; 28h: Facing left  - crouching
+; B5h: Facing left  - grappling - crouching (only frame 0 used)
+$92:DE3C             db 07,0F,00,07, 07,10,00,07, 07,11,00,07, 07,10,00,07, 00,00,00,00, 07,0F,00,07, 07,10,00,07, 07,13,00,07,
+                        07,10,00,07
 
-; 29: Facing right - falling
+; 29h: Facing right - falling
 $92:DE60             db 02,04,01,0A, 02,1C,01,0C, 02,1D,01,0C, 00,00,00,00, 00,00,00,00, 02,1C,01,0A, 02,04,01,19
 
-; 2A: Facing left  - falling
+; 2Ah: Facing left  - falling
 $92:DE7C             db 02,05,01,0B, 02,1E,01,0D, 02,1F,01,0D, 00,00,00,00, 00,00,00,00, 02,1E,01,0B, 02,05,01,1A
 
-; 2B: Facing right - falling - aiming up
+; 2Bh: Facing right - falling - aiming up
 $92:DE98             db 00,12,01,0A, 00,16,01,0C, 00,16,01,19
 
-; 2C: Facing left  - falling - aiming up
+; 2Ch: Facing left  - falling - aiming up
 $92:DEA4             db 00,13,01,0B, 00,17,01,0D, 00,17,01,1A
 
-; 2D: Facing right - falling - aiming down
+; 2Dh: Facing right - falling - aiming down
 $92:DEB0             db 00,0C,01,0A, 01,1A,01,11
 
-; 2E: Facing left  - falling - aiming down
+; 2Eh: Facing left  - falling - aiming down
 $92:DEB8             db 00,0D,01,0B, 01,1B,01,12
 
-; 67: Facing right - falling - gun extended
+; 67h: Facing right - falling - gun extended
 $92:DEC0             db 00,10,01,0A, 00,10,01,0C, 00,10,01,0C, 00,00,00,00, 00,00,00,00, 00,10,01,0A, 00,10,01,19
 
-; 68: Facing left  - falling - gun extended
+; 68h: Facing left  - falling - gun extended
 $92:DEDC             db 00,11,01,0B, 00,11,01,0D, 00,11,01,0D, 00,00,00,00, 00,00,00,00, 00,11,01,0B, 00,11,01,1A
 
-; 6D: Facing right - falling - aiming up-right
+; 6Dh: Facing right - falling - aiming up-right
 $92:DEF8             db 00,1A,01,0A, 00,1A,01,0C, 00,1A,01,19
 
-; 6E: Facing left  - falling - aiming up-left
+; 6Eh: Facing left  - falling - aiming up-left
 $92:DF04             db 00,1B,01,0B, 00,1B,01,0D, 00,1B,01,1A
 
-; 6F: Facing right - falling - aiming down-right
+; 6Fh: Facing right - falling - aiming down-right
 $92:DF10             db 00,0C,01,0A, 00,0C,01,0C, 00,0C,01,19
 
-; 70: Facing left  - falling - aiming down-left
+; 70h: Facing left  - falling - aiming down-left
 $92:DF1C             db 00,0D,01,0B, 00,0D,01,0D, 00,0D,01,1A
 
-; 0D: Moving right - aiming up (unused)
-$92:DF28             db 00,16,00,00, 00,16,00,08, 02,0E,00,01, 02,1E,00,09, 02,0E,00,02, 00,16,00,03, 00,16,00,0A, 02,0E,00,04, 02,1E,00,0B, 02,0E,00,05
+; Dh: Moving right - aiming up (unused)
+$92:DF28             db 00,16,00,00, 00,16,00,08, 02,0E,00,01, 02,1E,00,09, 02,0E,00,02, 00,16,00,03, 00,16,00,0A, 02,0E,00,04,
+                        02,1E,00,0B, 02,0E,00,05
 
-; 0E: Moving left  - aiming up (unused)
-$92:DF50             db 00,17,00,00, 00,17,00,08, 02,0F,00,01, 02,1F,00,09, 02,0F,00,02, 00,17,00,03, 00,17,00,0A, 02,0F,00,04, 02,1F,00,0B, 02,0F,00,05
+; Eh: Moving left  - aiming up (unused)
+$92:DF50             db 00,17,00,00, 00,17,00,08, 02,0F,00,01, 02,1F,00,09, 02,0F,00,02, 00,17,00,03, 00,17,00,0A, 02,0F,00,04,
+                        02,1F,00,0B, 02,0F,00,05
 
-; 0F: Moving right - aiming up-right
-$92:DF78             db 00,1A,00,00, 00,1A,00,08, 02,10,00,01, 02,16,00,09, 02,10,00,02, 00,1A,00,03, 00,1A,00,0A, 02,10,00,04, 02,16,00,0B, 02,10,00,05
+; Fh: Moving right - aiming up-right
+$92:DF78             db 00,1A,00,00, 00,1A,00,08, 02,10,00,01, 02,16,00,09, 02,10,00,02, 00,1A,00,03, 00,1A,00,0A, 02,10,00,04,
+                        02,16,00,0B, 02,10,00,05
 
-; 10: Moving left  - aiming up-left
-$92:DFA0             db 00,1B,00,00, 00,1B,00,08, 02,11,00,01, 02,17,00,09, 02,11,00,02, 00,1B,00,03, 00,1B,00,0A, 02,11,00,04, 02,17,00,0B, 02,11,00,05
+; 10h: Moving left  - aiming up-left
+$92:DFA0             db 00,1B,00,00, 00,1B,00,08, 02,11,00,01, 02,17,00,09, 02,11,00,02, 00,1B,00,03, 00,1B,00,0A, 02,11,00,04,
+                        02,17,00,0B, 02,11,00,05
 
-; 11: Moving right - aiming down-right
-$92:DFC8             db 00,0C,00,00, 00,0C,00,08, 02,06,00,01, 02,18,00,09, 02,06,00,02, 00,0C,00,03, 00,0C,00,0A, 02,06,00,04, 02,18,00,0B, 02,06,00,05
+; 11h: Moving right - aiming down-right
+$92:DFC8             db 00,0C,00,00, 00,0C,00,08, 02,06,00,01, 02,18,00,09, 02,06,00,02, 00,0C,00,03, 00,0C,00,0A, 02,06,00,04,
+                        02,18,00,0B, 02,06,00,05
 
-; 12: Moving left  - aiming down-left
-$92:DFF0             db 00,0D,00,00, 00,0D,00,08, 02,07,00,01, 02,19,00,09, 02,07,00,02, 00,0D,00,03, 00,0D,00,0A, 02,07,00,04, 02,19,00,0B, 02,07,00,05
+; 12h: Moving left  - aiming down-left
+$92:DFF0             db 00,0D,00,00, 00,0D,00,08, 02,07,00,01, 02,19,00,09, 02,07,00,02, 00,0D,00,03, 00,0D,00,0A, 02,07,00,04,
+                        02,19,00,0B, 02,07,00,05
 
-; 03: Facing right - aiming up
+; 3: Facing right - aiming up
 $92:E018             db 00,12,0A,00, 00,16,0A,00
 
-; 04: Facing left  - aiming up
+; 4: Facing left  - aiming up
 $92:E020             db 00,13,0A,01, 00,17,0A,01
 
-; 05: Facing right - aiming up-right
-; CF: Facing right - ran into a wall - aiming up-right
+; 5: Facing right - aiming up-right
+; CFh: Facing right - ran into a wall - aiming up-right
 $92:E028             db 00,12,0A,00
 
-; 06: Facing left  - aiming up-left
-; D0: Facing left  - ran into a wall - aiming up-left
+; 6: Facing left  - aiming up-left
+; D0h: Facing left  - ran into a wall - aiming up-left
 $92:E02C             db 00,13,0A,01
 
-; 07: Facing right - aiming down-right
-; AA: Unused
-; D1: Facing right - ran into a wall - aiming down-right
+; 7: Facing right - aiming down-right
+; AAh: Facing right - grappling - aiming down-right
+; D1h: Facing right - ran into a wall - aiming down-right
 $92:E030             db 00,0E,0A,00
 
-; 08: Facing left  - aiming down-left
-; AB: Unused
-; D2: Facing left  - ran into a wall - aiming down-left
+; 8: Facing left  - aiming down-left
+; ABh: Facing left  - grappling - aiming down-left
+; D2h: Facing left  - ran into a wall - aiming down-left
 $92:E034             db 00,0F,0A,01
 
-; 53: Facing right - knockback
+; 53h: Facing right - knockback
 $92:E038             db 00,1D,01,0C, 00,1D,01,1B
 
-; 54: Facing left  - knockback
+; 54h: Facing left  - knockback
 $92:E040             db 00,1C,01,0D, 00,1C,01,1C
 
-; 45: Unused
-; 46: Unused
-; 5B: Unused
-; B8: Facing left  - grapple wall jump pose
-$92:E048             db 01,0C,00,1A
+; 45h: Unused
+; 46h: Unused
+; B8h: Facing left  - grapple wall jump pose (only frame 0 used)
+$92:E048             db 01,0C,00,1A, 01,0B,00,19, 05,08,04,05, 05,07,04,04, 05,06,04,03, 05,05,04,02, 05,04,04,02, 05,03,04,01,
+                        05,02,04,01, 05,01,04,00
 
-; 5C: Unused
-; B9: Facing right - grapple wall jump pose
-$92:E04C             db 01,0B,00,19
+; B9h: Facing right - grapple wall jump pose
+$92:E070             db 05,00,04,00
 
-; 5D: Unused
-; 5E: Unused
-; 5F: Unused
-; 60: Unused
-; 61: Unused
-; B2: Facing clockwise     - grapple
-$92:E050             db 05,08,04,05, 05,07,04,04, 05,06,04,03, 05,05,04,02, 05,04,04,02, 05,03,04,01, 05,02,04,01, 05,01,04,00, 05,00,04,00, 03,0F,04,00, 03,0E,02,09, 03,0D,02,09, 03,0C,02,08, 03,0B,02,08, 03,0A,02,07, 03,09,02,06, 03,08,02,05, 03,07,02,04, 03,06,02,03, 03,05,02,02, 03,04,02,02, 03,03,02,01, 03,02,02,01, 03,01,02,00, 03,00,02,00, 05,0F,02,00, 05,0E,04,09, 05,0D,04,09, 05,0C,04,08, 05,0B,04,08, 05,0A,04,07, 05,09,04,06, 05,08,04,12, 05,07,04,11, 05,06,04,10, 05,05,04,0F, 05,04,04,0F, 05,03,04,0E, 05,02,04,0E, 05,01,04,0D, 05,00,04,0D, 03,0F,04,0D, 03,0E,02,16, 03,0D,02,16, 03,0C,02,15, 03,0B,02,15, 03,0A,02,14, 03,09,02,13, 03,08,02,12, 03,07,02,11, 03,06,02,10, 03,05,02,0F, 03,04,02,0F, 03,03,02,0E, 03,02,02,0E, 03,01,02,0D, 03,00,02,0D, 05,0F,02,0D, 05,0E,04,15, 05,0D,04,15, 05,0C,04,14, 05,0B,04,14, 05,0A,04,13, 05,09,04,12, 03,08,02,0B, 03,08,02,0C
+; B2h: Facing clockwise     - grapple swinging
+$92:E074             db 03,0F,04,00, 03,0E,02,09, 03,0D,02,09, 03,0C,02,08, 03,0B,02,08, 03,0A,02,07, 03,09,02,06, 03,08,02,05,
+                        03,07,02,04, 03,06,02,03, 03,05,02,02, 03,04,02,02, 03,03,02,01, 03,02,02,01, 03,01,02,00, 03,00,02,00,
+                        05,0F,02,00, 05,0E,04,09, 05,0D,04,09, 05,0C,04,08, 05,0B,04,08, 05,0A,04,07, 05,09,04,06, 05,08,04,12,
+                        05,07,04,11, 05,06,04,10, 05,05,04,0F, 05,04,04,0F, 05,03,04,0E, 05,02,04,0E, 05,01,04,0D, 05,00,04,0D,
+                        03,0F,04,0D, 03,0E,02,16, 03,0D,02,16, 03,0C,02,15, 03,0B,02,15, 03,0A,02,14, 03,09,02,13, 03,08,02,12,
+                        03,07,02,11, 03,06,02,10, 03,05,02,0F, 03,04,02,0F, 03,03,02,0E, 03,02,02,0E, 03,01,02,0D, 03,00,02,0D,
+                        05,0F,02,0D, 05,0E,04,15, 05,0D,04,15, 05,0C,04,14, 05,0B,04,14, 05,0A,04,13, 05,09,04,12, 03,08,02,0B,
+                        03,08,02,0C, 06,08,06,05, 06,09,06,06, 06,0A,06,07, 06,0B,06,08, 06,0C,06,08, 06,0D,06,09, 06,0E,06,09,
+                        06,0F,05,00, 04,00,05,00
 
-; 62: Unused
-; B3: Facing anticlockwise - grapple
-$92:E158             db 06,08,06,05, 06,09,06,06, 06,0A,06,07, 06,0B,06,08, 06,0C,06,08, 06,0D,06,09, 06,0E,06,09, 06,0F,05,00, 04,00,05,00, 04,01,05,00, 04,02,05,01, 04,03,05,01, 04,04,05,02, 04,05,05,02, 04,06,05,03, 04,07,05,04, 04,08,05,05, 04,09,05,06, 04,0A,05,07, 04,0B,05,08, 04,0C,05,08, 04,0D,05,09, 04,0E,05,09, 04,0F,06,00, 06,00,06,00, 06,01,06,00, 06,02,06,01, 06,03,06,01, 06,04,06,02, 06,05,06,02, 06,06,06,03, 06,07,06,04, 06,08,06,12, 06,09,06,13, 06,0A,06,14, 06,0B,06,15, 06,0C,06,15, 06,0D,06,16, 06,0E,06,16, 06,0F,05,0D, 04,00,05,0D, 04,01,05,0D, 04,02,05,0E, 04,03,05,0E, 04,04,05,0F, 04,05,05,0F, 04,06,05,10, 04,07,05,11, 04,08,05,12, 04,09,05,13, 04,0A,05,14, 04,0B,05,15, 04,0C,05,15, 04,0D,05,16, 04,0E,05,16, 04,0F,06,0D, 06,00,06,0D, 06,01,06,0D, 06,02,06,0E, 06,03,06,0E, 06,04,06,0F, 06,05,06,0F, 06,06,06,10, 06,07,06,11, 04,08,05,0B, 04,08,05,0C
+; B3h: Facing anticlockwise - grapple swinging
+$92:E17C             db 04,01,05,00, 04,02,05,01, 04,03,05,01, 04,04,05,02, 04,05,05,02, 04,06,05,03, 04,07,05,04, 04,08,05,05,
+                        04,09,05,06, 04,0A,05,07, 04,0B,05,08, 04,0C,05,08, 04,0D,05,09, 04,0E,05,09, 04,0F,06,00, 06,00,06,00,
+                        06,01,06,00, 06,02,06,01, 06,03,06,01, 06,04,06,02, 06,05,06,02, 06,06,06,03, 06,07,06,04, 06,08,06,12,
+                        06,09,06,13, 06,0A,06,14, 06,0B,06,15, 06,0C,06,15, 06,0D,06,16, 06,0E,06,16, 06,0F,05,0D, 04,00,05,0D,
+                        04,01,05,0D, 04,02,05,0E, 04,03,05,0E, 04,04,05,0F, 04,05,05,0F, 04,06,05,10, 04,07,05,11, 04,08,05,12,
+                        04,09,05,13, 04,0A,05,14, 04,0B,05,15, 04,0C,05,15, 04,0D,05,16, 04,0E,05,16, 04,0F,06,0D, 06,00,06,0D,
+                        06,01,06,0D, 06,02,06,0E, 06,03,06,0E, 06,04,06,0F, 06,05,06,0F, 06,06,06,10, 06,07,06,11, 04,08,05,0B,
+                        04,08,05,0C, 01,14,01,15, 01,0C,00,1A, 01,15,01,16, 01,0B,00,19, 01,12,01,13, 0A,10,00,00, 0A,11,00,00,
+                        0A,12,00,00, 0A,13,00,00
 
-; 63: Unused
-$92:E260             db 01,14,01,15, 01,0C,00,1A
+; 63h: Unused
+$92:E284             db 0A,14,00,00, 0A,15,00,00
 
-; 64: Unused
-$92:E268             db 01,15,01,16, 01,0B,00,19
+; 64h: Unused
+$92:E28C             db 0A,16,00,00, 0A,17,00,00
 
-; 65: Unused
-$92:E270             db 01,12,01,13, 0A,10,00,00, 0A,11,00,00, 0A,12,00,00, 0A,13,00,00, 0A,14,00,00, 0A,15,00,00, 0A,16,00,00, 0A,17,00,00
+; 65h: Unused
+$92:E294             db 01,13,01,14, 0A,10,00,00, 0A,11,00,00, 0A,12,00,00, 0A,13,00,00, 0A,14,00,00, 0A,15,00,00, 0A,16,00,00,
+                        0A,17,00,00
 
-; 66: Unused
-$92:E294             db 01,13,01,14, 0A,10,00,00, 0A,11,00,00, 0A,12,00,00, 0A,13,00,00, 0A,14,00,00, 0A,15,00,00, 0A,16,00,00, 0A,17,00,00
+; 66h: Unused
+$92:E2B8             db 01,12,01,13, 02,04,01,19, 00,00,00,00, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00,
+                        0A,0D,00,00
 
-; 83: Facing right - wall jump
-$92:E2B8             db 01,12,01,13, 02,04,01,19, 00,00,00,00, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00, 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07
+; 83h: Facing right - wall jump
+$92:E2DC             db 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 0A,10,09,00, 0A,10,09,01,
+                        0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01,
+                        0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01,
+                        0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 01,13,01,14, 02,05,01,1A,
+                        00,00,00,00, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00
 
-; 84: Facing left  - wall jump
-$92:E374             db 01,13,01,14, 02,05,01,1A, 00,00,00,00, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00, 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07
+; 84h: Facing left  - wall jump
+$92:E398             db 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 0A,10,09,00, 0A,10,09,01,
+                        0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01,
+                        0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01,
+                        0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,12,00,07, 00,13,00,07,
+                        00,0E,00,07, 00,0F,00,07, 00,12,00,07, 00,16,00,07, 00,13,00,07, 00,17,00,07, 00,1B,01,03
 
-; 71: Facing right - crouching - aiming up-right
-$92:E430             db 00,12,00,07
+; 71h: Facing right - crouching - aiming up-right
+$92:E454             db 02,11,01,04
 
-; 72: Facing left  - crouching - aiming up-left
-$92:E434             db 00,13,00,07
+; 72h: Facing left  - crouching - aiming up-left
+$92:E458             db 02,11,01,17
 
-; 73: Facing right - crouching - aiming down-right
-; B6: Unused
-$92:E438             db 00,0E,00,07
+; 73h: Facing right - crouching - aiming down-right
+; B6h: Facing right - grappling - crouching - aiming down-right
+$92:E45C             db 00,1B,01,00
 
-; 74: Facing left  - crouching - aiming down-left
-; B7: Unused
-$92:E43C             db 00,0F,00,07
+; 74h: Facing left  - crouching - aiming down-left
+; B7h: Facing left  - grappling - crouching - aiming down-left
+$92:E460             db 02,11,01,05
 
-; 85: Facing right - crouching - aiming up
-$92:E440             db 00,12,00,07, 00,16,00,07
+; 85h: Facing right - crouching - aiming up
+$92:E464             db 02,11,01,18, 00,1A,01,03
 
-; 86: Facing left  - crouching - aiming up
-$92:E448             db 00,13,00,07, 00,17,00,07
+; 86h: Facing left  - crouching - aiming up
+$92:E46C             db 02,10,01,04, 02,10,01,17
 
-; 75: Facing left  - moonwalk - aiming up-left
-$92:E450             db 00,1B,01,03, 02,11,01,04, 02,11,01,17, 00,1B,01,00, 02,11,01,05, 02,11,01,18
+; 75h: Facing left  - moonwalk - aiming up-left
+$92:E474             db 00,1A,01,00, 02,10,01,05, 02,10,01,18, 00,0D,01,03, 02,07,01,04, 02,07,01,17
 
-; 76: Facing right - moonwalk - aiming up-right
-$92:E468             db 00,1A,01,03, 02,10,01,04, 02,10,01,17, 00,1A,01,00, 02,10,01,05, 02,10,01,18
+; 76h: Facing right - moonwalk - aiming up-right
+$92:E48C             db 00,0D,01,00, 02,07,01,05, 02,07,01,18, 00,0C,01,03, 02,06,01,04, 02,06,01,17
 
-; 77: Facing left  - moonwalk - aiming down-left
-$92:E480             db 00,0D,01,03, 02,07,01,04, 02,07,01,17, 00,0D,01,00, 02,07,01,05, 02,07,01,18
+; 77h: Facing left  - moonwalk - aiming down-left
+$92:E4A4             db 00,0C,01,00, 02,06,01,05, 02,06,01,18, 00,10,01,06, 00,11,01,07, 0B,06,00,00
 
-; 78: Facing right - moonwalk - aiming down-right
-$92:E498             db 00,0C,01,03, 02,06,01,04, 02,06,01,17, 00,0C,01,00, 02,06,01,05, 02,06,01,18
+; 78h: Facing right - moonwalk - aiming down-right
+$92:E4BC             db 0B,05,00,00, 0B,04,00,00, 0B,03,00,00, 0B,05,00,00, 0B,06,00,00, 0B,03,00,00
 
-; 35: Facing right - crouching transition
-; 3B: Facing right - standing transition
-$92:E4B0             db 00,10,01,06
+; 35h: Facing right - crouching transition
+; 3Bh: Facing right - standing transition
+$92:E4D4             db 0B,04,00,00
 
-; 36: Facing left  - crouching transition
-; 3C: Facing left  - standing transition
-$92:E4B4             db 00,11,01,07
+; 36h: Facing left  - crouching transition
+; 3Ch: Facing left  - standing transition
+$92:E4D8             db 00,10,01,06
 
-; 37: Facing right - morphing transition
-$92:E4B8             db 0B,06,00,00, 0B,05,00,00
+; 37h: Facing right - morphing transition
+$92:E4DC             db 0B,06,00,00, 0B,05,00,00
 
-; 38: Facing left  - morphing transition
-$92:E4C0             db 0B,04,00,00, 0B,03,00,00
+; 38h: Facing left  - morphing transition
+$92:E4E4             db 00,11,01,06, 0B,04,00,00
 
-; 3D: Facing right - unmorphing transition
-$92:E4C8             db 0B,05,00,00, 0B,06,00,00
+; 3Dh: Facing right - unmorphing transition
+$92:E4EC             db 0B,03,00,00, 0B,05,00,00
 
-; 3E: Facing left  - unmorphing transition
-$92:E4D0             db 0B,03,00,00, 0B,04,00,00
+; 3Eh: Facing left  - unmorphing transition
+$92:E4F4             db 0B,06,00,00, 00,10,01,06
 
-; DB: Unused
-$92:E4D8             db 00,10,01,06, 0B,06,00,00, 0B,05,00,00
-
-; DC: Unused
-$92:E4E4             db 00,11,01,06, 0B,04,00,00, 0B,03,00,00
-
-; DD: Unused
-$92:E4F0             db 0B,05,00,00, 0B,06,00,00, 00,10,01,06
-
-; DE: Unused
+; DBh: Unused
 $92:E4FC             db 0B,03,00,00, 0B,04,00,00, 00,11,01,06
 
-; 1D: Facing right - morph ball - no springball - on ground
-; 31: Facing right - morph ball - no springball - in air
-; 32: Facing left  - morph ball - no springball - in air
-; 3F: Unused
-; 40: Unused
-$92:E508             db 0A,00,00,00, 0A,04,00,00, 0A,01,00,00, 0A,05,00,00, 0A,02,00,00, 0A,06,00,00, 0A,03,00,00, 0A,07,00,00, 00,00,00,00, 0B,01,00,00
+; DCh: Unused
+$92:E508             db 0A,00,00,00, 0A,04,00,00, 0A,01,00,00
 
-; 41: Facing left  - morph ball - no springball - on ground
-; C5: Unused
-; DF: Unused
-$92:E530             db 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00, 0A,00,00,00, 00,00,00,00, 0B,01,00,00
+; DDh: Unused
+$92:E514             db 0A,05,00,00, 0A,02,00,00, 0A,06,00,00
 
-; 1E: Moving right - morph ball - no springball - on ground
-$92:E558             db 0A,00,00,00, 0A,04,00,00, 0A,01,00,00, 0A,05,00,00, 0A,02,00,00, 0A,06,00,00, 0A,03,00,00, 0A,07,00,00, 00,00,00,00, 0B,01,00,00
+; DEh: Unused
+$92:E520             db 0A,03,00,00, 0A,07,00,00, 00,00,00,00
 
-; 1F: Moving left  - morph ball - no springball - on ground
-$92:E580             db 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00, 0A,00,00,00, 00,00,00,00, 0B,01,00,00
+; 1Dh: Facing right - morph ball - no springball - on ground
+; 31h: Facing right - morph ball - no springball - in air
+; 32h: Facing left  - morph ball - no springball - in air
+; 3Fh: Unused (only frame 0 used)
+; 40h: Unused (only frame 0 used)
+$92:E52C             db 0B,01,00,00, 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00,
+                        0A,00,00,00, 00,00,00,00
 
-; 79: Facing right - morph ball - spring ball - on ground
-; 7B: Moving right - morph ball - spring ball - on ground
-; 7D: Facing right - morph ball - spring ball - falling
-; 7F: Facing right - morph ball - spring ball - in air
-$92:E5A8             db 0A,00,00,00, 0A,04,00,00, 0A,01,00,00, 0A,05,00,00, 0A,02,00,00, 0A,06,00,00, 0A,03,00,00, 0A,07,00,00, 00,00,00,00, 0B,01,00,00
+; 41h: Facing left  - morph ball - no springball - on ground
+; C5h: Unused
+; DFh: Unused
+$92:E554             db 0B,01,00,00, 0A,00,00,00, 0A,04,00,00, 0A,01,00,00, 0A,05,00,00, 0A,02,00,00, 0A,06,00,00, 0A,03,00,00,
+                        0A,07,00,00, 00,00,00,00
 
-; 7A: Facing left  - morph ball - spring ball - on ground
-; 7C: Moving left  - morph ball - spring ball - on ground
-; 7E: Facing left  - morph ball - spring ball - falling
-; 80: Facing left  - morph ball - spring ball - in air
-$92:E5D0             db 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00, 0A,00,00,00, 00,00,00,00, 0B,01,00,00
+; 1Eh: Moving right - morph ball - no springball - on ground
+$92:E57C             db 0B,01,00,00, 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00,
+                        0A,00,00,00, 00,00,00,00
 
-; 19: Facing right - spin jump
-; 20: Unused
-; 21: Unused
-; 22: Unused
-; 23: Unused
-; 24: Unused
-; 33: Unused
-; 34: Unused
-; 39: Unused
-; 3A: Unused
-; 42: Unused
-$92:E5F8             db 02,04,01,19, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00, 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 01,1C,00,1E
+; 1Fh: Moving left  - morph ball - no springball - on ground
+$92:E5A4             db 0B,01,00,00, 0A,00,00,00, 0A,04,00,00, 0A,01,00,00, 0A,05,00,00, 0A,02,00,00, 0A,06,00,00, 0A,03,00,00,
+                        0A,07,00,00, 00,00,00,00
 
-; 1A: Facing left  - spin jump
-$92:E628             db 02,05,01,1A, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00, 0A,0E,00,00, 0A,0F,00,00, 00,00,00,00, 00,00,00,00, 01,1D,00,1F
+; 79h: Facing right - morph ball - spring ball - on ground
+; 7Bh: Moving right - morph ball - spring ball - on ground
+; 7Dh: Facing right - morph ball - spring ball - falling
+; 7Fh: Facing right - morph ball - spring ball - in air
+$92:E5CC             db 0B,01,00,00, 0A,07,00,00, 0A,03,00,00, 0A,06,00,00, 0A,02,00,00, 0A,05,00,00, 0A,01,00,00, 0A,04,00,00,
+                        0A,00,00,00, 00,00,00,00
 
-; 1B: Facing right - space jump
-$92:E658             db 02,04,01,19, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 01,1C,00,1E
+; 7Ah: Facing left  - morph ball - spring ball - on ground
+; 7Ch: Moving left  - morph ball - spring ball - on ground
+; 7Eh: Facing left  - morph ball - spring ball - falling
+; 80h: Facing left  - morph ball - spring ball - in air
+$92:E5F4             db 0B,01,00,00, 02,04,01,19, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00, 0A,0C,00,00, 0A,0D,00,00,
+                        0A,0E,00,00, 0A,0F,00,00
 
-; 1C: Facing left  - space jump
-$92:E688             db 02,05,01,1A, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 01,1D,00,1F
+; 19h: Facing right - spin jump
+$92:E61C             db 00,00,00,00, 00,00,00,00, 01,1C,00,1E, 02,05,01,1A, 0A,08,00,00, 0A,09,00,00, 0A,0A,00,00, 0A,0B,00,00,
+                        0A,0C,00,00, 0A,0D,00,00, 0A,0E,00,00, 0A,0F,00,00
 
-; 81: Facing right - screw attack
-$92:E6B8             db 02,04,01,19, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 01,1C,00,1E
+; 1Ah: Facing left  - spin jump
+$92:E64C             db 00,00,00,00, 00,00,00,00, 01,1D,00,1F, 02,04,01,19, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07
 
-; 82: Facing left  - screw attack
-$92:E728             db 02,05,01,1A, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03, 0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07, 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07, 0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07, 00,00,00,00, 00,00,00,00, 01,1D,00,1F
+; 1Bh: Facing right - space jump
+$92:E67C             db 00,00,00,00, 00,00,00,00, 01,1C,00,1E, 02,05,01,1A, 0A,14,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07
 
-; 25: Facing right - turning - standing
-; BF: Facing right - moonwalking - turn/jump left
-; C6: Unused
-$92:E798             db 01,07,00,16, 01,0A,01,01, 01,06,00,15
+; 1Ch: Facing left  - space jump
+$92:E6AC             db 00,00,00,00, 00,00,00,00, 01,1D,00,1F, 02,04,01,19, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07
 
-; 26: Facing left  - turning - standing
-; C0: Facing left  - moonwalking - turn/jump right
-$92:E7A4             db 01,06,00,15, 01,0A,01,01, 01,07,00,16
+; 81h: Facing right - screw attack
+$92:E6DC             db 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07,
+                        0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07,
+                        00,00,00,00, 00,00,00,00, 01,1C,00,1E, 02,05,01,1A, 0A,10,09,00, 0A,10,09,01, 0A,10,09,02, 0A,14,09,03,
+                        0A,14,09,04, 0A,14,09,05, 0A,11,09,06, 0A,11,09,07
 
-; 8B: Facing right - turning - standing - aiming up
-; 9C: Facing right - turning - standing - aiming up-right
-; C1: Facing right - moonwalking - turn/jump left  - aiming up-right
-$92:E7B0             db 01,09,00,16, 01,02,01,01, 01,08,00,15
+; 82h: Facing left  - screw attack
+$92:E74C             db 0A,11,09,00, 0A,14,09,01, 0A,14,09,02, 0A,14,09,03, 0A,12,09,04, 0A,12,09,05, 0A,12,09,06, 0A,14,09,07,
+                        0A,14,09,00, 0A,14,09,01, 0A,13,09,02, 0A,13,09,03, 0A,13,09,04, 0A,14,09,05, 0A,14,09,06, 0A,14,09,07,
+                        00,00,00,00, 00,00,00,00, 01,1D,00,1F, 01,07,00,16, 01,0A,01,01, 01,06,00,15, 01,06,00,15, 01,0A,01,01,
+                        01,07,00,16, 01,09,00,16, 01,02,01,01, 01,08,00,15
 
-; 8C: Facing left  - turning - standing - aiming up
-; 9D: Facing left  - turning - standing - aiming up-left
-; C2: Facing left  - moonwalking - turn/jump right - aiming up-left
+; 25h: Facing right - turning - standing
+; BFh: Facing right - moonwalking - turn/jump left
+; C6h: Unused
 $92:E7BC             db 01,08,00,15, 01,02,01,01, 01,09,00,16
 
-; 8D: Facing right - turning - standing - aiming down-right
-; C3: Facing right - moonwalking - turn/jump left  - aiming down-right
+; 26h: Facing left  - turning - standing
+; C0h: Facing left  - moonwalking - turn/jump right
 $92:E7C8             db 01,19,00,16, 01,03,01,01, 01,18,00,15
 
-; 8E: Facing left  - turning - standing - aiming down-left
-; C4: Facing left  - moonwalking - turn/jump right - aiming down-left
+; 8Bh: Facing right - turning - standing - aiming up
+; 9Ch: Facing right - turning - standing - aiming up-right
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right
 $92:E7D4             db 01,18,00,15, 01,03,01,01, 01,19,00,16
 
-; 2F: Facing right - turning - jumping
-; 43: Facing right - turning - crouching
-; 87: Facing right - turning - falling
+; 8Ch: Facing left  - turning - standing - aiming up
+; 9Dh: Facing left  - turning - standing - aiming up-left
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left
 $92:E7E0             db 01,07,00,18, 01,0A,01,02, 01,06,00,17
 
-; 30: Facing left  - turning - jumping
-; 44: Facing left  - turning - crouching
-; 88: Facing left  - turning - falling
+; 8Dh: Facing right - turning - standing - aiming down-right
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right
 $92:E7EC             db 01,06,00,17, 01,0A,01,02, 01,07,00,18
 
-; 8F: Facing right - turning - in air - aiming up
-; 93: Facing right - turning - falling - aiming up
-; 97: Facing right - turning - crouching - aiming up
-; 9E: Facing right - turning - in air - aiming up-right
-; A0: Facing right - turning - falling - aiming up-right
-; A2: Facing right - turning - crouching - aiming up-right
+; 8Eh: Facing left  - turning - standing - aiming down-left
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left
 $92:E7F8             db 01,09,00,18, 01,02,01,02, 01,08,00,17
 
-; 90: Facing left  - turning - in air - aiming up
-; 94: Facing left  - turning - falling - aiming up
-; 98: Facing left  - turning - crouching - aiming up
-; 9F: Facing left  - turning - in air - aiming up-left
-; A1: Facing left  - turning - falling - aiming up-left
-; A3: Facing left  - turning - crouching - aiming up-left
+; 2Fh: Facing right - turning - jumping
+; 43h: Facing right - turning - crouching
+; 87h: Facing right - turning - falling
 $92:E804             db 01,08,00,17, 01,02,01,02, 01,09,00,18
 
-; 91: Facing right - turning - in air - aiming down/down-right
-; 95: Facing right - turning - falling - aiming down/down-right
-; 99: Facing right - turning - crouching - aiming down/down-right
+; 30h: Facing left  - turning - jumping
+; 44h: Facing left  - turning - crouching
+; 88h: Facing left  - turning - falling
 $92:E810             db 01,19,00,18, 01,03,01,02, 01,18,00,17
 
-; 92: Facing left  - turning - in air - aiming down/down-left
-; 96: Facing left  - turning - falling - aiming down/down-left
-; 9A: Facing left  - turning - crouching - aiming down/down-left
+; 8Fh: Facing right - turning - in air - aiming up
+; 93h: Facing right - turning - falling - aiming up
+; 97h: Facing right - turning - crouching - aiming up
+; 9Eh: Facing right - turning - in air - aiming up-right
+; A0h: Facing right - turning - falling - aiming up-right
+; A2h: Facing right - turning - crouching - aiming up-right
 $92:E81C             db 01,18,00,17, 01,03,01,02, 01,19,00,18
 
-; EC: Facing right - grabbed by Draygon - not moving - not aiming
-$92:E828             db 02,04,01,1B
+; 90h: Facing left  - turning - in air - aiming up
+; 94h: Facing left  - turning - falling - aiming up
+; 98h: Facing left  - turning - crouching - aiming up
+; 9Fh: Facing left  - turning - in air - aiming up-left
+; A1h: Facing left  - turning - falling - aiming up-left
+; A3h: Facing left  - turning - crouching - aiming up-left
+$92:E828             db 02,04,01,1B, 00,1A,01,1B, 00,10,01,1B
 
-; ED: Facing right - grabbed by Draygon - not moving - aiming up-right
-$92:E82C             db 00,1A,01,1B
+; 91h: Facing right - turning - in air - aiming down/down-right
+; 95h: Facing right - turning - falling - aiming down/down-right
+; 99h: Facing right - turning - crouching - aiming down/down-right
+$92:E834             db 00,0C,01,1B, 02,05,01,1C, 00,1B,01,1C
 
-; EE: Facing right - grabbed by Draygon - firing
-$92:E830             db 00,10,01,1B
+; 92h: Facing left  - turning - in air - aiming down/down-left
+; 96h: Facing left  - turning - falling - aiming down/down-left
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left
+$92:E840             db 00,11,01,1C, 00,0D,01,1C, 00,01,01,0C
 
-; EF: Facing right - grabbed by Draygon - not moving - aiming down-right
-$92:E834             db 00,0C,01,1B
+; ECh: Facing right - grabbed by Draygon - not moving - not aiming
+$92:E84C             db 00,02,01,1B
 
-; BA: Facing left  - grabbed by Draygon - not moving - not aiming
-$92:E838             db 02,05,01,1C
+; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right
+$92:E850             db 00,00,01,19
 
-; BB: Facing left  - grabbed by Draygon - not moving - aiming up-left
-$92:E83C             db 00,1B,01,1C
+; EEh: Facing right - grabbed by Draygon - firing
+$92:E854             db 00,04,01,0C
 
-; BC: Facing left  - grabbed by Draygon - firing
-$92:E840             db 00,11,01,1C
+; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right
+$92:E858             db 00,05,01,0E
 
-; BD: Facing left  - grabbed by Draygon - not moving - aiming down-left
-$92:E844             db 00,0D,01,1C
+; BAh: Facing left  - grabbed by Draygon - not moving - not aiming
+$92:E85C             db 00,00,01,08
 
-; F0: Facing right - grabbed by Draygon - moving
-$92:E848             db 00,01,01,0C, 00,02,01,1B, 00,00,01,19, 00,04,01,0C, 00,05,01,0E, 00,00,01,08
+; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left
+$92:E860             db 00,07,01,0D
 
-; BE: Facing left  - grabbed by Draygon - moving
-$92:E860             db 00,07,01,0D, 00,08,01,1C, 00,06,01,1A, 00,0A,01,0D, 00,0B,01,0F, 00,06,01,09
+; BCh: Facing left  - grabbed by Draygon - firing
+$92:E864             db 00,08,01,1C
 
-; CB: Facing right - shinespark - vertical
-$92:E878             db 0C,00,00,00
+; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left
+$92:E868             db 00,06,01,1A
 
-; CC: Facing left  - shinespark - vertical
-$92:E87C             db 0C,01,00,00
+; F0h: Facing right - grabbed by Draygon - moving
+$92:E86C             db 00,0A,01,0D, 00,0B,01,0F, 00,06,01,09, 0C,00,00,00, 0C,01,00,00, 01,14,00,1B
 
-; C9: Facing right - shinespark - horizontal
-$92:E880             db 01,14,00,1B
+; BEh: Facing left  - grabbed by Draygon - moving
+$92:E884             db 01,15,00,1C, 01,14,00,1B, 01,15,00,1C, 0B,05,07,00, 0B,06,07,01, 0C,05,07,02
 
-; CA: Facing left  - shinespark - horizontal
-$92:E884             db 01,15,00,1C
+; CBh: Facing right - shinespark - vertical
+$92:E89C             db 0B,06,07,02
 
-; CD: Facing right - shinespark - diagonal
-$92:E888             db 01,14,00,1B
+; CCh: Facing left  - shinespark - vertical
+$92:E8A0             db 00,00,00,00
 
-; CE: Facing left  - shinespark - diagonal
-$92:E88C             db 01,15,00,1C
+; C9h: Facing right - shinespark - horizontal
+$92:E8A4             db 00,00,00,00
 
-; D3: Facing right - crystal flash
-$92:E890             db 0B,05,07,00, 0B,06,07,01, 0C,05,07,02, 0B,06,07,02, 00,00,00,00, 00,00,00,00, 0C,05,07,02, 0C,06,07,02, 0C,07,07,02, 0C,06,07,02, 00,00,00,00, 00,00,00,00, 0B,06,07,01, 0B,06,07,00, 00,10,01,06
+; CAh: Facing left  - shinespark - horizontal
+$92:E8A8             db 0C,05,07,02
 
-; D4: Facing left  - crystal flash
-$92:E8CC             db 0B,03,07,00, 0B,04,07,01, 0C,02,07,02, 0B,04,07,02, 00,00,00,00, 00,00,00,00, 0C,02,07,02, 0C,03,07,02, 0C,04,07,02, 0C,03,07,02, 00,00,00,00, 00,00,00,00, 0B,04,07,01, 0B,04,07,00, 00,11,01,07
+; CDh: Facing right - shinespark - diagonal
+$92:E8AC             db 0C,06,07,02
 
-; D7: Facing right - crystal flash ending
-$92:E908             db 0A,00,01,06, 0B,05,01,06, 0B,06,01,06, 00,10,01,06, 00,1D,01,0C, 00,1D,01,1B
+; CEh: Facing left  - shinespark - diagonal
+$92:E8B0             db 0C,07,07,02
 
-; D8: Facing left  - crystal flash ending
-$92:E920             db 0A,1F,01,06, 0B,03,01,06, 0B,04,01,06, 00,11,01,07, 00,1C,01,0D, 00,1C,01,1C
+; D3h: Facing right - crystal flash
+$92:E8B4             db 0C,06,07,02, 00,00,00,00, 00,00,00,00, 0B,06,07,01, 0B,06,07,00, 00,10,01,06, 0B,03,07,00, 0B,04,07,01,
+                        0C,02,07,02, 0B,04,07,02, 00,00,00,00, 00,00,00,00, 0C,02,07,02, 0C,03,07,02, 0C,04,07,02
 
-; E8: Facing right - Samus drained - crouching
-$92:E938             db 0A,00,01,06, 0B,05,01,06, 0B,06,01,06, 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 07,03,01,1F, 07,04,01,1F, 07,05,01,1F, 07,04,01,1F, 00,00,00,00, 00,00,00,00, 00,10,01,06
+; D4h: Facing left  - crystal flash
+$92:E8F0             db 0C,03,07,02, 00,00,00,00, 00,00,00,00, 0B,04,07,01, 0B,04,07,00, 00,11,01,07, 0A,00,01,06, 0B,05,01,06,
+                        0B,06,01,06, 00,10,01,06, 00,1D,01,0C, 00,1D,01,1B, 0A,1F,01,06, 0B,03,01,06, 0B,04,01,06
 
-; E9: Facing left  - Samus drained - crouching
-$92:E974             db 0B,03,01,06, 0B,04,01,06, 00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 07,01,01,07, 07,00,01,1E, 07,01,01,1E, 07,02,01,1E, 07,01,01,1E, 00,00,00,00, 00,00,00,00, 07,01,01,1A, 07,07,01,07, 02,03,0A,01, 00,00,00,00, 00,00,00,00, 07,01,01,1A, 07,07,01,07, 02,03,0A,01, 07,07,01,07, 07,01,01,1A, 00,00,00,00, 00,00,00,00, 07,00,01,1E, 00,00,00,00, 00,00,00,00, 07,00,01,1E, 00,00,00,00, 00,00,00,00
+; D7h: Facing right - crystal flash ending
+$92:E92C             db 00,11,01,07, 00,1C,01,0D, 00,1C,01,1C, 0A,00,01,06, 0B,05,01,06, 0B,06,01,06
 
-; EA: Facing right - Samus drained - standing
-$92:E9F4             db 07,09,01,1F, 07,0A,01,1F, 07,0B,01,1F, 07,0A,01,1F, 00,00,00,00, 00,10,01,06
+; D8h: Facing left  - crystal flash ending
+$92:E944             db 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 00,1D,01,0C, 07,03,01,1F
 
-; EB: Facing left  - Samus drained - standing
-$92:EA0C             db 07,06,01,1E, 07,07,01,1E, 07,08,01,1E, 07,07,01,1E, 00,00,00,00, 00,11,01,07
+; E8h: Facing right - Samus drained - crouching/falling
+$92:E95C             db 07,04,01,1F, 07,05,01,1F, 07,04,01,1F, 00,00,00,00, 00,00,00,00, 00,10,01,06, 0B,03,01,06, 0B,04,01,06,
+                        00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 00,1C,01,0D, 07,01,01,07, 07,00,01,1E
 
-; 00: Facing forward - power suit
-$92:EA24             db 01,11,00,0C, 00,00,00,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,05,08,00, 08,00,08,00, 08,06,08,00, 08,00,08,00, 08,07,08,00, 08,00,08,00, 08,08,08,00, 08,00,08,00, 08,09,08,00, 08,00,08,00, 08,07,08,00, 08,00,08,00, 08,08,08,00, 08,00,08,00, 08,09,08,00, 08,00,08,00
+; E9h: Facing left  - Samus drained - crouching/falling
+$92:E998             db 07,01,01,1E, 07,02,01,1E, 07,01,01,1E, 00,00,00,00, 00,00,00,00, 07,01,01,1A, 07,07,01,07, 02,03,0A,01,
+                        00,00,00,00, 00,00,00,00, 07,01,01,1A, 07,07,01,07, 02,03,0A,01, 07,07,01,07, 07,01,01,1A, 00,00,00,00,
+                        00,00,00,00, 07,00,01,1E, 00,00,00,00, 00,00,00,00, 07,00,01,1E, 00,00,00,00, 00,00,00,00, 07,09,01,1F,
+                        07,0A,01,1F, 07,0B,01,1F, 07,0A,01,1F, 00,00,00,00, 00,10,01,06, 07,06,01,1E
 
-; 9B: Facing forward - varia/gravity suit
-$92:EBA4             db 01,05,00,0D, 00,00,00,00, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,05,08,01, 08,00,08,01, 08,06,08,01, 08,00,08,01, 08,07,08,01, 08,00,08,01, 08,08,08,01, 08,00,08,01, 08,09,08,01, 08,00,08,01, 08,07,08,01, 08,00,08,01, 08,08,08,01, 08,00,08,01, 08,09,08,01, 08,00,08,01
+; EAh: Facing right - Samus drained - standing
+$92:EA10             db 07,07,01,1E, 07,08,01,1E, 07,07,01,1E, 00,00,00,00, 00,11,01,07, 01,11,00,0C
+
+; EBh: Facing left  - Samus drained - standing
+$92:EA28             db 00,00,00,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00
+
+; 0: Facing forward - power suit
+$92:EA40             db 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00,
+                        08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00,
+                        08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00,
+                        08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00,
+                        08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00,
+                        08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00,
+                        08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00,
+                        08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00,
+                        08,00,08,00, 08,04,08,00, 08,00,08,00, 08,02,08,00, 08,00,08,00, 08,03,08,00, 08,00,08,00, 08,04,08,00,
+                        08,00,08,00, 08,05,08,00, 08,00,08,00, 08,06,08,00, 08,00,08,00, 08,07,08,00, 08,00,08,00, 08,08,08,00,
+                        08,00,08,00, 08,09,08,00, 08,00,08,00, 08,07,08,00, 08,00,08,00, 08,08,08,00, 08,00,08,00, 08,09,08,00,
+                        08,00,08,00, 01,05,00,0D, 00,00,00,00, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01
+
+; 9Bh: Facing forward - varia/gravity suit
+$92:EBC0             db 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01,
+                        08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01,
+                        08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01,
+                        08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01,
+                        08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01,
+                        08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01,
+                        08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01,
+                        08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01,
+                        08,00,08,01, 08,04,08,01, 08,00,08,01, 08,02,08,01, 08,00,08,01, 08,03,08,01, 08,00,08,01, 08,04,08,01,
+                        08,00,08,01, 08,05,08,01, 08,00,08,01, 08,06,08,01, 08,00,08,01, 08,07,08,01, 08,00,08,01, 08,08,08,01,
+                        08,00,08,01, 08,09,08,01, 08,00,08,01, 08,07,08,01, 08,00,08,01, 08,08,08,01, 08,00,08,01, 08,09,08,01,
+                        08,00,08,01, 08,8B,4B,AB, C2,30,AD,EC, 0D,D0,0C,A9, 01,00,A0,0E, 00,22,F7,8F, 80,80,0E,C9, 05,00,D0,09
 }
 
 
