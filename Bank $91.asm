@@ -4011,8 +4011,6 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
 ; 10h: Moving left  - aiming up-left
 ; 11h: Moving right - aiming down-right
 ; 12h: Moving left  - aiming down-left
-; 45h: Unused
-; 46h: Unused
 $91:B20A             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF
 
 ; Unused. Not a subanimation of the above, just looks like a slower version
