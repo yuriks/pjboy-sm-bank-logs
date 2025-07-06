@@ -1799,7 +1799,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     {
         0: Arm cannon isn't drawn
         1: Arm cannon is drawn normally
-        2: Samus is facing forward (same as 0?)
+        2: Arm cannon is drawn behind Samus. Used by Samus is facing forward poses
     }
     $0AAE..CB: Speed echo variables
     {

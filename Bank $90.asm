@@ -10552,7 +10552,7 @@ $90:C67F BD DF C7    LDA $C7DF,x[$90:C7E3]  ;|
 $90:C682 A8          TAY                    ;/
 $90:C683 B9 00 00    LDA $0000,y[$90:C9F1]  ;\
 $90:C686 29 FF 00    AND #$00FF             ;|
-$90:C689 89 80 00    BIT #$0080             ;} If [[Y]] & 80h = 0: go to BRANCH_SPRITE_POSITIVE
+$90:C689 89 80 00    BIT #$0080             ;} If [[Y]] & 80h = 0: go to BRANCH_SPRITE_DIRECTION_POSITIVE
 $90:C68C F0 27       BEQ $27    [$C6B5]     ;/
 $90:C68E AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:C691 D0 11       BNE $11    [$C6A4]     ;} If [Samus animation frame] = 0:
@@ -10576,7 +10576,7 @@ $90:C6AE 69 04 00    ADC #$0004             ;} $16 = [Y] + 4 (base address of ar
 $90:C6B1 85 16       STA $16    [$7E:0016]  ;/
 $90:C6B3 80 07       BRA $07    [$C6BC]     ; Go to BRANCH_MERGE
 
-; BRANCH_SPRITE_POSITIVE
+; BRANCH_SPRITE_DIRECTION_POSITIVE
 $90:C6B5 0A          ASL A                  ;\
 $90:C6B6 AA          TAX                    ;} X = [[Y]] * 2 (direction)
 $90:C6B7 98          TYA                    ;\
@@ -10619,21 +10619,21 @@ $90:C6FC AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $90:C6FF 18          CLC                    ;|
 $90:C700 65 12       ADC $12    [$7E:0012]  ;|
 $90:C702 38          SEC                    ;|
-$90:C703 ED 11 09    SBC $0911  [$7E:0911]  ;} If 0 <= [Samus X position] + [$12] - [layer 1 X position] < 100h:
+$90:C703 ED 11 09    SBC $0911  [$7E:0911]  ;} If 0 <= [Samus X position] + (X offset) - [layer 1 X position] < 100h:
 $90:C706 30 2B       BMI $2B    [$C733]     ;|
 $90:C708 C9 00 01    CMP #$0100             ;|
 $90:C70B 10 26       BPL $26    [$C733]     ;/
-$90:C70D 9D 70 03    STA $0370,x[$7E:0370]  ; OAM entry X position = [Samus X position] + [$12] - [layer 1 X position]
+$90:C70D 9D 70 03    STA $0370,x[$7E:0370]  ; OAM entry X position = [Samus X position] + (X offset) - [layer 1 X position]
 $90:C710 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:C713 18          CLC                    ;|
 $90:C714 65 14       ADC $14    [$7E:0014]  ;|
 $90:C716 38          SEC                    ;|
-$90:C717 E5 16       SBC $16    [$7E:0016]  ;} If 0 <= [Samus Y position] + [$14] - [$16] - [layer 1 Y position] < 100h:
+$90:C717 E5 16       SBC $16    [$7E:0016]  ;} If 0 <= [Samus Y position] + (Y offset) - (projectile origin Y offset) - [layer 1 Y position] < 100h:
 $90:C719 ED 15 09    SBC $0915  [$7E:0915]  ;|
 $90:C71C 30 15       BMI $15    [$C733]     ;|
 $90:C71E C9 00 01    CMP #$0100             ;|
 $90:C721 10 10       BPL $10    [$C733]     ;/
-$90:C723 9D 71 03    STA $0371,x[$7E:0371]  ; OAM entry Y position = [Samus Y position] + [$14] - [$16] - [layer 1 Y position]
+$90:C723 9D 71 03    STA $0371,x[$7E:0371]  ; OAM entry Y position = [Samus Y position] + (Y offset) - (projectile origin Y offset) - [layer 1 Y position]
 $90:C726 A5 18       LDA $18    [$7E:0018]  ;\
 $90:C728 9D 72 03    STA $0372,x[$7E:0372]  ;} OAM entry tile number and attributes = [$18]
 $90:C72B 8A          TXA                    ;\
@@ -10649,7 +10649,7 @@ $90:C73B A8          TAY                    ;/
 $90:C73C B9 00 00    LDA $0000,y[$90:C9F1]  ;\
 $90:C73F 29 FF 00    AND #$00FF             ;} A = [[Y]] (direction)
 $90:C742 89 80 00    BIT #$0080             ;\
-$90:C745 F0 15       BEQ $15    [$C75C]     ;} If [A] & 80h = 0: go to BRANCH_TILES_POSITIVE
+$90:C745 F0 15       BEQ $15    [$C75C]     ;} If [A] & 80h = 0: go to BRANCH_TILES_DIRECTION_POSITIVE
 $90:C747 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:C74A D0 08       BNE $08    [$C754]     ;} If [Samus animation frame] = 0:
 $90:C74C B9 00 00    LDA $0000,y[$90:CAB5]  ;\
@@ -10661,7 +10661,7 @@ $90:C755 C8          INY                    ;|
 $90:C756 B9 00 00    LDA $0000,y[$90:CA07]  ;} A = [[Y] + 2] & 7Fh (direction)
 $90:C759 29 7F 00    AND #$007F             ;/
 
-; BRANCH_TILES_POSITIVE
+; BRANCH_TILES_DIRECTION_POSITIVE
 $90:C75C 0A          ASL A                  ;\
 $90:C75D AA          TAX                    ;|
 $90:C75E BD A5 C7    LDA $C7A5,x[$90:C7B3]  ;|
@@ -10765,233 +10765,380 @@ $90:C7DF             dw C9DB, C9DD, C9F1, CA05, CA0D, CA15, CA19, CA1D, CA21, C9
 ;     {
 ;         0: Arm cannon isn't drawn
 ;         1: Arm cannon is drawn normally
-;         2: Samus is facing forward (same as 0?)
+;         2: Arm cannon is drawn behind Samus
 ;     }
 ;     x/y: X/Y offsets, indexed by [Samus animation frame]
 
-; All other poses
-$90:C9D9             db 00, 00
+; Used by all other poses
+$90:C9D9             db 00, 00 ; Arm cannon isn't drawn
 
-; 0: Facing forward - power suit
-; 9Bh: Facing forward - varia/gravity suit
-$90:C9DB             db 00, 02
+; Used by:
+;     0: Facing forward - power suit
+;     9Bh: Facing forward - varia/gravity suit
+;     This arm cannon drawing data is missing the X/Y offsets, it only needs one frame of them! >_<;
+;     As a result, the data at $C9DD is used as X/Y offset, which draws the open arm cannon piece behind Samus' left hand
+$90:C9DB             db 00, 02 ; Arm cannon is drawn behind Samus, direction = up, facing right
 
-; 1: Facing right - normal
-; 47h: Unused
-; 89h: Facing right - ran into a wall
-; A8h: Unused
-; E6h: Facing right - landing from normal jump - firing
-; EEh: Facing right - grabbed by Draygon - firing
-$90:C9DD             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
+; Used by:
+;     1: Facing right - normal
+;     47h: Unused (only frame 0 used)
+;     89h: Facing right - ran into a wall (only frame 0 used)
+;     A8h: Facing right - grappling (only frame 0 used)
+;     E6h: Facing right - landing from normal jump - firing (only frames 0..1 used)
+;     EEh: Facing right - grabbed by Draygon - firing (only frame 0 used)
+$90:C9DD             db 02, 01, ; Arm cannon is drawn, direction = right
+                        0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD,
+                        0B,FD
 
-; 2: Facing left  - normal
-; 48h: Unused
-; 8Ah: Facing left  - ran into a wall
-; A9h: Unused
-; BCh: Facing left  - grabbed by Draygon - firing
-; E7h: Facing left  - landing from normal jump - firing
-$90:C9F1             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
+; Used by:
+;     2: Facing left  - normal
+;     48h: Unused (only frame 0 used)
+;     8Ah: Facing left  - ran into a wall (only frame 0 used)
+;     A9h: Facing left  - grappling (only frame 0 used)
+;     BCh: Facing left  - grabbed by Draygon - firing (only frame 0 used)
+;     E7h: Facing left  - landing from normal jump - firing (only frames 0..1 used)
+$90:C9F1             db 07, 01, ; Arm cannon is drawn, direction = left
+                        ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD,
+                        ED,FD
 
-; 3: Facing right - aiming up
-$90:CA05             db 81, 01, 80, 01, 0E,EA, FE,E1
+; Used by:
+;     3: Facing right - aiming up
+$90:CA05             db 81, 01, ; Frame 0.  Arm cannon is drawn, direction = up-right
+                        80, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing right
+                        0E,EA, FE,E1
 
-; 4: Facing left  - aiming up
-$90:CA0D             db 88, 01, 89, 01, EA,E9, FA,E1
+; Used by:
+;     4: Facing left  - aiming up
+$90:CA0D             db 88, 01, ; Frame 0.  Arm cannon is drawn, direction = up-left
+                        89, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing left
+                        EA,E9, FA,E1
 
-; 5: Facing right - aiming up-right
-; 57h: Facing right - normal jump transition - aiming up-right
-; CFh: Facing right - ran into a wall - aiming up-right
-; E2h: Facing right - landing from normal jump - aiming up-right
-; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right
-; F3h: Facing right - crouching transition - aiming up-right
-; F9h: Facing right - standing transition - aiming up-right
-$90:CA15             db 01, 01, 0D,EA
+; Used by:
+;     5: Facing right - aiming up-right (only frame 0 used)
+;     57h: Facing right - normal jump transition - aiming up-right (only frame 0 used)
+;     CFh: Facing right - ran into a wall - aiming up-right (only frame 0 used)
+;     E2h: Facing right - landing from normal jump - aiming up-right
+;     EDh: Facing right - grabbed by Draygon - not moving - aiming up-right (only frame 0 used)
+;     F3h: Facing right - crouching transition - aiming up-right (only frame 0 used)
+;     F9h: Facing right - standing transition - aiming up-right (only frame 0 used)
+; This arm cannon drawing data is too short for the full (2 frame) pose E2h animation
+$90:CA15             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0D,EA
 
-; 6: Facing left  - aiming up-left
-; 58h: Facing left  - normal jump transition - aiming up-left
-; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left
-; D0h: Facing left  - ran into a wall - aiming up-left
-; E3h: Facing left  - landing from normal jump - aiming up-left
-; F4h: Facing left  - crouching transition - aiming up-left
-; FAh: Facing left  - standing transition - aiming up-left
-$90:CA19             db 08, 01, EB,E9
+; Used by:
+;     6: Facing left  - aiming up-left (only frame 0 used)
+;     58h: Facing left  - normal jump transition - aiming up-left (only frame 0 used)
+;     BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left (only frame 0 used)
+;     D0h: Facing left  - ran into a wall - aiming up-left (only frame 0 used)
+;     E3h: Facing left  - landing from normal jump - aiming up-left
+;     F4h: Facing left  - crouching transition - aiming up-left (only frame 0 used)
+;     FAh: Facing left  - standing transition - aiming up-left (only frame 0 used)
+; This arm cannon drawing data is too short for the full (2 frame) pose E3h animation
+$90:CA19             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EB,E9
 
-; 7: Facing right - aiming down-right
-; 59h: Facing right - normal jump transition - aiming down-right
-; AAh: Unused
-; D1h: Facing right - ran into a wall - aiming down-right
-; E4h: Facing right - landing from normal jump - aiming down-right
-; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right
-; F5h: Facing right - crouching transition - aiming down-right
-; FBh: Facing right - standing transition - aiming down-right
-$90:CA1D             db 03, 01, 0D,02
+; Used by:
+;     7: Facing right - aiming down-right (only frame 0 used)
+;     59h: Facing right - normal jump transition - aiming down-right (only frame 0 used)
+;     AAh: Facing right - grappling - aiming down-right (only frame 0 used)
+;     D1h: Facing right - ran into a wall - aiming down-right (only frame 0 used)
+;     E4h: Facing right - landing from normal jump - aiming down-right
+;     EFh: Facing right - grabbed by Draygon - not moving - aiming down-right (only frame 0 used)
+;     F5h: Facing right - crouching transition - aiming down-right (only frame 0 used)
+;     FBh: Facing right - standing transition - aiming down-right (only frame 0 used)
+; This arm cannon drawing data is too short for the full (2 frame) pose E4h animation
+$90:CA1D             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0D,02
 
-; 8: Facing left  - aiming down-left
-; 5Ah: Facing left  - normal jump transition - aiming down-left
-; ABh: Unused
-; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left
-; D2h: Facing left  - ran into a wall - aiming down-left
-; E5h: Facing left  - landing from normal jump - aiming down-left
-; F6h: Facing left  - crouching transition - aiming down-left
-; FCh: Facing left  - standing transition - aiming down-left
-$90:CA21             db 06, 01, EB,02
+; Used by:
+;     8: Facing left  - aiming down-left (only frame 0 used)
+;     5Ah: Facing left  - normal jump transition - aiming down-left (only frame 0 used)
+;     ABh: Facing left  - grappling - aiming down-left (only frame 0 used)
+;     BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left (only frame 0 used)
+;     D2h: Facing left  - ran into a wall - aiming down-left (only frame 0 used)
+;     E5h: Facing left  - landing from normal jump - aiming down-left
+;     F6h: Facing left  - crouching transition - aiming down-left (only frame 0 used)
+;     FCh: Facing left  - standing transition - aiming down-left (only frame 0 used)
+; This arm cannon drawing data is too short for the full (2 frame) pose E5h animation
+$90:CA21             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        EB,02
 
-; Bh: Moving right - gun extended
-$90:CA25             db 02, 01, 11,FA, 11,FA, 11,F9, 11,F8, 11,F9, 11,FA, 11,F9, 11,F9, 11,F8, 11,F9
+; Used by:
+;     Bh: Moving right - gun extended
+$90:CA25             db 02, 01, ; Arm cannon is drawn, direction = right
+                        11,FA, 11,FA, 11,F9, 11,F8, 11,F9, 11,FA, 11,F9, 11,F9,
+                        11,F8, 11,F9
 
-; Ch: Moving left  - gun extended
-$90:CA3B             db 07, 01, E7,FA, E7,FA, E7,F8, E7,F9, E7,F9, E7,FA, E7,F9, E7,F8, E7,F9, E7,F9
+; Used by:
+;     Ch: Moving left  - gun extended
+$90:CA3B             db 07, 01, ; Arm cannon is drawn, direction = left
+                        E7,FA, E7,FA, E7,F8, E7,F9, E7,F9, E7,FA, E7,F9, E7,F8,
+                        E7,F9, E7,F9
 
-; Fh: Moving right - aiming up-right
-$90:CA51             db 01, 01, 0C,EA, 0C,EA, 0C,E9, 0C,E8, 0C,E9, 0C,EA, 0C,EA, 0C,E9, 0C,E8, 0C,E9
+; Used by:
+;     Fh: Moving right - aiming up-right
+$90:CA51             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0C,EA, 0C,EA, 0C,E9, 0C,E8, 0C,E9, 0C,EA, 0C,EA, 0C,E9,
+                        0C,E8, 0C,E9
 
-; 10h: Moving left  - aiming up-left
-$90:CA67             db 08, 01, EC,EA, EC,EA, EC,E9, EC,E8, EC,E9, EC,EA, EC,EA, EC,E9, EC,E8, EC,E9
+; Used by:
+;     10h: Moving left  - aiming up-left
+$90:CA67             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EC,EA, EC,EA, EC,E9, EC,E8, EC,E9, EC,EA, EC,EA, EC,E9,
+                        EC,E8, EC,E9
 
-; 11h: Moving right - aiming down-right
-$90:CA7D             db 03, 01, 0B,01, 0B,01, 0B,00, 0B,FF, 0B,00, 0B,01, 0B,01, 0B,00, 0B,FF, 0B,00
+; Used by:
+;     11h: Moving right - aiming down-right
+$90:CA7D             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0B,01, 0B,01, 0B,00, 0B,FF, 0B,00, 0B,01, 0B,01, 0B,00,
+                        0B,FF, 0B,00
 
-; 12h: Moving left  - aiming down-left
-$90:CA93             db 06, 01, ED,01, ED,01, ED,00, ED,FF, ED,00, ED,01, ED,01, ED,00, ED,FF, ED,00
+; Used by:
+;     12h: Moving left  - aiming down-left
+$90:CA93             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        ED,01, ED,01, ED,00, ED,FF, ED,00, ED,01, ED,01, ED,00,
+                        ED,FF, ED,00
 
-; 13h: Facing right - normal jump - not aiming - not moving - gun extended
-; ACh: Unused
-$90:CAA9             db 02, 01, 0B,FD, 0B,FD
+; Used by:
+;     13h: Facing right - normal jump - not aiming - not moving - gun extended
+;     ACh: Unused. Facing right - grappling - in air
+$90:CAA9             db 02, 01, ; Arm cannon is drawn, direction = right
+                        0B,FD, 0B,FD
 
-; 14h: Facing left  - normal jump - not aiming - not moving - gun extended
-; ADh: Unused
-$90:CAAF             db 07, 01, ED,FD, ED,FD
+; Used by:
+;     14h: Facing left  - normal jump - not aiming - not moving - gun extended
+;     ADh: Unused. Facing left  - grappling - in air
+$90:CAAF             db 07, 01, ; Arm cannon is drawn, direction = left
+                        ED,FD, ED,FD
 
-; 15h: Facing right - normal jump - aiming up
-$90:CAB5             db 81, 01, 80, 01, 0E,E9, FE,E0
+; Used by:
+;     15h: Facing right - normal jump - aiming up
+$90:CAB5             db 81, 01, ; Frame 0.  Arm cannon is drawn, direction = up-right
+                        80, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing right
+                        0E,E9, FE,E0
 
-; 16h: Facing left  - normal jump - aiming up
-$90:CABD             db 88, 01, 89, 01, EA,E8, FA,E0
+; Used by:
+;     16h: Facing left  - normal jump - aiming up
+$90:CABD             db 88, 01, ; Frame 0.  Arm cannon is drawn, direction = up-left
+                        89, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing left
+                        EA,E8, FA,E0
 
-; 17h: Facing right - normal jump - aiming down
-; AEh: Unused
-$90:CAC5             db 04, 01, 00,0D, 00,0D
+; Used by:
+;     17h: Facing right - normal jump - aiming down
+;     AEh: Unused. Facing right - grappling - in air - aiming down
+$90:CAC5             db 04, 01, ; Arm cannon is drawn, direction = down, facing right
+                        00,0D, 00,0D
 
-; 18h: Facing left  - normal jump - aiming down
-; AFh: Unused
-$90:CACB             db 05, 01, F7,0D, F7,0D
+; Used by:
+;     18h: Facing left  - normal jump - aiming down
+;     AFh: Unused. Facing left  - grappling - in air - aiming down
+$90:CACB             db 05, 01, ; Arm cannon is drawn, direction = down, facing left
+                        F7,0D, F7,0D
 
-; 4Bh: Facing right - normal jump transition
-$90:CAD1             db 03, 01, FB,00, 06,02, ED,FE
+; Used by:
+;     4Bh: Facing right - normal jump transition
+$90:CAD1             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        FB,00
 
-; 51h: Facing right - normal jump - not aiming - moving forward
-$90:CAD9             db 02, 01, 0B,FD, 0B,FD
+; Unused
+$90:CAD9             db 06, 02, ; Arm cannon is drawn behind Samus, direction = down-left
+                        ED,FE
 
-; 52h: Facing left  - normal jump - not aiming - moving forward
-$90:CADF             db 07, 01, ED,FD, ED,FD
+; Used by:
+;     51h: Facing right - normal jump - not aiming - moving forward
+$90:CAD9             db 02, 01, ; Arm cannon is drawn, direction = right
+                        0B,FD, 0B,FD
 
-; 69h: Facing right - normal jump - aiming up-right
-$90:CAE5             db 01, 01, 0C,EA, 0C,EA
+; Used by:
+;     52h: Facing left  - normal jump - not aiming - moving forward
+$90:CADF             db 07, 01, ; Arm cannon is drawn, direction = left
+                        ED,FD, ED,FD
 
-; 6Ah: Facing left  - normal jump - aiming up-left
-$90:CAEB             db 08, 01, EC,EA, EC,EA
+; Used by:
+;     69h: Facing right - normal jump - aiming up-right
+$90:CAE5             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0C,EA, 0C,EA
 
-; 6Bh: Facing right - normal jump - aiming down-right
-; B0h: Unused
-$90:CAF1             db 03, 01, 0B,01, 0B,01
+; Used by:
+;     6Ah: Facing left  - normal jump - aiming up-left
+$90:CAEB             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EC,EA, EC,EA
 
-; 6Ch: Facing left  - normal jump - aiming down-left
-; B1h: Unused
-$90:CAF7             db 06, 01, ED,01, ED,01
+; Used by:
+;     6Bh: Facing right - normal jump - aiming down-right
+;     B0h: Unused. Facing right - grappling - in air - aiming down-right
+$90:CAF1             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0B,01, 0B,01
 
-; 67h: Facing right - falling - gun extended
-$90:CAFD             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
+; Used by:
+;     6Ch: Facing left  - normal jump - aiming down-left
+;     B1h: Unused. Facing left  - grappling - in air - aiming down-left
+$90:CAF7             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        ED,01, ED,01
 
-; 68h: Facing left  - falling - gun extended
-$90:CB0D             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
+; Used by:
+;     67h: Facing right - falling - gun extended
+$90:CAFD             db 02, 01, ; Arm cannon is drawn, direction = right
+                        0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
 
-; 2Bh: Facing right - falling - aiming up
-$90:CB1D             db 81, 01, 80, 01, 0E,E9, FE,E0, FE,E0
+; Used by:
+;     68h: Facing left  - falling - gun extended
+$90:CB0D             db 07, 01, ; Arm cannon is drawn, direction = left
+                        ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
 
-; 2Ch: Facing left  - falling - aiming up
-$90:CB27             db 88, 01, 89, 01, EA,E8, FA,E4, FA,E4
+; Used by:
+;     2Bh: Facing right - falling - aiming up
+$90:CB1D             db 81, 01, ; Frame 0.  Arm cannon is drawn, direction = up-right
+                        80, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing right
+                        0E,E9, FE,E0, FE,E0
 
-; 2Dh: Facing right - falling - aiming down
-$90:CB31             db 04, 01, 00,09, 00,09
+; Used by:
+;     2Ch: Facing left  - falling - aiming up
+$90:CB27             db 88, 01, ; Frame 0.  Arm cannon is drawn, direction = up-left
+                        89, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing left
+                        EA,E8, FA,E4, FA,E4
 
-; 2Eh: Facing left  - falling - aiming down
-$90:CB37             db 05, 01, F7,09, F7,09
+; Used by:
+;     2Dh: Facing right - falling - aiming down
+$90:CB31             db 04, 01, ; Arm cannon is drawn, direction = down, facing right
+                        00,09, 00,09
 
-; 6Dh: Facing right - falling - aiming up-right
-$90:CB3D             db 01, 01, 0C,EA, 0C,EA, 0C,EA
+; Used by:
+;     2Eh: Facing left  - falling - aiming down
+$90:CB37             db 05, 01, ; Arm cannon is drawn, direction = down, facing left
+                        F7,09, F7,09
 
-; 6Eh: Facing left  - falling - aiming up-left
-$90:CB45             db 08, 01, EC,EA, EC,EA, EC,EA
+; Used by:
+;     6Dh: Facing right - falling - aiming up-right
+$90:CB3D             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0C,EA, 0C,EA, 0C,EA
 
-; 6Fh: Facing right - falling - aiming down-right
-$90:CB4D             db 03, 01, 0B,01, 0B,01, 0B,01
+; Used by:
+;     6Eh: Facing left  - falling - aiming up-left
+$90:CB45             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EC,EA, EC,EA, EC,EA
 
-; 70h: Facing left  - falling - aiming down-left
-$90:CB55             db 06, 01, ED,01, ED,01, ED,01
+; Used by:
+;     6Fh: Facing right - falling - aiming down-right
+$90:CB4D             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0B,01, 0B,01, 0B,01
 
-; 27h: Facing right - crouching
-; B4h: Unused
-$90:CB5D             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
+; Used by:
+;     70h: Facing left  - falling - aiming down-left
+$90:CB55             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        ED,01, ED,01, ED,01
 
-; 28h: Facing left  - crouching
-; B5h: Unused
-$90:CB71             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
+; Used by:
+;     27h: Facing right - crouching
+;     B4h: Facing right - grappling - crouching (only frame 0 used)
+$90:CB5D             db 02, 01, ; Arm cannon is drawn, direction = right
+                        0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD,
+                        0B,FD
 
-; 71h: Facing right - crouching - aiming up-right
-$90:CB85             db 01, 01, 0E,E9
+; Used by:
+;     28h: Facing left  - crouching
+;     B5h: Facing left  - grappling - crouching (only frame 0 used)
+$90:CB71             db 07, 01, ; Arm cannon is drawn, direction = left
+                        ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD,
+                        ED,FD
 
-; 72h: Facing left  - crouching - aiming up-left
-$90:CB89             db 08, 01, EA,E8
+; Used by:
+;     71h: Facing right - crouching - aiming up-right
+$90:CB85             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0E,E9
 
-; 73h: Facing right - crouching - aiming down-right
-; B6h: Unused
-$90:CB8D             db 03, 01, 0D,02
+; Used by:
+;     72h: Facing left  - crouching - aiming up-left
+$90:CB89             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EA,E8
 
-; 74h: Facing left  - crouching - aiming down-left
-; B7h: Unused
-$90:CB91             db 06, 01, EB,02
+; Used by:
+;     73h: Facing right - crouching - aiming down-right
+;     B6h: Facing right - grappling - crouching - aiming down-right
+$90:CB8D             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0D,02
 
-; 85h: Facing right - crouching - aiming up
-$90:CB95             db 81, 01, 80, 01, 0E,E9, FE,E0
+; Used by:
+;     74h: Facing left  - crouching - aiming down-left
+;     B7h: Facing left  - grappling - crouching - aiming down-left
+$90:CB91             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        EB,02
 
-; 86h: Facing left  - crouching - aiming up
-$90:CB9D             db 88, 01, 89, 01, EA,E8, FA,E0
+; Used by:
+;     85h: Facing right - crouching - aiming up
+$90:CB95             db 81, 01, ; Frame 0.  Arm cannon is drawn, direction = up-right
+                        80, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing right
+                        0E,E9, FE,E0
 
-; 49h: Facing left  - moonwalk
-$90:CBA5             db 02, 01, F1,FD, F1,FC, F1,FC, F1,FD, F1,FC, F1,FC
+; Used by:
+;     86h: Facing left  - crouching - aiming up
+$90:CB9D             db 88, 01, ; Frame 0.  Arm cannon is drawn, direction = up-left
+                        89, 01, ; Frame 1+. Arm cannon is drawn, direction = up, facing left
+                        EA,E8, FA,E0
 
-; 4Ah: Facing right - moonwalk
-$90:CBB3             db 07, 01, 07,FD, 07,FC, 07,FC, 07,FD, 07,FC, 07,FC
+; Used by:
+;     49h: Facing left  - moonwalk
+$90:CBA5             db 02, 01, ; Arm cannon is drawn, direction = right
+                        F1,FD, F1,FC, F1,FC, F1,FD, F1,FC, F1,FC
 
-; 75h: Facing left  - moonwalk - aiming up-left
-$90:CBC1             db 08, 01, EC,EA, EC,E9, EC,E9, EC,EA, EC,E9, EC,E9
+; Used by:
+;     4Ah: Facing right - moonwalk
+$90:CBB3             db 07, 01, ; Arm cannon is drawn, direction = left
+                        07,FD, 07,FC, 07,FC, 07,FD, 07,FC, 07,FC
 
-; 76h: Facing right - moonwalk - aiming up-right
-$90:CBCF             db 01, 01, 0C,EA, 0C,E9, 0C,E9, 0C,EA, 0C,E9, 0C,E9
+; Used by:
+;     75h: Facing left  - moonwalk - aiming up-left
+$90:CBC1             db 08, 01, ; Arm cannon is drawn, direction = up-left
+                        EC,EA, EC,E9, EC,E9, EC,EA, EC,E9, EC,E9
 
-; 77h: Facing left  - moonwalk - aiming down-left
-$90:CBDD             db 06, 01, ED,01, ED,00, ED,00, ED,01, ED,00, ED,00
+; Used by:
+;     76h: Facing right - moonwalk - aiming up-right
+$90:CBCF             db 01, 01, ; Arm cannon is drawn, direction = up-right
+                        0C,EA, 0C,E9, 0C,E9, 0C,EA, 0C,E9, 0C,E9
 
-; 78h: Facing right - moonwalk - aiming down-right
-$90:CBEB             db 03, 01, 0B,01, 0B,00, 0B,00, 0B,01, 0B,00, 0B,00
+; Used by:
+;     77h: Facing left  - moonwalk - aiming down-left
+$90:CBDD             db 06, 01, ; Arm cannon is drawn, direction = down-left
+                        ED,01, ED,00, ED,00, ED,01, ED,00, ED,00
 
-; A4h: Facing right - landing from normal jump
-$90:CBF9             db 03, 01, FB,00, FB,00, 06,02, ED,FE, ED,FE
+; Used by:
+;     78h: Facing right - moonwalk - aiming down-right
+$90:CBEB             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        0B,01, 0B,00, 0B,00, 0B,01, 0B,00, 0B,00
 
-; A6h: Facing right - landing from spin jump
-$90:CC05             db 03, 01, FB,00, FB,00, FB,00, 06,02, ED,FE, ED,FE, ED,FE
+; Used by:
+;     A4h: Facing right - landing from normal jump
+$90:CBF9             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        FB,00, FB,00
 
-; 55h: Facing right - normal jump transition - aiming up
-; E0h: Facing right - landing from normal jump - aiming up
-; F1h: Facing right - crouching transition - aiming up
-; F7h: Facing right - standing transition - aiming up
-$90:CC15             db 00, 01, FE,E1, FE,E1
+; Unused
+$90:CC05             db 06, 02, ; Arm cannon is drawn behind Samus, direction = down-left
+                        ED,FE, ED,FE
 
-; 56h: Facing left  - normal jump transition - aiming up
-; E1h: Facing left  - landing from normal jump - aiming up
-; F2h: Facing left  - crouching transition - aiming up
-; F8h: Facing left  - standing transition - aiming up
-$90:CC1B             db 09, 01, FA,E1, FA,E1
+; Used by:
+;     A6h: Facing right - landing from spin jump
+$90:CC05             db 03, 01, ; Arm cannon is drawn, direction = down-right
+                        FB,00, FB,00, FB,00
+
+; Unused
+$90:CC15             db 06, 02, ; Arm cannon is drawn behind Samus, direction = down-left
+                        ED,FE, ED,FE, ED,FE
+
+; Used by:
+;     55h: Facing right - normal jump transition - aiming up (only frame 0 used)
+;     E0h: Facing right - landing from normal jump - aiming up
+;     F1h: Facing right - crouching transition - aiming up (only frame 0 used)
+;     F7h: Facing right - standing transition - aiming up (only frame 0 used)
+$90:CC15             db 00, 01, ; Arm cannon is drawn, direction = up, facing right
+                        FE,E1, FE,E1
+
+; Used by:
+;     56h: Facing left  - normal jump transition - aiming up (only frame 0 used)
+;     E1h: Facing left  - landing from normal jump - aiming up
+;     F2h: Facing left  - crouching transition - aiming up (only frame 0 used)
+;     F8h: Facing left  - standing transition - aiming up (only frame 0 used)
+$90:CC1B             db 09, 01, ; Arm cannon is drawn, direction = up, facing left
+                        FA,E1, FA,E1
 }
 
 
