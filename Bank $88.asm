@@ -8823,7 +8823,7 @@ $88:E987 08          PHP
 $88:E988 C2 30       REP #$30
 $88:E98A DA          PHX
 $88:E98B AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
-$88:E98E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy 1 beam angle]
+$88:E98E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy 1 angle]
 $88:E990 BD 2C 19    LDA $192C,x[$7E:192C]  ;\
 $88:E993 85 14       STA $14    [$7E:0014]  ;} $14 = [HDMA object angular width]
 $88:E995 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
