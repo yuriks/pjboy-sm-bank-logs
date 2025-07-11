@@ -2,12 +2,10 @@
 {
 ;;; $8000: Samus top tiles - set 0 - entry 0 ;;;
 {
-; 9: Moving right - not aiming - frame 0
-; 9: Moving right - not aiming - frame 5
+; 9: Moving right - not aiming - frames 0 / 5
 ; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 3
 ; C7h: Facing right - vertical shinespark windup - frame 3
-; F0h: Facing right - grabbed by Draygon - moving - frame 2
-; F0h: Facing right - grabbed by Draygon - moving - frame 5
+; F0h: Facing right - grabbed by Draygon - moving - frames 2 / 5
 ; |--------|--------|--------|--------|
 ; |3BBABABA|B33F    |        |        |
 ; |F3333BBB|B3E3    |     FFF|EE      |
@@ -146,10 +144,8 @@ $9E:8320             db 5A,FA,B4,F2,FF,F7,FF,CF,FD,9F,F8,FF,F0,7F,38,3F,00,FC,04
 ;;; $8440: Samus top tiles - set 0 - entry 4 ;;;
 {
 ; 9: Moving right - not aiming - frame 9
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 0
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 2
-; C7h: Facing right - vertical shinespark windup - frame 0
-; C7h: Facing right - vertical shinespark windup - frame 2
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frames 0 / 2
+; C7h: Facing right - vertical shinespark windup - frames 0 / 2
 ; F0h: Facing right - grabbed by Draygon - moving - frame 3
 ; |--------|--------|--------|--------|
 ; |333BBBBA|AB3F3F  |        |        |
@@ -223,11 +219,9 @@ $9E:8540             db 78,7E,F6,F9,5F,FF,8C,FC,26,FE,45,FD,C7,FE,6F,7F,3E,3E,09
 
 ;;; $86C0: Samus top tiles - set 0 - entry 6 ;;;
 {
-; Ah: Moving left  - not aiming - frame 0
-; Ah: Moving left  - not aiming - frame 5
+; Ah: Moving left  - not aiming - frames 0 / 5
 ; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 3
-; BEh: Facing left  - grabbed by Draygon - moving - frame 2
-; BEh: Facing left  - grabbed by Draygon - moving - frame 5
+; BEh: Facing left  - grabbed by Draygon - moving - frames 2 / 5
 ; C8h: Facing left  - vertical shinespark windup - frame 3
 ; |--------|--------|--------|--------|
 ; |    F33B|ABABABB3|        |        |
@@ -373,11 +367,9 @@ $9E:8A40             db 38,F8,6C,FC,C6,FE,63,7F,37,3F,1F,1F,1E,1F,0E,0F,00,C0,00
 ;;; $8BC0: Samus top tiles - set 0 - entry Ah ;;;
 {
 ; Ah: Moving left  - not aiming - frame 9
-; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 0
-; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 2
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frames 0 / 2
 ; BEh: Facing left  - grabbed by Draygon - moving - frame 3
-; C8h: Facing left  - vertical shinespark windup - frame 0
-; C8h: Facing left  - vertical shinespark windup - frame 2
+; C8h: Facing left  - vertical shinespark windup - frames 0 / 2
 ; |--------|--------|--------|--------|
 ; | BF3F3BA|ABBB55DF|        |        |
 ; |  3EF3BB|AB87333F|    EEFF|F       |
@@ -447,14 +439,12 @@ $9E:8CC0             db FD,FC,FF,79,3F,FF,DF,FF,FF,FF,FF,F3,F7,E7,E6,E7,81,9B,46
 
 ;;; $8DE0: Samus top tiles - set 0 - entry Ch ;;;
 {
-; 11h: Moving right - aiming down-right - frames 0..1
-; 11h: Moving right - aiming down-right - frames 5..6
+; 11h: Moving right - aiming down-right - frames 0..1 / 5..6
 ; 17h: Facing right - normal jump - aiming down - frame 0
 ; 2Dh: Facing right - falling - aiming down - frame 0
 ; 6Bh: Facing right - normal jump - aiming down-right - frames 0..1
-; 6Fh: Facing right - falling - aiming down-right - frames 0..2
-; 78h: Facing right - moonwalk - aiming down-right - frame 0
-; 78h: Facing right - moonwalk - aiming down-right - frame 3
+; 6Fh: Facing right - falling - aiming down-right - frames 0 / 2
+; 78h: Facing right - moonwalk - aiming down-right - frames 0 / 3
 ; AEh: Unused. Facing right - grappling - in air - aiming down - frame 0
 ; B0h: Unused. Facing right - grappling - in air - aiming down-right - frames 0..1
 ; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right - frame 0
@@ -491,14 +481,12 @@ $9E:8DE0             db 03,03,0E,0F,18,1F,17,1F,2F,3F,7F,7F,7F,7F,7F,7F,03,03,0F
 
 ;;; $8F00: Samus top tiles - set 0 - entry Dh ;;;
 {
-; 12h: Moving left  - aiming down-left - frames 0..1
-; 12h: Moving left  - aiming down-left - frames 5..6
+; 12h: Moving left  - aiming down-left - frames 0..1 / 5..6
 ; 18h: Facing left  - normal jump - aiming down - frame 0
 ; 2Eh: Facing left  - falling - aiming down - frame 0
 ; 6Ch: Facing left  - normal jump - aiming down-left - frames 0..1
-; 70h: Facing left  - falling - aiming down-left - frames 0..2
-; 77h: Facing left  - moonwalk - aiming down-left - frame 0
-; 77h: Facing left  - moonwalk - aiming down-left - frame 3
+; 70h: Facing left  - falling - aiming down-left - frames 0 / 2
+; 77h: Facing left  - moonwalk - aiming down-left - frames 0 / 3
 ; AFh: Unused. Facing left  - grappling - in air - aiming down - frame 0
 ; B1h: Unused. Facing left  - grappling - in air - aiming down-left - frames 0..1
 ; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left - frame 0
@@ -626,11 +614,9 @@ $9E:9180             db 00,00,00,00,01,01,03,03,07,07,07,07,07,07,05,07,00,00,00
 ; 13h: Facing right - normal jump - not aiming - not moving - gun extended - frames 0..1
 ; 35h: Facing right - crouching transition - frame 0
 ; 3Bh: Facing right - standing transition - frame 0
-; 4Ah: Facing right - moonwalk - frame 0
-; 4Ah: Facing right - moonwalk - frame 3
+; 4Ah: Facing right - moonwalk - frames 0 / 3
 ; 51h: Facing right - normal jump - not aiming - moving forward - frames 0..1
-; 67h: Facing right - falling - gun extended - frames 0..2
-; 67h: Facing right - falling - gun extended - frames 5..6
+; 67h: Facing right - falling - gun extended - frames 0..2 / 5..6
 ; ACh: Unused. Facing right - grappling - in air - frames 0..1
 ; D3h: Facing right - crystal flash - frame Eh
 ; D5h: Facing right - x-ray - standing - frame 2
@@ -677,11 +663,9 @@ $9E:92E0             db 07,07,15,1E,3F,3F,7F,7F,75,7F,70,7F,E0,FF,E4,FF,07,07,0E
 ; 14h: Facing left  - normal jump - not aiming - not moving - gun extended - frames 0..1
 ; 36h: Facing left  - crouching transition - frame 0
 ; 3Ch: Facing left  - standing transition - frame 0
-; 49h: Facing left  - moonwalk - frame 0
-; 49h: Facing left  - moonwalk - frame 3
+; 49h: Facing left  - moonwalk - frames 0 / 3
 ; 52h: Facing left  - normal jump - not aiming - moving forward - frames 0..1
-; 68h: Facing left  - falling - gun extended - frames 0..2
-; 68h: Facing left  - falling - gun extended - frames 5..6
+; 68h: Facing left  - falling - gun extended - frames 0..2 / 5..6
 ; ADh: Unused. Facing left  - grappling - in air - frames 0..1
 ; BCh: Facing left  - grabbed by Draygon - firing - frame 0
 ; D4h: Facing left  - crystal flash - frame Eh
@@ -888,8 +872,7 @@ $9E:9880             db 00,00,08,38,3C,7C,33,7F,61,7F,33,3F,1F,1F,0F,0F,00,00,00
 ;;; $9A00: Samus top tiles - set 0 - entry 16h ;;;
 {
 ; 3: Facing right - aiming up - frame 1
-; Dh: Moving right - aiming up (unused) - frames 0..1
-; Dh: Moving right - aiming up (unused) - frames 5..6
+; Dh: Moving right - aiming up (unused) - frames 0..1 / 5..6
 ; 15h: Facing right - normal jump - aiming up - frame 1
 ; 2Bh: Facing right - falling - aiming up - frames 1..2
 ; 55h: Facing right - normal jump transition - aiming up - frame 0
@@ -930,8 +913,7 @@ $9E:9A00             db 07,07,1F,1F,3B,3F,3F,3F,7F,7F,7F,7F,FF,FF,FF,FF,04,07,1C
 ;;; $9B00: Samus top tiles - set 0 - entry 17h ;;;
 {
 ; 4: Facing left  - aiming up - frame 1
-; Eh: Moving left  - aiming up (unused) - frames 0..1
-; Eh: Moving left  - aiming up (unused) - frames 5..6
+; Eh: Moving left  - aiming up (unused) - frames 0..1 / 5..6
 ; 16h: Facing left  - normal jump - aiming up - frame 1
 ; 2Ch: Facing left  - falling - aiming up - frames 1..2
 ; 56h: Facing left  - normal jump transition - aiming up - frame 0
@@ -1039,12 +1021,10 @@ $9E:9D20             db 00,00,00,00,00,00,00,00,00,00,60,40,F9,E9,DD,05,00,00,00
 
 ;;; $9E40: Samus top tiles - set 0 - entry 1Ah ;;;
 {
-; Fh: Moving right - aiming up-right - frames 0..1
-; Fh: Moving right - aiming up-right - frames 5..6
+; Fh: Moving right - aiming up-right - frames 0..1 / 5..6
 ; 69h: Facing right - normal jump - aiming up-right - frames 0..1
-; 6Dh: Facing right - falling - aiming up-right - frames 0..2
-; 76h: Facing right - moonwalk - aiming up-right - frame 0
-; 76h: Facing right - moonwalk - aiming up-right - frame 3
+; 6Dh: Facing right - falling - aiming up-right - frames 0 / 2
+; 76h: Facing right - moonwalk - aiming up-right - frames 0 / 3
 ; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right - frame 0
 ; |--------|--------|--------|--------|--------|--------|
 ; |     FFE|EE      |        |BABBBB83|        |833D3   |
@@ -1078,12 +1058,10 @@ $9E:9E40             db 06,07,1C,1F,32,3F,2F,3F,5F,7F,7F,7F,7F,7F,FF,FF,07,07,1F
 
 ;;; $9F40: Samus top tiles - set 0 - entry 1Bh ;;;
 {
-; 10h: Moving left  - aiming up-left - frames 0..1
-; 10h: Moving left  - aiming up-left - frames 5..6
+; 10h: Moving left  - aiming up-left - frames 0..1 / 5..6
 ; 6Ah: Facing left  - normal jump - aiming up-left - frames 0..1
-; 6Eh: Facing left  - falling - aiming up-left - frames 0..2
-; 75h: Facing left  - moonwalk - aiming up-left - frame 0
-; 75h: Facing left  - moonwalk - aiming up-left - frame 3
+; 6Eh: Facing left  - falling - aiming up-left - frames 0 / 2
+; 75h: Facing left  - moonwalk - aiming up-left - frames 0 / 3
 ; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left - frame 0
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      EE|EFF     |  3DD33 |BBBBBB  |        |        |833D3   |
@@ -1120,7 +1098,7 @@ $9E:9F40             db 00,03,01,06,32,3B,73,73,57,77,DF,FF,FF,FF,6F,FF,03,03,06
 {
 ; 54h: Facing left  - knockback - frames 0..1
 ; D8h: Facing left  - crystal flash ending - frames 4..5
-; E9h: Facing left  - Samus drained - crouching/falling - frames 2..6
+; E9h: Facing left  - Samus drained - crouching/falling - frames 2 / 4
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |3F9FEF3B|        |        |3F9FEF3B|AABAAB  |        |833D3   |
 ; |       3|F969F3BA|        |        |F969F3BA|62AB2B3 |   33   |3375D3  |
@@ -1161,7 +1139,7 @@ $9E:A060             db 00,00,01,01,03,03,04,07,04,07,0C,0F,1F,1F,0F,3F,00,00,00
 {
 ; 53h: Facing right - knockback - frames 0..1
 ; D7h: Facing right - crystal flash ending - frames 4..5
-; E8h: Facing right - Samus drained - crouching/falling - frames 3..7
+; E8h: Facing right - Samus drained - crouching/falling - frames 3 / 5
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3F9FEF3B|3F9FEF3B|AABAAB  |        |833D3   |
 ; |        |        |       3|F969F3BA|F969F3BA|62AB2B3 |   33   |3375D3  |
@@ -1731,8 +1709,7 @@ $9E:B180             db 00,00,00,00,00,00,00,00,00,00,00,00,3C,3C,42,7E,00,00,00
 
 ;;; $B320: Samus top tiles - set 1 - entry Bh ;;;
 {
-; 5Ch: Unused - frame 0
-; 64h: Unused. Related to movement type Dh - frame 1
+; 64h: Unused - frame 1
 ; B9h: Facing right - grapple wall jump pose - frame 0
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |    33BB|33      |        | 88     |        | B3AAA  |3BA2A3  |
@@ -1770,10 +1747,7 @@ $9E:B320             db 00,00,00,00,00,00,03,03,07,07,06,07,0E,0F,0C,0F,00,00,00
 
 ;;; $B4A0: Samus top tiles - set 1 - entry Ch ;;;
 {
-; 45h: Unused - frame 0
-; 46h: Unused - frame 0
-; 5Bh: Unused - frame 0
-; 63h: Unused. Related to movement type Dh - frame 1
+; 63h: Unused - frame 1
 ; B8h: Facing left  - grapple wall jump pose - frame 0
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        | 88     |        |  3A3BB3|   BAA62|
@@ -1976,7 +1950,7 @@ $9E:BA20             db 44,7C,AA,D6,C7,FF,93,AA,82,93,45,45,EF,EF,FF,EF,7C,7C,D6
 
 ;;; $BB20: Samus top tiles - set 1 - entry 12h ;;;
 {
-; 65h: Unused. Related to movement type Dh - frame 0
+; 65h: Unused - frame 0
 ; 83h: Facing right - wall jump - frame 0
 ; |--------|--------|--------|--------|
 ; |        |        |        |        |
@@ -2010,7 +1984,7 @@ $9E:BB20             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,03,00,00,00
 
 ;;; $BC20: Samus top tiles - set 1 - entry 13h ;;;
 {
-; 66h: Unused. Related to movement type Dh - frame 0
+; 66h: Unused - frame 0
 ; 84h: Facing left  - wall jump - frame 0
 ; |--------|--------|--------|--------|
 ; |        |        |        |        |
@@ -2044,7 +2018,7 @@ $9E:BC20             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,03,00,00,00
 
 ;;; $BD20: Samus top tiles - set 1 - entry 14h ;;;
 {
-; 63h: Unused. Related to movement type Dh - frame 0
+; 63h: Unused - frame 0
 ; C9h: Facing right - shinespark - horizontal - frame 0
 ; CDh: Facing right - shinespark - diagonal - frame 0
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
@@ -2085,7 +2059,7 @@ $9E:BD20             db 6B,78,88,F8,8D,FD,8D,FD,FF,FF,6F,67,FF,7F,FF,FF,00,77,03
 
 ;;; $BEE0: Samus top tiles - set 1 - entry 15h ;;;
 {
-; 64h: Unused. Related to movement type Dh - frame 0
+; 64h: Unused - frame 0
 ; CAh: Facing left  - shinespark - horizontal - frame 0
 ; CEh: Facing left  - shinespark - diagonal - frame 0
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
@@ -2322,16 +2296,6 @@ $9E:C460             db 00,00,00,00,00,00,00,00,07,07,1B,1F,2E,37,4C,7F,00,00,00
 {
 ; 19h: Facing right - spin jump - frame Bh
 ; 1Bh: Facing right - space jump - frame Bh
-; 20h: Unused - frame Bh
-; 21h: Unused - frame Bh
-; 22h: Unused - frame Bh
-; 23h: Unused - frame Bh
-; 24h: Unused - frame Bh
-; 33h: Unused - frame Bh
-; 34h: Unused - frame Bh
-; 39h: Unused - frame Bh
-; 3Ah: Unused - frame Bh
-; 42h: Unused - frame Bh
 ; 81h: Facing right - screw attack - frame 1Bh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |     3BB|33      |        | B3AAA  |3BA2A3  |
@@ -2510,8 +2474,7 @@ $9E:C9E0             db 3F,7F,3A,62,7F,7F,31,3F,60,3F,61,7F,61,7F,73,7F,40,41,5A
 
 ;;; $CB20: Samus top tiles - set 2 - entry 3 ;;;
 {
-; E9h: Facing left  - Samus drained - crouching/falling - frame 10h
-; E9h: Facing left  - Samus drained - crouching/falling - frame 15h
+; E9h: Facing left  - Samus drained - crouching/falling - frames 10h / 15h
 ; |--------|--------|--------|--------|
 ; |  3E3BBB|B578D3E |   EEFFF|        |
 ; |  EE33BD|87D33FE |  EE96FE|FF      |
@@ -2546,24 +2509,12 @@ $9E:CB20             db 2F,3F,0F,3E,1F,3C,3F,3B,1B,11,1F,11,3F,39,7F,67,10,17,31
 {
 ; 19h: Facing right - spin jump - frame 0
 ; 1Bh: Facing right - space jump - frame 0
-; 20h: Unused - frame 0
-; 21h: Unused - frame 0
-; 22h: Unused - frame 0
-; 23h: Unused - frame 0
-; 24h: Unused - frame 0
-; 29h: Facing right - falling - frame 0
-; 29h: Facing right - falling - frame 6
-; 33h: Unused - frame 0
-; 34h: Unused - frame 0
-; 39h: Unused - frame 0
-; 3Ah: Unused - frame 0
-; 42h: Unused - frame 0
+; 29h: Facing right - falling - frames 0 / 6
 ; 50h: Facing right - damage boost - frames 0..1
 ; 81h: Facing right - screw attack - frame 0
 ; 83h: Facing right - wall jump - frame 1
 ; A4h: Facing right - landing from normal jump - frame 1
-; A6h: Facing right - landing from spin jump - frame 0
-; A6h: Facing right - landing from spin jump - frame 2
+; A6h: Facing right - landing from spin jump - frames 0 / 2
 ; ECh: Facing right - grabbed by Draygon - not moving - not aiming - frame 0
 ; |--------|--------|--------|--------|
 ; |       3|3FFFEE  |    3   |   33   |
@@ -2597,14 +2548,12 @@ $9E:CC20             db 01,01,0F,0F,1D,1F,3A,3F,3A,3F,3A,3F,3F,3F,35,24,00,00,00
 {
 ; 1Ah: Facing left  - spin jump - frame 0
 ; 1Ch: Facing left  - space jump - frame 0
-; 2Ah: Facing left  - falling - frame 0
-; 2Ah: Facing left  - falling - frame 6
+; 2Ah: Facing left  - falling - frames 0 / 6
 ; 4Fh: Facing left  - damage boost - frames 0..1
 ; 82h: Facing left  - screw attack - frame 0
 ; 84h: Facing left  - wall jump - frame 1
 ; A5h: Facing left  - landing from normal jump - frame 1
-; A7h: Facing left  - landing from spin jump - frame 0
-; A7h: Facing left  - landing from spin jump - frame 2
+; A7h: Facing left  - landing from spin jump - frames 0 / 2
 ; BAh: Facing left  - grabbed by Draygon - not moving - not aiming - frame 0
 ; |--------|--------|--------|--------|
 ; |3FF33D53|33333   |  EEFFF3|3       |
@@ -2638,12 +2587,8 @@ $9E:CCE0             db FF,F9,7F,BF,1F,FF,BF,FF,7F,7F,3F,37,1F,13,1F,1F,66,64,B0
 
 ;;; $CDE0: Samus top tiles - set 2 - entry 6 ;;;
 {
-; 11h: Moving right - aiming down-right - frame 2
-; 11h: Moving right - aiming down-right - frame 4
-; 11h: Moving right - aiming down-right - frame 7
-; 11h: Moving right - aiming down-right - frame 9
-; 78h: Facing right - moonwalk - aiming down-right - frames 1..2
-; 78h: Facing right - moonwalk - aiming down-right - frames 4..5
+; 11h: Moving right - aiming down-right - frames 2 / 4 / 7 / 9
+; 78h: Facing right - moonwalk - aiming down-right - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      FF|FEE     | 3B3DD3 |        |  BBBBB |    3   |   33   |
 ; |    FFFE|F69E    |  3DD3  |        | BA622AB|    3D  |  3DD3  |
@@ -2677,12 +2622,8 @@ $9E:CDE0             db 03,03,0E,0F,18,1F,17,1F,2F,3F,7F,7F,7F,7F,7F,7F,03,03,0F
 
 ;;; $CF00: Samus top tiles - set 2 - entry 7 ;;;
 {
-; 12h: Moving left  - aiming down-left - frame 2
-; 12h: Moving left  - aiming down-left - frame 4
-; 12h: Moving left  - aiming down-left - frame 7
-; 12h: Moving left  - aiming down-left - frame 9
-; 77h: Facing left  - moonwalk - aiming down-left - frames 1..2
-; 77h: Facing left  - moonwalk - aiming down-left - frames 4..5
+; 12h: Moving left  - aiming down-left - frames 2 / 4 / 7 / 9
+; 77h: Facing left  - moonwalk - aiming down-left - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |     EEF|FF      |   33   |    3   | 3DD3B3 |        | BBBBB  |
 ; |    E96F|EFFF    |  3DD3  |    3D  |  3333  |        |BA2A6AB |
@@ -2920,10 +2861,7 @@ $9E:D520             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $D620: Samus top tiles - set 2 - entry Eh ;;;
 {
-; Dh: Moving right - aiming up (unused) - frame 2
-; Dh: Moving right - aiming up (unused) - frame 4
-; Dh: Moving right - aiming up (unused) - frame 7
-; Dh: Moving right - aiming up (unused) - frame 9
+; Dh: Moving right - aiming up (unused) - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 3
 ; DAh: Facing left  - x-ray - crouching - frame 3
 ; |--------|--------|--------|--------|--------|--------|
@@ -2958,10 +2896,7 @@ $9E:D620             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $D720: Samus top tiles - set 2 - entry Fh ;;;
 {
-; Eh: Moving left  - aiming up (unused) - frame 2
-; Eh: Moving left  - aiming up (unused) - frame 4
-; Eh: Moving left  - aiming up (unused) - frame 7
-; Eh: Moving left  - aiming up (unused) - frame 9
+; Eh: Moving left  - aiming up (unused) - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 4
 ; DAh: Facing left  - x-ray - crouching - frame 4
 ; |--------|--------|--------|--------|--------|--------|
@@ -2996,12 +2931,8 @@ $9E:D720             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $D820: Samus top tiles - set 2 - entry 10h ;;;
 {
-; Fh: Moving right - aiming up-right - frame 2
-; Fh: Moving right - aiming up-right - frame 4
-; Fh: Moving right - aiming up-right - frame 7
-; Fh: Moving right - aiming up-right - frame 9
-; 76h: Facing right - moonwalk - aiming up-right - frames 1..2
-; 76h: Facing right - moonwalk - aiming up-right - frames 4..5
+; Fh: Moving right - aiming up-right - frames 2 / 4 / 7 / 9
+; 76h: Facing right - moonwalk - aiming up-right - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|
 ; |     FFE|EE      |        |BABBBB83|        |833D3   |
 ; |   FFF6E|9EE     |   33   |3BAAAB53|        |3375D3  |
@@ -3034,12 +2965,8 @@ $9E:D820             db 06,07,1C,1F,32,3F,2F,3F,5F,7F,7F,7F,7F,7F,FF,FF,07,07,1F
 
 ;;; $D920: Samus top tiles - set 2 - entry 11h ;;;
 {
-; 10h: Moving left  - aiming up-left - frame 2
-; 10h: Moving left  - aiming up-left - frame 4
-; 10h: Moving left  - aiming up-left - frame 7
-; 10h: Moving left  - aiming up-left - frame 9
-; 75h: Facing left  - moonwalk - aiming up-left - frames 1..2
-; 75h: Facing left  - moonwalk - aiming up-left - frames 4..5
+; 10h: Moving left  - aiming up-left - frames 2 / 4 / 7 / 9
+; 75h: Facing left  - moonwalk - aiming up-left - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      EE|EFF     |  3DD33 |BBBBBB  |        |        |833D3   |
 ; |     EE9|E6FFF   |   333  |BA226BB |       3|   33   |3375D3  |
@@ -3213,8 +3140,7 @@ $9E:DE00             db 07,07,1D,1F,33,3F,2F,3F,5F,7F,7F,7F,7F,7F,FF,FF,07,07,1F
 
 ;;; $DF40: Samus top tiles - set 2 - entry 16h ;;;
 {
-; Fh: Moving right - aiming up-right - frame 3
-; Fh: Moving right - aiming up-right - frame 8
+; Fh: Moving right - aiming up-right - frames 3 / 8
 ; |--------|--------|--------|--------|--------|--------|
 ; |     FFE|EE      |        |BABBBB83|        |833D3   |
 ; |   FFF6E|9EE     |   33   |3BAAAB53|        |3375D3  |
@@ -3247,8 +3173,7 @@ $9E:DF40             db 06,07,1C,1F,32,3F,2F,3F,5F,7F,7F,7F,7F,7F,FF,FF,07,07,1F
 
 ;;; $E040: Samus top tiles - set 2 - entry 17h ;;;
 {
-; 10h: Moving left  - aiming up-left - frame 3
-; 10h: Moving left  - aiming up-left - frame 8
+; 10h: Moving left  - aiming up-left - frames 3 / 8
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      EE|EFF     |  3DD33 |BBBBBB  |        |        |833D3   |
 ; |     EE9|E6FFF   |   333  |BA226BB |       3|   33   |3375D3  |
@@ -3282,8 +3207,7 @@ $9E:E040             db 00,03,01,06,32,3B,73,73,57,77,DF,FF,FF,FF,6F,FF,03,03,06
 
 ;;; $E160: Samus top tiles - set 2 - entry 18h ;;;
 {
-; 11h: Moving right - aiming down-right - frame 3
-; 11h: Moving right - aiming down-right - frame 8
+; 11h: Moving right - aiming down-right - frames 3 / 8
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      FF|FEE     | 3B3DD3 |        |  BBBBB |    3   |   33   |
 ; |    FFFE|F69E    |  3DD3  |        | BA622AB|    3D  |  3DD3  |
@@ -3317,8 +3241,7 @@ $9E:E160             db 03,03,0E,0F,18,1F,17,1F,2F,3F,7F,7F,7F,7F,7F,7F,03,03,0F
 
 ;;; $E280: Samus top tiles - set 2 - entry 19h ;;;
 {
-; 12h: Moving left  - aiming down-left - frame 3
-; 12h: Moving left  - aiming down-left - frame 8
+; 12h: Moving left  - aiming down-left - frames 3 / 8
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |     EEF|FF      |   33   | 3DD3B3 |        | BBBBB  |    3   |
 ; |    E96F|EFFF    |  3DD3  |  3333  |        |BA2A6AB |    3D  |
@@ -3352,8 +3275,7 @@ $9E:E280             db 01,07,05,0B,05,1F,1F,0F,17,17,07,07,0F,0F,1F,0F,07,07,0B
 
 ;;; $E3A0: Samus top tiles - set 2 - entry 1Ah ;;;
 {
-; 4Ah: Facing right - moonwalk - frames 1..2
-; 4Ah: Facing right - moonwalk - frames 4..5
+; 4Ah: Facing right - moonwalk - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|
 ; |     FFF|FF      |AB3 3BAA|   3BBAA|        |        |
 ; |   3EF69|9EF     |BB   3BB|     B33|D33     |3DDDDDD3|
@@ -3386,8 +3308,7 @@ $9E:E3A0             db 07,07,15,1E,3F,3F,7F,7F,75,7F,70,7F,E0,FF,E4,FF,07,07,0E
 
 ;;; $E4A0: Samus top tiles - set 2 - entry 1Bh ;;;
 {
-; 49h: Facing left  - moonwalk - frames 1..2
-; 49h: Facing left  - moonwalk - frames 4..5
+; 49h: Facing left  - moonwalk - frames 1..2 / 4..5
 ; |--------|--------|--------|--------|--------|--------|
 ; |      FE|FFF     |2AB31   |B326AB3A|        |        |
 ; |     FE9|96FE3   |AB3     |3BA2A33B|D33     |3DDDDDD3|
@@ -3420,8 +3341,7 @@ $9E:E4A0             db 02,03,05,06,0F,0F,0B,0B,03,03,07,07,0E,0B,0E,0F,03,03,06
 
 ;;; $E5A0: Samus top tiles - set 2 - entry 1Ch ;;;
 {
-; 29h: Facing right - falling - frame 1
-; 29h: Facing right - falling - frame 5
+; 29h: Facing right - falling - frames 1 / 5
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |      FF|F       |        |BB3DDDDD|        |333373AA|        |
 ; |    FFEF|EEFF    |D3D3    |BA355555|        | 333732B|        |
@@ -3489,10 +3409,8 @@ $9E:E6C0             db 03,03,0D,0F,13,1D,0F,13,0B,2F,2F,2F,1F,1F,1F,0F,03,03,0F
 
 ;;; $E7C0: Samus top tiles - set 2 - entry 1Eh ;;;
 {
-; Dh: Moving right - aiming up (unused) - frame 3
-; Dh: Moving right - aiming up (unused) - frame 8
-; 2Ah: Facing left  - falling - frame 1
-; 2Ah: Facing left  - falling - frame 5
+; Dh: Moving right - aiming up (unused) - frames 3 / 8
+; 2Ah: Facing left  - falling - frames 1 / 5
 ; |--------|--------|--------|--------|--------|--------|
 ; |      FF|F       |        | 333    |333373AA|        |
 ; |    FFEF|EEFF    |333333  |32AB3333| 333732B|        |
@@ -3525,8 +3443,7 @@ $9E:E7C0             db 03,03,0D,0F,13,1D,0F,13,0B,2F,2F,2F,1F,1F,1F,0F,03,03,0F
 
 ;;; $E8C0: Samus top tiles - set 2 - entry 1Fh ;;;
 {
-; Eh: Moving left  - aiming up (unused) - frame 3
-; Eh: Moving left  - aiming up (unused) - frame 8
+; Eh: Moving left  - aiming up (unused) - frames 3 / 8
 ; 2Ah: Facing left  - falling - frame 2
 ; 4Fh: Facing left  - damage boost - frame 9
 ; |--------|--------|--------|--------|--------|--------|

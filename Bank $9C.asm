@@ -1230,18 +1230,7 @@ $9C:9A00             db 07,07,1F,1F,79,77,D7,EF,D7,EF,CE,FF,FC,FF,6C,AF,00,00,07
 {
 ;;; $9B00: Samus top tiles - set 3 - entry 0 ;;;
 {
-; 5Dh: Unused - frame 18h
-; 5Dh: Unused - frame 38h
-; 5Eh: Unused - frame 18h
-; 5Eh: Unused - frame 38h
-; 5Fh: Unused - frame 18h
-; 5Fh: Unused - frame 38h
-; 60h: Unused - frame 18h
-; 60h: Unused - frame 38h
-; 61h: Unused - frame 18h
-; 61h: Unused - frame 38h
-; B2h: Facing clockwise     - grapple swinging - frame 18h
-; B2h: Facing clockwise     - grapple swinging - frame 38h
+; B2h: Facing clockwise     - grapple swinging - frames 18h / 38h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        | 88     |        |
 ; |        |        |   5 333|333     |D33     |3DDDDDD3|
@@ -1276,18 +1265,7 @@ $9C:9B00             db 00,00,00,00,00,00,06,06,38,3F,70,7F,E8,FF,E7,FE,00,00,00
 
 ;;; $9C40: Samus top tiles - set 3 - entry 1 ;;;
 {
-; 5Dh: Unused - frame 17h
-; 5Dh: Unused - frame 37h
-; 5Eh: Unused - frame 17h
-; 5Eh: Unused - frame 37h
-; 5Fh: Unused - frame 17h
-; 5Fh: Unused - frame 37h
-; 60h: Unused - frame 17h
-; 60h: Unused - frame 37h
-; 61h: Unused - frame 17h
-; 61h: Unused - frame 37h
-; B2h: Facing clockwise     - grapple swinging - frame 17h
-; B2h: Facing clockwise     - grapple swinging - frame 37h
+; B2h: Facing clockwise     - grapple swinging - frames 17h / 37h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |        |        |     333|3       |335     |    3333|
@@ -1322,18 +1300,7 @@ $9C:9C40             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 
 ;;; $9D80: Samus top tiles - set 3 - entry 2 ;;;
 {
-; 5Dh: Unused - frame 16h
-; 5Dh: Unused - frame 36h
-; 5Eh: Unused - frame 16h
-; 5Eh: Unused - frame 36h
-; 5Fh: Unused - frame 16h
-; 5Fh: Unused - frame 36h
-; 60h: Unused - frame 16h
-; 60h: Unused - frame 36h
-; 61h: Unused - frame 16h
-; 61h: Unused - frame 36h
-; B2h: Facing clockwise     - grapple swinging - frame 16h
-; B2h: Facing clockwise     - grapple swinging - frame 36h
+; B2h: Facing clockwise     - grapple swinging - frames 16h / 36h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |     333|3       |
@@ -1370,18 +1337,7 @@ $9C:9D80             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 
 ;;; $9F00: Samus top tiles - set 3 - entry 3 ;;;
 {
-; 5Dh: Unused - frame 15h
-; 5Dh: Unused - frame 35h
-; 5Eh: Unused - frame 15h
-; 5Eh: Unused - frame 35h
-; 5Fh: Unused - frame 15h
-; 5Fh: Unused - frame 35h
-; 60h: Unused - frame 15h
-; 60h: Unused - frame 35h
-; 61h: Unused - frame 15h
-; 61h: Unused - frame 35h
-; B2h: Facing clockwise     - grapple swinging - frame 15h
-; B2h: Facing clockwise     - grapple swinging - frame 35h
+; B2h: Facing clockwise     - grapple swinging - frames 15h / 35h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |    3333|FF33F   |
@@ -1418,18 +1374,7 @@ $9C:9F00             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 
 ;;; $A080: Samus top tiles - set 3 - entry 4 ;;;
 {
-; 5Dh: Unused - frame 14h
-; 5Dh: Unused - frame 34h
-; 5Eh: Unused - frame 14h
-; 5Eh: Unused - frame 34h
-; 5Fh: Unused - frame 14h
-; 5Fh: Unused - frame 34h
-; 60h: Unused - frame 14h
-; 60h: Unused - frame 34h
-; 61h: Unused - frame 14h
-; 61h: Unused - frame 34h
-; B2h: Facing clockwise     - grapple swinging - frame 14h
-; B2h: Facing clockwise     - grapple swinging - frame 34h
+; B2h: Facing clockwise     - grapple swinging - frames 14h / 34h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -1466,18 +1411,7 @@ $9C:A080             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $A200: Samus top tiles - set 3 - entry 5 ;;;
 {
-; 5Dh: Unused - frame 13h
-; 5Dh: Unused - frame 33h
-; 5Eh: Unused - frame 13h
-; 5Eh: Unused - frame 33h
-; 5Fh: Unused - frame 13h
-; 5Fh: Unused - frame 33h
-; 60h: Unused - frame 13h
-; 60h: Unused - frame 33h
-; 61h: Unused - frame 13h
-; 61h: Unused - frame 33h
-; B2h: Facing clockwise     - grapple swinging - frame 13h
-; B2h: Facing clockwise     - grapple swinging - frame 33h
+; B2h: Facing clockwise     - grapple swinging - frames 13h / 33h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -1514,18 +1448,7 @@ $9C:A200             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $A380: Samus top tiles - set 3 - entry 6 ;;;
 {
-; 5Dh: Unused - frame 12h
-; 5Dh: Unused - frame 32h
-; 5Eh: Unused - frame 12h
-; 5Eh: Unused - frame 32h
-; 5Fh: Unused - frame 12h
-; 5Fh: Unused - frame 32h
-; 60h: Unused - frame 12h
-; 60h: Unused - frame 32h
-; 61h: Unused - frame 12h
-; 61h: Unused - frame 32h
-; B2h: Facing clockwise     - grapple swinging - frame 12h
-; B2h: Facing clockwise     - grapple swinging - frame 32h
+; B2h: Facing clockwise     - grapple swinging - frames 12h / 32h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |33FF    |
 ; |        |        |        |33      |    33FF|FFEEEE  |
@@ -1562,18 +1485,7 @@ $9C:A380             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $A500: Samus top tiles - set 3 - entry 7 ;;;
 {
-; 5Dh: Unused - frame 11h
-; 5Dh: Unused - frame 31h
-; 5Eh: Unused - frame 11h
-; 5Eh: Unused - frame 31h
-; 5Fh: Unused - frame 11h
-; 5Fh: Unused - frame 31h
-; 60h: Unused - frame 11h
-; 60h: Unused - frame 31h
-; 61h: Unused - frame 11h
-; 61h: Unused - frame 31h
-; B2h: Facing clockwise     - grapple swinging - frame 11h
-; B2h: Facing clockwise     - grapple swinging - frame 31h
+; B2h: Facing clockwise     - grapple swinging - frames 11h / 31h
 ; |--------|--------|--------|--------|--------|--------|
 ; |       3|3       |      33|FFFEE   | D33333 |        |
 ; |      3B|333     |    333F|FEE69E3 | D575D3 |        |
@@ -1608,24 +1520,7 @@ $9C:A500             db 01,01,03,03,06,07,0C,0F,18,1F,5C,77,16,77,8B,F3,00,00,00
 
 ;;; $A640: Samus top tiles - set 3 - entry 8 ;;;
 {
-; 5Dh: Unused - frame 10h
-; 5Dh: Unused - frame 30h
-; 5Dh: Unused - frames 40h..41h
-; 5Eh: Unused - frame 10h
-; 5Eh: Unused - frame 30h
-; 5Eh: Unused - frames 40h..41h
-; 5Fh: Unused - frame 10h
-; 5Fh: Unused - frame 30h
-; 5Fh: Unused - frames 40h..41h
-; 60h: Unused - frame 10h
-; 60h: Unused - frame 30h
-; 60h: Unused - frames 40h..41h
-; 61h: Unused - frame 10h
-; 61h: Unused - frame 30h
-; 61h: Unused - frames 40h..41h
-; B2h: Facing clockwise     - grapple swinging - frame 10h
-; B2h: Facing clockwise     - grapple swinging - frame 30h
-; B2h: Facing clockwise     - grapple swinging - frames 40h..41h
+; B2h: Facing clockwise     - grapple swinging - frames 10h / 30h / 40h..41h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 | 333333 |        |
 ; |        |333333  |       3|FEE699E3| D575D3 |        |
@@ -1660,18 +1555,7 @@ $9C:A640             db 00,00,00,00,00,00,00,00,01,01,01,01,07,05,07,06,00,00,00
 
 ;;; $A780: Samus top tiles - set 3 - entry 9 ;;;
 {
-; 5Dh: Unused - frame Fh
-; 5Dh: Unused - frame 2Fh
-; 5Eh: Unused - frame Fh
-; 5Eh: Unused - frame 2Fh
-; 5Fh: Unused - frame Fh
-; 5Fh: Unused - frame 2Fh
-; 60h: Unused - frame Fh
-; 60h: Unused - frame 2Fh
-; 61h: Unused - frame Fh
-; 61h: Unused - frame 2Fh
-; B2h: Facing clockwise     - grapple swinging - frame Fh
-; B2h: Facing clockwise     - grapple swinging - frame 2Fh
+; B2h: Facing clockwise     - grapple swinging - frames Fh / 2Fh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   | D33333 |        |
 ; |       3|33333   |     3FF|699EE   | D575D3 |        |
@@ -1706,18 +1590,7 @@ $9C:A780             db 00,00,01,01,01,01,01,01,01,01,01,01,01,01,03,02,00,00,00
 
 ;;; $A8C0: Samus top tiles - set 3 - entry Ah ;;;
 {
-; 5Dh: Unused - frame Eh
-; 5Dh: Unused - frame 2Eh
-; 5Eh: Unused - frame Eh
-; 5Eh: Unused - frame 2Eh
-; 5Fh: Unused - frame Eh
-; 5Fh: Unused - frame 2Eh
-; 60h: Unused - frame Eh
-; 60h: Unused - frame 2Eh
-; 61h: Unused - frame Eh
-; 61h: Unused - frame 2Eh
-; B2h: Facing clockwise     - grapple swinging - frame Eh
-; B2h: Facing clockwise     - grapple swinging - frame 2Eh
+; B2h: Facing clockwise     - grapple swinging - frames Eh / 2Eh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |      EE|9E3     |
 ; |        |        |    3333|33      |    FF6F|9EFF    |
@@ -1754,18 +1627,7 @@ $9C:A8C0             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $AA40: Samus top tiles - set 3 - entry Bh ;;;
 {
-; 5Dh: Unused - frame Dh
-; 5Dh: Unused - frame 2Dh
-; 5Eh: Unused - frame Dh
-; 5Eh: Unused - frame 2Dh
-; 5Fh: Unused - frame Dh
-; 5Fh: Unused - frame 2Dh
-; 60h: Unused - frame Dh
-; 60h: Unused - frame 2Dh
-; 61h: Unused - frame Dh
-; 61h: Unused - frame 2Dh
-; B2h: Facing clockwise     - grapple swinging - frame Dh
-; B2h: Facing clockwise     - grapple swinging - frame 2Dh
+; B2h: Facing clockwise     - grapple swinging - frames Dh / 2Dh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -1802,18 +1664,7 @@ $9C:AA40             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $ABC0: Samus top tiles - set 3 - entry Ch ;;;
 {
-; 5Dh: Unused - frame Ch
-; 5Dh: Unused - frame 2Ch
-; 5Eh: Unused - frame Ch
-; 5Eh: Unused - frame 2Ch
-; 5Fh: Unused - frame Ch
-; 5Fh: Unused - frame 2Ch
-; 60h: Unused - frame Ch
-; 60h: Unused - frame 2Ch
-; 61h: Unused - frame Ch
-; 61h: Unused - frame 2Ch
-; B2h: Facing clockwise     - grapple swinging - frame Ch
-; B2h: Facing clockwise     - grapple swinging - frame 2Ch
+; B2h: Facing clockwise     - grapple swinging - frames Ch / 2Ch
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -1850,18 +1701,7 @@ $9C:ABC0             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $AD40: Samus top tiles - set 3 - entry Dh ;;;
 {
-; 5Dh: Unused - frame Bh
-; 5Dh: Unused - frame 2Bh
-; 5Eh: Unused - frame Bh
-; 5Eh: Unused - frame 2Bh
-; 5Fh: Unused - frame Bh
-; 5Fh: Unused - frame 2Bh
-; 60h: Unused - frame Bh
-; 60h: Unused - frame 2Bh
-; 61h: Unused - frame Bh
-; 61h: Unused - frame 2Bh
-; B2h: Facing clockwise     - grapple swinging - frame Bh
-; B2h: Facing clockwise     - grapple swinging - frame 2Bh
+; B2h: Facing clockwise     - grapple swinging - frames Bh / 2Bh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -1898,18 +1738,7 @@ $9C:AD40             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $AEC0: Samus top tiles - set 3 - entry Eh ;;;
 {
-; 5Dh: Unused - frame Ah
-; 5Dh: Unused - frame 2Ah
-; 5Eh: Unused - frame Ah
-; 5Eh: Unused - frame 2Ah
-; 5Fh: Unused - frame Ah
-; 5Fh: Unused - frame 2Ah
-; 60h: Unused - frame Ah
-; 60h: Unused - frame 2Ah
-; 61h: Unused - frame Ah
-; 61h: Unused - frame 2Ah
-; B2h: Facing clockwise     - grapple swinging - frame Ah
-; B2h: Facing clockwise     - grapple swinging - frame 2Ah
+; B2h: Facing clockwise     - grapple swinging - frames Ah / 2Ah
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -1946,18 +1775,7 @@ $9C:AEC0             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 
 ;;; $B040: Samus top tiles - set 3 - entry Fh ;;;
 {
-; 5Dh: Unused - frame 9
-; 5Dh: Unused - frame 29h
-; 5Eh: Unused - frame 9
-; 5Eh: Unused - frame 29h
-; 5Fh: Unused - frame 9
-; 5Fh: Unused - frame 29h
-; 60h: Unused - frame 9
-; 60h: Unused - frame 29h
-; 61h: Unused - frame 9
-; 61h: Unused - frame 29h
-; B2h: Facing clockwise     - grapple swinging - frame 9
-; B2h: Facing clockwise     - grapple swinging - frame 29h
+; B2h: Facing clockwise     - grapple swinging - frames 9 / 29h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |  33    |        |        |        |335     |    3333|

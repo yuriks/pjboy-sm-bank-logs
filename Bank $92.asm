@@ -5207,7 +5207,7 @@ $92:CE79             dx 9EE8C0, 00C0, 0040
 }
 
 
-;;; $CE80: Samus top tiles - set 3 (facing clockwise - grappling - in air - upside up) ;;;
+;;; $CE80: Samus top tiles - set 3 (facing clockwise - grapple swinging - upside up) ;;;
 {
 ; B2h: Facing clockwise     - grapple swinging - frames 18h / 38h
 $92:CE80             dx 9C9B00, 00C0, 0080
@@ -5262,7 +5262,7 @@ $92:CEF0             dx 9CB180, 00C0, 0080
 }
 
 
-;;; $CEF7: Samus top tiles - set 4 (facing anticlockwise - grappling - in air - upside up) ;;;
+;;; $CEF7: Samus top tiles - set 4 (facing anticlockwise - grapple swinging - upside up) ;;;
 {
 ; B3h: Facing anticlockwise - grapple swinging - frames 8 / 28h
 $92:CEF7             dx 9CB2C0, 0100, 00C0
@@ -5317,7 +5317,7 @@ $92:CF67             dx 9CD0E0, 0100, 00E0
 }
 
 
-;;; $CF6E: Samus top tiles - set 5 (facing clockwise - grappling - in air - upside down) ;;;
+;;; $CF6E: Samus top tiles - set 5 (facing clockwise - grapple swinging - upside down) ;;;
 {
 ; B2h: Facing clockwise     - grapple swinging - frames 8 / 28h
 $92:CF6E             dx 9DC980, 00C0, 0080
@@ -5372,7 +5372,7 @@ $92:CFDE             dx 9DE000, 00C0, 0080
 }
 
 
-;;; $CFE5: Samus top tiles - set 6 (facing anticlockwise - grappling - in air - upside down) ;;;
+;;; $CFE5: Samus top tiles - set 6 (facing anticlockwise - grapple swinging - upside down) ;;;
 {
 ; B3h: Facing anticlockwise - grapple swinging - frames 18h / 38h
 $92:CFE5             dx 9DE140, 0100, 00C0
