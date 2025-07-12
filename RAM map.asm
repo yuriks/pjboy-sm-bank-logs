@@ -1244,7 +1244,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0A16: Backup of newly pressed controller 1 input ($8F) during demo (actual hardware buttons, not game generated demo input)
     $0A18: Cleared in a few places in bank $91, never read
     $0A1A: Unused
-    $0A1C: Samus pose
+    $0A1C: Samus pose. See "Pose definitions.asm"
     {
         0: Facing forward - power suit
         1: Facing right - normal
@@ -1278,7 +1278,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         1Dh: Facing right - morph ball - no springball - on ground
         1Eh: Moving right - morph ball - no springball - on ground
         1Fh: Moving left  - morph ball - no springball - on ground
-        20h: Unused. Set by unused landing code
+        20h: Unused
         21h: Unused
         22h: Unused
         23h: Unused
@@ -1312,7 +1312,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         3Fh: Unused
         40h: Unused
         41h: Facing left  - morph ball - no springball - on ground
-        42h: Unused. Set by unused landing code
+        42h: Unused
         43h: Facing right - turning - crouching
         44h: Facing left  - turning - crouching
         45h: Unused
@@ -1345,10 +1345,10 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         60h: Unused
         61h: Unused
         62h: Unused
-        63h: Unused. Related to movement type Dh
-        64h: Unused. Related to movement type Dh
-        65h: Unused. Related to movement type Dh
-        66h: Unused. Related to movement type Dh
+        63h: Unused
+        64h: Unused
+        65h: Unused
+        66h: Unused
         67h: Facing right - falling - gun extended
         68h: Facing left  - falling - gun extended
         69h: Facing right - normal jump - aiming up-right
@@ -1469,7 +1469,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         DCh: Unused
         DDh: Unused
         DEh: Unused
-        DFh: Unused. Related to Draygon (would guess these 5 poses are the facing left versions of ECh..F0h)
+        DFh: Unused
         E0h: Facing right - landing from normal jump - aiming up
         E1h: Facing left  - landing from normal jump - aiming up
         E2h: Facing right - landing from normal jump - aiming up-right
@@ -1508,7 +1508,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         4: Facing left
         8: Facing right
     }
-    $0A1F: Samus movement type
+    $0A1F: Samus movement type. See "Pose definitions.asm"
     {
         0: Standing
         1: Running
@@ -1517,13 +1517,13 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         4: Morph ball - on ground
         5: Crouching
         6: Falling
-        7: Unused. Glitchy morph ball / spin jump
+        7: Unused
         8: Morph ball - falling
-        9: Unused. Glitchy morph ball
+        9: Unused
         Ah: Knockback / crystal flash ending
-        Bh: Unused. Can fire grapple beam, not moving
-        Ch: Unused. Can fire grapple beam and change pose. No pose definitions correspond to this
-        Dh: Unused. Can change pose, no firing...
+        Bh: Unused
+        Ch: Unused
+        Dh: Unused
         Eh: Turning around - on ground
         Fh: Crouching/standing/morphing/unmorphing transition
         10h: Moonwalking

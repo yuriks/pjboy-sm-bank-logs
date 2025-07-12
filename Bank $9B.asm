@@ -3815,100 +3815,8 @@ $9B:CBFB             fillto $9BE000, $FF
 {
 ;;; $E000: Samus top tiles - set 8 - entry 0 ;;;
 {
-; 0: Facing forward - power suit - frame 3
-; 0: Facing forward - power suit - frame 5
-; 0: Facing forward - power suit - frame 7
-; 0: Facing forward - power suit - frame 9
-; 0: Facing forward - power suit - frame Bh
-; 0: Facing forward - power suit - frame Dh
-; 0: Facing forward - power suit - frame Fh
-; 0: Facing forward - power suit - frame 11h
-; 0: Facing forward - power suit - frame 13h
-; 0: Facing forward - power suit - frame 15h
-; 0: Facing forward - power suit - frame 17h
-; 0: Facing forward - power suit - frame 19h
-; 0: Facing forward - power suit - frame 1Bh
-; 0: Facing forward - power suit - frame 1Dh
-; 0: Facing forward - power suit - frame 1Fh
-; 0: Facing forward - power suit - frame 21h
-; 0: Facing forward - power suit - frame 23h
-; 0: Facing forward - power suit - frame 25h
-; 0: Facing forward - power suit - frame 27h
-; 0: Facing forward - power suit - frame 29h
-; 0: Facing forward - power suit - frame 2Bh
-; 0: Facing forward - power suit - frame 2Dh
-; 0: Facing forward - power suit - frame 2Fh
-; 0: Facing forward - power suit - frame 31h
-; 0: Facing forward - power suit - frame 33h
-; 0: Facing forward - power suit - frame 35h
-; 0: Facing forward - power suit - frame 37h
-; 0: Facing forward - power suit - frame 39h
-; 0: Facing forward - power suit - frame 3Bh
-; 0: Facing forward - power suit - frame 3Dh
-; 0: Facing forward - power suit - frame 3Fh
-; 0: Facing forward - power suit - frame 41h
-; 0: Facing forward - power suit - frame 43h
-; 0: Facing forward - power suit - frame 45h
-; 0: Facing forward - power suit - frame 47h
-; 0: Facing forward - power suit - frame 49h
-; 0: Facing forward - power suit - frame 4Bh
-; 0: Facing forward - power suit - frame 4Dh
-; 0: Facing forward - power suit - frame 4Fh
-; 0: Facing forward - power suit - frame 51h
-; 0: Facing forward - power suit - frame 53h
-; 0: Facing forward - power suit - frame 55h
-; 0: Facing forward - power suit - frame 57h
-; 0: Facing forward - power suit - frame 59h
-; 0: Facing forward - power suit - frame 5Bh
-; 0: Facing forward - power suit - frame 5Dh
-; 0: Facing forward - power suit - frame 5Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 3
-; 9Bh: Facing forward - varia/gravity suit - frame 5
-; 9Bh: Facing forward - varia/gravity suit - frame 7
-; 9Bh: Facing forward - varia/gravity suit - frame 9
-; 9Bh: Facing forward - varia/gravity suit - frame Bh
-; 9Bh: Facing forward - varia/gravity suit - frame Dh
-; 9Bh: Facing forward - varia/gravity suit - frame Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 11h
-; 9Bh: Facing forward - varia/gravity suit - frame 13h
-; 9Bh: Facing forward - varia/gravity suit - frame 15h
-; 9Bh: Facing forward - varia/gravity suit - frame 17h
-; 9Bh: Facing forward - varia/gravity suit - frame 19h
-; 9Bh: Facing forward - varia/gravity suit - frame 1Bh
-; 9Bh: Facing forward - varia/gravity suit - frame 1Dh
-; 9Bh: Facing forward - varia/gravity suit - frame 1Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 21h
-; 9Bh: Facing forward - varia/gravity suit - frame 23h
-; 9Bh: Facing forward - varia/gravity suit - frame 25h
-; 9Bh: Facing forward - varia/gravity suit - frame 27h
-; 9Bh: Facing forward - varia/gravity suit - frame 29h
-; 9Bh: Facing forward - varia/gravity suit - frame 2Bh
-; 9Bh: Facing forward - varia/gravity suit - frame 2Dh
-; 9Bh: Facing forward - varia/gravity suit - frame 2Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 31h
-; 9Bh: Facing forward - varia/gravity suit - frame 33h
-; 9Bh: Facing forward - varia/gravity suit - frame 35h
-; 9Bh: Facing forward - varia/gravity suit - frame 37h
-; 9Bh: Facing forward - varia/gravity suit - frame 39h
-; 9Bh: Facing forward - varia/gravity suit - frame 3Bh
-; 9Bh: Facing forward - varia/gravity suit - frame 3Dh
-; 9Bh: Facing forward - varia/gravity suit - frame 3Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 41h
-; 9Bh: Facing forward - varia/gravity suit - frame 43h
-; 9Bh: Facing forward - varia/gravity suit - frame 45h
-; 9Bh: Facing forward - varia/gravity suit - frame 47h
-; 9Bh: Facing forward - varia/gravity suit - frame 49h
-; 9Bh: Facing forward - varia/gravity suit - frame 4Bh
-; 9Bh: Facing forward - varia/gravity suit - frame 4Dh
-; 9Bh: Facing forward - varia/gravity suit - frame 4Fh
-; 9Bh: Facing forward - varia/gravity suit - frame 51h
-; 9Bh: Facing forward - varia/gravity suit - frame 53h
-; 9Bh: Facing forward - varia/gravity suit - frame 55h
-; 9Bh: Facing forward - varia/gravity suit - frame 57h
-; 9Bh: Facing forward - varia/gravity suit - frame 59h
-; 9Bh: Facing forward - varia/gravity suit - frame 5Bh
-; 9Bh: Facing forward - varia/gravity suit - frame 5Dh
-; 9Bh: Facing forward - varia/gravity suit - frame 5Fh
+; 0: Facing forward - power suit - frames 3 / 5 / 7 / 9 / Bh / Dh / Fh / 11h / 13h / 15h / 17h / 19h / 1Bh / 1Dh / 1Fh / 21h / 23h / 25h / 27h / 29h / 2Bh / 2Dh / 2Fh / 31h / 33h / 35h / 37h / 39h / 3Bh / 3Dh / 3Fh / 41h / 43h / 45h / 47h / 49h / 4Bh / 4Dh / 4Fh / 51h / 53h / 55h / 57h / 59h / 5Bh / 5Dh / 5Fh
+; 9Bh: Facing forward - varia/gravity suit - frames 3 / 5 / 7 / 9 / Bh / Dh / Fh / 11h / 13h / 15h / 17h / 19h / 1Bh / 1Dh / 1Fh / 21h / 23h / 25h / 27h / 29h / 2Bh / 2Dh / 2Fh / 31h / 33h / 35h / 37h / 39h / 3Bh / 3Dh / 3Fh / 41h / 43h / 45h / 47h / 49h / 4Bh / 4Dh / 4Fh / 51h / 53h / 55h / 57h / 59h / 5Bh / 5Dh / 5Fh
 ; |--------|
 ; |        |
 ; |        |
@@ -3942,32 +3850,8 @@ $9B:E020             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0F
 
 ;;; $E040: Samus top tiles - set 8 - entry 2 ;;;
 {
-; 0: Facing forward - power suit - frame 2
-; 0: Facing forward - power suit - frame 8
-; 0: Facing forward - power suit - frame Eh
-; 0: Facing forward - power suit - frame 14h
-; 0: Facing forward - power suit - frame 1Ah
-; 0: Facing forward - power suit - frame 20h
-; 0: Facing forward - power suit - frame 26h
-; 0: Facing forward - power suit - frame 2Ch
-; 0: Facing forward - power suit - frame 32h
-; 0: Facing forward - power suit - frame 38h
-; 0: Facing forward - power suit - frame 3Eh
-; 0: Facing forward - power suit - frame 44h
-; 0: Facing forward - power suit - frame 4Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 2
-; 9Bh: Facing forward - varia/gravity suit - frame 8
-; 9Bh: Facing forward - varia/gravity suit - frame Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 14h
-; 9Bh: Facing forward - varia/gravity suit - frame 1Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 20h
-; 9Bh: Facing forward - varia/gravity suit - frame 26h
-; 9Bh: Facing forward - varia/gravity suit - frame 2Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 32h
-; 9Bh: Facing forward - varia/gravity suit - frame 38h
-; 9Bh: Facing forward - varia/gravity suit - frame 3Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 44h
-; 9Bh: Facing forward - varia/gravity suit - frame 4Ah
+; 0: Facing forward - power suit - frames 2 / 8 / Eh / 14h / 1Ah / 20h / 26h / 2Ch / 32h / 38h / 3Eh / 44h / 4Ah
+; 9Bh: Facing forward - varia/gravity suit - frames 2 / 8 / Eh / 14h / 1Ah / 20h / 26h / 2Ch / 32h / 38h / 3Eh / 44h / 4Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |    44  |444     |   44   |      4 |      4 |        |        |  44    |
 ; |     4  |  4     |   4444 |      4 |      4 |        |        |44 4    |
@@ -4001,32 +3885,8 @@ $9B:E040             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,04
 
 ;;; $E160: Samus top tiles - set 8 - entry 3 ;;;
 {
-; 0: Facing forward - power suit - frame 4
-; 0: Facing forward - power suit - frame Ah
-; 0: Facing forward - power suit - frame 10h
-; 0: Facing forward - power suit - frame 16h
-; 0: Facing forward - power suit - frame 1Ch
-; 0: Facing forward - power suit - frame 22h
-; 0: Facing forward - power suit - frame 28h
-; 0: Facing forward - power suit - frame 2Eh
-; 0: Facing forward - power suit - frame 34h
-; 0: Facing forward - power suit - frame 3Ah
-; 0: Facing forward - power suit - frame 40h
-; 0: Facing forward - power suit - frame 46h
-; 0: Facing forward - power suit - frame 4Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 4
-; 9Bh: Facing forward - varia/gravity suit - frame Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 10h
-; 9Bh: Facing forward - varia/gravity suit - frame 16h
-; 9Bh: Facing forward - varia/gravity suit - frame 1Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 22h
-; 9Bh: Facing forward - varia/gravity suit - frame 28h
-; 9Bh: Facing forward - varia/gravity suit - frame 2Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 34h
-; 9Bh: Facing forward - varia/gravity suit - frame 3Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 40h
-; 9Bh: Facing forward - varia/gravity suit - frame 46h
-; 9Bh: Facing forward - varia/gravity suit - frame 4Ch
+; 0: Facing forward - power suit - frames 4 / Ah / 10h / 16h / 1Ch / 22h / 28h / 2Eh / 34h / 3Ah / 40h / 46h / 4Ch
+; 9Bh: Facing forward - varia/gravity suit - frames 4 / Ah / 10h / 16h / 1Ch / 22h / 28h / 2Eh / 34h / 3Ah / 40h / 46h / 4Ch
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |        |      44|    44  |        |        |    4   |        |
 ; |        |  444444|    44  |        |        |    4   |        |
@@ -4049,32 +3909,8 @@ $9B:E160             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
 ;;; $E240: Samus top tiles - set 8 - entry 4 ;;;
 {
-; 0: Facing forward - power suit - frame 6
-; 0: Facing forward - power suit - frame Ch
-; 0: Facing forward - power suit - frame 12h
-; 0: Facing forward - power suit - frame 18h
-; 0: Facing forward - power suit - frame 1Eh
-; 0: Facing forward - power suit - frame 24h
-; 0: Facing forward - power suit - frame 2Ah
-; 0: Facing forward - power suit - frame 30h
-; 0: Facing forward - power suit - frame 36h
-; 0: Facing forward - power suit - frame 3Ch
-; 0: Facing forward - power suit - frame 42h
-; 0: Facing forward - power suit - frame 48h
-; 0: Facing forward - power suit - frame 4Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 6
-; 9Bh: Facing forward - varia/gravity suit - frame Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 12h
-; 9Bh: Facing forward - varia/gravity suit - frame 18h
-; 9Bh: Facing forward - varia/gravity suit - frame 1Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 24h
-; 9Bh: Facing forward - varia/gravity suit - frame 2Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 30h
-; 9Bh: Facing forward - varia/gravity suit - frame 36h
-; 9Bh: Facing forward - varia/gravity suit - frame 3Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 42h
-; 9Bh: Facing forward - varia/gravity suit - frame 48h
-; 9Bh: Facing forward - varia/gravity suit - frame 4Eh
+; 0: Facing forward - power suit - frames 6 / Ch / 12h / 18h / 1Eh / 24h / 2Ah / 30h / 36h / 3Ch / 42h / 48h / 4Eh
+; 9Bh: Facing forward - varia/gravity suit - frames 6 / Ch / 12h / 18h / 1Eh / 24h / 2Ah / 30h / 36h / 3Ch / 42h / 48h / 4Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |4444    | 4   4  |  444   |        |        |      44|        |  44    |
 ; |44      | 4   444|  44    |        |        |      44|        |   4444 |
@@ -4176,10 +4012,8 @@ $9B:E580             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
 ;;; $E680: Samus top tiles - set 8 - entry 7 ;;;
 {
-; 0: Facing forward - power suit - frame 54h
-; 0: Facing forward - power suit - frame 5Ah
-; 9Bh: Facing forward - varia/gravity suit - frame 54h
-; 9Bh: Facing forward - varia/gravity suit - frame 5Ah
+; 0: Facing forward - power suit - frames 54h / 5Ah
+; 9Bh: Facing forward - varia/gravity suit - frames 54h / 5Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; | 4     4| 4      |        |        |        |     44 |        |     4  |
 ; |  4 4 4 | 4      |        |        |        |     4  |        |     4  |
@@ -4214,10 +4048,8 @@ $9B:E680             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,41,00,2A
 
 ;;; $E7C0: Samus top tiles - set 8 - entry 8 ;;;
 {
-; 0: Facing forward - power suit - frame 56h
-; 0: Facing forward - power suit - frame 5Ch
-; 9Bh: Facing forward - varia/gravity suit - frame 56h
-; 9Bh: Facing forward - varia/gravity suit - frame 5Ch
+; 0: Facing forward - power suit - frames 56h / 5Ch
+; 9Bh: Facing forward - varia/gravity suit - frames 56h / 5Ch
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |      44|        |        |    444 |        |        |        |    4 4 |
 ; |        |        |        |       4|    4   |        |        |    444 |
@@ -4253,10 +4085,8 @@ $9B:E7C0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00
 
 ;;; $E920: Samus top tiles - set 8 - entry 9 ;;;
 {
-; 0: Facing forward - power suit - frame 58h
-; 0: Facing forward - power suit - frame 5Eh
-; 9Bh: Facing forward - varia/gravity suit - frame 58h
-; 9Bh: Facing forward - varia/gravity suit - frame 5Eh
+; 0: Facing forward - power suit - frames 58h / 5Eh
+; 9Bh: Facing forward - varia/gravity suit - frames 58h / 5Eh
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |  4     |    4   |        |        |        |        |        |
 ; |   4    |        |        |        |        |        |   4 4  |
@@ -4384,8 +4214,7 @@ $9B:EE00             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 {
 ;;; $EE20: Samus top tiles - set 9 - entry 0 ;;;
 {
-; Bh: Moving right - gun extended - frame 0
-; Bh: Moving right - gun extended - frame 5
+; Bh: Moving right - gun extended - frames 0 / 5
 ; |--------|--------|--------|--------|
 ; |     FFF|EE      |        |        |
 ; |   FFFEF|69E     |D33     |3DDDDDD3|
@@ -4512,8 +4341,7 @@ $9B:F080             db 00,00,01,01,03,07,0F,0F,1F,1F,1F,1F,1F,1F,3B,3F,00,00,01
 
 ;;; $F180: Samus top tiles - set 9 - entry 4 ;;;
 {
-; Bh: Moving right - gun extended - frame 6
-; Bh: Moving right - gun extended - frame 9
+; Bh: Moving right - gun extended - frames 6 / 9
 ; |--------|--------|--------|--------|
 ; |     FFF|EE      |        |        |
 ; |   FFFEF|69E     |D33     |3DDDDDD3|
@@ -4576,8 +4404,7 @@ $9B:F240             db 07,07,1D,1F,33,3F,2F,3F,50,7F,61,7F,64,7F,E2,FF,07,07,1F
 
 ;;; $F320: Samus top tiles - set 9 - entry 6 ;;;
 {
-; Ch: Moving left  - gun extended - frame 0
-; Ch: Moving left  - gun extended - frame 5
+; Ch: Moving left  - gun extended - frames 0 / 5
 ; |--------|--------|--------|--------|--------|--------|
 ; |      EE|FFF     |        |        |B3BBBB3 | B2A3ABB|
 ; |     EE9|6FEFF   |3DDDDDD3|D33     |AB3B333 | BAA3226|
@@ -4711,8 +4538,7 @@ $9B:F640             db 00,03,01,06,06,0F,0A,0B,03,03,05,05,0F,0B,0E,0F,03,03,06
 
 ;;; $F760: Samus top tiles - set 9 - entry Ah ;;;
 {
-; Ch: Moving left  - gun extended - frame 6
-; Ch: Moving left  - gun extended - frame 9
+; Ch: Moving left  - gun extended - frames 6 / 9
 ; |--------|--------|--------|--------|--------|--------|
 ; |      EE|FFF     |        |        | 3B3BAB3|        |
 ; |     EE9|6FEFF   |3DDDDDD3|D33     |BBAB333B|       3|

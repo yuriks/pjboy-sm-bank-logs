@@ -20,7 +20,7 @@
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 7
 ; C5h: Unused - frame 7
 ; D7h: Facing right - crystal flash ending - frame 0
-; DFh: Unused. Related to Draygon - frame 7
+; DFh: Unused - frame 7
 ; E8h: Facing right - Samus drained - crouching/falling - frame 0
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
@@ -56,8 +56,6 @@ $9C:8000             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 5
 ; 31h: Facing right - morph ball - no springball - in air - frame 2
 ; 32h: Facing left  - morph ball - no springball - in air - frame 2
-; 3Fh: Unused - frame 2
-; 40h: Unused - frame 2
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 5
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 2
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 5
@@ -68,7 +66,7 @@ $9C:8000             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 2
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 5
 ; C5h: Unused - frame 5
-; DFh: Unused. Related to Draygon - frame 5
+; DFh: Unused - frame 5
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
 ; |   BBBAA|AABBB   |        |
@@ -103,8 +101,6 @@ $9C:80A0             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 3
 ; 31h: Facing right - morph ball - no springball - in air - frame 4
 ; 32h: Facing left  - morph ball - no springball - in air - frame 4
-; 3Fh: Unused - frame 4
-; 40h: Unused - frame 4
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 3
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 4
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 3
@@ -115,7 +111,7 @@ $9C:80A0             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 4
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 3
 ; C5h: Unused - frame 3
-; DFh: Unused. Related to Draygon - frame 3
+; DFh: Unused - frame 3
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
 ; |   BBBAA|AABBB   |        |
@@ -150,8 +146,6 @@ $9C:8140             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 1
 ; 31h: Facing right - morph ball - no springball - in air - frame 6
 ; 32h: Facing left  - morph ball - no springball - in air - frame 6
-; 3Fh: Unused - frame 6
-; 40h: Unused - frame 6
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 1
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 6
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 1
@@ -162,7 +156,7 @@ $9C:8140             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 6
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 1
 ; C5h: Unused - frame 1
-; DFh: Unused. Related to Draygon - frame 1
+; DFh: Unused - frame 1
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
 ; |   BBBAA|AABBB   |        |
@@ -197,8 +191,6 @@ $9C:81E0             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 6
 ; 31h: Facing right - morph ball - no springball - in air - frame 1
 ; 32h: Facing left  - morph ball - no springball - in air - frame 1
-; 3Fh: Unused - frame 1
-; 40h: Unused - frame 1
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 6
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 1
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 6
@@ -209,7 +201,7 @@ $9C:81E0             db 07,07,1C,1F,30,3F,60,7F,60,7F,D0,FF,8C,FF,87,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 1
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 6
 ; C5h: Unused - frame 6
-; DFh: Unused. Related to Draygon - frame 6
+; DFh: Unused - frame 6
 ; |--------|--------|--------|--------|--------|
 ; |        |BBBAAABB|BBAAAAAB|3BB     |     BBB|
 ; |        |AAABBBBB|BBBAAABA|3ABBB   |   BBBAA|
@@ -235,8 +227,6 @@ $9C:8280             db 00,00,00,00,00,00,00,1C,00,1C,00,1C,00,00,00,00,00,00,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 4
 ; 31h: Facing right - morph ball - no springball - in air - frame 3
 ; 32h: Facing left  - morph ball - no springball - in air - frame 3
-; 3Fh: Unused - frame 3
-; 40h: Unused - frame 3
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 4
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 3
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 4
@@ -247,7 +237,7 @@ $9C:8280             db 00,00,00,00,00,00,00,1C,00,1C,00,1C,00,00,00,00,00,00,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 3
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 4
 ; C5h: Unused - frame 4
-; DFh: Unused. Related to Draygon - frame 4
+; DFh: Unused - frame 4
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
 ; |   3BBBB|BBBBB   |        |
@@ -282,8 +272,6 @@ $9C:8320             db 07,07,1F,1F,3E,3F,78,7F,7C,7F,F4,FF,E2,FF,E1,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 2
 ; 31h: Facing right - morph ball - no springball - in air - frame 5
 ; 32h: Facing left  - morph ball - no springball - in air - frame 5
-; 3Fh: Unused - frame 5
-; 40h: Unused - frame 5
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 2
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 5
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 2
@@ -294,7 +282,7 @@ $9C:8320             db 07,07,1F,1F,3E,3F,78,7F,7C,7F,F4,FF,E2,FF,E1,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 5
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 2
 ; C5h: Unused - frame 2
-; DFh: Unused. Related to Draygon - frame 2
+; DFh: Unused - frame 2
 ; |--------|--------|--------|
 ; |     BBB|3BB     |        |
 ; |   BBBAA|3ABBB   |        |
@@ -329,8 +317,6 @@ $9C:83C0             db 07,07,1C,1F,30,3F,60,7F,40,7F,C0,FF,C0,FF,C0,FF,00,07,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 0
 ; 31h: Facing right - morph ball - no springball - in air - frame 7
 ; 32h: Facing left  - morph ball - no springball - in air - frame 7
-; 3Fh: Unused - frame 7
-; 40h: Unused - frame 7
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 0
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 7
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 0
@@ -341,7 +327,7 @@ $9C:83C0             db 07,07,1C,1F,30,3F,60,7F,40,7F,C0,FF,C0,FF,C0,FF,00,07,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 7
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 0
 ; C5h: Unused - frame 0
-; DFh: Unused. Related to Draygon - frame 0
+; DFh: Unused - frame 0
 ; |--------|--------|--------|
 ; |     BBB|BBB     |        |
 ; |   3BBBB|BBBBB   |        |
@@ -373,16 +359,6 @@ $9C:8460             db 07,07,1F,1F,3E,3F,78,7F,7C,7F,F4,FF,E2,FF,E1,FF,00,07,00
 {
 ; 19h: Facing right - spin jump - frame 1
 ; 1Ah: Facing left  - spin jump - frame 1
-; 20h: Unused - frame 1
-; 21h: Unused - frame 1
-; 22h: Unused - frame 1
-; 23h: Unused - frame 1
-; 24h: Unused - frame 1
-; 33h: Unused - frame 1
-; 34h: Unused - frame 1
-; 39h: Unused - frame 1
-; 3Ah: Unused - frame 1
-; 42h: Unused - frame 1
 ; 83h: Facing right - wall jump - frame 3
 ; 84h: Facing left  - wall jump - frame 3
 ; |--------|--------|--------|--------|
@@ -419,16 +395,6 @@ $9C:8500             db 7F,FF,3E,FF,E7,FF,C7,FF,6F,FF,3E,FF,BF,FF,E3,FF,20,63,00
 {
 ; 19h: Facing right - spin jump - frame 2
 ; 1Ah: Facing left  - spin jump - frame 2
-; 20h: Unused - frame 2
-; 21h: Unused - frame 2
-; 22h: Unused - frame 2
-; 23h: Unused - frame 2
-; 24h: Unused - frame 2
-; 33h: Unused - frame 2
-; 34h: Unused - frame 2
-; 39h: Unused - frame 2
-; 3Ah: Unused - frame 2
-; 42h: Unused - frame 2
 ; 4Fh: Facing left  - damage boost - frame 8
 ; 50h: Facing right - damage boost - frame 8
 ; 83h: Facing right - wall jump - frame 4
@@ -475,16 +441,6 @@ $9C:8600             db 00,00,00,00,C0,C0,B0,F0,98,F8,DC,F8,FC,F4,FC,FC,00,00,00
 {
 ; 19h: Facing right - spin jump - frame 3
 ; 1Ah: Facing left  - spin jump - frame 3
-; 20h: Unused - frame 3
-; 21h: Unused - frame 3
-; 22h: Unused - frame 3
-; 23h: Unused - frame 3
-; 24h: Unused - frame 3
-; 33h: Unused - frame 3
-; 34h: Unused - frame 3
-; 39h: Unused - frame 3
-; 3Ah: Unused - frame 3
-; 42h: Unused - frame 3
 ; 4Fh: Facing left  - damage boost - frame 7
 ; 50h: Facing right - damage boost - frame 7
 ; 83h: Facing right - wall jump - frame 5
@@ -523,16 +479,6 @@ $9C:8800             db CF,CF,FF,3F,38,1F,70,3F,F8,7F,E0,FF,E4,FF,B1,FF,00,00,00
 {
 ; 19h: Facing right - spin jump - frame 4
 ; 1Ah: Facing left  - spin jump - frame 4
-; 20h: Unused - frame 4
-; 21h: Unused - frame 4
-; 22h: Unused - frame 4
-; 23h: Unused - frame 4
-; 24h: Unused - frame 4
-; 33h: Unused - frame 4
-; 34h: Unused - frame 4
-; 39h: Unused - frame 4
-; 3Ah: Unused - frame 4
-; 42h: Unused - frame 4
 ; 4Fh: Facing left  - damage boost - frame 6
 ; 50h: Facing right - damage boost - frame 6
 ; 83h: Facing right - wall jump - frame 6
@@ -579,16 +525,6 @@ $9C:8900             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 {
 ; 19h: Facing right - spin jump - frame 5
 ; 1Ah: Facing left  - spin jump - frame 5
-; 20h: Unused - frame 5
-; 21h: Unused - frame 5
-; 22h: Unused - frame 5
-; 23h: Unused - frame 5
-; 24h: Unused - frame 5
-; 33h: Unused - frame 5
-; 34h: Unused - frame 5
-; 39h: Unused - frame 5
-; 3Ah: Unused - frame 5
-; 42h: Unused - frame 5
 ; 4Fh: Facing left  - damage boost - frame 5
 ; 50h: Facing right - damage boost - frame 5
 ; 83h: Facing right - wall jump - frame 7
@@ -627,16 +563,6 @@ $9C:8B00             db 7F,FF,3E,FF,E7,FF,C7,FF,6F,FF,3E,FF,BF,FF,E3,FF,20,63,00
 {
 ; 19h: Facing right - spin jump - frame 6
 ; 1Ah: Facing left  - spin jump - frame 6
-; 20h: Unused - frame 6
-; 21h: Unused - frame 6
-; 22h: Unused - frame 6
-; 23h: Unused - frame 6
-; 24h: Unused - frame 6
-; 33h: Unused - frame 6
-; 34h: Unused - frame 6
-; 39h: Unused - frame 6
-; 3Ah: Unused - frame 6
-; 42h: Unused - frame 6
 ; 4Fh: Facing left  - damage boost - frame 4
 ; 50h: Facing right - damage boost - frame 4
 ; 83h: Facing right - wall jump - frame 8
@@ -683,16 +609,6 @@ $9C:8C00             db 00,00,00,00,C0,C0,B0,F0,98,F8,DC,F8,FC,F4,FC,FC,00,00,00
 {
 ; 19h: Facing right - spin jump - frame 7
 ; 1Ah: Facing left  - spin jump - frame 7
-; 20h: Unused - frame 7
-; 21h: Unused - frame 7
-; 22h: Unused - frame 7
-; 23h: Unused - frame 7
-; 24h: Unused - frame 7
-; 33h: Unused - frame 7
-; 34h: Unused - frame 7
-; 39h: Unused - frame 7
-; 3Ah: Unused - frame 7
-; 42h: Unused - frame 7
 ; 4Fh: Facing left  - damage boost - frame 3
 ; 50h: Facing right - damage boost - frame 3
 ; 83h: Facing right - wall jump - frame 9
@@ -731,16 +647,6 @@ $9C:8E00             db CF,CF,FF,3F,38,1F,70,3F,F8,7F,E0,FF,E4,FF,B1,FF,00,00,00
 {
 ; 19h: Facing right - spin jump - frame 8
 ; 1Ah: Facing left  - spin jump - frame 8
-; 20h: Unused - frame 8
-; 21h: Unused - frame 8
-; 22h: Unused - frame 8
-; 23h: Unused - frame 8
-; 24h: Unused - frame 8
-; 33h: Unused - frame 8
-; 34h: Unused - frame 8
-; 39h: Unused - frame 8
-; 3Ah: Unused - frame 8
-; 42h: Unused - frame 8
 ; 4Fh: Facing left  - damage boost - frame 2
 ; 50h: Facing right - damage boost - frame 2
 ; 83h: Facing right - wall jump - frame Ah
@@ -785,8 +691,8 @@ $9C:8F00             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
 ;;; $9100: Samus top tiles - set Ah - entry 10h ;;;
 {
-; 65h: Unused. Related to movement type Dh - frame 1
-; 66h: Unused. Related to movement type Dh - frame 1
+; 65h: Unused - frame 1
+; 66h: Unused - frame 1
 ; 81h: Facing right - screw attack - frames 1..3
 ; 82h: Facing left  - screw attack - frames 1..3
 ; 83h: Facing right - wall jump - frames 17h..19h
@@ -825,8 +731,8 @@ $9C:9100             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,0E
 
 ;;; $9240: Samus top tiles - set Ah - entry 11h ;;;
 {
-; 65h: Unused. Related to movement type Dh - frame 2
-; 66h: Unused. Related to movement type Dh - frame 2
+; 65h: Unused - frame 2
+; 66h: Unused - frame 2
 ; 81h: Facing right - screw attack - frames 7..9
 ; 82h: Facing left  - screw attack - frames 7..9
 ; 83h: Facing right - wall jump - frames 1Dh..1Fh
@@ -866,8 +772,8 @@ $9C:9240             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,01
 
 ;;; $93A0: Samus top tiles - set Ah - entry 12h ;;;
 {
-; 65h: Unused. Related to movement type Dh - frame 3
-; 66h: Unused. Related to movement type Dh - frame 3
+; 65h: Unused - frame 3
+; 66h: Unused - frame 3
 ; 81h: Facing right - screw attack - frames Dh..Fh
 ; 82h: Facing left  - screw attack - frames Dh..Fh
 ; 83h: Facing right - wall jump - frames 23h..25h
@@ -907,8 +813,8 @@ $9C:93A0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,03
 
 ;;; $9500: Samus top tiles - set Ah - entry 13h ;;;
 {
-; 65h: Unused. Related to movement type Dh - frame 4
-; 66h: Unused. Related to movement type Dh - frame 4
+; 65h: Unused - frame 4
+; 66h: Unused - frame 4
 ; 81h: Facing right - screw attack - frames 13h..15h
 ; 82h: Facing left  - screw attack - frames 13h..15h
 ; 83h: Facing right - wall jump - frames 29h..2Bh
@@ -938,26 +844,12 @@ $9C:9500             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,06,00,08
 {
 ; 1Bh: Facing right - space jump - frames 1..8
 ; 1Ch: Facing left  - space jump - frames 1..8
-; 65h: Unused. Related to movement type Dh - frame 5
-; 66h: Unused. Related to movement type Dh - frame 5
-; 81h: Facing right - screw attack - frames 4..6
-; 81h: Facing right - screw attack - frames Ah..Ch
-; 81h: Facing right - screw attack - frames 10h..12h
-; 81h: Facing right - screw attack - frames 16h..18h
-; 82h: Facing left  - screw attack - frames 4..6
-; 82h: Facing left  - screw attack - frames Ah..Ch
-; 82h: Facing left  - screw attack - frames 10h..12h
-; 82h: Facing left  - screw attack - frames 16h..18h
-; 83h: Facing right - wall jump - frames Dh..14h
-; 83h: Facing right - wall jump - frames 1Ah..1Ch
-; 83h: Facing right - wall jump - frames 20h..22h
-; 83h: Facing right - wall jump - frames 26h..28h
-; 83h: Facing right - wall jump - frames 2Ch..2Eh
-; 84h: Facing left  - wall jump - frames Dh..14h
-; 84h: Facing left  - wall jump - frames 1Ah..1Ch
-; 84h: Facing left  - wall jump - frames 20h..22h
-; 84h: Facing left  - wall jump - frames 26h..28h
-; 84h: Facing left  - wall jump - frames 2Ch..2Eh
+; 65h: Unused - frame 5
+; 66h: Unused - frame 5
+; 81h: Facing right - screw attack - frames 4..6 / Ah..Ch / 10h..12h / 16h..18h
+; 82h: Facing left  - screw attack - frames 4..6 / Ah..Ch / 10h..12h / 16h..18h
+; 83h: Facing right - wall jump - frames Dh..14h / 1Ah..1Ch / 20h..22h / 26h..28h / 2Ch..2Eh
+; 84h: Facing left  - wall jump - frames Dh..14h / 1Ah..1Ch / 20h..22h / 26h..28h / 2Ch..2Eh
 ; |--------|
 ; |        |
 ; |        |
@@ -999,8 +891,6 @@ $9C:9620             db 00,00,42,00,24,00,10,00,08,00,24,00,42,00,00,00,00,00,00
 ; 1Fh: Moving left  - morph ball - no springball - on ground - frame 9
 ; 31h: Facing right - morph ball - no springball - in air - frame 9
 ; 32h: Facing left  - morph ball - no springball - in air - frame 9
-; 3Fh: Unused - frame 9
-; 40h: Unused - frame 9
 ; 41h: Facing left  - morph ball - no springball - on ground - frame 9
 ; 79h: Facing right - morph ball - spring ball - on ground - frame 9
 ; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 9
@@ -1011,7 +901,7 @@ $9C:9620             db 00,00,42,00,24,00,10,00,08,00,24,00,42,00,00,00,00,00,00
 ; 7Fh: Facing right - morph ball - spring ball - in air - frame 9
 ; 80h: Facing left  - morph ball - spring ball - in air - frame 9
 ; C5h: Unused - frame 9
-; DFh: Unused. Related to Draygon - frame 9
+; DFh: Unused - frame 9
 ; |--------|--------|--------|
 ; |        |        |        |
 ; |        |        |B       |
@@ -1110,9 +1000,7 @@ $9C:9780             db 00,00,07,07,1F,1F,31,3F,67,7F,E6,DF,CE,FF,FC,FF,00,00,00
 {
 ; 38h: Facing left  - morphing transition - frame 0
 ; 3Eh: Facing left  - unmorphing transition - frame 1
-; D4h: Facing left  - crystal flash - frame 1
-; D4h: Facing left  - crystal flash - frame 3
-; D4h: Facing left  - crystal flash - frames Ch..Dh
+; D4h: Facing left  - crystal flash - frames 1 / 3 / Ch..Dh
 ; D8h: Facing left  - crystal flash ending - frame 2
 ; DCh: Unused - frame 1
 ; DEh: Unused - frame 1
@@ -1188,9 +1076,7 @@ $9C:9940             db 00,00,07,07,1F,1F,31,3F,67,7F,E6,DF,CE,FF,FC,FF,00,00,00
 {
 ; 37h: Facing right - morphing transition - frame 0
 ; 3Dh: Facing right - unmorphing transition - frame 1
-; D3h: Facing right - crystal flash - frame 1
-; D3h: Facing right - crystal flash - frame 3
-; D3h: Facing right - crystal flash - frames Ch..Dh
+; D3h: Facing right - crystal flash - frames 1 / 3 / Ch..Dh
 ; D7h: Facing right - crystal flash ending - frame 2
 ; DBh: Unused - frame 1
 ; DDh: Unused - frame 1
@@ -1848,10 +1734,7 @@ $9C:B180             db 00,00,00,00,00,00,7C,7C,8F,FF,FF,FF,C1,FF,C1,FF,00,00,00
 {
 ;;; $B2C0: Samus top tiles - set 4 - entry 0 ;;;
 {
-; 62h: Unused - frame 8
-; 62h: Unused - frame 28h
-; B3h: Facing anticlockwise - grapple swinging - frame 8
-; B3h: Facing anticlockwise - grapple swinging - frame 28h
+; B3h: Facing anticlockwise - grapple swinging - frames 8 / 28h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        | 3B33B3 |A       | 88     |        |
 ; |        |  333B3B|   5 333|333     |  332AB |B       |D33     |3DDDDDD3|
@@ -1890,10 +1773,7 @@ $9C:B2C0             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 
 ;;; $B480: Samus top tiles - set 4 - entry 1 ;;;
 {
-; 62h: Unused - frame 9
-; 62h: Unused - frame 29h
-; B3h: Facing anticlockwise - grapple swinging - frame 9
-; B3h: Facing anticlockwise - grapple swinging - frame 29h
+; B3h: Facing anticlockwise - grapple swinging - frames 9 / 29h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        |88      |        | 3B33B3 |A       |
 ; |        |  333B3B|   5 333|333     |335     |    3333|  332AB |B       |
@@ -1932,10 +1812,7 @@ $9C:B480             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 
 ;;; $B640: Samus top tiles - set 4 - entry 2 ;;;
 {
-; 62h: Unused - frame Ah
-; 62h: Unused - frame 2Ah
-; B3h: Facing anticlockwise - grapple swinging - frame Ah
-; B3h: Facing anticlockwise - grapple swinging - frame 2Ah
+; B3h: Facing anticlockwise - grapple swinging - frames Ah / 2Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -1976,10 +1853,7 @@ $9C:B640             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 
 ;;; $B840: Samus top tiles - set 4 - entry 3 ;;;
 {
-; 62h: Unused - frame Bh
-; 62h: Unused - frame 2Bh
-; B3h: Facing anticlockwise - grapple swinging - frame Bh
-; B3h: Facing anticlockwise - grapple swinging - frame 2Bh
+; B3h: Facing anticlockwise - grapple swinging - frames Bh / 2Bh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -2020,10 +1894,7 @@ $9C:B840             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 
 ;;; $BA40: Samus top tiles - set 4 - entry 4 ;;;
 {
-; 62h: Unused - frame Ch
-; 62h: Unused - frame 2Ch
-; B3h: Facing anticlockwise - grapple swinging - frame Ch
-; B3h: Facing anticlockwise - grapple swinging - frame 2Ch
+; B3h: Facing anticlockwise - grapple swinging - frames Ch / 2Ch
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |   B3BB3|333D8   |   3D573|        |
 ; |        |        |    3333|FF33F   |   332B3|33D8    |  3D5785|        |
@@ -2063,10 +1934,7 @@ $9C:BA40             db 00,00,00,00,00,00,00,00,0E,0E,2F,3D,7F,7D,CF,FD,00,00,00
 
 ;;; $BC20: Samus top tiles - set 4 - entry 5 ;;;
 {
-; 62h: Unused - frame Dh
-; 62h: Unused - frame 2Dh
-; B3h: Facing anticlockwise - grapple swinging - frame Dh
-; B3h: Facing anticlockwise - grapple swinging - frame 2Dh
+; B3h: Facing anticlockwise - grapple swinging - frames Dh / 2Dh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |   3AAAB|        |    33  |    D585|
 ; |        |        |    33FF|FFEEEE  |   B62AB|        |   33A3 |   D5885|
@@ -2106,10 +1974,7 @@ $9C:BC20             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 
 ;;; $BE00: Samus top tiles - set 4 - entry 6 ;;;
 {
-; 62h: Unused - frame Eh
-; 62h: Unused - frame 2Eh
-; B3h: Facing anticlockwise - grapple swinging - frame Eh
-; B3h: Facing anticlockwise - grapple swinging - frame 2Eh
+; B3h: Facing anticlockwise - grapple swinging - frames Eh / 2Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |D3      |   3AAAB|    D585|        |
 ; |        |        |    33FF|FFEEEE  |D3      |   B62AB|   D5885|        |
@@ -2149,10 +2014,7 @@ $9C:BE00             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 
 ;;; $BFE0: Samus top tiles - set 4 - entry 7 ;;;
 {
-; 62h: Unused - frame Fh
-; 62h: Unused - frame 2Fh
-; B3h: Facing anticlockwise - grapple swinging - frame Fh
-; B3h: Facing anticlockwise - grapple swinging - frame 2Fh
+; B3h: Facing anticlockwise - grapple swinging - frames Fh / 2Fh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |      33|FFFEE   |BA2AB3  |       3|        |        |
 ; |     333|33      |    333F|FEE69E3 |3BAB3   |      33|33333   |       3|
@@ -2191,12 +2053,7 @@ $9C:BFE0             db 00,00,07,07,0E,0F,1C,1F,1A,1F,31,3F,31,3F,3B,3F,00,00,00
 
 ;;; $C1A0: Samus top tiles - set 4 - entry 8 ;;;
 {
-; 62h: Unused - frame 10h
-; 62h: Unused - frame 30h
-; 62h: Unused - frames 40h..41h
-; B3h: Facing anticlockwise - grapple swinging - frame 10h
-; B3h: Facing anticlockwise - grapple swinging - frame 30h
-; B3h: Facing anticlockwise - grapple swinging - frames 40h..41h
+; B3h: Facing anticlockwise - grapple swinging - frames 10h / 30h / 40h..41h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 |62B3B3  |   33BBA| 333333 |        |
 ; |        | 33     |       3|FEE699E3|ABAB3   |   3A3B2| D575D3 |        |
@@ -2235,10 +2092,7 @@ $9C:C1A0             db 00,00,00,00,03,03,07,07,0E,0F,0D,0F,0D,0F,0F,0F,00,00,00
 
 ;;; $C360: Samus top tiles - set 4 - entry 9 ;;;
 {
-; 62h: Unused - frame 11h
-; 62h: Unused - frame 31h
-; B3h: Facing anticlockwise - grapple swinging - frame 11h
-; B3h: Facing anticlockwise - grapple swinging - frame 31h
+; B3h: Facing anticlockwise - grapple swinging - frames 11h / 31h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   |3BAAAB3 | 33B3BAB| D33333 |        |
 ; |        |        |     3FF|699EE   |B3B3BB3 |BA33A6A2| D575D3 |        |
@@ -2277,10 +2131,7 @@ $9C:C360             db 00,00,00,00,00,00,00,00,01,01,03,03,06,07,06,07,00,00,00
 
 ;;; $C520: Samus top tiles - set 4 - entry Ah ;;;
 {
-; 62h: Unused - frame 12h
-; 62h: Unused - frame 32h
-; B3h: Facing anticlockwise - grapple swinging - frame 12h
-; B3h: Facing anticlockwise - grapple swinging - frame 32h
+; B3h: Facing anticlockwise - grapple swinging - frames 12h / 32h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |       3|33      |      EE|9E3     |D3      |        |    D585|        |
 ; |     33B|BBB3    |    FF6F|9EFF    |D3      |   333  |   D5885|        |
@@ -2320,10 +2171,7 @@ $9C:C520             db 01,01,07,07,06,07,0E,0F,0D,0F,0F,0F,0E,08,0F,0E,00,00,00
 
 ;;; $C700: Samus top tiles - set 4 - entry Bh ;;;
 {
-; 62h: Unused - frame 13h
-; 62h: Unused - frame 33h
-; B3h: Facing anticlockwise - grapple swinging - frame 13h
-; B3h: Facing anticlockwise - grapple swinging - frame 33h
+; B3h: Facing anticlockwise - grapple swinging - frames 13h / 33h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        | 33     |   FFEEE|E       |D3      |    D585|        |        |
 ; |       3|BBBB3   |  3FE9EF|F4      |D3      |   D5885|        |        |
@@ -2364,10 +2212,7 @@ $9C:C700             db 00,00,01,01,03,03,03,03,07,07,05,05,06,06,CF,CF,00,00,00
 
 ;;; $C900: Samus top tiles - set 4 - entry Ch ;;;
 {
-; 62h: Unused - frame 14h
-; 62h: Unused - frame 34h
-; B3h: Facing anticlockwise - grapple swinging - frame 14h
-; B3h: Facing anticlockwise - grapple swinging - frame 34h
+; B3h: Facing anticlockwise - grapple swinging - frames 14h / 34h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        | 33     |   FFEEE|E       |   BB3BA|        |333D8   |   3D573|
 ; |       3|BBBB3   |  3FE9EF|F4      |    3BA2|        |33D8    |  3D5785|
@@ -2408,10 +2253,7 @@ $9C:C900             db 00,00,01,01,03,03,03,03,07,07,05,05,06,06,CF,CF,00,00,00
 
 ;;; $CB00: Samus top tiles - set 4 - entry Dh ;;;
 {
-; 62h: Unused - frame 15h
-; 62h: Unused - frame 35h
-; B3h: Facing anticlockwise - grapple swinging - frame 15h
-; B3h: Facing anticlockwise - grapple swinging - frame 35h
+; B3h: Facing anticlockwise - grapple swinging - frames 15h / 35h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |    3   |        |   3BA2A| 3BA3   |753533  |  3D5588|
 ; |        |        |  EEFFF4|        |    3BAA| BA2B3  |5D3D88  |  358885|
@@ -2452,10 +2294,7 @@ $9C:CB00             db 00,00,00,00,00,00,03,03,03,03,07,07,8B,8B,DF,DF,00,00,00
 
 ;;; $CD00: Samus top tiles - set 4 - entry Eh ;;;
 {
-; 62h: Unused - frame 16h
-; 62h: Unused - frame 36h
-; B3h: Facing anticlockwise - grapple swinging - frame 16h
-; B3h: Facing anticlockwise - grapple swinging - frame 36h
+; B3h: Facing anticlockwise - grapple swinging - frames 16h / 36h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |    3   |        |   3BA2A| 3BA3   |753533  |  3D5588|
 ; |        |        |  EEFFF4|        |    3BAA| BA2B3  |5D3D88  |  358885|
@@ -2496,10 +2335,7 @@ $9C:CD00             db 00,00,00,00,00,00,03,03,03,03,07,07,8B,8B,DF,DF,00,00,00
 
 ;;; $CF00: Samus top tiles - set 4 - entry Fh ;;;
 {
-; 62h: Unused - frame 17h
-; 62h: Unused - frame 37h
-; B3h: Facing anticlockwise - grapple swinging - frame 17h
-; B3h: Facing anticlockwise - grapple swinging - frame 37h
+; B3h: Facing anticlockwise - grapple swinging - frames 17h / 37h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |  33333A| 333333 |        |33BBB333|
 ; |        |        |        |        |  3A23B2|  3BAB3 |        |BA262AB3|
@@ -2582,9 +2418,7 @@ $9C:D0E0             db 00,00,00,00,00,00,00,00,00,00,03,03,FF,FF,FF,FB,00,00,00
 {
 ;;; $D2C0: Samus top tiles - set 7 - entry 0 ;;;
 {
-; E9h: Facing left  - Samus drained - crouching/falling - frame 8
-; E9h: Facing left  - Samus drained - crouching/falling - frame 1Ah
-; E9h: Facing left  - Samus drained - crouching/falling - frame 1Dh
+; E9h: Facing left  - Samus drained - crouching/falling - frames 8 / 1Ah / 1Dh
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |  EEFFFF|F3      |BB33    |     33B|        | 3A233B |        |
 ; | E969FEF|FF3     |2BAB3   |    33BA|        |3A22AB  | 33BB33 |
@@ -2618,12 +2452,7 @@ $9C:D2C0             db 0F,3F,2D,57,67,FF,AF,BF,2F,3F,5F,5F,FF,BF,7F,FF,3F,3F,57
 
 ;;; $D3E0: Samus top tiles - set 7 - entry 1 ;;;
 {
-; E9h: Facing left  - Samus drained - crouching/falling - frame 7
-; E9h: Facing left  - Samus drained - crouching/falling - frame 9
-; E9h: Facing left  - Samus drained - crouching/falling - frame Bh
-; E9h: Facing left  - Samus drained - crouching/falling - frame Eh
-; E9h: Facing left  - Samus drained - crouching/falling - frame 13h
-; E9h: Facing left  - Samus drained - crouching/falling - frame 17h
+; E9h: Facing left  - Samus drained - crouching/falling - frames 7 / 9 / Bh / Eh / 13h / 17h
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; |  EEFFFF|F3      |BB33    |     33B|        | 3A233B |        |
 ; | E969FEF|FF3     |2BAB3   |    33BA|        |3A22AB  | 33BB33 |
@@ -2726,8 +2555,7 @@ $9C:D620             db 0F,3F,2D,57,67,FF,AF,BF,2F,3F,5F,5F,FF,BF,7F,FF,3F,3F,57
 
 ;;; $D760: Samus top tiles - set 7 - entry 4 ;;;
 {
-; E8h: Facing right - Samus drained - crouching/falling - frame 9
-; E8h: Facing right - Samus drained - crouching/falling - frame Bh
+; E8h: Facing right - Samus drained - crouching/falling - frames 9 / Bh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |  EEFFFF|F3      |   33   |    3   |BB33    |     33B| 3A233B |        |
 ; | E969FEF|FF3     |  3DD3  |    3D  |2BAB3   |    33BA|3A22AB  | 33BB33 |
@@ -2831,11 +2659,8 @@ $9C:D9E0             db 43,7F,1A,15,B7,BF,5F,5F,FF,BF,7F,FF,FF,FF,FF,FF,3F,3F,75
 
 ;;; $DB00: Samus top tiles - set 7 - entry 7 ;;;
 {
-; E9h: Facing left  - Samus drained - crouching/falling - frame Fh
-; E9h: Facing left  - Samus drained - crouching/falling - frame 14h
-; E9h: Facing left  - Samus drained - crouching/falling - frame 16h
-; EBh: Facing left  - Samus drained - standing - frame 1
-; EBh: Facing left  - Samus drained - standing - frame 3
+; E9h: Facing left  - Samus drained - crouching/falling - frames Fh / 14h / 16h
+; EBh: Facing left  - Samus drained - standing - frames 1 / 3
 ; |--------|--------|--------|--------|--------|--------|--------|
 ; | 3EEEEFF|FF3     |BB33    |     33B|        | 3A233B |        |
 ; | 44F969E|FFF3    |2BAB3   |    33BA|        |3A22AB  | 33BB33 |
@@ -2938,8 +2763,7 @@ $9C:DD40             db 43,7F,1A,15,B7,BF,5F,5F,FF,BF,7F,FF,FF,FF,FF,FF,3F,3F,75
 
 ;;; $DE80: Samus top tiles - set 7 - entry Ah ;;;
 {
-; EAh: Facing right - Samus drained - standing - frame 1
-; EAh: Facing right - Samus drained - standing - frame 3
+; EAh: Facing right - Samus drained - standing - frames 1 / 3
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; | 3EEEEFF|FF3     |   33   |    3   |BB33    |     33B| 3A233B |        |
 ; | 44F969E|FFF3    |  3DD3  |    3D  |2BAB3   |    33BA|3A22AB  | 33BB33 |
@@ -3009,18 +2833,12 @@ $9C:DFC0             db 43,7F,1A,15,B7,BF,5F,5F,FF,BF,7F,FF,FF,FF,FF,FF,3F,3F,75
 
 ;;; $E100: Samus top tiles - set 7 - entry Ch ;;;
 {
-; 1: Facing right - normal - frame 0
-; 1: Facing right - normal - frame 5
-; 27h: Facing right - crouching - frame 0
-; 27h: Facing right - crouching - frame 5
+; 1: Facing right - normal - frames 0 / 5
+; 27h: Facing right - crouching - frames 0 / 5
 ; 47h: Unused - frame 0
-; 47h: Unused - frame 5
 ; 89h: Facing right - ran into a wall - frame 0
-; 89h: Facing right - ran into a wall - frame 5
 ; A8h: Facing right - grappling - frame 0
-; A8h: Facing right - grappling - frame 5
 ; B4h: Facing right - grappling - crouching - frame 0
-; B4h: Facing right - grappling - crouching - frame 5
 ; |--------|--------|--------|--------|--------|--------|
 ; |F3BA2B2B|ABF3    |     FFF|FF      |        |        |
 ; |F3BBABAB|B3FF    |   3EF69|9EF     |D33     |3DDDDDD3|
@@ -3055,30 +2873,8 @@ $9C:E100             db E5,FF,F5,FF,FF,FE,F5,E4,FF,67,7C,1F,38,1F,38,3F,80,B5,80
 
 ;;; $E240: Samus top tiles - set 7 - entry Dh ;;;
 {
-; 1: Facing right - normal - frame 1
-; 1: Facing right - normal - frame 3
-; 1: Facing right - normal - frame 6
-; 1: Facing right - normal - frame 8
-; 27h: Facing right - crouching - frame 1
-; 27h: Facing right - crouching - frame 3
-; 27h: Facing right - crouching - frame 6
-; 27h: Facing right - crouching - frame 8
-; 47h: Unused - frame 1
-; 47h: Unused - frame 3
-; 47h: Unused - frame 6
-; 47h: Unused - frame 8
-; 89h: Facing right - ran into a wall - frame 1
-; 89h: Facing right - ran into a wall - frame 3
-; 89h: Facing right - ran into a wall - frame 6
-; 89h: Facing right - ran into a wall - frame 8
-; A8h: Facing right - grappling - frame 1
-; A8h: Facing right - grappling - frame 3
-; A8h: Facing right - grappling - frame 6
-; A8h: Facing right - grappling - frame 8
-; B4h: Facing right - grappling - crouching - frame 1
-; B4h: Facing right - grappling - crouching - frame 3
-; B4h: Facing right - grappling - crouching - frame 6
-; B4h: Facing right - grappling - crouching - frame 8
+; 1: Facing right - normal - frames 1 / 3 / 6 / 8
+; 27h: Facing right - crouching - frames 1 / 3 / 6 / 8
 ; |--------|--------|--------|--------|--------|--------|
 ; |F3BA2B2B|ABF3    |     FFF|EF      |        |        |
 ; |F3BBBBBB|BBFE    |   FEF29|9EE     |D33     |3DDDDDD3|
@@ -3115,10 +2911,6 @@ $9C:E240             db E5,FF,FF,FF,FF,FC,F5,E4,7F,7F,FC,1F,78,5F,38,3F,80,B5,80
 {
 ; 1: Facing right - normal - frame 2
 ; 27h: Facing right - crouching - frame 2
-; 47h: Unused - frame 2
-; 89h: Facing right - ran into a wall - frame 2
-; A8h: Facing right - grappling - frame 2
-; B4h: Facing right - grappling - crouching - frame 2
 ; |--------|--------|--------|--------|--------|--------|
 ; |F3BA2B2B|ABF3    |     FFF|EE      |        |        |
 ; |F3BBBBBB|B3FE    |   FEFA9|9EE     |D33     |3DDDDDD3|
@@ -3153,18 +2945,12 @@ $9C:E380             db E5,FF,FF,FF,FE,FC,F6,66,7F,1F,FC,1F,38,1F,18,1F,80,B5,80
 
 ;;; $E4C0: Samus top tiles - set 7 - entry Fh ;;;
 {
-; 2: Facing left  - normal - frame 0
-; 2: Facing left  - normal - frame 5
-; 28h: Facing left  - crouching - frame 0
-; 28h: Facing left  - crouching - frame 5
+; 2: Facing left  - normal - frames 0 / 5
+; 28h: Facing left  - crouching - frames 0 / 5
 ; 48h: Unused - frame 0
-; 48h: Unused - frame 5
 ; 8Ah: Facing left  - ran into a wall - frame 0
-; 8Ah: Facing left  - ran into a wall - frame 5
 ; A9h: Facing left  - grappling - frame 0
-; A9h: Facing left  - grappling - frame 5
 ; B5h: Facing left  - grappling - crouching - frame 0
-; B5h: Facing left  - grappling - crouching - frame 5
 ; |--------|--------|--------|--------|--------|--------|
 ; |    33BA|B2B2BB3F|      FE|FFF     |        |        |
 ; |    FF3B|BABABB3F|     FE9|96FE3   |D33     |3DDDDDD3|
@@ -3199,30 +2985,8 @@ $9C:E4C0             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $E600: Samus top tiles - set 7 - entry 10h ;;;
 {
-; 2: Facing left  - normal - frame 1
-; 2: Facing left  - normal - frame 3
-; 2: Facing left  - normal - frame 6
-; 2: Facing left  - normal - frame 8
-; 28h: Facing left  - crouching - frame 1
-; 28h: Facing left  - crouching - frame 3
-; 28h: Facing left  - crouching - frame 6
-; 28h: Facing left  - crouching - frame 8
-; 48h: Unused - frame 1
-; 48h: Unused - frame 3
-; 48h: Unused - frame 6
-; 48h: Unused - frame 8
-; 8Ah: Facing left  - ran into a wall - frame 1
-; 8Ah: Facing left  - ran into a wall - frame 3
-; 8Ah: Facing left  - ran into a wall - frame 6
-; 8Ah: Facing left  - ran into a wall - frame 8
-; A9h: Facing left  - grappling - frame 1
-; A9h: Facing left  - grappling - frame 3
-; A9h: Facing left  - grappling - frame 6
-; A9h: Facing left  - grappling - frame 8
-; B5h: Facing left  - grappling - crouching - frame 1
-; B5h: Facing left  - grappling - crouching - frame 3
-; B5h: Facing left  - grappling - crouching - frame 6
-; B5h: Facing left  - grappling - crouching - frame 8
+; 2: Facing left  - normal - frames 1 / 3 / 6 / 8
+; 28h: Facing left  - crouching - frames 1 / 3 / 6 / 8
 ; |--------|--------|--------|--------|--------|--------|
 ; |    33BA|B2B2BB3F|      FE|FFF     |        |        |
 ; |    FF3B|BABABB3F|     EE9|92FEF   |D33     |3DDDDDD3|
@@ -3259,10 +3023,6 @@ $9C:E600             db 0E,0F,0F,0F,07,0E,0F,0F,0F,0F,7E,7F,9C,FF,6C,FF,00,03,0C
 {
 ; 2: Facing left  - normal - frame 2
 ; 28h: Facing left  - crouching - frame 2
-; 48h: Unused - frame 2
-; 8Ah: Facing left  - ran into a wall - frame 2
-; A9h: Facing left  - grappling - frame 2
-; B5h: Facing left  - grappling - crouching - frame 2
 ; |--------|--------|--------|--------|--------|--------|
 ; |    F33A|B2B2BB3F|      EE|FFF     |        |        |
 ; |    EF3B|BABABB3F|     EE9|9AFEF   |D33     |3DDDDDD3|
@@ -3299,10 +3059,6 @@ $9C:E740             db 0E,0F,07,0F,07,0E,0F,0F,0F,0F,7F,7F,9E,FF,6C,FF,08,09,0C
 {
 ; 1: Facing right - normal - frame 7
 ; 27h: Facing right - crouching - frame 7
-; 47h: Unused - frame 7
-; 89h: Facing right - ran into a wall - frame 7
-; A8h: Facing right - grappling - frame 7
-; B4h: Facing right - grappling - crouching - frame 7
 ; |--------|--------|--------|--------|--------|--------|
 ; |     FFF|EE      |333 3BA2|     333|        |        |
 ; |   FEFA9|9EE     |B3   3BB|     3BA|D33     |3DDDDDD3|
@@ -3337,10 +3093,6 @@ $9C:E880             db 07,07,15,1E,3F,3F,75,7F,60,7F,60,7F,E4,FF,E5,FF,07,07,1C
 {
 ; 2: Facing left  - normal - frame 7
 ; 28h: Facing left  - crouching - frame 7
-; 48h: Unused - frame 7
-; 8Ah: Facing left  - ran into a wall - frame 7
-; A9h: Facing left  - grappling - frame 7
-; B5h: Facing left  - grappling - crouching - frame 7
 ; |--------|--------|--------|--------|--------|--------|
 ; |      EE|FFF     |AB3     |B326A33B|        |        |
 ; |     EE9|9AFEF   |B3      |3BA2B3A3|D33     |3DDDDDD3|
@@ -3378,20 +3130,10 @@ $9C:E980             db 00,03,01,06,07,0B,0B,0B,07,07,06,07,06,0B,0E,0F,03,03,06
 {
 ; 1Bh: Facing right - space jump - frame 1
 ; 1Ch: Facing left  - space jump - frame 1
-; 81h: Facing right - screw attack - frame 1
-; 81h: Facing right - screw attack - frame 9
-; 81h: Facing right - screw attack - frame 11h
-; 82h: Facing left  - screw attack - frame 1
-; 82h: Facing left  - screw attack - frame 9
-; 82h: Facing left  - screw attack - frame 11h
-; 83h: Facing right - wall jump - frame Dh
-; 83h: Facing right - wall jump - frame 17h
-; 83h: Facing right - wall jump - frame 1Fh
-; 83h: Facing right - wall jump - frame 27h
-; 84h: Facing left  - wall jump - frame Dh
-; 84h: Facing left  - wall jump - frame 17h
-; 84h: Facing left  - wall jump - frame 1Fh
-; 84h: Facing left  - wall jump - frame 27h
+; 81h: Facing right - screw attack - frames 1 / 9 / 11h
+; 82h: Facing left  - screw attack - frames 1 / 9 / 11h
+; 83h: Facing right - wall jump - frames Dh / 17h / 1Fh / 27h
+; 84h: Facing left  - wall jump - frames Dh / 17h / 1Fh / 27h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |3333F   |        |3    3  |2BB3BA22|2BB3BA22|22AABA18|      33|3333F   |
 ; |E99999EF|        |3 3     |AA3ABBAA|AA3ABBAA|2BABBB18|    33EE|E99999EF|
@@ -3434,20 +3176,10 @@ $9C:EA80             db F8,F8,7D,83,AB,FC,C6,3F,31,0F,4C,83,DB,A3,B6,E9,08,08,83
 {
 ; 1Bh: Facing right - space jump - frame 2
 ; 1Ch: Facing left  - space jump - frame 2
-; 81h: Facing right - screw attack - frame 2
-; 81h: Facing right - screw attack - frame Ah
-; 81h: Facing right - screw attack - frame 12h
-; 82h: Facing left  - screw attack - frame 2
-; 82h: Facing left  - screw attack - frame Ah
-; 82h: Facing left  - screw attack - frame 12h
-; 83h: Facing right - wall jump - frame Eh
-; 83h: Facing right - wall jump - frame 18h
-; 83h: Facing right - wall jump - frame 20h
-; 83h: Facing right - wall jump - frame 28h
-; 84h: Facing left  - wall jump - frame Eh
-; 84h: Facing left  - wall jump - frame 18h
-; 84h: Facing left  - wall jump - frame 20h
-; 84h: Facing left  - wall jump - frame 28h
+; 81h: Facing right - screw attack - frames 2 / Ah / 12h
+; 82h: Facing left  - screw attack - frames 2 / Ah / 12h
+; 83h: Facing right - wall jump - frames Eh / 18h / 20h / 28h
+; 84h: Facing left  - wall jump - frames Eh / 18h / 20h / 28h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |BB2ABABC|9BA2B   |     399|FEEEFFEE|    B3BB|        |        |        |
 ; |22A3AB39|BBA2A   |    3EEE|EF9F9494|3333333B|        |        |        |
@@ -3490,20 +3222,10 @@ $9C:EC80             db CA,FE,17,FE,2D,FC,CB,F9,87,E3,BD,BF,3A,FF,C6,FF,01,DF,00
 {
 ; 1Bh: Facing right - space jump - frame 3
 ; 1Ch: Facing left  - space jump - frame 3
-; 81h: Facing right - screw attack - frame 3
-; 81h: Facing right - screw attack - frame Bh
-; 81h: Facing right - screw attack - frame 13h
-; 82h: Facing left  - screw attack - frame 3
-; 82h: Facing left  - screw attack - frame Bh
-; 82h: Facing left  - screw attack - frame 13h
-; 83h: Facing right - wall jump - frame Fh
-; 83h: Facing right - wall jump - frame 19h
-; 83h: Facing right - wall jump - frame 21h
-; 83h: Facing right - wall jump - frame 29h
-; 84h: Facing left  - wall jump - frame Fh
-; 84h: Facing left  - wall jump - frame 19h
-; 84h: Facing left  - wall jump - frame 21h
-; 84h: Facing left  - wall jump - frame 29h
+; 81h: Facing right - screw attack - frames 3 / Bh / 13h
+; 82h: Facing left  - screw attack - frames 3 / Bh / 13h
+; 83h: Facing right - wall jump - frames Fh / 19h / 21h / 29h
+; 84h: Facing left  - wall jump - frames Fh / 19h / 21h / 29h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |2ABB2ABA|BCBBABAB|        |  FFF 33| F9EFEFE|4BEF8335|88CCCBB3|3B      |
 ; |2ABB2BBA|B1B3AB2B|        |FFFFF3  | E9FEEF9|3EFF3878|11111CBB|AABB    |
@@ -3546,20 +3268,10 @@ $9C:EE80             db 32,FF,36,FF,64,FF,CB,FF,86,FF,FE,FE,B9,FF,32,FF,00,77,00
 {
 ; 1Bh: Facing right - space jump - frame 4
 ; 1Ch: Facing left  - space jump - frame 4
-; 81h: Facing right - screw attack - frame 4
-; 81h: Facing right - screw attack - frame Ch
-; 81h: Facing right - screw attack - frame 14h
-; 82h: Facing left  - screw attack - frame 4
-; 82h: Facing left  - screw attack - frame Ch
-; 82h: Facing left  - screw attack - frame 14h
-; 83h: Facing right - wall jump - frame 10h
-; 83h: Facing right - wall jump - frame 1Ah
-; 83h: Facing right - wall jump - frame 22h
-; 83h: Facing right - wall jump - frame 2Ah
-; 84h: Facing left  - wall jump - frame 10h
-; 84h: Facing left  - wall jump - frame 1Ah
-; 84h: Facing left  - wall jump - frame 22h
-; 84h: Facing left  - wall jump - frame 2Ah
+; 81h: Facing right - screw attack - frames 4 / Ch / 14h
+; 82h: Facing left  - screw attack - frames 4 / Ch / 14h
+; 83h: Facing right - wall jump - frames 10h / 1Ah / 22h / 2Ah
+; 84h: Facing left  - wall jump - frames 10h / 1Ah / 22h / 2Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |   BBBBB|BA33B2BB|C911933 |1B75FF4E|23AA22A9| 3      |
 ; |        |        |   BABBA|BAC2332B|BBBB333 |BB75FEEF|2ABAAABC|3  3   3|
@@ -3602,20 +3314,10 @@ $9C:F080             db 00,00,00,00,03,03,07,07,0F,0E,1E,18,18,14,11,11,00,00,00
 {
 ; 1Bh: Facing right - space jump - frame 5
 ; 1Ch: Facing left  - space jump - frame 5
-; 81h: Facing right - screw attack - frame 5
-; 81h: Facing right - screw attack - frame Dh
-; 81h: Facing right - screw attack - frame 15h
-; 82h: Facing left  - screw attack - frame 5
-; 82h: Facing left  - screw attack - frame Dh
-; 82h: Facing left  - screw attack - frame 15h
-; 83h: Facing right - wall jump - frame 11h
-; 83h: Facing right - wall jump - frame 1Bh
-; 83h: Facing right - wall jump - frame 23h
-; 83h: Facing right - wall jump - frame 2Bh
-; 84h: Facing left  - wall jump - frame 11h
-; 84h: Facing left  - wall jump - frame 1Bh
-; 84h: Facing left  - wall jump - frame 23h
-; 84h: Facing left  - wall jump - frame 2Bh
+; 81h: Facing right - screw attack - frames 5 / Dh / 15h
+; 82h: Facing left  - screw attack - frames 5 / Dh / 15h
+; 83h: Facing right - wall jump - frames 11h / 1Bh / 23h / 2Bh
+; 84h: Facing left  - wall jump - frames 11h / 1Bh / 23h / 2Bh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |3333F   |        |3    3  |2BB3BA22|2BB3BA22|22AABA18|      33|3333F   |
 ; |E99999EF|        |3 3     |AA3ABBAA|AA3ABBAA|2BABBB18|    33EE|E99999EF|
@@ -3658,20 +3360,10 @@ $9C:F280             db F8,F8,7D,83,AB,FC,C6,3F,31,0F,4C,83,DB,A3,B6,E9,08,08,83
 {
 ; 1Bh: Facing right - space jump - frame 6
 ; 1Ch: Facing left  - space jump - frame 6
-; 81h: Facing right - screw attack - frame 6
-; 81h: Facing right - screw attack - frame Eh
-; 81h: Facing right - screw attack - frame 16h
-; 82h: Facing left  - screw attack - frame 6
-; 82h: Facing left  - screw attack - frame Eh
-; 82h: Facing left  - screw attack - frame 16h
-; 83h: Facing right - wall jump - frame 12h
-; 83h: Facing right - wall jump - frame 1Ch
-; 83h: Facing right - wall jump - frame 24h
-; 83h: Facing right - wall jump - frame 2Ch
-; 84h: Facing left  - wall jump - frame 12h
-; 84h: Facing left  - wall jump - frame 1Ch
-; 84h: Facing left  - wall jump - frame 24h
-; 84h: Facing left  - wall jump - frame 2Ch
+; 81h: Facing right - screw attack - frames 6 / Eh / 16h
+; 82h: Facing left  - screw attack - frames 6 / Eh / 16h
+; 83h: Facing right - wall jump - frames 12h / 1Ch / 24h / 2Ch
+; 84h: Facing left  - wall jump - frames 12h / 1Ch / 24h / 2Ch
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |BB2ABABC|9BA2B   |     399|FEEEFFEE|        |BCC11C58|FF3F333 |        |
 ; |22A3AB39|BBA2A   |    3EEE|EF9F9494|3       |2BBAA91D|4EFF   3|        |
@@ -3714,20 +3406,10 @@ $9C:F480             db CA,FE,17,FE,2D,FC,CB,F9,87,E3,BD,BF,3A,FF,C6,FF,01,DF,00
 {
 ; 1Bh: Facing right - space jump - frame 7
 ; 1Ch: Facing left  - space jump - frame 7
-; 81h: Facing right - screw attack - frame 7
-; 81h: Facing right - screw attack - frame Fh
-; 81h: Facing right - screw attack - frame 17h
-; 82h: Facing left  - screw attack - frame 7
-; 82h: Facing left  - screw attack - frame Fh
-; 82h: Facing left  - screw attack - frame 17h
-; 83h: Facing right - wall jump - frame 13h
-; 83h: Facing right - wall jump - frame 1Dh
-; 83h: Facing right - wall jump - frame 25h
-; 83h: Facing right - wall jump - frame 2Dh
-; 84h: Facing left  - wall jump - frame 13h
-; 84h: Facing left  - wall jump - frame 1Dh
-; 84h: Facing left  - wall jump - frame 25h
-; 84h: Facing left  - wall jump - frame 2Dh
+; 81h: Facing right - screw attack - frames 7 / Fh / 17h
+; 82h: Facing left  - screw attack - frames 7 / Fh / 17h
+; 83h: Facing right - wall jump - frames 13h / 1Dh / 25h / 2Dh
+; 84h: Facing left  - wall jump - frames 13h / 1Dh / 25h / 2Dh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |2ABB2ABA|BCBBABAB|        |  FFF 33| F9EFEFE|4BEF8335|88CCCBB3|3B      |
 ; |2ABB2BBA|B1B3AB2B|        |FFFFF3  | E9FEEF9|3EFF3878|11111CBB|AABB    |
@@ -3770,20 +3452,10 @@ $9C:F680             db 32,FF,36,FF,64,FF,CB,FF,86,FF,FE,FE,B9,FF,32,FF,00,77,00
 {
 ; 1Bh: Facing right - space jump - frame 8
 ; 1Ch: Facing left  - space jump - frame 8
-; 81h: Facing right - screw attack - frame 8
-; 81h: Facing right - screw attack - frame 10h
-; 81h: Facing right - screw attack - frame 18h
-; 82h: Facing left  - screw attack - frame 8
-; 82h: Facing left  - screw attack - frame 10h
-; 82h: Facing left  - screw attack - frame 18h
-; 83h: Facing right - wall jump - frame 14h
-; 83h: Facing right - wall jump - frame 1Eh
-; 83h: Facing right - wall jump - frame 26h
-; 83h: Facing right - wall jump - frame 2Eh
-; 84h: Facing left  - wall jump - frame 14h
-; 84h: Facing left  - wall jump - frame 1Eh
-; 84h: Facing left  - wall jump - frame 26h
-; 84h: Facing left  - wall jump - frame 2Eh
+; 81h: Facing right - screw attack - frames 8 / 10h / 18h
+; 82h: Facing left  - screw attack - frames 8 / 10h / 18h
+; 83h: Facing right - wall jump - frames 14h / 1Eh / 26h / 2Eh
+; 84h: Facing left  - wall jump - frames 14h / 1Eh / 26h / 2Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |   BBBBB|BA33B2BB|23AA22A9|C911933 |1B75FF4E| 3      |
 ; |        |        |   BABBA|BAC2332B|2ABAAABC|BBBB333 |BB75FEEF|3  3   3|
