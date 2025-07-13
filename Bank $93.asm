@@ -16,7 +16,7 @@ $93:8009 29 0F 00    AND #$000F             ;|
 $93:800C 0A          ASL A                  ;} $12 = [projectile direction] * 2
 $93:800D 85 12       STA $12    [$7E:0012]  ;/
 $93:800F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
-$93:8012 89 00 0F    BIT #$0F00             ;} If not beam: go to BRANCH_NOT_BEAM
+$93:8012 89 00 0F    BIT #$0F00             ;} If (projectile type) != beam: go to BRANCH_NOT_BEAM
 $93:8015 D0 1B       BNE $1B    [$8032]     ;/
 $93:8017 89 10 00    BIT #$0010             ;\
 $93:801A D0 0B       BNE $0B    [$8027]     ;} If not charged:
@@ -73,6 +73,9 @@ $93:8070 6B          RTL
 
 ;;; $8071: Initialise super missile link ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
 ; Instruction list is $9F7B (loop of single instruction with 8x8 radius and dummy empty spritemap)
 $93:8071 08          PHP
 $93:8072 8B          PHB
@@ -104,6 +107,8 @@ $93:809F 6B          RTL
 
 ;;; $80A0: Initialise (power) bomb ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $93:80A0 08          PHP
 $93:80A1 8B          PHB
 $93:80A2 4B          PHK                    ;\
@@ -119,7 +124,6 @@ $93:80B2 B9 00 00    LDA $0000,y[$93:8675]  ;|
 $93:80B5 9D 2C 0C    STA $0C2C,x[$7E:0C36]  ;/
 $93:80B8 10 04       BPL $04    [$80BE]     ; If [projectile damage] < 0:
 $93:80BA 5C 73 85 80 JML $808573[$80:8573]  ; Crash
-                                            
 
 $93:80BE C8          INY                    ;\
 $93:80BF C8          INY                    ;|
@@ -133,8 +137,11 @@ $93:80CE 6B          RTL
 }
 
 
-;;; $80CF: Part of kill projectile - queue sound effect and set instruction ;;;
+;;; $80CF: Initialise beam / missile explosion ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
 ; Called by $90:AE06 (kill projectile)
 $93:80CF 08          PHP
 $93:80D0 8B          PHB
@@ -142,11 +149,11 @@ $93:80D1 4B          PHK                    ;\
 $93:80D2 AB          PLB                    ;} DB = $93
 $93:80D3 C2 30       REP #$30
 $93:80D5 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
-$93:80D8 89 00 0F    BIT #$0F00             ;} If beam: 
+$93:80D8 89 00 0F    BIT #$0F00             ;} If (projectile type) = beam:
 $93:80DB D0 1B       BNE $1B    [$80F8]     ;/
 $93:80DD BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:80E0 29 FF F0    AND #$F0FF             ;|
-$93:80E3 09 00 07    ORA #$0700             ;} Projectile type = beam explosion
+$93:80E3 09 00 07    ORA #$0700             ;} (Projectile type) = beam explosion
 $93:80E6 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $93:80E9 AD 7B 86    LDA $867B  [$93:867B]  ;\
 $93:80EC 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A007 (beam explosion)
@@ -161,17 +168,17 @@ $93:8100 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7, sound library 2, m
 
 $93:8104 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:8107 48          PHA                    ;|
-$93:8108 29 FF F0    AND #$F0FF             ;} Projectile type = (super) missile explosion
+$93:8108 29 FF F0    AND #$F0FF             ;} (Projectile type) = (super) missile explosion
 $93:810B 09 00 08    ORA #$0800             ;|
 $93:810E 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $93:8111 68          PLA                    ;\
-$93:8112 89 00 02    BIT #$0200             ;} If not super missile:
+$93:8112 89 00 02    BIT #$0200             ;} If (projectile type) != super missile:
 $93:8115 D0 08       BNE $08    [$811F]     ;/
 $93:8117 AD 7F 86    LDA $867F  [$93:867F]  ;\
 $93:811A 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A039 (missile explosion)
 $93:811D 80 12       BRA $12    [$8131]
 
-$93:811F AD 93 86    LDA $8693  [$93:8693]  ;\ Else (super missile):
+$93:811F AD 93 86    LDA $8693  [$93:8693]  ;\ Else ((projectile type) = super missile):
 $93:8122 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A0C1 (super missile explosion)
 $93:8125 A9 14 00    LDA #$0014             ;\
 $93:8128 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, diagonal
@@ -197,6 +204,8 @@ $93:814D 6B          RTL
 
 ;;; $814E: Initialise bomb explosion ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $93:814E 08          PHP
 $93:814F 8B          PHB
 $93:8150 4B          PHK                    ;\
@@ -214,6 +223,8 @@ $93:8162 6B          RTL
 
 ;;; $8163: Initialise shinespark echo or spazer SBA trail projectile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $93:8163 08          PHP
 $93:8164 8B          PHB
 $93:8165 4B          PHK                    ;\
@@ -227,12 +238,12 @@ $93:8172 BD 18 0C    LDA $0C18,x[$7E:0C1E]  ;\
 $93:8175 29 FF 00    AND #$00FF             ;|
 $93:8178 38          SEC                    ;|
 $93:8179 E9 22 00    SBC #$0022             ;|
-$93:817C 0A          ASL A                  ;|
-$93:817D A8          TAY                    ;} Projectile damage = [[$8403 + (([projectile type] & FFh) - 22h) * 2]]
+$93:817C 0A          ASL A                  ;} Y = [$8403 + (([projectile type] & FFh) - 22h) * 2]
+$93:817D A8          TAY                    ;|
 $93:817E B9 03 84    LDA $8403,y[$93:8411]  ;|
-$93:8181 A8          TAY                    ;|
-$93:8182 B9 00 00    LDA $0000,y[$93:86C1]  ;|
-$93:8185 9D 2C 0C    STA $0C2C,x[$7E:0C32]  ;/
+$93:8181 A8          TAY                    ;/
+$93:8182 B9 00 00    LDA $0000,y[$93:86C1]  ;\
+$93:8185 9D 2C 0C    STA $0C2C,x[$7E:0C32]  ;} Projectile damage = [[Y]]
 $93:8188 10 04       BPL $04    [$818E]     ; If [projectile damage] < 0:
 $93:818A 5C 73 85 80 JML $808573[$80:8573]  ; Crash
 
@@ -240,7 +251,7 @@ $93:818E C8          INY                    ;\
 $93:818F C8          INY                    ;|
 $93:8190 98          TYA                    ;|
 $93:8191 18          CLC                    ;|
-$93:8192 65 12       ADC $12    [$7E:0012]  ;} Projectile instruction pointer = [[$8403 + (([projectile type] & FFh) - 22h) * 2] + (projectile direction + 1) * 2 ]
+$93:8192 65 12       ADC $12    [$7E:0012]  ;} Projectile instruction pointer = [[Y] + 2 + (projectile direction) * 2]
 $93:8194 A8          TAY                    ;|
 $93:8195 B9 00 00    LDA $0000,y[$93:86C3]  ;|
 $93:8198 9D 40 0C    STA $0C40,x[$7E:0C46]  ;/
@@ -254,6 +265,9 @@ $93:81A3 6B          RTL
 
 ;;; $81A4: Initialise SBA projectile ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
 ; Excluding ice SBA, which is run as a regular projectile
 $93:81A4 08          PHP
 $93:81A5 8B          PHB
@@ -284,6 +298,10 @@ $93:81D0 6B          RTL
 
 ;;; $81D1: $16 = projectile trail frame ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;; Returns:
+;;     $16: Projectile trail frame. Used to index beam trail offset table, see $9B:A4B3
 $93:81D1 08          PHP
 $93:81D2 8B          PHB
 $93:81D3 4B          PHK                    ;\
@@ -349,6 +367,8 @@ $93:822E 6B          RTL
 {
 ;;; $822F: Instruction - delete ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 $93:822F C2 30       REP #$30
 $93:8231 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $93:8235 68          PLA                    ; Terminate projectile handling
@@ -360,6 +380,10 @@ $93:8238 6B          RTL
 
 ;;; $8239: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $93:8239 C2 30       REP #$30
 $93:823B B9 00 00    LDA $0000,y[$93:9F0D]
 $93:823E A8          TAY
@@ -369,6 +393,11 @@ $93:823F 60          RTS
 
 ;;; $8240: Unused. Instruction - go to [[Y] + 2] if [bomb timer] <= [[Y]] else go to [[Y] + 4] ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $93:8240 C2 30       REP #$30
 $93:8242 B9 00 00    LDA $0000,y
 $93:8245 DD 7C 0C    CMP $0C7C,x
@@ -390,8 +419,8 @@ $93:8254 08          PHP
 $93:8255 C2 30       REP #$30
 $93:8257 A2 08 00    LDX #$0008             ;\
 $93:825A 8E DE 0D    STX $0DDE  [$7E:0DDE]  ;} Projectile index = 8
-                                            
-; LOOP                                      
+
+; LOOP
 $93:825D BD 40 0C    LDA $0C40,x[$7E:0C48]  ;\
 $93:8260 D0 03       BNE $03    [$8265]     ;} If [projectile instruction pointer] = 0:
 $93:8262 4C E9 82    JMP $82E9  [$93:82E9]  ; Go to BRANCH_NEXT
@@ -455,8 +484,8 @@ $93:82D0 D0 0B       BNE $0B    [$82DD]     ;} If 0 <= [$12] < 100h:
 $93:82D2 BD B8 0C    LDA $0CB8,x[$7E:0CB8]  ;\
 $93:82D5 10 0F       BPL $0F    [$82E6]     ;} If [projectile spritemap pointer] & 8000h != 0:
 $93:82D7 22 4B 8A 81 JSL $818A4B[$81:8A4B]  ; Add projectile spritemap to OAM
-$93:82DB 80 09       BRA $09    [$82E6]     
-                                            
+$93:82DB 80 09       BRA $09    [$82E6]
+
 $93:82DD BD B8 0C    LDA $0CB8,x[$7E:0CBA]  ;\ Else (not 0 <= [$14] < 100h):
 $93:82E0 10 04       BPL $04    [$82E6]     ;} If [projectile spritemap pointer] & 8000h != 0:
 $93:82E2 22 B7 8A 81 JSL $818AB7[$81:8AB7]  ; RTL
@@ -469,7 +498,7 @@ $93:82EA CA          DEX                    ;} Projectile index -= 2
 $93:82EB 8E DE 0D    STX $0DDE  [$7E:0DDE]  ;/
 $93:82EE 30 03       BMI $03    [$82F3]     ; If [projectile index] >= 0:
 $93:82F0 4C 5D 82    JMP $825D  [$93:825D]  ; Go to LOOP
-                                            
+
 $93:82F3 22 53 89 90 JSL $908953[$90:8953]  ; Draw shinespark crash echoes
 $93:82F7 22 A9 B6 90 JSL $90B6A9[$90:B6A9]  ; Draw projectile trail
 $93:82FB 28          PLP

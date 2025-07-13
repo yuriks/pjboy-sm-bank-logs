@@ -6965,7 +6965,7 @@ $90:AE29 FC 3A AE    JSR ($AE3A,x)[$90:AEB9];|
 $90:AE2C BB          TYX                    ;/
 
 ; BRANCH_MISSILE
-$90:AE2D 22 CF 80 93 JSL $9380CF[$93:80CF]  ; Part of kill projectile - queue sound effect and set instruction
+$90:AE2D 22 CF 80 93 JSL $9380CF[$93:80CF]  ; Initialise beam / missile explosion
 $90:AE31 A9 69 B1    LDA #$B169             ;\
 $90:AE34 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = RTS
 $90:AE37 AB          PLB

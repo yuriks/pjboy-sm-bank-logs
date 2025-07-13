@@ -2031,8 +2031,8 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
                 tttt ssss xx yy ffff
                 t: Timer
                 s: Spritemap pointer
-                x: Projectile X radius
-                y: Projectile Y radius
+                x: X radius
+                y: Y radius
                 f: Projectile trail frame. Used to index beam trail offset table, see $9B:A4B3
             If p & 8000h != 0:
                 pppp

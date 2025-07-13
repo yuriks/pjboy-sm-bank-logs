@@ -523,7 +523,7 @@ $9B:A43C 79 E3 A4    ADC $A4E3,y            ;/
 $9B:A43F A8          TAY                    ;\
 $9B:A440 A5 16       LDA $16    [$7E:0016]  ;|
 $9B:A442 0A          ASL A                  ;|
-$9B:A443 0A          ASL A                  ;} Y = [[A]] + [$16] * 4
+$9B:A443 0A          ASL A                  ;} Y = [[A]] + (projectile trail frame) * 4
 $9B:A444 18          CLC                    ;|
 $9B:A445 79 00 00    ADC $0000,y[$9B:A519]  ;|
 $9B:A448 A8          TAY                    ;/

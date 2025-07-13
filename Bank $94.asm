@@ -1296,9 +1296,9 @@ $94:880A 18          CLC                    ;|
 $94:880B 6D 00 0B    ADC $0B00  [$7E:0B00]  ;} $1C = (Samus bottom boundary position)
 $94:880E 3A          DEC A                  ;|
 $94:880F 85 1C       STA $1C    [$7E:001C]  ;/
-$94:8811 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
-$94:8813 64 20       STZ $20    [$7E:0020]  ; $20 = 0
-$94:8815 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
+$94:8811 64 1E       STZ $1E    [$7E:001E]  ;\
+$94:8813 64 20       STZ $20    [$7E:0020]  ;} Calculate block at ([$1A], [$1C])
+$94:8815 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;/
 $94:8818 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
 $94:881B 0A          ASL A                  ;|
 $94:881C AA          TAX                    ;|
@@ -1357,9 +1357,9 @@ $94:888F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:8892 38          SEC                    ;|
 $94:8893 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $1C = (Samus top boundary)
 $94:8896 85 1C       STA $1C    [$7E:001C]  ;/
-$94:8898 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
-$94:889A 64 20       STZ $20    [$7E:0020]  ; $20 = 0
-$94:889C 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
+$94:8898 64 1E       STZ $1E    [$7E:001E]  ;\
+$94:889A 64 20       STZ $20    [$7E:0020]  ;} Calculate block at ([$1A], [$1C])
+$94:889C 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;/
 $94:889F AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
 $94:88A2 0A          ASL A                  ;|
 $94:88A3 AA          TAX                    ;|
@@ -2536,8 +2536,12 @@ $94:9494 60          RTS
 
 ;;; $9495: Calculate Samus Y block span ;;;
 {
-; A = $1A = $1C = ([Samus Y position] + [Samus Y radius] - 1) / 10h
-;               - ([Samus Y position] - [Samus Y radius]) / 10h
+;; Returns:
+;;     $1A: Number of blocks left to check (0 if final (bottom) block)
+;;     $1C: Samus' Y block span
+
+; $1A = $1C = ([Samus Y position] + [Samus Y radius] - 1) / 10h
+;           - ([Samus Y position] - [Samus Y radius]) / 10h
 $94:9495 AD FA 0A    LDA $0AFA  [$7E:0AFA]
 $94:9498 38          SEC
 $94:9499 ED 00 0B    SBC $0B00  [$7E:0B00]
@@ -2561,8 +2565,12 @@ $94:94B4 60          RTS
 
 ;;; $94B5: Calculate Samus X block span ;;;
 {
-; A = $1A = $1C = ([Samus X position] + [Samus X radius] - 1) / 10h
-;               - ([Samus X position] - [Samus X radius]) / 10h
+;; Returns:
+;;     $1A: Number of blocks left to check (0 if final (rightmost) block)
+;;     $1C: Samus' X block span
+
+; $1A = $1C = ([Samus X position] + [Samus X radius] - 1) / 10h
+;           - ([Samus X position] - [Samus X radius]) / 10h
 $94:94B5 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $94:94B8 38          SEC
 $94:94B9 ED FE 0A    SBC $0AFE  [$7E:0AFE]
@@ -3623,6 +3631,12 @@ $94:9C1C 6B          RTL
 
 ;;; $9C1D: Calculate block at ([$1A] + [$1E], [$1C] + [$20]) ;;;
 {
+;; Parameters:
+;;     $1A: X position
+;;     $1C: Y position
+;;     $1E: 0
+;;     $20: 0
+
 ; Every call site sets $1E and $20 to zero
 ; Sets X to zero if block index is calculated successfully (for no reason)
 $94:9C1D 08          PHP
@@ -3688,8 +3702,8 @@ $94:9C72 60          RTS
 ; Highly likely that this is based on an old model of the projectile system and was supposed to have been entirely abandoned,
 ; but here we are
 
-; The is a frame after the end of a power bomb explosion where this subroutine is called where the projectile type is 0,
-; cause the code at $9C83 to be executed. I doubt this is intentional
+; There is a frame after the end of a power bomb explosion where this subroutine is called where the projectile type is 0,
+; causing the code at $9C83 to be executed. I doubt this is intentional
 $94:9C73 08          PHP
 $94:9C74 8B          PHB
 $94:9C75 DA          PHX
@@ -3752,11 +3766,11 @@ $94:9CCC EB          XBA                    ;\
 $94:9CCD 29 FF 00    AND #$00FF             ;|
 $94:9CD0 CD AB 07    CMP $07AB  [$7E:07AB]  ;} If [projectile Y position] >= [room height]: return
 $94:9CD3 10 1C       BPL $1C    [$9CF1]     ;/
-$94:9CD5 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
-$94:9CD7 64 20       STZ $20    [$7E:0020]  ; $20 = 0
-$94:9CD9 9C C4 0D    STZ $0DC4  [$7E:0DC4]  ; Current block index = 0
-$94:9CDC DA          PHX                    ;\
-$94:9CDD 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;} Calculate block at ([$1A], [$1C])
+$94:9CD5 64 1E       STZ $1E    [$7E:001E]  ;\
+$94:9CD7 64 20       STZ $20    [$7E:0020]  ;|
+$94:9CD9 9C C4 0D    STZ $0DC4  [$7E:0DC4]  ;|
+$94:9CDC DA          PHX                    ;} Calculate block at ([$1A], [$1C])
+$94:9CDD 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;|
 $94:9CE0 FA          PLX                    ;/
 $94:9CE1 AD D2 0D    LDA $0DD2  [$7E:0DD2]  ;\
 $94:9CE4 C9 02 00    CMP #$0002             ;} If [projectile proto type] != bomb:
@@ -3813,6 +3827,10 @@ $94:9D33 60          RTS
 
 ;;; $9D34: Move block index X one row up ;;;
 {
+;; Parameters:
+;;     X: Block index
+;; Returns:
+;;     X: New block index
 $94:9D34 8A          TXA
 $94:9D35 38          SEC
 $94:9D36 ED A5 07    SBC $07A5  [$7E:07A5]
@@ -3824,6 +3842,10 @@ $94:9D3D 60          RTS
 
 ;;; $9D3E: Move block index X one row down, one column right ;;;
 {
+;; Parameters:
+;;     X: Block index
+;; Returns:
+;;     X: New block index
 $94:9D3E 8A          TXA
 $94:9D3F 38          SEC
 $94:9D40 6D A5 07    ADC $07A5  [$7E:07A5]
@@ -3836,6 +3858,10 @@ $94:9D48 60          RTS
 
 ;;; $9D49: Move block index X two columns left ;;;
 {
+;; Parameters:
+;;     X: Block index
+;; Returns:
+;;     X: New block index
 $94:9D49 CA          DEX
 $94:9D4A CA          DEX
 $94:9D4B CA          DEX
@@ -3846,6 +3872,11 @@ $94:9D4D 60          RTS
 
 ;;; $9D4E: Move block index X one row down, one column right ;;;
 {
+;; Parameters:
+;;     X: Block index
+;; Returns:
+;;     X: New block index
+
 ; Clone of $9D3E
 $94:9D4E 8A          TXA
 $94:9D4F 38          SEC
@@ -4394,7 +4425,7 @@ $94:A195             dw 9D59, ;  0: Air
 ;;     $26: Number of blocks left to check - 1
 ;;     $28: Target number of collisions - 1
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 ;;     $26: Remaining number of blocks left to check - 1
 ;;     $28: Remaining target number of collisions - 1
 $94:A1B5 EC B9 07    CPX $07B9  [$7E:07B9]  ;\
@@ -4429,7 +4460,7 @@ $94:A1D5 60          RTS
 ;;     $26: Number of blocks left to check - 1
 ;;     $28: Target number of collisions - 1
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 ;;     $26: Remaining number of blocks left to check - 1
 ;;     $28: Remaining target number of collisions - 1
 $94:A1D6 EC B9 07    CPX $07B9  [$7E:07B9]  ;\
@@ -4519,7 +4550,7 @@ $94:A23A 60          RTS
 ;; Parameters:
 ;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 $94:A23B 8B          PHB
 $94:A23C DA          PHX
 $94:A23D 4B          PHK                    ;\
@@ -4612,7 +4643,7 @@ $94:A2C9 6B          RTL                    ;} Return carry set
 ;; Parameters:
 ;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 $94:A2CA 8B          PHB
 $94:A2CB DA          PHX
 $94:A2CC 4B          PHK                    ;\
@@ -4881,7 +4912,7 @@ $94:A46E 6B          RTL                    ;} Return carry clear
 ;; Parameters:
 ;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 $94:A46F 8B          PHB
 $94:A470 DA          PHX
 $94:A471 4B          PHK                    ;\
@@ -4951,7 +4982,7 @@ $94:A4D8 6B          RTL                    ;} Return carry set
 ;; Parameters:
 ;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Set if collided with block, clear otherwise
 $94:A4D9 8B          PHB
 $94:A4DA DA          PHX
 $94:A4DB 4B          PHK                    ;\
@@ -5853,7 +5884,7 @@ $94:AA63 60          RTS
 ;;     $0D94: X block
 ;;     $0D96: Y block
 ;; Returns:
-;;     Carry: set if collision, clear otherwise
+;;     Carry: Set if collision, clear otherwise
 $94:AA64 E2 20       SEP #$20
 $94:AA66 AD 96 0D    LDA $0D96  [$7E:0D96]  ;\
 $94:AA69 8D 02 42    STA $4202              ;|
@@ -5996,6 +6027,12 @@ $94:AB90             dw AA9A, ;  0: Air
 
 ;;; $ABB0: Grapple swing collision reaction ;;;
 {
+;; Parameters:
+;;     $0D94: X block
+;;     $0D96: Y block
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 ; Clone of $AA64
 $94:ABB0 E2 20       SEP #$20
 $94:ABB2 AD 96 0D    LDA $0D96  [$7E:0D96]
@@ -6034,7 +6071,7 @@ $94:ABE5 60          RTS
 ;;; $ABE6: Grapple swing collision detection due to swinging ;;;
 {
 ;; Returns:
-;;     Carry: set if collision, clear otherwise
+;;     Carry: Set if collision, clear otherwise
 ;;     $0D98: Distance of grapple swing collision from Samus' feet. Unit 8px
 
 ; Checks 6(!) points along the 48px line projecting 8px beyond the grapple beam start position
@@ -6083,6 +6120,7 @@ $94:AC30 6B          RTL
 
 ;;; $AC31: Handle grapple beam length change ;;;
 {
+; Carry is ignored by caller
 $94:AC31 8B          PHB
 $94:AC32 4B          PHK                    ;\
 $94:AC33 AB          PLB                    ;} DB = $94
@@ -6196,6 +6234,7 @@ $94:ACFD 6B          RTL
 
 ;;; $ACFE: Handle grapple beam swinging movement ;;;
 {
+; Carry is ignored by caller
 ; The clockwise and anticlockwise branches are identical except for the INC/DEC in the loop >_>;
 $94:ACFE 8B          PHB
 $94:ACFF 4B          PHK                    ;\
@@ -6786,6 +6825,10 @@ $94:B0F3 60          RTS
 
 ;;; $B0F4: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $94:B0F4 B9 00 00    LDA $0000,y[$94:B19D]
 $94:B0F7 A8          TAY
 $94:B0F8 60          RTS
