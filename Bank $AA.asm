@@ -4134,25 +4134,25 @@ $AA:D785             dw 3800, 27F9, 2375, 1AD2, 164E, 11AB, 0D27, 0484, 0000, 7F
 
 ;;; $D7A5: Instruction list - Tourian entrance statue - Ridley ;;;
 {
-$AA:D7A5             dx 807C        ; Delete
-$AA:D7A7             dx 7777,D83B,
+$AA:D7A5             dw 807C        ; Delete
+$AA:D7A7             dw 7777,D83B,
                         80ED,D7A7   ; Go to $D7A7
 }
 
 
 ;;; $D7AF: Instruction list - Tourian entrance statue - Phantoon ;;;
 {
-$AA:D7AF             dx 807C        ; Delete
-$AA:D7B1             dx 7777,D8B0,
+$AA:D7AF             dw 807C        ; Delete
+$AA:D7B1             dw 7777,D8B0,
                         80ED,D7B1   ; Go to $D7B1
 }
 
 
 ;;; $D7B9: Instruction list - Tourian entrance statue - base decoration ;;;
 {
-$AA:D7B9             dx 807C        ; Delete
-                        0100,D816,
-$AA:D7BF             dx 7777,D816,
+$AA:D7B9             dw 807C,       ; Delete
+                        0100,D816
+$AA:D7BF             dw 7777,D816,
                         80ED,D7BF   ; Go to $D7BF
 }
 

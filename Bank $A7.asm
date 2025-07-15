@@ -5533,6 +5533,8 @@ $A7:CF5D 60          RTS
 
 ;;; $CF5E: Spawn casual flame ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:CF5E A9 00 00    LDA #$0000             ; A = 0
 $A7:CF61 A0 29 9C    LDY #$9C29             ;\
 $A7:CF64 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile

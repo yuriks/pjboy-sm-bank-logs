@@ -63,8 +63,8 @@ $0F8E/$0FCE/$100E/$104E: Spritemap pointer (Patern in enemy debugger)
                     [word] Top offset
                     [word] Right offset
                     [word] Bottom offset
-                    [word] Samus collision pointer
-                    [word] Projectile collision pointer
+                    [word] Touch AI pointer (Samus collision)
+                    [word] Shot AI pointer (projectile collision)
             }
 }
 $0F90/$0FD0/$1010/$1050: Timer (LpCnt in enemy debugger) (according to $A0:8123 and associated instructions)

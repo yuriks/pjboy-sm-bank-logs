@@ -1511,7 +1511,6 @@ $88:867E 60          RTS
 ;;; $867F: Unused. Instruction - skip next instruction ;;;
 {
 ;; Parameters:
-;;     X: HDMA object index
 ;;     Y: Pointer to after this instruction
 ;; Returns:
 ;;     Y: Pointer to next instruction

@@ -49,7 +49,7 @@
 
 ;;; $8000..8686: Common to all enemy banks ;;;
 {
-;;; $8000..45: Common enemy AI ;;;
+;;; $8000..4A: Common enemy AI ;;;
 {
 ;;; $8000: Grapple AI - no interaction. Also unfreezes enemies(!) ;;;
 {
@@ -114,7 +114,7 @@ $A0:8027 6B          RTL
 }
 
 
-;;; $8028: Normal touch AI - no death check ;;;
+;;; $8028: Normal enemy touch AI - no death check ;;;
 {
 $A0:8028 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A0:802C 6B          RTL
@@ -155,13 +155,14 @@ $A0:8040 6B          RTL
 $A0:8041 22 7E 95 A0 JSL $A0957E[$A0:957E]  ; Normal enemy frozen AI
 $A0:8045 6B          RTL
 }
-}
 
 
-;;; $8046: Creates a dud shot ;;;
+;;; $8046: Shot AI - dud shot ;;;
 {
+; Used only by Draygon and Spore Spawn
 $A0:8046 22 BC A8 A0 JSL $A0A8BC[$A0:A8BC]
 $A0:804A 6B          RTL
+}
 }
 
 
@@ -196,7 +197,7 @@ $A0:8059             dw 0001, 0000,0000,0000,0000,8023,802D
 }
 
 
-;;; $8067: Instruction list - delete enemy ;;;
+;;; $8067: Unused. Instruction list - delete enemy ;;;
 {
 $A0:8067             dw 807C
 }
@@ -214,7 +215,13 @@ $A0:806A EA          NOP
 {
 ;;; $806B: Instruction - enemy $0FB2 = [[Y]] ;;;
 {
-; Used only by torizos (for enemy movement function) and escape etecoon (for enemy function)
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
+; Used only by torizos (for enemy movement function), chozo statues and escape etecoon (for enemy function)
 $A0:806B B9 00 00    LDA $0000,y
 $A0:806E 9D B2 0F    STA $0FB2,x
 $A0:8071 C8          INY
@@ -225,6 +232,10 @@ $A0:8073 6B          RTL
 
 ;;; $8074: Instruction - enemy $0FB2 = RTS ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
+; Used only by chozo statues (for enemy function)
 $A0:8074 A9 7B 80    LDA #$807B
 $A0:8077 9D B2 0F    STA $0FB2,x
 $A0:807A 6B          RTL
@@ -235,6 +246,8 @@ $A0:807B 60          RTS
 
 ;;; $807C: Instruction - delete enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:807C BD 86 0F    LDA $0F86,x            ;\
 $A0:807F 09 00 02    ORA #$0200             ;} Mark enemy for deletion
 $A0:8082 9D 86 0F    STA $0F86,x            ;/
@@ -246,6 +259,13 @@ $A0:8089 6B          RTL
 
 ;;; $808A: Instruction - call function [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
+; Used only by Phantoon
 $A0:808A B9 00 00    LDA $0000,y
 $A0:808D 85 12       STA $12    [$7E:0012]
 $A0:808F 5A          PHY
@@ -263,6 +283,10 @@ $A0:809B 6B          RTL
 
 ;;; $809C: Unused. Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:809C B9 00 00    LDA $0000,y
 $A0:809F 85 12       STA $12    [$7E:0012]
 $A0:80A1 B9 02 00    LDA $0002,y
@@ -283,6 +307,10 @@ $A0:80B4 6B          RTL
 
 ;;; $80B5: Unused. Instruction - call external function [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:80B5 B9 00 00    LDA $0000,y
 $A0:80B8 85 12       STA $12    [$7E:0012]
 $A0:80BA B9 01 00    LDA $0001,y
@@ -303,6 +331,10 @@ $A0:80CB DC 12 00    JML [$0012]
 
 ;;; $80CE: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:80CE B9 00 00    LDA $0000,y
 $A0:80D1 85 12       STA $12    [$7E:0012]
 $A0:80D3 B9 01 00    LDA $0001,y
@@ -325,6 +357,10 @@ $A0:80EA DC 12 00    JML [$0012]
 
 ;;; $80ED: Instruction - go to [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:80ED B9 00 00    LDA $0000,y
 $A0:80F0 A8          TAY
 $A0:80F1 6B          RTL
@@ -333,6 +369,10 @@ $A0:80F1 6B          RTL
 
 ;;; $80F2: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:80F2 84 12       STY $12    [$7E:0012]
 $A0:80F4 88          DEY
 $A0:80F5 B9 00 00    LDA $0000,y
@@ -352,6 +392,11 @@ $A0:8107 6B          RTL
 
 ;;; $8108: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:8108 DE 90 0F    DEC $0F90,x
 $A0:810B D0 E0       BNE $E0    [$80ED]
 $A0:810D C8          INY
@@ -362,6 +407,11 @@ $A0:810F 6B          RTL
 
 ;;; $8110: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:8110 DE 90 0F    DEC $0F90,x
 $A0:8113 D0 D8       BNE $D8    [$80ED]
 $A0:8115 C8          INY
@@ -372,6 +422,11 @@ $A0:8117 6B          RTL
 
 ;;; $8118: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:8118 E2 20       SEP #$20
 $A0:811A DE 90 0F    DEC $0F90,x
 $A0:811D C2 20       REP #$20
@@ -383,6 +438,11 @@ $A0:8122 6B          RTL
 
 ;;; $8123: Instruction - timer = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:8123 B9 00 00    LDA $0000,y
 $A0:8126 9D 90 0F    STA $0F90,x
 $A0:8129 C8          INY
@@ -393,6 +453,10 @@ $A0:812B 6B          RTL
 
 ;;; $812C: Unused. Instruction - skip next instruction ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:812C C8          INY
 $A0:812D C8          INY
 $A0:812E 6B          RTL
@@ -401,6 +465,9 @@ $A0:812E 6B          RTL
 
 ;;; $812F: Instruction - sleep ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
 $A0:812F 88          DEY                    ;\
 $A0:8130 88          DEY                    ;|
 $A0:8131 98          TYA                    ;} Enemy instruction list pointer = [Y] - 2
@@ -413,6 +480,10 @@ $A0:8139 6B          RTL
 
 ;;; $813A: Instruction - wait [[Y]] frames ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+
 ; Set instruction timer and terminate processing enemy instructions
 ; Used for running a delay that doesn't update graphics,
 ; useful for e.g. GT eye beam attack ($AA:D10D), implemented by an instruction list that has no graphical instructions,
@@ -431,6 +502,11 @@ $A0:814A 6B          RTL
 
 ;;; $814B: Instruction - transfer [[Y]] bytes from [[Y] + 2] to VRAM [[Y] + 5] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A0:814B DA          PHX
 $A0:814C AE 30 03    LDX $0330  [$7E:0330]
 $A0:814F B9 00 00    LDA $0000,y
@@ -456,6 +532,8 @@ $A0:8172 6B          RTL
 
 ;;; $8173: Instruction - enable off-screen processing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:8173 BD 86 0F    LDA $0F86,x
 $A0:8176 09 00 08    ORA #$0800
 $A0:8179 9D 86 0F    STA $0F86,x
@@ -465,6 +543,8 @@ $A0:817C 6B          RTL
 
 ;;; $817D: Instruction - disable off-screen processing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:817D BD 86 0F    LDA $0F86,x
 $A0:8180 29 FF F7    AND #$F7FF
 $A0:8183 9D 86 0F    STA $0F86,x
@@ -900,12 +980,12 @@ $A0:8A37 A9 4C 80    LDA #$804C             ;} Enemy graphics drawn hook = RTL
 $A0:8A3A 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A0:8A3D A9 A0 00    LDA #$00A0             ;\
 $A0:8A40 8D 92 17    STA $1792  [$7E:1792]  ;|
-$A0:8A43 A9 4C 80    LDA #$804C             ;} $1790 = RTL
+$A0:8A43 A9 4C 80    LDA #$804C             ;} $1790 = RTL (never read)
 $A0:8A46 8D 90 17    STA $1790  [$7E:1790]  ;/
 $A0:8A49 A9 00 08    LDA #$0800             ;\
 $A0:8A4C 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 800h
-$A0:8A4F 9C 9E 17    STZ $179E  [$7E:179E]  ; $179E = 0
-$A0:8A52 9C A0 17    STZ $17A0  [$7E:17A0]  ; $17A0 = 0
+$A0:8A4F 9C 9E 17    STZ $179E  [$7E:179E]  ; $179E = 0 (never read)
+$A0:8A52 9C A0 17    STZ $17A0  [$7E:17A0]  ; $17A0 = 0 (never read)
 $A0:8A55 9C 9C 17    STZ $179C  [$7E:179C]  ; Boss number = 0 (again)
 $A0:8A58 22 6D 8A A0 JSL $A08A6D[$A0:8A6D]  ; Clear enemy data and process enemy set
 $A0:8A5C 22 6C 8C A0 JSL $A08C6C[$A0:8C6C]  ; Load enemy tile data
@@ -958,7 +1038,7 @@ $A0:8AA0 A0 00 14    LDY #$1400             ;\
 $A0:8AA3 A2 00 00    LDX #$0000             ;|
 $A0:8AA6 A9 00 00    LDA #$0000             ;|
                                             ;|
-$A0:8AA9 9F 00 70 7E STA $7E7000,x[$7E:7000];} $7E:7000..97FF = 0 (extra enemy RAM, but also a load of other random purposes)
+$A0:8AA9 9F 00 70 7E STA $7E7000,x[$7E:7000];} $7E:7000..97FF = 0 (mostly extra enemy RAM)
 $A0:8AAD E8          INX                    ;|
 $A0:8AAE E8          INX                    ;|
 $A0:8AAF 88          DEY                    ;|
