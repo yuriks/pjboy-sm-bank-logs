@@ -2733,7 +2733,7 @@ $1840: Earthquake timer
 $1842: Number of times $A0:8687 (handle room shaking) has been executed. Never read
 $1844: Sprite object index
 $1846: Debug enemy index (for enemy debugger)
-$1848: Log index for unused enemy function $A0:918B
+$1848: Debug enemy log index for unused function $A0:918B
 $184A: Samus X position when Samus collides with solid enemy. Never read
 $184C: Samus X subposition when Samus collides with solid enemy. Never read
 $184E: Enemy X position when Samus collides with solid enemy. Never read
@@ -3543,7 +3543,7 @@ $7E:6000..87FF: Post-credits Super Metroid icon
 
 $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9E)
 {
-    $7E:7000..97FF: Enemy tile data. Transferred to VRAM $6C00..7FFF by $A0:8CD7 when loading game
+    $7E:7000..97FF: Enemy tile data. Transferred to VRAM $6C00..7FFF by $A0:8CD7 when loading game. The first 200h bytes are initialised to the last 10h non-X standard sprite tiles and are never overwritten by any enemies, so it's basically wasted memory
     $7E:7000..77FF: Enemy spawn data. 40h byte slots
     {
         + 0: If not 0/8, then if enemy is respawning enemy placeholder, it can still interact with Samus, although it won't because its enemy touch is $804C. Never written
@@ -3696,6 +3696,7 @@ $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9
         }
     }
 
+    $7E:9000..97FF: Debug enemy log for unused function $A0:918B
     $7E:9000..953F: Mother Brain corpse rotting graphics
     $7E:9000..93FF: Botwoon position history. Previous 100h X/Y positions. Circular buffer with stack index $0FAA
     $7E:9000..19: Crocomire death sequence variables

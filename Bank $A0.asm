@@ -1263,11 +1263,12 @@ $A0:8C6B 60          RTS
 {
 ; Loads enemy tile data to $7E:7000+, this is then transferred to VRAM when loading the game, but ignored and cleared during door transition >_>
 ; Note how this routine can't load enemy graphics from hirom banks due to setting the DB to the tile data bank (which kills short address accesses to WRAM)
+; The $7E:7000..71FF part looks like it could be omitted from the VRAM update entirely...
 $A0:8C6C C2 30       REP #$30
 $A0:8C6E A2 FE 01    LDX #$01FE             ;\
                                             ;|
 $A0:8C71 BF 00 EA 9A LDA $9AEA00,x[$9A:EBFE];|
-$A0:8C75 9F 00 70 7E STA $7E7000,x[$7E:71FE];} $7E:7000..71FF = [$9A:EA00..EBFF] (standard sprite tiles)
+$A0:8C75 9F 00 70 7E STA $7E7000,x[$7E:71FE];} $7E:7000..71FF = [$9A:EA00..EBFF] (last 10h non-X standard sprite tiles)
 $A0:8C79 CA          DEX                    ;|
 $A0:8C7A CA          DEX                    ;|
 $A0:8C7B 10 F4       BPL $F4    [$8C71]     ;/
@@ -1288,7 +1289,7 @@ $A0:8C94 AB          PLB                    ;} DB = [enemy loading tile data ban
 $A0:8C95 AB          PLB                    ;/
 $A0:8C96 8A          TXA                    ;\
 $A0:8C97 18          CLC                    ;|
-$A0:8C98 69 07 00    ADC #$0007             ;} Enemy loading data index += 7
+$A0:8C98 69 07 00    ADC #$0007             ;} (Enemy loading data index) += 7
 $A0:8C9B 48          PHA                    ;/
 $A0:8C9C BD 5F 0E    LDA $0E5F,x[$7E:0E5F]  ;\
 $A0:8C9F AA          TAX                    ;} X = [enemy loading tile data offset]
@@ -1313,7 +1314,7 @@ $A0:8CC7 A8          TAY                    ;/
 $A0:8CC8 C4 12       CPY $12    [$7E:0012]  ;\
 $A0:8CCA D0 D4       BNE $D4    [$8CA0]     ;} If [Y] != [$12]: go to LOOP_TILES
 $A0:8CCC FA          PLX                    ;\
-$A0:8CCD EC 7A 0E    CPX $0E7A  [$7E:0E7A]  ;} If enemy loading data index != [enemy loading data stack pointer]: go to LOOP_ENEMIES
+$A0:8CCD EC 7A 0E    CPX $0E7A  [$7E:0E7A]  ;} If (enemy loading data index) != [enemy loading data stack pointer]: go to LOOP_ENEMIES
 $A0:8CD0 D0 B4       BNE $B4    [$8C86]     ;/
 $A0:8CD2 9C 7A 0E    STZ $0E7A  [$7E:0E7A]  ; Enemy loading data stack pointer = 0
 $A0:8CD5 AB          PLB
@@ -1375,6 +1376,11 @@ $A0:8D39 6B          RTL
 
 ;;; $8D3A: Unused. Load enemy width, height, health, layer and bank ;;;
 {
+;; Parameters:
+;;     X: Pointer to enemy ID
+;;     Y: Enemy index
+
+; DB must be $A0
 $A0:8D3A DA          PHX
 $A0:8D3B 5A          PHY
 $A0:8D3C BD 00 00    LDA $0000,x    ;\
@@ -1386,7 +1392,7 @@ $A0:8D49 99 84 0F    STA $0F84,y    ;} Enemy [Y] height = [[X] + Ah]
 $A0:8D4C BD 04 00    LDA $0004,x    ;\
 $A0:8D4F 99 8C 0F    STA $0F8C,y    ;} Enemy [Y] health = [[X] + 4]
 $A0:8D52 BD 39 00    LDA $0039,x    ;\
-$A0:8D55 29 FF 00    AND #$00FF     ;} Enemy [Y] layer = [[X] + 39h] & FFh
+$A0:8D55 29 FF 00    AND #$00FF     ;} Enemy [Y] layer = [[X] + 39h]
 $A0:8D58 99 9A 0F    STA $0F9A,y    ;/
 $A0:8D5B BD 0C 00    LDA $000C,x    ;\
 $A0:8D5E 99 A6 0F    STA $0FA6,y    ;} Enemy [Y] bank = [[X] + Ch]
@@ -1977,7 +1983,7 @@ $A0:918A 6B          RTL
 ;;; $918B: Unused. Logging routine for a specific vertical enemy reaction ;;;
 {
 $A0:918B 8B          PHB
-$A0:918C AD 48 18    LDA $1848  [$7E:1848]  ; A = [$1848]
+$A0:918C AD 48 18    LDA $1848  [$7E:1848]  ; A = [debug enemy log index]
 $A0:918F D0 03       BNE $03    [$9194]     ; If [A] = 0:
 $A0:9191 A9 00 90    LDA #$9000             ; A = $9000
 
@@ -1991,7 +1997,7 @@ $A0:91A6 9F 04 00 7E STA $7E0004,x          ;} $7E:0004 + [A] = [enemy 2 Y subpo
 $A0:91AA AD 5C 0B    LDA $0B5C  [$7E:0B5C]  ;\
 $A0:91AD 9F 06 00 7E STA $7E0006,x          ;} $7E:0006 + [A] = [extra Samus Y displacement]
 $A0:91B1 AD 5A 0B    LDA $0B5A  [$7E:0B5A]  ;\
-$A0:91B4 9F 08 00 7E STA $7E0008,x          ;} $7E:0008 + [A] = [decreasing momentum flag]
+$A0:91B4 9F 08 00 7E STA $7E0008,x          ;} $7E:0008 + [A] = [extra Samus Y subdisplacement]
 $A0:91B8 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:91BB 9F 0A 00 7E STA $7E000A,x          ;} $7E:000A + [A] = [Samus Y position]
 $A0:91BF AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
@@ -2005,7 +2011,7 @@ $A0:91D7 9F 12 00 7E STA $7E0012,x          ;} $7E:0012 + [A] = [Samus Y radius]
 $A0:91DB AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $A0:91DE 9F 14 00 7E STA $7E0014,x          ;} $7E:0014 + [A] = [Samus pose]
 $A0:91E2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$A0:91E5 9F 16 00 7E STA $7E0016,x          ;} $7E:0016 + [A] = [Samus movement type and X direction]
+$A0:91E5 9F 16 00 7E STA $7E0016,x          ;} $7E:0016 + [A] = [Samus movement type and pose X direction]
 $A0:91E9 A9 00 00    LDA #$0000             ;\
 $A0:91EC 9F 18 00 7E STA $7E0018,x          ;} $7E:0018 + [A] = 0
 $A0:91F0 9F 1A 00 7E STA $7E001A,x          ; $7E:001A + [A] = 0
@@ -2018,7 +2024,7 @@ $A0:9201 C9 00 98    CMP #$9800             ;\
 $A0:9204 30 03       BMI $03    [$9209]     ;} If [A] >= $9800:
 $A0:9206 A9 00 00    LDA #$0000             ; A = 0
 
-$A0:9209 8D 48 18    STA $1848  [$7E:1848]  ; $1848 = [A]
+$A0:9209 8D 48 18    STA $1848  [$7E:1848]  ; Debug enemy log index = [A]
 $A0:920C AB          PLB
 $A0:920D 60          RTS
 }
@@ -2028,6 +2034,7 @@ $A0:920D 60          RTS
 {
 ;; Parameters:
 ;;     A: Enemy header pointer (to check drop rates)
+;;     X: Enemy index
 ;;     $12: X position
 ;;     $14: Y position
 
@@ -2086,6 +2093,8 @@ $A0:924A 6B          RTL
 ;; Parameters:
 ;;     X: New enemy population data
 ;;     Y: New enemy index
+
+; Returned A and X is ignored by callers
 $A0:924B 8B          PHB
 $A0:924C 8E 20 0E    STX $0E20  [$7E:0E20]  ; $0E20 = [X]
 $A0:924F 8C 4A 0E    STY $0E4A  [$7E:0E4A]  ; New enemy index = [Y]
@@ -2109,8 +2118,9 @@ $A0:9272 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy
 ;; Parameters:
 ;;     X: New enemy population data
 ;; Returns:
-;;     A: 0 if successfully spawned, FFFFh otherwise
 ;;     X: New enemy index (or 800h if failed to spawn)
+
+; Returned A is ignored by callers
 
 ; This routine attempts to find (number of enemy parts) consecutive free enemy slots, and calls $92DB if it succeeds
 ; It has a couple problems for multi-part enemies
@@ -2180,8 +2190,10 @@ $A0:92DA 6B          RTL
 ;;     DB:$0E20: New enemy population data
 ;;     $0E26: Number of enemy parts to spawn. 0 acts like 1 (thanks to the BEQ at $93E2)
 ;; Returns:
-;;     A: 0. This routine doesn't check if it's overwriting an enemy or not and has no bounds checking, so it always succeeds
 ;;     X: New enemy index
+
+; Returned A is ignored by callers, though even if it did,
+; this routine doesn't check if it's overwriting an enemy or not and has no bounds checking, so it always succeeds
 
 $A0:92DB AC 4A 0E    LDY $0E4A  [$7E:0E4A]  ; Y = [$0E4A] (new enemy index)
 $A0:92DE AE 20 0E    LDX $0E20  [$7E:0E20]  ;\
@@ -2489,6 +2501,7 @@ $A0:957D 60          RTS
 
 ;;; $957E: Normal enemy frozen AI ;;;
 {
+; Returned A is ignored by callers
 $A0:957E DA          PHX
 $A0:957F 5A          PHY
 $A0:9580 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2649,7 +2662,7 @@ $A0:96C7 DC 84 17    JML [$1784]
 ;;; $96CA: Process extended tilemap ;;;
 {
 ;; Parameters:
-;;     [$16]: Pointer to extended tilemap
+;;     $16: Pointer to extended tilemap
 
 ; Crashes if writing >= 2800h bytes
 
@@ -3126,6 +3139,8 @@ $A0:99F8 6B          RTL
 ;; Parameters:
 ;;     X: Enemy projectile index
 ;;     Y: Projectile index
+
+; Caller assumes X and Y are unmodified by this routine
 
 ; Code at $9A3D for creating the dud shot graphics uses the wrong index register for the projectile position,
 ; meaning the sprite object usually doesn't appear (used for fire arc and Botwoon)
@@ -4006,7 +4021,7 @@ $A0:A0A3 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
 $A0:A0A6 C9 FF DA    CMP #$DAFF             ;} If [enemy ID] = respawning enemy placeholder:
 $A0:A0A9 D0 0B       BNE $0B    [$A0B6]     ;/
 $A0:A0AB BF 00 70 7E LDA $7E7000,x          ;\
-$A0:A0AF F0 05       BEQ $05    [$A0B6]     ;} If [enemy $7E:7000] != 0:
+$A0:A0AF F0 05       BEQ $05    [$A0B6]     ;} If [enemy $7E:7000] != 0 (never true):
 $A0:A0B1 C9 08 00    CMP #$0008             ;\
 $A0:A0B4 D0 02       BNE $02    [$A0B8]     ;} If [enemy $7E:7000] != 8: go to BRANCH_TANGIBLE
 
@@ -4420,6 +4435,7 @@ $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 ;;         2: Normal explosion. Used by super missile killed default, atomic / robot / ghost, bull / floater / oum / yard / fish, fune, sidehopper, desgeega, mochtroid, slug, sciser, metaree, chute, rio, squeept, rio, cacatac
 ;;         3: Fake Kraid explosion
 ;;         4: Big explosion. Used by space pirates, Shaktool, ki-hunter, dragon, kago, yapping maw, evir, metroid, super-sidehopper/desgeega, tatori
+;;     X: Enemy index
 $A0:A3AF 08          PHP
 $A0:A3B0 8B          PHB
 $A0:A3B1 F4 00 A0    PEA $A000              ;\
@@ -5562,6 +5578,8 @@ $A0:ABE6 6B          RTL
 {
 ;;; $ABE7: Check if enemy is touching Samus from below ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     A: FFFFh if touching Samus, otherwise 0
 $A0:ABE7 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -5604,6 +5622,8 @@ $A0:AC28 6B          RTL
 
 ;;; $AC29: Unused. Check if Samus is touching enemy from above ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     A: FFFFh if touching Samus, otherwise 0
 $A0:AC29 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -5644,6 +5664,8 @@ $A0:AC66 6B          RTL
 
 ;;; $AC67: Check if enemy is touching Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     A: FFFFh if touching Samus, otherwise 0
 $A0:AC67 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -5773,6 +5795,8 @@ $A0:AD32 6B          RTL                    ;} Return carry set
 
 ;;; $AD33: Unused. Enemy $0FB0 = max(0, [enemy $0FB0] - 1). If [enemy $0FB0] = 0, A = 1, else A = 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AD33 8B          PHB
 $A0:AD34 E2 20       SEP #$20
 $A0:AD36 A9 A0       LDA #$A0               ;\
@@ -5794,6 +5818,7 @@ $A0:AD4E 6B          RTL                    ;/
 
 ;;; $AD4F: Unused. A = sgn([A]) (zero is special case) ;;;
 {
+; It's assumed that the zero flag corresponds to A
 $A0:AD4F D0 04       BNE $04    [$AD55] ; If [A] = 0:
 $A0:AD51 A9 00 00    LDA #$0000         ;\
 $A0:AD54 6B          RTL                ;} Return A = 0
@@ -6067,6 +6092,8 @@ $A0:AEDC 6B          RTL
 
 ;;; $AEDD: A = [Samus Y position] - [enemy Y position] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AEDD AD FA 0A    LDA $0AFA  [$7E:0AFA]
 $A0:AEE0 38          SEC
 $A0:AEE1 FD 7E 0F    SBC $0F7E,x[$7E:10BE]
@@ -6076,6 +6103,8 @@ $A0:AEE4 6B          RTL
 
 ;;; $AEE5: A = [Samus X position] - [enemy X position] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AEE5 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A0:AEE8 38          SEC
 $A0:AEE9 FD 7A 0F    SBC $0F7A,x[$7E:10BA]
@@ -6085,6 +6114,8 @@ $A0:AEEC 6B          RTL
 
 ;;; $AEED: Is Samus within [A] pixel rows of enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AEED 8D 20 0E    STA $0E20  [$7E:0E20]  ;\
 $A0:AEF0 AC FA 0A    LDY $0AFA  [$7E:0AFA]  ;|
 $A0:AEF3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
@@ -6103,6 +6134,8 @@ $A0:AF0A 6B          RTL
 
 ;;; $AF0B: Is Samus within [A] pixel columns of enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AF0B 8D 20 0E    STA $0E20  [$7E:0E20]  ;\
 $A0:AF0E AC F6 0A    LDY $0AF6  [$7E:0AF6]  ;|
 $A0:AF11 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
@@ -6123,6 +6156,9 @@ $A0:AF28 6B          RTL
 {
 ;;; $AF29: Unused. Enemy X += [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Unused. Clone of $A0:AF6C
 $A0:AF29 BD 7C 0F    LDA $0F7C,x
 $A0:AF2C 18          CLC
@@ -6137,6 +6173,9 @@ $A0:AF3A 6B          RTL
 
 ;;; $AF3B: Unused. Enemy Y += [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Unused. Clone of $A0:AF90
 $A0:AF3B BD 80 0F    LDA $0F80,x
 $A0:AF3E 18          CLC
@@ -6151,6 +6190,13 @@ $A0:AF4C 6B          RTL
 
 ;;; $AF4D: Unused. Move enemy left/right/up/down by [$14].[$12] ;;;
 {
+;; Parameters:
+;;     A: Direction
+;;         0: Left
+;;         1: Right
+;;         2: Up
+;;         3: Down
+
 ; Broken. Uses X for jump table index, but is needed for enemy index
 $A0:AF4D 0A          ASL A
 $A0:AF4E AA          TAX
@@ -6162,6 +6208,8 @@ $A0:AF52             dw AF5A, AF6C, AF7E, AF90
 
 ;;; $AF5A: Enemy X -= [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AF5A BD 7C 0F    LDA $0F7C,x[$7E:0FBC]
 $A0:AF5D 38          SEC
 $A0:AF5E E5 12       SBC $12    [$7E:0012]
@@ -6175,6 +6223,8 @@ $A0:AF6B 6B          RTL
 
 ;;; $AF6C: Enemy X += [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AF6C BD 7C 0F    LDA $0F7C,x[$7E:0FBC]
 $A0:AF6F 18          CLC
 $A0:AF70 65 12       ADC $12    [$7E:0012]
@@ -6188,6 +6238,8 @@ $A0:AF7D 6B          RTL
 
 ;;; $AF7E: Enemy Y -= [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AF7E BD 80 0F    LDA $0F80,x[$7E:12C0]
 $A0:AF81 38          SEC
 $A0:AF82 E5 12       SBC $12    [$7E:0012]
@@ -6201,6 +6253,8 @@ $A0:AF8F 6B          RTL
 
 ;;; $AF90: Enemy Y += [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:AF90 BD 80 0F    LDA $0F80,x[$7E:1240]
 $A0:AF93 18          CLC
 $A0:AF94 65 12       ADC $12    [$7E:0012]
@@ -6449,7 +6503,11 @@ $A0:B0B1 6B          RTL
 
 ;;; $B0B2: 8-bit cosine multiplication ;;;
 {
-; $0E36.$0E38 = cos([A] * pi / 80h) * FFh * [$0E32] / 100h
+;; Parameters:
+;;     A: Angle
+;;     $0E32: Radius
+;; Returns:
+;;     $0E36.$0E38: cos([A] * pi / 80h) * [$0E32]
 
 ; Bug. Only accurate for angles in the range C0h..3Fh (see $B0DA)
 
@@ -6470,7 +6528,11 @@ $A0:B0C5 6B          RTL
 
 ;;; $B0C6: 8-bit negative sine multiplication ;;;
 {
-; $0E36.$0E38 = -sin([A] * pi / 80h) * FFh * [$0E32] / 100h
+;; Parameters:
+;;     A: Angle
+;;     $0E32: Radius
+;; Returns:
+;;     $0E36.$0E38: -sin([A] * pi / 80h) * [$0E32]
 
 ; Bug. Only accurate for angles in the range 80h..FFh (see $B0DA)
 
@@ -6491,9 +6553,13 @@ $A0:B0D9 6B          RTL
 
 ;;; $B0DA: 8-bit sine multiplication ;;;
 {
-; $0E36.$0E38 = sin([$0E34] * pi / 80h) * FFh * [$0E32] / 100h
+;; Parameters:
+;;     $0E34: Angle
+;;     $0E32: Radius
+;; Returns:
+;;     $0E36.$0E38: sin([$0E34] * pi / 80h) * [$0E32]
 
-; Bug. Only accurate for angles in the range 0..7Fh because the negation code of $B11B..2E does not do a correct multi-word increment.
+; Bug. Only accurate for angles in the range 0..7Fh because the negation code of $B11B..2E does not do a correct multi-word increment
 ; Accurate code would be more like:
 ;     LDA $0E38 : EOR #$FFFF : CLC : ADC #$0001 : STA $0E38
 ;     LDA $0E36 : EOR #$FFFF : ADC #$0000 : STA $0E36
@@ -6911,6 +6977,8 @@ $A0:B7EE             dw 0000, 0648, 0C8F, 12D5, 1917, 1F56, 258F, 2BC3, 31F1, 38
 {
 ;;; $B8EE: Fake Kraid death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:B8EE DA          PHX
 $A0:B8EF 5A          PHY
 $A0:B8F0 08          PHP
@@ -6946,6 +7014,8 @@ $A0:B92A 6B          RTL
 
 ;;; $B92B: Gold ninja space pirate death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:B92B DA          PHX
 $A0:B92C 5A          PHY
 $A0:B92D 08          PHP
@@ -6981,6 +7051,8 @@ $A0:B967 6B          RTL
 
 ;;; $B968: Metroid death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:B968 DA          PHX
 $A0:B969 5A          PHY
 $A0:B96A 08          PHP
@@ -7016,6 +7088,8 @@ $A0:B9A4 6B          RTL
 
 ;;; $B9A5: Ridley death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:B9A5 DA          PHX
 $A0:B9A6 5A          PHY
 $A0:B9A7 08          PHP
@@ -7047,6 +7121,8 @@ $A0:B9D7 6B          RTL
 
 ;;; $B9D8: Crocomire death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:B9D8 DA          PHX
 $A0:B9D9 5A          PHY
 $A0:B9DA 08          PHP
@@ -7078,6 +7154,8 @@ $A0:BA0A 6B          RTL
 
 ;;; $BA0B: Phantoon death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BA0B DA          PHX
 $A0:BA0C 5A          PHY
 $A0:BA0D 08          PHP
@@ -7109,6 +7187,8 @@ $A0:BA3D 6B          RTL
 
 ;;; $BA3E: Botwoon death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BA3E DA          PHX
 $A0:BA3F 5A          PHY
 $A0:BA40 08          PHP
@@ -7140,6 +7220,8 @@ $A0:BA70 6B          RTL
 
 ;;; $BA71: Kraid death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BA71 DA          PHX
 $A0:BA72 5A          PHY
 $A0:BA73 08          PHP
@@ -7171,6 +7253,8 @@ $A0:BAA3 6B          RTL
 
 ;;; $BAA4: Bomb Torizo death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BAA4 DA          PHX
 $A0:BAA5 5A          PHY
 $A0:BAA6 08          PHP
@@ -7202,6 +7286,8 @@ $A0:BAD6 6B          RTL
 
 ;;; $BAD7: Golden Torizo death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BAD7 DA          PHX
 $A0:BAD8 5A          PHY
 $A0:BAD9 08          PHP
@@ -7233,6 +7319,8 @@ $A0:BB09 6B          RTL
 
 ;;; $BB0A: Spore Spawn death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BB0A DA          PHX
 $A0:BB0B 5A          PHY
 $A0:BB0C 08          PHP
@@ -7264,6 +7352,8 @@ $A0:BB3C 6B          RTL
 
 ;;; $BB3D: Draygon death item drop routine ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A0:BB3D DA          PHX
 $A0:BB3E 5A          PHY
 $A0:BB3F 08          PHP
@@ -7332,6 +7422,8 @@ $A0:BB9A 6B          RTL
 
 ;;; $BB9B: Check if X distance between enemy and Samus is at least [A] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if X distance between enemy and Samus is at least [A], clear otherwise
 $A0:BB9B 48          PHA
@@ -7350,6 +7442,8 @@ $A0:BBAC 6B          RTL
 
 ;;; $BBAD: Unused. Check if Y distance between enemy and Samus is at least [A] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if Y distance between enemy and Samus is at least [A], clear otherwise
 $A0:BBAD 48          PHA
@@ -7371,6 +7465,7 @@ $A0:BBBE 6B          RTL
 ;;; $BBBF: Check for horizontal "solid" block collision ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $14.$12: Distance to check for collision (signed)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -7491,6 +7586,7 @@ $A0:BC75 6B          RTL                    ;/
 ;;; $BC76: Check for vertical "solid" block collision ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $14.$12: Distance to check for collision (signed)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -7609,6 +7705,7 @@ $A0:BD25 6B          RTL                    ;/
 {
 ;; Parameters:
 ;;     A: Direction. 0 = left, 1 = right
+;;     X: Enemy index
 ;;     $14.$12: Distance to move (signed)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -7742,6 +7839,7 @@ $A0:BDF5 6B          RTL                    ;/
 {
 ;; Parameters:
 ;;     A: Direction. 0 = up, 1 = down
+;;     X: Enemy index
 ;;     $14.$12: Distance to move (unsigned)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -7749,7 +7847,7 @@ $A0:BDF5 6B          RTL                    ;/
 $A0:BDF6 8B          PHB
 $A0:BDF7 E2 20       SEP #$20               ;\
 $A0:BDF9 A9 A0       LDA #$A0               ;|
-$A0:BDFB 48          PHA                    ;} DB = $A0
+$A0:BDFB 48          PHA                    ;} DB = $A0 <-- clobbers A, whoops
 $A0:BDFC AB          PLB                    ;|
 $A0:BDFD C2 30       REP #$30               ;/
 $A0:BDFF 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
@@ -7872,6 +7970,7 @@ $A0:BEBE 6B          RTL                    ;/
 {
 ;; Parameters:
 ;;     A: Direction. 0 = left, 1 = right
+;;     X: Enemy index
 ;;     $14.$12: Distance to check for collision (unsigned)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -8541,7 +8640,11 @@ $A0:C1D3 6B          RTL                    ;} Return carry set
 
 ;;; $C1D4: Unused. Assess Samus threat level ;;;
 {
+;; Returns:
+;;     $12: Threat level. Range 0..5
+
 ; ?
+
 $A0:C1D4 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
 $A0:C1D7 8D 04 42    STA $4204              ;|
 $A0:C1DA E2 20       SEP #$20               ;|
@@ -9469,8 +9572,7 @@ $A0:C777 6B          RTL                    ;} Return carry set
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: Y suboffset to move by
-;;     $14: Y offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
 ;;     Carry: Set if collided with wall
 
@@ -9484,8 +9586,7 @@ $A0:C77D 80 09       BRA $09    [$C788]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: Y suboffset to move by
-;;     $14: Y offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
 ;;     Carry: Set if collided with wall
 
