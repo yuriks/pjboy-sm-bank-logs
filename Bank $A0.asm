@@ -5600,14 +5600,14 @@ $A0:AC02 6B          RTL                    ;} Return A = 0
 $A0:AC03 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:AC06 18          CLC                    ;|
 $A0:AC07 69 03 00    ADC #$0003             ;|
-$A0:AC0A 38          SEC                    ;} If [Samus Y position] + 3 >= [enemy Y position]: return A = 0
+$A0:AC0A 38          SEC                    ;} If [enemy Y position] - 4 < [Samus Y position]: return A = 0
 $A0:AC0B FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;|
 $A0:AC0E 10 11       BPL $11    [$AC21]     ;/
 $A0:AC10 49 FF FF    EOR #$FFFF             ;\
 $A0:AC13 1A          INC A                  ;|
 $A0:AC14 38          SEC                    ;|
 $A0:AC15 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$A0:AC18 90 0B       BCC $0B    [$AC25]     ;} If [enemy Y position] - ([Samus Y position] + 3) <= [Samus Y radius] + [enemy Y radius]: return A = FFFFh
+$A0:AC18 90 0B       BCC $0B    [$AC25]     ;} If (enemy top boundary) - 4 <= (Samus bottom boundary): return A = FFFFh
 $A0:AC1A DD 84 0F    CMP $0F84,x[$7E:0F84]  ;|
 $A0:AC1D F0 06       BEQ $06    [$AC25]     ;|
 $A0:AC1F 90 04       BCC $04    [$AC25]     ;/
@@ -5643,13 +5643,13 @@ $A0:AC44 6B          RTL                    ;} Return A = 0
 
 $A0:AC45 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:AC48 38          SEC                    ;|
-$A0:AC49 FD 7E 0F    SBC $0F7E,x            ;} If [Samus Y position] >= [enemy Y position]: return A = 0
+$A0:AC49 FD 7E 0F    SBC $0F7E,x            ;} If [enemy Y position] <= [Samus Y position]: return A = 0
 $A0:AC4C 10 11       BPL $11    [$AC5F]     ;/
 $A0:AC4E 49 FF FF    EOR #$FFFF             ;\
 $A0:AC51 1A          INC A                  ;|
 $A0:AC52 38          SEC                    ;|
 $A0:AC53 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$A0:AC56 90 0B       BCC $0B    [$AC63]     ;} If [enemy Y position] - [Samus Y position] <= [Samus Y radius] + [enemy Y radius]: return A = FFFFh
+$A0:AC56 90 0B       BCC $0B    [$AC63]     ;} If (enemy top boundary) <= (Samus bottom boundary) + 1: return A = FFFFh
 $A0:AC58 DD 84 0F    CMP $0F84,x            ;|
 $A0:AC5B F0 06       BEQ $06    [$AC63]     ;|
 $A0:AC5D 90 04       BCC $04    [$AC63]     ;/
@@ -6295,7 +6295,7 @@ $A0:AFC5 6B          RTL
 }
 
 
-;;; $AFC6: Unused. Extra Samus Y displacement = [Samus X position] - [$14].[$12] ;;;
+;;; $AFC6: Unused. Extra Samus Y displacement = [Samus Y position] - [$14].[$12] ;;;
 {
 $A0:AFC6 AD FC 0A    LDA $0AFC  [$7E:0AFC]
 $A0:AFC9 38          SEC
@@ -6308,7 +6308,7 @@ $A0:AFD7 6B          RTL
 }
 
 
-;;; $AFD8: Unused. Extra Samus Y displacement = [Samus X position] + [$14].[$12] ;;;
+;;; $AFD8: Unused. Extra Samus Y displacement = [Samus Y position] + [$14].[$12] ;;;
 {
 $A0:AFD8 AD FC 0A    LDA $0AFC  [$7E:0AFC]
 $A0:AFDB 18          CLC

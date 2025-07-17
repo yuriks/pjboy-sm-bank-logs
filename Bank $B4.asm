@@ -2667,6 +2667,8 @@ $B4:9869 60          RTS                    ;} Return A = 1
 
 ;;; $986A: Debug handler - [debug index] = 3: sprite tiles viewer - 2nd half ;;;
 {
+;; Returns:
+;;     A: Non-zero. Skip processing frame
 $B4:986A AD C5 05    LDA $05C5  [$7E:05C5]  ;\
 $B4:986D 89 80 00    BIT #$0080             ;} If not newly pressed A whilst select + L is pressed: go to BRANCH_NO_CHANGE
 $B4:9870 F0 3F       BEQ $3F    [$98B1]     ;/
@@ -2764,6 +2766,8 @@ $B4:9924 60          RTS                    ;} Return A = 1
 
 ;;; $9925: Debug handler - [debug index] = 2: palette viewer - BG palettes ;;;
 {
+;; Returns:
+;;     A: Non-zero. Skip processing frame
 $B4:9925 A9 00 00    LDA #$0000             ;\
 $B4:9928 85 26       STA $26    [$7E:0026]  ;|
 $B4:992A A9 60 00    LDA #$0060             ;|
