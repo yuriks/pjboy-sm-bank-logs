@@ -86,6 +86,8 @@ $A2:8754 6B          RTL
 
 ;;; $8755: Calculate initial bounce speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8755 08          PHP
 
 ; LOOP

@@ -5576,12 +5576,16 @@ $A0:ABE6 6B          RTL
 
 ;;; $ABE7..C269: Utility functions ;;;
 {
-;;; $ABE7: Check if enemy is touching Samus from below ;;;
+;;; $ABE7: Check if enemy is touching Samus from below - 4px margin ;;;
 {
 ;; Parameters:
 ;;     X: Enemy index
 ;; Returns:
 ;;     A: FFFFh if touching Samus, otherwise 0
+
+; The (vertical) condition for touching here is:
+;     Samus' midpoint is at least 4px higher than the enemy midpoint (this is the rough "from below" condition)
+;     Samus' bottom boundary is at most 4px higher than the enemy top boundary (this is the rough "touching" condition)
 $A0:ABE7 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:ABEA 38          SEC                    ;|
 $A0:ABEB FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
@@ -5620,7 +5624,7 @@ $A0:AC28 6B          RTL
 }
 
 
-;;; $AC29: Unused. Check if Samus is touching enemy from above ;;;
+;;; $AC29: Unused. Check if enemy is touching Samus from below - 1px margin ;;;
 {
 ;; Parameters:
 ;;     X: Enemy index
