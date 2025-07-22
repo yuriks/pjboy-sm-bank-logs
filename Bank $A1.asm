@@ -12,10 +12,10 @@
 ; |     |    |     |     |    |     |    |
 ; iiii, xxxx,yyyy, oooo, pppp,gggg, aaaa,bbbb
 
-;  ______ Terminator
-; |     _ Number of enemy deaths needed to clear current room
-; |    |
-; FFFF nn
+;  _______ Terminator
+; |      _ Number of enemy deaths needed to clear current room
+; |     |
+; FFFF, nn
 
 ; Room $DA60, state $DA8C. Draygon - main area boss is dead
 ; Room $DD58, state $DDA2. Mother Brain - main area boss is dead

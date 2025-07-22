@@ -49,7 +49,7 @@ $A2:86DF             dw 0001, 0002, 0004, 0008, 000A, 000D, 0010, 0014
 ; Jump heights. Unit 1/100h px. Indexed by [enemy parameter 1 high] * 2
 $A2:86EF             dw 3000, 4000, 5000, 6000, 7000, 8000, 9000, A000, B000
 
-; Speed table. k (k+1) / 2 (sum of 0..k)
+; Speed table. Unit 1/100h px/frame. k (k+1) / 2 (sum of 0..k)
 $A2:8701             db 00, 01, 03, 06, 0A, 0F, 15, 1C, 24, 2D, 37, 42, 4E, 5B, 69, 78, 88, 99, AB, BE, D2, E7, FD
 
 ; Bounce movement functions
@@ -125,6 +125,8 @@ $A2:879B 60          RTS
 
 ;;; $879C: Main AI - enemy $CEBF (boyon) ;;;
 {
+; Initial bounce speed is only calculated once
+; Inexplicably, the devs chose to implement it here with a guard variable instead of in the init AI >_<;
 $A2:879C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:879F BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
 $A2:87A3 D0 0B       BNE $0B    [$87B0]     ;} If [enemy bounce speed calculated flag] = 0:
@@ -287,6 +289,9 @@ $A2:88C5 6B          RTL
 
 ;;; $88C6: Instruction - start bounce ;;;
 {
+; The only instruction list calling this instruction is the bouncing one
+; The bounce disable flag has to be clear for the bouncing instruction list to be used
+; So the clearing of that flag here is redundant
 $A2:88C6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:88C9 A9 00 00    LDA #$0000             ;\
 $A2:88CC 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy bounce disable flag = 0
@@ -377,6 +382,10 @@ $A2:896E             dw 0010,8B32,
 
 ;;; $897E: Instruction - spawn mini-Crocomire projectile with direction [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:897E 5A          PHY
 $A2:897F B9 00 00    LDA $0000,y            ; A = [[Y]] (direction)
 $A2:8982 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -503,7 +512,7 @@ $A2:8A42 60          RTS
 $A2:8A43 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8A46 BD AE 0F    LDA $0FAE,x            ;\
 $A2:8A49 85 14       STA $14    [$7E:0014]  ;|
-$A2:8A4B BD AC 0F    LDA $0FAC,x            ;} $14.$12 = [enemy left subvelocity]
+$A2:8A4B BD AC 0F    LDA $0FAC,x            ;} $14.$12 = [enemy left velocity]
 $A2:8A4E 85 12       STA $12    [$7E:0012]  ;/
 $A2:8A50 20 76 8A    JSR $8A76  [$A2:8A76]  ; Mini-Crocomire movement
 $A2:8A53 20 A7 8A    JSR $8AA7  [$A2:8AA7]  ; Decide whether to attack
@@ -519,12 +528,12 @@ $A2:8A5B 60          RTS
 $A2:8A5C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8A5F BD AA 0F    LDA $0FAA,x            ;\
 $A2:8A62 85 14       STA $14    [$7E:0014]  ;|
-$A2:8A64 BD A8 0F    LDA $0FA8,x            ;} $14.$12 = [enemy right subvelocity]
+$A2:8A64 BD A8 0F    LDA $0FA8,x            ;} $14.$12 = [enemy right velocity]
 $A2:8A67 85 12       STA $12    [$7E:0012]  ;/
 $A2:8A69 20 76 8A    JSR $8A76  [$A2:8A76]  ; Mini-Crocomire movement
 $A2:8A6C 20 A7 8A    JSR $8AA7  [$A2:8AA7]  ; Decide whether to attack
 $A2:8A6F 90 03       BCC $03    [$8A74]     ; If decided attack:
-$A2:8A71 20 30 8A    JSR $8A30  [$A2:8A30]  ; Set mini-Crocomire attacking left instruction list
+$A2:8A71 20 30 8A    JSR $8A30  [$A2:8A30]  ; Set mini-Crocomire attacking right instruction list
 
 $A2:8A74 60          RTS
 }
