@@ -2122,6 +2122,9 @@ $A0:9272 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy
 
 ; Returned A is ignored by callers
 
+; Called for Ceres Ridley room walls, Ridley explosion, zebetites, Mother Brain tubes falling enemy, Shitroid in cutscene
+; None of these enemies are multi-part
+
 ; This routine attempts to find (number of enemy parts) consecutive free enemy slots, and calls $92DB if it succeeds
 ; It has a couple problems for multi-part enemies
 ; Looking forward at $92DB, $0E26 is supposed to be the number of enemy parts (non-decremented). Further evidenced by the debug spawn routine above
@@ -2192,6 +2195,7 @@ $A0:92DA 6B          RTL
 ;; Returns:
 ;;     X: New enemy index
 
+; Expects a pushed DB
 ; Returned A is ignored by callers, though even if it did,
 ; this routine doesn't check if it's overwriting an enemy or not and has no bounds checking, so it always succeeds
 
