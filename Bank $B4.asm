@@ -6021,7 +6021,7 @@ $B4:E627             dx CF3F, 0100,0100, 0000, A800,0000, 0000,0000,
                         CF7F, 0140,0100, 0000, A800,0000, 0001,0000,
                         FFFF, 01
 
-; Enemy $D7FF/$D83F (tripper / suspensor platform))
+; Enemy $D7FF/$D83F (tripper / suspensor platform)
 $B4:E67A             dx D7FF, 0868,00C8, 0000, A000,0000, 0000,2020,
                         FFFF, 01
 

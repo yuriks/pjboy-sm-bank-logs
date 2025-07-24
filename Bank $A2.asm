@@ -941,6 +941,8 @@ $A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]; Go to [enemy function]
 {
 ;;; $8DD8: Tatori function - initial ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8DD8 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
 $A2:8DDB 9D D6 0F    STA $0FD6,x[$7E:0FD6]  ;} Enemy ([X] + 1) palette index = [enemy palette index]
 $A2:8DDE 9D 16 10    STA $1016,x[$7E:1016]  ; Enemy ([X] + 2) palette index = [enemy palette index]
@@ -964,6 +966,8 @@ $A2:8E09 6B          RTL
 
 ;;; $8E0A: Tatori function - asleep ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8E0A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
 $A2:8E0D D0 10       BNE $10    [$8E1F]     ;} If [enemy asleep flag] = 0:
 $A2:8E0F A9 E0 8E    LDA #$8EE0             ;\
@@ -1035,6 +1039,9 @@ $A2:8E80             dw FFF0, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF1, FFF1, FF
 
 ;;; $8EE0: Tatori function - leave shell ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; I don't understand these small position adjustments
 $A2:8EE0 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:8EE3 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
@@ -1081,6 +1088,8 @@ $A2:8F3E 6B          RTL
 
 ;;; $8F3F: Tatori function - enter shell ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8F3F A0 1C 8C    LDY #$8C1C             ; Enemy instruction list pointer = $8C1C (facing left - enter shell)
 $A2:8F42 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A2:8F45 38          SEC                    ;|
@@ -1100,6 +1109,8 @@ $A2:8F5E 6B          RTL
 
 ;;; $8F5F: Handle Samus landing on hovering tatori ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8F5F DA          PHX                    ;\
 $A2:8F60 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;|
 $A2:8F64 FA          PLX                    ;} If enemy is not touching Samus from below: return
@@ -1125,6 +1136,8 @@ $A2:8F8C 60          RTS
 
 ;;; $8F8D: Tatori function - rise to hover ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:8F8D 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:8F90 A9 FF FF    LDA #$FFFF             ;\
 $A2:8F93 85 14       STA $14    [$7E:0014]  ;|
@@ -1168,6 +1181,9 @@ $A2:8FEA 6B          RTL
 
 ;;; $8FEB: Tatori function - hovering ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Looks like buggy fixed point negations at $903C..6E
 ; The dev must have thought that INC affected the carry flag
 
@@ -1238,6 +1254,8 @@ $A2:9082 6B          RTL
 
 ;;; $9083: Tatori function - rising to peak ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9083 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:9086 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:9089 CD 60 8D    CMP $8D60  [$A2:8D60]  ;} If [enemy Y position] >= 1E8h:
@@ -1276,6 +1294,8 @@ $A2:90CA 80 EC       BRA $EC    [$90B8]     ; Go to BRANCH_MERGE
 
 ;;; $90CC: Tatori function - hovering at peak ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:90CC 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:90CF BF 00 78 7E LDA $7E7800,x[$7E:7800];\
 $A2:90D3 3A          DEC A                  ;} Decrement enemy function timer
@@ -1290,6 +1310,8 @@ $A2:90E0 6B          RTL
 
 ;;; $90E1: Tatori function - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:90E1 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:90E4 AF 08 78 7E LDA $7E7808[$7E:7808]  ;\
 $A2:90E8 CD 66 8D    CMP $8D66  [$A2:8D66]  ;} If [enemy Y velocity] < 4:
@@ -1340,6 +1362,8 @@ $A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 {
 ;;; $9142: Mini-tatori function - crawling - not carrying Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9142 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9146 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: return
 $A2:9149 F0 22       BEQ $22    [$916D]     ;/
@@ -1363,6 +1387,8 @@ $A2:916D 6B          RTL
 
 ;;; $916E: Mini-tatori function - hiding - carrying Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:916E 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9172 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:9175 F0 08       BEQ $08    [$917F]     ;/
@@ -1386,6 +1412,8 @@ $A2:9197 6B          RTL
 
 ;;; $9198: Mini-tatori function - hiding - not carrying Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9198 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:919C 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:919F F0 2F       BEQ $2F    [$91D0]     ;/
@@ -1432,6 +1460,8 @@ $A2:91F7 6B          RTL
 
 ;;; $91F8: Mini-tatori function - spinning - unstoppable ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:91F8 64 12       STZ $12    [$7E:0012]  ;\
 $A2:91FA BD B0 0F    LDA $0FB0,x            ;|
 $A2:91FD 85 14       STA $14    [$7E:0014]  ;} Move enemy right by [enemy X velocity]
@@ -1453,6 +1483,9 @@ $A2:921C 6B          RTL
 
 ;;; $921D: Unused ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Clone of $91DC. Possibly an RTL'd out section of the above function
 $A2:921D A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80 (crawling left)
 $A2:9220 BD B0 0F    LDA $0FB0,x            ;\
@@ -1471,6 +1504,8 @@ $A2:9238 6B          RTL
 
 ;;; $9239: Mini-tatori function - spinning - stoppable ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9239 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:923D 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to mini-tatori function - spinning - unstoppable
 $A2:9240 F0 B6       BEQ $B6    [$91F8]     ;/
@@ -1537,7 +1572,7 @@ $A2:929E 6B          RTL
 {
 $A2:929F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:92A2 BD A8 0F    LDA $0FA8,x            ;\
-$A2:92A5 C9 5E 92    CMP #$925E             ;} If [enemy function] = $925E:
+$A2:92A5 C9 5E 92    CMP #$925E             ;} If [enemy function] = $925E (crawling - carrying Samus):
 $A2:92A8 D0 01       BNE $01    [$92AB]     ;/
 $A2:92AA 6B          RTL                    ; Return
 
@@ -1571,7 +1606,7 @@ $A2:92E8 7D 82 0F    ADC $0F82,x            ;/
 
 $A2:92EB 9D 7A 0F    STA $0F7A,x
 $A2:92EE A9 42 91    LDA #$9142             ;\
-$A2:92F1 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
+$A2:92F1 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142 (crawling - not carrying Samus)
 $A2:92F4 64 12       STZ $12    [$7E:0012]  ;\
 $A2:92F6 BD B0 0F    LDA $0FB0,x            ;|
 $A2:92F9 85 14       STA $14    [$7E:0014]  ;} Move enemy right by [enemy X velocity]
@@ -1601,6 +1636,7 @@ $A2:9313 80 EA       BRA $EA    [$92FF]     ; Go to awaken tatori
 
 ;;; $9315: Tatori / Samus collision detection ;;;
 {
+; Assumes enemy slot 0
 $A2:9315 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A2:9318 38          SEC                    ;|
 $A2:9319 ED 82 0F    SBC $0F82  [$7E:0F82]  ;|
@@ -1738,6 +1774,8 @@ $A2:9410 80 DB       BRA $DB    [$93ED]     ; Go to BRANCH_MERGE
 
 ;;; $9412: Instruction - mini-tatori - loop or turn around if moved too far ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:9412 DA          PHX
 $A2:9413 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9416 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
@@ -1760,10 +1798,10 @@ $A2:9431 A9 FF FF    LDA #$FFFF             ; Enemy X velocity = -1
 $A2:9434 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 
 ; BRANCH_MERGE
-$A2:9437 A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72 (crawling right)
+$A2:9437 A0 72 8C    LDY #$8C72             ; Y = $8C72 (crawling right)
 $A2:943A BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
 $A2:943D 10 03       BPL $03    [$9442]     ;} If [enemy X velocity] < 0:
-$A2:943F A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80 (crawling left)
+$A2:943F A0 80 8B    LDY #$8B80             ; Y = $8B80 (crawling left)
 
 $A2:9442 FA          PLX
 $A2:9443 6B          RTL                    ; Return
@@ -1785,6 +1823,8 @@ $A2:9450 6B          RTL
 
 ;;; $9451: Instruction - tatori - rise to hover rightwards, go to $8C02 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:9451 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9454 A9 8D 8F    LDA #$8F8D             ;\
 $A2:9457 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D (rise to hover)
@@ -1799,6 +1839,8 @@ $A2:946A 6B          RTL
 
 ;;; $946B: Instruction - tatori - rise to hover leftwards, go to $8C02 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:946B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:946E A9 8D 8F    LDA #$8F8D             ;\
 $A2:9471 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D (rise to hover)
@@ -1813,6 +1855,10 @@ $A2:9484 6B          RTL
 
 ;;; $9485: Instruction - mini-tatori - leave shell ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:9485 5A          PHY
 $A2:9486 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9489 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
@@ -1833,6 +1879,8 @@ $A2:94A0 6B          RTL
 
 ;;; $94A1: Instruction - mini-tatori - left shell ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:94A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:94A4 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:94A8 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
@@ -1840,6 +1888,7 @@ $A2:94AB F0 12       BEQ $12    [$94BF]     ;/
 $A2:94AD A9 5E 92    LDA #$925E             ;\
 $A2:94B0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $925E (crawling - carrying Samus)
 
+; BRANCH_MERGE
 $A2:94B3 A0 80 8B    LDY #$8B80             ; Y = $8B80 (crawling left)
 $A2:94B6 BD B0 0F    LDA $0FB0,x            ;\
 $A2:94B9 30 03       BMI $03    [$94BE]     ;} If [enemy X velocity] >= 0:
@@ -1850,7 +1899,7 @@ $A2:94BE 6B          RTL                    ; Return
 ; BRANCH_NOT_TOUCHING_SAMUS
 $A2:94BF A9 42 91    LDA #$9142             ;\
 $A2:94C2 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142 (crawling - not carrying Samus)
-$A2:94C5 80 EC       BRA $EC    [$94B3]
+$A2:94C5 80 EC       BRA $EC    [$94B3]     ; Go to BRANCH_MERGE
 }
 
 
