@@ -753,7 +753,7 @@ $84:8628 AA          TAX                    ;/
 
 ; LOOP_DRAW_ENTRY
 $84:8629 B9 00 00    LDA $0000,y[$84:A827]  ;\
-$84:862C 30 19       BMI $19    [$8647]     ;} If [[Y]] & 8000h: go to BRANCH_COLUMN
+$84:862C 30 19       BMI $19    [$8647]     ;} If [[Y]] & 8000h != 0: go to BRANCH_COLUMN
 $84:862E 29 FF 00    AND #$00FF             ;\
 $84:8631 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of blocks)
 $84:8633 C8          INY                    ;\
@@ -3016,6 +3016,18 @@ $84:924C 60          RTS
 
 ;;; $924D..AADE: Draw instructions ;;;
 {
+; Draw instruction format:
+;     c0nn dddd [...] ; First row/column
+;     xx yy c0nn dddd [...] ; Second row/column
+;     [...] ; Other rows/columns
+;     0000 ; Terminator (x = y = 0)
+; where
+;     c: If 8, blocks are drawn as a column, otherwise drawn as a row
+;     n: Number of blocks to draw
+;     d: Level data, n entries. Word per block: ttttyxnnnnnnnnnn. t = block type (see "Special blocks.asm"), yx are Y/X flips, n = tile table index
+;     x: X offset to draw next row/column from, relative to original PLM position
+;     y: Y offset to draw next row/column from, relative to original PLM position
+
 ; Used by instruction list $D0EC: PLM $D0F2 (unused. Blue Brinstar face-block)
 $84:924D             dw 0001, 817E,
                         0000

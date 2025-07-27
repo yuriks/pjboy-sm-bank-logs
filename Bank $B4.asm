@@ -1356,7 +1356,7 @@ $B4:8CA9             dw E77F, 0001,          ; Coven
                         FFFF
 $B4:8CB7             db 00
 
-; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+; Room $CDF1, state $CE03. Wrecked Ship east super missile hall - default
 $B4:8CB8             db 4E,50,31,5F,31,33,20 ; "NP1_13 "
 $B4:8CBF             dw E77F, 0001,          ; Coven
                         E9FF, 0002,          ; Atomic
@@ -1384,7 +1384,7 @@ $B4:8CF9             dw DFFF, 0007,          ; Spike platform top
                         FFFF
 $B4:8CFF             db 00
 
-; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CDF1, state $CE1D. Wrecked Ship east super missile hall - main area boss is dead
 $B4:8D00             db 4E,50,31,5F,31,33,61 ; "NP1_13a"
 $B4:8D07             dw E8FF, 0001,          ; Work robot
                         E97F, 0002,          ; Bull

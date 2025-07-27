@@ -5338,7 +5338,7 @@ $8F:C2BB             dx 0000
 ; Room $CDA8, state $CDBA. Wrecked Ship west super missile room - default
 $8F:C2BD             dx 0000
 
-; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+; Room $CDF1, state $CE03. Wrecked Ship east super missile hall - default
 $8F:C2BF             dx B703, 2F,07, CE3D, ; Scroll PLM
                         0000
 
@@ -5403,7 +5403,7 @@ $8F:C355             dx 0000
 $8F:C357             dx EEDF, 02,07, 0085, ; Super missile tank
                         0000
 
-; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CDF1, state $CE1D. Wrecked Ship east super missile hall - main area boss is dead
 $8F:C35F             dx B703, 2F,07, CE3D, ; Scroll PLM
                         EEDF, 38,09, 0086, ; Super missile tank
                         0000
@@ -5888,7 +5888,7 @@ $8F:C8CF 60          RTS
 ; Room $CD13. Phantoon
 ; Room $CD5C. Wrecked Ship first flooded room
 ; Room $CDA8. Wrecked Ship west super missile room
-; Room $CDF1. Wrecked Ship easy super missile hall
+; Room $CDF1. Wrecked Ship east super missile hall
 ; Room $CE40. Gravity suit room
 ; Room $CE8A, state $CEB6. Wrecked Ship save station - main area boss is dead
 $8F:C8D0 60          RTS
@@ -6411,22 +6411,22 @@ $8F:CDEE             dw A2E8
 ; Scroll data. Room $CDA8. Wrecked Ship west super missile room
 $8F:CDF0             db 01
 
-; Room header. Wrecked Ship easy super missile hall
+; Room header. Wrecked Ship east super missile hall
 $8F:CDF1             dx 0D,03, 12,11, 04,01, 70,A0, 00, CE37, E629,01,CE1D, E5E6
 
-; State header. Room $CDF1. Wrecked Ship easy super missile hall - default
+; State header. Room $CDF1. Wrecked Ship east super missile hall - default
 $8F:CE03             dx C4EA8F, 05, 00,00, 9C74, C8C5, 8CBF, C1,C1, CE39, 0000, 0000, C2BF, E19E, C8D0
 
-; State header. Room $CDF1. Wrecked Ship easy super missile hall - main area boss is dead
+; State header. Room $CDF1. Wrecked Ship east super missile hall - main area boss is dead
 $8F:CE1D             dx C4ED98, 04, 00,00, 9B84, CC51, 8D07, C1,C1, CE39, 0000, 0000, C35F, E183, C8D0
 
-; Door list. Room $CDF1. Wrecked Ship easy super missile hall
+; Door list. Room $CDF1. Wrecked Ship east super missile hall
 $8F:CE37             dw A2F4
 
-; Scroll data. Room $CDF1. Wrecked Ship easy super missile hall
+; Scroll data. Room $CDF1. Wrecked Ship east super missile hall
 $8F:CE39             db 01, 01, 01, 00
 
-; PLM scroll data. Room $CDF1. Wrecked Ship easy super missile hall (PLM index 0)
+; PLM scroll data. Room $CDF1. Wrecked Ship east super missile hall (PLM index 0)
 $8F:CE3D             db 03,01, 80
 
 ; Room header. Gravity suit room
@@ -7563,7 +7563,7 @@ $8F:E168             dx 0004, BA988D, 4000,       ; Decompress $BA:988D to $7E:4
 
 ; Room $CD5C. Wrecked Ship first flooded room
 ; Room $CDA8. Wrecked Ship west super missile room
-; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CDF1, state $CE1D. Wrecked Ship east super missile hall - main area boss is dead
 ; Room $CE40. Gravity suit room
 $8F:E183             dx 0004, BA9C35, 4000,       ; Decompress $BA:9C35 to $7E:4000
                         0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
@@ -7572,7 +7572,7 @@ $8F:E183             dx 0004, BA9C35, 4000,       ; Decompress $BA:9C35 to $7E:4
 
 ; Room $CAF6. Wrecked Ship mainstreet
 ; Room $CBD5. Wrecked Ship east exit
-; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+; Room $CDF1, state $CE03. Wrecked Ship east super missile hall - default
 $8F:E19E             dx 0004, BA9F12, 4000,       ; Decompress $BA:9F12 to $7E:4000
                         0002, 7E4000, 4800, 0800, ; Transfer 800h from $7E:4000 to VRAM $4800
                         0002, 7E4000, 4C00, 0800, ; Transfer 800h from $7E:4000 to VRAM $4C00
@@ -7648,7 +7648,7 @@ $8F:E20E 60          RTS
 ;;; $E20F: Door ASM - scroll 29h = blue ;;;
 {
 ; Door destination: Wrecked Ship mainstreet
-; Room $CDF1, door 0. Wrecked Ship easy super missile hall
+; Room $CDF1, door 0. Wrecked Ship east super missile hall
 $8F:E20F 08          PHP
 $8F:E210 E2 20       SEP #$20
 $8F:E212 A9 01       LDA #$01

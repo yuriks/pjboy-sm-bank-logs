@@ -1806,7 +1806,7 @@ $83:9B64             dx 0000, 00A8,FFFF, 0000, 00, 06, 02,18, 03, 00,00, 48
 ; Room $CDA8, state $CDD4. Wrecked Ship west super missile room - main area boss is dead
 $83:9B74             dx 0000, FFFF,FFFF, 0000, 00, 00, 02,02, 00, 01,00, 00
 
-; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CDF1, state $CE1D. Wrecked Ship east super missile hall - main area boss is dead
 $83:9B84             dx 0000, FFFF,FFFF, 0000, 00, 00, 02,02, 00, 01,09, 00
 
 ; Room $CE40, state $CE6C. Gravity suit room - main area boss is dead
@@ -1852,7 +1852,7 @@ $83:9C54             dx 0000, FFFF,FFFF, 0000, 00, 00, 02,02, 00, 00,00, 00
 ; Room $CDA8, state $CDBA. Wrecked Ship west super missile room - default
 $83:9C64             dx 0000, FFFF,FFFF, 0000, 00, 00, 02,02, 00, 00,00, 00
 
-; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+; Room $CDF1, state $CE03. Wrecked Ship east super missile hall - default
 ; Room $CE40, state $CE52. Gravity suit room - default
 ; Room $CE8A, state $CE9C. Wrecked Ship save station - default
 $83:9C74             dx 0000, FFFF,FFFF, 0000, 00, 00, 02,02, 00, 00,00, 00
@@ -2191,7 +2191,7 @@ $83:A21C             dx CC6F, 00, 06, 26,02, 02,00, 8000, 0000 ; Pre Phantoon ha
 $83:A228             dx CA52, 00, 07, 46,0E, 04,00, 01C0, 0000 ; Wrecked Ship attic
 
 ; Room $CAF6, door 5. Wrecked Ship mainstreet
-$83:A234             dx CDF1, 00, 04, 01,06, 00,00, 8000, 0000 ; Wrecked Ship easy super missile hall
+$83:A234             dx CDF1, 00, 04, 01,06, 00,00, 8000, 0000 ; Wrecked Ship east super missile hall
 
 ; Wrecked Ship load station 0
 ; Room $CAF6, door 6. Wrecked Ship mainstreet
@@ -2240,7 +2240,7 @@ $83:A2DC             dx CB8B, 00, 04, 01,06, 00,00, 8000, 0000 ; Wrecked Ship sp
 ; Room $CDA8, door 0. Wrecked Ship west super missile room
 $83:A2E8             dx CAF6, 00, 04, 41,66, 04,06, 8000, 0000 ; Wrecked Ship mainstreet
 
-; Room $CDF1, door 0. Wrecked Ship easy super missile hall
+; Room $CDF1, door 0. Wrecked Ship east super missile hall
 $83:A2F4             dx CAF6, 00, 05, 5E,66, 05,06, 8000, E20F ; Wrecked Ship mainstreet
 
 ; Room $CE40, door 0. Gravity suit room

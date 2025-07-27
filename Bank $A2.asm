@@ -1538,7 +1538,7 @@ $A2:9271 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9275 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below: return
 $A2:9278 D0 06       BNE $06    [$9280]     ;/
 $A2:927A A9 42 91    LDA #$9142             ;\
-$A2:927D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
+$A2:927D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142 (crawling - not carrying Samus)
 
 $A2:9280 6B          RTL
 }

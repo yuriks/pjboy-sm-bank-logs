@@ -1777,7 +1777,7 @@ $A1:C6F2             dw E77F, 02D7,0098, 0000, 6800,0000, 0000,0000, ; Coven
                         E9FF, 0430,007E, 0000, 2000,0000, 0000,0000, ; Atomic
                         FFFF, 0A
 
-; Room $CDF1, state $CE03. Wrecked Ship easy super missile hall - default
+; Room $CDF1, state $CE03. Wrecked Ship east super missile hall - default
 $A1:C8C5             dw E77F, 0088,0088, 0000, 6800,0000, 0000,0000, ; Coven
                         D87F, 034F,009A, 0000, 2400,0000, C203,0080, ; Roach
                         D87F, 00FF,00E9, 0000, 2400,0000, FC04,0080, ; Roach
@@ -1845,7 +1845,7 @@ $A1:CBAE             dw DFFF, 0050,0060, 0000, A800,0000, 0040,6810, ; Spike pla
                         E03F, 01B0,0068, 0000, 0100,0000, 0000,0000, ; Spike platform bottom
                         FFFF, 00
 
-; Room $CDF1, state $CE1D. Wrecked Ship easy super missile hall - main area boss is dead
+; Room $CDF1, state $CE1D. Wrecked Ship east super missile hall - main area boss is dead
 $A1:CC51             dw E8FF, 0178,0080, 0000, 2800,0000, 0000,0000, ; Work robot
                         E8FF, 02C0,0080, 0000, 2800,0000, 0000,0000, ; Work robot
                         E97F, 00E0,0078, 0000, 2800,0000, 0003,0003, ; Bull
