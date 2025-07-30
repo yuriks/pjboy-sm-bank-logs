@@ -1403,9 +1403,9 @@ $A2:9183 3A          DEC A                  ;} Decrement enemy not carrying Samu
 $A2:9184 9F 0A 78 7E STA $7E780A,x[$7E:790A];/
 $A2:9188 D0 F4       BNE $F4    [$917E]     ; If [enemy not carrying Samus reaction timer] != 0: return
 $A2:918A A9 98 91    LDA #$9198             ;\
-$A2:918D 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9198
+$A2:918D 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9198 (hiding - not carrying Samus)
 $A2:9190 A9 3C 00    LDA #$003C             ;\
-$A2:9193 9F 00 78 7E STA $7E7800,x[$7E:7900];} Enemy $7E:7800 = 60 (never read, looks like a function timer that was never used)
+$A2:9193 9F 00 78 7E STA $7E7800,x[$7E:7900];} Enemy unstoppable spinning trigger timer = 60
 $A2:9197 6B          RTL
 }
 
@@ -1418,7 +1418,7 @@ $A2:9198 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:919C 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:919F F0 2F       BEQ $2F    [$91D0]     ;/
 $A2:91A1 A9 F8 91    LDA #$91F8             ;\
-$A2:91A4 9D A8 0F    STA $0FA8,x            ;} Enemy function = $91F8
+$A2:91A4 9D A8 0F    STA $0FA8,x            ;} Enemy function = $91F8 (spinning - unstoppable)
 $A2:91A7 A9 D2 8B    LDA #$8BD2             ;\
 $A2:91AA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8BD2 (spinning)
 $A2:91AD A9 01 00    LDA #$0001             ;\
@@ -1438,9 +1438,9 @@ $A2:91CF 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING_SAMUS
 $A2:91D0 BF 00 78 7E LDA $7E7800,x[$7E:7900];\
-$A2:91D4 3A          DEC A                  ;} Decrement enemy not carrying Samus reaction timer
+$A2:91D4 3A          DEC A                  ;} Decrement enemy unstoppable spinning trigger timer
 $A2:91D5 9F 00 78 7E STA $7E7800,x[$7E:7900];/
-$A2:91D9 F0 01       BEQ $01    [$91DC]     ; If [enemy not carrying Samus reaction timer] != 0:
+$A2:91D9 F0 01       BEQ $01    [$91DC]     ; If [enemy unstoppable spinning trigger timer] != 0:
 $A2:91DB 6B          RTL                    ; Return
 
 $A2:91DC A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80 (crawling left)
