@@ -8966,6 +8966,7 @@ $90:BAFB 60          RTS                    ;} Return carry set
 
 ;;; $BAFC: Handle charging beam graphics / audio ;;;
 {
+; For grapple beam, see $9B:C036
 $90:BAFC 08          PHP
 $90:BAFD C2 30       REP #$30
 $90:BAFF AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
