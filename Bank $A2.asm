@@ -1547,10 +1547,9 @@ $A2:9280 6B          RTL
 
 ;;; $9281: Enemy touch - enemy $CF3F (tatori) ;;;
 {
-; The solid enemy hitbox check here is useless, enemy touch reactions aren't called on solid enemies
 $A2:9281 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9284 BD 86 0F    LDA $0F86,x            ;\
-$A2:9287 89 00 80    BIT #$8000             ;} If enemy hitbox is solid to Samus: return
+$A2:9287 89 00 80    BIT #$8000             ;} If enemy hitbox is solid to Samus (always true): return
 $A2:928A D0 11       BNE $11    [$929D]     ;/
 $A2:928C 22 23 80 A2 JSL $A28023[$A2:8023]  ; Normal enemy touch AI
 $A2:9290 A9 E1 90    LDA #$90E1             ;\
@@ -2061,7 +2060,7 @@ $A2:9A01             dx 0001,9E1A,
 ;                       |    |    |    |
 $A2:9A07             dw 0010,0100,0200,9D0B, ; 0: Normal - small hop
                         0020,0100,0200,9D2B, ; 1: Normal - big hop
-                        0020,0200,0300,9D4B, ; 2: Unused. Normal - long hop
+                        0020,0200,0300,9D4B, ; 2: Normal - long hop
                         0080,0140,0200,9D6B, ; 3: Giant hop
                         0000,0000,0100,9D98, ; 4: Dropping
                         0010,0100,01C0,9DCD, ; 5: Dropped - small hop
@@ -2080,7 +2079,7 @@ $A2:9A4E 20 6C 9A    JSR $9A6C  [$A2:9A6C]  ;} Set enemy instruction list to $99
 $A2:9A51 A9 00 00    LDA #$0000             ;\
 $A2:9A54 9F 00 78 7E STA $7E7800,x[$7E:7940];} Enemy hop type = 0
 $A2:9A58 A9 65 9B    LDA #$9B65             ;\
-$A2:9A5B 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;} Enemy function = $9B65
+$A2:9A5B 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;} Enemy function = $9B65 (grounded)
 $A2:9A5E BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
 $A2:9A61 9D AC 0F    STA $0FAC,x[$7E:10EC]  ;} Enemy hop cooldown timer = [enemy parameter 1]
 $A2:9A64 A9 00 00    LDA #$0000             ;\
@@ -2109,7 +2108,7 @@ $A2:9A7C 60          RTS
 ;;; $9A7D: Main AI - enemy $CFBF (puyo) ;;;
 {
 $A2:9A7D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9A80 FC AE 0F    JSR ($0FAE,x)[$A2:9B65]
+$A2:9A80 FC AE 0F    JSR ($0FAE,x)[$A2:9B65]; Execute [enemy function]
 $A2:9A83 6B          RTL
 }
 
@@ -2167,7 +2166,7 @@ $A2:9AEC 85 1C       STA $1C    [$7E:001C]  ;/
 
 $A2:9AEE A5 1C       LDA $1C    [$7E:001C]  ;\
 $A2:9AF0 C9 02 00    CMP #$0002             ;|
-$A2:9AF3 30 03       BMI $03    [$9AF8]     ;} A = min(2, [$1C]) (pointless)
+$A2:9AF3 30 03       BMI $03    [$9AF8]     ;} A = min(2, [$1C])
 $A2:9AF5 A9 02 00    LDA #$0002             ;/
 
 ; BRANCH_HOP_DETERMINED
