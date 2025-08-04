@@ -2090,6 +2090,8 @@ $A2:9A6B 6B          RTL
 
 ;;; $9A6C: Set enemy instruction list ;;;
 {
+;; Parameters:
+;;     A: Instruction list pointer
 $A2:9A6C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A6F 9D 92 0F    STA $0F92,x[$7E:10D2]  ; Enemy instruction list pointer = [A]
 $A2:9A72 A9 01 00    LDA #$0001             ;\
@@ -2115,6 +2117,8 @@ $A2:9A83 6B          RTL
 
 ;;; $9A84: Initiate hop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9A84 BF 00 78 7E LDA $7E7800,x[$7E:7980];\
 $A2:9A88 C9 03 00    CMP #$0003             ;} If [enemy hop type] < 3:
 $A2:9A8B 10 07       BPL $07    [$9A94]     ;/
@@ -2239,6 +2243,8 @@ $A2:9B64 60          RTS
 
 ;;; $9B65: Puyo function - grounded ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:9B65 DE AC 0F    DEC $0FAC,x[$7E:112C]  ; Decrement enemy hop cooldown timer
 $A2:9B68 10 16       BPL $16    [$9B80]     ; If [enemy hop cooldown timer] >= 0: return
 $A2:9B6A A9 81 9B    LDA #$9B81             ;\
@@ -2321,7 +2327,6 @@ $A2:9C04 38          SEC                    ;|
 $A2:9C05 F9 0B 9A    SBC $9A0B,y[$A2:9A0B]  ;} Enemy Y speed table index -= [$9A07 + [Y] + 4]
 $A2:9C08 9D AA 0F    STA $0FAA,x[$7E:112A]  ;/
 $A2:9C0B 80 0D       BRA $0D    [$9C1A]
-
                                             ; Else (enemy is falling):
 $A2:9C0D 20 BE 9C    JSR $9CBE  [$A2:9CBE]  ; Set falling instruction list
 $A2:9C10 BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
