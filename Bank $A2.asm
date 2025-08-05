@@ -2627,7 +2627,7 @@ $A2:9E6A             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 57
 }
 
 
-;;; $9E8A..9F29: Instruction list - cacatac ;;;
+;;; $9E8A..9F29: Instruction lists - cacatac ;;;
 {
 ;;; $9E8A: Instruction list - upside up - idling ;;;
 {
@@ -2907,6 +2907,8 @@ $A2:A094 60          RTS
 
 ;;; $A095: Instruction - function = moving left/right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A095 A9 BA 9F    LDA #$9FBA             ;\
 $A2:A098 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $9FBA (moving left)
 $A2:A09B BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
@@ -2920,6 +2922,10 @@ $A2:A0A6 6B          RTL
 
 ;;; $A0A7: Instruction - spawn cacatac spike enemy projectile with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:A0A7 5A          PHY
 $A2:A0A8 B9 00 00    LDA $0000,y[$A2:9EC4]  ; A = [[Y]] (direction)
 $A2:A0AB AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -3208,6 +3214,8 @@ $A2:A552 60          RTS
 
 ;;; $A553: Maybe make owtch sink ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A553 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A2:A557 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A2:A55A 18          CLC                    ;|
@@ -3224,6 +3232,8 @@ $A2:A56C 60          RTS
 
 ;;; $A56D: Instruction - enemy function index = 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A56D 9E B0 0F    STZ $0FB0,x[$7E:1170]
 $A2:A570 6B          RTL
 }
@@ -3231,6 +3241,8 @@ $A2:A570 6B          RTL
 
 ;;; $A571: Instruction - enemy function index = 1 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A571 A9 01 00    LDA #$0001
 $A2:A574 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 $A2:A577 6B          RTL
@@ -3491,6 +3503,8 @@ $A2:A783 6B          RTL
 
 ;;; $A784: Process gunship hover ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A784 DE AE 0F    DEC $0FAE,x[$7E:0FAE]  ; Decrement enemy hover timer
 $A2:A787 F0 02       BEQ $02    [$A78B]     ;\
 $A2:A789 10 43       BPL $43    [$A7CE]     ;} If [enemy enemy hover timer] > 0: return
@@ -3545,6 +3559,9 @@ $A2:A7D7 6B          RTL
 
 ;;; $A7D8: Unused. Gunship function - rise to Y position 80h and then descend ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Probably a little debug function for testing the landing sequence
 $A2:A7D8 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:A7DB 38          SEC                    ;|
@@ -3573,6 +3590,8 @@ $A2:A80B 6B          RTL
 
 ;;; $A80C: Gunship function - landing on Zebes - descending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A80C BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:A80F C9 00 03    CMP #$0300             ;} If [enemy Y position] < 300h:
 $A2:A812 10 4D       BPL $4D    [$A861]     ;/
@@ -3654,6 +3673,9 @@ $A2:A8CF 6B          RTL
 
 ;;; $A8D0: Gunship function - landing on Zebes - apply brakes ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; The increment at $A921 is kinda random,
 ; causes a slight visual discrepancy when entering the ship immediately after landing
 $A2:A8D0 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
@@ -3706,6 +3728,8 @@ $A2:A941 6B          RTL
 
 ;;; $A942: Gunship function - landing on Zebes - wait for gunship entrance to open ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A942 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:A945 F0 02       BEQ $02    [$A949]     ;\
 $A2:A947 10 06       BPL $06    [$A94F]     ;} If [enemy 0 function timer] > 0: return
@@ -3719,6 +3743,8 @@ $A2:A94F 6B          RTL
 
 ;;; $A950: Gunship function - landing on Zebes - eject Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A950 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:A953 38          SEC                    ;|
 $A2:A954 E9 1E 00    SBC #$001E             ;} $12 = [enemy fixed Y position] - 1Eh
@@ -3746,6 +3772,8 @@ $A2:A986 6B          RTL
 
 ;;; $A987: Gunship function - landing on Zebes - wait for gunship entrance to close, then unlock Samus and save ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A987 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:A98A F0 02       BEQ $02    [$A98E]     ;\
 $A2:A98C 10 2E       BPL $2E    [$A9BC]     ;} If [enemy 0 function timer] > 0: return
@@ -3771,6 +3799,8 @@ $A2:A9BC 6B          RTL
 
 ;;; $A9BD: Gunship function - idle - handle letting Samus enter ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:A9BD AD 98 09    LDA $0998  [$7E:0998]  ;\
 $A2:A9C0 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay: return
 $A2:A9C3 D0 43       BNE $43    [$AA08]     ;/
@@ -3835,6 +3865,8 @@ $A2:AA4E 6B          RTL
 
 ;;; $AA4F: Gunship function - Samus entering - wait for entrance pad to open ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AA4F CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:AA52 F0 02       BEQ $02    [$AA56]     ;\
 $A2:AA54 10 06       BPL $06    [$AA5C]     ;} If [enemy 0 function timer] > 0: return
@@ -3848,6 +3880,8 @@ $A2:AA5C 6B          RTL
 
 ;;; $AA5D: Gunship function - Samus entering - lower Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AA5D BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:AA60 18          CLC                    ;|
 $A2:AA61 69 12 00    ADC #$0012             ;} $12 = [enemy fixed Y position] + 12h
@@ -3875,6 +3909,8 @@ $A2:AA93 6B          RTL
 
 ;;; $AA94: Gunship function - Samus entering - wait for entrance pad to close ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AA94 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:AA97 F0 02       BEQ $02    [$AA9B]     ;\
 $A2:AA99 10 06       BPL $06    [$AAA1]     ;} If [enemy 0 function timer] > 0: return
@@ -3888,6 +3924,9 @@ $A2:AAA1 6B          RTL
 
 ;;; $AAA2: Gunship function - Samus entered - go to liftoff or restore Samus health / ammo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; The unconditional branch at $AAEF was most likely added to disable the liftoff debug feature
 ; (although debug mode has to be enabled to allow controller 2 input)
 $A2:AAA2 A9 0E 00    LDA #$000E             ;\
@@ -3943,6 +3982,8 @@ $A2:AB1E 6B          RTL
 
 ;;; $AB1F: Gunship function - Samus entered - handle save confirmation ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AB1F A9 1C 00    LDA #$001C             ;\
 $A2:AB22 22 80 80 85 JSL $858080[$85:8080]  ;} Display save confirmation message box
 $A2:AB26 C9 02 00    CMP #$0002             ;\
@@ -3970,6 +4011,9 @@ $A2:AB5F 6B          RTL
 
 ;;; $AB60: Gunship function - Samus exiting - wait for entrance pad to open ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Set by initialisation AI if demo set 0 is playing
 $A2:AB60 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy function timer
 $A2:AB63 F0 02       BEQ $02    [$AB67]     ;\
@@ -3984,6 +4028,8 @@ $A2:AB6D 6B          RTL
 
 ;;; $AB6E: Gunship function - Samus exiting - raise Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AB6E BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:AB71 38          SEC                    ;|
 $A2:AB72 E9 1E 00    SBC #$001E             ;} $12 = [enemy fixed Y position] - 1Eh
@@ -4011,6 +4057,8 @@ $A2:ABA4 6B          RTL
 
 ;;; $ABA5: Gunship function - Samus exiting - wait for entrance pad to close, then unlock Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:ABA5 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy function timer
 $A2:ABA8 F0 02       BEQ $02    [$ABAC]     ;\
 $A2:ABAA 10 1A       BPL $1A    [$ABC6]     ;} If [enemy function timer] > 0: return
@@ -4031,6 +4079,8 @@ $A2:ABC6 6B          RTL
 
 ;;; $ABC7: Gunship function - liftoff - load dust cloud tiles ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:ABC7 AC EC 0D    LDY $0DEC  [$7E:0DEC]  ;\
 $A2:ABCA DA          PHX                    ;|
 $A2:ABCB AE 30 03    LDX $0330  [$7E:0330]  ;|
@@ -4072,6 +4122,8 @@ $A2:AC11             dw 7600, 7800, 7A00, 7C00, 7E00 ; Destination VRAM addresse
 
 ;;; $AC1B: Gunship function - liftoff - fire up engines and spawn dust clouds ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AC1B BD F0 0F    LDA $0FF0,x[$7E:0FF0]  ;\
 $A2:AC1E C9 40 00    CMP #$0040             ;} If [enemy ([X] + 1) $0FB0] >= 40h: go to BRANCH_RUMBLE_INTENSIFIES
 $A2:AC21 10 23       BPL $23    [$AC46]     ;/
@@ -4155,6 +4207,8 @@ $A2:ACD6 6B          RTL
 
 ;;; $ACD7: Gunship function - liftoff - steady rise ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:ACD7 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:ACDA 38          SEC                    ;|
 $A2:ACDB E9 02 00    SBC #$0002             ;} Samus Y position -= 2
@@ -4183,6 +4237,8 @@ $A2:AD0D 6B          RTL
 
 ;;; $AD0E: Gunship function - liftoff - accelerating / set game state ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AD0E 22 2D AD A2 JSL $A2AD2D[$A2:AD2D]  ; Liftoff - accelerating
 $A2:AD12 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:AD15 C9 00 01    CMP #$0100             ;} If [enemy Y position] >= 100h: return
@@ -4200,6 +4256,8 @@ $A2:AD2C 6B          RTL
 
 ;;; $AD2D: Gunship function - liftoff - accelerating ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:AD2D BD F2 0F    LDA $0FF2,x[$7E:0FF2]  ;\
 $A2:AD30 18          CLC                    ;|
 $A2:AD31 69 40 00    ADC #$0040             ;} Enemy ([X] + 1) $0FB2 += 40h
