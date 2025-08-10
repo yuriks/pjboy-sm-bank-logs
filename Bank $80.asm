@@ -565,13 +565,13 @@ $80:8262 A9 03 00    LDA #$0003             ;\
 $80:8265 8D 59 1F    STA $1F59  [$7E:1F59]  ;} Number of demo sets = 3
 $80:8268 A9 00 00    LDA #$0000             ;\
 $80:826B 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot A
-$80:826F 90 23       BCC $23    [$8294]     ; If not corrupt, go to BRANCH_NON_CORRUPT
+$80:826F 90 23       BCC $23    [$8294]     ; If not corrupt: go to BRANCH_NON_CORRUPT
 $80:8271 A9 01 00    LDA #$0001             ;\
 $80:8274 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot B
-$80:8278 90 1A       BCC $1A    [$8294]     ; If not corrupt, go to BRANCH_NON_CORRUPT
+$80:8278 90 1A       BCC $1A    [$8294]     ; If not corrupt: go to BRANCH_NON_CORRUPT
 $80:827A A9 02 00    LDA #$0002             ;\
 $80:827D 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot C
-$80:8281 90 11       BCC $11    [$8294]     ; If not corrupt, go to BRANCH_NON_CORRUPT
+$80:8281 90 11       BCC $11    [$8294]     ; If not corrupt: go to BRANCH_NON_CORRUPT
 $80:8283 A2 0A 00    LDX #$000A             ;\
                                             ;|
 $80:8286 BF AD 82 80 LDA $8082AD,x[$80:949A];|

@@ -9202,7 +9202,7 @@ $82:DAAB 8A          TXA                    ; A = [X]
 $82:DAAC 60          RTS                    ; Return
 
 $82:DAAD 3A          DEC A                  ;\
-$82:DAAE CD 02 C4    CMP $C402  [$7E:C402]  ;} If [A] = [palette change denominator] + 1
+$82:DAAE CD 02 C4    CMP $C402  [$7E:C402]  ;} If [A] = [palette change denominator] + 1:
 $82:DAB1 D0 02       BNE $02    [$DAB5]     ;/
 $82:DAB3 98          TYA                    ; A = [Y]
 $82:DAB4 60          RTS                    ; Return

@@ -1277,7 +1277,7 @@ $89:ACF8 D0 20       BNE $20    [$AD1A]     ;|
 $89:ACFA AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;} If [Samus Y speed] = 0.0:
 $89:ACFD D0 1B       BNE $1B    [$AD1A]     ;/
 $89:ACFF AD 98 09    LDA $0998  [$7E:0998]  ;\
-$89:AD02 C9 08 00    CMP #$0008             ;} If [game state] = normal gameplay
+$89:AD02 C9 08 00    CMP #$0008             ;} If [game state] = normal gameplay:
 $89:AD05 D0 13       BNE $13    [$AD1A]     ;/
 $89:AD07 A9 02 00    LDA #$0002             ;\
 $89:AD0A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - Samus reached Ceres elevator

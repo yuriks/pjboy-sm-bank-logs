@@ -3332,7 +3332,7 @@ $88:9229 9E 08 19    STZ $1908,x[$7E:1908]  ;/
 
 $88:922C AD EC 0C    LDA $0CEC  [$7E:0CEC]  ;\
 $88:922F 18          CLC                    ;|
-$88:9230 6D F0 0C    ADC $0CF0  [$7E:0CF0]  ;} If [power bomb pre-explosion radius] + [power bomb explosion radius speed] < 10000h
+$88:9230 6D F0 0C    ADC $0CF0  [$7E:0CF0]  ;} If [power bomb pre-explosion radius] + [power bomb explosion radius speed] < 10000h:
 $88:9233 B0 0E       BCS $0E    [$9243]     ;/
 $88:9235 8D EC 0C    STA $0CEC  [$7E:0CEC]  ; Power bomb pre-explosion radius += [power bomb explosion radius speed]
 $88:9238 AD F0 0C    LDA $0CF0  [$7E:0CF0]  ;\

@@ -1471,7 +1471,7 @@ $A7:ACA1 8E B2 0F    STX $0FB2  [$7E:0FB2]  ;/
 
 ; BRANCH_RETURN
 $A7:ACA4 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
-$A7:ACA7 C9 28 01    CMP #$0128             ;} If [Kraid Y position] < 128h
+$A7:ACA7 C9 28 01    CMP #$0128             ;} If [Kraid Y position] < 128h:
 $A7:ACAA 10 06       BPL $06    [$ACB2]     ;/
 $A7:ACAC A9 3A AD    LDA #$AD3A             ;\
 $A7:ACAF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = set BG2 tilemap priority bits
@@ -4885,7 +4885,7 @@ $A7:C917 8D B2 0F    STA $0FB2  [$82:0FB2]  ;} Kraid function timer = 120h
 $A7:C91A 6B          RTL                    ; Return
 
 $A7:C91B 29 07 00    AND #$0007             ;\ Else ([Kraid function timer] != 0):
-$A7:C91E D0 03       BNE $03    [$C923]     ;} If [Kraid function timer] is a multiple of 8
+$A7:C91E D0 03       BNE $03    [$C923]     ;} If [Kraid function timer] is a multiple of 8:
 $A7:C920 20 95 C9    JSR $C995  [$A7:C995]  ; Spawn random earthquake projectile
 
 $A7:C923 6B          RTL

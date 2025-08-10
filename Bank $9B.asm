@@ -1836,7 +1836,7 @@ $9B:BAD5 A2 46 00    LDX #$0046             ; X = 46h
 
 ; LOOP
 $9B:BAD8 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
-$9B:BADB DD 3E C4    CMP $C43E,x[$9B:C484]  ;} If [grapple beam end angle] != [$C43E + [X]]
+$9B:BADB DD 3E C4    CMP $C43E,x[$9B:C484]  ;} If [grapple beam end angle] != [$C43E + [X]]:
 $9B:BADE F0 0A       BEQ $0A    [$BAEA]     ;/
 $9B:BAE0 8A          TXA                    ;\
 $9B:BAE1 38          SEC                    ;|
@@ -1953,7 +1953,7 @@ $9B:BBB8 60          RTS                    ; Return
 ; BRANCH_RIGHT
 $9B:BBB9 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BBBC 29 00 FF    AND #$FF00             ;|
-$9B:BBBF C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h
+$9B:BBBF C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h:
 $9B:BBC2 D0 0B       BNE $0B    [$BBCF]     ;/
 $9B:BBC4 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BBC7 D0 06       BNE $06    [$BBCF]     ;} If [grapple swing angular velocity] = 0:
@@ -1980,7 +1980,7 @@ $9B:BBEF 60          RTS                    ; Return
 ; BRANCH_LEFT
 $9B:BBF0 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BBF3 29 00 FF    AND #$FF00             ;|
-$9B:BBF6 C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h
+$9B:BBF6 C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h:
 $9B:BBF9 D0 0B       BNE $0B    [$BC06]     ;/
 $9B:BBFB AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BBFE D0 06       BNE $06    [$BC06]     ;} If [grapple swing angular velocity] = 0:

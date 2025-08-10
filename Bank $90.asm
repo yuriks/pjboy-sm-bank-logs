@@ -2861,7 +2861,7 @@ $90:90A3 80 0B       BRA $0B    [$90B0]     ; Go to BRANCH_MERGE
 
 ; BRANCH_ALLOW_X_MOVEMENT
 $90:90A5 AD 4A 0B    LDA $0B4A  [$7E:0B4A]  ;\
-$90:90A8 D0 06       BNE $06    [$90B0]     ;} If [Samus X acceleration mode] = accelerating
+$90:90A8 D0 06       BNE $06    [$90B0]     ;} If [Samus X acceleration mode] = accelerating:
 $90:90AA A9 02 00    LDA #$0002             ;\
 $90:90AD 8D 4A 0B    STA $0B4A  [$7E:0B4A]  ;} Samus X acceleration mode = decelerating
 
@@ -6258,7 +6258,7 @@ $90:A9FA 29 03 00    AND #$0003             ;|
 $90:A9FD C9 03 00    CMP #$0003             ;} If [X] % 4 != 3: go to BRANCH_SINGLE_PAGE (if [X] = 3, then mini-map origin is within 8 squares of the right page boundary)
 $90:AA00 D0 2A       BNE $2A    [$AA2C]     ;/
 
-; If [X] % 4 == 3 then mini-map origin is within last 8 tiles of the row.
+; If [X] % 4 = 3 then mini-map origin is within last 8 tiles of the row.
 ; If the mini-map origin is on the same page as Samus map position,
 ; then there's a chance that at least one of the two tiles right of Samus map position spilled onto the next map page.
 ; If the mini-map origin is on a different page to Samus map position,

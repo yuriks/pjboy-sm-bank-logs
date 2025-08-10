@@ -359,7 +359,7 @@ $A9:8906 BD 2B 89    LDA $892B,x[$A9:8947]  ;\
 $A9:8909 85 14       STA $14    [$7E:0014]  ;} $14 = [$8929 + [X] + 2]
 $A9:890B A0 03 00    LDY #$0003             ; A = 3 (small explosion)
 $A9:890E AD E5 05    LDA $05E5  [$7E:05E5]  ;\
-$A9:8911 C9 00 40    CMP #$4000             ;} If [random number] < 4000h
+$A9:8911 C9 00 40    CMP #$4000             ;} If [random number] < 4000h:
 $A9:8914 B0 03       BCS $03    [$8919]     ;/
 $A9:8916 A0 0C 00    LDY #$000C             ; A = Ch (smoke)
 
@@ -1350,7 +1350,7 @@ $A9:90CF AF 40 80 7E LDA $7E8040[$7E:8040]  ;\
 $A9:90D3 38          SEC                    ;} Mother Brain's lower neck angle -= [Mother Brain neck angle delta]
 $A9:90D4 EF 68 80 7E SBC $7E8068[$7E:8068]  ;/
 $A9:90D8 C9 00 30    CMP #$3000             ;\
-$A9:90DB B0 0A       BCS $0A    [$90E7]     ;} If [Mother Brain's lower neck angle] < 3000h
+$A9:90DB B0 0A       BCS $0A    [$90E7]     ;} If [Mother Brain's lower neck angle] < 3000h:
 $A9:90DD A9 00 00    LDA #$0000             ;\
 $A9:90E0 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 0 (nothing)
 $A9:90E4 A9 00 30    LDA #$3000             ; Mother Brain's lower neck angle = 3000h
@@ -1408,7 +1408,7 @@ $A9:9134 AF 42 80 7E LDA $7E8042[$7E:8042]  ;\
 $A9:9138 38          SEC                    ;} Mother Brain's upper neck angle -= [Mother Brain neck angle delta]
 $A9:9139 EF 68 80 7E SBC $7E8068[$7E:8068]  ;/
 $A9:913D C9 00 20    CMP #$2000             ;\
-$A9:9140 B0 0A       BCS $0A    [$914C]     ;} If [Mother Brain's upper neck angle] < 2000h
+$A9:9140 B0 0A       BCS $0A    [$914C]     ;} If [Mother Brain's upper neck angle] < 2000h:
 $A9:9142 A9 04 00    LDA #$0004             ;\
 $A9:9145 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 4 (bob up)
 $A9:9149 A9 00 20    LDA #$2000             ; Mother Brain's upper neck angle = 2000h

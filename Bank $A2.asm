@@ -4374,6 +4374,8 @@ $A2:B08F 6B          RTL
 
 ;;; $B090: Move fly according to angle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B090 9B          TXY
 $A2:B091 BE B0 0F    LDX $0FB0,y[$7E:0FF0]  ;\
 $A2:B094 BF 42 B4 A0 LDA $A0B442,x[$A0:B442];|
@@ -4413,8 +4415,8 @@ $A2:B0DB 60          RTS
 
 ;;; $B0DC: Move fly according to velocities ;;;
 {
-;; Returns:
-;;     A: Enemy Y position
+;; Parameters:
+;;     X: Enemy index
 $A2:B0DC BD A9 0F    LDA $0FA9,x[$7E:0FE9]  ;\
 $A2:B0DF 29 00 FF    AND #$FF00             ;|
 $A2:B0E2 18          CLC                    ;|
@@ -4459,6 +4461,9 @@ $A2:B126 7C B2 0F    JMP ($0FB2,x)[$A2:B14E];} Go to [enemy function]
 
 ;;; $B129: Set fly to attack Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Sets up X/Y velocity to direct fly towards midpoint between Samus and enemy
 $A2:B129 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A2:B12D 0A          ASL A
@@ -4481,6 +4486,8 @@ $A2:B14D 6B          RTL
 
 ;;; $B14E: Fly function - idle movement - clockwise circle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B14E BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
 $A2:B151 F0 06       BEQ $06    [$B159]     ;} If [enemy retreat timer] != 0:
 $A2:B153 3A          DEC A                  ;\
@@ -4508,6 +4515,8 @@ $A2:B17B 6B          RTL
 
 ;;; $B17C: Fly function - idle movement - anti-clockwise circle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B17C BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
 $A2:B17F F0 06       BEQ $06    [$B187]     ;} If [enemy retreat timer] != 0:
 $A2:B181 3A          DEC A                  ;\
@@ -4535,6 +4544,8 @@ $A2:B1A9 6B          RTL
 
 ;;; $B1AA: Fly function - attack Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B1AA 20 DC B0    JSR $B0DC  [$A2:B0DC]  ; Move fly according to velocities
 $A2:B1AD FE A8 0F    INC $0FA8,x[$7E:0FE8]  ; Increment enemy retreat timer
 $A2:B1B0 3C AC 0F    BIT $0FAC,x[$7E:0FEC]  ;\
@@ -4559,6 +4570,8 @@ $A2:B1D1 6B          RTL
 
 ;;; $B1D2: Fly function - retreat ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B1D2 20 DC B0    JSR $B0DC  [$A2:B0DC]  ; Move fly according to velocities
 $A2:B1D5 DE A8 0F    DEC $0FA8,x[$7E:0FA8]  ; Decrement enemy retreat timer
 $A2:B1D8 30 01       BMI $01    [$B1DB]     ; If [enemy retreat timer] >= 0:
@@ -4981,7 +4994,7 @@ $A2:B5FB             dx 0001, 01FC,FC,210A
 {
 $A2:B602 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B605 BD B4 0F    LDA $0FB4,x[$7E:10B4]  ;\
-$A2:B608 F0 20       BEQ $20    [$B62A]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B608 F0 20       BEQ $20    [$B62A]     ;} If [enemy parameter 1] = 0 (not Mother Brain's room): BRANCH_NORMAL
 $A2:B60A 20 9B B6    JSR $B69B  [$A2:B69B]  ; Spawn Mother Brain's room rinka
 $A2:B60D AF 3A 78 7E LDA $7E783A[$7E:783A]  ; >_<;
 $A2:B611 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
@@ -4996,7 +5009,8 @@ $A2:B622 09 00 2C    ORA #$2C00             ;} Set process instructions, process
 $A2:B625 9D 86 0F    STA $0F86,x            ;/
 $A2:B628 80 0C       BRA $0C    [$B636]     ; Go to BRANCH_PROPERTIES_SET
 
-$A2:B62A BD 86 0F    LDA $0F86,x[$7E:1086]  ;\ Else ([enemy parameter 1] = 0):
+; BRANCH_NORMAL
+$A2:B62A BD 86 0F    LDA $0F86,x[$7E:1086]  ;\
 $A2:B62D 09 00 64    ORA #$6400             ;|
 $A2:B630 29 FF F7    AND #$F7FF             ;} Set enemy to respawn if killed, process instructions, to not process whilst off-screen, and as intangible
 $A2:B633 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
@@ -5010,6 +5024,8 @@ $A2:B63C 80 16       BRA $16    [$B654]     ; Go to reset rinka
 
 ;;; $B63E: Respawn rinka ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B63E BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $A2:B641 F0 03       BEQ $03    [$B646]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
 $A2:B643 20 9B B6    JSR $B69B  [$A2:B69B]  ; Spawn Mother Brain's room rinka
@@ -5023,6 +5039,8 @@ $A2:B651 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = [enemy spawn Y
 
 ;;; $B654: Reset rinka ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B654 A9 52 B8    LDA #$B852             ;\
 $A2:B657 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $B852 (waiting to fire)
 $A2:B65A A9 1A 00    LDA #$001A             ;\
@@ -5056,6 +5074,9 @@ $A2:B69A 6B          RTL
 
 ;;; $B69B: Spawn Mother Brain's room rinka ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Spawn a rinka to one of the predefined spawn points in the room that's currently available
 ; The spawn point is selected as follows:
 ;     If it's on screen, the spawn point the rinka was previously spawned from
@@ -5186,6 +5207,10 @@ $A2:B75B             dw 03E7,0026,0002,
 
 ;;; $B79D: Get availability index of enemy spawn position ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     A: Index for $7E:8800 spawn point availability table
 $A2:B79D A0 00 00    LDY #$0000             ; Y = 0
 
 ; LOOP
@@ -5227,6 +5252,8 @@ $A2:B7DC 7C A8 0F    JMP ($0FA8,x)[$A2:B852]; Go to [enemy function]
 
 ;;; $B7DF: Rinka function - fire ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B7DF DE B2 0F    DEC $0FB2,x[$7E:1132]  ; Decrement enemy function timer
 $A2:B7E2 10 5F       BPL $5F    [$B843]     ; If [enemy function timer] >= 0: return
 $A2:B7E4 A9 5B B8    LDA #$B85B             ;\
@@ -5273,6 +5300,8 @@ $A2:B843 6B          RTL
 
 ;;; $B844: Rinka function - killed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B844 DE B2 0F    DEC $0FB2,x[$7E:10F2]  ; Decrement enemy function timer
 $A2:B847 10 FA       BPL $FA    [$B843]     ; If [enemy function timer] >= 0: return
 $A2:B849 A9 0A 00    LDA #$000A             ;\
@@ -5283,6 +5312,8 @@ $A2:B84F 4C 3E B6    JMP $B63E  [$A2:B63E]  ; Go to respawn rinka
 
 ;;; $B852: Rinka function - waiting to fire ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B852 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]  ;\
 $A2:B856 90 EB       BCC $EB    [$B843]     ;} If enemy is on screen: return
 $A2:B858 4C 65 B8    JMP $B865  [$A2:B865]  ; Go to delete and respawn rinkas
@@ -5299,6 +5330,8 @@ $A2:B863 90 DE       BCC $DE    [$B843]     ;} If enemy is on screen: return
 
 ;;; $B865: Delete and respawn rinka ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B865 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $A2:B868 F0 10       BEQ $10    [$B87A]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
 $A2:B86A 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
@@ -5314,6 +5347,8 @@ $A2:B87D 4C 3E B6    JMP $B63E  [$A2:B63E]  ; Go to respawn rinka
 
 ;;; $B880: Decrement rinka counter ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B880 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $A2:B883 F0 16       BEQ $16    [$B89B]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
 $A2:B885 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
@@ -5332,6 +5367,8 @@ $A2:B89B 60          RTS
 
 ;;; $B89C: Unused ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B89C AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
 $A2:B89F 29 03 00    AND #$0003             ;|
 $A2:B8A2 DD B4 0F    CMP $0FB4,x            ;} If [number of times main enemy routine has been executed] % 4 = [enemy parameter 1]:
@@ -5350,6 +5387,8 @@ $A2:B8BA 60          RTS
 
 ;;; $B8BB: Mark rinka spawn point available ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B8BB BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
 $A2:B8BE F0 12       BEQ $12    [$B8D2]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
 $A2:B8C0 BD AE 0F    LDA $0FAE,x[$7E:106E]  ;\
@@ -5367,6 +5406,8 @@ $A2:B8D2 60          RTS
 
 ;;; $B8D3: Check if rinka is on screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Clear if rinka is on screen, set otherwise
 $A2:B8D3 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
@@ -5430,6 +5471,8 @@ $A2:B928 6B          RTL                    ;} Return carry set
 
 ;;; $B929: Frozen AI - enemy $D23F (rinka) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B929 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]  ;\
 $A2:B92D 90 03       BCC $03    [$B932]     ;} If rinka is off-screen:
 $A2:B92F 9E 9E 0F    STZ $0F9E,x[$7E:10DE]  ; Enemy frozen timer = 0
@@ -5461,6 +5504,8 @@ $A2:B951 80 0D       BRA $0D    [$B960]     ; Go to rinka shared contact reactio
 
 ;;; $B953: Power bomb reaction - enemy $D23F (rinka) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B953 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
 $A2:B956 29 00 01    AND #$0100             ;} If enemy is invisible:
 $A2:B959 F0 01       BEQ $01    [$B95C]     ;/
@@ -5472,6 +5517,8 @@ $A2:B95C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no de
 
 ;;; $B960: Rinka shared contact reaction ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B960 BD 8C 0F    LDA $0F8C,x[$7E:10CC]  ;\
 $A2:B963 F0 01       BEQ $01    [$B966]     ;} If [enemy health] != 0:
 $A2:B965 6B          RTL                    ; Return
@@ -5503,6 +5550,10 @@ $A2:B9A1 6B          RTL
 
 ;;; $B9A2: Unused. Instruction - go to [[Y]] if [rinka counter] >= 3 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A2:B9A2 AF 3C 78 7E LDA $7E783C[$7E:783C]
 $A2:B9A6 C9 03 00    CMP #$0003
 $A2:B9A9 10 03       BPL $03    [$B9AE]
@@ -5518,6 +5569,8 @@ $A2:B9B2 6B          RTL
 
 ;;; $B9B3: Instruction - set enemy as intangible and invisible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B9B3 BD 86 0F    LDA $0F86,x[$7E:1106]
 $A2:B9B6 09 00 05    ORA #$0500
 $A2:B9B9 9D 86 0F    STA $0F86,x[$7E:1106]
@@ -5527,6 +5580,8 @@ $A2:B9BC 6B          RTL
 
 ;;; $B9BD: Instruction - set enemy as intangible, invisible and active off-screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B9BD BD 86 0F    LDA $0F86,x[$7E:1046]
 $A2:B9C0 09 00 0D    ORA #$0D00
 $A2:B9C3 9D 86 0F    STA $0F86,x[$7E:1046]
@@ -5536,6 +5591,8 @@ $A2:B9C6 6B          RTL
 
 ;;; $B9C7: Instruction - fire rinka ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:B9C7 BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
 $A2:B9CA 29 FF FA    AND #$FAFF             ;} Set enemy as tangible and visible
 $A2:B9CD 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
@@ -5762,6 +5819,8 @@ $A2:BBEA 7C AA 0F    JMP ($0FAA,x)[$A2:BBED]; Go to [enemy function]
 
 ;;; $BBED: Rio function - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BBED A9 A0 00    LDA #$00A0             ;\
 $A2:BBF0 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least A0h:
 $A2:BBF4 90 01       BCC $01    [$BBF7]     ;/
@@ -5772,7 +5831,7 @@ $A2:BBFA 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;} Enemy Y velocity = 580h
 $A2:BBFD AD BF BB    LDA $BBBF  [$A2:BBBF]  ;\
 $A2:BC00 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;} Enemy X velocity = 180h
 $A2:BC03 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$A2:BC06 DD 7A 0F    CMP $0F7A,x[$7E:107A]  ;} If [Samus X position] < [enemy X position]
+$A2:BC06 DD 7A 0F    CMP $0F7A,x[$7E:107A]  ;} If [Samus X position] < [enemy X position]:
 $A2:BC09 10 0A       BPL $0A    [$BC15]     ;/
 $A2:BC0B BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;\
 $A2:BC0E 49 FF FF    EOR #$FFFF             ;|
@@ -5795,6 +5854,8 @@ $A2:BC31 6B          RTL
 
 ;;; $BC32: Rio function - swoop cooldown ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BC32 BD B0 0F    LDA $0FB0,x[$7E:10B0]  ;\
 $A2:BC35 D0 01       BNE $01    [$BC38]     ;} If enemy not finished animation:
 $A2:BC37 6B          RTL                    ; Return
@@ -5810,6 +5871,8 @@ $A2:BC47 6B          RTL
 
 ;;; $BC48: Rio function - swoop - descending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BC48 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BC4A 64 14       STZ $14    [$7E:0014]  ;|
 $A2:BC4C BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;|
@@ -5869,6 +5932,8 @@ $A2:BCB6 6B          RTL
 
 ;;; $BCB7: Rio function - swoop - ascending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BCB7 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BCB9 64 14       STZ $14    [$7E:0014]  ;|
 $A2:BCBB BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;|
@@ -5908,6 +5973,8 @@ $A2:BCFE 6B          RTL
 
 ;;; $BCFF: Rio function - homing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BCFF BD 7E 0F    LDA $0F7E,x            ;\
 $A2:BD02 38          SEC                    ;|
 $A2:BD03 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} If [enemy Y position] >= [Samus Y position]: go to BRANCH_RESUME_SWOOP
@@ -6047,7 +6114,7 @@ $A2:BE9C A9 00 00    LDA #$0000             ;\
 $A2:BE9F 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy animation finished flag = 0
 $A2:BEA3 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy instruction list = 0
 $A2:BEA7 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A2:BEAA 30 19       BMI $19    [$BEC5]     ;} If [enemy parameter 1] & 8000h = 0:
+$A2:BEAA 30 19       BMI $19    [$BEC5]     ;} If [enemy parameter 1] & 8000h = 0 (main part):
 $A2:BEAC BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A2:BEAF 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy spawn X position = [enemy X position]
 $A2:BEB2 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
@@ -6076,6 +6143,8 @@ $A2:BED9 7C B2 0F    JMP ($0FB2,x)[$A2:BF1A]; Go to [enemy function]
 
 ;;; $BEDC: Squeept function - flame ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BEDC BD 4C 0F    LDA $0F4C,x[$7E:0F8C]  ;\
 $A2:BEDF D0 0A       BNE $0A    [$BEEB]     ;} If [enemy ([X] - 1) health] = 0:
 $A2:BEE1 BD 86 0F    LDA $0F86,x            ;\
@@ -6111,6 +6180,8 @@ $A2:BF19 6B          RTL
 
 ;;; $BF1A: Squeept function - jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BF1A AD E6 05    LDA $05E6  [$7E:05E6]  ;\
 $A2:BF1D 29 06 00    AND #$0006             ;|
 $A2:BF20 A8          TAY                    ;} Enemy Y velocity = [$BE86 + [random number] / 200h % 4 * 2]
@@ -6129,6 +6200,8 @@ $A2:BF3D 6B          RTL
 
 ;;; $BF3E: Squeept function - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BF3E BD AB 0F    LDA $0FAB,x[$7E:0FAB]  ;\
 $A2:BF41 29 00 FF    AND #$FF00             ;|
 $A2:BF44 18          CLC                    ;|
@@ -6162,6 +6235,8 @@ $A2:BF7B 6B          RTL
 
 ;;; $BF7C: Squeept function - flipping ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BF7C BD AB 0F    LDA $0FAB,x[$7E:0FAB]  ;\
 $A2:BF7F 29 00 FF    AND #$FF00             ;|
 $A2:BF82 18          CLC                    ;|
@@ -6195,6 +6270,8 @@ $A2:BFBB 6B          RTL
 
 ;;; $BFBC: Squeept function - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:BFBC BD AB 0F    LDA $0FAB,x[$7E:0FAB]  ;\
 $A2:BFBF 29 00 FF    AND #$FF00             ;|
 $A2:BFC2 18          CLC                    ;|
@@ -6525,6 +6602,8 @@ $A2:C27E 7C B2 0F    JMP ($0FB2,x)[$A2:C2E7]; Go to [enemy function]
 
 ;;; $C281: Geruta function - flames ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C281 BD 4C 0F    LDA $0F4C,x[$7E:0F8C]  ;\
 $A2:C284 D0 0A       BNE $0A    [$C290]     ;} If [enemy ([X] - 1) health] = 0:
 $A2:C286 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
@@ -6576,6 +6655,8 @@ $A2:C2E6 6B          RTL
 
 ;;; $C2E7: Geruta function - idle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C2E7 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A2:C2EA 29 01 01    AND #$0101             ;} If [random number] & 101h != 0:
 $A2:C2ED F0 09       BEQ $09    [$C2F8]     ;/
@@ -6619,6 +6700,8 @@ $A2:C33E 6B          RTL
 
 ;;; $C33F: Geruta function - start swoop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C33F BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A2:C343 D0 01       BNE $01    [$C346]     ;} If not finished swoop start animation:
 $A2:C345 6B          RTL                    ; Return
@@ -6637,6 +6720,8 @@ $A2:C360 6B          RTL
 
 ;;; $C361: Geruta function - swoop - descending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C361 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C363 64 14       STZ $14    [$7E:0014]  ;|
 $A2:C365 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;|
@@ -6679,6 +6764,8 @@ $A2:C3B0 6B          RTL
 
 ;;; $C3B1: Geruta function - swoop - ascending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C3B1 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C3B3 64 14       STZ $14    [$7E:0014]  ;|
 $A2:C3B5 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;|
@@ -6724,6 +6811,8 @@ $A2:C405 6B          RTL
 
 ;;; $C406: Geruta function - finish swoop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C406 A9 E7 C2    LDA #$C2E7             ;\
 $A2:C409 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $C2E7 (idle)
 $A2:C40C 6B          RTL
@@ -6911,7 +7000,7 @@ $A2:C6F3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C6F6 A9 00 00    LDA #$0000             ;\
 $A2:C6F9 9F 02 78 7E STA $7E7802,x[$7E:7902];} Enemy animation finished flag = 0
 $A2:C6FD BD B4 0F    LDA $0FB4,x[$7E:10B4]  ;\
-$A2:C700 10 11       BPL $11    [$C713]     ;} If [enemy parameter 1] & 8000h != 0:
+$A2:C700 10 11       BPL $11    [$C713]     ;} If [enemy parameter 1] & 8000h != 0 (flames part):
 $A2:C702 A9 2E C7    LDA #$C72E             ;\
 $A2:C705 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy function = $C72E (flames)
 $A2:C708 A9 B0 C6    LDA #$C6B0             ;\
@@ -6938,6 +7027,8 @@ $A2:C72B 7C B2 0F    JMP ($0FB2,x)[$A2:C771]; Go to [enemy function]
 
 ;;; $C72E: Holtz function - flames ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C72E BD 4C 0F    LDA $0F4C,x[$7E:110C]  ;\
 $A2:C731 D0 0A       BNE $0A    [$C73D]     ;} If [enemy ([X] - 1) health] = 0:
 $A2:C733 BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
@@ -6975,6 +7066,8 @@ $A2:C770 6B          RTL
 
 ;;; $C771: Holtz function - idle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C771 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A2:C774 29 01 01    AND #$0101             ;} If [random number] & 101h != 0 (3/4 chance):
 $A2:C777 F0 09       BEQ $09    [$C782]     ;/
@@ -7011,6 +7104,8 @@ $A2:C7BA 6B          RTL
 
 ;;; $C7BB: Holtz function - prepare to swoop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C7BB BF 02 78 7E LDA $7E7802,x[$7E:7982];\
 $A2:C7BF D0 01       BNE $01    [$C7C2]     ;} If [enemy animation finished flag] = 0:
 $A2:C7C1 6B          RTL                    ; Return
@@ -7027,6 +7122,8 @@ $A2:C7D5 6B          RTL
 
 ;;; $C7D6: Holtz function - swoop - descending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C7D6 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C7D8 64 14       STZ $14    [$7E:0014]  ;|
 $A2:C7DA BD AE 0F    LDA $0FAE,x[$7E:112E]  ;|
@@ -7071,6 +7168,8 @@ $A2:C82C 6B          RTL
 
 ;;; $C82D: Holtz function - swoop - ascending ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C82D 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C82F 64 14       STZ $14    [$7E:0014]  ;|
 $A2:C831 BD AE 0F    LDA $0FAE,x[$7E:112E]  ;|
@@ -7118,6 +7217,8 @@ $A2:C887 6B          RTL
 
 ;;; $C888: Holtz function - swoop cooldown ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:C888 BF 02 78 7E LDA $7E7802,x[$7E:7982];\
 $A2:C88C D0 01       BNE $01    [$C88F]     ;} If [enemy animation finished flag] = 0:
 $A2:C88E 6B          RTL                    ; Return

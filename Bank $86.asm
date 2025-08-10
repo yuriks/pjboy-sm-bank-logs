@@ -9916,7 +9916,7 @@ $86:C0B7 30 25       BMI $25    [$C0DE]     ;} If [enemy projectile Y position] 
 $86:C0B9 18          CLC                    ;\
 $86:C0BA 69 10 00    ADC #$0010             ;|
 $86:C0BD 38          SEC                    ;|
-$86:C0BE ED 15 09    SBC $0915  [$7E:0915]  ;} If 0 <= [enemy projectile Y position] + 10h - [layer 1 Y position] < 100h
+$86:C0BE ED 15 09    SBC $0915  [$7E:0915]  ;} If 0 <= [enemy projectile Y position] + 10h - [layer 1 Y position] < 100h:
 $86:C0C1 30 1B       BMI $1B    [$C0DE]     ;|
 $86:C0C3 C9 00 01    CMP #$0100             ;|
 $86:C0C6 10 16       BPL $16    [$C0DE]     ;/
@@ -9925,7 +9925,7 @@ $86:C0CB 30 11       BMI $11    [$C0DE]     ;} If [enemy projectile X position] 
 $86:C0CD 18          CLC                    ;\
 $86:C0CE 69 04 00    ADC #$0004             ;|
 $86:C0D1 38          SEC                    ;|
-$86:C0D2 ED 11 09    SBC $0911  [$7E:0911]  ;} If -4 <= [enemy projectile X position] - [layer 1 X position] < 100h + 4
+$86:C0D2 ED 11 09    SBC $0911  [$7E:0911]  ;} If -4 <= [enemy projectile X position] - [layer 1 X position] < 100h + 4:
 $86:C0D5 30 07       BMI $07    [$C0DE]     ;|
 $86:C0D7 C9 08 01    CMP #$0108             ;|
 $86:C0DA 10 02       BPL $02    [$C0DE]     ;/
