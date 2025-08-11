@@ -7538,6 +7538,8 @@ $A2:CD34 60          RTS
 
 ;;; $CD35: Handle pushing Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:CD35 A9 00 00    LDA #$0000             ;\
 $A2:CD38 9F 16 78 7E STA $7E7816,x[$7E:7816];} Enemy stop flag = 0
 $A2:CD3C 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
@@ -7572,6 +7574,8 @@ $A2:CD76 60          RTS
 
 ;;; $CD77: Stop if player is pressing towards oum ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:CD77 BF 08 78 7E LDA $7E7808,x[$7E:7808];\
 $A2:CD7B F0 68       BEQ $68    [$CDE5]     ;} If not touching Samus: return
 $A2:CD7D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -7798,6 +7802,8 @@ $A2:CF65 60          RTS
 
 ;;; $CF66: Oum bounce function - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:CF66 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A2:CF69 18          CLC                    ;|
 $A2:CF6A 69 80 01    ADC #$0180             ;|
@@ -7835,6 +7841,8 @@ $A2:CFA8 60          RTS
 
 ;;; $CFA9: Oum bounce function - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:CFA9 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
 $A2:CFAC 38          SEC                    ;|
 $A2:CFAD E9 80 01    SBC #$0180             ;} Enemy Y speed table index -= 180h
@@ -7871,6 +7879,8 @@ $A2:CFDE 60          RTS
 
 ;;; $CFDF: Set oum instruction list ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:CFDF BF 00 78 7E LDA $7E7800,x[$7E:7800];\
 $A2:CFE3 DF 02 78 7E CMP $7E7802,x[$7E:7802];} If [enemy instruction list index] != [enemy new instruction list index]:
 $A2:CFE7 F0 15       BEQ $15    [$CFFE]     ;/
@@ -7956,6 +7966,8 @@ $A2:D388 22 23 80 A2 JSL $A28023[$A2:8023]  ; Normal enemy touch AI
 
 ;;; $D38C: Enemy touch - oum - doesn't hurt Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:D38C 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:D390 D0 21       BNE $21    [$D3B3]     ;} If enemy is touching Samus from below: return
 $A2:D392 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -8191,6 +8203,8 @@ $A2:DFCD 6B          RTL
 
 ;;; $DFCE: Calculate choot jump height ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     $12: [enemy parameter 1 low] (number of falling pattern loops) * [enemy falling pattern Y distance]
 $A2:DFCE 08          PHP
@@ -8213,6 +8227,7 @@ $A2:DFE8 60          RTS
 ;;; $DFE9: Calculate initial choot jump speed ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $12: Jump height. Unit px
 
 ; Calculates the initial quadratic speed table index required to make a jump
@@ -8466,6 +8481,8 @@ $A2:E1CB             dx 0010,E44B,
 
 ;;; $E1D3: Initialisation AI - enemy $D3FF (gripper) ;;;
 {
+; Initialisation parameter high is meant to decide initial direction, but doesn't due to the defective bitmask at $E1E6
+; Instead, gripper will only move right if the speed table index is zero, and will move left otherwise
 $A2:E1D3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E1D6 BD 92 0F    LDA $0F92,x[$7E:1152]  ;\
 $A2:E1D9 29 FF 00    AND #$00FF             ;|
@@ -8547,6 +8564,10 @@ $A2:E278 6B          RTL
 
 ;;; $E279: Check if moved left too far ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     Carry: Set if moved left too far
 $A2:E279 BD AE 0F    LDA $0FAE,x[$7E:116E]  ;\
 $A2:E27C 10 0A       BPL $0A    [$E288]     ;} If [enemy X velocity] >= 0: return carry clear
 $A2:E27E BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
@@ -8562,6 +8583,10 @@ $A2:E289 60          RTS
 
 ;;; $E28A: Check if moved right too far ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     Carry: Set if moved right too far
 $A2:E28A BD AE 0F    LDA $0FAE,x[$7E:116E]  ;\
 $A2:E28D 30 0A       BMI $0A    [$E299]     ;} If [enemy X velocity] < 0: return carry clear
 $A2:E28F BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
@@ -9010,7 +9035,10 @@ $A2:E651 7C B2 0F    JMP ($0FB2,x)[$A2:E654]; Go to [enemy function]
 
 ;;; $E654: Dragon function - wait to rise ;;;
 {
-; The comparison done at $E666..79 is crazy overengineered
+;; Parameters:
+;;     X: Enemy index
+
+; The comparison done at $E666..79 is crazy over-engineered
 $A2:E654 DE AE 0F    DEC $0FAE,x[$7E:116E]  ; Decrement enemy function timer
 $A2:E657 30 01       BMI $01    [$E65A]     ; If [enemy function timer] >= 0:
 $A2:E659 6B          RTL                    ; Return
@@ -9052,6 +9080,8 @@ $A2:E6AC 6B          RTL
 
 ;;; $E6AD: Dragon function - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:E6AD DE AE 0F    DEC $0FAE,x[$7E:116E]  ; Decrement enemy function timer
 $A2:E6B0 10 18       BPL $18    [$E6CA]     ; If [enemy function timer] < 0:
 $A2:E6B2 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
@@ -9111,6 +9141,8 @@ $A2:E733 6B          RTL
 
 ;;; $E734: Dragon function - wait to sink ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:E734 DE AE 0F    DEC $0FAE,x[$7E:11EE]  ; Decrement enemy function timer
 $A2:E737 D0 0F       BNE $0F    [$E748]     ; If [enemy function timer] != 0: return
 $A2:E739 A9 30 00    LDA #$0030             ;\
@@ -9125,6 +9157,8 @@ $A2:E748 6B          RTL
 
 ;;; $E749: Dragon function - sinking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:E749 DE AE 0F    DEC $0FAE,x[$7E:102E]  ; Decrement enemy function timer
 $A2:E74C 10 0C       BPL $0C    [$E75A]     ; If [enemy function timer] < 0:
 $A2:E74E A9 80 00    LDA #$0080             ;\
@@ -9393,6 +9427,8 @@ $A2:EABC 6B          RTL
 
 ;;; $EABD: Growing shutter function - initial - upwards - wait for timer ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EABD BD B4 0F    LDA $0FB4,x            ;\
 $A2:EAC0 F0 05       BEQ $05    [$EAC7]     ;} If [enemy parameter 1] != 0:
 $A2:EAC2 3A          DEC A                  ;\
@@ -9401,20 +9437,22 @@ $A2:EAC6 60          RTS                    ; Return
 
 $A2:EAC7 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EACA A9 13 EC    LDA #$EC13             ;\
-$A2:EACD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (closing - upwards)
+$A2:EACD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (growing - upwards)
 $A2:EAD0 60          RTS
 }
 
 
 ;;; $EAD1: Growing shutter function - initial - upwards - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EAD1 BD B4 0F    LDA $0FB4,x            ;\
 $A2:EAD4 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
 $A2:EAD8 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy parameter 1] pixels columns of enemy:
 $A2:EADB F0 09       BEQ $09    [$EAE6]     ;/
 $A2:EADD 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EAE0 A9 13 EC    LDA #$EC13             ;\
-$A2:EAE3 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (closing - upwards)
+$A2:EAE3 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (growing - upwards)
 
 $A2:EAE6 60          RTS
 }
@@ -9422,13 +9460,15 @@ $A2:EAE6 60          RTS
 
 ;;; $EAE7: Growing shutter function - initial - downwards - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EAE7 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A2:EAEA 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
 $A2:EAEE 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy parameter 1] pixels columns of enemy:
 $A2:EAF1 F0 09       BEQ $09    [$EAFC]     ;/
 $A2:EAF3 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EAF6 A9 11 EB    LDA #$EB11             ;\
-$A2:EAF9 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EB11 (closing - downwards)
+$A2:EAF9 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EB11 (growing - downwards)
 
 $A2:EAFC 60          RTS
 }
@@ -9436,6 +9476,8 @@ $A2:EAFC 60          RTS
 
 ;;; $EAFD: Growing shutter function - initial - downwards - wait for timer ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EAFD BD B4 0F    LDA $0FB4,x            ;\
 $A2:EB00 F0 05       BEQ $05    [$EB07]     ;} If [enemy parameter 1] != 0:
 $A2:EB02 3A          DEC A                  ;\
@@ -9444,13 +9486,15 @@ $A2:EB06 60          RTS                    ; Return
 
 $A2:EB07 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EB0A A9 11 EB    LDA #$EB11             ;\
-$A2:EB0D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EB11 (closing - downwards)
+$A2:EB0D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EB11 (growing - downwards)
 $A2:EB10 60          RTS
 }
 
 
 ;;; $EB11: Growing shutter function - growing - downwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EB11 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
 $A2:EB14 0A          ASL A                  ;|
 $A2:EB15 AA          TAX                    ;} Execute [$EB1A + [enemy growth level] * 2]
@@ -9581,6 +9625,8 @@ $A2:EC12 60          RTS
 
 ;;; $EC13: Growing shutter function - growing - upwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EC13 BD 7E 0F    LDA $0F7E,x            ;\
 $A2:EC16 9F 00 88 7E STA $7E8800,x          ;} Enemy previous Y position = [enemy Y position]
 $A2:EC1A BD B2 0F    LDA $0FB2,x            ;\
@@ -9812,6 +9858,8 @@ $A2:EE1E 6B          RTL
 
 ;;; $EE1F: Initialise up/down mover ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
 $A2:EE22 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [A] = [enemy initialisation parameter low]
 $A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800];/

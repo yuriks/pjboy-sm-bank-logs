@@ -6378,7 +6378,7 @@ $B4:EEB0             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,00,02,02,02,0
 $B4:EEC6             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,00,00,00,00,00,00,00 ; Indestructible. Enemy $CF3F/$CF7F/$D1FF/$D37F/$D83F/$D87F/$D8BF/$DBFF/$DFFF/$E03F/$E07F/$E0BF/$E1BF/$E1FF/$E6BF/$E8FF/$E93F/$EA3F/$EA7F/$F0FF
 $B4:EEDC             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,02,00,00,00,00,00,00,02,02 ; Enemy $DFBF (boulder)
 $B4:EEF2             db 00,00,00,00,00,00,00,00,00,00,FF,FF, 00,00,00,00,00,00,02,00,02,02 ; Enemy $E73F (namihe)
-$B4:EF08             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,82,00,00,00,00,00,00 ; Enemy $D4FF/$D53F/$D57F/$D5FF (non-destroyable-timed shutters / rising and falling platform)
+$B4:EF08             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,82,00,00,00,00,00,00 ; Enemy $D4FF/$D53F/$D57F/$D5FF (growing shutter / shootable shutter / horizontal shutter / up/down mover platform)
 $B4:EF1E             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,82,00,00,00,00,00,00,00 ; Enemy $F07F (Shaktool)
 $B4:EF34             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,82,82,82,82,82,02,82,82 ; Enemy $E8BF (powamp)
 $B4:EF4A             db 00,00,00,00,00,00,80,00,00,00,00,00, 02,02,00,02,00,02,02,00,00,02 ; Enemy $D3FF (gripper)
@@ -6386,7 +6386,7 @@ $B4:EF60             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 02,04,00,01,02,02,0
 $B4:EF76             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,04,04,02,02,02,02,02,02 ; Enemy $D77F/$D7BF (sciser / zero)
 $B4:EF8C             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 02,02,04,04,02,02,02,00,00,02 ; Enemy $E87F (beetom)
 $B4:EFA2             db 80,80,80,80,80,80,80,80,02,02,82,82, 02,02,02,02,02,02,02,02,02,02 ; Enemy $E97F (bull)
-$B4:EFB8             db 02,02,02,02,02,02,02,02,02,02,82,82, 00,00,00,00,00,00,00,02,00,00 ; Enemy $D5BF (destroyable timed shutter)
+$B4:EFB8             db 02,02,02,02,02,02,02,02,02,02,82,82, 00,00,00,00,00,00,00,02,00,00 ; Enemy $D5BF (destroyable shutter)
 $B4:EFCE             db 02,02,FF,FF,02,02,FF,FF,02,02,82,82, 02,02,02,02,02,02,02,02,02,02 ; Enemy $E63F (evir)
 $B4:EFE4             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,00,00,00,00,00,00,00 ; Enemy $E67F (evir projectile)
 $B4:EFFA             db 82,82,82,82,82,82,82,82,82,82,82,82, 84,84,82,82,82,82,82,02,80,80 ; Enemy $E0FF (fake Kraid)
