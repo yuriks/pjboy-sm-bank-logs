@@ -17309,12 +17309,12 @@ $86:F25B 7A          PLY
 $86:F25C FA          PLX
 $86:F25D 60          RTS
 
-$86:F25E             db 01, ; Small health
-                        02, ; Big health
-                        04, ; Missiles
-                        06, ; Nothing
-                        05, ; Super missiles
-                        03  ; Power bombs
+$86:F25E             db 01, ; 0: Small health
+                        02, ; 1: Big health
+                        04, ; 2: Missiles
+                        06, ; 3: Nothing
+                        05, ; 4: Super missiles
+                        03  ; 5: Power bombs
 }
 
 

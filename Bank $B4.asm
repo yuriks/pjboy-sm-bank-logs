@@ -591,7 +591,7 @@ $B4:855D             db 00
 ; Room $9BC8. Early supers room
 $B4:855E             db 62,6C,31,5F,30,33,20 ; "bl1_03 "
 $B4:8565             dw D93F, 0001,          ; Sidehopper
-                        D4FF, 0002,          ; Timed shutter
+                        D4FF, 0002,          ; Growing shutter
                         D63F, 0003,          ; Waver
                         F193, 0007,          ; Zeb
                         FFFF
@@ -737,7 +737,7 @@ $B4:86CD             db 00
 
 ; Room $A815. Ice beam mockball hall
 $B4:86CE             db 4E,4F,31,5F,30,34,20 ; "NO1_04 "
-$B4:86D5             dw D4FF, 0001,          ; Timed shutter
+$B4:86D5             dw D4FF, 0001,          ; Growing shutter
                         D97F, 0002,          ; Desgeega
                         D13F, 0003,          ; Mella
                         DCBF, 0007,          ; Sova
@@ -868,7 +868,7 @@ $B4:8803             db 00
 ; Room $ADAD. Pre wave beam room
 $B4:8804             db 4E,4F,31,5F,33,30,20 ; "NO1_30 "
 $B4:880B             dw E6FF, 0001,          ; Fune
-                        D5FF, 0002,          ; Rising and falling platform
+                        D5FF, 0002,          ; Up/down mover platform
                         E7FF, 0003,          ; Kago
                         D3FF, 0007,          ; Gripper
                         FFFF
@@ -1149,7 +1149,7 @@ $B4:8ABB             dw D2FF, 0001,          ; Geruta
                         FFFF
 $B4:8AC5             db 00
 
-; Room $B07A. Speed booster lavaquake room
+; Room $B07A. Speed booster lavaquake farming room
 $B4:8AC6             db 4E,4F,31,5F,34,35,20 ; "NO1_45 "
 $B4:8ACD             dw F213, 0001,          ; Gamet
                         DB7F, 0002,          ; Skree
@@ -1820,7 +1820,7 @@ $B4:9128             db 00
 
 ; Room $DE4D. Escape room 1
 $B4:9129             db 54,53,31,5F,31,34,20 ; "TS1_14 "
-$B4:9130             dw D5BF, 0001,          ; Destroyable timed shutter
+$B4:9130             dw D5BF, 0001,          ; Destroyable shutter
                         FFFF
 $B4:9136             db 00
 
@@ -1876,7 +1876,7 @@ $B4:91AA             db 00
 ; Room $DEA7. Escape room 3
 $B4:91AB             db 54,53,31,5F,31,36,20 ; "TS1_16 "
 $B4:91B2             dw F793, 0001,          ; Silver walking space pirate
-                        D4FF, 0002,          ; Timed shutter
+                        D4FF, 0002,          ; Growing shutter
                         FFFF
 $B4:91BC             db 00
 

@@ -448,7 +448,7 @@ $83:8710             dx 0000, FFFF,FFFF, 0000, 00, 02, 02,1E, 01, 00,00, 02
 ; Room $B051. Purple farming room
 $83:8720             dx 0000, FFFF,FFFF, 0000, 00, 02, 02,1E, 03, 1F,00, 02
 
-; Room $B07A. Speed booster lavaquake room
+; Room $B07A. Speed booster lavaquake farming room
 $83:8730             dx 0000, 01B4,FFFF, 0000, 00, 02, 02,1E, 03, 1F,00, 02
 
 ; Room $B0B4. Norfair map station
@@ -1407,14 +1407,14 @@ $83:9576             dx AEDF, 00, 06, 06,02, 00,00, 8000, C0DE ; Purple shaft
 $83:9582             dx AD5E, 00, 04, 01,06, 00,00, 8000, 0000 ; Alcoon shaft
 
 ; Room $ACB3, door 5. Bubble Norfair mainstreet
-$83:958E             dx B07A, 00, 04, 01,16, 00,01, 8000, 0000 ; Speed booster lavaquake room
+$83:958E             dx B07A, 00, 04, 01,16, 00,01, 8000, 0000 ; Speed booster lavaquake farming room
 
 ; Norfair load station 1
 ; Room $ACB3, door 6. Bubble Norfair mainstreet
 $83:959A             dx B0DD, 00, 05, 0E,06, 00,00, 8000, 0000 ; Bubble Norfair save station
 
 ; Room $ACF0, door 0. Speed booster lavaquake
-$83:95A6             dx B07A, 00, 05, 0E,06, 00,00, 8000, BFE9 ; Speed booster lavaquake room
+$83:95A6             dx B07A, 00, 05, 0E,06, 00,00, 8000, BFE9 ; Speed booster lavaquake farming room
 
 ; Room $ACF0, door 1. Speed booster lavaquake
 $83:95B2             dx AD1B, 00, 04, 01,06, 00,00, 8000, 0000 ; Speed booster room
@@ -1544,10 +1544,10 @@ $83:9792             dx AFFB, 00, 04, 01,06, 00,00, 8000, 0000 ; Norfair lava-sp
 ; Room $B051, door 0. Purple farming room
 $83:979E             dx AEDF, 00, 05, 0E,16, 00,01, 8000, 0000 ; Purple shaft
 
-; Room $B07A, door 0. Speed booster lavaquake room
+; Room $B07A, door 0. Speed booster lavaquake farming room
 $83:97AA             dx ACB3, 00, 05, 1E,06, 01,00, 8000, 0000 ; Bubble Norfair mainstreet
 
-; Room $B07A, door 1. Speed booster lavaquake room
+; Room $B07A, door 1. Speed booster lavaquake farming room
 $83:97B6             dx ACF0, 00, 04, 01,06, 00,00, 8000, 0000 ; Speed booster lavaquake
 
 ; Room $B0B4, door 0. Norfair map station

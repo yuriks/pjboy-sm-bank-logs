@@ -974,7 +974,7 @@ $8F:8D9C             dx B6DF, 07,0A, 0045, ; Energy station
 ; Room $B051. Purple farming room
 $8F:8DA4             dx 0000
 
-; Room $B07A. Speed booster lavaquake room
+; Room $B07A. Speed booster lavaquake farming room
 $8F:8DA6             dx B703, 09,0C, B0A7, ; Scroll PLM
                         B63B, 0A,0C, 8000, ; Rightwards extension
                         B703, 09,10, B0AC, ; Scroll PLM
@@ -1495,7 +1495,7 @@ $8F:91F5 60          RTS
 ; Room $AFFB. Norfair lava-spike hall
 ; Room $B026. Norfair energy station
 ; Room $B051. Purple farming room
-; Room $B07A. Speed booster lavaquake room
+; Room $B07A. Speed booster lavaquake farming room
 ; Room $B0B4. Norfair map station
 ; Room $B0DD. Bubble Norfair save station
 ; Room $B106. Norfair speed blockade hall
@@ -3366,25 +3366,25 @@ $8F:B05E             dx C8B9CF, 09, 00,00, 8720, A2DF, 86C7, 01,01, 0000, 0000, 
 ; Door list. Room $B051. Purple farming room
 $8F:B078             dw 979E
 
-; Room header. Speed booster lavaquake room
+; Room header. Speed booster lavaquake farming room
 $8F:B07A             dx 2D,02, 18,01, 01,02, 70,A0, 00, B0A1, E5E6
 
-; State header. Room $B07A. Speed booster lavaquake room - default
+; State header. Room $B07A. Speed booster lavaquake farming room - default
 $8F:B087             dx C8BB21, 09, 00,05, 8730, B912, 8ACD, 00,00, B0A5, 0000, 0000, 8DA6, 0000, 91F6
 
-; Door list. Room $B07A. Speed booster lavaquake room
+; Door list. Room $B07A. Speed booster lavaquake farming room
 $8F:B0A1             dw 97AA, 97B6
 
-; Scroll data. Room $B07A. Speed booster lavaquake room
+; Scroll data. Room $B07A. Speed booster lavaquake farming room
 $8F:B0A5             db 00, 01
 
-; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 0)
+; PLM scroll data. Room $B07A. Speed booster lavaquake farming room (PLM index 0)
 $8F:B0A7             db 00,02, 01,02, 80
 
-; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 2)
+; PLM scroll data. Room $B07A. Speed booster lavaquake farming room (PLM index 2)
 $8F:B0AC             db 00,02, 01,01, 80
 
-; PLM scroll data. Room $B07A. Speed booster lavaquake room (PLM index 4)
+; PLM scroll data. Room $B07A. Speed booster lavaquake farming room (PLM index 4)
 $8F:B0B1             db 00,00, 80
 
 ; Room header. Norfair map station
@@ -4810,7 +4810,7 @@ $8F:BFE8 60          RTS
 
 ;;; $BFE9: Door ASM - scroll 0 = blue, 1 = red ;;;
 {
-; Door destination: Speed booster lavaquake room
+; Door destination: Speed booster lavaquake farming room
 ; Room $ACF0, door 0. Speed booster lavaquake
 $8F:BFE9 08          PHP
 $8F:BFEA E2 20       SEP #$20

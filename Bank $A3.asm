@@ -98,7 +98,7 @@ $A3:872D 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 
 $A3:8730 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
 $A3:8733 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy instruction list index = 0
-$A3:8736 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0
+$A3:8736 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy spin finished flag = 0
 $A3:8739 A9 A7 86    LDA #$86A7             ;\
 $A3:873C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
 $A3:873F BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
@@ -336,6 +336,9 @@ $A3:89AB 6B          RTL
 
 ;;; $89AC: Determine metaree Y velocity ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; This subroutine assumes [Samus' Y position] >= [enemy Y position]
 ; If this is not the case, then due to the unsigned nature of division,
 ; the resulting enemy velocity will be some large value (~AAh) that makes the metaree shoot off-screen in an instant and/or hit the ground from many tiles away
@@ -365,6 +368,8 @@ $A3:89D3 60          RTS
 
 ;;; $89D4: Metaree function - prepare to launch attack ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:89D4 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
 $A3:89D7 F0 19       BEQ $19    [$89F2]     ;} If [enemy attack ready flag] = 0: return
 $A3:89D9 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
@@ -662,6 +667,8 @@ $A3:8D69 60          RTS
 
 ;;; $8D6A: Set initial fireflea angle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:8D6A BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A3:8D6D 29 FF 00    AND #$00FF             ;|
 $A3:8D70 EB          XBA                    ;} Enemy angle = [enemy parameter 1 high] * 100h
@@ -672,6 +679,9 @@ $A3:8D74 60          RTS
 
 ;;; $8D75: Set fireflea speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     $12: Enemy parameter 1 low
 $A3:8D75 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A3:8D78 29 FF 00    AND #$00FF             ;|
 $A3:8D7B 0A          ASL A                  ;|
@@ -698,6 +708,8 @@ $A3:8D9B 60          RTS
 
 ;;; $8D9C: Set fireflea radius ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:8D9C BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
 $A3:8D9F 29 FF 00    AND #$00FF             ;|
 $A3:8DA2 0A          ASL A                  ;|
@@ -711,6 +723,9 @@ $A3:8DAD 60          RTS
 
 ;;; $8DAE: Set initial circling fireflea position ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; This seems to be missing a division by 100h of the enemy angle,
 ; which is of little consequence as the main AI sets the position every frame anyway
 $A3:8DAE BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
@@ -733,6 +748,8 @@ $A3:8DD6 60          RTS
 
 ;;; $8DD7: Set Y fireflea extrema ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:8DD7 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $A3:8DDA 38          SEC                    ;|
 $A3:8DDB FD AC 0F    SBC $0FAC,x[$7E:106C]  ;} Enemy minimum Y position = [enemy Y position] - [enemy radius]
@@ -1829,7 +1846,7 @@ $A3:9C2B             dw 0007,9F5C,
 }
 
 
-;;; $9C3F: Instruction list - tripper - vertically still - moving right ;;;
+;;; $9C3F: Instruction list - tripper - vertically still - moving left ;;;
 {
 $A3:9C3F             dw 9C6B        ; Set moving left X movement
 $A3:9C41             dw 0007,9F8F,
@@ -1840,7 +1857,7 @@ $A3:9C41             dw 0007,9F8F,
 }
 
 
-;;; $9C55: Instruction list - tripper - vertically still - moving left ;;;
+;;; $9C55: Instruction list - tripper - vertically still - moving right ;;;
 {
 $A3:9C55             dw 9C76        ; Set moving right X movement
 $A3:9C57             dw 0007,9FCC,
@@ -1917,16 +1934,19 @@ $A3:9CB8 80 12       BRA $12    [$9CCC]     ; Go to tripper / suspensor platform
 ;;; $9CBA: Initialisation AI - enemy $D7FF (tripper) ;;;
 {
 $A3:9CBA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:9CBD A0 3F 9C    LDY #$9C3F             ; Y = $9C3F (tripper - vertically still - moving right)
+$A3:9CBD A0 3F 9C    LDY #$9C3F             ; Y = $9C3F (tripper - vertically still - moving left)
 $A3:9CC0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A3:9CC3 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy X movement function index = [enemy parameter 1]
 $A3:9CC7 F0 03       BEQ $03    [$9CCC]     ; If [enemy X movement function index] = 0 (moving left): go to tripper / suspensor platform common initialisation AI
-$A3:9CC9 A0 55 9C    LDY #$9C55             ; Y = $9C55 (tripper - vertically still - moving left)
+$A3:9CC9 A0 55 9C    LDY #$9C55             ; Y = $9C55 (tripper - vertically still - moving right)
 }
 
 
 ;;; $9CCC: Tripper / suspensor platform common initialisation AI ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Instruction list pointer
 $A3:9CCC 98          TYA                    ;\
 $A3:9CCD 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list = [Y]
 $A3:9CD0 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -6067,6 +6087,8 @@ $A3:C6F6 6B          RTL
 
 ;;; $C6F7: Skree function - prepare to launch attack ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:C6F7 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
 $A3:C6FA F0 19       BEQ $19    [$C715]     ;} If [enemy attack ready flag] = 0: return
 $A3:C6FC 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
@@ -6644,6 +6666,11 @@ $A3:CC26             dx 0003,D857,
 
 ;;; $CC36: Instruction - enemy movement function = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:CC36 B9 00 00    LDA $0000,y[$A3:CB38]
 $A3:CC39 9D B2 0F    STA $0FB2,x[$7E:1032]
 $A3:CC3C C8          INY
@@ -6654,6 +6681,11 @@ $A3:CC3E 6B          RTL
 
 ;;; $CC3F: Instruction - enemy hiding instruction list = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:CC3F B9 00 00    LDA $0000,y[$A3:C8E6]
 $A3:CC42 9D AE 0F    STA $0FAE,x[$7E:116E]
 $A3:CC45 C8          INY
@@ -6664,6 +6696,11 @@ $A3:CC47 6B          RTL
 
 ;;; $CC48: Instruction - set enemy direction to [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:CC48 5A          PHY
 $A3:CC49 B9 00 00    LDA $0000,y[$A3:C8EA]  ;\
 $A3:CC4C 9F 0E 78 7E STA $7E780E,x[$7E:79CE];} Enemy direction = [[Y]]
@@ -6682,6 +6719,11 @@ $A3:CC5E 6B          RTL
 
 ;;; $CC5F: Instruction - move ([[Y]], [[Y] + 2]) pixels ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:CC5F B9 00 00    LDA $0000,y[$A3:C8DC]
 $A3:CC62 18          CLC
 $A3:CC63 7D 7A 0F    ADC $0F7A,x[$7E:113A]
@@ -6700,6 +6742,11 @@ $A3:CC77 6B          RTL
 
 ;;; $CC78: Instruction - go back 4 bytes if hiding or with 50% chance ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:CC78 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A3:CC7C C9 02 00    CMP #$0002             ;} If [enemy behaviour] != hiding:
 $A3:CC7F F0 0A       BEQ $0A    [$CC8B]     ;/
@@ -6718,6 +6765,12 @@ $A3:CC91 6B          RTL
 
 ;;; $CC92: Unused. Instruction - make yard face Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Wild NOP appears!
 $A3:CC92 EA          NOP
 $A3:CC93 5A          PHY
@@ -6846,7 +6899,7 @@ $A3:CDFD A8          TAY                    ;/
 $A3:CDFE B9 42 CD    LDA $CD42,y[$A3:CD72]  ;\
 $A3:CE01 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
 $A3:CE04 B9 44 CD    LDA $CD44,y[$A3:CD74]  ;\
-$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]  ;} Enemy properties |= [$CD42 + [Y] + 2] <-- seemingly inconsequential
+$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]  ;} Enemy properties |= [$CD42 + [Y] + 2]
 $A3:CE0A 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:CE0D B9 46 CD    LDA $CD46,y[$A3:CD76]  ;\
 $A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy hiding instruction list = [$CD42 + [Y] + 4]
@@ -6862,6 +6915,7 @@ $A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C];} Enemy idle crawling speed table i
 ;;; $CE27: Set yard crawling velocities ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Direction * 8
 $A3:CE27 B9 82 CD    LDA $CD82,y[$A3:CDB2]  ;\
 $A3:CE2A 85 12       STA $12    [$7E:0012]  ;} $12 = [$CD82 + [Y]] (X velocity sign, FFFF = negative)
@@ -6890,6 +6944,8 @@ $A3:CE56 6B          RTL
 
 ;;; $CE57: Set yard crawling movement function ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CE57 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
 $A3:CE5B 0A          ASL A                  ;|
 $A3:CE5C A8          TAY                    ;} Enemy movement function = [$CDD2 + [enemy direction] * 2]
@@ -6911,6 +6967,8 @@ $A3:CE70 7C B2 0F    JMP ($0FB2,x)[$A3:CF5F]; Go to [enemy movement function]
 
 ;;; $CE73: Drop yard if super missile quake ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CE73 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A3:CE77 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: return
 $A3:CE7A F0 1D       BEQ $1D    [$CE99]     ;/
@@ -6932,6 +6990,8 @@ $A3:CE99 60          RTS
 
 ;;; $CE9A: Handle yard hiding ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CE9A BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A3:CE9E C9 01 00    CMP #$0001             ;} If [enemy behaviour] = aggressive crawling: return
 $A3:CEA1 F0 6D       BEQ $6D    [$CF10]     ;/
@@ -6987,6 +7047,8 @@ $A3:CF10 60          RTS
 
 ;;; $CF11: Determine if yard hitbox is solid to Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CF11 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
 $A3:CF14 C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] = $D1B3 (airborne): go to BRANCH_NOT_SOLID
 $A3:CF17 F0 3C       BEQ $3C    [$CF55]     ;/
@@ -7034,6 +7096,8 @@ $A3:CF5F 6B          RTL
 
 ;;; $CF60: Yard movement function - hiding ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CF60 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
 $A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy direction] < 4: (moving vertically)
 $A3:CF67 B0 11       BCS $11    [$CF7A]     ;/
@@ -7061,6 +7125,7 @@ $A3:CF8E 6B          RTL
 ;;; $CF8F: $14.$12 = ±[A] / 100h + 7 * sgn([A]) ;;;
 {
 ; Requires $14.$12 to be set to 0.0 first
+; TODO: could probably come up with a non-maths label
 $A3:CF8F 10 02       BPL $02    [$CF93]     ;\
 $A3:CF91 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;} $14.$12 = ±[A] / 100h
@@ -7081,6 +7146,8 @@ $A3:CFA5 60          RTS
 
 ;;; $CFA6: Yard movement function - crawling - upside up - moving left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFA6 BF 0A 78 7E LDA $7E780A,x[$7E:79CA];\
 $A3:CFAA D0 05       BNE $05    [$CFB1]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFAC A0 E2 CC    LDY #$CCE2             ; Y = $CCE2
@@ -7094,6 +7161,8 @@ $A3:CFB4 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 
 ;;; $CFB7: Yard movement function - crawling - upside left - moving down ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFB7 A0 EA CC    LDY #$CCEA             ; Y = $CCEA
 $A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
@@ -7101,6 +7170,8 @@ $A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - ver
 
 ;;; $CFBD: Yard movement function - crawling - upside down - moving right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFBD BF 0A 78 7E LDA $7E780A,x[$7E:78CA];\
 $A3:CFC1 D0 05       BNE $05    [$CFC8]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFC3 A0 F2 CC    LDY #$CCF2             ; Y = $CCF2
@@ -7114,6 +7185,8 @@ $A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 
 ;;; $CFCE: Yard movement function - crawling - upside right - moving up ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFCE A0 FA CC    LDY #$CCFA             ; Y = $CCFA
 $A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
@@ -7121,6 +7194,8 @@ $A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - ver
 
 ;;; $CFD4: Yard movement function - crawling - upside up - moving right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFD4 BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
 $A3:CFD8 D0 05       BNE $05    [$CFDF]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFDA A0 02 CD    LDY #$CD02             ; Y = $CD02
@@ -7134,6 +7209,8 @@ $A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 
 ;;; $CFE5: Yard movement function - crawling - upside right - moving down ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFE5 A0 0A CD    LDY #$CD0A             ; Y = $CD0A
 $A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
@@ -7141,6 +7218,8 @@ $A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - ver
 
 ;;; $CFEB: Yard movement function - crawling - upside down - moving left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFEB BF 0A 78 7E LDA $7E780A,x[$7E:7A0A];\
 $A3:CFEF D0 05       BNE $05    [$CFF6]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFF1 A0 12 CD    LDY #$CD12             ; Y = $CD12
@@ -7154,6 +7233,8 @@ $A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 
 ;;; $CFFC: Yard movement function - crawling - upside left - moving up ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:CFFC A0 1A CD    LDY #$CD1A             ; Y = $CD1A
 $A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
@@ -7162,6 +7243,7 @@ $A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - ver
 ;;; $D002: Yard crawling movement - vertical ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Pointer to turn data entry (see $CCE2)
 $A3:D002 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D005 64 12       STZ $12    [$7E:0012]  ;\
@@ -7234,6 +7316,7 @@ $A3:D07D 6B          RTL
 ;;; $D07E: Yard crawling movement - horizontal ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Pointer to turn data entry (see $CCE2)
 $A3:D07E 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D081 64 12       STZ $12    [$7E:0012]  ;\
@@ -7304,6 +7387,7 @@ $A3:D0F7 6B          RTL
 ;;; $D0F8: Move enemy ahead for outside turn check ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Pointer to turn data entry (see $CCE2)
 $A3:D0F8 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
 $A3:D0FB 18          CLC                    ;|
@@ -7320,7 +7404,9 @@ $A3:D10C 60          RTS
 ;;; $D10D: Move enemy back from outside turn check ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Pointer to turn data entry (see $CCE2)
+
 ; Important that the carry flag is preserved here
 $A3:D10D 08          PHP
 $A3:D10E BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
@@ -7340,6 +7426,7 @@ $A3:D123 60          RTS
 {
 ;; Parameters:
 ;;     Carry: Set if position was adjusted by slope, otherwise clear
+;;     X: Enemy index
 $A3:D124 B0 0F       BCS $0F    [$D135]     ; If carry set: go to BRANCH_RESET_TURN_TRANSITION_DISABLE_COUNTER
 $A3:D126 BF 08 78 7E LDA $7E7808,x[$7E:79C8];\
 $A3:D12A 1A          INC A                  ;|
@@ -7364,6 +7451,9 @@ $A3:D14B 60          RTS
 
 ;;; $D14C: Set enemy instruction list and disable turn transition ;;;
 {
+;; Parameters:
+;;     A: Instruction list pointer
+;;     X: Enemy index
 $A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]  ; Enemy instruction list pointer = [A]
 $A3:D14F A9 01 00    LDA #$0001             ;\
 $A3:D152 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
@@ -7377,6 +7467,8 @@ $A3:D163 60          RTS
 
 ;;; $D164: Drop yard ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:D164 5A          PHY
 $A3:D165 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
 $A3:D169 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: return
@@ -7415,6 +7507,9 @@ $A3:D1AB             dw CC06,CB44, ; Facing left
 
 ;;; $D1B3: Yard movement function - airborne ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Note the two fixed point negation operations at $D20A and $D26D are off by 1.0 when the low word is zero
 $A3:D1B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
 $A3:D1B7 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: go to BRANCH_X_MOVEMENT_END
@@ -7530,7 +7625,7 @@ $A3:D2D0 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = idle crawling
 
 $A3:D2D4 BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
 $A3:D2D7 29 FC FF    AND #$FFFC             ;|
-$A3:D2DA 1D AC 0F    ORA $0FAC,x[$7E:116C]  ;} Enemy parameter 2 = [enemy properties] & ~3 | [enemy airborne facing direction]
+$A3:D2DA 1D AC 0F    ORA $0FAC,x[$7E:116C]  ;} Enemy properties = [enemy properties] & ~3 | [enemy airborne facing direction]
 $A3:D2DD 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
 $A3:D2E0 22 7A E6 A3 JSL $A3E67A[$A3:E67A]  ; Creepy crawly common initialisation AI
 $A3:D2E4 A9 5F CF    LDA #$CF5F             ;\
@@ -7546,6 +7641,8 @@ $A3:D2F9 6B          RTL
 
 ;;; $D2FA: Set yard airborne instruction list ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:D2FA BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
 $A3:D2FD 0A          ASL A                  ;|
 $A3:D2FE 0A          ASL A                  ;} Y = [enemy airborne facing direction] * 4
@@ -7566,6 +7663,8 @@ $A3:D30D             dw CC06,CB44, ; Facing left
 
 ;;; $D315: Unused. Make yard face Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if yard was turned around
 $A3:D315 BF 0A 78 7E LDA $7E780A,x          ;\
@@ -7593,6 +7692,8 @@ $A3:D33D 6B          RTL                    ; Return carry clear
 
 ;;; $D33E: Make yard face Samus horizontally ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if yard was turned around
 
@@ -7614,6 +7715,8 @@ $A3:D355 6B          RTL                    ; Return carry clear
 
 ;;; $D356: Turn yard around ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if yard was turned around
 
@@ -7637,7 +7740,7 @@ $A3:D378 B9 42 CD    LDA $CD42,y[$A3:CD7A]  ;\
 $A3:D37B 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
 $A3:D37E BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A3:D381 29 FC FF    AND #$FFFC             ;|
-$A3:D384 19 44 CD    ORA $CD44,y[$A3:CD7C]  ;} Enemy properties |= [$CD42 + [Y] + 2]
+$A3:D384 19 44 CD    ORA $CD44,y[$A3:CD7C]  ;} Enemy properties = [enemy properties] & ~3 | [$CD42 + [Y] + 2]
 $A3:D387 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A3:D38A B9 46 CD    LDA $CD46,y[$A3:CD7E]  ;\
 $A3:D38D 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy hiding instruction list = [$CD42 + [Y] + 4]
@@ -7711,6 +7814,8 @@ $A3:D420 6B          RTL
 
 ;;; $D421: Check if player is directing towards enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if player is directing towards enemy, clear otherwise
 
@@ -7743,6 +7848,8 @@ $A3:D445 60          RTS
 
 ;;; $D446: Unused. Check if enemy is moving the direction Samus is facing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Clear if enemy is moving the direction Samus is facing, set otherwise
 $A3:D446 BD A8 0F    LDA $0FA8,x            ;\
@@ -7799,6 +7906,9 @@ $A3:D49E 6B          RTL
 
 ;;; $D49F: Kick yard into air ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Note the fixed point negation operation at $D4F6 is off by 1.0 when the low word is zero
 $A3:D49F A9 04 00    LDA #$0004             ;\
 $A3:D4A2 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = kicked into air
@@ -7859,6 +7969,8 @@ $A3:D517             dw 0000,FFFD, A000,FFFD, 4000,FFFD, 0000,FFFC, A000,FFFC, 4
 
 ;;; $D557: Shoot yard into air ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:D557 5A          PHY
 $A3:D558 A9 05 00    LDA #$0005             ;\
 $A3:D55B 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = shot into air
@@ -8599,6 +8711,11 @@ $A3:DFA2             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 52
 
 ;;; $DFC2: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:DFC2 B9 00 00    LDA $0000,y[$A3:E021]
 $A3:DFC5 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 $A3:DFC8 C8          INY
@@ -8712,6 +8829,8 @@ $A3:E08E 7C B2 0F    JMP ($0FB2,x)[$A3:E08A]; Go to [enemy function]
 
 ;;; $E091: Wrecked Ship orange zoomer function - crawling vertically ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:E091 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A3:E094 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E097 D0 15       BNE $15    [$E0AE]     ;/
@@ -8818,6 +8937,8 @@ $A3:E167 6B          RTL
 
 ;;; $E168: Wrecked Ship orange zoomer function - crawling horizontally ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:E168 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A3:E16B C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E16E D0 15       BNE $15    [$E185]     ;/
@@ -9087,7 +9208,7 @@ $A3:E5D0             dw 3800, 7FFF, 4ED3, 1926, 0481, 5F57, 4691, 360D, 2DCB, 6B
 {
 ;;; $E5F0: Creepy crawly speed table ;;;
 {
-; Speed. Unit is 1/100h px/frame. Indexed by [enemy parameter 1] * 2
+; Speed. Unit is 1/100h px/frame. Indexed by [enemy parameter 1] * 2. Only entries 0..7 used
 $A3:E5F0             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 0280, 02C0, 0300, 0340, 0380, 0400, 0440,
                         0540, 0580, 05C0, 0600, 0640, 0680, 06C0, 0700, 0740, 0780, 07C0, 0800, 0840, 0880, 0800, 0000
 }
@@ -9112,6 +9233,11 @@ $A3:E654             dw E278, E278, E278, B5EB, 9693, 988B ; Upside left
 
 ;;; $E660: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:E660 B9 00 00    LDA $0000,y[$A3:E2B2]
 $A3:E663 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 $A3:E666 C8          INY
@@ -9134,7 +9260,10 @@ $A3:E677 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
 
 ;;; $E67A: Creepy crawly common initialisation AI ;;;
 {
-; Used by: sciser, zero, viola, yard, zeela, zoomer, sova, stone zoomer
+;; Parameters:
+;;     X: Enemy index
+
+; Used by: (stone) zoomer, sova, sciser, zero, viola, yard (but not for init AI), zeela
 $A3:E67A A9 4D 80    LDA #$804D             ;\
 $A3:E67D 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (no effect)
 $A3:E680 A9 01 00    LDA #$0001             ;\
@@ -9179,6 +9308,8 @@ $A3:E6C5 7C B2 0F    JMP ($0FB2,x)[$A3:E6C1]; Go to [enemy function]
 
 ;;; $E6C8: Creepy crawly function - crawling vertically ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:E6C8 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A3:E6CB C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E6CE D0 15       BNE $15    [$E6E5]     ;/
@@ -9272,6 +9403,8 @@ $A3:E784 6B          RTL
 
 ;;; $E785: Creepy crawly function - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:E785 BF 02 78 7E LDA $7E7802,x[$7E:7A02];\
 $A3:E789 85 12       STA $12    [$7E:0012]  ;|
 $A3:E78B BF 04 78 7E LDA $7E7804,x[$7E:7A04];} Move enemy down by [enemy falling Y velocity]
@@ -9318,6 +9451,8 @@ $A3:E7F1 6B          RTL
 
 ;;; $E7F2: Creepy crawly function - crawling horizontally ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:E7F2 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A3:E7F5 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 30:
 $A3:E7F8 D0 15       BNE $15    [$E80F]     ;/
@@ -9405,6 +9540,10 @@ $A3:E8A4 6B          RTL
 
 ;;; $E8A5: Adjust enemy X velocity for slopes ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     $14.$12: Adjusted enemy X velocity
 $A3:E8A5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A3:E8A8 48          PHA
 $A3:E8A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
@@ -9465,7 +9604,7 @@ $A3:E91E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:E921 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E923 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E925 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
-$A3:E928 10 02       BPL $02    [$E92C]     ;} $14.$12 = [enemy Y velocity] / 100h
+$A3:E928 10 02       BPL $02    [$E92C]     ;} $14.$12 = [enemy X velocity] / 100h
 $A3:E92A C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:E92C 85 13       STA $13    [$7E:0013]  ;/

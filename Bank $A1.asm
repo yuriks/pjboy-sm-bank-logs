@@ -701,9 +701,9 @@ $A1:9A2D             dw F193, 00C0,00B8, 0000, 6900,0000, 0000,0000, ; Zeb
 ; Room $9BC8. Early supers room
 $A1:9A40             dw D93F, 01BA,01A8, 0000, 2000,0000, 0000,0000, ; Sidehopper
                         D93F, 0200,01A8, 0000, 2000,0000, 0000,0000, ; Sidehopper
-                        D4FF, 0198,0128, 0001, A800,0000, 0090,0010, ; Timed shutter
-                        D4FF, 0228,0128, 0001, A800,0000, 0090,0010, ; Timed shutter
-                        D4FF, 0288,0128, 0001, A800,0000, 0090,0010, ; Timed shutter
+                        D4FF, 0198,0128, 0001, A800,0000, 0090,0010, ; Growing shutter
+                        D4FF, 0228,0128, 0001, A800,0000, 0090,0010, ; Growing shutter
+                        D4FF, 0288,0128, 0001, A800,0000, 0090,0010, ; Growing shutter
                         D63F, 00AB,004B, 0000, 2000,0000, 0000,0000, ; Waver
                         D63F, 0108,006B, 0000, 2800,0000, 0001,0000, ; Waver
                         D63F, 0211,0065, 0000, 2000,0000, 0001,0000, ; Waver
@@ -904,8 +904,8 @@ $A1:A2DF             dw F213, 0080,00B8, 0000, 6800,0000, 0000,3030, ; Gamet
                         FFFF, 01
 
 ; Room $A815. Ice beam mockball hall
-$A1:A332             dw D4FF, 0408,0258, 0001, A800,0000, 00F0,000D, ; Timed shutter
-                        D4FF, 0608,0258, 0001, A800,0000, 0068,0010, ; Timed shutter
+$A1:A332             dw D4FF, 0408,0258, 0001, A800,0000, 00F0,000D, ; Growing shutter
+                        D4FF, 0608,0258, 0001, A800,0000, 0068,0010, ; Growing shutter
                         D97F, 0104,03AF, 0000, 2000,0000, 0000,0000, ; Desgeega
                         D97F, 0195,035F, 0000, 2000,0000, 0001,0000, ; Desgeega
                         D97F, 0222,03B2, 0000, 2000,0000, 0000,0000, ; Desgeega
@@ -1056,10 +1056,10 @@ $A1:A82E             dw E73F, 00DA,0577, 0000, A000,0000, 1001,4007, ; Namihe
 ; Room $ADAD. Pre wave beam room
 $A1:A8E1             dw E6FF, 0030,00D0, 0000, A000,0000, 5010,F007, ; Fune
                         E6FF, 01C0,00D8, 0000, A000,0000, 5000,F007, ; Fune
-                        D5FF, 0088,00A8, 0108, A800,0404, 4001,0020, ; Rising and falling platform
-                        D5FF, 00D0,00E8, 0008, A800,0808, 3001,0030, ; Rising and falling platform
-                        D5FF, 0110,00A8, 0108, A800,0202, 6001,0030, ; Rising and falling platform
-                        D5FF, 0178,00A8, 0108, A800,0303, 5001,0030, ; Rising and falling platform
+                        D5FF, 0088,00A8, 0108, A800,0404, 4001,0020, ; Up/down mover platform
+                        D5FF, 00D0,00E8, 0008, A800,0808, 3001,0030, ; Up/down mover platform
+                        D5FF, 0110,00A8, 0108, A800,0202, 6001,0030, ; Up/down mover platform
+                        D5FF, 0178,00A8, 0108, A800,0303, 5001,0030, ; Up/down mover platform
                         E7FF, 02F0,01D0, 0000, A000,0000, 000A,0000, ; Kago
                         D3FF, 02E8,00F0, 0010, 2000,0000, 0298,0338, ; Gripper
                         FFFF, 04
@@ -1433,7 +1433,7 @@ $A1:B88F             dw D2FF, 0388,0128, 0000, 2000,0000, 0000,0000, ; Geruta
                         D67F, 00F0,0056, 0000, 2000,0000, 0000,0000, ; Metaree
                         FFFF, 05
 
-; Room $B07A. Speed booster lavaquake room
+; Room $B07A. Speed booster lavaquake farming room
 $A1:B912             dw F213, 0060,00B0, 0000, 6800,0000, 0000,2020, ; Gamet
                         F213, 0060,00B0, 0000, 6800,0000, 0000,2000, ; Gamet
                         F213, 0060,00B0, 0000, 6800,0000, 0000,2000, ; Gamet
@@ -2409,14 +2409,14 @@ $A1:E387             dw D9FF, 00F8,0061, 0000, 2000,0000, 8000,0000, ; Tourian s
                         FFFF, 02
 
 ; Room $DE4D. Escape room 1
-$A1:E3AA             dw D5BF, 01B8,0040, 0108, A800,FF00, 2000,0010, ; Destroyable timed shutter
-                        D5BF, 01B8,00C0, 0008, A800,00FF, 2000,0010, ; Destroyable timed shutter
-                        D5BF, 0168,0040, 0108, A800,FF00, 2000,0010, ; Destroyable timed shutter
-                        D5BF, 0168,00C0, 0008, A800,00FF, 2000,0010, ; Destroyable timed shutter
-                        D5BF, 0118,0040, 0108, A800,FF00, 2000,0018, ; Destroyable timed shutter
-                        D5BF, 0118,00C0, 0008, A800,00FF, 2000,0018, ; Destroyable timed shutter
-                        D5BF, 00C8,0040, 0108, A800,FF00, 2000,0020, ; Destroyable timed shutter
-                        D5BF, 00C8,00C0, 0008, A800,00FF, 2000,0020, ; Destroyable timed shutter
+$A1:E3AA             dw D5BF, 01B8,0040, 0108, A800,FF00, 2000,0010, ; Destroyable shutter
+                        D5BF, 01B8,00C0, 0008, A800,00FF, 2000,0010, ; Destroyable shutter
+                        D5BF, 0168,0040, 0108, A800,FF00, 2000,0010, ; Destroyable shutter
+                        D5BF, 0168,00C0, 0008, A800,00FF, 2000,0010, ; Destroyable shutter
+                        D5BF, 0118,0040, 0108, A800,FF00, 2000,0018, ; Destroyable shutter
+                        D5BF, 0118,00C0, 0008, A800,00FF, 2000,0018, ; Destroyable shutter
+                        D5BF, 00C8,0040, 0108, A800,FF00, 2000,0020, ; Destroyable shutter
+                        D5BF, 00C8,00C0, 0008, A800,00FF, 2000,0020, ; Destroyable shutter
                         FFFF, 00
 
 ; Room $DAAE. Tourian -> Crateria elevator

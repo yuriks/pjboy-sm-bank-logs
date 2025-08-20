@@ -9861,7 +9861,7 @@ $A2:EE1E 6B          RTL
 ;; Parameters:
 ;;     X: Enemy index
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
-$A2:EE22 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [A] = [enemy initialisation parameter low]
+$A2:EE22 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [enemy initialisation parameter low]
 $A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $A2:EE29 0A          ASL A                  ;\
 $A2:EE2A 0A          ASL A                  ;|
@@ -10008,6 +10008,8 @@ $A2:EF43 60          RTS
 
 ;;; $EF44: Activate up/down mover ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:EF44 A9 68 EF    LDA #$EF68             ;\
 $A2:EF47 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68 (moving up)
 $A2:EF4A BF 02 78 7E LDA $7E7802,x[$7E:7882];\
@@ -10264,8 +10266,10 @@ $A2:F11D 6B          RTL
 
 ;;; $F11E: Initialise horizontal shutter ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:F11E BD 92 0F    LDA $0F92,x            ;\
-$A2:F121 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [A] = [enemy initialisation parameter low]
+$A2:F121 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [enemy initialisation parameter low]
 $A2:F124 9F 00 78 7E STA $7E7800,x          ;/
 $A2:F128 0A          ASL A                  ;\
 $A2:F129 0A          ASL A                  ;|
@@ -10420,6 +10424,8 @@ $A2:F25E 60          RTS
 
 ;;; $F25F: Activate horizontal shutter ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:F25F A9 72 F2    LDA #$F272             ;\
 $A2:F262 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272 (moving left)
 $A2:F265 BF 02 78 7E LDA $7E7802,x          ;\
@@ -10529,6 +10535,8 @@ $A2:F355 60          RTS
 
 ;;; $F356: Eject Samus if pressing right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:F356 BF 26 78 7E LDA $7E7826,x          ;\
 $A2:F35A F0 14       BEQ $14    [$F370]     ;} If [enemy moving Samus flag] = 0: return
 $A2:F35C A5 8B       LDA $8B    [$7E:008B]  ;\
@@ -10546,6 +10554,8 @@ $A2:F370 60          RTS
 
 ;;; $F371: Eject Samus if pressing left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A2:F371 BF 26 78 7E LDA $7E7826,x          ;\
 $A2:F375 F0 14       BEQ $14    [$F38B]     ;} If [enemy moving Samus flag] = 0: return
 $A2:F377 A5 8B       LDA $8B    [$7E:008B]  ;\
