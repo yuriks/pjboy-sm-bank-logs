@@ -2451,8 +2451,10 @@ $A3:A182 6B          RTL
 
 ;;; $A183: Calculate moving forward speeds ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A183 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A3:A186 29 FF 00    AND #$00FF             ;} $14 = [enemy parameter 1 low] (radius)
+$A3:A186 29 FF 00    AND #$00FF             ;} $14 = [enemy parameter 1 low] (speed)
 $A3:A189 85 14       STA $14    [$7E:0014]  ;/
 $A3:A18B BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A3:A18E 29 FF 00    AND #$00FF             ;} $12 = [enemy parameter 1 high] (angle)
@@ -2472,6 +2474,9 @@ $A3:A1AF 60          RTS
 
 ;;; $A1B0: Unused. Calculate moving forward velocities ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Not sure why, but moving forward calculations are done with $A3:A183 instead
 $A3:A1B0 BD B4 0F    LDA $0FB4,x            ;\
 $A3:A1B3 29 FF 00    AND #$00FF             ;|
@@ -2499,6 +2504,8 @@ $A3:A1F2 60          RTS
 
 ;;; $A1F3: Calculate moving left velocities ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A1F3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A3:A1F6 29 FF 00    AND #$00FF             ;|
 $A3:A1F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
@@ -2529,6 +2536,8 @@ $A3:A23D 60          RTS
 
 ;;; $A23E: Calculate moving right velocities ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A23E BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A3:A241 29 FF 00    AND #$00FF             ;|
 $A3:A244 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
@@ -2559,6 +2568,8 @@ $A3:A288 60          RTS
 
 ;;; $A289: Determine facing forward instruction list index ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A289 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A3:A28C 38          SEC                    ;|
 $A3:A28D E9 30 00    SBC #$0030             ;|
@@ -2576,6 +2587,8 @@ $A3:A29D 60          RTS
 
 ;;; $A29E: Determine facing left instruction list index ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A29E BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A3:A2A1 38          SEC                    ;|
 $A3:A2A2 E9 30 00    SBC #$0030             ;|
@@ -2595,6 +2608,8 @@ $A3:A2B6 60          RTS
 
 ;;; $A2B7: Determine facing right instruction list index ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A2B7 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A3:A2BA 38          SEC                    ;|
 $A3:A2BB E9 30 00    SBC #$0030             ;|
@@ -2751,6 +2766,8 @@ $A3:A3B4 60          RTS
 
 ;;; $A3B5: Determine custom instruction list index ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A3B5 BD AC 0F    LDA $0FAC,x            ;\
 $A3:A3B8 38          SEC                    ;|
 $A3:A3B9 E9 30 00    SBC #$0030             ;|
@@ -2768,6 +2785,8 @@ $A3:A3C9 60          RTS
 
 ;;; $A3CA: Calculate custom velocities ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A3CA BD B4 0F    LDA $0FB4,x            ;\
 $A3:A3CD 29 FF 00    AND #$00FF             ;|
 $A3:A3D0 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
@@ -2828,7 +2847,7 @@ $A3:A43F 60          RTS
 ;;; $A440: Roach function - activated - index 2 (move towards Samus) ;;;
 {
 $A3:A440 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A443 20 11 A6    JSR $A611  [$A3:A611]  ; Move enemy along custom angle
+$A3:A443 20 11 A6    JSR $A611  [$A3:A611]  ; Move roach along custom angle
 $A3:A446 60          RTS
 }
 
@@ -2836,7 +2855,7 @@ $A3:A446 60          RTS
 ;;; $A447: Roach function - activated - index 6 (move away from Samus) ;;;
 {
 $A3:A447 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A44A 20 11 A6    JSR $A611  [$A3:A611]  ; Move enemy along custom angle
+$A3:A44A 20 11 A6    JSR $A611  [$A3:A611]  ; Move roach along custom angle
 $A3:A44D 60          RTS
 }
 
@@ -2861,7 +2880,7 @@ $A3:A461 60          RTS
 $A3:A462 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A465 DE B2 0F    DEC $0FB2,x            ; Decrement enemy movement timer
 $A3:A468 30 05       BMI $05    [$A46F]     ; If [enemy movement timer] >= 0:
-$A3:A46A 20 48 A6    JSR $A648  [$A3:A648]  ; Move enemy along custom angle and wait for Samus if hit block
+$A3:A46A 20 48 A6    JSR $A648  [$A3:A648]  ; Move roach along custom angle and wait for Samus if hit block
 $A3:A46D 80 06       BRA $06    [$A475]     ; Return
 
 $A3:A46F A9 F0 A4    LDA #$A4F0             ;\
@@ -2897,7 +2916,7 @@ $A3:A4A5 80 03       BRA $03    [$A4AA]     ; Go to BRANCH_MOVE
 $A3:A4A7 20 2A A5    JSR $A52A  [$A3:A52A]  ; Reverse roach custom angle
 
 ; BRANCH_MOVE
-$A3:A4AA 20 11 A6    JSR $A611  [$A3:A611]  ; Move enemy along custom angle
+$A3:A4AA 20 11 A6    JSR $A611  [$A3:A611]  ; Move roach along custom angle
 $A3:A4AD 80 06       BRA $06    [$A4B5]     ; Return
 
 ; BRANCH_DONE
@@ -2995,6 +3014,8 @@ $A3:A577 60          RTS
 
 ;;; $A578: Move roach forward ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A578 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A3:A57C 8D 24 0E    STA $0E24  [$7E:0E24]  ;|
 $A3:A57F BF 00 78 7E LDA $7E7800,x[$7E:7800];} $0E24.$0E26 = [enemy moving forward X speed]
@@ -3019,6 +3040,8 @@ $A3:A5A2 60          RTS
 
 ;;; $A5A3: Move roach left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A5A3 BD 7A 0F    LDA $0F7A,x            ;\
 $A3:A5A6 18          CLC                    ;|
 $A3:A5A7 7F 0A 78 7E ADC $7E780A,x          ;|
@@ -3047,6 +3070,8 @@ $A3:A5D9 60          RTS
 
 ;;; $A5DA: Move roach right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A5DA BD 7A 0F    LDA $0F7A,x            ;\
 $A3:A5DD 18          CLC                    ;|
 $A3:A5DE 7F 12 78 7E ADC $7E7812,x          ;|
@@ -3073,8 +3098,10 @@ $A3:A610 60          RTS
 }
 
 
-;;; $A611: Move enemy along custom angle ;;;
+;;; $A611: Move roach along custom angle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A611 BD 7A 0F    LDA $0F7A,x            ;\
 $A3:A614 18          CLC                    ;|
 $A3:A615 7F 1A 78 7E ADC $7E781A,x          ;|
@@ -3101,8 +3128,10 @@ $A3:A647 60          RTS
 }
 
 
-;;; $A648: Move enemy along custom angle and wait for Samus if hit block ;;;
+;;; $A648: Move roach along custom angle and wait for Samus if hit block ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:A648 BF 18 78 7E LDA $7E7818,x          ;\
 $A3:A64C 85 12       STA $12    [$7E:0012]  ;|
 $A3:A64E BF 1A 78 7E LDA $7E781A,x          ;} Move enemy right by [enemy custom X velocity]
@@ -3454,6 +3483,10 @@ $A3:A93B 60          RTS
 
 ;;; $A93C: Set mochtroid instruction list ;;;
 {
+;; Parameters:
+;;     A: Instruction list pointer
+;;     X: Enemy index
+
 ; Mochtroid respawn crash: if mochtroid is set to respawn,
 ; then [enemy $7E:7802] is likely already set to [A],
 ; so the enemy instruction list pointer never gets set,
@@ -3543,6 +3576,10 @@ $A3:AA48             dw 3800, 57FF, 42F7, 0D4A, 0063, 4F5A, 36B5, 2610, 1DCE, 4E
 
 ;;; $AA68: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 3 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:AA68 5A          PHY
 $A3:AA69 DA          PHX
 $A3:AA6A B9 00 00    LDA $0000,y[$A3:AAAC]
@@ -3758,6 +3795,8 @@ $A3:ABD5 6B          RTL
 {
 ;;; $ABD6: Sidehopper function - hop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:ABD6 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A3:ABDA 29 01 00    AND #$0001             ;\
 $A3:ABDD 0A          ASL A                  ;|
@@ -4557,6 +4596,8 @@ $A3:B4A7 6B          RTL
 
 ;;; $B4A8: Zoa function - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:B4A8 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A3:B4AB 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
 $A3:B4AE 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
@@ -4580,6 +4621,8 @@ $A3:B4D5 6B          RTL
 
 ;;; $B4D6: Zoa function - shooting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:B4D6 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
 $A3:B4D9 F0 1D       BEQ $1D    [$B4F8]     ;} If [enemy direction] = left:
 $A3:B4DB BF 00 78 7E LDA $7E7800,x[$7E:7840];\
@@ -8290,6 +8333,11 @@ $A3:DBBE             dx DBC8,0003,  ; Enemy reflection axis = down-right diagona
 
 ;;; $DBC8: Instruction - enemy reflection axis = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A3:DBC8 5A          PHY
 $A3:DBC9 B9 00 00    LDA $0000,y
 $A3:DBCC 9D B6 0F    STA $0FB6,x

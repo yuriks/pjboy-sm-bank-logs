@@ -581,6 +581,35 @@ $A0:8187             dw 0000,0000,0000,0000, 0000,1000,FFFF,F000, 0000,2000,FFFF
 ; I.e. gravity
 ; Used by e.g. Botwoon when dying and falling to the floor
 
+; This table appears to have been generated with a buggy calculation
+; Recall that the sum of 0..k is
+;     T(t) = t (t + 1) / 2
+; The first 22 values of this table (ignoring the negated part) can be calculated with
+;     v(t) = T(t) * 0.0109h
+; Which is likely the intended calculation
+
+; From 22 onwards, values in the table are too low by a multiple of 0.0900h with occasional discontinuities (see "Quadratic speed table.png")
+; My best guess is that buggy calculation determined the whole and fractional parts separately using the high and low bytes of T(t):
+;     v_frac(t) = (T(t) & FFh) * 109h
+;     v_whole(t) = (T(t) >> 8) / 0x10000
+; And truncated the value of v_frac to 16 bits without carrying bit 17 into v_whole
+;     v(t) = v_whole(t) + (v_frac(t) & FFFFh) / 0x10000
+
+; Generate the table with this python code
+;     def triangle(n):
+;         return n * (n + 1) // 2
+;     
+;     for t in range(95):
+;         T = triangle(t)
+;     
+;         T_low = T & 0xFF
+;         T_high = T >> 8
+;         
+;         v_frac = T_low * 0x109 & 0xFFFF # Truncated
+;         v_whole = T_high
+;         
+;         print(f'{t}: {v_whole:X}.{v_frac:04X}h')
+
 ; Subspeed, speed, negated subspeed, negated speed
 $A0:838F             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5,FFFF, 0636,0000,F9CA,FFFF,
                         0A5A,0000,F5A6,FFFF, 0F87,0000,F079,FFFF, 15BD,0000,EA43,FFFF, 1CFC,0000,E304,FFFF,
@@ -1195,6 +1224,8 @@ $A0:8BF0 DC 84 17    JML [$1784][$A6:F6C5]
 ;; Parameters:
 ;;     X: Enemy population index
 ;;     Y: Enemy data index
+
+; DB must be $A0
 $A0:8BF3 DA          PHX
 $A0:8BF4 5A          PHY
 $A0:8BF5 86 12       STX $12    [$7E:0012]  ; $12 = [X]
