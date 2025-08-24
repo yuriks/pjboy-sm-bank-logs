@@ -33,6 +33,10 @@ $A4:86A4             dw 0640 ; Crocomire X position threshold for bridge to coll
 {
 ;;; $86A6: Instruction - fight AI ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A4:86A6 DA          PHX
 $A4:86A7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:86AA BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
@@ -54,8 +58,10 @@ $A4:86DD 60          RTS
 
 ;;; $86DE: Fight AI - index 0 - lock up (unused) / set initial Crocomire instruction list ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE (initial)
 $A4:86E1 A9 01 00    LDA #$0001             ;\
 $A4:86E4 9D 94 0F    STA $0F94,x            ;} Crocomire instruction timer = 1
@@ -66,7 +72,7 @@ $A4:86E7 60          RTS
 ;;; $86E8: Fight AI - index 2 - step forward until on screen (unused) / step forward ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 
 ; Skips the "wait for damage" stage if Crocomire happens to perform a projectile attack during its stepping forward
 $A4:86E8 A9 04 00    LDA #$0004             ;\
@@ -78,8 +84,10 @@ $A4:86F1 60          RTS
 
 ;;; $86F2: Fight AI - index 4 - asleep ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:86F2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:86F5 38          SEC                    ;|
 $A4:86F6 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
@@ -103,7 +111,7 @@ $A4:8716 60          RTS
 ;;; $8717: Fight AI - index 6 - stepping forward ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:8717 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:871A 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:871D F0 18       BEQ $18    [$8737]     ;/
@@ -136,6 +144,10 @@ $A4:8751 60          RTS
 
 ;;; $8752: Instruction - maybe start projectile attack ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A4:8752 DA          PHX
 $A4:8753 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A4:8756 29 FF 0F    AND #$0FFF             ;|
@@ -153,8 +165,10 @@ $A4:876B 6B          RTL
 
 ;;; $876C: Fight AI - index 8 - projectile attack ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:876C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:876F 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:8772 F0 10       BEQ $10    [$8784]     ;/
@@ -190,8 +204,10 @@ $A4:87B1 60          RTS
 
 ;;; $87B2: Fight AI - index Ah - near spike wall charge ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:87B2 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:87B5 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:87B8 F0 0F       BEQ $0F    [$87C9]     ;/
@@ -208,7 +224,7 @@ $A4:87C9 60          RTS
 ;;; $87CA: Fight AI - index Ch - stepping back ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:87CA AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:87CD F0 10       BEQ $10    [$87DF]     ;} If [Crocomire step back counter] != 0:
 $A4:87CF 3A          DEC A                  ;\
@@ -228,8 +244,10 @@ $A4:87E8 60          RTS
 
 ;;; $87E9: Fight AI - index Eh - back off from spike wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h:
 $A4:87EF 30 09       BMI $09    [$87FA]     ;/
@@ -244,7 +262,7 @@ $A4:87FA 60          RTS
 ;;; $87FB: Fight AI - index 10h - roar and step forwards (unused) ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:87FB A9 06 00    LDA #$0006             ;\
 $A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A (wait for first/second damage - roar)
@@ -254,6 +272,8 @@ $A4:8804 60          RTS
 
 ;;; $8805: Set fight intro moving claws instruction list (unused) ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:880B 29 FF FB    AND #$FBFF             ;} Crocomire fight flags &= ~400h
@@ -264,8 +284,10 @@ $A4:8811 60          RTS
 
 ;;; $8812: Fight AI - index 12h - wait for first damage ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:8812 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8815 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:8818 F0 13       BEQ $13    [$882D]     ;/
@@ -287,8 +309,10 @@ $A4:8835 60          RTS
 
 ;;; $8836: Fight AI - index 14h - wait for second damage ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:8836 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8839 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:883C F0 13       BEQ $13    [$8851]     ;/
@@ -310,8 +334,10 @@ $A4:8859 60          RTS
 
 ;;; $885A: Fight AI - index 16h - wait for second damage (unused) ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 
 ; Clone of $8836
 $A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]
@@ -335,8 +361,10 @@ $A4:887D 60          RTS
 
 ;;; $887E: Fight AI - index 18h - power bombed charge ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:887E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8881 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:8884 3A          DEC A                  ;} Decrement Crocomire step forward counter
@@ -354,8 +382,10 @@ $A4:8899 60          RTS
 
 ;;; $889A: Fight AI - index 1Ah - do near spike wall charge unless damaged (unused) ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 
 ; The sound effect played here sound a bit like skree (sound 5Bh)
 $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -385,7 +415,7 @@ $A4:88D1 60          RTS
 ;;; $88D2: Fight AI - index 1Ch - unused sequence - set initial instruction list ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:88D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -401,6 +431,8 @@ $A4:88ED 60          RTS
 
 ;;; $88EE: Unused. Charge Crocomire forward one step after delay ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A4:88EE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:88F1 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:88F4 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
@@ -419,6 +451,11 @@ $A4:890A 60          RTS
 
 ;;; $890B: Charge Crocomire forward one step ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Both callers of this function (which are both unused) immediately overwrite $0FAC
 $A4:890B A9 14 00    LDA #$0014             ;\
 $A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h (wait for second damage)
@@ -432,7 +469,7 @@ $A4:891A 60          RTS
 ;;; $891B: Fight AI - index 1Eh - unused sequence - choose forward moving attack ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:891B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8921 89 00 01    BIT #$0100             ;} If [Crocomire fight flags] & 100h = 0:
@@ -454,7 +491,7 @@ $A4:893F 60          RTS
 ;;; $8940: Fight AI - index 20h - unused sequence - do nothing and step forward ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:8940 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
@@ -472,8 +509,10 @@ $A4:895D 60          RTS
 
 ;;; $895E: Fight AI - index 22h - unused sequence - move forward until hit Samus with claw ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:895E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8961 C9 A0 02    CMP #$02A0             ;} If [Crocomire X position] < 2A0h:
 $A4:8964 10 13       BPL $13    [$8979]     ;/
@@ -510,7 +549,7 @@ $A4:89A7 60          RTS
 ;;; $89A8: Fight AI - index 24h - unused sequence - move claws and step forward ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 
 ; $0FAE is remaining number of times to do moving claws action
 $A4:89A8 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -540,7 +579,7 @@ $A4:89DD 60          RTS
 ;;; $89DE: Fight AI - index 26h - unused sequence - step forward ;;;
 {
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 $A4:89DE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:89E1 89 00 20    BIT #$2000             ;} If [Crocomire fight flags] & 2000h = 0:
 $A4:89E4 D0 06       BNE $06    [$89EC]     ;/
@@ -557,8 +596,10 @@ $A4:89F8 60          RTS
 
 ;;; $89F9: Fight AI - index 28h - unused sequence - moving claws ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
 ;; Returns:
-;;     Y: Instruction list pointer
+;;     Y: Pointer to next instruction
 
 ; $0FAE is remaining number of times to do moving claws action
 ; $0FB2 is the fight function index to change to when done moving claws (set by index 22h handler before advancing to unwritten 2Ah index)
@@ -699,6 +740,8 @@ $A4:8B5A 6B          RTL
 
 ;;; $8B5B: Update Crocomire BG2 scroll ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A4:8B5B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A4:8B5E 38          SEC                    ;|
 $A4:8B5F E9 43 00    SBC #$0043             ;|
@@ -804,6 +847,8 @@ $A4:8C14             dw 8C6E, 9136, 8D3F, 92CE, 91BA, 8D3F, 92CE, 91BA, 9341, 94
 
 ;;; $8C6E: Crocomire main AI - death sequence index 0 - death sequence not started ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A4:8C6E 22 5E 8D A4 JSL $A48D5E[$A4:8D5E]  ; Handle Crocomire's bridge
 $A4:8C72 A9 01 01    LDA #$0101             ;\
 $A4:8C75 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scrolls 4/5 = blue
@@ -970,6 +1015,8 @@ $A4:8D5D 60          RTS
 
 ;;; $8D5E: Handle Crocomire's bridge ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A4:8D5E 5A          PHY
 $A4:8D5F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8D62 C9 00 06    CMP #$0600             ;} If [Crocomire X position] < 600h: go to BRANCH_NOT_ON_BRIDGE
@@ -1199,6 +1246,11 @@ $A4:8FC1 60          RTS
 
 ;;; $8FC2: Unused. Move enemy down by [$14].[$12] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     $14.$12: Distance to move (signed)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $A4:8FC2 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A4:8FC6 6B          RTL
 }
@@ -1244,7 +1296,7 @@ $A4:8FF9 6B          RTL
 ;;; $8FFA: Instruction - move left 4px and spawn big dust cloud ;;;
 {
 $A4:8FFA 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
-$A4:8FFD 80 E0       BRA $E0    [$8FDF]     ; Go to $8FDF
+$A4:8FFD 80 E0       BRA $E0    [$8FDF]     ; Go to move left 4px
 }
 
 
@@ -1275,6 +1327,10 @@ $A4:901C 60          RTS
 
 ;;; $901D: Instruction - move left 4px and spawn big dust cloud and handle spike wall collision ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A4:901D DA          PHX
 $A4:901E 5A          PHY
 $A4:901F AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1311,6 +1367,8 @@ $A4:905A 6B          RTL
 
 ;;; $905B: Instruction - move right 4px if on-screen ;;;
 {
+;; Parameters:
+;;     0. Enemy index
 $A4:905B DA          PHX
 $A4:905C 5A          PHY
 $A4:905D AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1334,6 +1392,8 @@ $A4:907E 6B          RTL
 
 ;;; $907F: Instruction - move right 4px ;;;
 {
+;; Parameters:
+;;     0. Enemy index
 $A4:907F DA          PHX
 $A4:9080 5A          PHY
 $A4:9081 64 12       STZ $12    [$7E:0012]  ;\
@@ -1348,6 +1408,8 @@ $A4:908E 6B          RTL
 
 ;;; $908F: Instruction - move right 4px if on-screen and spawn big dust cloud ;;;
 {
+;; Parameters:
+;;     0. Enemy index
 $A4:908F 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
 $A4:9092 80 C7       BRA $C7    [$905B]     ; Move right 4px if on-screen
 }
@@ -1355,6 +1417,8 @@ $A4:9092 80 C7       BRA $C7    [$905B]     ; Move right 4px if on-screen
 
 ;;; $9094: Instruction - move right 4px and spawn big dust cloud ;;;
 {
+;; Parameters:
+;;     0. Enemy index
 $A4:9094 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
 $A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
 }
@@ -1437,6 +1501,8 @@ $A4:9133 4C C1 91    JMP $91C1  [$A4:91C1]  ; Go to sink Crocomire down
 
 ;;; $9136: Crocomire main AI - death sequence index 2 - falling ;;;
 {
+;; Parameters:
+;;     0. Enemy index
 $A4:9136 AF 16 90 7E LDA $7E9016[$7E:9016]  ;\
 $A4:913A C9 16 00    CMP #$0016             ;} If [Crocomire death sequence crumbling bridge index] >= 16h:
 $A4:913D 30 03       BMI $03    [$9142]     ;/

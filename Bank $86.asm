@@ -14030,7 +14030,7 @@ $86:DC34             dw 0001,B023,
                         0005,B056,
                         0005,B06C,
                         0006,B082,
-                        DC61,       ; Spawn enemy drops with Spore Spawn's drop chances
+                        DC61,       ; Spawn enemy drops with spore dummy's drop chances
                         81AB,84FC   ; Go to delete
 }
 
@@ -14047,7 +14047,7 @@ $86:DC60 60          RTS
 }
 
 
-;;; $DC61: Instruction - spawn enemy drops with Spore Spawn's drop chances ;;;
+;;; $DC61: Instruction - spawn enemy drops with spore dummy's drop chances ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -14057,7 +14057,7 @@ $86:DC63 BD 4B 1A    LDA $1A4B,x[$7E:1A5D]  ;\
 $86:DC66 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:DC68 BD 93 1A    LDA $1A93,x[$7E:1AA5]  ;\
 $86:DC6B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
-$86:DC6D A9 7F DF    LDA #$DF7F             ; A = $DF7F (Spore Spawn)
+$86:DC6D A9 7F DF    LDA #$DF7F             ; A = $DF7F (spore dummy)
 $86:DC70 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:DC74 7A          PLY
 $86:DC75 FA          PLX

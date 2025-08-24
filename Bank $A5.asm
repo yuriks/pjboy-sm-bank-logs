@@ -1014,6 +1014,8 @@ $A5:8F1D 60          RTS
 
 ;;; $8F1E: Draygon body function - grabbed Samus - moving to target position ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A5:8F1E AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
 $A5:8F21 89 01 00    BIT #$0001             ;} If grapple connected with block:
 $A5:8F24 F0 1D       BEQ $1D    [$8F43]     ;/
@@ -1096,6 +1098,8 @@ $A5:8FD5 60          RTS
 
 ;;; $8FD6: Draygon body function - grabbed Samus - rising spiral movement ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A5:8FD6 AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
 $A5:8FD9 89 01 00    BIT #$0001             ;} If grapple connected with block:
 $A5:8FDC F0 1D       BEQ $1D    [$8FFB]     ;/
@@ -1489,6 +1493,8 @@ $A5:931B 60          RTS
 
 ;;; $931C: Handle short Draygon breath bubbles ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A5:931C BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
 $A5:931F 29 7F 00    AND #$007F             ;} If [enemy frame counter] % 80h = 0:
 $A5:9322 D0 1D       BNE $1D    [$9341]     ;/
@@ -3921,6 +3927,8 @@ $A5:C48C 6B          RTL
 
 ;;; $C48D: Draygon eye function - facing left ;;;
 {
+;; Parameters:
+;;     X: 40h. Enemy index
 $A5:C48D BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
 $A5:C490 29 7F 00    AND #$007F             ;} If [Draygon body frame counter] % 80h = 0:
 $A5:C493 D0 1C       BNE $1C    [$C4B1]     ;/
@@ -3983,6 +3991,8 @@ $A5:C512 60          RTS
 
 ;;; $C513: Draygon eye function - facing right ;;;
 {
+;; Parameters:
+;;     X: 40h. Enemy index
 $A5:C513 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
 $A5:C516 29 7F 00    AND #$007F             ;} If [Draygon body frame counter] % 80h = 0:
 $A5:C519 D0 1C       BNE $1C    [$C537]     ;/
@@ -5222,16 +5232,16 @@ $A5:EAE0 38          SEC                    ;|
 $A5:EAE1 E9 80 00    SBC #$0080             ;} Enemy Y position -= 80h
 $A5:EAE4 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A5:EAE7 A9 00 00    LDA #$0000             ;\
-$A5:EAEA A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 0 px
+$A5:EAEA A0 88 DE    LDY #$DE88             ;} Spawn spore spawner enemy projectile with X offset 0 px
 $A5:EAED 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EAF1 A9 01 00    LDA #$0001             ;\
-$A5:EAF4 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 40h px
+$A5:EAF4 A0 88 DE    LDY #$DE88             ;} Spawn spore spawner enemy projectile with X offset 40h px
 $A5:EAF7 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EAFB A9 02 00    LDA #$0002             ;\
-$A5:EAFE A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset 80h px
+$A5:EAFE A0 88 DE    LDY #$DE88             ;} Spawn spore spawner enemy projectile with X offset 80h px
 $A5:EB01 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EB05 A9 03 00    LDA #$0003             ;\
-$A5:EB08 A0 88 DE    LDY #$DE88             ;} Spawn Spore spawner enemy projectile with X offset C0h px
+$A5:EB08 A0 88 DE    LDY #$DE88             ;} Spawn spore spawner enemy projectile with X offset C0h px
 $A5:EB0B 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A5:EB0F 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment positions
 $A5:EB12 6B          RTL
@@ -5279,6 +5289,8 @@ $A5:EB51 60          RTS
 
 ;;; $EB52: Spore Spawn function - moving ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A5:EB52 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment positions
 $A5:EB55 AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
 $A5:EB59 8D 32 0E    STA $0E32  [$7E:0E32]  ;|

@@ -662,6 +662,8 @@ $A6:8C49 60          RTS
 
 ;;; $8C4A: Spike platform function - waiting to rise ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:8C4A BF 06 78 7E LDA $7E7806,x[$7E:7AC6];\
 $A6:8C4E 3A          DEC A                  ;} Decrement enemy rise wait timer
 $A6:8C4F 9F 06 78 7E STA $7E7806,x[$7E:7AC6];/
@@ -709,6 +711,8 @@ $A6:8CA0 60          RTS
 
 ;;; $8CA1: Check if spike platform is touching Samus from below ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Zero: clear if touching Samus, otherwise set
 
@@ -2097,6 +2101,7 @@ $A6:9ADB 6B          RTL
 ;;; $9ADC: Handle fake Kraid spike ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Spike timer index
 
 ; Typo at $9B18 >_<;
@@ -2188,6 +2193,8 @@ $A6:9B73 6B          RTL
 
 ;;; $9B74: Instruction - choose action ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A6:9B74 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9B77 BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
 $A6:9B7A D0 19       BNE $19    [$9B95]     ;} If [enemy spit timer] = 0:
@@ -3288,17 +3295,17 @@ $A6:AA27 A2 3F AA    LDX #$AA3F             ;\
 $A6:AA2A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn right wall
 $A6:AA2E 60          RTS
 
-;                        ______________________________________ Enemy ID
-;                       |     _________________________________ X position
-;                       |    |     ____________________________ Y position
-;                       |    |    |     _______________________ Initialisation parameter
-;                       |    |    |    |     __________________ Properties
-;                       |    |    |    |    |     _____________ Extra properties
-;                       |    |    |    |    |    |     ________ Parameter 1
-;                       |    |    |    |    |    |    |     ___ Parameter 2
-;                       |    |    |    |    |    |    |    |
-$A6:AA2F             dw E23F,0008,007F,0000,2800,0000,0005,0000 ; Ceres door
-$A6:AA3F             dw E23F,00F8,007F,0000,2800,0000,0006,0000 ; Ceres door
+;                        ________________________________________ Enemy ID
+;                       |      __________________________________ X position
+;                       |     |     _____________________________ Y position
+;                       |     |    |      _______________________ Initialisation parameter
+;                       |     |    |     |      _________________ Properties
+;                       |     |    |     |     |     ____________ Extra properties
+;                       |     |    |     |     |    |      ______ Parameter 1
+;                       |     |    |     |     |    |     |     _ Parameter 2
+;                       |     |    |     |     |    |     |    |
+$A6:AA2F             dw E23F, 0008,007F, 0000, 2800,0000, 0005,0000 ; Ceres door
+$A6:AA3F             dw E23F, 00F8,007F, 0000, 2800,0000, 0006,0000 ; Ceres door
 }
 
 
@@ -9691,7 +9698,7 @@ $A6:E1AF             dw 3800, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E
 
 ;;; $E1CF: Palettes ;;;
 {
-; Enemy $E1FF (Ceres steam) palette points to $E23F, right in the middle of this section...
+; Enemy $E1FF (steam) palette points to $E23F, right in the middle of this section...
 $A6:E1CF             dw 3800, 6B5A, 5652, 28E7, 1863, 62B5, 4A10, 396B, 3129, 43FF, 0113, 000F, 175C, 0299, 01D6, 3BE0
 $A6:E1EF             dw 3800, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0
 
@@ -10489,9 +10496,9 @@ $A6:EF91             dx 0006, 8008,03,71CC, 8000,F8,7120, 81F0,F8,7122, 81F2,06,
 }
 
 
-;;; $EFB1..F4EB: Ceres steam ;;;
+;;; $EFB1..F4EB: Steam ;;;
 {
-;;; $EFB1: Initialisation AI - enemy $E1FF (Ceres steam) ;;;
+;;; $EFB1: Initialisation AI - enemy $E1FF (steam) ;;;
 {
 $A6:EFB1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:EFB4 9E 98 0F    STZ $0F98,x[$7E:1018]  ; Enemy VRAM tiles index = 0
@@ -10525,7 +10532,7 @@ $A6:F001             dw EFF4, EFF4, EFF4, EFF4, F019, F019 ; Initial function po
 }
 
 
-;;; $F00D: Main AI - enemy $E1FF (Ceres steam) ;;;
+;;; $F00D: Main AI - enemy $E1FF (steam) ;;;
 {
 $A6:F00D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F010 A9 FF 7F    LDA #$7FFF             ;\
@@ -10534,13 +10541,15 @@ $A6:F016 7C A8 0F    JMP ($0FA8,x)[$A6:EFF4]; Go to [enemy function]
 }
 
 
-;;; $F019: Ceres steam function - calculate graphical offset in rotating elevator room ;;;
+;;; $F019: Steam function - calculate graphical offset in rotating elevator room ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F019 BD 7A 0F    LDA $0F7A,x[$7E:11FA]  ;\
 $A6:F01C 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A6:F01E BD 7E 0F    LDA $0F7E,x[$7E:11FE]  ;\
 $A6:F021 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
-$A6:F023 22 66 8B 8B JSL $8B8B66[$8B:8B66]  ; Calculate position of Ceres steam in rotating elevator room
+$A6:F023 22 66 8B 8B JSL $8B8B66[$8B:8B66]  ; Calculate position of steam in rotating elevator room
 $A6:F027 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F02A A5 12       LDA $12    [$7E:0012]  ;\
 $A6:F02C 38          SEC                    ;|
@@ -10554,7 +10563,7 @@ $A6:F03E 6B          RTL
 }
 
 
-;;; $F03F: Enemy touch - enemy $E1FF (Ceres steam) ;;;
+;;; $F03F: Enemy touch - enemy $E1FF (steam) ;;;
 {
 $A6:F03F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F042 A9 FF 7F    LDA #$7FFF             ;\
@@ -10564,7 +10573,7 @@ $A6:F04C 6B          RTL
 }
 
 
-;;; $F04D: Instruction list - Ceres steam - up ;;;
+;;; $F04D: Instruction list - steam - up ;;;
 {
 $A6:F04D             dw F11D,           ; Hide enemy
                         0001,F142,
@@ -10583,7 +10592,7 @@ $A6:F061             dw 0003,F142,
 }
 
 
-;;; $F081: Instruction list - Ceres steam - left ;;;
+;;; $F081: Instruction list - steam - left ;;;
 {
 $A6:F081             dw F11D,           ; Hide enemy
                         0001,F188,
@@ -10602,7 +10611,7 @@ $A6:F095             dw 0003,F188,
 }
 
 
-;;; $F0B5: Instruction list - Ceres steam - down ;;;
+;;; $F0B5: Instruction list - steam - down ;;;
 {
 $A6:F0B5             dw F11D,           ; Hide enemy
                         0001,F1CE,
@@ -10621,7 +10630,7 @@ $A6:F0C9             dw 0003,F1CE,
 }
 
 
-;;; $F0E9: Instruction list - Ceres steam - right ;;;
+;;; $F0E9: Instruction list - steam - right ;;;
 {
 $A6:F0E9             dw F11D,           ; Hide enemy
                         0001,F214,
@@ -10642,6 +10651,8 @@ $A6:F0FD             dw 0003,F214,
 
 ;;; $F11D: Instruction - hide enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F11D BD 86 0F    LDA $0F86,x[$7E:1086]  ;\
 $A6:F120 09 00 05    ORA #$0500             ;} Set enemy to be intangible and invisible
 $A6:F123 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
@@ -10651,6 +10662,11 @@ $A6:F126 6B          RTL
 
 ;;; $F127: Instruction - decrement activation timer and go to [[Y]] if non-zero, otherwise show enemy and go to [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A6:F127 DE AE 0F    DEC $0FAE,x[$7E:10AE]  ; Decrement enemy activation timer
 $A6:F12A F0 05       BEQ $05    [$F131]     ; If [enemy activation timer] != 0:
 $A6:F12C B9 00 00    LDA $0000,y[$A6:F055]  ;\
@@ -10664,6 +10680,8 @@ $A6:F134 A8          TAY                    ;} Y = [[Y] + 2]
 
 ;;; $F135: Instruction - show enemy ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F135 BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
 $A6:F138 29 FF FB    AND #$FBFF             ;|
 $A6:F13B 29 FF FE    AND #$FEFF             ;} Set enemy to tangible and visible
@@ -10672,7 +10690,7 @@ $A6:F141 6B          RTL
 }
 
 
-;;; $F142: Ceres steam extended spritemaps ;;;
+;;; $F142: Steam extended spritemaps ;;;
 {
 ; Top byte of extended spritemap size is ignored...
 
@@ -10714,7 +10732,7 @@ $A6:F250             dx 1001, 0000,0000,F4E5,F25A
 }
 
 
-;;; $F25A: Ceres steam hitboxes ;;;
+;;; $F25A: Steam hitboxes ;;;
 {
 $A6:F25A             dx 0000
 
@@ -10748,7 +10766,7 @@ $A6:F366             dx 0001, 0019,FFF5,0028,0003,F03F,804C
 }
 
 
-;;; $F374: Ceres steam spritemaps ;;;
+;;; $F374: Steam spritemaps ;;;
 {
 ; Up
 $A6:F374             dx 0001, 81F8,F0,207C
@@ -10940,6 +10958,12 @@ $A6:F636             dw 0001,FB2F,
 {
 ;;; $F63E: Instruction - go to [[Y]] if Samus is not within 30h pixels ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Measure with taxicab distance
 $A6:F63E BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $A6:F641 38          SEC
@@ -10972,18 +10996,26 @@ $A6:F669 6B          RTL
 
 ;;; $F66A: Instruction - go to [[Y]] if area boss is alive ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A6:F66A DA          PHX
 $A6:F66B AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $A6:F66E BF 28 D8 7E LDA $7ED828,x[$7E:D82E];|
 $A6:F672 FA          PLX                    ;} If area boss not dead: go to parameter
 $A6:F673 4A          LSR A                  ;|
 $A6:F674 90 EF       BCC $EF    [$F665]     ;/
-$A6:F676 80 EA       BRA $EA    [$F662]     ; Else (area boss dead): go to next instruction
+$A6:F676 80 EA       BRA $EA    [$F662]     ; Go to next instruction
 }
 
 
 ;;; $F678: Instruction - go to [[Y]] if Ceres Ridley has not escaped ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A6:F678 AD 3F 09    LDA $093F  [$7E:093F]
 $A6:F67B F0 E8       BEQ $E8    [$F665]
 $A6:F67D 80 E3       BRA $E3    [$F662]
@@ -11003,6 +11035,8 @@ $A6:F68A 6B          RTL
 
 ;;; $F68B: Instruction - set enemy as intangible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F68B BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A6:F68E 09 00 04    ORA #$0400
 $A6:F691 9D 86 0F    STA $0F86,x[$7E:0F86]
@@ -11012,6 +11046,8 @@ $A6:F694 6B          RTL
 
 ;;; $F695: Instruction - set enemy as tangible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F695 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F698 29 FF FB    AND #$FBFF
 $A6:F69B 9D 86 0F    STA $0F86,x[$7E:0FC6]
@@ -11021,6 +11057,8 @@ $A6:F69E 6B          RTL
 
 ;;; $F69F: Instruction - set drawn by Ridley flag ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F69F A9 01 00    LDA #$0001
 $A6:F6A2 9D AA 0F    STA $0FAA,x[$7E:0FEA]
 $A6:F6A5 6B          RTL
@@ -11029,6 +11067,8 @@ $A6:F6A5 6B          RTL
 
 ;;; $F6A6: Instruction - set enemy as invisible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F6A6 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F6A9 09 00 01    ORA #$0100
 $A6:F6AC 9D 86 0F    STA $0F86,x[$7E:0FC6]
@@ -11038,12 +11078,16 @@ $A6:F6AF 6B          RTL
 
 ;;; $F6B0: Instruction - set enemy as visible, clear drawn by Ridley flag ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F6B0 9E AA 0F    STZ $0FAA,x[$7E:0FEA]
 }
 
 
 ;;; $F6B3: Instruction - set enemy as visible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F6B3 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F6B6 29 FF FE    AND #$FEFF
 $A6:F6B9 9D 86 0F    STA $0F86,x[$7E:0FC6]
@@ -11077,7 +11121,7 @@ $A6:F6E4 A8          TAY                    ;/
 $A6:F6E5 B9 2B F7    LDA $F72B,y[$A6:F72F]  ;\
 $A6:F6E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = [$F72B + [Y]]
 $A6:F6EB B9 2C F5    LDA $F52C,y[$A6:F530]  ;\
-$A6:F6EE 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Instruction pointer = [$F52C + [Y]]
+$A6:F6EE 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction pointer = [$F52C + [Y]]
 $A6:F6F1 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy drawn by Ridley flag = 0
 $A6:F6F4 20 39 F7    JSR $F739  [$A6:F739]  ; Load rotating elevator room pre-explosion door overlay tiles if needed
 $A6:F6F7 AD 3F 09    LDA $093F  [$7E:093F]  ;\
@@ -11118,6 +11162,8 @@ $A6:F72B             dw F76B, ; 0: Normal facing right
 
 ;;; $F739: Load rotating elevator room pre-explosion door overlay tiles if needed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F739 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A6:F73C C9 02 00    CMP #$0002             ;} If [enemy parameter 1] != 2 (rotating elevator room pre-explosion door overlay): return
 $A6:F73F D0 23       BNE $23    [$F764]     ;/
@@ -11206,6 +11252,8 @@ $A6:F7BC 6B          RTL
 
 ;;; $F7BD: Ceres door function - rotating elevator room - default ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F7BD 22 50 F8 A6 JSL $A6F850[$A6:F850]  ; Handle Ceres elevator animations
 $A6:F7C1 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:F7C4 C9 02 00    CMP #$0002             ;} If [Ceres status] < 2 (before escape sequence): return
@@ -11223,6 +11271,8 @@ $A6:F7DB 6B          RTL
 
 ;;; $F7DC: Ceres door function - rotating elevator room - rumbling and explosions ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:F7DC DE AE 0F    DEC $0FAE,x[$7E:0FAE]  ; Decrement enemy rumbling timer
 $A6:F7DF 10 12       BPL $12    [$F7F3]     ; If [enemy rumbling timer] < 0:
 $A6:F7E1 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
@@ -11431,7 +11481,7 @@ $A6:FBD5 6B          RTL                    ; Return
 $A6:FBD6 0A          ASL A                  ;\
 $A6:FBD7 A8          TAY                    ;} Y = [enemy destroyed counter] * 2
 $A6:FBD8 B9 03 FC    LDA $FC03,y[$A6:FC03]  ;\
-$A6:FBDB 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy multipart flag = [$FC03 + [Y]]
+$A6:FBDB 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy multi-part flag = [$FC03 + [Y]]
 $A6:FBDE B9 0B FC    LDA $FC0B,y[$A6:FC0B]  ;\
 $A6:FBE1 9D 84 0F    STA $0F84,x[$7E:1004]  ;} Enemy Y radius = [$FC0B + [Y]]
 $A6:FBE4 B9 13 FC    LDA $FC13,y[$A6:FC13]  ;\
@@ -11450,7 +11500,7 @@ $A6:FC02 6B          RTL
 
 ; Indexed by zebetites destroyed counter
 ;                       0    1    2    3
-$A6:FC03             dw 0000,8000,0000,8000 ; Multipart flag
+$A6:FC03             dw 0000,8000,0000,8000 ; Multi-part flag
 $A6:FC0B             dw 0018,0008,0018,0008 ; Height
 $A6:FC13             dw FDCC,FDEA,FDCC,FDEA ; Instruction list pointer
 $A6:FC1B             dw 0338,0278,01B8,00F8 ; X position
@@ -11472,8 +11522,10 @@ $A6:FC3E 7C A8 0F    JMP ($0FA8,x)[$A6:FC41]; Execute [enemy function]
 
 ;;; $FC41: Zebetites function - spawn bottom zebetite if needed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:FC41 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
-$A6:FC44 10 0F       BPL $0F    [$FC55]     ;} If [enemy multipart flag] & 8000h != 0:
+$A6:FC44 10 0F       BPL $0F    [$FC55]     ;} If [enemy multi-part flag] & 8000h != 0:
 $A6:FC46 20 F1 FC    JSR $FCF1  [$A6:FCF1]  ; Spawn bottom zebetite
 $A6:FC49 AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
 $A6:FC4C 9D B6 0F    STA $0FB6,x[$7E:1136]  ;} New enemy other part enemy index = [enemy index]
@@ -11489,6 +11541,8 @@ $A6:FC58 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC5B (wait for 
 
 ;;; $FC5B: Zebetites function - wait for door transition to finish ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A6:FC5B AD 95 07    LDA $0795  [$7E:0795]  ;\
 $A6:FC5E F0 01       BEQ $01    [$FC61]     ;} If door transition active:
 $A6:FC60 6B          RTL                    ; Return
@@ -11579,16 +11633,16 @@ $A6:FCD9 A2 E1 FC    LDX #$FCE1             ;\
 $A6:FCDC 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn top zebetite
 $A6:FCE0 60          RTS
 
-;                        _____________________________________________ Enemy ID
-;                       |      _______________________________________ X position
-;                       |     |      _________________________________ Y position
-;                       |     |     |      ___________________________ Initialisation parameter
-;                       |     |     |     |      _____________________ Properties
-;                       |     |     |     |     |      _______________ Extra properties
-;                       |     |     |     |     |     |      _________ Parameter 1
-;                       |     |     |     |     |     |     |      ___ Parameter 2
-;                       |     |     |     |     |     |     |     |
-$A6:FCE1             dw E27F, 0000, 0000, 0000, 2000, 0000, 0000, 0000 ; Zebetites
+;                        ________________________________________ Enemy ID
+;                       |      __________________________________ X position
+;                       |     |     _____________________________ Y position
+;                       |     |    |      _______________________ Initialisation parameter
+;                       |     |    |     |      _________________ Properties
+;                       |     |    |     |     |     ____________ Extra properties
+;                       |     |    |     |     |    |      ______ Parameter 1
+;                       |     |    |     |     |    |     |     _ Parameter 2
+;                       |     |    |     |     |    |     |    |
+$A6:FCE1             dw E27F, 0000,0000, 0000, 2000,0000, 0000,0000 ; Zebetites
 }
 
 
@@ -11600,16 +11654,16 @@ $A6:FCF1 A2 F9 FC    LDX #$FCF9             ;\
 $A6:FCF4 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn bottom zebetite
 $A6:FCF8 60          RTS
 
-;                        _____________________________________________ Enemy ID
-;                       |      _______________________________________ X position
-;                       |     |      _________________________________ Y position
-;                       |     |     |      ___________________________ Initialisation parameter
-;                       |     |     |     |      _____________________ Properties
-;                       |     |     |     |     |      _______________ Extra properties
-;                       |     |     |     |     |     |      _________ Parameter 1
-;                       |     |     |     |     |     |     |      ___ Parameter 2
-;                       |     |     |     |     |     |     |     |
-$A6:FCF9             dw E27F, 0000, 0000, 0000, 2000, 0000, 0002, 0000 ; Zebetites
+;                        ________________________________________ Enemy ID
+;                       |      __________________________________ X position
+;                       |     |     _____________________________ Y position
+;                       |     |    |      _______________________ Initialisation parameter
+;                       |     |    |     |      _________________ Properties
+;                       |     |    |     |     |     ____________ Extra properties
+;                       |     |    |     |     |    |      ______ Parameter 1
+;                       |     |    |     |     |    |     |     _ Parameter 2
+;                       |     |    |     |     |    |     |    |
+$A6:FCF9             dw E27F, 0000,0000, 0000, 2000,0000, 0002,0000 ; Zebetites
 }
 
 
@@ -11633,7 +11687,7 @@ $A6:FD2F A0 08 00    LDY #$0008             ; Y = 8
 
 $A6:FD32 B9 4A FD    LDA $FD4A,y[$A6:FD4A]  ; Enemy instruction list pointer = [$FD54 + [Y]]
 $A6:FD35 3C B2 0F    BIT $0FB2,x[$7E:1032]  ;\
-$A6:FD38 10 03       BPL $03    [$FD3D]     ;} If [enemy multipart flag] & 8000h != 0:
+$A6:FD38 10 03       BPL $03    [$FD3D]     ;} If [enemy multi-part flag] & 8000h != 0:
 $A6:FD3A B9 54 FD    LDA $FD54,y[$A6:FD54]  ; Enemy instruction list pointer = [$FD54 + [Y]]
 
 $A6:FD3D 9D 92 0F    STA $0F92,x[$7E:1012]
@@ -11697,11 +11751,11 @@ $A6:FDAB 6B          RTL
 
 ;;; $FDAC: Enemy shot - enemy $E27F (zebetites) ;;;
 {
-; This code should probably check that the zebetite is a multipart one before doing this code with the other part
-$A6:FDAC 48          PHA                    ;\
-$A6:FDAD A9 09 00    LDA #$0009             ;|
+; This code should probably check that the zebetite is a multi-part one before doing this code with the other part
+$A6:FDAC 48          PHA
+$A6:FDAD A9 09 00    LDA #$0009             ;\
 $A6:FDB0 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 9, sound library 3, max queued sounds allowed = 6 (shot zebetite)
-$A6:FDB4 68          PLA                    ;/
+$A6:FDB4 68          PLA
 $A6:FDB5 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:FDB9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:FDBC BC B6 0F    LDY $0FB6,x[$7E:1036]  ; Y = [enemy other part enemy index]

@@ -3560,8 +3560,8 @@ $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9
         + 6: VRAM tiles index
         + 8: Palette index
 
-        + 10h: Graphical X offset. Used by Ceres steam in Ceres elevator room when rotating
-        + 12h: Graphical Y offset. Used by Ceres steam in Ceres elevator room when rotating
+        + 10h: Graphical X offset. Used by steam in Ceres elevator room when rotating
+        + 12h: Graphical Y offset. Used by steam in Ceres elevator room when rotating
 
         ; Used for debug enemy spawner
         + 1Eh: ID

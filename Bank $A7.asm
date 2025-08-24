@@ -8207,6 +8207,8 @@ $A7:E957 6B          RTL
 
 ;;; $E958: Freeze etecoon if quake active ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:E958 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A7:E95B F0 16       BEQ $16    [$E973]     ;} If [earthquake timer] != 0:
 $A7:E95D BD B6 0F    LDA $0FB6,x            ;\
@@ -8224,6 +8226,8 @@ $A7:E973 60          RTS
 
 ;;; $E974: Etecoon horizontal movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 $A7:E974 BD AC 0F    LDA $0FAC,x            ;\
@@ -8237,6 +8241,8 @@ $A7:E982 60          RTS
 
 ;;; $E983: Etecoon vertical movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 $A7:E983 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
@@ -8261,6 +8267,8 @@ $A7:E9AE 60          RTS
 
 ;;; $E9AF: Etecoon function - initial ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:E9AF AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A7:E9B2 F0 01       BEQ $01    [$E9B5]     ;} If [door transition flag] != 0:
 $A7:E9B4 6B          RTL                    ; Return
@@ -8303,6 +8311,8 @@ $A7:E9FF 6B          RTL
 
 ;;; $EA00: Etecoon function - start hop - bottom of room ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EA00 DE B0 0F    DEC $0FB0,x[$7E:11B0]  ; Decrement enemy function timer
 $A7:EA03 F0 02       BEQ $02    [$EA07]     ;\
 $A7:EA05 10 2F       BPL $2F    [$EA36]     ;} If [enemy function timer] > 0: return
@@ -8331,6 +8341,8 @@ $A7:EA36 6B          RTL
 
 ;;; $EA37: Etecoon function - hopping - bottom of room ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EA37 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
 $A7:EA3A B0 01       BCS $01    [$EA3D]     ; If no collision:
 $A7:EA3C 6B          RTL                    ; Return
@@ -8389,6 +8401,8 @@ $A7:EAB4 6B          RTL
 
 ;;; $EAB5: Etecoon function - look at Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EAB5 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A7:EAB8 F0 02       BEQ $02    [$EABC]     ;\
 $A7:EABA 10 45       BPL $45    [$EB01]     ;} If [enemy function timer] > 0: return
@@ -8427,6 +8441,8 @@ $A7:EB01 6B          RTL
 
 ;;; $EB02: Etecoon function - running left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EB02 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EB05 90 24       BCC $24    [$EB2B]     ; If collision:
 $A7:EB07 AD 08 E9    LDA $E908  [$A7:E908]  ;\
@@ -8448,6 +8464,8 @@ $A7:EB2B 6B          RTL
 
 ;;; $EB2C: Etecoon function - running right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EB2C A9 20 00    LDA #$0020             ;\
 $A7:EB2F 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 20h.0
 $A7:EB31 64 12       STZ $12    [$7E:0012]  ;/
@@ -8468,6 +8486,8 @@ $A7:EB4F 6B          RTL
 
 ;;; $EB50: Etecoon function - jumping ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EB50 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
 $A7:EB53 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EB56 90 3E       BCC $3E    [$EB96]     ; If no collision: go to BRANCH_NO_WALL
@@ -8526,6 +8546,8 @@ $A7:EBCC 6B          RTL
 
 ;;; $EBCD: Etecoon function - wall jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EBCD 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
 $A7:EBD0 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A7:EBD3 F0 02       BEQ $02    [$EBD7]     ;\
@@ -8563,6 +8585,8 @@ $A7:EC1A 6B          RTL
 
 ;;; $EC1B: Etecoon function - landed from jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EC1B DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A7:EC1E F0 02       BEQ $02    [$EC22]     ;\
 $A7:EC20 10 1E       BPL $1E    [$EC40]     ;} If [enemy function timer] > 0: return
@@ -8588,6 +8612,8 @@ $A7:EC41             dw EC47, EC61, EC7B
 
 ;;; $EC47: Run to left run-up point ;;;
 {
+;; Parameters:
+;;     Y: Enemy index
 $A7:EC47 BB          TYX
 $A7:EC48 A9 97 EC    LDA #$EC97             ;\
 $A7:EC4B 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EC97 (run to left run-up point)
@@ -8603,6 +8629,8 @@ $A7:EC60 60          RTS
 
 ;;; $EC61: Run to right run-up point ;;;
 {
+;; Parameters:
+;;     Y: Enemy index
 $A7:EC61 BB          TYX
 $A7:EC62 A9 BB EC    LDA #$ECBB             ;\
 $A7:EC65 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ECBB (run to right run-up point)
@@ -8618,6 +8646,8 @@ $A7:EC7A 60          RTS
 
 ;;; $EC7B: Hop at centre run-up point ;;;
 {
+;; Parameters:
+;;     Y: Enemy index
 $A7:EC7B BB          TYX
 $A7:EC7C A9 75 ED    LDA #$ED75             ;\
 $A7:EC7F 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED75 (hopping - top of room)
@@ -8635,6 +8665,8 @@ $A7:EC96 60          RTS
 
 ;;; $EC97: Etecoon function - run to left run-up point ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EC97 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EC9A BD 7A 0F    LDA $0F7A,x            ;\
 $A7:EC9D C9 19 02    CMP #$0219             ;} If [enemy X position] <= 218h:
@@ -8654,6 +8686,8 @@ $A7:ECBA 6B          RTL
 
 ;;; $ECBB: Etecoon function - run to right run-up point ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ECBB 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:ECBE BD 7A 0F    LDA $0F7A,x            ;\
 $A7:ECC1 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
@@ -8673,6 +8707,8 @@ $A7:ECDE 6B          RTL
 
 ;;; $ECDF: Etecoon function - running for successful morph tunnel jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ECDF 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:ECE2 BD 7A 0F    LDA $0F7A,x            ;\
 $A7:ECE5 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
@@ -8694,6 +8730,8 @@ $A7:ED08 6B          RTL
 
 ;;; $ED09: Etecoon function - successful morph tunnel jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ED09 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:ED0C 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
 $A7:ED0F BD 7A 0F    LDA $0F7A,x            ;\
@@ -8712,6 +8750,8 @@ $A7:ED29 6B          RTL
 
 ;;; $ED2A: Etecoon function - running through morph tunnel ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ED2A 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:ED2D BD 7A 0F    LDA $0F7A,x            ;\
 $A7:ED30 C9 48 03    CMP #$0348             ;} If [enemy X position] >= 348h:
@@ -8733,6 +8773,8 @@ $A7:ED53 6B          RTL
 
 ;;; $ED54: Etecoon function - falling from morph tunnel ledge ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ED54 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:ED57 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
 $A7:ED5A 90 18       BCC $18    [$ED74]     ; If collision:
@@ -8751,6 +8793,8 @@ $A7:ED74 6B          RTL
 
 ;;; $ED75: Etecoon function - hopping - top of room ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:ED75 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
 $A7:ED78 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
 $A7:ED7B B0 01       BCS $01    [$ED7E]     ; If no collision:
@@ -8794,6 +8838,8 @@ $A7:EDC6 6B          RTL
 
 ;;; $EDC7: Etecoon function - start hop - top of room ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EDC7 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
 $A7:EDCA DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A7:EDCD F0 02       BEQ $02    [$EDD1]     ;\
@@ -8848,6 +8894,8 @@ $A7:EE3D 6B          RTL
 
 ;;; $EE3E: Etecoon function - hop until Samus is near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EE3E 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
 $A7:EE41 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A7:EE44 F0 02       BEQ $02    [$EE48]     ;\
@@ -8892,6 +8940,8 @@ $A7:EE99 6B          RTL
 
 ;;; $EE9A: Etecoon function - running for failed morph tunnel jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EE9A 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EE9D BD 7A 0F    LDA $0F7A,x            ;\
 $A7:EEA0 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
@@ -8909,6 +8959,8 @@ $A7:EEB7 6B          RTL
 
 ;;; $EEB8: Etecoon function - failed tunnel jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A7:EEB8 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EEBB 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
 $A7:EEBE 90 2A       BCC $2A    [$EEEA]     ; If collision:

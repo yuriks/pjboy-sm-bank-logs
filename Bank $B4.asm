@@ -6515,7 +6515,7 @@ $B4:F3FE             db 74,14,41,36,00,00 ;  45.5%   7.8%  25.5%  21.2%         
 $B4:F404             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $EF7F (Golden Torizo)
 $B4:F40A             db 1E,1E,32,3C,55,00 ;  11.8%  11.8%  19.6%  23.5%  33.3%        - enemy $EFBF (Golden Torizo orb)
 $B4:F410             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $DF3F (Spore Spawn)
-$B4:F416             db 0A,14,C8,19,00,00 ;   3.9%   7.8%  78.4%   9.8%               - enemy $DF7F (Spore Spawn)
+$B4:F416             db 0A,14,C8,19,00,00 ;   3.9%   7.8%  78.4%   9.8%               - enemy $DF7F (spore dummy)
 $B4:F41C             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E2BF (Kraid)
 $B4:F422             db 0A,23,C8,00,0A,00 ;   3.9%  13.7%  78.4%          3.9%        - enemy $E3FF/$E43F (Kraid foot / good fingernail)
 $B4:F428             db 00,0A,DC,05,14,00 ;          3.9%  86.3%   2.0%   7.8%        - enemy $DDFF (Crocomire tongue)
@@ -6534,7 +6534,7 @@ $B4:F470             db 00,00,00,FF,00,00 ;                      100.0%         
 $B4:F476             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E07F (fire pillar)
 $B4:F47C             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D87F/$D8BF (roach)
 $B4:F482             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E5BF/$F2D3 (etecoon)
-$B4:F488             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E1FF/$E5FF/$F313 (Ceres steam / dachora))
+$B4:F488             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E1FF/$E5FF/$F313 (steam / dachora))
 $B4:F48E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D1FF (polyp)
 $B4:F494             db 00,00,00,FF,00,00 ;                      100.0%
 $B4:F49A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EC3F (Mother Brain brain)

@@ -1617,7 +1617,7 @@ $8B:8B65 6B          RTL
 }
 
 
-;;; $8B66: Calculate position of Ceres steam in rotating elevator room ;;;
+;;; $8B66: Calculate position of steam in rotating elevator room ;;;
 {
 ;; Parameters:
 ;      $12: X position

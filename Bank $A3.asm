@@ -10309,6 +10309,8 @@ $A3:EECD 6B          RTL
 
 ;;; $EECE: Deal metroid contact damage to Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A3:EECE AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A3:EED1 38          SEC                    ;|
 $A3:EED2 E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8 (never read)
