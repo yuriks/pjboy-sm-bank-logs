@@ -217,11 +217,11 @@ $A8:8849 A9 01 00    LDA #$0001             ;\ Else ([Samus X position] >= [enem
 $A8:884C 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy facing direction = right
 
 $A8:884F A9 A7 86    LDA #$86A7             ;\
-$A8:8852 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $86A7
+$A8:8852 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $86A7 (evir body - facing left)
 $A8:8856 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:8859 F0 07       BEQ $07    [$8862]     ;} If [enemy facing direction] != left:
 $A8:885B A9 0B 87    LDA #$870B             ;\
-$A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $870B
+$A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $870B (evir body - facing right)
 
 $A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8865 60          RTS
@@ -243,7 +243,7 @@ $A8:887E 18          CLC                    ;|
 $A8:887F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ah
 $A8:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:8885 A9 C3 86    LDA #$86C3             ;\
-$A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $86C3
+$A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $86C3 (evir arms - facing left)
 $A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:888F 80 1E       BRA $1E    [$88AF]
 
@@ -256,7 +256,7 @@ $A8:889E 18          CLC                    ;|
 $A8:889F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ah
 $A8:88A2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:88A5 A9 27 87    LDA #$8727             ;\
-$A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $8727
+$A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $8727 (evir arms - facing right)
 $A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:88AF 60          RTS
@@ -267,7 +267,7 @@ $A8:88AF 60          RTS
 {
 $A8:88B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:88B3 A9 6F 87    LDA #$876F             ;\
-$A8:88B6 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
+$A8:88B6 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F (normal)
 $A8:88BA 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:88BD BD 16 0F    LDA $0F16,x[$7E:0F96]  ;\
 $A8:88C0 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = [enemy ([X] - 2) palette index]
@@ -400,14 +400,14 @@ $A8:89A6 BF 16 78 7E LDA $7E7816,x[$7E:7896];\
 $A8:89AA F0 0F       BEQ $0F    [$89BB]     ;} If [enemy moving flag] != 0:
 $A8:89AC BD AA 0F    LDA $0FAA,x[$7E:102A]  ; >_<;
 $A8:89AF A9 6F 87    LDA #$876F             ;\
-$A8:89B2 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
+$A8:89B2 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F (normal)
 $A8:89B6 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89B9 80 15       BRA $15    [$89D0]     ; Go to BRANCH_MERGE
 
 $A8:89BB BF 18 78 7E LDA $7E7818,x[$7E:7898];\
 $A8:89BF F0 0C       BEQ $0C    [$89CD]     ;} If [enemy regenerating flag] != 0:
 $A8:89C1 A9 75 87    LDA #$8775             ;\
-$A8:89C4 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775
+$A8:89C4 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775 (regenerating)
 $A8:89C8 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89CB 80 03       BRA $03    [$89D0]     ; Go to BRANCH_MERGE
 
@@ -447,7 +447,7 @@ $A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enemy Y velocity = 4 * -sin([$16]
 $A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
 $A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894];/
 $A8:8A1C A9 6F 87    LDA #$876F             ;\
-$A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
+$A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F (normal)
 $A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A26 A9 01 00    LDA #$0001             ;\
 $A8:8A29 9F 16 78 7E STA $7E7816,x[$7E:7896];} Enemy moving flag = 1
@@ -504,7 +504,7 @@ $A8:8A7E D0 30       BNE $30    [$8AB0]     ;} If [enemy ([X] - 2) frozen timer]
 $A8:8A80 BF 18 78 7E LDA $7E7818,x[$7E:7898];\
 $A8:8A84 D0 1D       BNE $1D    [$8AA3]     ;} If [enemy regenerating flag] = 0:
 $A8:8A86 A9 6F 87    LDA #$876F             ;\
-$A8:8A89 9F 04 78 7E STA $7E7804,x          ;} Enemy new instruction list = $876F
+$A8:8A89 9F 04 78 7E STA $7E7804,x          ;} Enemy new instruction list = $876F (normal)
 $A8:8A8D 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A90 A9 00 00    LDA #$0000             ;\
 $A8:8A93 9F 18 78 7E STA $7E7818,x          ;} Enemy regenerating flag = 0
@@ -540,7 +540,7 @@ $A8:8AD3 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy function = $8A78 (regenerat
 $A8:8AD6 A9 01 00    LDA #$0001             ;\
 $A8:8AD9 9F 18 78 7E STA $7E7818,x[$7E:7898];} >_<;
 $A8:8ADD A9 75 87    LDA #$8775             ;\
-$A8:8AE0 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775
+$A8:8AE0 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775 (regenerating)
 $A8:8AE4 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:8AE7 60          RTS
