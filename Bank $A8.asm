@@ -616,6 +616,7 @@ $A8:8B58 6B          RTL
 
 ;;; $8B59: Evir spritemaps ;;;
 {
+; Evir body - facing left
 $A8:8B59             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FB,2108, 8001,01,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125
 $A8:8B88             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FC,2108, 8001,02,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125
 $A8:8BB7             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FD,2108, 8001,03,2108, 81FF,08,210C, 01FE,11,2126, 01FE,09,2125
@@ -623,6 +624,8 @@ $A8:8BE6             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,
 $A8:8C15             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FD,2108, 8001,04,2108, 81FF,0A,210C, 01FE,11,2126, 01FE,09,2125
 $A8:8C44             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FC,2108, 8001,03,2108, 81FF,09,210C, 01FE,10,2126, 01FE,08,2125
 $A8:8C73             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FB,2108, 8001,01,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125 ; Unused
+
+; Evir arms - facing left
 $A8:8CA2             dx 0005, 0000,F8,2123, 01F8,F8,2122, 0002,FC,2124, 01FE,F4,2121, 01F6,F4,2120
 $A8:8CBD             dx 0005, 01FE,F4,2123, 01F6,F4,2122, 0000,F8,2124, 0002,FC,2123, 01FA,FC,2122
 $A8:8CD8             dx 0005, 01FE,F4,2124, 01F8,F8,2122, 0000,F8,2123, 0002,FC,2121, 01FA,FC,2120
@@ -630,8 +633,14 @@ $A8:8CF3             dx 0006, 01FE,F4,2123, 01F6,F4,2122, 01F8,F8,2120, 0000,F8,
 $A8:8D13             dx 0003, 01FE,F4,2124, 0000,F8,2124, 0002,FC,2124
 $A8:8D24             dx 0006, 01FE,F4,2123, 01F6,F4,2122, 01F8,F8,2122, 0000,F8,2123, 0002,FC,2123, 01FA,FC,2122 ; Unused
 $A8:8D44             dx 0006, 01FE,F4,2121, 01F6,F4,2120, 0000,F8,2121, 01F8,F8,2120, 0002,FC,2121, 01FA,FC,2120 ; Unused
+
+; Evir projectile - regenerating
 $A8:8D64             dx 0004, 0000,00,A128, 01F8,00,A127, 0000,F8,2128, 01F8,F8,2127
+
+; Evir projectile - normal
 $A8:8D7A             dx 0001, 81F8,F8,210E
+
+; Evir body - facing right
 $A8:8D81             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FB,6108, 81EF,01,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125
 $A8:8DB0             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FC,6108, 81EF,02,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125
 $A8:8DDF             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FD,6108, 81EF,03,6108, 81F1,08,610C, 01FA,11,6126, 01FA,09,6125
@@ -639,6 +648,8 @@ $A8:8E0E             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,
 $A8:8E3D             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FD,6108, 81EF,04,6108, 81F1,0A,610C, 01FA,11,6126, 01FA,09,6125
 $A8:8E6C             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FC,6108, 81EF,03,6108, 81F1,09,610C, 01FA,10,6126, 01FA,08,6125
 $A8:8E9B             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FB,6108, 81EF,01,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125 ; Unused
+
+; Evir arms - facing right
 $A8:8ECA             dx 0005, 01F8,F8,6123, 0000,F8,6122, 01FA,F4,6121, 0002,F4,6120, 01F6,FC,6124
 $A8:8EE5             dx 0005, 01FA,F4,6123, 0002,F4,6122, 01F8,F8,6124, 01F6,FC,6123, 01FE,FC,6122
 $A8:8F00             dx 0005, 01FA,F4,6124, 01F8,F8,6123, 0000,F8,6122, 01F6,FC,6121, 01FE,FC,6120
@@ -843,6 +854,8 @@ $A8:90F0 6B          RTL
 
 ;;; $90F1: Morph ball eye function - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:90F1 AD 54 90    LDA $9054  [$A8:9054]  ;\
 $A8:90F4 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
 $A8:90F8 A8          TAY                    ;} If Samus is not within 80h pixels rows of enemy: return
@@ -874,6 +887,8 @@ $A8:912D 6B          RTL
 
 ;;; $912E: Morph ball eye function - activating ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:912E DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:9131 F0 02       BEQ $02    [$9135]     ;\
 $A8:9133 10 2A       BPL $2A    [$915F]     ;} If [enemy function timer] > 0: return
@@ -900,6 +915,8 @@ $A8:915F 6B          RTL
 
 ;;; $9160: Morph ball eye function - active ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:9160 AD 56 90    LDA $9056  [$A8:9056]  ;\
 $A8:9163 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
 $A8:9167 A8          TAY                    ;} If Samus is within 80h pixels rows of enemy:
@@ -955,6 +972,8 @@ $A8:91CD 6B          RTL
 
 ;;; $91CE: Morph ball eye function - deactivating ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:91CE DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:91D1 F0 02       BEQ $02    [$91D5]     ;\
 $A8:91D3 10 06       BPL $06    [$91DB]     ;} If [enemy function timer] > 0: return
@@ -1546,6 +1565,9 @@ $A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]; Go to [enemy function]
 
 ;;; $9B42: Coven function - materialising - fade to white ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; You only see this fade to white transition once where it transitions from the initial black palette
 ; On subsequent calls to this function, it will already have a white palette from the dematerialisation fade to white
 $A8:9B42 DA          PHX
@@ -1659,6 +1681,8 @@ $A8:9C30 6B          RTL
 
 ;;; $9C31: Process coven palette transition delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:9C31 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:9C34 F0 1F       BEQ $1F    [$9C55]     ;} If [enemy function timer] != 0:
 $A8:9C36 3A          DEC A                  ;\
@@ -1711,6 +1735,8 @@ $A8:9C89 6B          RTL
 
 ;;; $9C8A: Coven function - materialised ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:9C8A BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\
 $A8:9C8D 18          CLC                    ;|
 $A8:9C8E 7F 02 78 7E ADC $7E7802,x[$7E:7802];|
@@ -1773,6 +1799,8 @@ $A8:9D12 6B          RTL
 
 ;;; $9D13: Coven function - dematerialised - asleep ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:9D13 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:9D16 F0 06       BEQ $06    [$9D1E]     ;} If [enemy function timer] != 0:
 $A8:9D18 3A          DEC A                  ;\
@@ -1806,6 +1834,9 @@ $A8:9D34             dw 0001 ; Y radius
 
 ;;; $9D36: Coven function - dematerialised - awake ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; The Samus position loads at $9D45 / $9DC3 / $9DCD are erroneously being indexed by X, which is the enemy index
 ; Consequently, this code has unexpected results if the enemy is not enemy slot 0
 
@@ -2366,7 +2397,7 @@ $A8:A195 85 24       STA $24    [$7E:0024]  ;} $24 = 39h (yapping maw base - fac
 $A8:A197 A9 08 00    LDA #$0008             ;\
 $A8:A19A 85 22       STA $22    [$7E:0022]  ;} $22 = 8 (base Y offset)
 $A8:A19C BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$A8:A19F D0 10       BNE $10    [$A1B1]     ;} If [enemy parameter 1] = 0 (facing down):
+$A8:A19F D0 10       BNE $10    [$A1B1]     ;} If [enemy parameter 2] = 0 (facing down):
 $A8:A1A1 A9 C7 9F    LDA #$9FC7             ;\
 $A8:A1A4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9FC7
 $A8:A1A7 A9 38 00    LDA #$0038             ;\
@@ -2809,7 +2840,7 @@ $A8:A604 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = 
 
 ; BRANCH_UP_MERGE
 $A8:A607 BD B6 0F    LDA $0FB6,x[$7E:0FF6]  ;\
-$A8:A60A D0 31       BNE $31    [$A63D]     ;} If [enemy parameter 2] != 0: return
+$A8:A60A D0 31       BNE $31    [$A63D]     ;} If [enemy parameter 2] != 0: (facing up) return
 $A8:A60C BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A8:A610 C9 04 00    CMP #$0004             ;} If [enemy instruction list table index] = right: go to BRANCH_DOWN_RIGHT
 $A8:A613 F0 07       BEQ $07    [$A61C]     ;/
@@ -2843,6 +2874,8 @@ $A8:A63D 60          RTS
 
 ;;; $A63E: Update yapping maw angular speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:A63E BC AE 0F    LDY $0FAE,x[$7E:0FEE]  ; Y = [enemy angular speed table index] (quadratic speed table index)
 $A8:A641 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:A644 18          CLC                    ;|
@@ -3127,6 +3160,8 @@ $A8:A834 6B          RTL
 
 ;;; $A835: Frozen AI - enemy $E7BF (yapping maw) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:A835 22 41 80 A8 JSL $A88041[$A8:8041]  ; Normal enemy frozen AI
 $A8:A839 BF 00 88 7E LDA $7E8800,x[$7E:8800];\
 $A8:A83D A8          TAY                    ;} Y = [enemy body segment 0 enemy projectile index]
@@ -3299,6 +3334,8 @@ $A8:AB78 7C A8 0F    JMP ($0FA8,x)[$A8:AB7B]; Go to [enemy function]
 
 ;;; $AB7B: Kago function - nothing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:AB7B A9 81 AB    LDA #$AB81             ;\
 $A8:AB7E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTL
 $A8:AB81 6B          RTL
@@ -3591,6 +3628,10 @@ $A8:AE0C             dx 0001,B4B5,
 {
 ;;; $AE12: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6, if enemy is on-screen ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:AE12 DA          PHX
 $A8:AE13 5A          PHY
 $A8:AE14 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
@@ -3931,6 +3972,8 @@ $A8:B087 60          RTS
 
 ;;; $B088: Set up magdollite palette cycling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:B088 A9 B2 B0    LDA #$B0B2             ;\
 $A8:B08B 8D 8C 17    STA $178C  [$7E:178C]  ;|
 $A8:B08E A9 A8 00    LDA #$00A8             ;} Enemy graphics drawn hook = $A8:B0B2
@@ -4150,6 +4193,8 @@ $A8:B22F 60          RTS
 
 ;;; $B230: Grow arm ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:B230 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
 $A8:B233 49 FF FF    EOR #$FFFF             ;|
 $A8:B236 1A          INC A                  ;} If -[enemy arm height] < 6Ch: (whoops, we forgot to load Y before taking this branch >_<;)
@@ -4228,6 +4273,8 @@ $A8:B2C4 60          RTS
 
 ;;; $B2C5: Shrink arm ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:B2C5 BC AA 0F    LDY $0FAA,x[$7E:0FEA]  ;\
 $A8:B2C8 88          DEY                    ;} Y = [enemy growth table index] - 2
 $A8:B2C9 88          DEY                    ;/
@@ -4364,6 +4411,8 @@ $A8:B3CA 60          RTS
 
 ;;; $B3CB: Update magdollite head Y radius ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:B3CB BD FE 0E    LDA $0EFE,x[$7E:0F7E]  ;\
 $A8:B3CE 38          SEC                    ;|
 $A8:B3CF FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
@@ -4398,8 +4447,8 @@ $A8:B3FF 60          RTS
 
 ;;; $B400: Power bomb reaction - enemy $E83F (magdollite) ;;;
 {
-$A8:B400 22 37 80 A8 JSL $A88037[$A8:8037]
-$A8:B404 80 0A       BRA $0A    [$B410]
+$A8:B400 22 37 80 A8 JSL $A88037[$A8:8037]  ; Normal enemy power bomb AI
+$A8:B404 80 0A       BRA $0A    [$B410]     ; Go to magdollite shared contact reaction
 }
 
 
@@ -5056,7 +5105,6 @@ $A8:BA87 BF 0A 78 7E LDA $7E780A,x[$7E:784A];\
 $A8:BA8B D0 05       BNE $05    [$BA92]     ;} If [enemy falling flag] = 0:
 $A8:BA8D 20 E7 BA    JSR $BAE7  [$A8:BAE7]  ; Beetom Y movement - short hop - rising
 $A8:BA90 80 03       BRA $03    [$BA95]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BA92 20 20 BB    JSR $BB20  [$A8:BB20]  ; Beetom Y movement - short hop - falling
 
@@ -5083,7 +5131,6 @@ $A8:BABA BF 0A 78 7E LDA $7E780A,x[$7E:78CA];\
 $A8:BABE D0 05       BNE $05    [$BAC5]     ;} If [enemy falling flag] = 0:
 $A8:BAC0 20 E7 BA    JSR $BAE7  [$A8:BAE7]  ; Beetom Y movement - short hop - rising
 $A8:BAC3 80 03       BRA $03    [$BAC8]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BAC5 20 20 BB    JSR $BB20  [$A8:BB20]  ; Beetom Y movement - short hop - falling
 
@@ -5104,6 +5151,8 @@ $A8:BAE6 60          RTS
 
 ;;; $BAE7: Beetom Y movement - short hop - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BAE7 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A8:BAEA 0A          ASL A                  ;|
 $A8:BAEB 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5135,6 +5184,8 @@ $A8:BB1F 60          RTS
 
 ;;; $BB20: Beetom Y movement - short hop - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BB20 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A8:BB23 0A          ASL A                  ;|
 $A8:BB24 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5170,7 +5221,6 @@ $A8:BB58 BF 0A 78 7E LDA $7E780A,x[$7E:790A];\
 $A8:BB5C D0 05       BNE $05    [$BB63]     ;} If [enemy falling flag] = 0:
 $A8:BB5E 20 B8 BB    JSR $BBB8  [$A8:BBB8]  ; Beetom Y movement - long hop - rising
 $A8:BB61 80 03       BRA $03    [$BB66]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BB63 20 F1 BB    JSR $BBF1  [$A8:BBF1]  ; Beetom Y movement - long hop - falling
 
@@ -5197,7 +5247,6 @@ $A8:BB8B BF 0A 78 7E LDA $7E780A,x[$7E:78CA];\
 $A8:BB8F D0 05       BNE $05    [$BB96]     ;} If [enemy falling flag] = 0:
 $A8:BB91 20 B8 BB    JSR $BBB8  [$A8:BBB8]  ; Beetom Y movement - long hop - rising
 $A8:BB94 80 03       BRA $03    [$BB99]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BB96 20 F1 BB    JSR $BBF1  [$A8:BBF1]  ; Beetom Y movement - long hop - falling
 
@@ -5218,6 +5267,8 @@ $A8:BBB7 60          RTS
 
 ;;; $BBB8: Beetom Y movement - long hop - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BBB8 BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
 $A8:BBBB 0A          ASL A                  ;|
 $A8:BBBC 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5249,6 +5300,8 @@ $A8:BBF0 60          RTS
 
 ;;; $BBF1: Beetom Y movement - long hop - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BBF1 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:BBF4 0A          ASL A                  ;|
 $A8:BBF5 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5284,7 +5337,6 @@ $A8:BC29 BF 0A 78 7E LDA $7E780A,x[$7E:790A];\
 $A8:BC2D D0 05       BNE $05    [$BC34]     ;} If [enemy falling flag] = 0:
 $A8:BC2F 20 8A BC    JSR $BC8A  [$A8:BC8A]  ; Beetom Y movement - lunge - rising
 $A8:BC32 80 03       BRA $03    [$BC37]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BC34 20 C3 BC    JSR $BCC3  [$A8:BCC3]  ; Beetom Y movement - lunge - falling
 
@@ -5312,7 +5364,6 @@ $A8:BC5D BF 0A 78 7E LDA $7E780A,x[$7E:788A];\
 $A8:BC61 D0 05       BNE $05    [$BC68]     ;} If [enemy falling flag] = 0:
 $A8:BC63 20 8A BC    JSR $BC8A  [$A8:BC8A]  ; Beetom Y movement - lunge - rising
 $A8:BC66 80 03       BRA $03    [$BC6B]
-
                                             ; Else ([enemy falling flag] != 0):
 $A8:BC68 20 C3 BC    JSR $BCC3  [$A8:BCC3]  ; Beetom Y movement - lunge - falling
 
@@ -5333,6 +5384,8 @@ $A8:BC89 60          RTS
 
 ;;; $BC8A: Beetom Y movement - lunge - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BC8A BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
 $A8:BC8D 0A          ASL A                  ;|
 $A8:BC8E 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5364,6 +5417,8 @@ $A8:BCC2 60          RTS
 
 ;;; $BCC3: Beetom Y movement - lunge - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BCC3 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
 $A8:BCC6 0A          ASL A                  ;|
 $A8:BCC7 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5510,6 +5565,8 @@ $A8:BDCB 60          RTS
 
 ;;; $BDCC: Beetom movement - being flung ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:BDCC BD AA 0F    LDA $0FAA,x            ;\
 $A8:BDCF 0A          ASL A                  ;|
 $A8:BDD0 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
@@ -5798,6 +5855,8 @@ $A8:C233 60          RTS
 
 ;;; $C234: Set powamp balloon Y position ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C234 BD 52 0F    LDA $0F52,x[$7E:0F92]  ; A = [enemy ([X] - 1) instruction list pointer]
 $A8:C237 C9 91 C1    CMP #$C191             ;\
 $A8:C23A 10 1E       BPL $1E    [$C25A]     ;} If [A] >= $C191 (balloon - deflate): go to BRANCH_DEFLATE
@@ -5845,6 +5904,8 @@ $A8:C27D             dw FFEC, FFF0, FFF4 ; Deflate
 {
 ;;; $C283: Powamp function - body - deflated - resting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C283 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C286 F0 02       BEQ $02    [$C28A]     ;\
 $A8:C288 10 18       BPL $18    [$C2A2]     ;} If [enemy function timer] <= 0:
@@ -5865,6 +5926,8 @@ $A8:C2A5 6B          RTL
 
 ;;; $C2A6: Powamp function - body - inflating ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C2A6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C2A9 F0 02       BEQ $02    [$C2AD]     ;\
 $A8:C2AB 10 1E       BPL $1E    [$C2CB]     ;} If [enemy function timer] <= 0:
@@ -5887,6 +5950,8 @@ $A8:C2CE 6B          RTL
 
 ;;; $C2CF: Powamp function - body - inflated - rise to target height ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C2CF BD 8A 0F    LDA $0F8A,x[$7E:0FCA]  ;\
 $A8:C2D2 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) != 0:
 $A8:C2D5 F0 09       BEQ $09    [$C2E0]     ;/
@@ -5960,6 +6025,8 @@ $A8:C36A 6B          RTL
 
 ;;; $C36B: Powamp function - body - inflated - finish wiggle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C36B DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Decrement enemy wiggle timer
 $A8:C36E F0 02       BEQ $02    [$C372]     ;\
 $A8:C370 10 4A       BPL $4A    [$C3BC]     ;} If [enemy wiggle timer] > 0: go to BRANCH_CONTINUE_RISING
@@ -6018,6 +6085,8 @@ $A8:C3E0 6B          RTL
 
 ;;; $C3E1: Powamp function - body - grappled - rise to target height ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C3E1 BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
 $A8:C3E4 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
 $A8:C3E7 D0 07       BNE $07    [$C3F0]     ;/
@@ -6085,6 +6154,8 @@ $A8:C468 6B          RTL
 
 ;;; $C469: Powamp function - body - grappled - finish wiggle ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C469 BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
 $A8:C46C 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
 $A8:C46F D0 07       BNE $07    [$C478]     ;/
@@ -6144,6 +6215,8 @@ $A8:C4DB 6B          RTL
 
 ;;; $C4DC: Powamp function - body - grappled - resting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C4DC BD 8A 0F    LDA $0F8A,x            ;\
 $A8:C4DF 89 01 00    BIT #$0001             ;} If [enemy AI handler] & 1 (grapple AI) = 0:
 $A8:C4E2 D0 18       BNE $18    [$C4FC]     ;/
@@ -6163,6 +6236,8 @@ $A8:C4FF 6B          RTL
 
 ;;; $C500: Powamp function - body - deflating ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C500 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy function timer
 $A8:C503 F0 02       BEQ $02    [$C507]     ;\
 $A8:C505 10 12       BPL $12    [$C519]     ;} If [enemy function timer] <= 0:
@@ -6181,6 +6256,8 @@ $A8:C51C 6B          RTL
 
 ;;; $C51D: Powamp function - body - deflated - sinking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C51D BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A8:C520 18          CLC                    ;|
 $A8:C521 6D BF C1    ADC $C1BF  [$A8:C1BF]  ;|
@@ -6220,6 +6297,8 @@ $A8:C568 6B          RTL
 
 ;;; $C569: Powamp function - body - fatal damage ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C569 BD 52 0F    LDA $0F52,x            ; A = [enemy ([X] - 1) instruction list pointer]
 $A8:C56C C9 91 C1    CMP #$C191             ;\
 $A8:C56F 30 18       BMI $18    [$C589]     ;} If [A] >= $C191 (balloon - deflate):
@@ -6249,6 +6328,8 @@ $A8:C599             dw C18B, C187, C183
 
 ;;; $C59F: Powamp function - body - death sequence ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:C59F DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
 $A8:C5A2 F0 02       BEQ $02    [$C5A6]     ;\
 $A8:C5A4 10 14       BPL $14    [$C5BA]     ;} If [enemy function timer] <= 0:
@@ -7038,6 +7119,8 @@ $A8:CCC1             dw 001F,0018,000F,0008, 0040,
 
 ;;; $CCFF: Decrement enemy laser cooldown ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:CCFF BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:CD02 F0 04       BEQ $04    [$CD08]     ;|
 $A8:CD04 3A          DEC A                  ;} Enemy laser cooldown = max(0, [enemy laser cooldown] - 1)
@@ -7051,6 +7134,10 @@ $A8:CD08 60          RTS
 {
 ;;; $CD09: Instruction - facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CD09 DA          PHX
 $A8:CD0A 5A          PHY
 $A8:CD0B AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7122,6 +7209,10 @@ $A8:CDA3 6B          RTL
 
 ;;; $CDA4: Instruction - facing left - move forwards, go to $C73F if hit wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CDA4 DA          PHX
 $A8:CDA5 5A          PHY
 $A8:CDA6 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7159,6 +7250,10 @@ $A8:CDE9 6B          RTL
 
 ;;; $CDEA: Instruction - facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CDEA DA          PHX
 $A8:CDEB 5A          PHY
 $A8:CDEC AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7230,6 +7325,10 @@ $A8:CE84 6B          RTL
 
 ;;; $CE85: Instruction - facing left - move backwards, go to $C6E9 if hit wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CE85 DA          PHX
 $A8:CE86 5A          PHY
 $A8:CE87 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7267,6 +7366,8 @@ $A8:CECA 6B          RTL
 
 ;;; $CECB: Instruction - go to $C92D ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CECB A0 2D C9    LDY #$C92D
 $A8:CECE 6B          RTL
 }
@@ -7274,6 +7375,10 @@ $A8:CECE 6B          RTL
 
 ;;; $CECF: Instruction - facing right - move forwards, go to $C985 if hit wall, go to $C91B if approaching a fall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CECF DA          PHX
 $A8:CED0 5A          PHY
 $A8:CED1 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7345,6 +7450,10 @@ $A8:CF69 6B          RTL
 
 ;;; $CF6A: Instruction - facing right - move forwards, go to $C985 if hit wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CF6A DA          PHX
 $A8:CF6B 5A          PHY
 $A8:CF6C AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7382,6 +7491,10 @@ $A8:CFAF 6B          RTL
 
 ;;; $CFB0: Instruction - facing right - move backwards, go to $C6E9 if hit wall, go to $CB65 if approaching a fall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:CFB0 DA          PHX
 $A8:CFB1 5A          PHY
 $A8:CFB2 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7453,6 +7566,10 @@ $A8:D04A 6B          RTL
 
 ;;; $D04B: Instruction - facing right - move backwards, go to $C6E9 if hit wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D04B DA          PHX
 $A8:D04C 5A          PHY
 $A8:D04D AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7518,6 +7635,8 @@ $A8:D0C1 6B          RTL
 
 ;;; $D0C2: Instruction - go to $C6E9 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D0C2 A0 E9 C6    LDY #$C6E9
 $A8:D0C5 6B          RTL
 }
@@ -7525,6 +7644,11 @@ $A8:D0C5 6B          RTL
 
 ;;; $D0C6: Instruction - try shooting laser up-right and go to $CB1D if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D0C6 A9 1D CB    LDA #$CB1D             ;\
 $A8:D0C9 85 32       STA $32    [$7E:0032]  ;} $32 = $CB1D
 $A8:D0CB A9 D0 D2    LDA #$D2D0             ;\
@@ -7535,6 +7659,11 @@ $A8:D0D0 80 0A       BRA $0A    [$D0DC]     ; Go to handle firing laser - upward
 
 ;;; $D0D2: Instruction - try shooting laser up-left and go to $C8D1 if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D0D2 A9 D1 C8    LDA #$C8D1             ;\
 $A8:D0D5 85 32       STA $32    [$7E:0032]  ;} $32 = $C8D1
 $A8:D0D7 A9 A6 D2    LDA #$D2A6             ;\
@@ -7544,6 +7673,13 @@ $A8:D0DA 85 30       STA $30    [$7E:0030]  ;} $30 = $D2A6 (work robot laser - u
 
 ;;; $D0DC: Handle firing laser - upwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;;     $30: Enemy projectile ID
+;;     $32: Pointer to next instruction if laser fired
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D0DC BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:D0DF D0 1B       BNE $1B    [$D0FC]     ;} If [enemy laser cooldown] = 0:
 $A8:D0E1 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -7566,6 +7702,11 @@ $A8:D0FF 6B          RTL
 
 ;;; $D100: Instruction - try shooting laser horizontally and go to $CB09 if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D100 A9 09 CB    LDA #$CB09             ;\
 $A8:D103 85 32       STA $32    [$7E:0032]  ;} $32 = $CB09
 $A8:D105 80 05       BRA $05    [$D10C]     ; Go to handle firing laser - horizontal
@@ -7574,6 +7715,11 @@ $A8:D105 80 05       BRA $05    [$D10C]     ; Go to handle firing laser - horizo
 
 ;;; $D107: Instruction - try shooting laser horizontally and go to $C8BD if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D107 A9 BD C8    LDA #$C8BD             ;\
 $A8:D10A 85 32       STA $32    [$7E:0032]  ;} $32 = $C8BD
 }
@@ -7581,6 +7727,12 @@ $A8:D10A 85 32       STA $32    [$7E:0032]  ;} $32 = $C8BD
 
 ;;; $D10C: Handle firing laser - horizontal ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;;     $32: Pointer to next instruction if laser fired
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D10C BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:D10F D0 1C       BNE $1C    [$D12D]     ;} If [enemy laser cooldown] = 0:
 $A8:D111 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -7603,6 +7755,11 @@ $A8:D130 6B          RTL
 
 ;;; $D131: Instruction - try shooting laser down-right and go to $CAFD if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D131 A9 DE D2    LDA #$D2DE             ;\
 $A8:D134 85 30       STA $30    [$7E:0030]  ;} $30 = $D2DE (work robot laser - down-right)
 $A8:D136 A9 FD CA    LDA #$CAFD             ;\
@@ -7613,6 +7770,11 @@ $A8:D13B 80 0A       BRA $0A    [$D147]     ; Go to handle firing laser - downwa
 
 ;;; $D13D: Instruction - try shooting laser down-left and go to $C8B1 if so ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D13D A9 C2 D2    LDA #$D2C2             ;\
 $A8:D140 85 30       STA $30    [$7E:0030]  ;} $30 = $D2C2 (work robot laser - down-left)
 $A8:D142 A9 B1 C8    LDA #$C8B1             ;\
@@ -7622,6 +7784,13 @@ $A8:D145 85 32       STA $32    [$7E:0032]  ;} $32 = $C8B1
 
 ;;; $D147: Handle firing laser - downwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to after this instruction
+;;     $30: Enemy projectile ID
+;;     $32: Pointer to next instruction if laser fired
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:D147 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:D14A D0 1B       BNE $1B    [$D167]     ;} If [enemy laser cooldown] = 0:
 $A8:D14C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -8057,6 +8226,8 @@ $A8:DA70 60          RTS
 
 ;;; $DA71: Accelerate bull ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DA71 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy acceleration interval timer
 $A8:DA74 D0 1B       BNE $1B    [$DA91]     ; If [enemy acceleration interval timer] != 0: return
 $A8:DA76 BF 0A 78 7E LDA $7E780A,x[$7E:788A];\
@@ -8076,6 +8247,8 @@ $A8:DA91 60          RTS
 
 ;;; $DA92: Decelerate bull ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DA92 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy acceleration interval timer
 $A8:DA95 D0 1B       BNE $1B    [$DAB2]     ; If [enemy acceleration interval timer] != 0: return
 $A8:DA97 BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
