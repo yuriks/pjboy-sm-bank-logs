@@ -2876,7 +2876,7 @@ $94:963F AA          TAX                    ;} X = [current block index] * 2
 $94:9640 20 2C 95    JSR $952C  [$94:952C]  ; Samus block collision reaction - vertical
 $94:9643 B0 0C       BCS $0C    [$9651]     ; If collision: return carry set
 $94:9645 CA          DEX                    ;\
-$94:9646 CA          DEX                    ;} X += 2
+$94:9646 CA          DEX                    ;} X -= 2
 $94:9647 E6 1A       INC $1A    [$7E:001A]  ; Increment $1A
 $94:9649 A5 1C       LDA $1C    [$7E:001C]  ;\
 $94:964B C5 1A       CMP $1A    [$7E:001A]  ;} If [$1A] <= [$1C]: go to LOOP

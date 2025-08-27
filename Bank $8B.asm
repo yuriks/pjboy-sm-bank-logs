@@ -6257,7 +6257,7 @@ $8B:ADC6 10 0B       BPL $0B    [$ADD3]     ;/
 $8B:ADC8 1A          INC A                  ;\
 $8B:ADC9 8D 97 19    STA $1997  [$7E:1997]  ;} Cinematic BG1 Y position += 1
 $8B:ADCC BD 9D 1A    LDA $1A9D,x[$7E:1AB9]  ;\
-$8B:ADCF 3A          DEC A                  ;} Cinematic sprite object Y position += 1
+$8B:ADCF 3A          DEC A                  ;} Cinematic sprite object Y position -= 1
 $8B:ADD0 9D 9D 1A    STA $1A9D,x[$7E:1AB9]  ;/
 
 $8B:ADD3 60          RTS

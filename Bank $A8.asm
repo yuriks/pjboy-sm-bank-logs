@@ -8528,7 +8528,7 @@ $A8:DCDA 9D B2 0F    STA $0FB2,x[$7E:1072]  ;} Enemy spawn Y position = [enemy Y
 $A8:DCDD BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $A8:DCE0 9F 04 78 7E STA $7E7804,x[$7E:78C4];} Enemy spawn X position = [enemy X position]
 $A8:DCE4 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
-$A8:DCE7 09 00 20    ORA #$2000             ;} Set enemies to process instructions
+$A8:DCE7 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A8:DCEA 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $A8:DCED A9 E7 DB    LDA #$DBE7             ;\
 $A8:DCF0 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $DBE7 (facing left - walking)
@@ -8567,6 +8567,8 @@ $A8:DD36 6B          RTL
 
 ;;; $DD37: Set up jump movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DD37 A9 F4 FF    LDA #$FFF4             ;\
 $A8:DD3A 9D AA 0F    STA $0FAA,x[$7E:106A]  ;|
 $A8:DD3D A9 00 00    LDA #$0000             ;} Enemy Y velocity = -C.0h
@@ -8582,6 +8584,8 @@ $A8:DD54 60          RTS
 
 ;;; $DD55: Alcoon Y acceleration ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DD55 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A8:DD58 18          CLC                    ;|
 $A8:DD59 7F 02 78 7E ADC $7E7802,x[$7E:78C2];|
@@ -8602,6 +8606,8 @@ $A8:DD6E 7C A8 0F    JMP ($0FA8,x)[$A8:DD71]; Go to [enemy function]
 
 ;;; $DD71: Alcoon function - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DD71 BF 06 78 7E LDA $7E7806,x[$7E:78C6];\
 $A8:DD75 38          SEC                    ;|
 $A8:DD76 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
@@ -8648,6 +8654,8 @@ $A8:DDC5 6B          RTL
 
 ;;; $DDC6: Alcoon function - emerging - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DDC6 BD AC 0F    LDA $0FAC,x[$7E:10EC]  ;\
 $A8:DDC9 18          CLC                    ;|
 $A8:DDCA 7D 80 0F    ADC $0F80,x[$7E:10C0]  ;|
@@ -8683,6 +8691,8 @@ $A8:DE03 80 D9       BRA $D9    [$DDDE]     ; Go to BRANCH_FALLING
 
 ;;; $DE05: Alcoon function - emerging - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DE05 BD AC 0F    LDA $0FAC,x[$7E:10EC]  ;\
 $A8:DE08 85 12       STA $12    [$7E:0012]  ;|
 $A8:DE0A BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;} Move enemy down by [enemy Y velocity]
@@ -8718,6 +8728,8 @@ $A8:DE4A 6B          RTL
 
 ;;; $DE4B: Alcoon function - emerged ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DE4B 64 12       STZ $12    [$7E:0012]  ;\
 $A8:DE4D A9 02 00    LDA #$0002             ;|
 $A8:DE50 85 14       STA $14    [$7E:0014]  ;} Move enemy down by 2.0
@@ -8794,6 +8806,8 @@ $A8:DECC 6B          RTL
 
 ;;; $DECD: Alcoon function - hiding - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DECD BD AC 0F    LDA $0FAC,x            ;\
 $A8:DED0 18          CLC                    ;|
 $A8:DED1 7D 80 0F    ADC $0F80,x            ;|
@@ -8812,6 +8826,8 @@ $A8:DEEB 6B          RTL
 
 ;;; $DEEC: Alcoon function - hiding - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:DEEC BD AC 0F    LDA $0FAC,x            ;\
 $A8:DEEF 18          CLC                    ;|
 $A8:DEF0 7D 80 0F    ADC $0F80,x            ;|
@@ -8877,6 +8893,8 @@ $A8:DF3D 80 E1       BRA $E1    [$DF20]     ; Go to spawn alcoon fireball
 
 ;;; $DF3F: Instruction - start walking ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:DF3F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DF42 A9 4B DE    LDA #$DE4B             ;\
 $A8:DF45 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DE4B (emerged)
@@ -8897,6 +8915,10 @@ $A8:DF62 6B          RTL
 
 ;;; $DF63: Instruction - decrement step counter and move horizontally ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:DF63 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DF66 BF 08 78 7E LDA $7E7808,x[$7E:78C8];\
 $A8:DF6A F0 05       BEQ $05    [$DF71]     ;} If [enemy step counter] != 0:
@@ -8907,6 +8929,10 @@ $A8:DF6D 9F 08 78 7E STA $7E7808,x[$7E:7948];} Decrement step counter
 
 ;;; $DF71: Instruction - move horizontally ;;;
 {
+;; Parameters:
+;;     Y: Pointer to after this instruction
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:DF71 5A          PHY
 $A8:DF72 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DF75 64 12       STZ $12    [$7E:0012]  ;\
@@ -9374,6 +9400,8 @@ $A8:E694 6B          RTL
 
 ;;; $E695: Wrecked Ship spark function - intermittent - inactive ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:E695 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
 $A8:E698 3A          DEC A                  ;} If [enemy function timer] != 1:
 $A8:E699 F0 04       BEQ $04    [$E69F]     ;/
@@ -9394,6 +9422,8 @@ $A8:E6B6 6B          RTL
  
 ;;; $E6B7: Wrecked Ship spark function - intermittent - active ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:E6B7 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
 $A8:E6BA 3A          DEC A                  ;} If [enemy function timer] != 1:
 $A8:E6BB F0 04       BEQ $04    [$E6C1]     ;/
@@ -9415,6 +9445,8 @@ $A8:E6DB 6B          RTL
 
 ;;; $E6DC: Wrecked Ship spark function - emit falling sparks ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:E6DC BD B2 0F    LDA $0FB2,x[$7E:1132]  ;\
 $A8:E6DF 3A          DEC A                  ;} If [enemy function timer] != 1:
 $A8:E6E0 F0 04       BEQ $04    [$E6E6]     ;/
@@ -9433,6 +9465,7 @@ $A8:E6F5 6B          RTL
 ;;; $E6F6: Set Wrecked Ship spark function timer ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $12: Additional function time
 $A8:E6F6 BD B0 0F    LDA $0FB0,x[$7E:10F0]  ; A = [enemy base function time]
 $A8:E6F9 10 0B       BPL $0B    [$E706]     ; If [A] < 0:
@@ -10061,6 +10094,8 @@ $A8:F265 7C A8 0F    JMP ($0FA8,x)[$A8:F6F3]; Execute [enemy function]
 
 ;;; $F268: Ki-hunter function - winged - idle flying ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F268 BF 10 78 7E LDA $7E7810,x[$7E:7810];\
 $A8:F26C 85 12       STA $12    [$7E:0012]  ;|
 $A8:F26E BF 12 78 7E LDA $7E7812,x[$7E:7812];} Move enemy down by [enemy Y velocity]
@@ -10201,6 +10236,8 @@ $A8:F3B0             dw E9FA,EA4E, ; Facing left
 
 ;;; $F3B8: Ki-hunter function - winged - swoop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F3B8 BF 08 78 7E LDA $7E7808,x[$7E:7808];\
 $A8:F3BC 10 0B       BPL $0B    [$F3C9]     ;} If [enemy arc angular acceleration] < 0:
 $A8:F3BE BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
@@ -10327,6 +10364,8 @@ $A8:F4EC 6B          RTL
 
 ;;; $F4ED: Ki-hunter function - winged - back off ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F4ED BF 0C 78 7E LDA $7E780C,x[$7E:798C];\
 $A8:F4F1 85 12       STA $12    [$7E:0012]  ;|
 $A8:F4F3 BF 0E 78 7E LDA $7E780E,x[$7E:798E];} Move enemy right by [enemy X velocity]
@@ -10353,6 +10392,10 @@ $A8:F525 6B          RTL
 
 ;;; $F526: Instruction - set idling instruction lists facing forwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     Y: Pointer to next instruction
 $A8:F526 A0 FA E9    LDY #$E9FA             ; Y = $E9FA (idling - facing left)
 $A8:F529 A9 4E EA    LDA #$EA4E             ;\
 $A8:F52C 85 12       STA $12    [$7E:0012]  ;} $12 = $EA4E (ki-hunter wings - facing left)
@@ -10380,6 +10423,8 @@ $A8:F559 6B          RTL
 
 ;;; $F55A: Ki-hunter function - wingless - initial falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F55A BF 10 78 7E LDA $7E7810,x[$7E:7910];\
 $A8:F55E 85 12       STA $12    [$7E:0012]  ;|
 $A8:F560 BF 12 78 7E LDA $7E7812,x[$7E:7912];} Move enemy down by [enemy Y velocity]
@@ -10403,6 +10448,8 @@ $A8:F58A 6B          RTL
 
 ;;; $F58B: Ki-hunter function - wingless - prepare to hop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F58B A9 E3 F5    LDA #$F5E3             ;\
 $A8:F58E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = RTL
 $A8:F591 A9 00 00    LDA #$0000             ;\
@@ -10450,6 +10497,8 @@ $A8:F5EF 6B          RTL
 
 ;;; $F5F0: Ki-hunter function - wingless - hop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F5F0 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A8:F5F4 85 12       STA $12    [$7E:0012]  ;|
 $A8:F5F6 BF 12 78 7E LDA $7E7812,x[$7E:7892];} Move enemy down by [enemy Y velocity]
@@ -10522,6 +10571,8 @@ $A8:F68A 6B          RTL
 
 ;;; $F68B: Ki-hunter function - wingless - thinking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F68B BF 1E 78 7E LDA $7E781E,x[$7E:781E];\
 $A8:F68F 3A          DEC A                  ;} Decrement enemy thinking timer
 $A8:F690 9F 1E 78 7E STA $7E781E,x[$7E:781E];/
@@ -10547,6 +10598,8 @@ $A8:F6B2 6B          RTL
 
 ;;; $F6B3: Ki-hunter function - wingless - fire acid spit ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F6B3 A0 F2 EA    LDY #$EAF2             ; Enemy instruction list pointer = $EAF2 (acid spit attack - facing left)
 $A8:F6B6 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A8:F6B9 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
@@ -10599,6 +10652,8 @@ $A8:F6F2 6B          RTL
 {
 ;;; $F6F3: Ki-hunter wings function - attached ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F6F3 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
 $A8:F6F6 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy ([X] - 1) X position]
 $A8:F6F9 BD 3E 0F    LDA $0F3E,x[$7E:0F7E]  ;\
@@ -10875,6 +10930,8 @@ $A8:F945 80 E3       BRA $E3    [$F92A]     ; Return <-- the store to $0FAA,x do
 
 ;;; $F947: Set up falling ki-hunter wings drifting left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F947 A9 DB F7    LDA #$F7DB             ;\
 $A8:F94A 9F 00 78 7E STA $7E7800,x          ;} Enemy falling function = $F7DB (drifting left)
 $A8:F94E BF 14 78 7E LDA $7E7814,x          ;\
@@ -10891,6 +10948,8 @@ $A8:F969 60          RTS
 
 ;;; $F96A: Set up falling ki-hunter wings drifting right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A8:F96A A9 AD F8    LDA #$F8AD             ;\
 $A8:F96D 9F 00 78 7E STA $7E7800,x[$7E:7940];} Enemy falling function = $F8AD (drifting right)
 $A8:F971 BF 14 78 7E LDA $7E7814,x[$7E:7954];\
