@@ -6527,6 +6527,8 @@ $A9:C452 60          RTS
 
 ;;; $C453: Set enemy instruction list ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C453 9D 92 0F    STA $0F92,x[$7E:0FD2]  ; Enemy instruction list pointer = [A]
 $A9:C456 A9 01 00    LDA #$0001             ;\
 $A9:C459 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
@@ -6575,6 +6577,8 @@ $A9:C48D 6B          RTL
 
 ;;; $C48E: Unused. Enemy X position += [A] / 100h ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C48E E2 20       SEP #$20
 $A9:C490 18          CLC
 $A9:C491 7D 7D 0F    ADC $0F7D,x
@@ -6593,6 +6597,8 @@ $A9:C4A8 60          RTS
 
 ;;; $C4A9: Enemy Y position += [A] / 100h ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C4A9 E2 20       SEP #$20
 $A9:C4AB 18          CLC
 $A9:C4AC 7D 81 0F    ADC $0F81,x[$7E:1001]
@@ -7068,6 +7074,8 @@ $A9:C79B 6B          RTL
 
 ;;; $C79C: Handle Shitroid flashing ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C79C A0 00 0E    LDY #$0E00             ; Y = E00h (palette 7)
 $A9:C79F BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
 $A9:C7A3 F0 0D       BEQ $0D    [$C7B2]     ;} If [enemy flash timer] != 0:
@@ -7098,6 +7106,8 @@ $A9:C7CB 60          RTS
 
 ;;; $C7CC: Shitroid function - dash onto screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C7CC DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement function timer
 $A9:C7CF 30 01       BMI $01    [$C7D2]     ; If [function timer] >= 0:
 $A9:C7D1 60          RTS                    ; Return
@@ -7115,6 +7125,8 @@ $A9:C7E9 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = Ah
 
 ;;; $C7EC: Shitroid function - curve towards Mother Brain brain ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C7EC A9 80 FE    LDA #$FE80             ;\
 $A9:C7EF 85 12       STA $12    [$7E:0012]  ;} $12 = -180h (angle delta)
 $A9:C7F1 A9 00 B0    LDA #$B000             ;\
@@ -7136,6 +7148,8 @@ $A9:C810 60          RTS
 
 ;;; $C811: Shitroid function - get right up in Mother Brain's face ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C811 A9 00 FA    LDA #$FA00             ;\
 $A9:C814 85 12       STA $12    [$7E:0012]  ;} $12 = -500h (angle delta)
 $A9:C816 A9 00 82    LDA #$8200             ;\
@@ -7167,6 +7181,8 @@ $A9:C850 60          RTS
 
 ;;; $C851: Shitroid function - latch onto Mother Brain ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C851 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C854 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:C856 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
@@ -7189,6 +7205,8 @@ $A9:C878 60          RTS
 
 ;;; $C879: Shitroid function - set Mother Brain to stumble back ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C879 A0 02 00    LDY #$0002             ;\
 $A9:C87C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
 $A9:C87F 3A          DEC A                  ;} Make Mother Brain walk backwards 1 pixel really fast
@@ -7200,6 +7218,8 @@ $A9:C886 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C889
 
 ;;; $C889: Shitroid function - activate rainbow beam and Mother Brain body ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C889 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C88C 18          CLC                    ;|
 $A9:C88D 69 00 00    ADC #$0000             ;} $12 = [Mother Brain brain X position]
@@ -7239,6 +7259,8 @@ $A9:C8E1 60          RTS
 
 ;;; $C8E2: Shitroid function - wait for Mother Brain to turn to corpse ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C8E2 BD A4 0F    LDA $0FA4,x[$7E:1024]  ;\
 $A9:C8E5 29 06 00    AND #$0006             ;} Y = [enemy frame timer] & 6
 $A9:C8E8 A8          TAY                    ;/
@@ -7266,6 +7288,8 @@ $A9:C914 60          RTS
 
 ;;; $C915: Shitroid function - stop draining ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C915 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C918 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [Mother Brain brain X position]
 $A9:C91B AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
@@ -7292,6 +7316,8 @@ $A9:C94A 60          RTS
 
 ;;; $C94B: Shitroid function - let go and spawn dust clouds ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C94B DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:C94E 10 09       BPL $09    [$C959]     ; If [enemy function timer] < 0:
 $A9:C950 20 8C C9    JSR $C98C  [$A9:C98C]  ; Spawn three dust clouds on Mother Brain brain
@@ -7302,6 +7328,8 @@ $A9:C956 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C959
 
 ;;; $C959: Shitroid function - move up to ceiling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:C959 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C95C 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:C95E A9 00 00    LDA #$0000             ;\
@@ -7359,6 +7387,9 @@ $A9:C9C2 60          RTS
 
 ;;; $C9C3: Shitroid function - move to Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Is this used for the sidehopper attack too?! Note the enemy index being 80h instead of C0h
 $A9:C9C3 A9 00 00    LDA #$0000             ;\
 $A9:C9C6 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable Shitroid cry sound effect
@@ -7430,6 +7461,8 @@ $A9:CA24             dw 00A0,0078,0000,F466,
 
 ;;; $CA66: Shitroid function - latch onto Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CA66 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:CA69 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
 $A9:CA6B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -7443,6 +7476,8 @@ $A9:CA77 4C 51 F4    JMP $F451  [$A9:F451]  ; Gradually accelerate towards point
 
 ;;; $CA7A: Shitroid function - heal Samus up to full health ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CA7A A9 00 00    LDA #$0000             ;\
 $A9:CA7D 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable Shitroid cry sound effect
 $A9:CA81 20 B7 C7    JSR $C7B7  [$A9:C7B7]  ; Handle playing Shitroid cry
@@ -7474,6 +7509,8 @@ $A9:CABC 60          RTS
 
 ;;; $CABD: Shitroid function - idle until run out of health ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CABD 20 B7 C7    JSR $C7B7  [$A9:C7B7]  ; Handle playing Shitroid cry
 $A9:CAC0 BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
 $A9:CAC4 F0 1E       BEQ $1E    [$CAE4]     ;} If [enemy flash timer] != 0:
@@ -7515,10 +7552,12 @@ $A9:CB12 60          RTS
 
 ;;; $CB13: Shitroid function - release Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CB13 A9 72 00    LDA #$0072             ;\
 $A9:CB16 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 72h, sound library 2, max queued sounds allowed = 6 (Shitroid's cry)
 $A9:CB1A A9 01 00    LDA #$0001             ;\
-$A9:CB1D 8F 56 78 7E STA $7E7856[$7E:7856]  ;} $7E:7856 = 1
+$A9:CB1D 8F 56 78 7E STA $7E7856[$7E:7856]  ;} $7E:7856 = 1 (never read)
 $A9:CB21 A9 2D CB    LDA #$CB2D             ;\
 $A9:CB24 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $CB2D
 $A9:CB27 A9 8E C1    LDA #$C18E             ;\
@@ -7528,6 +7567,8 @@ $A9:CB2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C18
 
 ;;; $CB2D: Shitroid function - stare down Mother Brain ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CB2D AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:CB30 38          SEC                    ;|
 $A9:CB31 E9 04 00    SBC #$0004             ;} $12 = [Samus X position] - 4
@@ -7551,6 +7592,8 @@ $A9:CB55 60          RTS
 
 ;;; $CB56: Shitroid function - fly off-screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CB56 A9 10 01    LDA #$0110             ;\
 $A9:CB59 85 12       STA $12    [$7E:0012]  ;} $12 = 110h
 $A9:CB5B A9 40 00    LDA #$0040             ;\
@@ -7572,6 +7615,8 @@ $A9:CB7A 60          RTS
 
 ;;; $CB7B: Shitroid function - move to final charge start position ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CB7B A9 31 01    LDA #$0131             ;\
 $A9:CB7E 85 12       STA $12    [$7E:0012]  ;} $12 = 131h
 $A9:CB80 A9 A0 00    LDA #$00A0             ;\
@@ -7599,6 +7644,8 @@ $A9:CBB2 60          RTS
 
 ;;; $CBB3: Shitroid function - initiate final charge ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CBB3 A9 22 01    LDA #$0122             ;\
 $A9:CBB6 85 12       STA $12    [$7E:0012]  ;} $12 = 122h
 $A9:CBB8 A9 80 00    LDA #$0080             ;\
@@ -7620,6 +7667,8 @@ $A9:CBD7 60          RTS
 
 ;;; $CBD8: Shitroid function - final charge ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CBD8 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:CBDB 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:CBDD A9 E0 FF    LDA #$FFE0             ;\
@@ -7660,6 +7709,8 @@ $A9:CC3A 9F 22 78 7E STA $7E7822,x[$7E:78A2];} Enemy shaking origin Y position =
 
 ;;; $CC3E: Shitroid function - Shitroid takes fatal blow ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CC3E 20 DB CE    JSR $CEDB  [$A9:CEDB]  ; Shake Shitroid
 $A9:CC41 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CC44 10 52       BPL $52    [$CC98]     ; If [enemy function timer] >= 0: return
@@ -7676,6 +7727,8 @@ $A9:CC5D 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = 38h
 
 ;;; $CC60: Shitroid function - play Samus theme ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CC60 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CC63 10 33       BPL $33    [$CC98]     ; If [enemy function timer] >= 0: return
 $A9:CC65 A9 48 FF    LDA #$FF48             ;\
@@ -7691,6 +7744,8 @@ $A9:CC7C 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = Ch
 
 ;;; $CC7F: Shitroid function - prepare Samus for hyper beam acquisition ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CC7F DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CC82 10 14       BPL $14    [$CC98]     ; If [enemy function timer] >= 0: return
 $A9:CC84 A9 19 00    LDA #$0019             ;\
@@ -7706,6 +7761,8 @@ $A9:CC98 60          RTS
 
 ;;; $CC99: Shitroid function - death sequence ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CC99 20 27 CD    JSR $CD27  [$A9:CD27]  ; Handle Samus rainbow palette animation
 $A9:CC9C 20 40 CE    JSR $CE40  [$A9:CE40]  ; Accelerate Shitroid downwards
 $A9:CC9F 20 69 CD    JSR $CD69  [$A9:CD69]  ; Fade Shitroid to black
@@ -7726,6 +7783,8 @@ $A9:CCBF 60          RTS
 
 ;;; $CCC0: Shitroid function - unload Shitroid tiles ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CCC0 20 27 CD    JSR $CD27  [$A9:CD27]  ; Handle Samus rainbow palette animation
 $A9:CCC3 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CCC6 10 F7       BPL $F7    [$CCBF]     ; If [enemy function timer] >= 0: return
@@ -7743,6 +7802,8 @@ $A9:CCDB 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = B0h
 
 ;;; $CCDE: Shitroid function - let Samus rainbow some more ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CCDE DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CCE1 10 DC       BPL $DC    [$CCBF]     ; If [enemy function timer] >= 0: return
 $A9:CCE3 A9 F0 CC    LDA #$CCF0             ;\
@@ -7754,6 +7815,8 @@ $A9:CCEC 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Room lights transition counter = 
 
 ;;; $CCF0: Shitroid function - finish cutscene ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CCF0 AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:CCF4 1A          INC A                  ;} Increment room lights transition counter
 $A9:CCF5 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -7779,6 +7842,8 @@ $A9:CD26 60          RTS
 
 ;;; $CD27: Handle Samus rainbow palette animation ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CD27 AF 6C 78 7E LDA $7E786C[$7E:786C]  ;\
 $A9:CD2B 85 12       STA $12    [$7E:0012]  ;} Execute [Samus rainbow palette function]
 $A9:CD2D 6C 12 00    JMP ($0012)[$A9:CD30]  ;/
@@ -7787,6 +7852,8 @@ $A9:CD2D 6C 12 00    JMP ($0012)[$A9:CD30]  ;/
 
 ;;; $CD30: Samus rainbow palette function - activate rainbow when enemy is low enough ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CD30 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A9:CD33 18          CLC                    ;|
 $A9:CD34 69 10 00    ADC #$0010             ;} If [enemy Y position] + 10h >= [Samus Y position]:
@@ -7823,7 +7890,8 @@ $A9:CD68 60          RTS
 
 ;;; $CD69: Fade Shitroid to black ;;;
 {
-;; Returns:
+;; Parameters:
+;;     X: Enemy index
 ;;     Carry: Set if faded to black, clear otherwise
 $A9:CD69 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A9:CD6C C9 80 00    CMP #$0080             ;} If [enemy Y position] >= 80h:
@@ -7869,6 +7937,8 @@ $A9:CDB0 60          RTS                    ;} Return carry clear
 
 ;;; $CDB1: Handle Shitroid death explosions ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CDB1 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A9:CDB5 3A          DEC A                  ;} If [enemy death explosion timer] > 0:
 $A9:CDB6 30 05       BMI $05    [$CDBD]     ;/
@@ -7921,6 +7991,8 @@ $A9:CDFC             dw FFE8,FFE8,
 
 ;;; $CE24: Handle enemy blinking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CE24 BD A4 0F    LDA $0FA4,x[$7E:1024]  ;\
 $A9:CE27 29 01 00    AND #$0001             ;} If [enemy frame counter] % 2 != 0:
 $A9:CE2A F0 0A       BEQ $0A    [$CE36]     ;/
@@ -7938,6 +8010,8 @@ $A9:CE3F 60          RTS
 
 ;;; $CE40: Accelerate Shitroid downwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CE40 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
 $A9:CE43 10 04       BPL $04    [$CE49]     ;|
 $A9:CE45 49 FF FF    EOR #$FFFF             ;|
@@ -7964,6 +8038,8 @@ $A9:CE68 60          RTS
 
 ;;; $CE69: Handle Shitroid health-based palette ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:CE69 BF 12 78 7E LDA $7E7812,x[$7E:7892];\
 $A9:CE6D F0 08       BEQ $08    [$CE77]     ;} If health based palette enabled:
 $A9:CE6F BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
@@ -8019,6 +8095,9 @@ $A9:CEDA 60          RTS
 
 ;;; $CEDB: Shake Shitroid ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Decrementing velocity might be setting up initial velocity for the later calls to $CE40, pretty weird stuff...
 $A9:CEDB BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
 $A9:CEDE 18          CLC                    ;|
@@ -8066,6 +8145,7 @@ $A9:CF30 6B          RTL
 ;;; $CF31: Update Shitroid speed and angle ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $12: Angle delta
 ;;     $14: Target angle
 ;;     $16: Target speed
@@ -8136,6 +8216,8 @@ $A9:CFA2             dx 0010,F9A8,
 
 ;;; $CFB4: Instruction - go to $CFA2 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:CFB4 A0 A2 CF    LDY #$CFA2
 $A9:CFB7 6B          RTL
 }
@@ -8153,6 +8235,8 @@ $A9:CFB8             dx 0008,F9A8,
 
 ;;; $CFCA: Instruction - go to $CFB8 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:CFCA A0 B8 CF    LDY #$CFB8
 $A9:CFCD 6B          RTL
 }
@@ -8614,6 +8698,8 @@ $A9:D3AC 6B          RTL
 
 ;;; $D3AD: Torizo corpse function - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:D3AD EC 2C 18    CPX $182C  [$7E:182C]  ;\
 $A9:D3B0 F0 0F       BEQ $0F    [$D3C1]     ;|
 $A9:D3B2 EC 2E 18    CPX $182E  [$7E:182E]  ;|
@@ -9175,6 +9261,8 @@ $A9:D8E1 6B          RTL
 
 ;;; $D8E2: Sidehopper corpse function - alive - waiting for activation ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:D8E2 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A9:D8E5 C9 01 02    CMP #$0201             ;} If [layer 1 X position] <= 200h:
 $A9:D8E8 30 01       BMI $01    [$D8EB]     ;/
@@ -9187,6 +9275,8 @@ $A9:D8EE 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8F1 (hopping)
 
 ;;; $D8F1: Sidehopper corpse function - hopping ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:D8F1 20 61 D9    JSR $D961  [$A9:D961]  ; Sidehopper corpse movement
 $A9:D8F4 90 19       BCC $19    [$D90F]     ; If collision:
 $A9:D8F6 BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
@@ -9204,6 +9294,8 @@ $A9:D90F 60          RTS
 
 ;;; $D910: Sidehopper corpse function - start idling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:D910 A9 1D D9    LDA #$D91D             ;\
 $A9:D913 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D91D (idling)
 $A9:D916 A9 40 00    LDA #$0040             ;\
@@ -9214,6 +9306,8 @@ $A9:D91C 60          RTS
 
 ;;; $D91D: Sidehopper corpse function - idling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:D91D DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Decrement enemy function timer
 $A9:D920 10 2E       BPL $2E    [$D950]     ; If [enemy function timer] >= 0: return
 $A9:D922 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
@@ -9244,6 +9338,8 @@ $A9:D959             dw 01C0, 0120, 0120, 0300 ; X velocity
 
 ;;; $D961: Sidehopper corpse movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 $A9:D961 BF 14 78 7E LDA $7E7814,x[$7E:7854]; A = [enemy X velocity]
@@ -9302,6 +9398,7 @@ $A9:D9C6 60          RTS                    ;} Return carry clear
 {
 ;; Parameters:
 ;;     A: Distance to move (signed)
+;;     X: Enemy index
 $A9:D9C7 85 12       STA $12    [$7E:0012]
 $A9:D9C9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $A9:D9CC C9 20 02    CMP #$0220             ;} If [enemy X position] >= 220h:
@@ -9339,6 +9436,8 @@ $A9:DA07 60          RTS
 
 ;;; $DA08: Sidehopper corpse function - being drained ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA08 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
 $A9:DA0C 1A          INC A                  ;} Increment enemy drained palette timer
 $A9:DA0D 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
@@ -9386,6 +9485,8 @@ $A9:DA63 60          RTS
 
 ;;; $DA64: Sidehopper corpse function - dead - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA64 A0 8F DA    LDY #$DA8F             ; Y = $DA8F (pre-rot delay)
 $A9:DA67 80 0D       BRA $0D    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
@@ -9393,6 +9494,8 @@ $A9:DA67 80 0D       BRA $0D    [$DA76]     ; Go to dead enemies shared AI - wai
 
 ;;; $DA69: Zoomer corpse function - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA69 A0 94 DA    LDY #$DA94             ; Y = $DA94 (pre-rot delay)
 $A9:DA6C 80 08       BRA $08    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
@@ -9400,6 +9503,8 @@ $A9:DA6C 80 08       BRA $08    [$DA76]     ; Go to dead enemies shared AI - wai
 
 ;;; $DA6E: Skree corpse function - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA6E A0 9E DA    LDY #$DA9E             ; Y = $DA9E (pre-rot delay)
 $A9:DA71 80 03       BRA $03    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
@@ -9407,6 +9512,8 @@ $A9:DA71 80 03       BRA $03    [$DA76]     ; Go to dead enemies shared AI - wai
 
 ;;; $DA73: Ripper corpse function - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA73 A0 99 DA    LDY #$DA99             ; Y = $DA99 (pre-rot delay)
 }
 
@@ -9414,6 +9521,7 @@ $A9:DA73 A0 99 DA    LDY #$DA99             ; Y = $DA99 (pre-rot delay)
 ;;; $DA76: Dead monsters shared AI - wait for Samus collision ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: New enemy function if collision occurred
 $A9:DA76 EC 2C 18    CPX $182C  [$7E:182C]  ;\
 $A9:DA79 F0 0F       BEQ $0F    [$DA8A]     ;|
@@ -9432,14 +9540,17 @@ $A9:DA8E 60          RTS
 
 ;;; $DA8F: Sidehopper corpse function - pre-rot delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA8F A0 BA DA    LDY #$DABA             ; Y = $DABA (rotting)
 $A9:DA92 80 0D       BRA $0D    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
-
 }
 
 
 ;;; $DA94: Zoomer corpse function - pre-rot delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA94 A0 D0 DA    LDY #$DAD0             ; Y = $DAD0 (rotting)
 $A9:DA97 80 08       BRA $08    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
@@ -9447,6 +9558,8 @@ $A9:DA97 80 08       BRA $08    [$DAA1]     ; Go to dead enemies shared AI - pre
 
 ;;; $DA99: Ripper corpse function - pre-rot delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA99 A0 E6 DA    LDY #$DAE6             ; Y = $DAE6 (rotting)
 $A9:DA9C 80 03       BRA $03    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
@@ -9454,6 +9567,8 @@ $A9:DA9C 80 03       BRA $03    [$DAA1]     ; Go to dead enemies shared AI - pre
 
 ;;; $DA9E: Skree corpse function - pre-rot delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DA9E A0 FC DA    LDY #$DAFC             ; Y = $DAFC (rotting)
 }
 
@@ -9461,6 +9576,7 @@ $A9:DA9E A0 FC DA    LDY #$DAFC             ; Y = $DAFC (rotting)
 ;;; $DAA1: Dead monsters shared AI - pre-rot delay ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Rotting enemy function
 $A9:DAA1 FE AA 0F    INC $0FAA,x[$7E:10AA]  ; Increment enemy pre-rot timer
 $A9:DAA4 BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
@@ -9478,6 +9594,9 @@ $A9:DAB9 60          RTS
 
 ;;; $DABA: Sidehopper corpse function - rotting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; The LDA at $DAC2 looks like it was supposed to be for $DA63 (RTS), but since the sidehopper is intangible at this point, it doesn't really matter
 
 $A9:DABA 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
@@ -9494,6 +9613,8 @@ $A9:DACD 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 
 ;;; $DAD0: Zoomer corpse function - rotting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DAD0 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAD3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DAD6 B0 06       BCS $06    [$DADE]     ; If finished rotting:
@@ -9508,6 +9629,8 @@ $A9:DAE3 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 
 ;;; $DAE6: Ripper corpse function - rotting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DAE6 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAE9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DAEC B0 06       BCS $06    [$DAF4]     ; If finished rotting:
@@ -9522,6 +9645,8 @@ $A9:DAF9 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 
 ;;; $DAFC: Skree corpse function - rotting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:DAFC 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DB02 B0 06       BCS $06    [$DB0A]     ; If finished rotting:
@@ -9537,6 +9662,9 @@ $A9:DB0F 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 
 ;;; $DB12: Process corpse rotting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 {
 ; n_entries = [$880A]
 ; for (i_entry = 0; i_entry < n_entries; ++i_entry):
@@ -12115,6 +12243,8 @@ $A9:ECAC             dx 0002,EE3C,
 
 ;;; $ECD0: Instruction - end hop ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:ECD0 5A          PHY
 $A9:ECD1 A0 10 D9    LDY #$D910             ; Enemy function = $D910 (start idling)
 $A9:ECD4 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
@@ -12416,6 +12546,8 @@ $A9:EFDE 6B          RTL
 
 ;;; $EFDF: Shitroid function - disappeared ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:EFDF 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
 $A9:EFE2 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
 $A9:EFE5 60          RTS
@@ -12451,6 +12583,8 @@ $A9:F02A 60          RTS
 
 ;;; $F02B: Shitroid function - let sidehopper live for a bit ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F02B A9 37 F0    LDA #$F037             ;\
 $A9:F02E 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F037
 $A9:F031 A9 D0 01    LDA #$01D0             ;\
@@ -12460,6 +12594,8 @@ $A9:F034 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 1D0h
 
 ;;; $F037: Shitroid function - queue battle music ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F037 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
 $A9:F03A 10 30       BPL $30    [$F06C]     ; If [enemy function timer] < 0:
 $A9:F03C A9 05 00    LDA #$0005             ;\
@@ -12471,6 +12607,8 @@ $A9:F046 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F049
 
 ;;; $F049: Shitroid function - rush to middle of room ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F049 A9 48 02    LDA #$0248             ;\
 $A9:F04C 85 12       STA $12    [$7E:0012]  ;} $12 = 248h
 $A9:F04E A9 4A 00    LDA #$004A             ;\
@@ -12491,6 +12629,8 @@ $A9:F06C 60          RTS
 
 ;;; $F06D: Shitroid function - rush to sidehopper ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F06D BD BA 0F    LDA $0FBA,x[$7E:0FBA]  ;\
 $A9:F070 85 12       STA $12    [$7E:0012]  ;} $12 = [sidehopper X position]
 $A9:F072 BD BE 0F    LDA $0FBE,x[$7E:0FBE]  ;\
@@ -12514,6 +12654,8 @@ $A9:F093 60          RTS
 
 ;;; $F094: Shitroid function - latch onto sidehopper ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F094 BD BA 0F    LDA $0FBA,x[$7E:0FBA]  ;\
 $A9:F097 85 12       STA $12    [$7E:0012]  ;} $12 = [sidehopper X position]
 $A9:F099 BD BE 0F    LDA $0FBE,x[$7E:0FBE]  ;\
@@ -12551,6 +12693,8 @@ $A9:F0E5 60          RTS
 
 ;;; $F0E6: Shitroid function - draining sidehopper ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F0E6 BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
 $A9:F0E9 29 06 00    AND #$0006             ;} Y = [enemy frame counter] / 2 % 4 * 2
 $A9:F0EC A8          TAY                    ;/
@@ -12581,6 +12725,8 @@ $A9:F124 60          RTS
 
 ;;; $F125: Shitroid function - make sidehopper rottable ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F125 A9 01 00    LDA #$0001             ;\
 $A9:F128 8F 50 78 7E STA $7E7850[$7E:7850]  ;} Sidehopper drained palette index = 1
 $A9:F12C A9 38 F1    LDA #$F138             ;\
@@ -12592,6 +12738,8 @@ $A9:F135 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = C0h
 
 ;;; $F138: Shitroid function - move up and unlock camera ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F138 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A9:F13B 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A9:F13D A9 68 00    LDA #$0068             ;\
@@ -12621,6 +12769,9 @@ $A9:F17F 60          RTS
 
 ;;; $F180: Shitroid function - stare down Samus ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
+
 ; Shitroid moves towards Samus' X position and usually Y position 50h
 ; With a 0.78125% chance, Shitroid will move towards Samus' Y position instead for 20h frames
 ; 0.78125% chance per frame ~= 37.5% chance per second
@@ -12686,6 +12837,9 @@ $A9:F1F9 60          RTS
 
 ;;; $F1FA: Shitroid function - latch onto Samus ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
+
 ; See enemy touch
 $A9:F1FA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:F1FD 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
@@ -12709,6 +12863,8 @@ $A9:F218 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy function = $F21B
 
 ;;; $F21B: Shitroid function - draining Samus ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F21B AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $A9:F21E C9 02 00    CMP #$0002             ;} If [Samus health] < 2: go to BRANCH_DONE
 $A9:F221 90 43       BCC $43    [$F266]     ;/
@@ -12764,6 +12920,8 @@ $A9:F2A1 60          RTS
 
 ;;; $F2A2: Shitroid function - start heel realisation ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F2A2 A9 AE F2    LDA #$F2AE             ;\
 $A9:F2A5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F2AE
 $A9:F2A8 A9 78 00    LDA #$0078             ;\
@@ -12773,6 +12931,8 @@ $A9:F2AB 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 120
 
 ;;; $F2AE: Shitroid function - heel realisation ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F2AE DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
 $A9:F2B1 30 01       BMI $01    [$F2B4]     ; If [enemy function timer] >= 0:
 $A9:F2B3 60          RTS                    ; Return
@@ -12864,6 +13024,8 @@ $A9:F35F 60          RTS
 
 ;;; $F360: Shitroid function - flee remorsefully ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F360 A9 52 00    LDA #$0052             ;\
 $A9:F363 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 52h, sound library 2, max queued sounds allowed = 6 (Shitroid feels remorse)
 $A9:F367 A9 6D F3    LDA #$F36D             ;\
@@ -12899,6 +13061,8 @@ $A9:F3A2 60          RTS
 
 ;;; $F3A3: Shitroid function - Samus recovering ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F3A3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
 $A9:F3A6 30 03       BMI $03    [$F3AB]     ; If [enemy function timer] >= 0:
 $A9:F3A8 4C D4 F3    JMP $F3D4  [$A9:F3D4]  ; Go to gradually accelerate towards Samus
@@ -12914,6 +13078,8 @@ $A9:F3BB 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F3BE
 
 ;;; $F3BE: Shitroid function - remorse ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F3BE 20 D4 F3    JSR $F3D4  [$A9:F3D4]  ; Gradually accelerate towards Samus
 $A9:F3C1 B0 01       BCS $01    [$F3C4]     ; If not ready to flee:
 $A9:F3C3 60          RTS                    ; Return
@@ -12922,6 +13088,8 @@ $A9:F3C3 60          RTS                    ; Return
 
 ;;; $F3C4: Make Shitroid flee ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F3C4 A9 60 F3    LDA #$F360             ;\
 $A9:F3C7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F360
 $A9:F3CA 60          RTS
@@ -12930,6 +13098,8 @@ $A9:F3CA 60          RTS
 
 ;;; $F3CB: Signal Shitroid to leave ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 $A9:F3CB BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
 $A9:F3CE C9 BE F3    CMP #$F3BE             ;} If [Shitroid function] = $F3BE (remorse): go to make Shitroid flee
 $A9:F3D1 F0 F1       BEQ $F1    [$F3C4]     ;/
@@ -12939,6 +13109,8 @@ $A9:F3D3 60          RTS
 
 ;;; $F3D4: Gradually accelerate towards Samus ;;;
 {
+;; Parameters:
+;;     X: 0. Enemy index
 ;; Returns:
 ;;     Carry: Set if ready to flee, clear otherwise
 
@@ -13004,6 +13176,11 @@ $A9:F450 60          RTS                    ;} Return carry set
 
 ;;; $F451: Gradually accelerate towards point - $1A = 400h ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Acceleration divisor table index. Range 0..Fh, lower = slower
+;;     $12: Target X position
+;;     $14: Target Y position
 $A9:F451 A9 00 04    LDA #$0400
 $A9:F454 85 1A       STA $1A    [$7E:001A]
 $A9:F456 80 13       BRA $13    [$F46B]
@@ -13012,6 +13189,11 @@ $A9:F456 80 13       BRA $13    [$F46B]
 
 ;;; $F458: Gradually accelerate towards point - $1A = 4 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Acceleration divisor table index. Range 0..Fh, lower = slower
+;;     $12: Target X position
+;;     $14: Target Y position
 $A9:F458 A9 04 00    LDA #$0004
 $A9:F45B 85 1A       STA $1A    [$7E:001A]
 $A9:F45D 80 0C       BRA $0C    [$F46B]
@@ -13020,6 +13202,11 @@ $A9:F45D 80 0C       BRA $0C    [$F46B]
 
 ;;; $F45F: Gradually accelerate towards point - $1A = 8 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Acceleration divisor table index. Range 0..Fh, lower = slower
+;;     $12: Target X position
+;;     $14: Target Y position
 $A9:F45F A9 08 00    LDA #$0008
 $A9:F462 85 1A       STA $1A    [$7E:001A]
 $A9:F464 80 05       BRA $05    [$F46B]
@@ -13028,6 +13215,11 @@ $A9:F464 80 05       BRA $05    [$F46B]
 
 ;;; $F466: Gradually accelerate towards point - $1A = 10h ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Acceleration divisor table index. Range 0..Fh, lower = slower
+;;     $12: Target X position
+;;     $14: Target Y position
 $A9:F466 A9 10 00    LDA #$0010
 $A9:F469 85 1A       STA $1A    [$7E:001A]
 }
@@ -13036,6 +13228,7 @@ $A9:F469 85 1A       STA $1A    [$7E:001A]
 ;;; $F46B: Gradually accelerate towards point ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     Y: Acceleration divisor table index. Range 0..Fh, lower = slower
 ;;     $12: Target X position
 ;;     $14: Target Y position
@@ -13116,6 +13309,7 @@ $A9:F4E5 60          RTS
 ;;; $F4E6: Gradually accelerate horizontally ;;;
 {
 ;; Parameters:
+;;     X: 0. Enemy index
 ;;     $12: Target X position
 ;;     $18: Acceleration divisor
 ;;     $1A: Extra speed if enemy is moving the wrong way and is off-screen. Unit is 1/100h px/frame
@@ -13218,7 +13412,8 @@ $A9:F56A             db 10, 0F, 0E, 0D, 0C, 0B, 0A, 09, 08, 07, 06, 05, 04, 03, 
 
 ;;; $F57A: Check if enemy is vaguely on screen ;;;
 {
-;; Returns:
+;; Parameters:
+;;     X: Enemy index
 ;;     Carry: Set if off-screen, otherwise clear
 $A9:F57A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A9:F57D 30 25       BMI $25    [$F5A4]     ;} If [enemy Y position] < 0: return carry set
@@ -13250,6 +13445,7 @@ $A9:F5A5 6B          RTL
 {
 ;; Parameters:
 ;;     A: Acceleration. Unit is 1/100h px/frame^2
+;;     X: 0. Enemy index
 ;;     $12: Target X position
 ;;     $14: Target Y position
 ;; Returns:
@@ -13267,6 +13463,7 @@ $A9:F5B4 60          RTS
 ;;; $F5B5: Accelerate Shitroid towards Y position ;;;
 {
 ;; Parameters:
+;;     X: 0. Enemy index
 ;;     $14: Target Y position
 ;;     $16: Acceleration. Unit is 1/100h px/frame^2
 
@@ -13332,6 +13529,7 @@ $A9:F614 60          RTS
 ;;; $F615: Accelerate Shitroid towards X position ;;;
 {
 ;; Parameters:
+;;     X: 0. Enemy index
 ;;     $12: Target X position
 ;;     $16: Acceleration. Unit is 1/100h px/frame^2
 
@@ -13489,6 +13687,7 @@ $A9:F711             dw 5990,3870,346D,3068,
 {
 ;; Parameters:
 ;;     A: Enemy palette frame timer
+;;     X: 0. Enemy index
 $A9:F751 C9 05 00    CMP #$0005             ;\
 $A9:F754 F0 01       BEQ $01    [$F757]     ;} If [enemy palette frame timer] != 0:
 $A9:F756 60          RTS                    ; Return
@@ -13690,6 +13889,8 @@ $A9:F90E             dx 0010,F9A8,
 
 ;;; $F920: Instruction - go to $F90E ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:F920 A0 0E F9    LDY #$F90E
 $A9:F923 6B          RTL
 }
@@ -13707,6 +13908,8 @@ $A9:F924             dx 0008,F9A8,
 
 ;;; $F936: Instruction - go to $F924 ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:F936 A0 24 F9    LDY #$F924
 $A9:F939 6B          RTL
 }
@@ -13741,6 +13944,8 @@ $A9:F93A             dx 000A,F9A8,
 
 ;;; $F990: Instruction - go to $F93A ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:F990 A0 3A F9    LDY #$F93A
 $A9:F993 6B          RTL
 }
@@ -13748,6 +13953,11 @@ $A9:F993 6B          RTL
 
 ;;; $F994: Instruction - go to [[Y]] or queue Shitroid feels remorse sound effect ;;;
 {
+;; Parameters:
+;;     X: HDMA object index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A9:F994 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:F997 10 0A       BPL $0A    [$F9A3]     ;} If [random number] & 8000h != 0:
 $A9:F999 A9 52 00    LDA #$0052             ;\
