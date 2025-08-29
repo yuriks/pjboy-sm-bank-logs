@@ -3566,7 +3566,7 @@ $AA:D3A6 6B          RTL
 ;; Returns:
 ;;     Negative: Set if torizo is facing away from Samus, clear otherwise
 
-; Facing right: [$0FB4] & 8000h != 0
+; Facing right: [enemy $0FB4] & 8000h != 0
 $AA:D3A7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $AA:D3AA 38          SEC
 $AA:D3AB ED F6 0A    SBC $0AF6  [$7E:0AF6]

@@ -1235,7 +1235,7 @@ $81:8AB7 6B          RTL
 ;    $A0:944A: Write enemy OAM (non extended spritemap format)
 ;    $B4:BD32: Draw sprite objects
 
-; See $879F for spritemap format
+; See $8A5F for spritemap format
 $81:8AB8 5A          PHY
 $81:8AB9 B9 00 00    LDA $0000,y[$A6:F921]  ; $18 = [[Y]] (number of entries)
 $81:8ABC F0 61       BEQ $61    [$8B1F]     ; If [$18] = 0: return
@@ -1309,7 +1309,7 @@ $81:8B21 6B          RTL
 ; Called by:
 ;    $A0:944A: Write enemy OAM (extended spritemap format)
 
-; See $879F for spritemap format
+; See $8A5F for spritemap format
 ; Bug: missing CLC before ADC when calculating Y position, causes enemies straddling the left screen boundary to shift down a pixel
 
 $81:8B22 5A          PHY
@@ -1388,7 +1388,7 @@ $81:8B95 6B          RTL
 ; Called by:
 ;    $A0:944A: Write enemy OAM (extended spritemap format)
 
-; See $879F for spritemap format
+; See $8A5F for spritemap format
 ; Bug: missing CLC before ADC when calculating Y position, causes enemies straddling the left screen boundary to shift down a pixel
 
 $81:8B96 5A          PHY
@@ -1467,7 +1467,7 @@ $81:8C09 6B          RTL
 ; Called by:
 ;    $86:83D6: Draw enemy projectile
 
-; See $879F for spritemap format
+; See $8A5F for spritemap format
 $81:8C0A B9 00 00    LDA $0000,y[$8D:B1BA]  ;\
 $81:8C0D D0 01       BNE $01    [$8C10]     ;} If [[Y]] = 0: return
 $81:8C0F 6B          RTL                    ;/
@@ -1545,7 +1545,7 @@ $81:8C7E 6B          RTL
 ; Called by:
 ;    $86:83D6: Draw enemy projectile
 
-; See $879F for spritemap format
+; See $8A5F for spritemap format
 $81:8C7F B9 00 00    LDA $0000,y[$8D:B250]  ;\
 $81:8C82 D0 01       BNE $01    [$8C85]     ;} If [[Y]] = 0: return
 $81:8C84 6B          RTL                    ;/
