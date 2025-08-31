@@ -1519,6 +1519,10 @@ $B2:EDFE             dw 000A,8932,
 {
 ;;; $EE40: Instruction - move [[Y]] pixels down and change direction on collision - left wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:EE40 DA          PHX
 $B2:EE41 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EE44 A9 00 00    LDA #$0000             ;\
@@ -1552,6 +1556,10 @@ $B2:EE71 6B          RTL
 
 ;;; $EE72: Instruction - move enemy [[Y]] pixels down and change direction on collision - right wall ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:EE72 DA          PHX
 $B2:EE73 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EE76 A9 00 00    LDA #$0000             ;\
@@ -1585,6 +1593,8 @@ $B2:EEA3 6B          RTL
 
 ;;; $EEA4: Instruction - randomly choose a direction - left wall ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:EEA4 DA          PHX
 $B2:EEA5 A0 36 ED    LDY #$ED36             ; Y = $ED36 (moving down left wall)
 $B2:EEA8 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1601,6 +1611,8 @@ $B2:EEBB 6B          RTL
 
 ;;; $EEBC: Instruction - randomly choose a direction - right wall ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:EEBC DA          PHX
 $B2:EEBD A0 AC ED    LDY #$EDAC             ; Y = $EDAC (moving down right wall)
 $B2:EEC0 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1717,6 +1729,10 @@ $B2:EF82 6B          RTL
 
 ;;; $EF83: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:EF83 5A          PHY
 $B2:EF84 DA          PHX
 $B2:EF85 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2047,7 +2063,7 @@ $B2:F232             dw 000A,8F56,
                         000A,8F6A,
                         000A,8F60,
                         EF83,804B,  ; Enemy function = RTS
-                        F590,       ; Set enemy $0FAC
+                        F590,       ; Go to active
                         80ED,F232   ; Go to $F232
 }
 
@@ -2237,7 +2253,7 @@ $B2:F424             dw 000A,8F74,
                         000A,8F88,
                         000A,8F7E,
                         EF83,804B,  ; Enemy function = RTS
-                        F590,       ; Set enemy $0FAC
+                        F590,       ; Go to active
                         80ED,F424   ; Go to $F424
 }
 
@@ -2351,6 +2367,10 @@ $B2:F51A             dw EF83,804B,  ; Enemy function = RTS
 {
 ;;; $F536: Instruction - enemy palette index = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F536 DA          PHX
 $B2:F537 5A          PHY
 $B2:F538 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2366,6 +2386,10 @@ $B2:F545 6B          RTL
 
 ;;; $F546: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F546 DA          PHX
 $B2:F547 5A          PHY
 $B2:F548 B9 00 00    LDA $0000,y[$B2:F370]
@@ -2380,6 +2404,8 @@ $B2:F553 6B          RTL
 
 ;;; $F554: Unused. Instruction - go to [enemy $0FAC] ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F554 DA          PHX
 $B2:F555 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F558 A9 01 00    LDA #$0001             ;\
@@ -2393,6 +2419,10 @@ $B2:F563 6B          RTL
 
 ;;; $F564: Instruction - spawn space pirate claw enemy projectile with throw direction [[Y]] and spawn offset ([[Y] + 2], [[Y] + 4]) ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F564 DA          PHX
 $B2:F565 5A          PHY
 $B2:F566 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2419,8 +2449,10 @@ $B2:F58F 6B          RTL
 }
 
 
-;;; $F590: Instruction - set enemy $0FAC - active ;;;
+;;; $F590: Instruction - go to active ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F590 DA          PHX
 $B2:F591 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F594 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
@@ -2429,20 +2461,22 @@ $B2:F598 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus
 $B2:F59B 85 12       STA $12    [$7E:0012]  ;/
 $B2:F59D A9 01 00    LDA #$0001             ;\
 $B2:F5A0 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
-$B2:F5A3 A0 2E F2    LDY #$F22E             ; Enemy $0FAC = $F22E (active - facing left) (never read)
+$B2:F5A3 A0 2E F2    LDY #$F22E             ; Y = $F22E (active - facing left)
 $B2:F5A6 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F5A8 10 03       BPL $03    [$F5AD]     ;} If [enemy X position] < [Samus X position]:
-$B2:F5AA A0 20 F4    LDY #$F420             ; Enemy $0FAC = $F420 (active - facing right) (never read)
+$B2:F5AA A0 20 F4    LDY #$F420             ; Y = $F420 (active - facing right)
 
-$B2:F5AD 98          TYA
-$B2:F5AE 9D AC 0F    STA $0FAC,x[$7E:0FEC]
+$B2:F5AD 98          TYA                    ;\
+$B2:F5AE 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy $0FAC = [Y] (never read)
 $B2:F5B1 FA          PLX
 $B2:F5B2 6B          RTL
 }
 
 
-;;; $F5B3: Unused. Instruction - set enemy $0FAC - standing kick ;;;
+;;; $F5B3: Unused. Instruction - go to standing kick ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:F5B3 DA          PHX
 $B2:F5B4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F5B7 BD 7A 0F    LDA $0F7A,x            ;\
@@ -2451,13 +2485,13 @@ $B2:F5BB ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus
 $B2:F5BE 85 12       STA $12    [$7E:0012]  ;/
 $B2:F5C0 A9 01 00    LDA #$0001             ;\
 $B2:F5C3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$B2:F5C6 A0 2E F3    LDY #$F32E             ; Enemy $0FAC = $F32E (standing kick - facing left) (never read)
+$B2:F5C6 A0 2E F3    LDY #$F32E             ; Y = $F32E (standing kick - facing left)
 $B2:F5C9 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F5CB 10 03       BPL $03    [$F5D0]     ;} If [enemy X position] < [Samus X position]:
-$B2:F5CD A0 1A F5    LDY #$F51A             ; Enemy $0FAC = $F51A (standing kick - facing right) (never read)
+$B2:F5CD A0 1A F5    LDY #$F51A             ; Y = $F51A (standing kick - facing right)
 
-$B2:F5D0 98          TYA
-$B2:F5D1 9D AC 0F    STA $0FAC,x
+$B2:F5D0 98          TYA                    ;\
+$B2:F5D1 9D AC 0F    STA $0FAC,x            ;} Enemy $0FAC = [Y] (never read)
 $B2:F5D4 FA          PLX
 $B2:F5D5 6B          RTL
 }
@@ -2465,6 +2499,8 @@ $B2:F5D5 6B          RTL
 
 ;;; $F5D6: Instruction - enemy speed = 0 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F5D6 A9 00 00    LDA #$0000
 $B2:F5D9 9F 00 78 7E STA $7E7800,x[$7E:7840]
 $B2:F5DD 6B          RTL
@@ -2612,6 +2648,8 @@ $B2:F6E3 60          RTS
 
 ;;; $F6E4: Ninja space pirate function - active ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F6E4 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch trigger
 $B2:F6E7 D0 0D       BNE $0D    [$F6F6]     ; If flinch triggered: return
 $B2:F6E9 20 C6 F7    JSR $F7C6  [$B2:F7C6]  ; Ninja space pirate standing kick trigger
@@ -2626,6 +2664,8 @@ $B2:F6F6 60          RTS
 
 ;;; $F6F7: Ninja space pirate projectile claw attack trigger ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F6F7 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
 $B2:F6FA 29 3F 00    AND #$003F             ;} If [enemy frame counter] % 40h != 0: return
 $B2:F6FD D0 2E       BNE $2E    [$F72D]     ;/
@@ -2800,6 +2840,8 @@ $B2:F816 60          RTS
 
 ;;; $F817: Ninja space pirate function - spin jump left - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F817 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:F81B 29 00 FF    AND #$FF00             ;|
 $B2:F81E EB          XBA                    ;|
@@ -2827,6 +2869,8 @@ $B2:F84B 60          RTS
 
 ;;; $F84C: Ninja space pirate function - spin jump left - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F84C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:F850 29 00 FF    AND #$FF00             ;|
 $B2:F853 EB          XBA                    ;|
@@ -2859,6 +2903,8 @@ $B2:F88F 60          RTS
 
 ;;; $F890: Ninja space pirate function - spin jump right - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F890 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
 $B2:F894 29 00 FF    AND #$FF00             ;|
 $B2:F897 EB          XBA                    ;|
@@ -2886,6 +2932,8 @@ $B2:F8C4 60          RTS
 
 ;;; $F8C5: Ninja space pirate function - spin jump right - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F8C5 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
 $B2:F8C9 29 00 FF    AND #$FF00             ;|
 $B2:F8CC EB          XBA                    ;|
@@ -2972,6 +3020,8 @@ $B2:F959             dw 0000, F27C, F27C, F27C,
 
 ;;; $F969: Instruction - set left divekick jump initial Y speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F969 DA          PHX
 $B2:F96A 5A          PHY
 $B2:F96B A9 00 06    LDA #$0600             ;\
@@ -2991,6 +3041,8 @@ $B2:F984 6B          RTL
 
 ;;; $F985: Ninja space pirate function - divekick left - jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F985 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:F989 29 00 FF    AND #$FF00             ;|
 $B2:F98C EB          XBA                    ;|
@@ -3020,6 +3072,8 @@ $B2:F9C0 60          RTS
 
 ;;; $F9C1: Ninja space pirate function - divekick left - divekick ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:F9C1 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F9C4 38          SEC                    ;|
 $B2:F9C5 E9 05 00    SBC #$0005             ;} Enemy X position -= 5
@@ -3057,6 +3111,8 @@ $B2:FA14 60          RTS
 
 ;;; $FA15: Ninja space pirate function - divekick left - walk to left post ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FA15 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:FA18 18          CLC                    ;|
 $B2:FA19 69 FE FF    ADC #$FFFE             ;} Enemy X position -= 2
@@ -3078,6 +3134,8 @@ $B2:FA3C 60          RTS
 
 ;;; $FA3D: Instruction - set right divekick jump initial Y speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FA3D DA          PHX
 $B2:FA3E 5A          PHY
 $B2:FA3F A9 00 06    LDA #$0600             ;\
@@ -3097,6 +3155,8 @@ $B2:FA58 6B          RTL
 
 ;;; $FA59: Ninja space pirate function - divekick right - jump ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FA59 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:FA5D 29 00 FF    AND #$FF00             ;|
 $B2:FA60 EB          XBA                    ;|
@@ -3126,6 +3186,8 @@ $B2:FA94 60          RTS
 
 ;;; $FA95: Ninja space pirate function - divekick right - divekick ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FA95 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:FA98 18          CLC                    ;|
 $B2:FA99 69 05 00    ADC #$0005             ;} Enemy X position += 5
@@ -3163,6 +3225,8 @@ $B2:FAE8 60          RTS
 
 ;;; $FAE9: Ninja space pirate function - divekick right - walk to right post ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FAE9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:FAEC 18          CLC                    ;|
 $B2:FAED 69 02 00    ADC #$0002             ;} Enemy X position += 2
@@ -3184,6 +3248,8 @@ $B2:FB10 60          RTS
 
 ;;; $FB11: Spawn ninja space pirate landing dust cloud ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B2:FB11 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:FB14 38          SEC                    ;|
 $B2:FB15 E9 08 00    SBC #$0008             ;| $12 = [enemy X position] - 8
@@ -3334,6 +3400,10 @@ $B2:FC48             dw FCB8,FE4A,  ; Enemy function = RTS
 {
 ;;; $FC68: Instruction - fire laser left with Y offset [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:FC68 DA          PHX
 $B2:FC69 5A          PHY
 $B2:FC6A AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3359,6 +3429,10 @@ $B2:FC8F 6B          RTL
 
 ;;; $FC90: Instruction - fire laser right with Y offset [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:FC90 DA          PHX
 $B2:FC91 5A          PHY
 $B2:FC92 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3384,6 +3458,10 @@ $B2:FCB7 6B          RTL
 
 ;;; $FCB8: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:FCB8 5A          PHY
 $B2:FCB9 DA          PHX
 $B2:FCBA AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3399,6 +3477,8 @@ $B2:FCC7 6B          RTL
 
 ;;; $FCC8: Instruction - choose a movement ;;;
 {
+;; Returns:
+;;     Y: Pointer to next instruction
 $B2:FCC8 DA          PHX
 $B2:FCC9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FCCC A9 10 00    LDA #$0010             ;\

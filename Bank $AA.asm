@@ -434,6 +434,11 @@ $AA:B09A             dw 0003 ; Elevator. Music track to queue when torizo dies
 {
 ;;; $B09C: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:B09C B9 00 00    LDA $0000,y[$AA:B883]
 $AA:B09F 9D B0 0F    STA $0FB0,x[$7E:0FB0]
 $AA:B0A2 C8          INY
@@ -468,6 +473,8 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
 
 ;;; $B11D: Instruction - mark Bomb Torizo gut blown up and spawn 6 Bomb Torizo low-health continuous drool enemy projectiles ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:B11D BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $AA:B120 09 00 80    ORA #$8000             ;} Mark torizo gut blown up
 $AA:B123 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
@@ -515,6 +522,8 @@ $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
 
 ;;; $B1BE: Instruction - mark Bomb Torizo face blown up ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:B1BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $AA:B1C1 09 00 40    ORA #$4000             ;} Enemy behavioural properties |= 4000h
 $AA:B1C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
@@ -560,6 +569,8 @@ $AA:B1E2             dx C32F,       ; Spawn torizo death explosion and sleep for
 
 ;;; $B224: Instruction - set enemy as visible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:B224 BD 86 0F    LDA $0F86,x[$7E:0F86]
 $AA:B227 29 FF FE    AND #$FEFF
 $AA:B22A 9D 86 0F    STA $0F86,x[$7E:0F86]
@@ -569,6 +580,8 @@ $AA:B22D 6B          RTL
 
 ;;; $B22E: Instruction - set enemy as invisible ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:B22E BD 86 0F    LDA $0F86,x[$7E:0F86]
 $AA:B231 09 00 01    ORA #$0100
 $AA:B234 9D 86 0F    STA $0F86,x[$7E:0F86]
@@ -595,6 +608,8 @@ $AA:B24C 6B          RTL
 
 ;;; $B24D: Instruction - set boss bit, queue elevator music, spawn item drops ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:B24D A9 04 00    LDA #$0004             ;\
 $AA:B250 22 A6 81 80 JSL $8081A6[$80:81A6]  ;} Set torizo boss bit
 $AA:B254 AD 9A B0    LDA $B09A  [$AA:B09A]  ;\
@@ -1536,6 +1551,8 @@ $AA:C1CC             dx C3B6,       ; Set stepped right with left foot state
 
 ;;; $C20A: Make torizo jump forwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C20A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C20D 30 05       BMI $05    [$C214]     ;} If torizo is facing left:
 $AA:C20F A9 00 FE    LDA #$FE00             ; Enemy X velocity = -200h
@@ -1556,6 +1573,8 @@ $AA:C22C 60          RTS
 
 ;;; $C22D: Make torizo jump backwards ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C22D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C230 30 05       BMI $05    [$C237]     ;} If torizo is facing left:
 $AA:C232 A9 00 03    LDA #$0300             ; Enemy X velocity = 300h
@@ -1669,6 +1688,8 @@ $AA:C2C8 6B          RTL
 
 ;;; $C2C9: Instruction - set animation lock ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C2C9 A9 77 77    LDA #$7777
 $AA:C2CC 9F 08 78 7E STA $7E7808,x[$7E:7808]
 $AA:C2D0 6B          RTL
@@ -1677,6 +1698,8 @@ $AA:C2D0 6B          RTL
 
 ;;; $C2D1: Instruction - clear animation lock ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C2D1 A9 00 00    LDA #$0000
 $AA:C2D4 9F 08 78 7E STA $7E7808,x[$7E:7808]
 $AA:C2D8 6B          RTL
@@ -1685,6 +1708,11 @@ $AA:C2D8 6B          RTL
 
 ;;; $C2D9: Instruction - go to [[Y]] if face blown up, else go to [[Y] + 2] if Golden Torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C2D9 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
 $AA:C2DC 70 0A       BVS $0A    [$C2E8]     ;} If torizo face not blown up:
 $AA:C2DE C8          INY                    ;\
@@ -1703,6 +1731,11 @@ $AA:C2EC 6B          RTL
 
 ;;; $C2ED: Instruction - enemy link instruction = [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C2ED B9 00 00    LDA $0000,y[$AA:BCD8]
 $AA:C2F0 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $AA:C2F4 C8          INY
@@ -1713,6 +1746,10 @@ $AA:C2F6 6B          RTL
 
 ;;; $C2F7: Instruction - return ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C2F7 BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $AA:C2FB A8          TAY
 $AA:C2FC 6B          RTL
@@ -1721,6 +1758,10 @@ $AA:C2FC 6B          RTL
 
 ;;; $C2FD: Instruction - go to [enemy gut explosion link instruction] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C2FD BF 02 78 7E LDA $7E7802,x[$7E:7802]
 $AA:C301 A8          TAY
 $AA:C302 6B          RTL
@@ -1729,6 +1770,9 @@ $AA:C302 6B          RTL
 
 ;;; $C303: Instruction - spawn 5 Bomb Torizo low-health explosions with parameter [[Y]] and sleep for 28h i-frames ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
 $AA:C303 5A          PHY                    ; Save Y
 $AA:C304 B9 00 00    LDA $0000,y[$AA:B0ED]  ; A = [[Y]]
 $AA:C307 48          PHA
@@ -1759,6 +1803,8 @@ $AA:C32E 6B          RTL
 
 ;;; $C32F: Instruction - spawn torizo death explosion and sleep for 1 i-frame ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C32F 5A          PHY                    ;\
 $AA:C330 A0 AF A9    LDY #$A9AF             ;|
 $AA:C333 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn torizo death explosion enemy projectile
@@ -1788,6 +1834,8 @@ $AA:C35A 6B          RTL
 
 ;;; $C35B: Instruction - spawn low-health initial drool if health is low ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C35B BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:C35E C9 5E 01    CMP #$015E             ;} If [enemy health] < 350:
 $AA:C361 B0 09       BCS $09    [$C36C]     ;/
@@ -1802,6 +1850,8 @@ $AA:C36C 6B          RTL
 
 ;;; $C36D: Instruction - set torizo turning around flag ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C36D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C370 09 00 40    ORA #$4000             ;} Enemy graphical properties |= 4000h
 $AA:C373 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
@@ -1811,6 +1861,8 @@ $AA:C376 6B          RTL
 
 ;;; $C377: Instruction - set stepped left with left foot state ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C377 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C37A 29 FF 1F    AND #$1FFF             ;} Set torizo as not turning around, facing left, foreground foot forward
 $AA:C37D 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
@@ -1823,6 +1875,8 @@ $AA:C389 6B          RTL
 
 ;;; $C38A: Instruction - set stepped right with right foot state ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C38A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C38D 29 FF 1F    AND #$1FFF             ;|
 $AA:C390 09 00 80    ORA #$8000             ;} Set torizo as not turning around, facing right, foreground foot forward
@@ -1836,6 +1890,8 @@ $AA:C39F 6B          RTL
 
 ;;; $C3A0: Instruction - set stepped left with right foot state ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C3A0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C3A3 29 FF 1F    AND #$1FFF             ;|
 $AA:C3A6 09 00 20    ORA #$2000             ;} Set torizo as not turning around, facing left, background foot forward
@@ -1849,6 +1905,8 @@ $AA:C3B5 6B          RTL
 
 ;;; $C3B6: Instruction - set stepped right with left foot state ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C3B6 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C3B9 29 FF 1F    AND #$1FFF             ;|
 $AA:C3BC 09 00 A0    ORA #$A000             ;} Set torizo as not turning around, facing right, background foot forward
@@ -1862,6 +1920,11 @@ $AA:C3CB 6B          RTL
 
 ;;; $C3CC: Instruction - standing up movement - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C3CC 5A          PHY
 $AA:C3CD B9 00 00    LDA $0000,y[$AA:B905]  ;\
 $AA:C3D0 A8          TAY                    ;|
@@ -1892,6 +1955,11 @@ $AA:C40E             dw 0000,FFFA,FFFA,FFF9,0000,0000, 0000,0000
 
 ;;; $C41E: Instruction - sitting down movement - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C41E 5A          PHY
 $AA:C41F B9 00 00    LDA $0000,y[$AA:C9F6]  ;\
 $AA:C422 A8          TAY                    ;|
@@ -1922,6 +1990,11 @@ $AA:C460             dw 0000,FFFA,FFFA,FFF9,0000,0000, 0000,0000
 
 ;;; $C470: Instruction - Bomb Torizo walking movement - normal - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C470 5A          PHY
 $AA:C471 64 12       STZ $12    [$7E:0012]
 $AA:C473 B9 00 00    LDA $0000,y[$AA:B9D2]  ;\
@@ -1970,6 +2043,11 @@ $AA:C4BD             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 
 ;;; $C4E5: Instruction - Bomb Torizo walking movement - faceless - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C4E5 5A          PHY
 $AA:C4E6 64 12       STZ $12    [$7E:0012]
 $AA:C4E8 B9 00 00    LDA $0000,y[$AA:C1AA]  ;\
@@ -2018,6 +2096,11 @@ $AA:C532             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 
 ;;; $C55A: Instruction - go to [[Y]] if rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C55A BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $AA:C55D 30 03       BMI $03    [$C562]     ;} If [enemy Y velocity] >= 0:
 $AA:C55F C8          INY                    ;\
@@ -2032,6 +2115,11 @@ $AA:C566 6B          RTL
 
 ;;; $C567: Instruction - call [[Y]] if Samus is less than 38h pixels in front of torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C567 A9 38 00    LDA #$0038             ;\
 $AA:C56A 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 38h: go to BRANCH_NEAR
 $AA:C56E 90 03       BCC $03    [$C573]     ;/
@@ -2059,6 +2147,11 @@ $AA:C58A 6B          RTL
 
 ;;; $C58B: Instruction - go to [[Y]] and jump backwards if Samus is less 20h pixels in front of Bomb Torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C58B A9 20 00    LDA #$0020             ;\
 $AA:C58E 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 20h:
 $AA:C592 B0 0D       BCS $0D    [$C5A1]     ;/
@@ -2077,6 +2170,11 @@ $AA:C5A3 6B          RTL
 
 ;;; $C5A4: Instruction - call [[Y]] or [[Y] + 2] for Bomb Torizo attack ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C5A4 98          TYA                    ;\
 $AA:C5A5 1A          INC A                  ;|
 $AA:C5A6 1A          INC A                  ;|
@@ -2106,6 +2204,8 @@ $AA:C5CA 6B          RTL
 
 ;;; $C5CB: Instruction - spawn Bomb Torizo's chozo orbs ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C5CB 5A          PHY
 $AA:C5CC A0 5E AD    LDY #$AD5E             ;\
 $AA:C5CF 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Bomb Torizo's chozo orbs enemy projectile
@@ -2120,6 +2220,11 @@ $AA:C5E2 6B          RTL
 
 ;;; $C5E3: Instruction - spawn Bomb Torizo sonic boom with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C5E3 5A          PHY
 $AA:C5E4 B9 00 00    LDA $0000,y
 $AA:C5E7 A0 A8 AE    LDY #$AEA8             ;\
@@ -2133,6 +2238,11 @@ $AA:C5F1 6B          RTL
 
 ;;; $C5F2: Instruction - spawn Golden Torizo sonic boom with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C5F2 5A          PHY
 $AA:C5F3 B9 00 00    LDA $0000,y[$AA:CD05]
 $AA:C5F6 A0 B6 AE    LDY #$AEB6             ;\
@@ -2146,6 +2256,10 @@ $AA:C600 6B          RTL
 
 ;;; $C601: Instruction - spawn Bomb Torizo explosive swipe with parameter [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:C601 5A          PHY
 $AA:C602 B9 00 00    LDA $0000,y[$AA:BBF8]  ; A = [[Y]]
 $AA:C605 A0 85 A9    LDY #$A985             ;\
@@ -2176,6 +2290,8 @@ $AA:C61F 6B          RTL
 
 ;;; $C620: Handle low-health initial drool ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C620 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C623 F0 03       BEQ $03    [$C628]     ;} If [area index] != Crateria:
 $AA:C625 4C 42 C6    JMP $C642  [$AA:C642]  ; Return
@@ -2198,6 +2314,8 @@ $AA:C642 60          RTS
 
 ;;; $C643: Handle falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C643 64 12       STZ $12    [$7E:0012]  ;\
 $AA:C645 64 14       STZ $14    [$7E:0014]  ;|
 $AA:C647 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;|
@@ -2269,6 +2387,8 @@ $AA:C6AB 60          RTS
 
 ;;; $C6AC: Unused ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C6AC 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C6AF A9 00 06    LDA #$0600             ;\
 $AA:C6B2 22 F7 DA 82 JSL $82DAF7[$82:DAF7]  ;} Advance gradual colour change of sprite palettes 1/2 - denominator = Ch
@@ -2282,6 +2402,9 @@ $AA:C6BE 60          RTS
 
 ;;; $C6BF: Torizo function - simple movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Used for
 ;     Bomb Torizo after statue finishes crumbling and before walking starts
 ;     Golden Torizo when falling from ceiling
@@ -2294,6 +2417,8 @@ $AA:C6C5 60          RTS
 
 ;;; $C6C6: Torizo function - wake enemy when Bomb Torizo chozo finishes crumbling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C6C6 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $AA:C6C9 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $AA:C6CC 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
@@ -2325,6 +2450,8 @@ $AA:C6FE 60          RTS
 
 ;;; $C6FF: Torizo function - normal movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C6FF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:C702 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
 $AA:C705 30 1C       BMI $1C    [$C723]     ;} If torizo gut not blown up:
@@ -2366,6 +2493,8 @@ $AA:C751 60          RTS
 
 ;;; $C752: Torizo movement function - walking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C752 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
 $AA:C755 50 03       BVC $03    [$C75A]     ;} If torizo face blown up:
 $AA:C757 4C C1 C7    JMP $C7C1  [$AA:C7C1]  ; Go to BRANCH_FACELESS
@@ -2475,6 +2604,8 @@ $AA:C827 60          RTS
 
 ;;; $C828: Torizo movement function - attacking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C828 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C82B 60          RTS
 }
@@ -2482,6 +2613,8 @@ $AA:C82B 60          RTS
 
 ;;; $C82C: Torizo movement function - jumping/falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:C82C 64 12       STZ $12    [$7E:0012]  ;\
 $AA:C82E 64 14       STZ $14    [$7E:0014]  ;|
 $AA:C830 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
@@ -2743,6 +2876,11 @@ $AA:CAB6             dx 0004,AA5E,
 
 ;;; $CACE: Instruction - go to [[Y]] if not hit ground ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:CACE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $AA:CAD1 C9 77 01    CMP #$0177             ;} If [enemy Y position] != 177h:
 $AA:CAD4 F0 05       BEQ $05    [$CADB]     ;/
@@ -2765,6 +2903,8 @@ $AA:CAE1 6B          RTL
 
 ;;; $CAE2: Instruction - start fight music and Golden Torizo belly palette FX ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:CAE2 A9 05 00    LDA #$0005             ;\
 $AA:CAE5 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 0 music track
 $AA:CAE9 A9 12 00    LDA #$0012             ;\
@@ -3029,6 +3169,8 @@ $AA:CDCD             dx D526,CC57,CCDB, ; Call $CC57 (spewing orbs) or $CCDB (so
 
 ;;; $CDD7: Instruction - clear torizo caught super missile flag ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:CDD7 BD B6 0F    LDA $0FB6,x
 $AA:CDDA 29 FF EF    AND #$EFFF
 $AA:CDDD 9D B6 0F    STA $0FB6,x
@@ -3267,6 +3409,10 @@ $AA:D0F2 6B          RTL
 
 ;;; $D0F3: Instruction - go to [[Y]] if Golden Torizo egg is active ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D0F3 DA          PHX
 $AA:D0F4 A2 22 00    LDX #$0022             ; X = 22h
 
@@ -3322,6 +3468,8 @@ $AA:D133             dx 813A,0003,              ; Wait 3 frames
 
 ;;; $D17B: Instruction - disable eye beam explosions ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D17B BF 0C 78 7E LDA $7E780C,x[$7E:780C]
 $AA:D17F 29 FF 7F    AND #$7FFF
 $AA:D182 9F 0C 78 7E STA $7E780C,x[$7E:780C]
@@ -3331,6 +3479,8 @@ $AA:D186 6B          RTL
 
 ;;; $D187: Instruction - enable eye beam explosions ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D187 BF 0C 78 7E LDA $7E780C,x[$7E:780C]
 $AA:D18B 09 00 80    ORA #$8000
 $AA:D18E 9F 0C 78 7E STA $7E780C,x[$7E:780C]
@@ -3363,6 +3513,8 @@ $AA:D1A1             dx 813A,0003,              ; Wait 3 frames
 
 ;;; $D1E7: Instruction - unmark Golden Torizo stunned ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D1E7 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $AA:D1EA 29 FF DF    AND #$DFFF
 $AA:D1ED 9D B6 0F    STA $0FB6,x[$7E:0FB6]
@@ -3525,7 +3677,7 @@ $AA:D379 A9 00 00    LDA #$0000             ;\
 $AA:D37C 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy space jump counter = 0
 $AA:D380 80 09       BRA $09    [$D38B]
 
-$AA:D382 BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
+$AA:D382 BF 0E 78 7E LDA $7E780E,x[$7E:780E];\ Else ([Samus pose] = space jump):
 $AA:D386 1A          INC A                  ;} Increment enemy space jump counter
 $AA:D387 9F 0E 78 7E STA $7E780E,x[$7E:780E];/
 
@@ -3563,6 +3715,8 @@ $AA:D3A6 6B          RTL
 
 ;;; $D3A7: Check if torizo is facing Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     Negative: Set if torizo is facing away from Samus, clear otherwise
 
@@ -3577,6 +3731,8 @@ $AA:D3B1 60          RTS
 
 ;;; $D3B2: Golden Torizo health-based palette handling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D3B2 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ; A = [enemy health]
 $AA:D3B5 22 00 80 84 JSL $848000[$84:8000]  ; Golden Torizo health-based palette handling
 $AA:D3B9 60          RTS
@@ -3622,6 +3778,12 @@ $AA:D3E9 6B          RTL
 
 ;;; $D3EA: Instruction - go to [[Y]] if Samus is a medium distance behind torizo and morphed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Pose checklist is missing 41h (facing left - morph ball - no springball - on ground) >_<;
 $AA:D3EA 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
 $AA:D3ED 10 44       BPL $44    [$D433]     ;} If torizo is facing Samus: go to BRANCH_NO_GO_TO
@@ -3662,6 +3824,10 @@ $AA:D435 6B          RTL
 
 ;;; $D436: Instruction - spawn Golden Torizo eye beam ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D436 5A          PHY
 $AA:D437 B9 00 00    LDA $0000,y[$AA:D121]  ; A = [[Y]] (ignored by enemy projectile)
 $AA:D43A A0 28 B4    LDY #$B428             ;\
@@ -3675,6 +3841,11 @@ $AA:D444 6B          RTL
 
 ;;; $D445: Instruction - call [[Y]] with 25% chance if Samus is a medium distance in front of torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D445 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
 $AA:D448 30 27       BMI $27    [$D471]     ;} If torizo is facing Samus:
 $AA:D44A A9 20 00    LDA #$0020             ;\
@@ -3702,6 +3873,11 @@ $AA:D473 6B          RTL
 
 ;;; $D474: Instruction - call [[Y]] with 25% chance if health <= 1928 ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D474 A9 88 07    LDA #$0788             ;\
 $AA:D477 DD 8C 0F    CMP $0F8C,x[$7E:0F8C]  ;} If [enemy health] <= 13500 / 7:
 $AA:D47A 90 1C       BCC $1C    [$D498]     ;/
@@ -3726,6 +3902,11 @@ $AA:D49A 6B          RTL
 
 ;;; $D49B: Instruction - call [[Y]] if health >= 10800 and stunned ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D49B A9 30 2A    LDA #$2A30             ;\
 $AA:D49E DD 8C 0F    CMP $0F8C,x[$7E:0F8C]  ;} If [enemy health] > 13500 * 4/5:
 $AA:D4A1 B0 14       BCS $14    [$D4B7]     ;/
@@ -3748,6 +3929,12 @@ $AA:D4B9 6B          RTL
 
 ;;; $D4BA: Instruction - go to [[Y]] and jump forwards if Samus is at least 70h pixels in front of Golden Torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Jump at Samus if at least 7 blocks away and:
 ;     She's been space jumping for over 6 seconds
 ;     Or the player is pressing left or right with a 75% chance
@@ -3782,6 +3969,8 @@ $AA:D4F2 6B          RTL
 
 ;;; $D4F3: Instruction - spawn Golden Torizo's chozo orbs ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D4F3 5A          PHY                    ;\
 $AA:D4F4 A0 7A AD    LDY #$AD7A             ;|
 $AA:D4F7 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Golden Torizo's chozo orbs enemy projectile
@@ -3792,6 +3981,11 @@ $AA:D4FC 6B          RTL
 
 ;;; $D4FD: Instruction - go to [[Y]] and jump backwards if Samus is less than 20h pixels in front of Golden Torizo ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D4FD BF 12 78 7E LDA $7E7812,x[$7E:7812];\
 $AA:D501 C9 08 00    CMP #$0008             ;} If [enemy step counter] < 8:
 $AA:D504 B0 0E       BCS $0E    [$D514]     ;/
@@ -3817,6 +4011,11 @@ $AA:D525 6B          RTL
 
 ;;; $D526: Instruction - call [[Y]] or [[Y] + 2] for Golden Torizo attack ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D526 98          TYA                    ;\
 $AA:D527 1A          INC A                  ;|
 $AA:D528 1A          INC A                  ;|
@@ -3846,6 +4045,11 @@ $AA:D54C 6B          RTL
 
 ;;; $D54D: Instruction - Golden Torizo walking movement - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:D54D 5A          PHY
 $AA:D54E 64 12       STZ $12    [$7E:0012]
 $AA:D550 B9 00 00    LDA $0000,y[$AA:D27F]  ;\
@@ -3894,6 +4098,8 @@ $AA:D59A             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 
 ;;; $D5C2: Torizo function - Golden Torizo - wake enemy if Samus is below and right of target position ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D5C2 A9 40 01    LDA #$0140             ;\
 $AA:D5C5 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [Samus Y position] > 140h:
 $AA:D5C8 B0 14       BCS $14    [$D5DE]     ;/
@@ -3911,6 +4117,9 @@ $AA:D5DE 60          RTS
 
 ;;; $D5DF: Torizo function - Golden Torizo - simple movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Clone of $C6BF
 $AA:D5DF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:D5E2 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
@@ -3920,6 +4129,8 @@ $AA:D5E5 60          RTS
 
 ;;; $D5E6: Torizo function - Golden Torizo - normal movement ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D5E6 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:D5E9 FC B2 0F    JSR ($0FB2,x)[$AA:D5F1]; Execute [enemy movement function]
 $AA:D5EC 60          RTS
@@ -3928,6 +4139,9 @@ $AA:D5EC 60          RTS
 
 ;;; $D5ED: Torizo movement function - Golden Torizo - attacking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; Clone of C828
 $AA:D5ED 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:D5F0 60          RTS
@@ -3936,6 +4150,8 @@ $AA:D5F0 60          RTS
 
 ;;; $D5F1: Torizo movement function - Golden Torizo - walking ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D5F1 BF 06 78 7E LDA $7E7806,x[$7E:7806];\
 $AA:D5F5 F0 25       BEQ $25    [$D61C]     ;} If [enemy turn around timer] = 0: go to BRANCH_NOT_TURNING
 $AA:D5F7 3A          DEC A                  ;\
@@ -4057,6 +4273,9 @@ $AA:D6D0 6B          RTL
 
 ;;; $D6D1: Golden Torizo shot reaction - normal - missile ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Projectile index
 $AA:D6D1 B9 04 0C    LDA $0C04,y            ;\
 $AA:D6D4 29 EF FF    AND #$FFEF             ;} Unflag projectile for deletion(!)
 $AA:D6D7 99 04 0C    STA $0C04,y            ;/
@@ -4078,6 +4297,9 @@ $AA:D6F6 6B          RTL
 
 ;;; $D6F7: Golden Torizo shot reaction - normal - super missile ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Projectile index
 $AA:D6F7 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
 $AA:D6FA 10 03       BPL $03    [$D6FF]     ;} If torizo is facing away from Samus:
 $AA:D6FC 4C A6 D6    JMP $D6A6  [$AA:D6A6]  ; Go to Golden Torizo shot reaction - damaged
@@ -4229,6 +4451,8 @@ $AA:D911             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 03
 {
 ;;; $D931: Unused. Instruction - lower enemy 1px away from enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D931 5A          PHY                    ;\
 $AA:D932 BC B0 0F    LDY $0FB0,x            ;|
 $AA:D935 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head head direction] ^ 80h
@@ -4240,6 +4464,8 @@ $AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 
 ;;; $D93F: Unused. Instruction - raise enemy 1px towards enemy projectile ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D93F 5A          PHY                    ;\
 $AA:D940 BC B0 0F    LDY $0FB0,x            ;|
 $AA:D943 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head head direction]
@@ -4250,6 +4476,8 @@ $AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 
 ;;; $D94A: Instruction - lower enemy 1px ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D94A BD A9 0F    LDA $0FA9,x[$7E:0FE9]  ;\
 $AA:D94D 49 80 00    EOR #$0080             ;} A = [enemy facing angle] / 100h ^ 80h
 $AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
@@ -4258,6 +4486,8 @@ $AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 
 ;;; $D953: Instruction - raise enemy 1px ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy facing angle] / 100h
 }
 
@@ -4266,6 +4496,7 @@ $AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy facing angle] / 100h
 {
 ;; Parameters:
 ;;     A: Angle
+;;     X: Enemy index
 $AA:D956 DA          PHX
 $AA:D957 5A          PHY
 $AA:D958 9B          TXY                    ; Y = [X] (enemy index)
@@ -4308,6 +4539,9 @@ $AA:D99E 6B          RTL
 
 ;;; $D99F: RTL. Instruction - NOP (disabled - spawn Shaktool attack enemy projectiles) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; This is RTL'd out, but the instruction list that calls this instruction is never used due to $DAE4 being RTS'd out anyway
 $AA:D99F 6B          RTL
 
@@ -4327,6 +4561,8 @@ $AA:D9B9 6B          RTL
 
 ;;; $D9BA: Instruction - reset Shaktool functions ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:D9BA 5A          PHY
 $AA:D9BB BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:D9BE AD DB DE    LDA $DEDB  [$AA:DEDB]  ;\
@@ -4540,6 +4776,9 @@ $AA:DADC             dx 077B,E012,
 
 ;;; $DAE4: RTS. Maybe make Shaktool attack ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+
 ; RTS'd out
 $AA:DAE4 60          RTS
 
@@ -4569,6 +4808,9 @@ $AA:DB0D 60          RTS
 
 ;;; $DB0E: Shaktool pieces movement options = [A] ;;;
 {
+;; Parameters:
+;;     A: Movement options
+;;     X: Enemy index
 $AA:DB0E BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DB11 99 B4 0F    STA $0FB4,y[$7E:0FB4]  ; Shaktool primary piece movement options = [A]
 $AA:DB14 99 F4 0F    STA $0FF4,y[$7E:0FF4]  ; Shaktool rightmost arm piece movement options = [A]
@@ -4583,6 +4825,9 @@ $AA:DB26 60          RTS
 
 ;;; $DB27: Shaktool pieces facing angle = [A] ;;;
 {
+;; Parameters:
+;;     A: Facing angle
+;;     X: Enemy index
 $AA:DB27 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DB2A 99 A8 0F    STA $0FA8,y[$7E:0FA8]  ; Shaktool primary piece facing angle = [A]
 $AA:DB2D 99 E8 0F    STA $0FE8,y[$7E:0FE8]  ; Shaktool rightmost arm piece facing angle = [A]
@@ -4597,6 +4842,9 @@ $AA:DB3F 60          RTS
 
 ;;; $DB40: Shaktool pieces neighbour angle = [A] ;;;
 {
+;; Parameters:
+;;     A: Neighbour angle
+;;     X: Enemy index
 $AA:DB40 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DB43 99 AA 0F    STA $0FAA,y[$7E:0FAA]  ; Shaktool primary piece neighbour angle = [A]
 $AA:DB46 99 EA 0F    STA $0FEA,y[$7E:0FEA]  ; Shaktool rightmost arm piece neighbour angle = [A]
@@ -4611,6 +4859,8 @@ $AA:DB58 60          RTS
 
 ;;; $DB59: Flip Shaktool ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DB59 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DB5C B9 6E 10    LDA $106E,y[$7E:106E]  ;\
 $AA:DB5F 49 00 80    EOR #$8000             ;} Set Shaktool head as flipped
@@ -4680,6 +4930,8 @@ $AA:DC06 60          RTS
 
 ;;; $DC07: Set Shaktool piece neighbour angle delta due to block collision ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DC07 A9 00 00    LDA #$0000
 $AA:DC0A 38          SEC
 $AA:DC0B 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
@@ -4704,6 +4956,8 @@ $AA:DC29 60          RTS
 
 ;;; $DC2A: Position Shaktool piece relative to previous piece ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DC2A BD AB 0F    LDA $0FAB,x[$7E:0FEB]  ;\
 $AA:DC2D 29 FF 00    AND #$00FF             ;|
 $AA:DC30 0A          ASL A                  ;} Y = [enemy neighbour angle] / 100h * 2
@@ -4742,6 +4996,8 @@ $AA:DC6E 60          RTS
 
 ;;; $DC6F: Set Shaktool pieces neighbour angle and angle delta for curling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
 $AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces neighbour angle = [enemy facing angle]
 $AA:DC75 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
@@ -4785,6 +5041,8 @@ $AA:DCAB 60          RTS
 
 ;;; $DCAC: Shaktool function - arm piece. Set position and handle curling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DCAC 20 2A DC    JSR $DC2A  [$AA:DC2A]  ; Position Shaktool piece relative to previous piece
 $AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
 $AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If enemy is maximally curled:
@@ -4811,6 +5069,8 @@ $AA:DCD6 60          RTS
 
 ;;; $DCD7: Shaktool function - head ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DCD7 20 AC DC    JSR $DCAC  [$AA:DCAC]  ; Set position and handle curling
 $AA:DCDA BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $AA:DCDD 49 00 80    EOR #$8000             ;|
@@ -4849,6 +5109,8 @@ $AA:DD15             dw DAB4, DABC, DAC4, DACC, DAD4, DADC, DAA4, DAAC
 
 ;;; $DD25: Shaktool function - final piece ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:DD25 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
 $AA:DD28 48          PHA                    ;} Save [enemy Y position] (old Y position)
 $AA:DD29 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
@@ -5224,6 +5486,8 @@ $AA:E444 6B          RTL
 
 ;;; $E445: Chozo statue function - Lower Norfair ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:E445 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:E448 F0 0C       BEQ $0C    [$E456]     ;} If [enemy activation flag] = 0: return
 $AA:E44A A9 A7 E3    LDA #$E3A7             ;\
@@ -5344,6 +5608,11 @@ $AA:E58E 6B          RTL
 
 ;;; $E58F: Instruction - spawn chozo spike clearing footstep enemy projectile with X offset [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:E58F DA          PHX
 $AA:E590 5A          PHY
 $AA:E591 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -5386,6 +5655,11 @@ $AA:E5D7 6B          RTL
 
 ;;; $E5D8: Instruction - chozo statue movement - index [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $AA:E5D8 B9 00 00    LDA $0000,y[$AA:E465]  ;\
 $AA:E5DB 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy movement index = [[Y]]
 $AA:E5DE 5A          PHY
@@ -5545,6 +5819,8 @@ $AA:E7AD 6B          RTL
 
 ;;; $E7AE: Chozo statue function - Wrecked Ship ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $AA:E7AE DA          PHX                    ;\
 $AA:E7AF AE 9F 07    LDX $079F  [$7E:079F]  ;|
 $AA:E7B2 BF 28 D8 7E LDA $7ED828,x[$7E:D82B];|
