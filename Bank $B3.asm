@@ -118,7 +118,7 @@ $B3:878B             dw 3800, 021D, 0015, 0008, 0003, 00BD, 0013, 000E, 000B, 7F
 }
 
 
-;;; $87AB: Instruction list - facing left - rising ;;;
+;;; $87AB: Instruction list - zeb - facing left - rising ;;;
 {
 $B3:87AB             dx 0002,89B7,
                         0002,89BE,
@@ -132,7 +132,7 @@ $B3:87AB             dx 0002,89B7,
 }
 
 
-;;; $87CF: Instruction list - facing left - shooting ;;;
+;;; $87CF: Instruction list - zeb - facing left - shooting ;;;
 {
 $B3:87CF             dx 0001,89B7,
                         0001,89BE,
@@ -144,7 +144,7 @@ $B3:87CF             dx 0001,89B7,
 }
 
 
-;;; $87EB: Instruction list - facing right - rising ;;;
+;;; $87EB: Instruction list - zeb - facing right - rising ;;;
 {
 $B3:87EB             dx 0002,89DA,
                         0002,89E1,
@@ -158,7 +158,7 @@ $B3:87EB             dx 0002,89DA,
 }
 
 
-;;; $880F: Instruction list - facing right - shooting ;;;
+;;; $880F: Instruction list - zeb - facing right - shooting ;;;
 {
 $B3:880F             dx 0001,89DA,
                         0001,89E1,
@@ -193,18 +193,18 @@ $B3:884A 38          SEC                    ;\
 $B3:884B E9 10 00    SBC #$0010             ;} Enemy target Y position = [enemy Y position] - 10h
 $B3:884E 9F 00 78 7E STA $7E7800,x[$7E:7A40];/
 $B3:8852 A9 80 88    LDA #$8880             ;\
-$B3:8855 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $8880
+$B3:8855 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $8880 (wait until on screen)
 $B3:8858 A9 30 00    LDA #$0030             ;\
 $B3:885B 9D AE 0F    STA $0FAE,x[$7E:11EE]  ;} Enemy spawn delay timer = 30h <-- this doesn't need to be initialised here
 $B3:885E A9 00 00    LDA #$0000             ;\
 $B3:8861 9D B0 0F    STA $0FB0,x[$7E:11F0]  ;} Enemy instruction list table index = 0
 $B3:8864 9F 02 78 7E STA $7E7802,x[$7E:7A42]; Enemy previous instruction list table index = 0
 $B3:8868 A9 AB 87    LDA #$87AB             ;\
-$B3:886B 9D 92 0F    STA $0F92,x[$7E:11D2]  ;} Enemy instruction list pointer = $87AB
+$B3:886B 9D 92 0F    STA $0F92,x[$7E:11D2]  ;} Enemy instruction list pointer = $87AB (zeb - facing left - rising)
 $B3:886E BD B4 0F    LDA $0FB4,x[$7E:11F4]  ;\
 $B3:8871 F0 06       BEQ $06    [$8879]     ;} If [enemy parameter 1] != 0 (green bug):
 $B3:8873 A9 1D 8A    LDA #$8A1D             ;\
-$B3:8876 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $8A1D
+$B3:8876 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $8A1D (zebbo - facing left - rising)
 
 $B3:8879 6B          RTL
 }
@@ -231,6 +231,8 @@ $B3:888F 6B          RTL
 
 ;;; $8890: Zeb/zebbo function - wait for Samus to get near ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:8890 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $B3:8894 10 23       BPL $23    [$88B9]     ;|
 $B3:8896 C9 A0 FF    CMP #$FFA0             ;} If not 0 < [enemy Y position] - [Samus Y position] <= 60h: return
@@ -273,6 +275,8 @@ $B3:88E2 6B          RTL
 
 ;;; $88E3: Zeb/zebbo function - rising ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:88E3 A9 FF FF    LDA #$FFFF             ;\
 $B3:88E6 18          CLC                    ;|
 $B3:88E7 7D 80 0F    ADC $0F80,x[$7E:11C0]  ;|
@@ -301,6 +305,8 @@ $B3:891B 6B          RTL
 
 ;;; $891C: Zeb/zebbo function - shooting ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:891C 3C A8 0F    BIT $0FA8,x[$7E:11E8]  ;\
 $B3:891F 10 15       BPL $15    [$8936]     ;} If [enemy direction] = left:
 $B3:8921 BD 7C 0F    LDA $0F7C,x[$7E:11BC]
@@ -345,6 +351,8 @@ $B3:897D 6B          RTL
 
 ;;; $897E: Zeb/zebbo function - spawn delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:897E DE AE 0F    DEC $0FAE,x[$7E:11EE]  ; Decrement enemy spawn delay timer
 $B3:8981 F0 01       BEQ $01    [$8984]     ; If [enemy spawn delay timer] != 0:
 $B3:8983 6B          RTL                    ; Return
@@ -368,7 +376,7 @@ $B3:899D BD B4 0F    LDA $0FB4,x[$7E:11F4]  ;\
 $B3:89A0 D0 05       BNE $05    [$89A7]     ;} If [enemy parameter 1] = 0 (red bug):
 $B3:89A2 B9 2B 88    LDA $882B,y[$B3:882F]  ; Enemy instruction list pointer = [$882B + [Y]]
 $B3:89A5 80 03       BRA $03    [$89AA]
-                                            ; Else ([enemy parameter 1] != 0 (green bug)):
+                                            ; Else ([enemy parameter 1] != 0): (green bug)
 $B3:89A7 B9 33 88    LDA $8833,y[$B3:8835]  ; Enemy instruction list pointer = [$8833 + [Y]]
 
 $B3:89AA 9D 92 0F    STA $0F92,x[$7E:11D2]
@@ -401,7 +409,7 @@ $B3:89FD             dw 3800, 3F95, 2E8B, 0120, 0060, 3AEE, 2249, 11A4, 0962, 39
 }
 
 
-;;; $8A1D: Instruction list - facing left - rising ;;;
+;;; $8A1D: Instruction list - zebbo - facing left - rising ;;;
 {
 $B3:8A1D             dx 0002,8A82,
                         0001,8A89,
@@ -411,7 +419,7 @@ $B3:8A1D             dx 0002,8A82,
 }
 
 
-;;; $8A31: Instruction list - facing left - shooting ;;;
+;;; $8A31: Instruction list - zebbo - facing left - shooting ;;;
 {
 $B3:8A31             dx 0003,8A6D,
                         0003,8A74,
@@ -421,7 +429,7 @@ $B3:8A31             dx 0003,8A6D,
 }
 
 
-;;; $8A45: Instruction list - facing right - rising ;;;
+;;; $8A45: Instruction list - zebbo - facing right - rising ;;;
 {
 $B3:8A45             dx 0002,8AAC,
                         0001,8AB3,
@@ -431,7 +439,7 @@ $B3:8A45             dx 0002,8AAC,
 }
 
 
-;;; $8A59: Instruction list - facing right - shooting ;;;
+;;; $8A59: Instruction list - zebbo - facing right - shooting ;;;
 {
 $B3:8A59             dx 0003,8A97,
                         0003,8A9E,
@@ -540,9 +548,9 @@ $B3:8B88 A9 01 00    LDA #$0001             ;\
 $B3:8B8B 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B3:8B8E 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $B3:8B91 A9 E1 8A    LDA #$8AE1             ;\
-$B3:8B94 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8AE1
+$B3:8B94 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8AE1 (facing left - rising)
 $B3:8B97 A9 CD 8B    LDA #$8BCD             ;\
-$B3:8B9A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8BCD
+$B3:8B9A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8BCD (wait until everyone's ready)
 $B3:8B9D 6B          RTL
 }
 
@@ -637,14 +645,16 @@ $B3:8C51 60          RTS
 }
 
 
-;;; $8C52: Set up Gamet formation ;;;
+;;; $8C52: Set up gamet formation ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:8C52 A9 A6 8C    LDA #$8CA6             ;\
-$B3:8C55 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8CA6
-$B3:8C58 9D E8 0F    STA $0FE8,x[$7E:0FE8]  ; Enemy ([X] + 1) function = $8CA6
-$B3:8C5B 9D 28 10    STA $1028,x[$7E:1028]  ; Enemy ([X] + 2) function = $8CA6
-$B3:8C5E 9D 68 10    STA $1068,x[$7E:1068]  ; Enemy ([X] + 3) function = $8CA6
-$B3:8C61 9D A8 10    STA $10A8,x[$7E:10A8]  ; Enemy ([X] + 4) function = $8CA6
+$B3:8C55 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8CA6 (rising)
+$B3:8C58 9D E8 0F    STA $0FE8,x[$7E:0FE8]  ; Enemy ([X] + 1) function = $8CA6 (rising)
+$B3:8C5B 9D 28 10    STA $1028,x[$7E:1028]  ; Enemy ([X] + 2) function = $8CA6 (rising)
+$B3:8C5E 9D 68 10    STA $1068,x[$7E:1068]  ; Enemy ([X] + 3) function = $8CA6 (rising)
+$B3:8C61 9D A8 10    STA $10A8,x[$7E:10A8]  ; Enemy ([X] + 4) function = $8CA6 (rising)
 $B3:8C64 A9 68 00    LDA #$0068             ;\
 $B3:8C67 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy shoot delay = 68h
 $B3:8C6B A9 60 00    LDA #$0060             ;\
@@ -656,15 +666,15 @@ $B3:8C7C 9F C4 78 7E STA $7E78C4,x[$7E:78C4];} Enemy ([X] + 3) shoot delay = 70h
 $B3:8C80 A9 78 00    LDA #$0078             ;\
 $B3:8C83 9F 04 79 7E STA $7E7904,x[$7E:7904];} Enemy ([X] + 4) shoot delay = 78h
 $B3:8C87 A9 FF 8C    LDA #$8CFF             ;\
-$B3:8C8A 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy formation function = $8CFF
+$B3:8C8A 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy formation function = $8CFF (centre)
 $B3:8C8D A9 0C 8D    LDA #$8D0C             ;\
-$B3:8C90 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) formation function = $8D0C
+$B3:8C90 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) formation function = $8D0C (upper middle)
 $B3:8C93 A9 4E 8D    LDA #$8D4E             ;\
-$B3:8C96 9D 32 10    STA $1032,x[$7E:1032]  ;} Enemy ([X] + 2) formation function = $8D4E
+$B3:8C96 9D 32 10    STA $1032,x[$7E:1032]  ;} Enemy ([X] + 2) formation function = $8D4E (top)
 $B3:8C99 A9 90 8D    LDA #$8D90             ;\
-$B3:8C9C 9D 72 10    STA $1072,x[$7E:1072]  ;} Enemy ([X] + 3) formation function = $8D90
+$B3:8C9C 9D 72 10    STA $1072,x[$7E:1072]  ;} Enemy ([X] + 3) formation function = $8D90 (lower middle)
 $B3:8C9F A9 D2 8D    LDA #$8DD2             ;\
-$B3:8CA2 9D B2 10    STA $10B2,x[$7E:10B2]  ;} Enemy ([X] + 4) formation function = $8DD2
+$B3:8CA2 9D B2 10    STA $10B2,x[$7E:10B2]  ;} Enemy ([X] + 4) formation function = $8DD2 (bottom)
 $B3:8CA5 60          RTS
 }
 
@@ -1082,6 +1092,8 @@ $B3:8FF4 60          RTS
 
 ;;; $8FF5: Geega function - shoot delay ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:8FF5 BF 00 80 7E LDA $7E8000,x[$7E:80C0];\
 $B3:8FF9 3A          DEC A                  ;} Decrement enemy shoot delay timer
 $B3:8FFA 9F 00 80 7E STA $7E8000,x[$7E:80C0];/
@@ -1156,6 +1168,8 @@ $B3:90A0 60          RTS
 
 ;;; $90A1: Move geega left ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:90A1 BD 7C 0F    LDA $0F7C,x[$7E:103C]  ;\
 $B3:90A4 18          CLC                    ;|
 $B3:90A5 7F 04 78 7E ADC $7E7804,x[$7E:78C4];|
@@ -1223,6 +1237,8 @@ $B3:9139 60          RTS
 
 ;;; $913A: Move geega right ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:913A BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
 $B3:913D A8          TAY                    ;} Y = [enemy $0FAA] (unused)
 $B3:913E BD 7C 0F    LDA $0F7C,x[$7E:107C]  ;\
@@ -1343,6 +1359,8 @@ $B3:9255 60          RTS
 
 ;;; $9256: Move geega up ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9256 FE B0 0F    INC $0FB0,x[$7E:10F0]  ; Increment enemy Y speed table index
 $B3:9259 BD B0 0F    LDA $0FB0,x[$7E:10F0]  ;\
 $B3:925C 0A          ASL A                  ;|
@@ -1366,6 +1384,8 @@ $B3:9279 60          RTS
 
 ;;; $927A: Move geega down ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:927A DE B0 0F    DEC $0FB0,x[$7E:1070]  ; Decrement enemy Y speed table index
 $B3:927D 10 0B       BPL $0B    [$928A]     ; If [enemy Y speed table index] < 0:
 $B3:927F A9 00 00    LDA #$0000             ;\
