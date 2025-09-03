@@ -686,12 +686,16 @@ $A9:8B7B             dw 8B88, 8B88, 8B88, 8B88, 8BCB ; Function
 
 ;;; $8B85: Main AI - enemy $ECFF (Mother Brain tubes falling) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8B85 7C A8 0F    JMP ($0FA8,x)[$A9:8B88]; Go to [enemy function]
 }
 
 
 ;;; $8B88: Mother Brain tubes falling function - non-main tube ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8B88 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
 $A9:8B8B 18          CLC                    ;|
 $A9:8B8C 69 06 00    ADC #$0006             ;} Enemy Y velocity += 6
@@ -705,6 +709,8 @@ $A9:8B9B 10 09       BPL $09    [$8BA6]     ;/
 
 ;;; $8B9D: Handle falling tube smoke ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8B9D DE AE 0F    DEC $0FAE,x[$7E:102E]  ; Decrement enemy smoke timer
 $A9:8BA0 10 03       BPL $03    [$8BA5]     ; If [enemy smoke timer] < 0:
 $A9:8BA2 20 36 8C    JSR $8C36  [$A9:8C36]  ; Spawn falling tube smoke
@@ -715,6 +721,8 @@ $A9:8BA5 6B          RTL
 
 ;;; $8BA6: Explode Mother Brain tube ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8BA6 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A9:8BA9 09 00 02    ORA #$0200             ;} Flag enemy for deletion
 $A9:8BAC 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
@@ -733,6 +741,8 @@ $A9:8BCA 6B          RTL
 
 ;;; $8BCB: Mother Brain tubes falling function - main tube - waiting to fall ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8BCB DE B6 0F    DEC $0FB6,x[$7E:1076]  ; Decrement enemy parameter 2
 $A9:8BCE 10 D5       BPL $D5    [$8BA5]     ; If [enemy parameter 2] >= 0: return
 $A9:8BD0 A9 D6 8B    LDA #$8BD6             ;\
@@ -742,6 +752,8 @@ $A9:8BD3 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $8BD6 (falling)
 
 ;;; $8BD6: Mother Brain tubes falling function - main tube - falling ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8BD6 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A9:8BD9 18          CLC                    ;|
 $A9:8BDA 69 06 00    ADC #$0006             ;} Enemy Y velocity += 6
@@ -784,6 +796,8 @@ $A9:8C33 4C A6 8B    JMP $8BA6  [$A9:8BA6]  ; Go to explode Mother Brain tube
 
 ;;; $8C36: Spawn falling tube smoke ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $A9:8C36 A9 08 00    LDA #$0008             ;\
 $A9:8C39 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy smoke timer = 8
 $A9:8C3C BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
@@ -2020,7 +2034,7 @@ $A9:95FF 18          CLC                    ;|
 $A9:9600 69 01 00    ADC #$0001             ;} Mother Brain body X position += 1
 $A9:9603 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9606 A9 FE FF    LDA #$FFFE             ;\
-$A9:9609 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
+$A9:9609 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 2
 }
 
 
@@ -2031,14 +2045,14 @@ $A9:960F 18          CLC                    ;|
 $A9:9610 69 02 00    ADC #$0002             ;} Mother Brain body X position += 2
 $A9:9613 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9616 A9 00 00    LDA #$0000             ;\
-$A9:9619 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 0
+$A9:9619 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 0
 }
 
 
 ;;; $961C: Instruction - move Mother Brain body up by 1px ;;;
 {
 $A9:961C A9 01 00    LDA #$0001             ;\
-$A9:961F 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 1
+$A9:961F 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 1
 }
 
 
@@ -2051,7 +2065,7 @@ $A9:962B 18          CLC                    ;|
 $A9:962C 69 03 00    ADC #$0003             ;} Mother Brain body X position += 3
 $A9:962F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9632 A9 01 00    LDA #$0001             ;\
-$A9:9635 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 1
+$A9:9635 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 1
 }
 
 
@@ -2062,7 +2076,7 @@ $A9:963B 18          CLC                    ;|
 $A9:963C 69 0F 00    ADC #$000F             ;} Mother Brain body X position += 15
 $A9:963F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9642 A9 FE FF    LDA #$FFFE             ;\
-$A9:9645 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 2
+$A9:9645 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 2
 }
 
 
@@ -2073,7 +2087,7 @@ $A9:964B 18          CLC                    ;|
 $A9:964C 69 06 00    ADC #$0006             ;} Mother Brain body X position += 6
 $A9:964F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9652 A9 FC FF    LDA #$FFFC             ;\
-$A9:9655 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 4
+$A9:9655 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 4
 }
 
 
@@ -2084,7 +2098,7 @@ $A9:965B 18          CLC                    ;|
 $A9:965C 69 FE FF    ADC #$FFFE             ;} Mother Brain body X position -= 2
 $A9:965F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9662 A9 04 00    LDA #$0004             ;\
-$A9:9665 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 4
+$A9:9665 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 4
 }
 
 
@@ -2097,7 +2111,7 @@ $A9:9671 18          CLC                    ;|
 $A9:9672 69 FF FF    ADC #$FFFF             ;} Mother Brain body X position -= 1
 $A9:9675 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9678 A9 02 00    LDA #$0002             ;\
-$A9:967B 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
+$A9:967B 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 2
 }
 
 
@@ -2110,7 +2124,7 @@ $A9:9687 38          SEC                    ;|
 $A9:9688 E9 01 00    SBC #$0001             ;} Mother Brain body X position -= 1
 $A9:968B 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:968E A9 02 00    LDA #$0002             ;\
-$A9:9691 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
+$A9:9691 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 2
 }
 
 
@@ -2121,14 +2135,14 @@ $A9:9697 38          SEC                    ;|
 $A9:9698 E9 02 00    SBC #$0002             ;} Mother Brain body X position -= 2
 $A9:969B 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:969E A9 00 00    LDA #$0000             ;\
-$A9:96A1 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 0
+$A9:96A1 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 0
 }
 
 
 ;;; $96A4: Instruction - move Mother Brain body down by 1px ;;;
 {
 $A9:96A4 A9 FF FF    LDA #$FFFF             ;\
-$A9:96A7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 1
+$A9:96A7 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 1
 }
 
 
@@ -2139,7 +2153,7 @@ $A9:96AD 38          SEC                    ;|
 $A9:96AE E9 03 00    SBC #$0003             ;} Mother Brain body X position -= 3
 $A9:96B1 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96B4 A9 FF FF    LDA #$FFFF             ;\
-$A9:96B7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 1
+$A9:96B7 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 1
 }
 
 
@@ -2152,7 +2166,7 @@ $A9:96C3 38          SEC                    ;|
 $A9:96C4 E9 0F 00    SBC #$000F             ;} Mother Brain body X position -= 15
 $A9:96C7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96CA A9 02 00    LDA #$0002             ;\
-$A9:96CD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
+$A9:96CD 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 2
 }
 
 
@@ -2163,7 +2177,7 @@ $A9:96D3 38          SEC                    ;|
 $A9:96D4 E9 06 00    SBC #$0006             ;} Mother Brain body X position -= 6
 $A9:96D7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96DA A9 04 00    LDA #$0004             ;\
-$A9:96DD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 4
+$A9:96DD 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body up by 4
 }
 
 
@@ -2174,7 +2188,7 @@ $A9:96E3 38          SEC                    ;|
 $A9:96E4 E9 FE FF    SBC #$FFFE             ;} Mother Brain body X position += 2
 $A9:96E7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96EA A9 FC FF    LDA #$FFFC             ;\
-$A9:96ED 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 4
+$A9:96ED 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 4
 }
 
 
@@ -2185,7 +2199,7 @@ $A9:96F3 38          SEC                    ;|
 $A9:96F4 E9 FF FF    SBC #$FFFF             ;} Mother Brain body X position += 1
 $A9:96F7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96FA A9 FE FF    LDA #$FFFE             ;\
-$A9:96FD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 2
+$A9:96FD 4C 79 95    JMP $9579  [$A9:9579]  ;} Go to move Mother Brain body down by 2
 }
 
 
@@ -2642,6 +2656,11 @@ $A9:9A42             dx 9720,                   ; Mother Brain's pose = death be
 {
 ;;; $9AC8: Instruction - spawn enemy projectile $E509 to offset ([[Y]], [[Y] + 2]) with parameter [[Y] + 4] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Offset is relative to Mother Brain body position
 $A9:9AC8 5A          PHY
 $A9:9AC9 DA          PHX
@@ -2695,6 +2714,10 @@ $A9:9B0E 6B          RTL
 
 ;;; $9B0F: Instruction - go to [[X]] ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9B0F BD 00 00    LDA $0000,x[$A9:9C27]
 $A9:9B12 AA          TAX
 $A9:9B13 60          RTS
@@ -2705,10 +2728,14 @@ $A9:9B13 60          RTS
 {
 ;;; $9B14: Instruction - enable Mother Brain neck movement and go to [[X]] ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9B14 A9 01 00    LDA #$0001             ;\
 $A9:9B17 8F 62 80 7E STA $7E8062[$7E:8062]  ;} Enable Mother Brain neck movement
-$A9:9B1B BD 00 00    LDA $0000,x[$A9:9EFE]
-$A9:9B1E AA          TAX
+$A9:9B1B BD 00 00    LDA $0000,x[$A9:9EFE]  ;\
+$A9:9B1E AA          TAX                    ;} X = [[X]]
 $A9:9B1F 60          RTS
 }
 
@@ -2723,6 +2750,10 @@ $A9:9B27 60          RTS
 
 ;;; $9B28: Instruction - queue sound [[X]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9B28 BD 00 00    LDA $0000,x[$A9:9B93]
 $A9:9B2B 22 CB 90 80 JSL $8090CB[$80:90CB]
 $A9:9B2F E8          INX
@@ -2733,6 +2764,10 @@ $A9:9B31 60          RTS
 
 ;;; $9B32: Instruction - queue sound [[X]], sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9B32 BD 00 00    LDA $0000,x[$A9:9D55]
 $A9:9B35 22 4D 91 80 JSL $80914D[$80:914D]
 $A9:9B39 E8          INX
@@ -2895,6 +2930,8 @@ $A9:9C5F             dx 0002,A789,
 
 ;;; $9C65: Instruction - go to $9C5F or occasionally $9C47 ;;;
 {
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9C65 A2 5F 9C    LDX #$9C5F             ; X = $9C5F
 $A9:9C68 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:9C6B 29 FF 0F    AND #$0FFF             ;|
@@ -2938,6 +2975,10 @@ $A9:9C9F             dx 0008,A5F8,
 
 ;;; $9CAD: Instruction - likely go to $9C9F ;;;
 {
+;; Parameters:
+;;     X: Pointer to after this instruction
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9CAD AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:9CB0 C9 00 F0    CMP #$F000             ;} If [random number] < F000h:
 $A9:9CB3 B0 03       BCS $03    [$9CB8]     ;/
@@ -2979,6 +3020,11 @@ $A9:9CE3             dx 0004,A717,
 
 ;;; $9D0D: Instruction - likely go to $9CD1 ;;;
 {
+;; Parameters:
+;;     X: Pointer to after this instruction
+;; Returns:
+;;     X: Pointer to next instruction
+
 ; If [random number] & FFFh < EC0h:
 ;     X = $9CD1
 
@@ -2997,6 +3043,8 @@ $A9:9D1F B0 03       BCS $03    [$9D24]
 
 ;;; $9D21: Instruction - go to $9CD1 ;;;
 {
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9D21 A2 D1 9C    LDX #$9CD1
 $A9:9D24 60          RTS
 }
@@ -3173,6 +3221,10 @@ $A9:9E75 85 14       STA $14    [$7E:0014]  ;/
 
 ;;; $9E77: Aim Mother Brain blue rings ;;;
 {
+;; Parameters:
+;;     $12: X offset
+;;     $14: Y offset
+
 ; $7E:7834 = clamp(80h - (angle of ([$12], [$14]) offset), 10h, 40h)
 
 $A9:9E77 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
@@ -3229,6 +3281,10 @@ $A9:9EBC 60          RTS
 
 ;;; $9EBD: Instruction - spawn Mother Brain bomb enemy projectile with parameter [[X]] ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A9:9EBD 5A          PHY
 $A9:9EBE BD 00 00    LDA $0000,x[$A9:9EEC]
 $A9:9EC1 A0 59 CB    LDY #$CB59             ;\
@@ -4430,9 +4486,9 @@ $A9:B5A1             db 02, ; Beam
                         01, ; Missile
                         01, ; Super missile
                         00, ; Power bomb
-                        00, ; Unused
+                        00,
                         00, ; Bomb
-                        00, ; Unused
+                        00,
                         00  ; Beam explosion
 }
 
@@ -13954,7 +14010,6 @@ $A9:F993 6B          RTL
 ;;; $F994: Instruction - go to [[Y]] or queue Shitroid feels remorse sound effect ;;;
 {
 ;; Parameters:
-;;     X: HDMA object index
 ;;     Y: Pointer to instruction arguments
 ;; Returns:
 ;;     Y: Pointer to next instruction

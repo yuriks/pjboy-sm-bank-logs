@@ -2021,14 +2021,17 @@ $B3:9674 6B          RTL
 }
 
 
-;;; $9675:  ;;;
+;;; $9675: Unused data ;;;
 {
+; Bitmasks for unused routine $967B
 $B3:9675             dw FFFF, 00FF, 01FF
 }
 
 
 ;;; $967B: Unused ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:967B BF 3E 80 7E LDA $7E803E,x          ;\
 $B3:967F 0A          ASL A                  ;|
 $B3:9680 A8          TAY                    ;} $12 = [$9675 + [enemy speed table index] * 2]
@@ -2267,6 +2270,8 @@ $B3:9932 60          RTS
 
 ;;; $9933: Choose Botwoon movement path ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9933 20 5D 99    JSR $995D  [$B3:995D]  ; Set Botwoon speed
 $B3:9936 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (visible)
 $B3:9938 BF 26 80 7E LDA $7E8026,x[$7E:8026];\
@@ -2291,6 +2296,8 @@ $B3:995C 60          RTS
 
 ;;; $995D: Set Botwoon speed ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:995D BF 26 80 7E LDA $7E8026,x[$7E:8026];\
 $B3:9961 D0 40       BNE $40    [$99A3]     ;} If [enemy head hidden flag] != 0: return
 $B3:9963 A9 00 00    LDA #$0000             ;\
@@ -2335,7 +2342,6 @@ $B3:99AB F0 0A       BEQ $0A    [$99B7]     ;} If [enemy going through hole flag
 $B3:99AD A9 00 00    LDA #$0000             ;\
 $B3:99B0 9F 38 80 7E STA $7E8038,x[$7E:8038];} Enemy going through hole flag = 0
 $B3:99B4 4C CA 99    JMP $99CA  [$B3:99CA]
-
                                             ; Else ([enemy going through hole flag] = 0):
 $B3:99B7 FC B0 0F    JSR ($0FB0,x)[$B3:E250]; Execute [enemy movement function]
 $B3:99BA 20 7B 9C    JSR $9C7B  [$B3:9C7B]  ; Update Botwoon position history
@@ -2480,6 +2486,8 @@ $B3:9ADC 60          RTS
 
 ;;; $9ADD: Spawn Botwoon item drops and start crumbling wall ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9ADD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $B3:9AE1             dx 0F, 04, B79B        ;} Spawn PLM to crumble Botwoon's wall
 $B3:9AE5 22 3E BA A0 JSL $A0BA3E[$A0:BA3E]  ; Botwoon death item drop routine
@@ -2493,6 +2501,8 @@ $B3:9AF8 60          RTS
 
 ;;; $9AF9: Botwoon function - death sequence - crumbling wall ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9AF9 BF 06 80 7E LDA $7E8006,x[$7E:8006];\
 $B3:9AFD C9 C0 00    CMP #$00C0             ;} If [enemy death counter] >= C0h: go to BRANCH_END
 $B3:9B00 10 08       BPL $08    [$9B0A]     ;/
@@ -2605,6 +2615,8 @@ $B3:9BF7 60          RTS
 
 ;;; $9BF8: Calculate X/Y offsets to target hole ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     $12: X offset
 ;;     $14: Y offset
@@ -3049,6 +3061,8 @@ $B3:9F79 60          RTS
 
 ;;; $9F7A: Botwoon head function - spitting - cooldown ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9F7A BF 02 80 7E LDA $7E8002,x[$7E:8002];\
 $B3:9F7E 3A          DEC A                  ;} Decrement enemy spit timer
 $B3:9F7F 9F 02 80 7E STA $7E8002,x[$7E:8002];/
@@ -3064,6 +3078,8 @@ $B3:9F92 60          RTS
 
 ;;; $9F93: Botwoon / hole collision detection ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:9F93 BF 2A 80 7E LDA $7E802A,x[$7E:802A];\
 $B3:9F97 F0 03       BEQ $03    [$9F9C]     ;} If [enemy hole collision disabled flag] != 0:
 $B3:9F99 4C FE 9F    JMP $9FFE  [$B3:9FFE]  ; Return
@@ -3451,6 +3467,8 @@ $B3:E555 60          RTS
 }
 
 
+;;; $E556..E60F: Instruction lists ;;;
+{
 ;;; $E556: Instruction list - running left - low tide ;;;
 {
 $B3:E556             dw E545,E56E   ; Go to $E56E (high tide) if [acid Y position] < CEh
@@ -3531,10 +3549,16 @@ $B3:E5E0             dw 0008,E736,
                         0008,E8D5,
                         80ED,E5AE   ; Go to $E5AE (running for escape)
 }
+}
 
 
 ;;; $E610: Instruction - enemy X position += [[Y]] ;;;
 {
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B3:E610 BD 7A 0F    LDA $0F7A,x[$7E:103A]
 $B3:E613 18          CLC
 $B3:E614 79 00 00    ADC $0000,y[$B3:E5E6]
@@ -3591,6 +3615,8 @@ $B3:E65B 6B          RTL
 
 ;;; $E65C: Escape etecoon function - running for escape ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:E65C BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
 $B3:E65F 18          CLC                    ;|
 $B3:E660 69 00 80    ADC #$8000             ;|
@@ -3604,6 +3630,8 @@ $B3:E66F 60          RTS
 
 ;;; $E670: Escape etecoon function - stationary (waiting to express gratitude) ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:E670 A9 0F 00    LDA #$000F             ;\
 $B3:E673 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped:
 $B3:E677 90 06       BCC $06    [$E67F]     ;/
@@ -3616,6 +3644,8 @@ $B3:E67F 60          RTS
 
 ;;; $E680: Escape etecoon function - running around aimlessly ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 $B3:E680 64 12       STZ $12    [$7E:0012]  ;\
 $B3:E682 64 14       STZ $14    [$7E:0014]  ;|
 $B3:E684 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
@@ -3632,17 +3662,17 @@ $B3:E69C 49 FF FF    EOR #$FFFF             ;|
 $B3:E69F 1A          INC A                  ;} Negate enemy X velocity
 $B3:E6A0 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
 $B3:E6A3 10 05       BPL $05    [$E6AA]     ; If [enemy X velocity] < 0:
-$B3:E6A5 A9 56 E5    LDA #$E556             ; Enemy instruction list pointer = $E556
+$B3:E6A5 A9 56 E5    LDA #$E556             ; Enemy instruction list pointer = $E556 (running left - low tide)
 $B3:E6A8 80 03       BRA $03    [$E6AD]
                                             ; Else ([enemy X velocity] >= 0):
-$B3:E6AA A9 82 E5    LDA #$E582             ; Enemy instruction list pointer = $E582
+$B3:E6AA A9 82 E5    LDA #$E582             ; Enemy instruction list pointer = $E582 (running right - low tide)
 
 $B3:E6AD 9D 92 0F    STA $0F92,x[$7E:1012]
 $B3:E6B0 A9 0F 00    LDA #$000F             ;\
 $B3:E6B3 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped:
 $B3:E6B7 90 06       BCC $06    [$E6BF]     ;/
 $B3:E6B9 A9 AE E5    LDA #$E5AE             ;\
-$B3:E6BC 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E5AE
+$B3:E6BC 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E5AE (running for escape)
 
 ; BRANCH_NO_COLLISION
 $B3:E6BF 64 12       STZ $12    [$7E:0012]  ;\
@@ -3846,6 +3876,10 @@ $B3:EA80             dw 0001,EC49,
 
 ;;; $EAA8: Instruction - go to [[Y]] if [acid Y position] < CEh ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B3:EAA8 AD 62 19    LDA $1962  [$7E:1962]
 $B3:EAAB C9 CE 00    CMP #$00CE
 $B3:EAAE B0 05       BCS $05    [$EAB5]
@@ -3861,6 +3895,10 @@ $B3:EAB7 6B          RTL
 
 ;;; $EAB8: Instruction - go to [[Y]] if critters escaped ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $B3:EAB8 A9 0F 00    LDA #$000F
 $B3:EABB 22 33 82 80 JSL $808233[$80:8233]
 $B3:EABF 90 05       BCC $05    [$EAC6]
