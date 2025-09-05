@@ -2634,8 +2634,6 @@ $91:9EDC             dw 83BF,8A9B,9DAE ; Crystal flash
 ;     0020: Aim diagonally down
 ;     0010: Aim diagonally up
 
-; See "/Other/Transition table generator/vanilla output.asm" for nicer presentation
-
 $91:9EE2             dw A0DE, A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A1F8, A242, AE94, AEDE, A1F8, A242, A1F8,
                         A242, A1F8, A242, AAC0, AB3A, A2F6, A376, ABB4, AC40, A41E, A46E, A4BE, A50E, A5FE, A618, A632,
                         A666, A666, A666, A668, A666, ACF4, AD08, A66C, A6BC, A70C, A750, A70C, A750, AD94, ADD2, A0DC,
@@ -2653,1316 +2651,1151 @@ $91:9EE2             dw A0DE, A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A1
                         A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A0DC, A0DC, A0DC, A0DC, AE56, AE56, AE56, AE56,
                         AE56, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC, A0DC
 
-
-;;; $A0DC: Transition table - entry 2F/30/35/36/37/38/39/3A/3B/3C/3F/40/43/44/5D/5E/5F/60/61/62/87/88/8F/90/91/92/93/94/95/96/97/98/99/9A/9C/9D/9E/9F/A0/A1/A2/A3/A8/A9/AA/AB/AC/AD/AE/AF/B0/B1/B2/B3/B4/B5/B6/B7/B8/B9/C5/C6/C9/CA/CB/CC/CD/CE/D3/D4/D5/D6/D7/D8/D9/DA/DB/DC/DD/DE/E8/E9/EA/EB/F1/F2/F3/F4/F5/F6/F7/F8/F9/FA/FB/FC ;;;
+; Empty
 {
+; 2Fh: Facing right - turning - jumping
+; 30h: Facing left  - turning - jumping
+; 35h: Facing right - crouching transition
+; 36h: Facing left  - crouching transition
+; 37h: Facing right - morphing transition
+; 38h: Facing left  - morphing transition
+; 39h: Unused
+; 3Ah: Unused
+; 3Bh: Facing right - standing transition
+; 3Ch: Facing left  - standing transition
+; 3Fh: Unused
+; 40h: Unused
+; 43h: Facing right - turning - crouching
+; 44h: Facing left  - turning - crouching
+; 5Dh: Unused
+; 5Eh: Unused
+; 5Fh: Unused
+; 60h: Unused
+; 61h: Unused
+; 62h: Unused
+; 87h: Facing right - turning - falling
+; 88h: Facing left  - turning - falling
+; 8Fh: Facing right - turning - in air - aiming up
+; 90h: Facing left  - turning - in air - aiming up
+; 91h: Facing right - turning - in air - aiming down/down-right
+; 92h: Facing left  - turning - in air - aiming down/down-left
+; 93h: Facing right - turning - falling - aiming up
+; 94h: Facing left  - turning - falling - aiming up
+; 95h: Facing right - turning - falling - aiming down/down-right
+; 96h: Facing left  - turning - falling - aiming down/down-left
+; 97h: Facing right - turning - crouching - aiming up
+; 98h: Facing left  - turning - crouching - aiming up
+; 99h: Facing right - turning - crouching - aiming down/down-right
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left
+; 9Ch: Facing right - turning - standing - aiming up-right
+; 9Dh: Facing left  - turning - standing - aiming up-left
+; 9Eh: Facing right - turning - in air - aiming up-right
+; 9Fh: Facing left  - turning - in air - aiming up-left
+; A0h: Facing right - turning - falling - aiming up-right
+; A1h: Facing left  - turning - falling - aiming up-left
+; A2h: Facing right - turning - crouching - aiming up-right
+; A3h: Facing left  - turning - crouching - aiming up-left
+; A8h: Facing right - grappling
+; A9h: Facing left  - grappling
+; AAh: Facing right - grappling - aiming down-right
+; ABh: Facing left  - grappling - aiming down-left
+; ACh: Unused. Facing right - grappling - in air
+; ADh: Unused. Facing left  - grappling - in air
+; AEh: Unused. Facing right - grappling - in air - aiming down
+; AFh: Unused. Facing left  - grappling - in air - aiming down
+; B0h: Unused. Facing right - grappling - in air - aiming down-right
+; B1h: Unused. Facing left  - grappling - in air - aiming down-left
+; B2h: Facing clockwise     - grapple swinging
+; B3h: Facing anticlockwise - grapple swinging
+; B4h: Facing right - grappling - crouching
+; B5h: Facing left  - grappling - crouching
+; B6h: Facing right - grappling - crouching - aiming down-right
+; B7h: Facing left  - grappling - crouching - aiming down-left
+; B8h: Facing left  - grapple wall jump pose
+; B9h: Facing right - grapple wall jump pose
+; C5h: Unused
+; C6h: Unused
+; C9h: Facing right - shinespark - horizontal
+; CAh: Facing left  - shinespark - horizontal
+; CBh: Facing right - shinespark - vertical
+; CCh: Facing left  - shinespark - vertical
+; CDh: Facing right - shinespark - diagonal
+; CEh: Facing left  - shinespark - diagonal
+; D3h: Facing right - crystal flash
+; D4h: Facing left  - crystal flash
+; D5h: Facing right - x-ray - standing
+; D6h: Facing left  - x-ray - standing
+; D7h: Facing right - crystal flash ending
+; D8h: Facing left  - crystal flash ending
+; D9h: Facing right - x-ray - crouching
+; DAh: Facing left  - x-ray - crouching
+; DBh: Unused
+; DCh: Unused
+; DDh: Unused
+; DEh: Unused
+; E8h: Facing right - Samus drained - crouching/falling
+; E9h: Facing left  - Samus drained - crouching/falling
+; EAh: Facing right - Samus drained - standing
+; EBh: Facing left  - Samus drained - standing
+; F1h: Facing right - crouching transition - aiming up
+; F2h: Facing left  - crouching transition - aiming up
+; F3h: Facing right - crouching transition - aiming up-right
+; F4h: Facing left  - crouching transition - aiming up-left
+; F5h: Facing right - crouching transition - aiming down-right
+; F6h: Facing left  - crouching transition - aiming down-left
+; F7h: Facing right - standing transition - aiming up
+; F8h: Facing left  - standing transition - aiming up
+; F9h: Facing right - standing transition - aiming up-right
+; FAh: Facing left  - standing transition - aiming up-left
+; FBh: Facing right - standing transition - aiming down-right
+; FCh: Facing left  - standing transition - aiming down-left
 $91:A0DC             dw FFFF
 }
 
 
-;;; $A0DE: Transition table - entry 00/9B ;;;
-{
-; 00: Facing forward - power suit
-; 9B: Facing forward - varia/gravity suit
-$91:A0DE             dw 0000, 0100, 0026,
-                        0000, 0200, 0025,
+; 0: Facing forward - power suit
+; 9Bh: Facing forward - varia/gravity suit
+$91:A0DE             dw 0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
                         FFFF
-}
 
 
-;;; $A0EC: Transition table - entry 01/03/05/07/A4/A6/E0/E2/E4/E6 ;;;
-{
-; 01: Facing right - normal
-; 03: Facing right - aiming up
-; 05: Facing right - aiming up-right
-; 07: Facing right - aiming down-right
-; A4: Facing right - landing from normal jump
-; A6: Facing right - landing from spin jump
-; E0: Facing right - landing from normal jump - aiming up
-; E2: Facing right - landing from normal jump - aiming up-right
-; E4: Facing right - landing from normal jump - aiming down-right
-; E6: Facing right - landing from normal jump - firing
-$91:A0EC             dw 0080, 0800, 0055,
-                        0080, 0010, 0057,
-                        0080, 0020, 0059,
-                        0080, 0000, 004B,
-                        0400, 0030, 00F1,
-                        0400, 0010, 00F3,
-                        0400, 0020, 00F5,
-                        0400, 0000, 0035,
-                        0000, 0260, 0078,
-                        0000, 0250, 0076,
-                        0000, 0230, 0025,
-                        0000, 0030, 0003,
-                        0000, 0110, 000F,
-                        0000, 0120, 0011,
-                        0000, 0900, 000F,
-                        0000, 0500, 0011,
-                        0000, 0240, 004A,
-                        0000, 0200, 0025,
-                        0000, 0800, 0003,
-                        0000, 0010, 0005,
-                        0000, 0020, 0007,
-                        0000, 0100, 0009,
+; 1: Facing right - normal
+; 3: Facing right - aiming up
+; 5: Facing right - aiming up-right
+; 7: Facing right - aiming down-right
+; A4h: Facing right - landing from normal jump
+; A6h: Facing right - landing from spin jump
+; E0h: Facing right - landing from normal jump - aiming up
+; E2h: Facing right - landing from normal jump - aiming up-right
+; E4h: Facing right - landing from normal jump - aiming down-right
+; E6h: Facing right - landing from normal jump - firing
+$91:A0EC             dw 0080, 0800, 0055, ; tap         A    + hold    ^         = facing right - normal jump transition - aiming up
+                        0080, 0010, 0057, ; tap         A    + hold        R     = facing right - normal jump transition - aiming up-right
+                        0080, 0020, 0059, ; tap         A    + hold       L      = facing right - normal jump transition - aiming down-right
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0400, 0030, 00F1, ; tap     v        + hold       LR     = facing right - crouching transition - aiming up
+                        0400, 0010, 00F3, ; tap     v        + hold        R     = facing right - crouching transition - aiming up-right
+                        0400, 0020, 00F5, ; tap     v        + hold       L      = facing right - crouching transition - aiming down-right
+                        0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0000, 0260, 0078, ;                    hold   <   L   X  = facing right - moonwalk - aiming down-right
+                        0000, 0250, 0076, ;                    hold   <    R  X  = facing right - moonwalk - aiming up-right
+                        0000, 0230, 0025, ;                    hold   <   LR     = facing right - turning - standing
+                        0000, 0030, 0003, ;                    hold       LR     = facing right - aiming up
+                        0000, 0110, 000F, ;                    hold      > R     = moving right - aiming up-right
+                        0000, 0120, 0011, ;                    hold      >L      = moving right - aiming down-right
+                        0000, 0900, 000F, ;                    hold    ^ >       = moving right - aiming up-right
+                        0000, 0500, 0011, ;                    hold     v>       = moving right - aiming down-right
+                        0000, 0240, 004A, ;                    hold   <       X  = facing right - moonwalk
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
+                        0000, 0800, 0003, ;                    hold    ^         = facing right - aiming up
+                        0000, 0010, 0005, ;                    hold        R     = facing right - aiming up-right
+                        0000, 0020, 0007, ;                    hold       L      = facing right - aiming down-right
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
                         FFFF
-}
 
 
-;;; $A172: Transition table - entry 02/04/06/08/A5/A7/E1/E3/E5/E7 ;;;
-{
-; 02: Facing left - normal
-; 04: Facing left - aiming up
-; 06: Facing left - aiming up-left
-; 08: Facing left - aiming down-left
-; A5: Facing left - landing from normal jump
-; A7: Facing left - landing from spin jump
-; E1: Facing left - landing from normal jump - aiming up
-; E3: Facing left - landing from normal jump - aiming up-left
-; E5: Facing left - landing from normal jump - aiming down-left
-; E7: Facing left - landing from normal jump - firing
-$91:A172             dw 0080, 0800, 0056,
-                        0080, 0010, 0058,
-                        0080, 0020, 005A,
-                        0080, 0000, 004C,
-                        0400, 0030, 00F2,
-                        0400, 0010, 00F4,
-                        0400, 0020, 00F6,
-                        0400, 0000, 0036,
-                        0000, 0160, 0077,
-                        0000, 0150, 0075,
-                        0000, 0130, 0026,
-                        0000, 0030, 0004,
-                        0000, 0210, 0010,
-                        0000, 0220, 0012,
-                        0000, 0A00, 0010,
-                        0000, 0600, 0012,
-                        0000, 0140, 0049,
-                        0000, 0100, 0026,
-                        0000, 0800, 0004,
-                        0000, 0010, 0006,
-                        0000, 0020, 0008,
-                        0000, 0200, 000A,
+; 2: Facing left  - normal
+; 4: Facing left  - aiming up
+; 6: Facing left  - aiming up-left
+; 8: Facing left  - aiming down-left
+; A5h: Facing left  - landing from normal jump
+; A7h: Facing left  - landing from spin jump
+; E1h: Facing left  - landing from normal jump - aiming up
+; E3h: Facing left  - landing from normal jump - aiming up-left
+; E5h: Facing left  - landing from normal jump - aiming down-left
+; E7h: Facing left  - landing from normal jump - firing
+$91:A172             dw 0080, 0800, 0056, ; tap         A    + hold    ^         = facing left  - normal jump transition - aiming up
+                        0080, 0010, 0058, ; tap         A    + hold        R     = facing left  - normal jump transition - aiming up-left
+                        0080, 0020, 005A, ; tap         A    + hold       L      = facing left  - normal jump transition - aiming down-left
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0400, 0030, 00F2, ; tap     v        + hold       LR     = facing left  - crouching transition - aiming up
+                        0400, 0010, 00F4, ; tap     v        + hold        R     = facing left  - crouching transition - aiming up-left
+                        0400, 0020, 00F6, ; tap     v        + hold       L      = facing left  - crouching transition - aiming down-left
+                        0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0000, 0160, 0077, ;                    hold      >L   X  = facing left  - moonwalk - aiming down-left
+                        0000, 0150, 0075, ;                    hold      > R  X  = facing left  - moonwalk - aiming up-left
+                        0000, 0130, 0026, ;                    hold      >LR     = facing left  - turning - standing
+                        0000, 0030, 0004, ;                    hold       LR     = facing left  - aiming up
+                        0000, 0210, 0010, ;                    hold   <    R     = moving left  - aiming up-left
+                        0000, 0220, 0012, ;                    hold   <   L      = moving left  - aiming down-left
+                        0000, 0A00, 0010, ;                    hold   <^         = moving left  - aiming up-left
+                        0000, 0600, 0012, ;                    hold   < v        = moving left  - aiming down-left
+                        0000, 0140, 0049, ;                    hold      >    X  = facing left  - moonwalk
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0800, 0004, ;                    hold    ^         = facing left  - aiming up
+                        0000, 0010, 0006, ;                    hold        R     = facing left  - aiming up-left
+                        0000, 0020, 0008, ;                    hold       L      = facing left  - aiming down-left
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
                         FFFF
-}
 
 
-;;; $A1F8: Transition table - entry 09/0D/0F/11 ;;;
-{
-; 09: Moving right - not aiming
-; 0D: Moving right - aiming up (unused)
-; 0F: Moving right - aiming up-right
-; 11: Moving right - aiming down-right
-$91:A1F8             dw 0400, 0000, 0035,
-                        0080, 0000, 0019,
-                        0000, 0110, 000F,
-                        0000, 0120, 0011,
-                        0000, 0900, 000F,
-                        0000, 0500, 0011,
-                        0000, 0140, 000B,
-                        0000, 0100, 0009,
-                        0000, 0200, 0025,
-                        0000, 0800, 0003,
-                        0000, 0010, 0005,
-                        0000, 0020, 0007,
+; 9: Moving right - not aiming
+; Dh: Moving right - aiming up (unused)
+; Fh: Moving right - aiming up-right
+; 11h: Moving right - aiming down-right
+$91:A1F8             dw 0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0080, 0000, 0019, ; tap         A                        = facing right - spin jump
+                        0000, 0110, 000F, ;                    hold      > R     = moving right - aiming up-right
+                        0000, 0120, 0011, ;                    hold      >L      = moving right - aiming down-right
+                        0000, 0900, 000F, ;                    hold    ^ >       = moving right - aiming up-right
+                        0000, 0500, 0011, ;                    hold     v>       = moving right - aiming down-right
+                        0000, 0140, 000B, ;                    hold      >    X  = moving right - gun extended
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
+                        0000, 0800, 0003, ;                    hold    ^         = facing right - aiming up
+                        0000, 0010, 0005, ;                    hold        R     = facing right - aiming up-right
+                        0000, 0020, 0007, ;                    hold       L      = facing right - aiming down-right
                         FFFF
-}
 
 
-;;; $A242: Transition table - entry 0A/0E/10/12 ;;;
-{
-; 0A: Moving left - not aiming
-; 0E: Moving left - aiming up (unused)
-; 10: Moving left - aiming up-left
-; 12: Moving left - aiming down-left
-$91:A242             dw 0400, 0000, 0036,
-                        0080, 0000, 001A,
-                        0000, 0210, 0010,
-                        0000, 0220, 0012,
-                        0000, 0A00, 0010,
-                        0000, 0600, 0012,
-                        0000, 0240, 000C,
-                        0000, 0200, 000A,
-                        0000, 0100, 0026,
-                        0000, 0800, 0004,
-                        0000, 0010, 0006,
-                        0000, 0020, 0008,
+; Ah: Moving left  - not aiming
+; Eh: Moving left  - aiming up (unused)
+; 10h: Moving left  - aiming up-left
+; 12h: Moving left  - aiming down-left
+$91:A242             dw 0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0080, 0000, 001A, ; tap         A                        = facing left  - spin jump
+                        0000, 0210, 0010, ;                    hold   <    R     = moving left  - aiming up-left
+                        0000, 0220, 0012, ;                    hold   <   L      = moving left  - aiming down-left
+                        0000, 0A00, 0010, ;                    hold   <^         = moving left  - aiming up-left
+                        0000, 0600, 0012, ;                    hold   < v        = moving left  - aiming down-left
+                        0000, 0240, 000C, ;                    hold   <       X  = moving left  - gun extended
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0800, 0004, ;                    hold    ^         = facing left  - aiming up
+                        0000, 0010, 0006, ;                    hold        R     = facing left  - aiming up-left
+                        0000, 0020, 0008, ;                    hold       L      = facing left  - aiming down-left
                         FFFF
-}
 
 
-;;; $A28C: Transition table - entry 4B/55/57/59 ;;;
-{
-; 4B: Facing right - normal jump transition
-; 55: Facing right - normal jump transition - aiming up
-; 57: Facing right - normal jump transition - aiming up-right
-; 59: Facing right - normal jump transition - aiming down-right
-$91:A28C             dw 0000, 0280, 002F,
-                        0000, 0880, 0015,
-                        0000, 0480, 0017,
-                        0000, 0090, 0069,
-                        0000, 00A0, 006B,
-                        0000, 0180, 0051,
-                        0000, 00C0, 0013,
-                        0000, 0040, 0013,
+; 4Bh: Facing right - normal jump transition
+; 55h: Facing right - normal jump transition - aiming up
+; 57h: Facing right - normal jump transition - aiming up-right
+; 59h: Facing right - normal jump transition - aiming down-right
+$91:A28C             dw 0000, 0280, 002F, ;                    hold   <     A    = facing right - turning - jumping
+                        0000, 0880, 0015, ;                    hold    ^    A    = facing right - normal jump - aiming up
+                        0000, 0480, 0017, ;                    hold     v   A    = facing right - normal jump - aiming down
+                        0000, 0090, 0069, ;                    hold        RA    = facing right - normal jump - aiming up-right
+                        0000, 00A0, 006B, ;                    hold       L A    = facing right - normal jump - aiming down-right
+                        0000, 0180, 0051, ;                    hold      >  A    = facing right - normal jump - not aiming - moving forward
+                        0000, 00C0, 0013, ;                    hold         A X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $A2BE: Transition table - entry 4C/56/58/5A ;;;
-{
-; 4C: Facing left - normal jump transition
-; 56: Facing left - normal jump transition - aiming up
-; 58: Facing left - normal jump transition - aiming up-left
-; 5A: Facing left - normal jump transition - aiming down-left
-$91:A2BE             dw 0000, 0180, 0030,
-                        0000, 0880, 0016,
-                        0000, 0480, 0018,
-                        0000, 0090, 006A,
-                        0000, 00A0, 006C,
-                        0000, 0280, 0052,
-                        0000, 00C0, 0014,
-                        0000, 0100, 0030,
-                        0000, 0040, 0014,
+; 4Ch: Facing left  - normal jump transition
+; 56h: Facing left  - normal jump transition - aiming up
+; 58h: Facing left  - normal jump transition - aiming up-left
+; 5Ah: Facing left  - normal jump transition - aiming down-left
+$91:A2BE             dw 0000, 0180, 0030, ;                    hold      >  A    = facing left  - turning - jumping
+                        0000, 0880, 0016, ;                    hold    ^    A    = facing left  - normal jump - aiming up
+                        0000, 0480, 0018, ;                    hold     v   A    = facing left  - normal jump - aiming down
+                        0000, 0090, 006A, ;                    hold        RA    = facing left  - normal jump - aiming up-left
+                        0000, 00A0, 006C, ;                    hold       L A    = facing left  - normal jump - aiming down-left
+                        0000, 0280, 0052, ;                    hold   <     A    = facing left  - normal jump - not aiming - moving forward
+                        0000, 00C0, 0014, ;                    hold         A X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0100, 0030, ;                    hold      >       = facing left  - turning - jumping
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $A2F6: Transition table - entry 15/4D/51/69/6B ;;;
-{
-; 15: Facing right - normal jump - aiming up
-; 4D: Facing right - normal jump - not aiming - not moving - gun not extended
-; 51: Facing right - normal jump - not aiming - moving forward
-; 69: Facing right - normal jump - aiming up-right
-; 6B: Facing right - normal jump - aiming down-right
-$91:A2F6             dw 0000, 0980, 0069,
-                        0000, 0580, 006B,
-                        0000, 0190, 0069,
-                        0000, 01A0, 006B,
-                        0000, 0900, 0069,
-                        0000, 0500, 006B,
-                        0000, 0280, 002F,
-                        0000, 0880, 0015,
-                        0000, 0480, 0017,
-                        0000, 0090, 0069,
-                        0000, 00A0, 006B,
-                        0000, 0180, 0051,
-                        0000, 00C0, 0013,
-                        0000, 0200, 002F,
-                        0000, 0800, 0015,
-                        0000, 0400, 0017,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0100, 0051,
-                        0000, 0080, 004D,
-                        0000, 0040, 0013,
+; 15h: Facing right - normal jump - aiming up
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
+; 51h: Facing right - normal jump - not aiming - moving forward
+; 69h: Facing right - normal jump - aiming up-right
+; 6Bh: Facing right - normal jump - aiming down-right
+$91:A2F6             dw 0000, 0980, 0069, ;                    hold    ^ >  A    = facing right - normal jump - aiming up-right
+                        0000, 0580, 006B, ;                    hold     v>  A    = facing right - normal jump - aiming down-right
+                        0000, 0190, 0069, ;                    hold      > RA    = facing right - normal jump - aiming up-right
+                        0000, 01A0, 006B, ;                    hold      >L A    = facing right - normal jump - aiming down-right
+                        0000, 0900, 0069, ;                    hold    ^ >       = facing right - normal jump - aiming up-right
+                        0000, 0500, 006B, ;                    hold     v>       = facing right - normal jump - aiming down-right
+                        0000, 0280, 002F, ;                    hold   <     A    = facing right - turning - jumping
+                        0000, 0880, 0015, ;                    hold    ^    A    = facing right - normal jump - aiming up
+                        0000, 0480, 0017, ;                    hold     v   A    = facing right - normal jump - aiming down
+                        0000, 0090, 0069, ;                    hold        RA    = facing right - normal jump - aiming up-right
+                        0000, 00A0, 006B, ;                    hold       L A    = facing right - normal jump - aiming down-right
+                        0000, 0180, 0051, ;                    hold      >  A    = facing right - normal jump - not aiming - moving forward
+                        0000, 00C0, 0013, ;                    hold         A X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0200, 002F, ;                    hold   <          = facing right - turning - jumping
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0100, 0051, ;                    hold      >       = facing right - normal jump - not aiming - moving forward
+                        0000, 0080, 004D, ;                    hold         A    = facing right - normal jump - not aiming - not moving - gun not extended
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $A376: Transition table - entry 16/4E/52/6A/6C ;;;
-{
-; 16: Facing left - normal jump - aiming up
-; 4E: Facing left - normal jump - not aiming - not moving - gun not extended
-; 52: Facing left - normal jump - not aiming - moving forward
-; 6A: Facing left - normal jump - aiming up-left
-; 6C: Facing left - normal jump - aiming down-left
-$91:A376             dw 0000, 0A80, 006A,
-                        0000, 0680, 006C,
-                        0000, 0290, 006A,
-                        0000, 02A0, 006C,
-                        0000, 0A00, 006A,
-                        0000, 0600, 006C,
-                        0000, 0180, 0030,
-                        0000, 0880, 0016,
-                        0000, 0480, 0018,
-                        0000, 0090, 006A,
-                        0000, 00A0, 006C,
-                        0000, 0280, 0052,
-                        0000, 00C0, 0014,
-                        0000, 0100, 0030,
-                        0000, 0800, 0016,
-                        0000, 0400, 0018,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0200, 0052,
-                        0000, 0080, 004E,
-                        0000, 0040, 0014,
+; 16h: Facing left  - normal jump - aiming up
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended
+; 52h: Facing left  - normal jump - not aiming - moving forward
+; 6Ah: Facing left  - normal jump - aiming up-left
+; 6Ch: Facing left  - normal jump - aiming down-left
+$91:A376             dw 0000, 0A80, 006A, ;                    hold   <^    A    = facing left  - normal jump - aiming up-left
+                        0000, 0680, 006C, ;                    hold   < v   A    = facing left  - normal jump - aiming down-left
+                        0000, 0290, 006A, ;                    hold   <    RA    = facing left  - normal jump - aiming up-left
+                        0000, 02A0, 006C, ;                    hold   <   L A    = facing left  - normal jump - aiming down-left
+                        0000, 0A00, 006A, ;                    hold   <^         = facing left  - normal jump - aiming up-left
+                        0000, 0600, 006C, ;                    hold   < v        = facing left  - normal jump - aiming down-left
+                        0000, 0180, 0030, ;                    hold      >  A    = facing left  - turning - jumping
+                        0000, 0880, 0016, ;                    hold    ^    A    = facing left  - normal jump - aiming up
+                        0000, 0480, 0018, ;                    hold     v   A    = facing left  - normal jump - aiming down
+                        0000, 0090, 006A, ;                    hold        RA    = facing left  - normal jump - aiming up-left
+                        0000, 00A0, 006C, ;                    hold       L A    = facing left  - normal jump - aiming down-left
+                        0000, 0280, 0052, ;                    hold   <     A    = facing left  - normal jump - not aiming - moving forward
+                        0000, 00C0, 0014, ;                    hold         A X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0100, 0030, ;                    hold      >       = facing left  - turning - jumping
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0200, 0052, ;                    hold   <          = facing left  - normal jump - not aiming - moving forward
+                        0000, 0080, 004E, ;                    hold         A    = facing left  - normal jump - not aiming - not moving - gun not extended
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $A3F6: Transition table - entry 4F ;;;
-{
-; 4F: Facing left - damage boost
-$91:A3F6             dw 0000, 0280, 0052,
-                        0000, 0180, 004F,
-                        0000, 0080, 004E,
+; 4Fh: Facing left  - damage boost
+$91:A3F6             dw 0000, 0280, 0052, ;                    hold   <     A    = facing left  - normal jump - not aiming - moving forward
+                        0000, 0180, 004F, ;                    hold      >  A    = facing left  - damage boost
+                        0000, 0080, 004E, ;                    hold         A    = facing left  - normal jump - not aiming - not moving - gun not extended
                         FFFF
-}
 
 
-;;; $A40A: Transition table - entry 50 ;;;
-{
-; 50: Facing right - damage boost
-$91:A40A             dw 0000, 0280, 0050,
-                        0000, 0180, 0051,
-                        0000, 0080, 004D,
+; 50h: Facing right - damage boost
+$91:A40A             dw 0000, 0280, 0050, ;                    hold   <     A    = facing right - damage boost
+                        0000, 0180, 0051, ;                    hold      >  A    = facing right - normal jump - not aiming - moving forward
+                        0000, 0080, 004D, ;                    hold         A    = facing right - normal jump - not aiming - not moving - gun not extended
                         FFFF
-}
 
 
-;;; $A41E: Transition table - entry 19 ;;;
-{
-; 19: Facing right - spin jump
-$91:A41E             dw 0040, 0000, 0013,
-                        0040, 0100, 0013,
-                        0000, 0840, 0015,
-                        0000, 0440, 0017,
-                        0000, 0050, 0069,
-                        0000, 0060, 006B,
-                        0000, 0180, 0019,
-                        0000, 0800, 0015,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0400, 0017,
-                        0000, 0100, 0019,
-                        0000, 0200, 001A,
+; 19h: Facing right - spin jump
+$91:A41E             dw 0040, 0000, 0013, ; tap           X                      = facing right - normal jump - not aiming - not moving - gun extended
+                        0040, 0100, 0013, ; tap           X  + hold      >       = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0015, ;                    hold    ^      X  = facing right - normal jump - aiming up
+                        0000, 0440, 0017, ;                    hold     v     X  = facing right - normal jump - aiming down
+                        0000, 0050, 0069, ;                    hold        R  X  = facing right - normal jump - aiming up-right
+                        0000, 0060, 006B, ;                    hold       L   X  = facing right - normal jump - aiming down-right
+                        0000, 0180, 0019, ;                    hold      >  A    = facing right - spin jump
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0100, 0019, ;                    hold      >       = facing right - spin jump
+                        0000, 0200, 001A, ;                    hold   <          = facing left  - spin jump
                         FFFF
-}
 
 
-;;; $A46E: Transition table - entry 1A ;;;
-{
-; 1A: Facing left - spin jump
-$91:A46E             dw 0040, 0000, 0014,
-                        0040, 0200, 0014,
-                        0000, 0840, 0016,
-                        0000, 0440, 0018,
-                        0000, 0050, 006A,
-                        0000, 0060, 006C,
-                        0000, 0280, 001A,
-                        0000, 0800, 0016,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0400, 0018,
-                        0000, 0200, 001A,
-                        0000, 0100, 0019,
+; 1Ah: Facing left  - spin jump
+$91:A46E             dw 0040, 0000, 0014, ; tap           X                      = facing left  - normal jump - not aiming - not moving - gun extended
+                        0040, 0200, 0014, ; tap           X  + hold   <          = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0016, ;                    hold    ^      X  = facing left  - normal jump - aiming up
+                        0000, 0440, 0018, ;                    hold     v     X  = facing left  - normal jump - aiming down
+                        0000, 0050, 006A, ;                    hold        R  X  = facing left  - normal jump - aiming up-left
+                        0000, 0060, 006C, ;                    hold       L   X  = facing left  - normal jump - aiming down-left
+                        0000, 0280, 001A, ;                    hold   <     A    = facing left  - spin jump
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0200, 001A, ;                    hold   <          = facing left  - spin jump
+                        0000, 0100, 0019, ;                    hold      >       = facing right - spin jump
                         FFFF
-}
 
 
-;;; $A4BE: Transition table - entry 1B ;;;
-{
-; 1B: Facing right - space jump
-$91:A4BE             dw 0040, 0000, 0013,
-                        0040, 0100, 0013,
-                        0000, 0840, 0015,
-                        0000, 0440, 0017,
-                        0000, 0050, 0069,
-                        0000, 0060, 006B,
-                        0000, 0180, 001B,
-                        0000, 0800, 0015,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0400, 0017,
-                        0000, 0100, 001B,
-                        0000, 0200, 001C,
+; 1Bh: Facing right - space jump
+$91:A4BE             dw 0040, 0000, 0013, ; tap           X                      = facing right - normal jump - not aiming - not moving - gun extended
+                        0040, 0100, 0013, ; tap           X  + hold      >       = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0015, ;                    hold    ^      X  = facing right - normal jump - aiming up
+                        0000, 0440, 0017, ;                    hold     v     X  = facing right - normal jump - aiming down
+                        0000, 0050, 0069, ;                    hold        R  X  = facing right - normal jump - aiming up-right
+                        0000, 0060, 006B, ;                    hold       L   X  = facing right - normal jump - aiming down-right
+                        0000, 0180, 001B, ;                    hold      >  A    = facing right - space jump
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0100, 001B, ;                    hold      >       = facing right - space jump
+                        0000, 0200, 001C, ;                    hold   <          = facing left  - space jump
                         FFFF
-}
 
 
-;;; $A50E: Transition table - entry 1C ;;;
-{
-; 1C: Facing left - space jump
-$91:A50E             dw 0040, 0000, 0014,
-                        0040, 0200, 0014,
-                        0000, 0840, 0016,
-                        0000, 0440, 0018,
-                        0000, 0050, 006A,
-                        0000, 0060, 006C,
-                        0000, 0280, 001C,
-                        0000, 0800, 0016,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0400, 0018,
-                        0000, 0200, 001C,
-                        0000, 0100, 001B,
+; 1Ch: Facing left  - space jump
+$91:A50E             dw 0040, 0000, 0014, ; tap           X                      = facing left  - normal jump - not aiming - not moving - gun extended
+                        0040, 0200, 0014, ; tap           X  + hold   <          = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0016, ;                    hold    ^      X  = facing left  - normal jump - aiming up
+                        0000, 0440, 0018, ;                    hold     v     X  = facing left  - normal jump - aiming down
+                        0000, 0050, 006A, ;                    hold        R  X  = facing left  - normal jump - aiming up-left
+                        0000, 0060, 006C, ;                    hold       L   X  = facing left  - normal jump - aiming down-left
+                        0000, 0280, 001C, ;                    hold   <     A    = facing left  - space jump
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0200, 001C, ;                    hold   <          = facing left  - space jump
+                        0000, 0100, 001B, ;                    hold      >       = facing right - space jump
                         FFFF
-}
 
 
-;;; $A55E: Transition table - entry 81 ;;;
-{
-; 81: Facing right - screw attack
-$91:A55E             dw 0040, 0000, 0013,
-                        0040, 0100, 0013,
-                        0000, 0840, 0015,
-                        0000, 0440, 0017,
-                        0000, 0050, 0069,
-                        0000, 0060, 006B,
-                        0000, 0180, 0081,
-                        0000, 0800, 0015,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0400, 0017,
-                        0000, 0100, 0081,
-                        0000, 0200, 0082,
+; 81h: Facing right - screw attack
+$91:A55E             dw 0040, 0000, 0013, ; tap           X                      = facing right - normal jump - not aiming - not moving - gun extended
+                        0040, 0100, 0013, ; tap           X  + hold      >       = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0015, ;                    hold    ^      X  = facing right - normal jump - aiming up
+                        0000, 0440, 0017, ;                    hold     v     X  = facing right - normal jump - aiming down
+                        0000, 0050, 0069, ;                    hold        R  X  = facing right - normal jump - aiming up-right
+                        0000, 0060, 006B, ;                    hold       L   X  = facing right - normal jump - aiming down-right
+                        0000, 0180, 0081, ;                    hold      >  A    = facing right - screw attack
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0100, 0081, ;                    hold      >       = facing right - screw attack
+                        0000, 0200, 0082, ;                    hold   <          = facing left  - screw attack
                         FFFF
-}
 
 
-;;; $A5AE: Transition table - entry 82 ;;;
-{
-; 82: Facing left - screw attack
-$91:A5AE             dw 0040, 0000, 0014,
-                        0040, 0200, 0014,
-                        0000, 0840, 0016,
-                        0000, 0440, 0018,
-                        0000, 0050, 006A,
-                        0000, 0060, 006C,
-                        0000, 0280, 0082,
-                        0000, 0800, 0016,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0400, 0018,
-                        0000, 0200, 0082,
-                        0000, 0100, 0081,
+; 82h: Facing left  - screw attack
+$91:A5AE             dw 0040, 0000, 0014, ; tap           X                      = facing left  - normal jump - not aiming - not moving - gun extended
+                        0040, 0200, 0014, ; tap           X  + hold   <          = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0840, 0016, ;                    hold    ^      X  = facing left  - normal jump - aiming up
+                        0000, 0440, 0018, ;                    hold     v     X  = facing left  - normal jump - aiming down
+                        0000, 0050, 006A, ;                    hold        R  X  = facing left  - normal jump - aiming up-left
+                        0000, 0060, 006C, ;                    hold       L   X  = facing left  - normal jump - aiming down-left
+                        0000, 0280, 0082, ;                    hold   <     A    = facing left  - screw attack
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0200, 0082, ;                    hold   <          = facing left  - screw attack
+                        0000, 0100, 0081, ;                    hold      >       = facing right - screw attack
                         FFFF
-}
 
 
-;;; $A5FE: Transition table - entry 1D ;;;
-{
-; 1D: Facing right - morph ball - no springball - on ground
-$91:A5FE             dw 0800, 0000, 003D,
-                        0080, 0000, 003D,
-                        0000, 0100, 001E,
-                        0000, 0200, 001F,
+; 1Dh: Facing right - morph ball - no springball - on ground
+$91:A5FE             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0080, 0000, 003D, ; tap         A                        = facing right - unmorphing transition
+                        0000, 0100, 001E, ;                    hold      >       = moving right - morph ball - no springball - on ground
+                        0000, 0200, 001F, ;                    hold   <          = moving left  - morph ball - no springball - on ground
                         FFFF
-}
 
 
-;;; $A618: Transition table - entry 1E ;;;
-{
-; 1E: Moving right - morph ball - no springball - on ground
-$91:A618             dw 0800, 0000, 003D,
-                        0080, 0000, 003D,
-                        0000, 0100, 001E,
-                        0000, 0200, 001F,
+; 1Eh: Moving right - morph ball - no springball - on ground
+$91:A618             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0080, 0000, 003D, ; tap         A                        = facing right - unmorphing transition
+                        0000, 0100, 001E, ;                    hold      >       = moving right - morph ball - no springball - on ground
+                        0000, 0200, 001F, ;                    hold   <          = moving left  - morph ball - no springball - on ground
                         FFFF
-}
 
 
-;;; $A632: Transition table - entry 1F ;;;
-{
-; 1F: Moving left - morph ball - no springball - on ground
-$91:A632             dw 0800, 0000, 003E,
-                        0080, 0000, 003E,
-                        0000, 0100, 001E,
-                        0000, 0200, 001F,
+; 1Fh: Moving left  - morph ball - no springball - on ground
+$91:A632             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0080, 0000, 003E, ; tap         A                        = facing left  - unmorphing transition
+                        0000, 0100, 001E, ;                    hold      >       = moving right - morph ball - no springball - on ground
+                        0000, 0200, 001F, ;                    hold   <          = moving left  - morph ball - no springball - on ground
                         FFFF
-}
 
 
-;;; $A64C: Transition table - entry 41 ;;;
-{
-; 41: Facing left - morph ball - no springball - on ground
-$91:A64C             dw 0800, 0000, 003E,
-                        0080, 0000, 003E,
-                        0000, 0100, 001E,
-                        0000, 0200, 001F,
+; 41h: Facing left  - morph ball - no springball - on ground
+$91:A64C             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0080, 0000, 003E, ; tap         A                        = facing left  - unmorphing transition
+                        0000, 0100, 001E, ;                    hold      >       = moving right - morph ball - no springball - on ground
+                        0000, 0200, 001F, ;                    hold   <          = moving left  - morph ball - no springball - on ground
                         FFFF
-}
 
 
-;;; $A666: Transition table - entry 20/21/22/24 ;;;
-{
-; Unused
+; 20h: Unused
+; 21h: Unused
+; 22h: Unused
+; 24h: Unused
 $91:A666             dw FFFF
-}
 
 
-;;; $A668: Transition table - entry 23 ;;;
-{
-; Unused
+; 23h: Unused
 $91:A668             dw FFFF
-}
 
 
-;;; $A66A: Transition table - entry 42 ;;;
-{
-; Unused
+; 42h: Unused
 $91:A66A             dw FFFF
-}
 
 
-;;; $A66C: Transition table - entry 27/71/73/85 ;;;
-{
-; 27: Facing right - crouching
-; 71: Facing right - crouching transition - aiming up-right
-; 73: Facing right - crouching transition - aiming down-right
-; 85: Facing right - crouching - aiming up
-$91:A66C             dw 0800, 0030, 00F7,
-                        0800, 0010, 00F9,
-                        0800, 0020, 00FB,
-                        0800, 0000, 003B,
-                        0200, 0000, 0043,
-                        0400, 0000, 0037,
-                        0080, 0000, 004B,
-                        0000, 0030, 0085,
-                        0000, 0110, 0001,
-                        0000, 0120, 0001,
-                        0000, 0010, 0071,
-                        0000, 0020, 0073,
-                        0000, 0100, 0001,
+; 27h: Facing right - crouching
+; 71h: Facing right - crouching - aiming up-right
+; 73h: Facing right - crouching - aiming down-right
+; 85h: Facing right - crouching - aiming up
+$91:A66C             dw 0800, 0030, 00F7, ; tap    ^         + hold       LR     = facing right - standing transition - aiming up
+                        0800, 0010, 00F9, ; tap    ^         + hold        R     = facing right - standing transition - aiming up-right
+                        0800, 0020, 00FB, ; tap    ^         + hold       L      = facing right - standing transition - aiming down-right
+                        0800, 0000, 003B, ; tap    ^                             = facing right - standing transition
+                        0200, 0000, 0043, ; tap   <                              = facing right - turning - crouching
+                        0400, 0000, 0037, ; tap     v                            = facing right - morphing transition
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0030, 0085, ;                    hold       LR     = facing right - crouching - aiming up
+                        0000, 0110, 0001, ;                    hold      > R     = facing right - normal
+                        0000, 0120, 0001, ;                    hold      >L      = facing right - normal
+                        0000, 0010, 0071, ;                    hold        R     = facing right - crouching - aiming up-right
+                        0000, 0020, 0073, ;                    hold       L      = facing right - crouching - aiming down-right
+                        0000, 0100, 0001, ;                    hold      >       = facing right - normal
                         FFFF
-}
 
 
-;;; $A6BC: Transition table - entry 28/72/74/86 ;;;
-{
-; 28: Facing left - crouching
-; 72: Facing left - crouching transition - aiming up-left
-; 74: Facing left - crouching transition - aiming down-left
-; 86: Facing left - crouching - aiming up
-$91:A6BC             dw 0800, 0030, 00F8,
-                        0800, 0010, 00FA,
-                        0800, 0020, 00FC,
-                        0800, 0000, 003C,
-                        0100, 0000, 0044,
-                        0400, 0000, 0038,
-                        0080, 0000, 004C,
-                        0000, 0030, 0086,
-                        0000, 0220, 0002,
-                        0000, 0210, 0002,
-                        0000, 0010, 0072,
-                        0000, 0020, 0074,
-                        0000, 0200, 0002,
+; 28h: Facing left  - crouching
+; 72h: Facing left  - crouching - aiming up-left
+; 74h: Facing left  - crouching - aiming down-left
+; 86h: Facing left  - crouching - aiming up
+$91:A6BC             dw 0800, 0030, 00F8, ; tap    ^         + hold       LR     = facing left  - standing transition - aiming up
+                        0800, 0010, 00FA, ; tap    ^         + hold        R     = facing left  - standing transition - aiming up-left
+                        0800, 0020, 00FC, ; tap    ^         + hold       L      = facing left  - standing transition - aiming down-left
+                        0800, 0000, 003C, ; tap    ^                             = facing left  - standing transition
+                        0100, 0000, 0044, ; tap      >                           = facing left  - turning - crouching
+                        0400, 0000, 0038, ; tap     v                            = facing left  - morphing transition
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0030, 0086, ;                    hold       LR     = facing left  - crouching - aiming up
+                        0000, 0220, 0002, ;                    hold   <   L      = facing left  - normal
+                        0000, 0210, 0002, ;                    hold   <    R     = facing left  - normal
+                        0000, 0010, 0072, ;                    hold        R     = facing left  - crouching - aiming up-left
+                        0000, 0020, 0074, ;                    hold       L      = facing left  - crouching - aiming down-left
+                        0000, 0200, 0002, ;                    hold   <          = facing left  - normal
                         FFFF
-}
 
 
-;;; $A70C: Transition table - entry 29/2B/6D/6F ;;;
-{
-; 29: Facing right - falling
-; 2B: Facing right - falling - aiming up
-; 6D: Facing right - falling - aiming up-right
-; 6F: Facing right - falling - aiming down-right
-$91:A70C             dw 0000, 0900, 006D,
-                        0000, 0500, 006F,
-                        0000, 0A00, 0087,
-                        0000, 0600, 0087,
-                        0000, 0200, 0087,
-                        0000, 0800, 002B,
-                        0000, 0400, 002D,
-                        0000, 0010, 006D,
-                        0000, 0020, 006F,
-                        0000, 0040, 0067,
-                        0000, 0100, 0029,
+; 29h: Facing right - falling
+; 2Bh: Facing right - falling - aiming up
+; 6Dh: Facing right - falling - aiming up-right
+; 6Fh: Facing right - falling - aiming down-right
+$91:A70C             dw 0000, 0900, 006D, ;                    hold    ^ >       = facing right - falling - aiming up-right
+                        0000, 0500, 006F, ;                    hold     v>       = facing right - falling - aiming down-right
+                        0000, 0A00, 0087, ;                    hold   <^         = facing right - turning - falling
+                        0000, 0600, 0087, ;                    hold   < v        = facing right - turning - falling
+                        0000, 0200, 0087, ;                    hold   <          = facing right - turning - falling
+                        0000, 0800, 002B, ;                    hold    ^         = facing right - falling - aiming up
+                        0000, 0400, 002D, ;                    hold     v        = facing right - falling - aiming down
+                        0000, 0010, 006D, ;                    hold        R     = facing right - falling - aiming up-right
+                        0000, 0020, 006F, ;                    hold       L      = facing right - falling - aiming down-right
+                        0000, 0040, 0067, ;                    hold           X  = facing right - falling - gun extended
+                        0000, 0100, 0029, ;                    hold      >       = facing right - falling
                         FFFF
-}
 
 
-;;; $A750: Transition table - entry 2A/2C/6E/70 ;;;
-{
-; 2A: Facing left - falling
-; 2C: Facing left - falling - aiming up
-; 6E: Facing left - falling - aiming up-left
-; 70: Facing left - falling - aiming down-left
-$91:A750             dw 0000, 0A00, 006E,
-                        0000, 0600, 0070,
-                        0000, 0900, 0088,
-                        0000, 0500, 0088,
-                        0000, 0100, 0088,
-                        0000, 0800, 002C,
-                        0000, 0400, 002E,
-                        0000, 0010, 006E,
-                        0000, 0020, 0070,
-                        0000, 0040, 0068,
-                        0000, 0200, 002A,
+; 2Ah: Facing left  - falling
+; 2Ch: Facing left  - falling - aiming up
+; 6Eh: Facing left  - falling - aiming up-left
+; 70h: Facing left  - falling - aiming down-left
+$91:A750             dw 0000, 0A00, 006E, ;                    hold   <^         = facing left  - falling - aiming up-left
+                        0000, 0600, 0070, ;                    hold   < v        = facing left  - falling - aiming down-left
+                        0000, 0900, 0088, ;                    hold    ^ >       = facing left  - turning - falling
+                        0000, 0500, 0088, ;                    hold     v>       = facing left  - turning - falling
+                        0000, 0100, 0088, ;                    hold      >       = facing left  - turning - falling
+                        0000, 0800, 002C, ;                    hold    ^         = facing left  - falling - aiming up
+                        0000, 0400, 002E, ;                    hold     v        = facing left  - falling - aiming down
+                        0000, 0010, 006E, ;                    hold        R     = facing left  - falling - aiming up-left
+                        0000, 0020, 0070, ;                    hold       L      = facing left  - falling - aiming down-left
+                        0000, 0040, 0068, ;                    hold           X  = facing left  - falling - gun extended
+                        0000, 0200, 002A, ;                    hold   <          = facing left  - falling
                         FFFF
-}
 
 
-;;; $A794: Transition table - entry 31 ;;;
-{
-; 31: Facing right - morph ball - no springball - in air
-$91:A794             dw 0800, 0000, 003D,
-                        0080, 0000, 003D,
-                        0000, 0100, 0031,
-                        0000, 0200, 0032,
+; 31h: Facing right - morph ball - no springball - in air
+$91:A794             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0080, 0000, 003D, ; tap         A                        = facing right - unmorphing transition
+                        0000, 0100, 0031, ;                    hold      >       = facing right - morph ball - no springball - in air
+                        0000, 0200, 0032, ;                    hold   <          = facing left  - morph ball - no springball - in air
                         FFFF
-}
 
 
-;;; $A7AE: Transition table - entry 32 ;;;
-{
-; 32: Facing left - morph ball - no springball - in air
-$91:A7AE             dw 0800, 0000, 003E,
-                        0080, 0000, 003E,
-                        0000, 0200, 0032,
-                        0000, 0100, 0031,
+; 32h: Facing left  - morph ball - no springball - in air
+$91:A7AE             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0080, 0000, 003E, ; tap         A                        = facing left  - unmorphing transition
+                        0000, 0200, 0032, ;                    hold   <          = facing left  - morph ball - no springball - in air
+                        0000, 0100, 0031, ;                    hold      >       = facing right - morph ball - no springball - in air
                         FFFF
-}
 
 
-;;; $A7C8: Transition table - entry 33 ;;;
-{
-; Unused
+; 33h: Unused
 $91:A7C8             dw FFFF
-}
 
 
-;;; $A7CA: Transition table - entry 34 ;;;
-{
-; Unused
+; 34h: Unused
 $91:A7CA             dw FFFF
-}
 
 
-;;; $A7CC: Transition table - entry 45 ;;;
-{
-; Unused
-$91:A7CC             dw 0000, 0240, 0045,
-                        0000, 0100, 0009,
-                        0000, 0200, 0025,
+; 45h: Unused
+$91:A7CC             dw 0000, 0240, 0045, ;                    hold   <       X  = unused
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
                         FFFF
-}
 
 
-;;; $A7E0: Transition table - entry 46 ;;;
-{
-; Unused
-$91:A7E0             dw 0000, 0140, 0046,
-                        0000, 0200, 000A,
-                        0000, 0100, 0026,
+; 46h: Unused
+$91:A7E0             dw 0000, 0140, 0046, ;                    hold      >    X  = unused
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
                         FFFF
-}
 
 
-;;; $A7F4: Transition table - entry 47 ;;;
-{
-; Unused
+; 47h: Unused
 $91:A7F4             dw FFFF
-}
 
 
-;;; $A7F6: Unused ;;;
-{
-; Possibly no-op'd sections of the above?
-$91:A7F6             dw 0080, 0000, 004B,
-                        0400, 0000, 0035,
-                        0000, 0210, 0078,
-                        0000, 0220, 0076,
-                        0000, 0240, 004A,
-                        0000, 0100, 0009,
-                        0000, 0200, 0025,
-                        0000, 0800, 0003,
-                        0000, 0010, 0005,
-                        0000, 0020, 0007,
+; Unused. Similar to moonwalk with a normal jump transition instead of moonwalking turn/jump
+$91:A7F6             dw 0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0000, 0210, 0078, ;                    hold   <    R     = facing right - moonwalk - aiming down-right
+                        0000, 0220, 0076, ;                    hold   <   L      = facing right - moonwalk - aiming up-right
+                        0000, 0240, 004A, ;                    hold   <       X  = facing right - moonwalk
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
+                        0000, 0800, 0003, ;                    hold    ^         = facing right - aiming up
+                        0000, 0010, 0005, ;                    hold        R     = facing right - aiming up-right
+                        0000, 0020, 0007, ;                    hold       L      = facing right - aiming down-right
                         FFFF
-}
 
 
-;;; $A834: Transition table - entry 48 ;;;
-{
-; Unused
+; 48h: Unused
 $91:A834             dw FFFF
-}
 
 
-;;; $A836: Unused ;;;
-{
-; Possibly no-op'd sections of the above?
-$91:A836             dw 0080, 0000, 004C,
-                        0400, 0000, 0036,
-                        0000, 0120, 0077,
-                        0000, 0110, 0075,
-                        0000, 0140, 0049,
-                        0000, 0200, 000A,
-                        0000, 0100, 0026,
-                        0000, 0800, 0004,
-                        0000, 0010, 0006,
-                        0000, 0020, 0008,
+; Unused. Similar to moonwalk with a normal jump transition instead of moonwalking turn/jump
+$91:A836             dw 0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0000, 0120, 0077, ;                    hold      >L      = facing left  - moonwalk - aiming down-left
+                        0000, 0110, 0075, ;                    hold      > R     = facing left  - moonwalk - aiming up-left
+                        0000, 0140, 0049, ;                    hold      >    X  = facing left  - moonwalk
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0800, 0004, ;                    hold    ^         = facing left  - aiming up
+                        0000, 0010, 0006, ;                    hold        R     = facing left  - aiming up-left
+                        0000, 0020, 0008, ;                    hold       L      = facing left  - aiming down-left
                         FFFF
-}
 
 
-;;; $A874: Transition table - entry 49/75/77 ;;;
-{
-; 49: Facing left - moonwalk
-; 75: Facing left - moonwalk - aiming up-left
-; 77: Facing left - moonwalk - aiming down-left
-$91:A874             dw 0400, 0000, 0036,
-                        0080, 0000, 00C0,
-                        0080, 0010, 00C2,
-                        0080, 0020, 00C4,
-                        0000, 0160, 0077,
-                        0000, 0150, 0075,
-                        0000, 0140, 0049,
-                        0000, 0200, 000A,
-                        0000, 0100, 0026,
+; 49h: Facing left  - moonwalk
+; 75h: Facing left  - moonwalk - aiming up-left
+; 77h: Facing left  - moonwalk - aiming down-left
+$91:A874             dw 0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0080, 0000, 00C0, ; tap         A                        = facing left  - moonwalking - turn/jump right
+                        0080, 0010, 00C2, ; tap         A    + hold        R     = facing left  - moonwalking - turn/jump right - aiming up-left
+                        0080, 0020, 00C4, ; tap         A    + hold       L      = facing left  - moonwalking - turn/jump right - aiming down-left
+                        0000, 0160, 0077, ;                    hold      >L   X  = facing left  - moonwalk - aiming down-left
+                        0000, 0150, 0075, ;                    hold      > R  X  = facing left  - moonwalk - aiming up-left
+                        0000, 0140, 0049, ;                    hold      >    X  = facing left  - moonwalk
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
                         FFFF
-}
 
 
-;;; $A8AC: Transition table - entry 4A/76/78 ;;;
-{
-; 4A: Facing right - moonwalk
-; 76: Facing right - moonwalk - aiming up-right
-; 78: Facing right - moonwalk - aiming down-right
-$91:A8AC             dw 0400, 0000, 0035,
-                        0080, 0000, 00BF,
-                        0080, 0010, 00C1,
-                        0080, 0020, 00C3,
-                        0000, 0250, 0076,
-                        0000, 0260, 0078,
-                        0000, 0240, 004A,
-                        0000, 0100, 0009,
-                        0000, 0200, 0025,
+; 4Ah: Facing right - moonwalk
+; 76h: Facing right - moonwalk - aiming up-right
+; 78h: Facing right - moonwalk - aiming down-right
+$91:A8AC             dw 0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0080, 0000, 00BF, ; tap         A                        = facing right - moonwalking - turn/jump left
+                        0080, 0010, 00C1, ; tap         A    + hold        R     = facing right - moonwalking - turn/jump left  - aiming up-right
+                        0080, 0020, 00C3, ; tap         A    + hold       L      = facing right - moonwalking - turn/jump left  - aiming down-right
+                        0000, 0250, 0076, ;                    hold   <    R  X  = facing right - moonwalk - aiming up-right
+                        0000, 0260, 0078, ;                    hold   <   L   X  = facing right - moonwalk - aiming down-right
+                        0000, 0240, 004A, ;                    hold   <       X  = facing right - moonwalk
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
                         FFFF
-}
 
 
-;;; $A8E4: Transition table - entry 53 ;;;
-{
-; 53: Facing right - knockback
-$91:A8E4             dw 0000, 0280, 0050,
+; 53h: Facing right - knockback
+$91:A8E4             dw 0000, 0280, 0050, ;                    hold   <     A    = facing right - damage boost
                         FFFF
-}
 
 
-;;; $A8EC: Transition table - entry 54 ;;;
-{
-; 54: Facing left - knockback
-$91:A8EC             dw 0000, 0180, 004F,
+; 54h: Facing left  - knockback
+$91:A8EC             dw 0000, 0180, 004F, ;                    hold      >  A    = facing left  - damage boost
                         FFFF
-}
 
 
-;;; $A8F4: Unused ;;;
-{
+; Unused
 $91:A8F4             dw FFFF
 $91:A8F6             dw FFFF
 $91:A8F8             dw FFFF
 $91:A8FA             dw FFFF
-}
 
 
-;;; $A8FC: Transition table - entry 5B ;;;
-{
-; Unused
-$91:A8FC             dw 0000, 0280, 0066,
+; 5Bh: Unused
+$91:A8FC             dw 0000, 0280, 0066, ;                    hold   <     A    = unused
                         FFFF
-}
 
 
-;;; $A904: Transition table - entry 5C ;;;
-{
-; Unused
-$91:A904             dw 0000, 0180, 0065,
+; 5Ch: Unused
+$91:A904             dw 0000, 0180, 0065, ;                    hold      >  A    = unused
                         FFFF
-}
 
 
-;;; $A90C: Transition table - entry 79/7B ;;;
-{
-; 79: Facing right - morph ball - spring ball - on ground
-; 7B: Moving right - morph ball - spring ball - on ground
-$91:A90C             dw 0800, 0000, 003D,
-                        0080, 0000, 007F,
-                        0000, 0100, 007B,
-                        0000, 0200, 007C,
+; 79h: Facing right - morph ball - spring ball - on ground
+; 7Bh: Moving right - morph ball - spring ball - on ground
+$91:A90C             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0080, 0000, 007F, ; tap         A                        = facing right - morph ball - spring ball - in air
+                        0000, 0100, 007B, ;                    hold      >       = moving right - morph ball - spring ball - on ground
+                        0000, 0200, 007C, ;                    hold   <          = moving left  - morph ball - spring ball - on ground
                         FFFF
-}
 
 
-;;; $A926: Transition table - entry 7A/7C ;;;
-{
-; 7A: Facing left - morph ball - spring ball - on ground
-; 7C: Moving left - morph ball - spring ball - on ground
-$91:A926             dw 0800, 0000, 003E,
-                        0080, 0000, 0080,
-                        0000, 0100, 007B,
-                        0000, 0200, 007C,
+; 7Ah: Facing left  - morph ball - spring ball - on ground
+; 7Ch: Moving left  - morph ball - spring ball - on ground
+$91:A926             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0080, 0000, 0080, ; tap         A                        = facing left  - morph ball - spring ball - in air
+                        0000, 0100, 007B, ;                    hold      >       = moving right - morph ball - spring ball - on ground
+                        0000, 0200, 007C, ;                    hold   <          = moving left  - morph ball - spring ball - on ground
                         FFFF
-}
 
 
-;;; $A940: Transition table - entry 7D ;;;
-{
-; 7D: Facing right - morph ball - spring ball - falling
-$91:A940             dw 0800, 0000, 003D,
-                        0000, 0200, 007E,
-                        0000, 0100, 007D,
+; 7Dh: Facing right - morph ball - spring ball - falling
+$91:A940             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0000, 0200, 007E, ;                    hold   <          = facing left  - morph ball - spring ball - falling
+                        0000, 0100, 007D, ;                    hold      >       = facing right - morph ball - spring ball - falling
                         FFFF
-}
 
 
-;;; $A954: Transition table - entry 7E ;;;
-{
-; 7E: Facing left - morph ball - spring ball - falling
-$91:A954             dw 0800, 0000, 003E,
-                        0000, 0100, 007D,
-                        0000, 0200, 007E,
+; 7Eh: Facing left  - morph ball - spring ball - falling
+$91:A954             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0000, 0100, 007D, ;                    hold      >       = facing right - morph ball - spring ball - falling
+                        0000, 0200, 007E, ;                    hold   <          = facing left  - morph ball - spring ball - falling
                         FFFF
-}
 
 
-;;; $A968: Transition table - entry 7F ;;;
-{
-; 7F: Facing right - morph ball - spring ball - in air
-$91:A968             dw 0800, 0000, 003D,
-                        0000, 0100, 007F,
-                        0000, 0200, 0080,
+; 7Fh: Facing right - morph ball - spring ball - in air
+$91:A968             dw 0800, 0000, 003D, ; tap    ^                             = facing right - unmorphing transition
+                        0000, 0100, 007F, ;                    hold      >       = facing right - morph ball - spring ball - in air
+                        0000, 0200, 0080, ;                    hold   <          = facing left  - morph ball - spring ball - in air
                         FFFF
-}
 
 
-;;; $A97C: Transition table - entry 80 ;;;
-{
-; 80: Facing left - morph ball - spring ball - in air
-$91:A97C             dw 0800, 0000, 003E,
-                        0000, 0100, 007F,
-                        0000, 0200, 0080,
+; 80h: Facing left  - morph ball - spring ball - in air
+$91:A97C             dw 0800, 0000, 003E, ; tap    ^                             = facing left  - unmorphing transition
+                        0000, 0100, 007F, ;                    hold      >       = facing right - morph ball - spring ball - in air
+                        0000, 0200, 0080, ;                    hold   <          = facing left  - morph ball - spring ball - in air
                         FFFF
-}
 
 
-;;; $A990: Transition table - entry 63 ;;;
-{
-; Unused
-$91:A990             dw 0000, 0280, 0066,
+; 63h: Unused
+$91:A990             dw 0000, 0280, 0066, ;                    hold   <     A    = unused
                         FFFF
-}
 
 
-;;; $A998: Transition table - entry 64 ;;;
-{
-; Unused
-$91:A998             dw 0000, 0180, 0065,
+; 64h: Unused
+$91:A998             dw 0000, 0180, 0065, ;                    hold      >  A    = unused
                         FFFF
-}
 
 
-;;; $A9A0: Transition table - entry 65 ;;;
-{
-; Unused
-$91:A9A0             dw 0000, 0180, 0065,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0040, 0013,
-                        0000, 0080, 0065,
-                        0000, 0100, 0065,
+; 65h: Unused
+$91:A9A0             dw 0000, 0180, 0065, ;                    hold      >  A    = unused
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0080, 0065, ;                    hold         A    = unused
+                        0000, 0100, 0065, ;                    hold      >       = unused
                         FFFF
-}
 
 
-;;; $A9C6: Transition table - entry 66 ;;;
-{
-; 66: Unused
-$91:A9C6             dw 0000, 0280, 0066,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0040, 0014,
-                        0000, 0080, 0066,
-                        0000, 0200, 0066,
+; 66h: Unused
+$91:A9C6             dw 0000, 0280, 0066, ;                    hold   <     A    = unused
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0080, 0066, ;                    hold         A    = unused
+                        0000, 0200, 0066, ;                    hold   <          = unused
                         FFFF
-}
 
 
-;;; $A9EC: Transition table - entry 83 ;;;
-{
-; 83: Facing right - wall jump
-$91:A9EC             dw 0400, 0000, 0037,
-                        0000, 0200, 001A,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0040, 0013,
-                        0000, 0080, 0083,
+; 83h: Facing right - wall jump
+$91:A9EC             dw 0400, 0000, 0037, ; tap     v                            = facing right - morphing transition
+                        0000, 0200, 001A, ;                    hold   <          = facing left  - spin jump
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0080, 0083, ;                    hold         A    = facing right - wall jump
                         FFFF
-}
 
 
-;;; $AA12: Transition table - entry 84 ;;;
-{
-; 84: Facing left - wall jump
-$91:AA12             dw 0400, 0000, 0038,
-                        0000, 0100, 0019,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0040, 0014,
-                        0000, 0080, 0084,
+; 84h: Facing left  - wall jump
+$91:AA12             dw 0400, 0000, 0038, ; tap     v                            = facing left  - morphing transition
+                        0000, 0100, 0019, ;                    hold      >       = facing right - spin jump
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0080, 0084, ;                    hold         A    = facing left  - wall jump
                         FFFF
-}
 
 
-;;; $AA38: Transition table - entry 89/CF/D1 ;;;
-{
-; 89: Facing right - ran into a wall
-; CF: Facing right - ran into a wall - aiming up-right
-; D1: Facing right - ran into a wall - aiming down-right
-$91:AA38             dw 0080, 0000, 004B,
-                        0000, 0900, 000F,
-                        0000, 0500, 0011,
-                        0400, 0000, 0035,
-                        0000, 0220, 0078,
-                        0000, 0210, 0076,
-                        0000, 0800, 0003,
-                        0000, 0010, 0005,
-                        0000, 0020, 0007,
-                        0000, 0200, 0025,
-                        0000, 0100, 0009,
+; 89h: Facing right - ran into a wall
+; CFh: Facing right - ran into a wall - aiming up-right
+; D1h: Facing right - ran into a wall - aiming down-right
+$91:AA38             dw 0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0900, 000F, ;                    hold    ^ >       = moving right - aiming up-right
+                        0000, 0500, 0011, ;                    hold     v>       = moving right - aiming down-right
+                        0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0000, 0220, 0078, ;                    hold   <   L      = facing right - moonwalk - aiming down-right
+                        0000, 0210, 0076, ;                    hold   <    R     = facing right - moonwalk - aiming up-right
+                        0000, 0800, 0003, ;                    hold    ^         = facing right - aiming up
+                        0000, 0010, 0005, ;                    hold        R     = facing right - aiming up-right
+                        0000, 0020, 0007, ;                    hold       L      = facing right - aiming down-right
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
+                        0000, 0100, 0009, ;                    hold      >       = moving right - not aiming
                         FFFF
-}
 
 
-;;; $AA7C: Transition table - entry 8A/D0/D2 ;;;
-{
-; 8A: Facing left - ran into a wall
-; D0: Facing left - ran into a wall - aiming up-left
-; D2: Facing left - ran into a wall - aiming down-left
-$91:AA7C             dw 0080, 0000, 004C,
-                        0000, 0A00, 0010,
-                        0000, 0600, 0012,
-                        0400, 0000, 0036,
-                        0000, 0120, 0077,
-                        0000, 0110, 0075,
-                        0000, 0800, 0004,
-                        0000, 0010, 0006,
-                        0000, 0020, 0008,
-                        0000, 0100, 0026,
-                        0000, 0200, 000A,
+; 8Ah: Facing left  - ran into a wall
+; D0h: Facing left  - ran into a wall - aiming up-left
+; D2h: Facing left  - ran into a wall - aiming down-left
+$91:AA7C             dw 0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0A00, 0010, ;                    hold   <^         = moving left  - aiming up-left
+                        0000, 0600, 0012, ;                    hold   < v        = moving left  - aiming down-left
+                        0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0000, 0120, 0077, ;                    hold      >L      = facing left  - moonwalk - aiming down-left
+                        0000, 0110, 0075, ;                    hold      > R     = facing left  - moonwalk - aiming up-left
+                        0000, 0800, 0004, ;                    hold    ^         = facing left  - aiming up
+                        0000, 0010, 0006, ;                    hold        R     = facing left  - aiming up-left
+                        0000, 0020, 0008, ;                    hold       L      = facing left  - aiming down-left
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0200, 000A, ;                    hold   <          = moving left  - not aiming
                         FFFF
-}
 
 
-;;; $AAC0: Transition table - entry 13 ;;;
-{
-; 13: Facing right - normal jump - not aiming - not moving - gun extended
-$91:AAC0             dw 0000, 0980, 0069,
-                        0000, 0580, 006B,
-                        0000, 0190, 0069,
-                        0000, 01A0, 006B,
-                        0000, 0900, 0069,
-                        0000, 0500, 006B,
-                        0000, 0280, 002F,
-                        0000, 0880, 0015,
-                        0000, 0480, 0017,
-                        0000, 0090, 0069,
-                        0000, 00A0, 006B,
-                        0000, 0180, 0051,
-                        0000, 00C0, 0013,
-                        0000, 0200, 002F,
-                        0000, 0800, 0015,
-                        0000, 0400, 0017,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0100, 0051,
-                        0000, 0040, 0013,
+; 13h: Facing right - normal jump - not aiming - not moving - gun extended
+$91:AAC0             dw 0000, 0980, 0069, ;                    hold    ^ >  A    = facing right - normal jump - aiming up-right
+                        0000, 0580, 006B, ;                    hold     v>  A    = facing right - normal jump - aiming down-right
+                        0000, 0190, 0069, ;                    hold      > RA    = facing right - normal jump - aiming up-right
+                        0000, 01A0, 006B, ;                    hold      >L A    = facing right - normal jump - aiming down-right
+                        0000, 0900, 0069, ;                    hold    ^ >       = facing right - normal jump - aiming up-right
+                        0000, 0500, 006B, ;                    hold     v>       = facing right - normal jump - aiming down-right
+                        0000, 0280, 002F, ;                    hold   <     A    = facing right - turning - jumping
+                        0000, 0880, 0015, ;                    hold    ^    A    = facing right - normal jump - aiming up
+                        0000, 0480, 0017, ;                    hold     v   A    = facing right - normal jump - aiming down
+                        0000, 0090, 0069, ;                    hold        RA    = facing right - normal jump - aiming up-right
+                        0000, 00A0, 006B, ;                    hold       L A    = facing right - normal jump - aiming down-right
+                        0000, 0180, 0051, ;                    hold      >  A    = facing right - normal jump - not aiming - moving forward
+                        0000, 00C0, 0013, ;                    hold         A X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0200, 002F, ;                    hold   <          = facing right - turning - jumping
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0100, 0051, ;                    hold      >       = facing right - normal jump - not aiming - moving forward
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $AB3A: Transition table - entry 14 ;;;
-{
-; 14: Facing left - normal jump - not aiming - not moving - gun extended
-$91:AB3A             dw 0000, 0A80, 006A,
-                        0000, 0680, 006C,
-                        0000, 0290, 006A,
-                        0000, 02A0, 006C,
-                        0000, 0A00, 006A,
-                        0000, 0600, 006C,
-                        0000, 0180, 0030,
-                        0000, 0880, 0016,
-                        0000, 0480, 0018,
-                        0000, 0090, 006A,
-                        0000, 00A0, 006C,
-                        0000, 0280, 0052,
-                        0000, 00C0, 0014,
-                        0000, 0100, 0030,
-                        0000, 0800, 0016,
-                        0000, 0400, 0018,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0200, 0052,
-                        0000, 0040, 0014,
+; 14h: Facing left  - normal jump - not aiming - not moving - gun extended
+$91:AB3A             dw 0000, 0A80, 006A, ;                    hold   <^    A    = facing left  - normal jump - aiming up-left
+                        0000, 0680, 006C, ;                    hold   < v   A    = facing left  - normal jump - aiming down-left
+                        0000, 0290, 006A, ;                    hold   <    RA    = facing left  - normal jump - aiming up-left
+                        0000, 02A0, 006C, ;                    hold   <   L A    = facing left  - normal jump - aiming down-left
+                        0000, 0A00, 006A, ;                    hold   <^         = facing left  - normal jump - aiming up-left
+                        0000, 0600, 006C, ;                    hold   < v        = facing left  - normal jump - aiming down-left
+                        0000, 0180, 0030, ;                    hold      >  A    = facing left  - turning - jumping
+                        0000, 0880, 0016, ;                    hold    ^    A    = facing left  - normal jump - aiming up
+                        0000, 0480, 0018, ;                    hold     v   A    = facing left  - normal jump - aiming down
+                        0000, 0090, 006A, ;                    hold        RA    = facing left  - normal jump - aiming up-left
+                        0000, 00A0, 006C, ;                    hold       L A    = facing left  - normal jump - aiming down-left
+                        0000, 0280, 0052, ;                    hold   <     A    = facing left  - normal jump - not aiming - moving forward
+                        0000, 00C0, 0014, ;                    hold         A X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0100, 0030, ;                    hold      >       = facing left  - turning - jumping
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0200, 0052, ;                    hold   <          = facing left  - normal jump - not aiming - moving forward
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $ABB4: Transition table - entry 17 ;;;
-{
-; 17: Facing right - normal jump - aiming down
-$91:ABB4             dw 0400, 0000, 0037,
-                        0000, 0980, 0069,
-                        0000, 0580, 006B,
-                        0000, 0190, 0069,
-                        0000, 01A0, 006B,
-                        0000, 01C0, 0013,
-                        0000, 0900, 0069,
-                        0000, 0500, 006B,
-                        0000, 0280, 002F,
-                        0000, 0880, 0015,
-                        0000, 0480, 0017,
-                        0000, 0090, 0069,
-                        0000, 00A0, 006B,
-                        0000, 0180, 0051,
-                        0000, 00C0, 0013,
-                        0000, 0200, 002F,
-                        0000, 0800, 0015,
-                        0000, 0400, 0017,
-                        0000, 0010, 0069,
-                        0000, 0020, 006B,
-                        0000, 0100, 0051,
-                        0000, 0080, 0017,
-                        0000, 0040, 0013,
+; 17h: Facing right - normal jump - aiming down
+$91:ABB4             dw 0400, 0000, 0037, ; tap     v                            = facing right - morphing transition
+                        0000, 0980, 0069, ;                    hold    ^ >  A    = facing right - normal jump - aiming up-right
+                        0000, 0580, 006B, ;                    hold     v>  A    = facing right - normal jump - aiming down-right
+                        0000, 0190, 0069, ;                    hold      > RA    = facing right - normal jump - aiming up-right
+                        0000, 01A0, 006B, ;                    hold      >L A    = facing right - normal jump - aiming down-right
+                        0000, 01C0, 0013, ;                    hold      >  A X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0900, 0069, ;                    hold    ^ >       = facing right - normal jump - aiming up-right
+                        0000, 0500, 006B, ;                    hold     v>       = facing right - normal jump - aiming down-right
+                        0000, 0280, 002F, ;                    hold   <     A    = facing right - turning - jumping
+                        0000, 0880, 0015, ;                    hold    ^    A    = facing right - normal jump - aiming up
+                        0000, 0480, 0017, ;                    hold     v   A    = facing right - normal jump - aiming down
+                        0000, 0090, 0069, ;                    hold        RA    = facing right - normal jump - aiming up-right
+                        0000, 00A0, 006B, ;                    hold       L A    = facing right - normal jump - aiming down-right
+                        0000, 0180, 0051, ;                    hold      >  A    = facing right - normal jump - not aiming - moving forward
+                        0000, 00C0, 0013, ;                    hold         A X  = facing right - normal jump - not aiming - not moving - gun extended
+                        0000, 0200, 002F, ;                    hold   <          = facing right - turning - jumping
+                        0000, 0800, 0015, ;                    hold    ^         = facing right - normal jump - aiming up
+                        0000, 0400, 0017, ;                    hold     v        = facing right - normal jump - aiming down
+                        0000, 0010, 0069, ;                    hold        R     = facing right - normal jump - aiming up-right
+                        0000, 0020, 006B, ;                    hold       L      = facing right - normal jump - aiming down-right
+                        0000, 0100, 0051, ;                    hold      >       = facing right - normal jump - not aiming - moving forward
+                        0000, 0080, 0017, ;                    hold         A    = facing right - normal jump - aiming down
+                        0000, 0040, 0013, ;                    hold           X  = facing right - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $AC40: Transition table - entry 18 ;;;
-{
-; 18: Facing left - normal jump - aiming down
-$91:AC40             dw 0400, 0000, 0038,
-                        0000, 0A80, 006A,
-                        0000, 0680, 006C,
-                        0000, 0290, 006A,
-                        0000, 02A0, 006C,
-                        0000, 02A0, 006C,
-                        0000, 0A00, 006A,
-                        0000, 0600, 006C,
-                        0000, 0180, 0030,
-                        0000, 0880, 0016,
-                        0000, 0480, 0018,
-                        0000, 0090, 006A,
-                        0000, 00A0, 006C,
-                        0000, 0280, 0052,
-                        0000, 00C0, 0014,
-                        0000, 0100, 0030,
-                        0000, 0800, 0016,
-                        0000, 0400, 0018,
-                        0000, 0010, 006A,
-                        0000, 0020, 006C,
-                        0000, 0200, 0052,
-                        0000, 0080, 0018,
-                        0000, 0040, 0014,
+; 18h: Facing left  - normal jump - aiming down
+$91:AC40             dw 0400, 0000, 0038, ; tap     v                            = facing left  - morphing transition
+                        0000, 0A80, 006A, ;                    hold   <^    A    = facing left  - normal jump - aiming up-left
+                        0000, 0680, 006C, ;                    hold   < v   A    = facing left  - normal jump - aiming down-left
+                        0000, 0290, 006A, ;                    hold   <    RA    = facing left  - normal jump - aiming up-left
+                        0000, 02A0, 006C, ;                    hold   <   L A    = facing left  - normal jump - aiming down-left
+                        0000, 02A0, 006C, ;                    hold   <   L A    = facing left  - normal jump - aiming down-left
+                        0000, 0A00, 006A, ;                    hold   <^         = facing left  - normal jump - aiming up-left
+                        0000, 0600, 006C, ;                    hold   < v        = facing left  - normal jump - aiming down-left
+                        0000, 0180, 0030, ;                    hold      >  A    = facing left  - turning - jumping
+                        0000, 0880, 0016, ;                    hold    ^    A    = facing left  - normal jump - aiming up
+                        0000, 0480, 0018, ;                    hold     v   A    = facing left  - normal jump - aiming down
+                        0000, 0090, 006A, ;                    hold        RA    = facing left  - normal jump - aiming up-left
+                        0000, 00A0, 006C, ;                    hold       L A    = facing left  - normal jump - aiming down-left
+                        0000, 0280, 0052, ;                    hold   <     A    = facing left  - normal jump - not aiming - moving forward
+                        0000, 00C0, 0014, ;                    hold         A X  = facing left  - normal jump - not aiming - not moving - gun extended
+                        0000, 0100, 0030, ;                    hold      >       = facing left  - turning - jumping
+                        0000, 0800, 0016, ;                    hold    ^         = facing left  - normal jump - aiming up
+                        0000, 0400, 0018, ;                    hold     v        = facing left  - normal jump - aiming down
+                        0000, 0010, 006A, ;                    hold        R     = facing left  - normal jump - aiming up-left
+                        0000, 0020, 006C, ;                    hold       L      = facing left  - normal jump - aiming down-left
+                        0000, 0200, 0052, ;                    hold   <          = facing left  - normal jump - not aiming - moving forward
+                        0000, 0080, 0018, ;                    hold         A    = facing left  - normal jump - aiming down
+                        0000, 0040, 0014, ;                    hold           X  = facing left  - normal jump - not aiming - not moving - gun extended
                         FFFF
-}
 
 
-;;; $ACCC: Transition table - entry 3D ;;;
-{
-; 3D: Facing right - unmorphing
-$91:ACCC             dw 0000, 0140, 0067,
-                        0000, 0840, 002B,
-                        0000, 0440, 002D,
+; 3Dh: Facing right - unmorphing transition
+$91:ACCC             dw 0000, 0140, 0067, ;                    hold      >    X  = facing right - falling - gun extended
+                        0000, 0840, 002B, ;                    hold    ^      X  = facing right - falling - aiming up
+                        0000, 0440, 002D, ;                    hold     v     X  = facing right - falling - aiming down
                         FFFF
-}
 
 
-;;; $ACE0: Transition table - entry 3E ;;;
-{
-; 3E: Facing left - unmorphing
-$91:ACE0             dw 0000, 0240, 0068,
-                        0000, 0840, 002C,
-                        0000, 0440, 002E,
+; 3Eh: Facing left  - unmorphing transition
+$91:ACE0             dw 0000, 0240, 0068, ;                    hold   <       X  = facing left  - falling - gun extended
+                        0000, 0840, 002C, ;                    hold    ^      X  = facing left  - falling - aiming up
+                        0000, 0440, 002E, ;                    hold     v     X  = facing left  - falling - aiming down
                         FFFF
-}
 
 
-;;; $ACF4: Transition table - entry 25 ;;;
-{
-; 25: Facing right - turning - standing
-$91:ACF4             dw 0000, 0280, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 0025,
+; 25h: Facing right - turning - standing
+$91:ACF4             dw 0000, 0280, 001A, ;                    hold   <     A    = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
                         FFFF
-}
 
 
-;;; $AD08: Transition table - entry 26 ;;;
-{
-; 26: Facing left - turning - standing
-$91:AD08             dw 0000, 0180, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 0026,
+; 26h: Facing left  - turning - standing
+$91:AD08             dw 0000, 0180, 0019, ;                    hold      >  A    = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
                         FFFF
-}
 
 
-;;; $AD1C: Transition table - entry 8B ;;;
-{
-; 8B: Facing right - turning - standing - aiming up
-$91:AD1C             dw 0080, 0200, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 008B,
+; 8Bh: Facing right - turning - standing - aiming up
+$91:AD1C             dw 0080, 0200, 001A, ; tap         A    + hold   <          = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 008B, ;                    hold   <          = facing right - turning - standing - aiming up
                         FFFF
-}
 
 
-;;; $AD30: Transition table - entry 8C ;;;
-{
-; 8C: Facing left - turning - standing - aiming up
-$91:AD30             dw 0080, 0100, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 008C,
+; 8Ch: Facing left  - turning - standing - aiming up
+$91:AD30             dw 0080, 0100, 0019, ; tap         A    + hold      >       = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 008C, ;                    hold      >       = facing left  - turning - standing - aiming up
                         FFFF
-}
 
 
-;;; $AD44: Transition table - entry 8D ;;;
-{
-; 8D: Facing right - turning - standing - aiming down-right
-$91:AD44             dw 0080, 0200, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 008D,
+; 8Dh: Facing right - turning - standing - aiming down-right
+$91:AD44             dw 0080, 0200, 001A, ; tap         A    + hold   <          = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 008D, ;                    hold   <          = facing right - turning - standing - aiming down-right
                         FFFF
-}
 
 
-;;; $AD58: Transition table - entry 8E ;;;
-{
-; 8E: Facing left - turning - standing - aiming down-left
-$91:AD58             dw 0080, 0100, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 008E,
+; 8Eh: Facing left  - turning - standing - aiming down-left
+$91:AD58             dw 0080, 0100, 0019, ; tap         A    + hold      >       = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 008E, ;                    hold      >       = facing left  - turning - standing - aiming down-left
                         FFFF
-}
 
 
-;;; $AD6C: Transition table - entry C7 ;;;
-{
-; C7: Facing right - vertical shinespark windup
-$91:AD6C             dw 0000, 0880, 00CB,
-                        0000, 0090, 00CD,
-                        0000, 0180, 00C9,
+; C7h: Facing right - vertical shinespark windup
+$91:AD6C             dw 0000, 0880, 00CB, ;                    hold    ^    A    = facing right - shinespark - vertical
+                        0000, 0090, 00CD, ;                    hold        RA    = facing right - shinespark - diagonal
+                        0000, 0180, 00C9, ;                    hold      >  A    = facing right - shinespark - horizontal
                         FFFF
-}
 
 
-;;; $AD80: Transition table - entry C8 ;;;
-{
-; C8: Facing left - vertical shinespark windup
-$91:AD80             dw 0000, 0880, 00CC,
-                        0000, 0090, 00CE,
-                        0000, 0280, 00CA,
+; C8h: Facing left  - vertical shinespark windup
+$91:AD80             dw 0000, 0880, 00CC, ;                    hold    ^    A    = facing left  - shinespark - vertical
+                        0000, 0090, 00CE, ;                    hold        RA    = facing left  - shinespark - diagonal
+                        0000, 0280, 00CA, ;                    hold   <     A    = facing left  - shinespark - horizontal
                         FFFF
-}
 
 
-;;; $AD94: Transition table - entry 2D ;;;
-{
-; 2D: Facing right - falling - aiming down
-$91:AD94             dw 0400, 0000, 0037,
-                        0000, 0900, 006D,
-                        0000, 0500, 006F,
-                        0000, 0800, 002B,
-                        0000, 0400, 002D,
-                        0000, 0200, 0087,
-                        0000, 0010, 006D,
-                        0000, 0020, 006F,
-                        0000, 0040, 0067,
-                        0000, 0100, 0029,
+; 2Dh: Facing right - falling - aiming down
+$91:AD94             dw 0400, 0000, 0037, ; tap     v                            = facing right - morphing transition
+                        0000, 0900, 006D, ;                    hold    ^ >       = facing right - falling - aiming up-right
+                        0000, 0500, 006F, ;                    hold     v>       = facing right - falling - aiming down-right
+                        0000, 0800, 002B, ;                    hold    ^         = facing right - falling - aiming up
+                        0000, 0400, 002D, ;                    hold     v        = facing right - falling - aiming down
+                        0000, 0200, 0087, ;                    hold   <          = facing right - turning - falling
+                        0000, 0010, 006D, ;                    hold        R     = facing right - falling - aiming up-right
+                        0000, 0020, 006F, ;                    hold       L      = facing right - falling - aiming down-right
+                        0000, 0040, 0067, ;                    hold           X  = facing right - falling - gun extended
+                        0000, 0100, 0029, ;                    hold      >       = facing right - falling
                         FFFF
-}
 
 
-;;; $ADD2: Transition table - entry 2E ;;;
-{
-; 2E: Facing left - falling - aiming down
-$91:ADD2             dw 0400, 0000, 0038,
-                        0000, 0A00, 006E,
-                        0000, 0600, 0070,
-                        0000, 0800, 002C,
-                        0000, 0400, 002E,
-                        0000, 0100, 0088,
-                        0000, 0010, 006E,
-                        0000, 0020, 0070,
-                        0000, 0040, 0068,
-                        0000, 0200, 002A,
+; 2Eh: Facing left  - falling - aiming down
+$91:ADD2             dw 0400, 0000, 0038, ; tap     v                            = facing left  - morphing transition
+                        0000, 0A00, 006E, ;                    hold   <^         = facing left  - falling - aiming up-left
+                        0000, 0600, 0070, ;                    hold   < v        = facing left  - falling - aiming down-left
+                        0000, 0800, 002C, ;                    hold    ^         = facing left  - falling - aiming up
+                        0000, 0400, 002E, ;                    hold     v        = facing left  - falling - aiming down
+                        0000, 0100, 0088, ;                    hold      >       = facing left  - turning - falling
+                        0000, 0010, 006E, ;                    hold        R     = facing left  - falling - aiming up-left
+                        0000, 0020, 0070, ;                    hold       L      = facing left  - falling - aiming down-left
+                        0000, 0040, 0068, ;                    hold           X  = facing left  - falling - gun extended
+                        0000, 0200, 002A, ;                    hold   <          = facing left  - falling
                         FFFF
-}
 
 
-;;; $AE10: Transition table - entry DF ;;;
-{
-; Unused
-$91:AE10             dw 0800, 0000, 00DE,
+; DFh: Unused
+$91:AE10             dw 0800, 0000, 00DE, ; tap    ^                             = unused
                         FFFF
-}
 
 
-;;; $AE18: Transition table - entry BA/BB/BC/BD/BE ;;;
-{
-; BA: Facing left - grabbed by Draygon - not moving - not aiming
-; BB: Facing left - grabbed by Draygon - not moving - aiming up-left
-; BC: Facing left - grabbed by Draygon - firing
-; BD: Facing left - grabbed by Draygon - not moving - aiming down-left
-; BE: Facing left - grabbed by Draygon - moving
-$91:AE18             dw 0000, 0A40, 00BB,
-                        0000, 0640, 00BD,
-                        0000, 0240, 00BC,
-                        0000, 0010, 00BB,
-                        0000, 0020, 00BD,
-                        0000, 0040, 00BC,
-                        0000, 0200, 00BE,
-                        0000, 0100, 00BE,
-                        0000, 0800, 00BE,
-                        0000, 0400, 00BE,
+; BAh: Facing left  - grabbed by Draygon - not moving - not aiming
+; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left
+; BCh: Facing left  - grabbed by Draygon - firing
+; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left
+; BEh: Facing left  - grabbed by Draygon - moving
+$91:AE18             dw 0000, 0A40, 00BB, ;                    hold   <^      X  = facing left  - grabbed by Draygon - not moving - aiming up-left
+                        0000, 0640, 00BD, ;                    hold   < v     X  = facing left  - grabbed by Draygon - not moving - aiming down-left
+                        0000, 0240, 00BC, ;                    hold   <       X  = facing left  - grabbed by Draygon - firing
+                        0000, 0010, 00BB, ;                    hold        R     = facing left  - grabbed by Draygon - not moving - aiming up-left
+                        0000, 0020, 00BD, ;                    hold       L      = facing left  - grabbed by Draygon - not moving - aiming down-left
+                        0000, 0040, 00BC, ;                    hold           X  = facing left  - grabbed by Draygon - firing
+                        0000, 0200, 00BE, ;                    hold   <          = facing left  - grabbed by Draygon - moving
+                        0000, 0100, 00BE, ;                    hold      >       = facing left  - grabbed by Draygon - moving
+                        0000, 0800, 00BE, ;                    hold    ^         = facing left  - grabbed by Draygon - moving
+                        0000, 0400, 00BE, ;                    hold     v        = facing left  - grabbed by Draygon - moving
                         FFFF
-}
 
 
-;;; $AE56: Transition table - entry EC/ED/EE/EF/F0 ;;;
-{
-; EC: Facing right - grabbed by Draygon - not moving - not aiming
-; ED: Facing right - grabbed by Draygon - not moving - aiming up-right
-; EE: Facing right - grabbed by Draygon - firing
-; EF: Facing right - grabbed by Draygon - not moving - aiming down-right
-; F0: Facing right - grabbed by Draygon - moving
-$91:AE56             dw 0000, 0940, 00ED,
-                        0000, 0540, 00EF,
-                        0000, 0140, 00EE,
-                        0000, 0010, 00ED,
-                        0000, 0020, 00EF,
-                        0000, 0040, 00EE,
-                        0000, 0200, 00F0,
-                        0000, 0100, 00F0,
-                        0000, 0800, 00F0,
-                        0000, 0400, 00F0,
+; ECh: Facing right - grabbed by Draygon - not moving - not aiming
+; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right
+; EEh: Facing right - grabbed by Draygon - firing
+; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right
+; F0h: Facing right - grabbed by Draygon - moving
+$91:AE56             dw 0000, 0940, 00ED, ;                    hold    ^ >    X  = facing right - grabbed by Draygon - not moving - aiming up-right
+                        0000, 0540, 00EF, ;                    hold     v>    X  = facing right - grabbed by Draygon - not moving - aiming down-right
+                        0000, 0140, 00EE, ;                    hold      >    X  = facing right - grabbed by Draygon - firing
+                        0000, 0010, 00ED, ;                    hold        R     = facing right - grabbed by Draygon - not moving - aiming up-right
+                        0000, 0020, 00EF, ;                    hold       L      = facing right - grabbed by Draygon - not moving - aiming down-right
+                        0000, 0040, 00EE, ;                    hold           X  = facing right - grabbed by Draygon - firing
+                        0000, 0200, 00F0, ;                    hold   <          = facing right - grabbed by Draygon - moving
+                        0000, 0100, 00F0, ;                    hold      >       = facing right - grabbed by Draygon - moving
+                        0000, 0800, 00F0, ;                    hold    ^         = facing right - grabbed by Draygon - moving
+                        0000, 0400, 00F0, ;                    hold     v        = facing right - grabbed by Draygon - moving
                         FFFF
-}
 
 
-;;; $AE94: Transition table - entry 0B ;;;
-{
-; 0B: Moving right - gun extended
-$91:AE94             dw 0400, 0000, 0035,
-                        0080, 0000, 0019,
-                        0000, 0110, 000F,
-                        0000, 0120, 0011,
-                        0000, 0900, 000F,
-                        0000, 0500, 0011,
-                        0000, 0140, 000B,
-                        0000, 0100, 000B,
-                        0000, 0200, 0025,
-                        0000, 0800, 0003,
-                        0000, 0010, 0005,
-                        0000, 0020, 0007,
+; Bh: Moving right - gun extended
+$91:AE94             dw 0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
+                        0080, 0000, 0019, ; tap         A                        = facing right - spin jump
+                        0000, 0110, 000F, ;                    hold      > R     = moving right - aiming up-right
+                        0000, 0120, 0011, ;                    hold      >L      = moving right - aiming down-right
+                        0000, 0900, 000F, ;                    hold    ^ >       = moving right - aiming up-right
+                        0000, 0500, 0011, ;                    hold     v>       = moving right - aiming down-right
+                        0000, 0140, 000B, ;                    hold      >    X  = moving right - gun extended
+                        0000, 0100, 000B, ;                    hold      >       = moving right - gun extended
+                        0000, 0200, 0025, ;                    hold   <          = facing right - turning - standing
+                        0000, 0800, 0003, ;                    hold    ^         = facing right - aiming up
+                        0000, 0010, 0005, ;                    hold        R     = facing right - aiming up-right
+                        0000, 0020, 0007, ;                    hold       L      = facing right - aiming down-right
                         FFFF
-}
 
 
-;;; $AEDE: Transition table - entry 0C ;;;
-{
-; 0C: Moving left - gun extended
-$91:AEDE             dw 0400, 0000, 0036,
-                        0080, 0000, 001A,
-                        0000, 0210, 0010,
-                        0000, 0220, 0012,
-                        0000, 0A00, 0010,
-                        0000, 0600, 0012,
-                        0000, 0240, 000C,
-                        0000, 0200, 000C,
-                        0000, 0100, 0026,
-                        0000, 0800, 0004,
-                        0000, 0010, 0006,
-                        0000, 0020, 0008,
+; Ch: Moving left  - gun extended
+$91:AEDE             dw 0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
+                        0080, 0000, 001A, ; tap         A                        = facing left  - spin jump
+                        0000, 0210, 0010, ;                    hold   <    R     = moving left  - aiming up-left
+                        0000, 0220, 0012, ;                    hold   <   L      = moving left  - aiming down-left
+                        0000, 0A00, 0010, ;                    hold   <^         = moving left  - aiming up-left
+                        0000, 0600, 0012, ;                    hold   < v        = moving left  - aiming down-left
+                        0000, 0240, 000C, ;                    hold   <       X  = moving left  - gun extended
+                        0000, 0200, 000C, ;                    hold   <          = moving left  - gun extended
+                        0000, 0100, 0026, ;                    hold      >       = facing left  - turning - standing
+                        0000, 0800, 0004, ;                    hold    ^         = facing left  - aiming up
+                        0000, 0010, 0006, ;                    hold        R     = facing left  - aiming up-left
+                        0000, 0020, 0008, ;                    hold       L      = facing left  - aiming down-left
                         FFFF
-}
 
 
-;;; $AF28: Transition table - entry 67 ;;;
-{
-; 67: Facing right - falling - gun extended
-$91:AF28             dw 0000, 0900, 006D,
-                        0000, 0500, 006F,
-                        0000, 0800, 002B,
-                        0000, 0400, 002D,
-                        0000, 0200, 0087,
-                        0000, 0010, 006D,
-                        0000, 0020, 006F,
-                        0000, 0040, 0067,
-                        0000, 0100, 0067,
+; 67h: Facing right - falling - gun extended
+$91:AF28             dw 0000, 0900, 006D, ;                    hold    ^ >       = facing right - falling - aiming up-right
+                        0000, 0500, 006F, ;                    hold     v>       = facing right - falling - aiming down-right
+                        0000, 0800, 002B, ;                    hold    ^         = facing right - falling - aiming up
+                        0000, 0400, 002D, ;                    hold     v        = facing right - falling - aiming down
+                        0000, 0200, 0087, ;                    hold   <          = facing right - turning - falling
+                        0000, 0010, 006D, ;                    hold        R     = facing right - falling - aiming up-right
+                        0000, 0020, 006F, ;                    hold       L      = facing right - falling - aiming down-right
+                        0000, 0040, 0067, ;                    hold           X  = facing right - falling - gun extended
+                        0000, 0100, 0067, ;                    hold      >       = facing right - falling - gun extended
                         FFFF
-}
 
 
-;;; $AF60: Transition table - entry 68 ;;;
-{
-; 68: Facing left - falling - gun extended
-$91:AF60             dw 0000, 0A00, 006E,
-                        0000, 0600, 0070,
-                        0000, 0800, 002C,
-                        0000, 0400, 002E,
-                        0000, 0100, 0088,
-                        0000, 0010, 006E,
-                        0000, 0020, 0070,
-                        0000, 0040, 0068,
-                        0000, 0200, 0068,
+; 68h: Facing left  - falling - gun extended
+$91:AF60             dw 0000, 0A00, 006E, ;                    hold   <^         = facing left  - falling - aiming up-left
+                        0000, 0600, 0070, ;                    hold   < v        = facing left  - falling - aiming down-left
+                        0000, 0800, 002C, ;                    hold    ^         = facing left  - falling - aiming up
+                        0000, 0400, 002E, ;                    hold     v        = facing left  - falling - aiming down
+                        0000, 0100, 0088, ;                    hold      >       = facing left  - turning - falling
+                        0000, 0010, 006E, ;                    hold        R     = facing left  - falling - aiming up-left
+                        0000, 0020, 0070, ;                    hold       L      = facing left  - falling - aiming down-left
+                        0000, 0040, 0068, ;                    hold           X  = facing left  - falling - gun extended
+                        0000, 0200, 0068, ;                    hold   <          = facing left  - falling - gun extended
                         FFFF
-}
 
 
-;;; $AF98: Transition table - entry BF ;;;
-{
-; BF: Facing right - moonwalking - turn/jump left
-$91:AF98             dw 0000, 0280, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 00BF,
+; BFh: Facing right - moonwalking - turn/jump left
+$91:AF98             dw 0000, 0280, 001A, ;                    hold   <     A    = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 00BF, ;                    hold   <          = facing right - moonwalking - turn/jump left
                         FFFF
-}
 
 
-;;; $AFAC: Transition table - entry C0 ;;;
-{
-; C0: Facing left - moonwalking - turn/jump right
-$91:AFAC             dw 0000, 0180, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 00C0,
+; C0h: Facing left  - moonwalking - turn/jump right
+$91:AFAC             dw 0000, 0180, 0019, ;                    hold      >  A    = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 00C0, ;                    hold      >       = facing left  - moonwalking - turn/jump right
                         FFFF
-}
 
 
-;;; $AFC0: Transition table - entry C1 ;;;
-{
-; C1: Facing right - moonwalking - turn/jump left - aiming up-right
-$91:AFC0             dw 0080, 0200, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 00C1,
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right
+$91:AFC0             dw 0080, 0200, 001A, ; tap         A    + hold   <          = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 00C1, ;                    hold   <          = facing right - moonwalking - turn/jump left  - aiming up-right
                         FFFF
-}
 
 
-;;; $AFD4: Transition table - entry C2 ;;;
-{
-; C2: Facing left - moonwalking - turn/jump right - aiming up-left
-$91:AFD4             dw 0080, 0100, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 00C2,
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left
+$91:AFD4             dw 0080, 0100, 0019, ; tap         A    + hold      >       = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 00C2, ;                    hold      >       = facing left  - moonwalking - turn/jump right - aiming up-left
                         FFFF
-}
 
 
-;;; $AFE8: Transition table - entry C3 ;;;
-{
-; C3: Facing right - moonwalking - turn/jump left - aiming down-right
-$91:AFE8             dw 0080, 0200, 001A,
-                        0080, 0000, 004C,
-                        0000, 0200, 00C3,
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right
+$91:AFE8             dw 0080, 0200, 001A, ; tap         A    + hold   <          = facing left  - spin jump
+                        0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
+                        0000, 0200, 00C3, ;                    hold   <          = facing right - moonwalking - turn/jump left  - aiming down-right
                         FFFF
-}
 
 
-;;; $AFFC: Transition table - entry C4 ;;;
-{
-; C4: Facing left - moonwalking - turn/jump right - aiming down-left
-$91:AFFC             dw 0080, 0100, 0019,
-                        0080, 0000, 004B,
-                        0000, 0100, 00C4,
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left
+$91:AFFC             dw 0080, 0100, 0019, ; tap         A    + hold      >       = facing right - spin jump
+                        0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
+                        0000, 0100, 00C4, ;                    hold      >       = facing left  - moonwalking - turn/jump right - aiming down-left
                         FFFF
-}
 }
 
 
