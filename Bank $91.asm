@@ -3238,7 +3238,7 @@ $91:A7E0             dw 0000, 0140, 0046, ;                    hold      >    X 
 $91:A7F4             dw FFFF
 
 
-; Unused. Similar to moonwalk with a normal jump transition instead of moonwalking turn/jump
+; Unused. Similar to ran into a wall, but with aim-up and aim-down buttons reversed
 $91:A7F6             dw 0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
                         0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
                         0000, 0210, 0078, ;                    hold   <    R     = facing right - moonwalk - aiming down-right
@@ -3256,7 +3256,7 @@ $91:A7F6             dw 0080, 0000, 004B, ; tap         A                       
 $91:A834             dw FFFF
 
 
-; Unused. Similar to moonwalk with a normal jump transition instead of moonwalking turn/jump
+; Unused. Similar to ran into a wall, but with aim-up and aim-down buttons reversed
 $91:A836             dw 0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
                         0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
                         0000, 0120, 0077, ;                    hold      >L      = facing left  - moonwalk - aiming down-left
