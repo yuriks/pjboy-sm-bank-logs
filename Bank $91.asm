@@ -410,8 +410,7 @@ $91:81A8 60          RTS
 
 ;;; $81A9: Determine prospective pose from transition table ;;;
 {
-;; Returns:
-;;     Carry: Set if pose was found, clear otherwise
+; Carry is ignored by all callers
 
 ; Transition table entries have the format:
 ;     nnnn cccc pppp
@@ -424,10 +423,8 @@ $91:81A8 60          RTS
 ;     p is the pose to transition to (if not currently already in that pose)
 
 ; Iterate through transition table entry for current pose, if transition found with the required inputs being pressed:
-;     If transition pose is the current pose, return carry clear
-;     Else, set prospective pose and return carry set
-; If pressing nothing or transition table entry is non-empty, execute $91:82D9
-; Return carry clear
+;     If transition pose is not the current pose, set prospective pose
+; Else if pressing nothing or transition table entry is non-empty, execute $91:82D9
 
 ; $12: The controller 1 input bits *not* newly pressed (not including start/select)
 ; $14: The controller 1 input bits *not* pressed (not including start/select)
@@ -3238,7 +3235,7 @@ $91:A7E0             dw 0000, 0140, 0046, ;                    hold      >    X 
 $91:A7F4             dw FFFF
 
 
-; Unused. Similar to ran into a wall, but with aim-up and aim-down buttons reversed
+; Unused. Similar to ran into a wall
 $91:A7F6             dw 0080, 0000, 004B, ; tap         A                        = facing right - normal jump transition
                         0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
                         0000, 0210, 0078, ;                    hold   <    R     = facing right - moonwalk - aiming down-right
@@ -3256,7 +3253,7 @@ $91:A7F6             dw 0080, 0000, 004B, ; tap         A                       
 $91:A834             dw FFFF
 
 
-; Unused. Similar to ran into a wall, but with aim-up and aim-down buttons reversed
+; Unused. Similar to ran into a wall
 $91:A836             dw 0080, 0000, 004C, ; tap         A                        = facing left  - normal jump transition
                         0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
                         0000, 0120, 0077, ;                    hold      >L      = facing left  - moonwalk - aiming down-left
@@ -11603,6 +11600,8 @@ $91:EADD 60          RTS
 ; If Samus pose changes from a running pose to another running pose (changing arm cannon aim),
 ; Samus is moved one pixel horizontally forwards,
 ; the fact that it's pure horizontal movement causes Samus to sometimes lose contact with downwards slopes
+
+; This code is also responsible for preventing jump or crouch on the frame Samus runs into a wall
 
 $91:EADE AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
 $91:EAE1 F0 0B       BEQ $0B    [$EAEE]     ;} If Samus X speed killed due to solid collision:

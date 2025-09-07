@@ -13520,7 +13520,7 @@ $90:DDD7 60          RTS
 ;;; $DDD8: HUD selection handler - grabbed by Draygon ;;;
 {
 $90:DDD8 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:DDDB C9 DF 00    CMP #$00DF             ;} If [Samus pose] != DFh (unused?):
+$90:DDDB C9 DF 00    CMP #$00DF             ;} If [Samus pose] != DFh (unused):
 $90:DDDE F0 05       BEQ $05    [$DDE5]     ;/
 $90:DDE0 20 3D DD    JSR $DD3D  [$90:DD3D]  ; Standard HUD selection handler
 $90:DDE3 80 03       BRA $03    [$DDE8]
