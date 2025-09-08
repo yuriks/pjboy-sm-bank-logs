@@ -2828,7 +2828,7 @@ $91:A172             dw 0080, 0800, 0056, ; tap         A    + hold    ^        
 
 
 ; 9: Moving right - not aiming
-; Dh: Moving right - aiming up (unused)
+; Dh: Unused. Moving right - aiming up
 ; Fh: Moving right - aiming up-right
 ; 11h: Moving right - aiming down-right
 $91:A1F8             dw 0400, 0000, 0035, ; tap     v                            = facing right - crouching transition
@@ -2847,7 +2847,7 @@ $91:A1F8             dw 0400, 0000, 0035, ; tap     v                           
 
 
 ; Ah: Moving left  - not aiming
-; Eh: Moving left  - aiming up (unused)
+; Eh: Unused. Moving left  - aiming up
 ; 10h: Moving left  - aiming up-left
 ; 12h: Moving left  - aiming down-left
 $91:A242             dw 0400, 0000, 0036, ; tap     v                            = facing left  - crouching transition
@@ -3835,8 +3835,8 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
 ; Ah: Moving left  - not aiming
 ; Bh: Moving right - gun extended
 ; Ch: Moving left  - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left  - aiming up (unused)
+; Dh: Unused. Moving right - aiming up
+; Eh: Unused. Moving left  - aiming up
 ; Fh: Moving right - aiming up-right
 ; 10h: Moving left  - aiming up-left
 ; 11h: Moving right - aiming down-right
@@ -4524,8 +4524,8 @@ $91:B671             db 08,01,01,02,06,00,15,00 ; 9: Moving right - not aiming
 $91:B679             db 04,01,02,07,06,00,15,00 ; Ah: Moving left  - not aiming
 $91:B681             db 08,01,01,02,06,00,15,00 ; Bh: Moving right - gun extended
 $91:B689             db 04,01,02,07,06,00,15,00 ; Ch: Moving left  - gun extended
-$91:B691             db 08,01,01,00,06,00,15,00 ; Dh: Moving right - aiming up (unused)
-$91:B699             db 04,01,02,09,06,00,15,00 ; Eh: Moving left  - aiming up (unused)
+$91:B691             db 08,01,01,00,06,00,15,00 ; Dh: Unused. Moving right - aiming up
+$91:B699             db 04,01,02,09,06,00,15,00 ; Eh: Unused. Moving left  - aiming up
 $91:B6A1             db 08,01,01,01,06,00,15,00 ; Fh: Moving right - aiming up-right
 $91:B6A9             db 04,01,02,08,06,00,15,00 ; 10h: Moving left  - aiming up-left
 $91:B6B1             db 08,01,01,03,06,00,15,00 ; 11h: Moving right - aiming down-right

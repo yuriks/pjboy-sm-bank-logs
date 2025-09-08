@@ -5225,7 +5225,7 @@ $8F:C1D5 60          RTS
 ; Sprite object IDs. 3 = small explosion, 9 = small dust cloud, Ch = smoke, 12h = short big dust cloud, 15h = big dust cloud
 $8F:C1D6             db 03, 03, 09, 0C, 0C, 12, 12, 15
 
-; Explosion sound effects
+; Explosion sound effects. Sound library 2
 $8F:C1DE             db 24, 00, 00, 25, 00, 00, 00, 00
 }
 

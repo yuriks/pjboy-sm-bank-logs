@@ -6,8 +6,8 @@
 ; Ah: Moving left  - not aiming - frame 0
 ; Bh: Moving right - gun extended - frame 0
 ; Ch: Moving left  - gun extended - frame 0
-; Dh: Moving right - aiming up (unused) - frame 0
-; Eh: Moving left  - aiming up (unused) - frame 0
+; Dh: Unused. Moving right - aiming up - frame 0
+; Eh: Unused. Moving left  - aiming up - frame 0
 ; Fh: Moving right - aiming up-right - frame 0
 ; 10h: Moving left  - aiming up-left - frame 0
 ; 11h: Moving right - aiming down-right - frame 0
@@ -50,8 +50,8 @@ $9D:8000             db 82,C3,C2,C3,07,07,0F,0F,1F,1F,37,3F,36,3F,1F,1F,00,40,00
 ; Ah: Moving left  - not aiming - frame 2
 ; Bh: Moving right - gun extended - frame 2
 ; Ch: Moving left  - gun extended - frame 2
-; Dh: Moving right - aiming up (unused) - frame 2
-; Eh: Moving left  - aiming up (unused) - frame 2
+; Dh: Unused. Moving right - aiming up - frame 2
+; Eh: Unused. Moving left  - aiming up - frame 2
 ; Fh: Moving right - aiming up-right - frame 2
 ; 10h: Moving left  - aiming up-left - frame 2
 ; 11h: Moving right - aiming down-right - frame 2
@@ -95,8 +95,8 @@ $9D:8100             db 01,01,01,01,03,03,07,07,0C,0F,08,0F,18,1F,11,1F,00,01,00
 ; Ah: Moving left  - not aiming - frame 4
 ; Bh: Moving right - gun extended - frame 4
 ; Ch: Moving left  - gun extended - frame 4
-; Dh: Moving right - aiming up (unused) - frame 4
-; Eh: Moving left  - aiming up (unused) - frame 4
+; Dh: Unused. Moving right - aiming up - frame 4
+; Eh: Unused. Moving left  - aiming up - frame 4
 ; Fh: Moving right - aiming up-right - frame 4
 ; 10h: Moving left  - aiming up-left - frame 4
 ; 11h: Moving right - aiming down-right - frame 4
@@ -142,8 +142,8 @@ $9D:8260             db 00,00,00,00,04,04,0E,0E,1B,1F,39,3F,6F,7F,E7,FF,00,00,00
 ; Ah: Moving left  - not aiming - frame 5
 ; Bh: Moving right - gun extended - frame 5
 ; Ch: Moving left  - gun extended - frame 5
-; Dh: Moving right - aiming up (unused) - frame 5
-; Eh: Moving left  - aiming up (unused) - frame 5
+; Dh: Unused. Moving right - aiming up - frame 5
+; Eh: Unused. Moving left  - aiming up - frame 5
 ; Fh: Moving right - aiming up-right - frame 5
 ; 10h: Moving left  - aiming up-left - frame 5
 ; 11h: Moving right - aiming down-right - frame 5
@@ -188,8 +188,8 @@ $9D:8400             db C3,C3,03,03,03,03,07,07,07,07,0F,0F,1E,1F,1F,1F,00,41,00
 ; Ah: Moving left  - not aiming - frame 7
 ; Bh: Moving right - gun extended - frame 7
 ; Ch: Moving left  - gun extended - frame 7
-; Dh: Moving right - aiming up (unused) - frame 7
-; Eh: Moving left  - aiming up (unused) - frame 7
+; Dh: Unused. Moving right - aiming up - frame 7
+; Eh: Unused. Moving left  - aiming up - frame 7
 ; Fh: Moving right - aiming up-right - frame 7
 ; 10h: Moving left  - aiming up-left - frame 7
 ; 11h: Moving right - aiming down-right - frame 7
@@ -234,8 +234,8 @@ $9D:8500             db 03,03,03,02,07,07,0F,0F,0B,0F,13,1F,1F,1F,3E,3E,00,01,00
 ; Ah: Moving left  - not aiming - frame 9
 ; Bh: Moving right - gun extended - frame 9
 ; Ch: Moving left  - gun extended - frame 9
-; Dh: Moving right - aiming up (unused) - frame 9
-; Eh: Moving left  - aiming up (unused) - frame 9
+; Dh: Unused. Moving right - aiming up - frame 9
+; Eh: Unused. Moving left  - aiming up - frame 9
 ; Fh: Moving right - aiming up-right - frame 9
 ; 10h: Moving left  - aiming up-left - frame 9
 ; 11h: Moving right - aiming down-right - frame 9
@@ -385,8 +385,8 @@ $9D:89A0             db 03,03,02,03,03,03,01,01,01,01,01,01,00,00,00,00,00,01,00
 ; Ah: Moving left  - not aiming - frame 1
 ; Bh: Moving right - gun extended - frame 1
 ; Ch: Moving left  - gun extended - frame 1
-; Dh: Moving right - aiming up (unused) - frame 1
-; Eh: Moving left  - aiming up (unused) - frame 1
+; Dh: Unused. Moving right - aiming up - frame 1
+; Eh: Unused. Moving left  - aiming up - frame 1
 ; Fh: Moving right - aiming up-right - frame 1
 ; 10h: Moving left  - aiming up-left - frame 1
 ; 11h: Moving right - aiming down-right - frame 1
@@ -429,8 +429,8 @@ $9D:8AA0             db 39,20,7D,78,CF,FC,87,FE,83,FE,83,FE,C7,FE,FB,FF,06,06,02
 ; Ah: Moving left  - not aiming - frame 3
 ; Bh: Moving right - gun extended - frame 3
 ; Ch: Moving left  - gun extended - frame 3
-; Dh: Moving right - aiming up (unused) - frame 3
-; Eh: Moving left  - aiming up (unused) - frame 3
+; Dh: Unused. Moving right - aiming up - frame 3
+; Eh: Unused. Moving left  - aiming up - frame 3
 ; Fh: Moving right - aiming up-right - frame 3
 ; 10h: Moving left  - aiming up-left - frame 3
 ; 11h: Moving right - aiming down-right - frame 3
@@ -475,8 +475,8 @@ $9D:8BE0             db FA,E3,9E,93,0F,09,0F,0D,07,07,07,07,02,03,02,03,04,87,00
 ; Ah: Moving left  - not aiming - frame 6
 ; Bh: Moving right - gun extended - frame 6
 ; Ch: Moving left  - gun extended - frame 6
-; Dh: Moving right - aiming up (unused) - frame 6
-; Eh: Moving left  - aiming up (unused) - frame 6
+; Dh: Unused. Moving right - aiming up - frame 6
+; Eh: Unused. Moving left  - aiming up - frame 6
 ; Fh: Moving right - aiming up-right - frame 6
 ; 10h: Moving left  - aiming up-left - frame 6
 ; 11h: Moving right - aiming down-right - frame 6
@@ -519,8 +519,8 @@ $9D:8D60             db 31,20,7F,7F,63,7F,C1,FF,C1,FF,E1,FF,F2,FF,FF,FF,0E,0E,00
 ; Ah: Moving left  - not aiming - frame 8
 ; Bh: Moving right - gun extended - frame 8
 ; Ch: Moving left  - gun extended - frame 8
-; Dh: Moving right - aiming up (unused) - frame 8
-; Eh: Moving left  - aiming up (unused) - frame 8
+; Dh: Unused. Moving right - aiming up - frame 8
+; Eh: Unused. Moving left  - aiming up - frame 8
 ; Fh: Moving right - aiming up-right - frame 8
 ; 10h: Moving left  - aiming up-left - frame 8
 ; 11h: Moving right - aiming down-right - frame 8

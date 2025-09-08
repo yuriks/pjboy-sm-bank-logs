@@ -5868,7 +5868,7 @@ $84:AB0C             dw 0001,92C7,
 {
 ;;; $AB12: Instruction list - PLM $B78F (crumble Spore Spawn ceiling) ;;;
 {
-$84:AB12             dx 8C10,0A     ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumble)
+$84:AB12             dx 8C10,0A     ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumbled)
                         0004,9423,
                         0004,9433,
                         0004,9443
@@ -5906,7 +5906,7 @@ $84:AB30 60          RTS
 {
 $84:AB31             dx 874E,09,    ; Timer = 9
                         AB51        ; Scroll 0..1 = blue
-$84:AB36             dx 8C10,0A,    ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumble)
+$84:AB36             dx 8C10,0A,    ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumbled)
                         0004,A345,
                         0004,A34B,
                         0004,A351,

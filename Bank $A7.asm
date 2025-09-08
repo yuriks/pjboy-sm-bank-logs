@@ -2344,8 +2344,8 @@ $A7:B326 8D 8C 0F    STA $0F8C  [$7E:0F8C]  ;/
 
 ; BRANCH_TRIPLE_DAMAGE_END
 $A7:B329 AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
-$A7:B32C BF 0E 00 A0 LDA $A0000E,x          ;} A = (enemy 0 cry)
-$A7:B330 22 CB 90 80 JSL $8090CB[$80:90CB]  ; Queue sound [A], sound library 2, max queued sounds allowed = 6
+$A7:B32C BF 0E 00 A0 LDA $A0000E,x          ;} Queue sound (enemy 0 cry), sound library 2, max queued sounds allowed = 6
+$A7:B330 22 CB 90 80 JSL $8090CB[$80:90CB]  ;/
 
 $A7:B334 7A          PLY
 $A7:B335 FA          PLX

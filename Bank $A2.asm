@@ -7872,7 +7872,7 @@ $A2:CFD6 60          RTS
 ;;; $CFD7: Unused ;;;
 {
 $A2:CFD7 A9 63 00    LDA #$0063             ;\
-$A2:CFDA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 63h, sound library 2, max queued sounds allowed = 6 (Mother Brain's ketchup beam)
+$A2:CFDA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 63h, sound library 2, max queued sounds allowed = 6 (Mother Brain's death beam)
 $A2:CFDE 60          RTS
 }
 

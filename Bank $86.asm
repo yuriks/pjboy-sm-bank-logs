@@ -6645,7 +6645,7 @@ $86:AADA 60          RTS
 
 ;;; $AADB: Instruction list - enemy projectile $AB07 ;;;
 {
-$86:AADB             dx 831B,09,    ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (shot zebetite / shot missile door with missile)
+$86:AADB             dx 831B,09,    ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (shot zebetite / missile door shot with missile)
                         012C,8C4D,
                         81D5,0018   ; Timer = 18h
 $86:AAE6             dx 0002,8C4D,
@@ -6715,7 +6715,7 @@ $86:AB25             dx 816A,       ; Clear pre-instruction
 $86:AB41             dx 816A,       ; Clear pre-instruction
                         823C,DFFF,  ; Enemy projectile properties &= DFFFh (enable collisions with Samus)
                         8230,5000,  ; Enemy projectile properties |= 5000h (don't die on contact, high priority)
-                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
+                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (torizo's projectile hits surface)
                         0004,8C7E,
                         0005,8C85,
                         0006,8C91,
@@ -8040,7 +8040,7 @@ $86:B3CD             dw 816A,       ; Clear pre-instruction
 $86:B3E5             dw 816A        ; Clear pre-instruction
 $86:B3E7             dx 0008,8000,
                         B3B8,B3E7,  ; Go to $B3E7 if eye beam explosions are disabled
-                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / torizo's projectile hits surface / Shitroid exploding)
+                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (torizo's projectile hits surface)
                         0004,8C7E,
                         0005,8C85,
                         823C,DFFF,  ; Enemy projectile properties &= DFFFh (enable collisions with Samus)
@@ -10608,7 +10608,7 @@ $86:C41D A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $86:C420 A0 09 E5    LDY #$E509             ;\
 $86:C423 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:C427 A9 13 00    LDA #$0013             ;\
-$86:C42A 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
+$86:C42A 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's projectile hits surface)
 }
 
 
@@ -10753,7 +10753,7 @@ $86:C53E A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $86:C541 A0 09 E5    LDY #$E509             ;\
 $86:C544 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:C548 A9 13 00    LDA #$0013             ;\
-$86:C54B 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
+$86:C54B 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's projectile hits surface)
 $86:C54F 60          RTS
 
 ; Y accelerations (1/100h px/frame^2), indexed by bounce counter
@@ -10979,7 +10979,7 @@ $86:C73F A0 09 E5    LDY #$E509
 $86:C742 A9 1D 00    LDA #$001D             ; A = 1Dh (big explosion)
 $86:C745 22 97 80 86 JSL $868097[$86:8097]  ; Spawn dust cloud / explosion enemy projectile
 $86:C749 A9 13 00    LDA #$0013             ;\
-$86:C74C 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
+$86:C74C 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's projectile hits surface)
 $86:C750 A9 0A 00    LDA #$000A             ;\
 $86:C753 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10
 $86:C756 A9 05 00    LDA #$0005             ;\

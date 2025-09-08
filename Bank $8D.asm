@@ -3333,7 +3333,7 @@ $8D:E39C A9 46 00    LDA #$0046             ;\
 $8D:E39F CD C2 09    CMP $09C2  [$7E:09C2]  ;} If [Samus health] > 70:
 $8D:E3A2 B0 07       BCS $07    [$E3AB]     ;/
 $8D:E3A4 A9 2D 00    LDA #$002D             ;\
-$8D:E3A7 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Dh, sound library 3, max queued sounds allowed = 6 (gaining/losing increment health)
+$8D:E3A7 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Dh, sound library 3, max queued sounds allowed = 6 (gaining/losing incremental health)
 
 $8D:E3AB AD ED 1E    LDA $1EED  [$7E:1EED]  ;\
 $8D:E3AE CD EF 1E    CMP $1EEF  [$7E:1EEF]  ;} If [Samus in heat palette FX index] = [previous Samus in heat palette FX index]: return

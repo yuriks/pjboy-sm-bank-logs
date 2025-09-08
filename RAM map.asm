@@ -1259,8 +1259,8 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         Ah: Moving left  - not aiming
         Bh: Moving right - gun extended
         Ch: Moving left  - gun extended
-        Dh: Moving right - aiming up (unused)
-        Eh: Moving left  - aiming up (unused)
+        Dh: Unused. Moving right - aiming up
+        Eh: Unused. Moving left  - aiming up
         Fh: Moving right - aiming up-right
         10h: Moving left  - aiming up-left
         11h: Moving right - aiming down-right

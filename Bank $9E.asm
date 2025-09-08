@@ -872,7 +872,7 @@ $9E:9880             db 00,00,08,38,3C,7C,33,7F,61,7F,33,3F,1F,1F,0F,0F,00,00,00
 ;;; $9A00: Samus top tiles - set 0 - entry 16h ;;;
 {
 ; 3: Facing right - aiming up - frame 1
-; Dh: Moving right - aiming up (unused) - frames 0..1 / 5..6
+; Dh: Unused. Moving right - aiming up - frames 0..1 / 5..6
 ; 15h: Facing right - normal jump - aiming up - frame 1
 ; 2Bh: Facing right - falling - aiming up - frames 1..2
 ; 55h: Facing right - normal jump transition - aiming up - frame 0
@@ -913,7 +913,7 @@ $9E:9A00             db 07,07,1F,1F,3B,3F,3F,3F,7F,7F,7F,7F,FF,FF,FF,FF,04,07,1C
 ;;; $9B00: Samus top tiles - set 0 - entry 17h ;;;
 {
 ; 4: Facing left  - aiming up - frame 1
-; Eh: Moving left  - aiming up (unused) - frames 0..1 / 5..6
+; Eh: Unused. Moving left  - aiming up - frames 0..1 / 5..6
 ; 16h: Facing left  - normal jump - aiming up - frame 1
 ; 2Ch: Facing left  - falling - aiming up - frames 1..2
 ; 56h: Facing left  - normal jump transition - aiming up - frame 0
@@ -2861,7 +2861,7 @@ $9E:D520             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $D620: Samus top tiles - set 2 - entry Eh ;;;
 {
-; Dh: Moving right - aiming up (unused) - frames 2 / 4 / 7 / 9
+; Dh: Unused. Moving right - aiming up - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 3
 ; DAh: Facing left  - x-ray - crouching - frame 3
 ; |--------|--------|--------|--------|--------|--------|
@@ -2896,7 +2896,7 @@ $9E:D620             db 0E,0F,0F,0F,07,0E,07,0F,0F,0F,7E,7F,9C,FF,2C,FF,00,03,0C
 
 ;;; $D720: Samus top tiles - set 2 - entry Fh ;;;
 {
-; Eh: Moving left  - aiming up (unused) - frames 2 / 4 / 7 / 9
+; Eh: Unused. Moving left  - aiming up - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 4
 ; DAh: Facing left  - x-ray - crouching - frame 4
 ; |--------|--------|--------|--------|--------|--------|
@@ -3409,7 +3409,7 @@ $9E:E6C0             db 03,03,0D,0F,13,1D,0F,13,0B,2F,2F,2F,1F,1F,1F,0F,03,03,0F
 
 ;;; $E7C0: Samus top tiles - set 2 - entry 1Eh ;;;
 {
-; Dh: Moving right - aiming up (unused) - frames 3 / 8
+; Dh: Unused. Moving right - aiming up - frames 3 / 8
 ; 2Ah: Facing left  - falling - frames 1 / 5
 ; |--------|--------|--------|--------|--------|--------|
 ; |      FF|F       |        | 333    |333373AA|        |
@@ -3443,7 +3443,7 @@ $9E:E7C0             db 03,03,0D,0F,13,1D,0F,13,0B,2F,2F,2F,1F,1F,1F,0F,03,03,0F
 
 ;;; $E8C0: Samus top tiles - set 2 - entry 1Fh ;;;
 {
-; Eh: Moving left  - aiming up (unused) - frames 3 / 8
+; Eh: Unused. Moving left  - aiming up - frames 3 / 8
 ; 2Ah: Facing left  - falling - frame 2
 ; 4Fh: Facing left  - damage boost - frame 9
 ; |--------|--------|--------|--------|--------|--------|

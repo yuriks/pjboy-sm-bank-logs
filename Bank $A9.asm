@@ -3827,7 +3827,7 @@ $A9:B08D E8          INX                    ;/
 $A9:B08E 3A          DEC A                  ; Decrement A
 $A9:B08F D0 CA       BNE $CA    [$B05B]     ; If [A] != 0: go to LOOP
 $A9:B091 A9 13 00    LDA #$0013             ;\
-$A9:B094 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 3 (Mother Brain's projectile hits surface)
+$A9:B094 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound 13h, sound library 3, max queued sounds allowed = 3 (Mother Brain exploding)
 $A9:B098 60          RTS
 
 $A9:B099             dw 0024,FFDB, FFED,FFF1, FFFC,000D, 001D,0019,

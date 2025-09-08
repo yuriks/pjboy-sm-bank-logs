@@ -4333,7 +4333,7 @@ $A3:B0A5             dw 3800, 7FFF, 56E0, 3180, 18C0, 6BC0, 5EC0, 4A20, 35A0, 7F
 ;;; $B0C5: Instruction list - super-sidehopper - hopping - upside up ;;;
 {
 $A3:B0C5             dx 8173,       ; Enable off-screen processing
-                        AA68,005D,  ; Queue sound 5Dh, sound library 2, max queued sounds allowed = 3
+                        AA68,005D,  ; Queue sound 5Dh, sound library 2, max queued sounds allowed = 3 (sidehopper jumped)
                         0001,B15B,
                         812F        ; Sleep
 }
@@ -4342,7 +4342,7 @@ $A3:B0C5             dx 8173,       ; Enable off-screen processing
 ;;; $B0D1: Instruction list - super-sidehopper - landed - upside up ;;;
 {
 $A3:B0D1             dx 817D,       ; Disable off-screen processing
-                        AA68,005E,  ; Queue sound 5Eh, sound library 2, max queued sounds allowed = 3
+                        AA68,005E,  ; Queue sound 5Eh, sound library 2, max queued sounds allowed = 3 (sidehopper landed)
                         0002,B111,
                         0005,B136,
                         0002,B111,
@@ -4355,7 +4355,7 @@ $A3:B0D1             dx 817D,       ; Disable off-screen processing
 ;;; $B0EB: Instruction list - super-sidehopper - hopping - upside down ;;;
 {
 $A3:B0EB             dx 8173,       ; Enable off-screen processing
-                        AA68,005D,  ; Queue sound 5Dh, sound library 2, max queued sounds allowed = 3
+                        AA68,005D,  ; Queue sound 5Dh, sound library 2, max queued sounds allowed = 3 (sidehopper jumped)
                         0001,B1DE,
                         812F        ; Sleep
 }
@@ -4364,7 +4364,7 @@ $A3:B0EB             dx 8173,       ; Enable off-screen processing
 ;;; $B0F7: Instruction list - super-sidehopper - landed - upside down ;;;
 {
 $A3:B0F7             dx 817D,       ; Disable off-screen processing
-                        AA68,005E,  ; Queue sound 5Eh, sound library 2, max queued sounds allowed = 3
+                        AA68,005E,  ; Queue sound 5Eh, sound library 2, max queued sounds allowed = 3 (sidehopper landed)
                         0002,B194,
                         0005,B1B9,
                         0002,B194,
@@ -5763,7 +5763,7 @@ $A3:BEBD 60          RTS
 ; Actual result is as follows:
 ;     If [$18].[$16] = 0.0:
 ;        Return
-;     
+;
 ;     If [$16] != 0:
 ;         $1E.$1C = -[$18].[$16]
 ;     Else ([$16] = 0):
@@ -8529,7 +8529,7 @@ $A3:DDE3 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DDE6 30 04       BMI $04    [$DDEC]     ;/
 $A3:DDE8 A9 00 00    LDA #$0000             ;\
 $A3:DDEB 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DDEC A9 01 00    LDA #$0001             ;\
 $A3:DDEF 60          RTS                    ;} Return A = 1
 }
@@ -8547,7 +8547,7 @@ $A3:DE00 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE03 30 04       BMI $04    [$DE09]     ;/
 $A3:DE05 A9 00 00    LDA #$0000             ;\
 $A3:DE08 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DE09 A9 01 00    LDA #$0001             ;\
 $A3:DE0C 60          RTS                    ;} Return A = 1
 }
@@ -8565,7 +8565,7 @@ $A3:DE1D CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE20 10 04       BPL $04    [$DE26]     ;/
 $A3:DE22 A9 00 00    LDA #$0000             ;\
 $A3:DE25 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DE26 A9 01 00    LDA #$0001             ;\
 $A3:DE29 60          RTS                    ;} Return A = 1
 }
@@ -8583,7 +8583,7 @@ $A3:DE3A CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE3D 10 04       BPL $04    [$DE43]     ;/
 $A3:DE3F A9 00 00    LDA #$0000             ;\
 $A3:DE42 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DE43 A9 01 00    LDA #$0001             ;\
 $A3:DE46 60          RTS                    ;} Return A = 1
 }
@@ -8601,7 +8601,7 @@ $A3:DE57 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE5A 30 04       BMI $04    [$DE60]     ;/
 $A3:DE5C A9 00 00    LDA #$0000             ;\
 $A3:DE5F 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DE60 A9 01 00    LDA #$0001             ;\
 $A3:DE63 60          RTS                    ;} Return A = 1
 }
@@ -8621,7 +8621,7 @@ $A3:DE78 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE7B 30 04       BMI $04    [$DE81]     ;/
 $A3:DE7D A9 00 00    LDA #$0000             ;\
 $A3:DE80 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DE81 A9 01 00    LDA #$0001             ;\
 $A3:DE84 60          RTS                    ;} Return A = 1
 }
@@ -8641,7 +8641,7 @@ $A3:DE99 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DE9C 10 04       BPL $04    [$DEA2]     ;/
 $A3:DE9E A9 00 00    LDA #$0000             ;\
 $A3:DEA1 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DEA2 A9 01 00    LDA #$0001             ;\
 $A3:DEA5 60          RTS                    ;} Return A = 1
 }
@@ -8659,7 +8659,7 @@ $A3:DEB6 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DEB9 30 04       BMI $04    [$DEBF]     ;/
 $A3:DEBB A9 00 00    LDA #$0000             ;\
 $A3:DEBE 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DEBF A9 01 00    LDA #$0001             ;\
 $A3:DEC2 60          RTS                    ;} Return A = 1
 }
@@ -8677,7 +8677,7 @@ $A3:DED3 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DED6 10 04       BPL $04    [$DEDC]     ;/
 $A3:DED8 A9 01 00    LDA #$0001             ;\
 $A3:DEDB 60          RTS                    ;} Return A = 1
-                                            
+
 $A3:DEDC A9 00 00    LDA #$0000             ;\
 $A3:DEDF 60          RTS                    ;} Return A = 0
 }
@@ -8695,7 +8695,7 @@ $A3:DEF0 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DEF3 30 04       BMI $04    [$DEF9]     ;/
 $A3:DEF5 A9 00 00    LDA #$0000             ;\
 $A3:DEF8 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DEF9 A9 01 00    LDA #$0001             ;\
 $A3:DEFC 60          RTS                    ;} Return A = 1
 }
@@ -8713,7 +8713,7 @@ $A3:DF0D CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
 $A3:DF10 10 04       BPL $04    [$DF16]     ;/
 $A3:DF12 A9 00 00    LDA #$0000             ;\
 $A3:DF15 60          RTS                    ;} Return A = 0
-                                            
+
 $A3:DF16 A9 01 00    LDA #$0001             ;\
 $A3:DF19 60          RTS                    ;} Return A = 1
 }
@@ -9821,7 +9821,15 @@ $A3:EAC5 6B          RTL
 ; Unused. 180..250 in steps of 10, unsure of significance
 $A3:EAC6             dw 00B4, 00BE, 00C8, 00D2, 00DC, 00E6, 00F0, 00FA
 
-$A3:EAD6             dw 0050, 0058, 005A, 0050, 0058, 005A, 0058, 005A
+; Sound library 2. Chosen randomly from the following
+$A3:EAD6             dw 0050, ; Random metroid cry / metroid draining Samus
+                        0058, ; Random metroid cry / shot mochtroid
+                        005A, ; Random metroid cry / shot metroid
+                        0050, ; Random metroid cry / metroid draining Samus
+                        0058, ; Random metroid cry / shot mochtroid
+                        005A, ; Random metroid cry / shot metroid
+                        0058, ; Random metroid cry / shot mochtroid
+                        005A  ; Random metroid cry / shot metroid
 }
 
 

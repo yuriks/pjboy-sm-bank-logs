@@ -279,10 +279,10 @@ $92:84A7             dw A2D0, A440, A2F2, A308, A2E1, A2D0, A323, A334, A400, A3
 ; 217h. Top half - Ch: Moving left  - gun extended
 $92:84BB             dw A34A, A451, A3A0, A380, A365, A34A, A3C0, A41B, A3DB, A3C0
 
-; 221h. Top half - Dh: Moving right - aiming up (unused)
+; 221h. Top half - Dh: Unused. Moving right - aiming up
 $92:84CF             dw 97FF, 97FF, 9CAD, 9E9E, 9CAD, 97FF, 97FF, 9CAD, 9E9E, 9CAD
 
-; 22Bh. Top half - Eh: Moving left  - aiming up (unused)
+; 22Bh. Top half - Eh: Unused. Moving left  - aiming up
 $92:84E3             dw 981A, 981A, 9CC8, 9EB9, 9CC8, 981A, 981A, 9CC8, 9EB9, 9CC8
 
 ; 235h. Top half - Fh: Moving right - aiming up-right
@@ -734,7 +734,7 @@ $92:8A49             dw ADCC, ADCC, ADCC, ADCC, ADCC
 ; 4E3h
 ; Bottom half - 9: Moving right - not aiming
 ; Bottom half - Bh: Moving right - gun extended
-; Bottom half - Dh: Moving right - aiming up (unused)
+; Bottom half - Dh: Unused. Moving right - aiming up
 ; Bottom half - Fh: Moving right - aiming up-right
 ; Bottom half - 11h: Moving right - aiming down-right
 ; Bottom half - 45h: Unused
@@ -743,7 +743,7 @@ $92:8A53             dw AD3C, ADD8, AD48, ADEE, AD63, AD79, AE0E, AD85, AE24, AD
 ; 4EDh
 ; Bottom half - Ah: Moving left  - not aiming
 ; Bottom half - Ch: Moving left  - gun extended
-; Bottom half - Eh: Moving left  - aiming up (unused)
+; Bottom half - Eh: Unused. Moving left  - aiming up
 ; Bottom half - 10h: Moving left  - aiming up-left
 ; Bottom half - 12h: Moving left  - aiming down-left
 ; Bottom half - 46h: Unused
@@ -1513,10 +1513,10 @@ $92:97DD             dx 0003, C3FF,F8,2800, 0007,F0,2804, C3F7,F0,2802
 $92:97EE             dx 0003, C3F1,F8,2800, C3F9,F0,2802, C3F1,F0,2804
 
 ; Top half - 3: Facing right - aiming up - frame 1
-; Top half - Dh: Moving right - aiming up (unused) - frame 0
-; Top half - Dh: Moving right - aiming up (unused) - frame 1
-; Top half - Dh: Moving right - aiming up (unused) - frame 5
-; Top half - Dh: Moving right - aiming up (unused) - frame 6
+; Top half - Dh: Unused. Moving right - aiming up - frame 0
+; Top half - Dh: Unused. Moving right - aiming up - frame 1
+; Top half - Dh: Unused. Moving right - aiming up - frame 5
+; Top half - Dh: Unused. Moving right - aiming up - frame 6
 ; Top half - 15h: Facing right - normal jump - aiming up - frame 1
 ; Top half - 2Bh: Facing right - falling - aiming up - frame 1
 ; Top half - 2Bh: Facing right - falling - aiming up - frame 2
@@ -1529,10 +1529,10 @@ $92:97EE             dx 0003, C3F1,F8,2800, C3F9,F0,2802, C3F1,F0,2804
 $92:97FF             dx 0005, 01F9,F9,2802, 01F9,F1,2803, 01FE,E1,2804, 01FE,E9,2805, C3F9,F1,2800
 
 ; Top half - 4: Facing left  - aiming up - frame 1
-; Top half - Eh: Moving left  - aiming up (unused) - frame 0
-; Top half - Eh: Moving left  - aiming up (unused) - frame 1
-; Top half - Eh: Moving left  - aiming up (unused) - frame 5
-; Top half - Eh: Moving left  - aiming up (unused) - frame 6
+; Top half - Eh: Unused. Moving left  - aiming up - frame 0
+; Top half - Eh: Unused. Moving left  - aiming up - frame 1
+; Top half - Eh: Unused. Moving left  - aiming up - frame 5
+; Top half - Eh: Unused. Moving left  - aiming up - frame 6
 ; Top half - 16h: Facing left  - normal jump - aiming up - frame 1
 ; Top half - 2Ch: Facing left  - falling - aiming up - frame 1
 ; Top half - 2Ch: Facing left  - falling - aiming up - frame 2
@@ -1893,18 +1893,18 @@ $92:9C77             dx 0005, 01F7,F0,2802, 01FF,F0,2803, C3F7,F8,2800, 01EE,FD,
 ; Top half - DAh: Facing left  - x-ray - crouching - frame 0
 $92:9C92             dx 0005, 01F7,F0,2802, 01FF,F0,2803, C3F7,F8,2800, 01EE,FD,6804, 01F6,FD,6805
 
-; Top half - Dh: Moving right - aiming up (unused) - frame 2
-; Top half - Dh: Moving right - aiming up (unused) - frame 4
-; Top half - Dh: Moving right - aiming up (unused) - frame 7
-; Top half - Dh: Moving right - aiming up (unused) - frame 9
+; Top half - Dh: Unused. Moving right - aiming up - frame 2
+; Top half - Dh: Unused. Moving right - aiming up - frame 4
+; Top half - Dh: Unused. Moving right - aiming up - frame 7
+; Top half - Dh: Unused. Moving right - aiming up - frame 9
 ; Top half - D6h: Facing left  - x-ray - standing - frame 3
 ; Top half - DAh: Facing left  - x-ray - crouching - frame 3
 $92:9CAD             dx 0005, 01FF,F0,2802, 01F7,F0,2803, C3F7,F8,2800, 01EE,FD,6804, 01F6,FD,6805
 
-; Top half - Eh: Moving left  - aiming up (unused) - frame 2
-; Top half - Eh: Moving left  - aiming up (unused) - frame 4
-; Top half - Eh: Moving left  - aiming up (unused) - frame 7
-; Top half - Eh: Moving left  - aiming up (unused) - frame 9
+; Top half - Eh: Unused. Moving left  - aiming up - frame 2
+; Top half - Eh: Unused. Moving left  - aiming up - frame 4
+; Top half - Eh: Unused. Moving left  - aiming up - frame 7
+; Top half - Eh: Unused. Moving left  - aiming up - frame 9
 ; Top half - D6h: Facing left  - x-ray - standing - frame 4
 ; Top half - DAh: Facing left  - x-ray - crouching - frame 4
 $92:9CC8             dx 0005, 01FF,F0,2802, 01F7,F0,2803, C3F7,F8,2800, 01EE,FD,6804, 01F6,FD,6805
@@ -1969,14 +1969,14 @@ $92:9E63             dx 0006, 0005,F7,2802, 01FD,F7,2803, 01F9,F5,2804, 01F9,F7,
 ; Top half - 50h: Facing right - damage boost - frame 9
 $92:9E83             dx 0005, 0005,EF,2802, 01FD,EF,2803, 01F9,F6,6804, 01F9,EE,6805, C3FA,F0,6800
 
-; Top half - Dh: Moving right - aiming up (unused) - frame 3
-; Top half - Dh: Moving right - aiming up (unused) - frame 8
+; Top half - Dh: Unused. Moving right - aiming up - frame 3
+; Top half - Dh: Unused. Moving right - aiming up - frame 8
 ; Top half - 2Ah: Facing left  - falling - frame 1
 ; Top half - 2Ah: Facing left  - falling - frame 5
 $92:9E9E             dx 0005, 01FD,F6,2802, 01F5,F6,2803, 01FE,F7,2804, 01FE,EF,2805, C3F6,F0,2800
 
-; Top half - Eh: Moving left  - aiming up (unused) - frame 3
-; Top half - Eh: Moving left  - aiming up (unused) - frame 8
+; Top half - Eh: Unused. Moving left  - aiming up - frame 3
+; Top half - Eh: Unused. Moving left  - aiming up - frame 8
 ; Top half - 2Ah: Facing left  - falling - frame 2
 ; Top half - 4Fh: Facing left  - damage boost - frame 9
 $92:9EB9             dx 0005, 01F9,F0,2802, 01F1,F0,2803, 01FE,F6,2804, 01FE,EE,2805, C3F6,F0,2800
@@ -2606,7 +2606,7 @@ $92:ACDE             dx 0009, C3F2,FD,E800, 0002,FD,E804, 0002,05,E805, 0002,0D,
 
 ; Bottom half - 9: Moving right - not aiming - frame 0
 ; Bottom half - Bh: Moving right - gun extended - frame 0
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 0
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 0
 ; Bottom half - Fh: Moving right - aiming up-right - frame 0
 ; Bottom half - 11h: Moving right - aiming down-right - frame 0
 ; Bottom half - 45h: Unused - frame 0
@@ -2614,7 +2614,7 @@ $92:AD3C             dx 0002, C3F8,10,2808, C3F8,00,280A
 
 ; Bottom half - 9: Moving right - not aiming - frame 2
 ; Bottom half - Bh: Moving right - gun extended - frame 2
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 2
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 2
 ; Bottom half - Fh: Moving right - aiming up-right - frame 2
 ; Bottom half - 11h: Moving right - aiming down-right - frame 2
 ; Bottom half - 45h: Unused - frame 2
@@ -2622,7 +2622,7 @@ $92:AD48             dx 0005, C3F3,07,2808, C3FB,FF,280A, 01EB,0F,280C, 01F3,17,
 
 ; Bottom half - 9: Moving right - not aiming - frame 4
 ; Bottom half - Bh: Moving right - gun extended - frame 4
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 4
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 4
 ; Bottom half - Fh: Moving right - aiming up-right - frame 4
 ; Bottom half - 11h: Moving right - aiming down-right - frame 4
 ; Bottom half - 45h: Unused - frame 4
@@ -2630,7 +2630,7 @@ $92:AD63             dx 0004, C3F0,FF,2808, C200,0F,280A, C3F8,FF,280C, 0008,07,
 
 ; Bottom half - 9: Moving right - not aiming - frame 5
 ; Bottom half - Bh: Moving right - gun extended - frame 5
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 5
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 5
 ; Bottom half - Fh: Moving right - aiming up-right - frame 5
 ; Bottom half - 11h: Moving right - aiming down-right - frame 5
 ; Bottom half - 45h: Unused - frame 5
@@ -2640,7 +2640,7 @@ $92:AD79             dx 0002, C3F7,10,2808, C3F7,00,280A
 
 ; Bottom half - 9: Moving right - not aiming - frame 7
 ; Bottom half - Bh: Moving right - gun extended - frame 7
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 7
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 7
 ; Bottom half - Fh: Moving right - aiming up-right - frame 7
 ; Bottom half - 11h: Moving right - aiming down-right - frame 7
 ; Bottom half - 45h: Unused - frame 7
@@ -2648,7 +2648,7 @@ $92:AD85             dx 0006, C3F3,07,2808, C3FB,FF,280A, 01F3,FF,280C, 01EB,0F,
 
 ; Bottom half - 9: Moving right - not aiming - frame 9
 ; Bottom half - Bh: Moving right - gun extended - frame 9
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 9
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 9
 ; Bottom half - Fh: Moving right - aiming up-right - frame 9
 ; Bottom half - 11h: Moving right - aiming down-right - frame 9
 ; Bottom half - 45h: Unused - frame 9
@@ -2695,7 +2695,7 @@ $92:ADCC             dx 0002, C3EF,00,2808, C3F7,00,280A
 
 ; Bottom half - 9: Moving right - not aiming - frame 1
 ; Bottom half - Bh: Moving right - gun extended - frame 1
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 1
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 1
 ; Bottom half - Fh: Moving right - aiming up-right - frame 1
 ; Bottom half - 11h: Moving right - aiming down-right - frame 1
 ; Bottom half - 45h: Unused - frame 1
@@ -2703,7 +2703,7 @@ $92:ADD8             dx 0004, C3FB,00,2808, C3F3,10,280A, 01F3,08,280C, 0003,10,
 
 ; Bottom half - 9: Moving right - not aiming - frame 3
 ; Bottom half - Bh: Moving right - gun extended - frame 3
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 3
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 3
 ; Bottom half - Fh: Moving right - aiming up-right - frame 3
 ; Bottom half - 11h: Moving right - aiming down-right - frame 3
 ; Bottom half - 45h: Unused - frame 3
@@ -2711,7 +2711,7 @@ $92:ADEE             dx 0006, C3FF,06,2808, C3F7,FE,280A, 000F,0F,280C, 01EF,0E,
 
 ; Bottom half - 9: Moving right - not aiming - frame 6
 ; Bottom half - Bh: Moving right - gun extended - frame 6
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 6
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 6
 ; Bottom half - Fh: Moving right - aiming up-right - frame 6
 ; Bottom half - 11h: Moving right - aiming down-right - frame 6
 ; Bottom half - 45h: Unused - frame 6
@@ -2719,7 +2719,7 @@ $92:AE0E             dx 0004, 01FB,18,280C, C3FB,00,2808, C3F3,08,280A, 01F3,18,
 
 ; Bottom half - 9: Moving right - not aiming - frame 8
 ; Bottom half - Bh: Moving right - gun extended - frame 8
-; Bottom half - Dh: Moving right - aiming up (unused) - frame 8
+; Bottom half - Dh: Unused. Moving right - aiming up - frame 8
 ; Bottom half - Fh: Moving right - aiming up-right - frame 8
 ; Bottom half - 11h: Moving right - aiming down-right - frame 8
 ; Bottom half - 45h: Unused - frame 8
@@ -3438,7 +3438,7 @@ $92:B2AB             dx 0004, 0007,18,680C, 0007,10,680D, C3F7,10,6808, C3F7,00,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 0
 ; Bottom half - Ch: Moving left  - gun extended - frame 0
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 0
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 0
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 0
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 0
 ; Bottom half - 46h: Unused - frame 0
@@ -3446,7 +3446,7 @@ $92:B2C1             dx 0002, C3F8,10,6808, C3F8,00,680A
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 2
 ; Bottom half - Ch: Moving left  - gun extended - frame 2
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 2
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 2
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 2
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 2
 ; Bottom half - 46h: Unused - frame 2
@@ -3454,7 +3454,7 @@ $92:B2CD             dx 0005, C3FD,07,6808, C3F5,FF,680A, 000D,0F,680C, 0005,17,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 4
 ; Bottom half - Ch: Moving left  - gun extended - frame 4
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 4
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 4
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 4
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 4
 ; Bottom half - 46h: Unused - frame 4
@@ -3462,7 +3462,7 @@ $92:B2E8             dx 0004, C200,FF,6808, C3F0,0F,680A, C3F8,FF,680C, 01F0,07,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 5
 ; Bottom half - Ch: Moving left  - gun extended - frame 5
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 5
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 5
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 5
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 5
 ; Bottom half - 46h: Unused - frame 5
@@ -3472,7 +3472,7 @@ $92:B2FE             dx 0002, C3F9,10,6808, C3F9,00,680A
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 7
 ; Bottom half - Ch: Moving left  - gun extended - frame 7
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 7
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 7
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 7
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 7
 ; Bottom half - 46h: Unused - frame 7
@@ -3480,7 +3480,7 @@ $92:B30A             dx 0006, C3FD,07,6808, C3F5,FF,680A, 0005,FF,680C, 000D,0F,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 9
 ; Bottom half - Ch: Moving left  - gun extended - frame 9
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 9
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 9
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 9
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 9
 ; Bottom half - 46h: Unused - frame 9
@@ -3527,7 +3527,7 @@ $92:B351             dx 0002, C201,00,6808, C3F9,00,680A
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 1
 ; Bottom half - Ch: Moving left  - gun extended - frame 1
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 1
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 1
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 1
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 1
 ; Bottom half - 46h: Unused - frame 1
@@ -3535,7 +3535,7 @@ $92:B35D             dx 0004, C3F5,00,6808, C3FD,10,680A, 0005,08,680C, 01F5,10,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 3
 ; Bottom half - Ch: Moving left  - gun extended - frame 3
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 3
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 3
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 3
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 3
 ; Bottom half - 46h: Unused - frame 3
@@ -3543,7 +3543,7 @@ $92:B373             dx 0006, C3F1,06,6808, C3F9,FE,680A, 01E9,0F,680C, 0009,0E,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 6
 ; Bottom half - Ch: Moving left  - gun extended - frame 6
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 6
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 6
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 6
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 6
 ; Bottom half - 46h: Unused - frame 6
@@ -3551,7 +3551,7 @@ $92:B393             dx 0004, 01FD,18,680C, C3F5,00,6808, C3FD,08,680A, 0005,18,
 
 ; Bottom half - Ah: Moving left  - not aiming - frame 8
 ; Bottom half - Ch: Moving left  - gun extended - frame 8
-; Bottom half - Eh: Moving left  - aiming up (unused) - frame 8
+; Bottom half - Eh: Unused. Moving left  - aiming up - frame 8
 ; Bottom half - 10h: Moving left  - aiming up-left - frame 8
 ; Bottom half - 12h: Moving left  - aiming down-left - frame 8
 ; Bottom half - 46h: Unused - frame 8
@@ -4804,7 +4804,7 @@ $92:CC7A             dx 9E9760, 00A0, 0080
 $92:CC81             dx 9E9880, 00C0, 00C0
 
 ; 3: Facing right - aiming up - frame 1
-; Dh: Moving right - aiming up (unused) - frames 0..1 / 5..6
+; Dh: Unused. Moving right - aiming up - frames 0..1 / 5..6
 ; 15h: Facing right - normal jump - aiming up - frame 1
 ; 2Bh: Facing right - falling - aiming up - frames 1..2
 ; 55h: Facing right - normal jump transition - aiming up - frame 0
@@ -4815,7 +4815,7 @@ $92:CC81             dx 9E9880, 00C0, 00C0
 $92:CC88             dx 9E9A00, 00C0, 0040
 
 ; 4: Facing left  - aiming up - frame 1
-; Eh: Moving left  - aiming up (unused) - frames 0..1 / 5..6
+; Eh: Unused. Moving left  - aiming up - frames 0..1 / 5..6
 ; 16h: Facing left  - normal jump - aiming up - frame 1
 ; 2Ch: Facing left  - falling - aiming up - frames 1..2
 ; 56h: Facing left  - normal jump transition - aiming up - frame 0
@@ -5147,12 +5147,12 @@ $92:CDF4             dx 9ED420, 00C0, 0040
 ; DAh: Facing left  - x-ray - crouching - frame 0
 $92:CDFB             dx 9ED520, 00C0, 0040
 
-; Dh: Moving right - aiming up (unused) - frames 2 / 4 / 7 / 9
+; Dh: Unused. Moving right - aiming up - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 3
 ; DAh: Facing left  - x-ray - crouching - frame 3
 $92:CE02             dx 9ED620, 00C0, 0040
 
-; Eh: Moving left  - aiming up (unused) - frames 2 / 4 / 7 / 9
+; Eh: Unused. Moving left  - aiming up - frames 2 / 4 / 7 / 9
 ; D6h: Facing left  - x-ray - standing - frame 4
 ; DAh: Facing left  - x-ray - crouching - frame 4
 $92:CE09             dx 9ED720, 00C0, 0040
@@ -5196,11 +5196,11 @@ $92:CE64             dx 9EE5A0, 00E0, 0040
 ; 50h: Facing right - damage boost - frame 9
 $92:CE6B             dx 9EE6C0, 00C0, 0040
 
-; Dh: Moving right - aiming up (unused) - frames 3 / 8
+; Dh: Unused. Moving right - aiming up - frames 3 / 8
 ; 2Ah: Facing left  - falling - frames 1 / 5
 $92:CE72             dx 9EE7C0, 00C0, 0040
 
-; Eh: Moving left  - aiming up (unused) - frames 3 / 8
+; Eh: Unused. Moving left  - aiming up - frames 3 / 8
 ; 2Ah: Facing left  - falling - frame 2
 ; 4Fh: Facing left  - damage boost - frame 9
 $92:CE79             dx 9EE8C0, 00C0, 0040
@@ -5609,8 +5609,8 @@ $92:D197             dx 9BFCA0, 00C0, 0040
 ; Ah: Moving left  - not aiming - frame 0
 ; Bh: Moving right - gun extended - frame 0
 ; Ch: Moving left  - gun extended - frame 0
-; Dh: Moving right - aiming up (unused) - frame 0
-; Eh: Moving left  - aiming up (unused) - frame 0
+; Dh: Unused. Moving right - aiming up - frame 0
+; Eh: Unused. Moving left  - aiming up - frame 0
 ; Fh: Moving right - aiming up-right - frame 0
 ; 10h: Moving left  - aiming up-left - frame 0
 ; 11h: Moving right - aiming down-right - frame 0
@@ -5623,8 +5623,8 @@ $92:D19E             dx 9D8000, 0080, 0080
 ; Ah: Moving left  - not aiming - frame 2
 ; Bh: Moving right - gun extended - frame 2
 ; Ch: Moving left  - gun extended - frame 2
-; Dh: Moving right - aiming up (unused) - frame 2
-; Eh: Moving left  - aiming up (unused) - frame 2
+; Dh: Unused. Moving right - aiming up - frame 2
+; Eh: Unused. Moving left  - aiming up - frame 2
 ; Fh: Moving right - aiming up-right - frame 2
 ; 10h: Moving left  - aiming up-left - frame 2
 ; 11h: Moving right - aiming down-right - frame 2
@@ -5635,8 +5635,8 @@ $92:D1A5             dx 9D8100, 00E0, 0080
 ; Ah: Moving left  - not aiming - frame 4
 ; Bh: Moving right - gun extended - frame 4
 ; Ch: Moving left  - gun extended - frame 4
-; Dh: Moving right - aiming up (unused) - frame 4
-; Eh: Moving left  - aiming up (unused) - frame 4
+; Dh: Unused. Moving right - aiming up - frame 4
+; Eh: Unused. Moving left  - aiming up - frame 4
 ; Fh: Moving right - aiming up-right - frame 4
 ; 10h: Moving left  - aiming up-left - frame 4
 ; 11h: Moving right - aiming down-right - frame 4
@@ -5647,8 +5647,8 @@ $92:D1AC             dx 9D8260, 00E0, 00C0
 ; Ah: Moving left  - not aiming - frame 5
 ; Bh: Moving right - gun extended - frame 5
 ; Ch: Moving left  - gun extended - frame 5
-; Dh: Moving right - aiming up (unused) - frame 5
-; Eh: Moving left  - aiming up (unused) - frame 5
+; Dh: Unused. Moving right - aiming up - frame 5
+; Eh: Unused. Moving left  - aiming up - frame 5
 ; Fh: Moving right - aiming up-right - frame 5
 ; 10h: Moving left  - aiming up-left - frame 5
 ; 11h: Moving right - aiming down-right - frame 5
@@ -5663,8 +5663,8 @@ $92:D1B3             dx 9D8400, 0080, 0080
 ; Ah: Moving left  - not aiming - frame 7
 ; Bh: Moving right - gun extended - frame 7
 ; Ch: Moving left  - gun extended - frame 7
-; Dh: Moving right - aiming up (unused) - frame 7
-; Eh: Moving left  - aiming up (unused) - frame 7
+; Dh: Unused. Moving right - aiming up - frame 7
+; Eh: Unused. Moving left  - aiming up - frame 7
 ; Fh: Moving right - aiming up-right - frame 7
 ; 10h: Moving left  - aiming up-left - frame 7
 ; 11h: Moving right - aiming down-right - frame 7
@@ -5675,8 +5675,8 @@ $92:D1BA             dx 9D8500, 0100, 0080
 ; Ah: Moving left  - not aiming - frame 9
 ; Bh: Moving right - gun extended - frame 9
 ; Ch: Moving left  - gun extended - frame 9
-; Dh: Moving right - aiming up (unused) - frame 9
-; Eh: Moving left  - aiming up (unused) - frame 9
+; Dh: Unused. Moving right - aiming up - frame 9
+; Eh: Unused. Moving left  - aiming up - frame 9
 ; Fh: Moving right - aiming up-right - frame 9
 ; 10h: Moving left  - aiming up-left - frame 9
 ; 11h: Moving right - aiming down-right - frame 9
@@ -5727,8 +5727,8 @@ $92:D1CF             dx 9D89A0, 0080, 0080
 ; Ah: Moving left  - not aiming - frame 1
 ; Bh: Moving right - gun extended - frame 1
 ; Ch: Moving left  - gun extended - frame 1
-; Dh: Moving right - aiming up (unused) - frame 1
-; Eh: Moving left  - aiming up (unused) - frame 1
+; Dh: Unused. Moving right - aiming up - frame 1
+; Eh: Unused. Moving left  - aiming up - frame 1
 ; Fh: Moving right - aiming up-right - frame 1
 ; 10h: Moving left  - aiming up-left - frame 1
 ; 11h: Moving right - aiming down-right - frame 1
@@ -5739,8 +5739,8 @@ $92:D1D6             dx 9D8AA0, 00C0, 0080
 ; Ah: Moving left  - not aiming - frame 3
 ; Bh: Moving right - gun extended - frame 3
 ; Ch: Moving left  - gun extended - frame 3
-; Dh: Moving right - aiming up (unused) - frame 3
-; Eh: Moving left  - aiming up (unused) - frame 3
+; Dh: Unused. Moving right - aiming up - frame 3
+; Eh: Unused. Moving left  - aiming up - frame 3
 ; Fh: Moving right - aiming up-right - frame 3
 ; 10h: Moving left  - aiming up-left - frame 3
 ; 11h: Moving right - aiming down-right - frame 3
@@ -5751,8 +5751,8 @@ $92:D1DD             dx 9D8BE0, 0100, 0080
 ; Ah: Moving left  - not aiming - frame 6
 ; Bh: Moving right - gun extended - frame 6
 ; Ch: Moving left  - gun extended - frame 6
-; Dh: Moving right - aiming up (unused) - frame 6
-; Eh: Moving left  - aiming up (unused) - frame 6
+; Dh: Unused. Moving right - aiming up - frame 6
+; Eh: Unused. Moving left  - aiming up - frame 6
 ; Fh: Moving right - aiming up-right - frame 6
 ; 10h: Moving left  - aiming up-left - frame 6
 ; 11h: Moving right - aiming down-right - frame 6
@@ -5763,8 +5763,8 @@ $92:D1E4             dx 9D8D60, 00C0, 0080
 ; Ah: Moving left  - not aiming - frame 8
 ; Bh: Moving right - gun extended - frame 8
 ; Ch: Moving left  - gun extended - frame 8
-; Dh: Moving right - aiming up (unused) - frame 8
-; Eh: Moving left  - aiming up (unused) - frame 8
+; Dh: Unused. Moving right - aiming up - frame 8
+; Eh: Unused. Moving left  - aiming up - frame 8
 ; Fh: Moving right - aiming up-right - frame 8
 ; 10h: Moving left  - aiming up-left - frame 8
 ; 11h: Moving right - aiming down-right - frame 8
@@ -7349,11 +7349,11 @@ $92:DF10             db 00,0C,01,0A, 00,0C,01,0C, 00,0C,01,19
 ; 70h: Facing left  - falling - aiming down-left
 $92:DF1C             db 00,0D,01,0B, 00,0D,01,0D, 00,0D,01,1A
 
-; Dh: Moving right - aiming up (unused)
+; Dh: Unused. Moving right - aiming up
 $92:DF28             db 00,16,00,00, 00,16,00,08, 02,0E,00,01, 02,1E,00,09, 02,0E,00,02, 00,16,00,03, 00,16,00,0A, 02,0E,00,04,
                         02,1E,00,0B, 02,0E,00,05
 
-; Eh: Moving left  - aiming up (unused)
+; Eh: Unused. Moving left  - aiming up
 $92:DF50             db 00,17,00,00, 00,17,00,08, 02,0F,00,01, 02,1F,00,09, 02,0F,00,02, 00,17,00,03, 00,17,00,0A, 02,0F,00,04,
                         02,1F,00,0B, 02,0F,00,05
 
