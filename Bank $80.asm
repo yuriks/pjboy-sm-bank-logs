@@ -1028,6 +1028,7 @@ $80:8480 D0 F3       BNE $F3    [$8475]     ;/
 {
 ; They wait another (see $841C) 3 frames here at $8523
 ; It might be giving the SPC engine a chance to run its initialisation after sending zero bytes to the APU IO registers
+; This routine has far too many STZ instructions considering the first thing it does is clear all of bank $7E
 $80:8482 E2 20       SEP #$20
 $80:8484 A9 8F       LDA #$8F               ;\
 $80:8486 8D 00 21    STA $2100              ;} Enable forced blank
@@ -4825,7 +4826,8 @@ $80:9EEA 38          SEC                    ; Set carry
 
 $80:9EEB 60          RTS
 
-; Timer centisecond decrements (43 1s and 85 2s)
+; Timer centisecond decrements. 43 1s and 85 2s, 128 decrements total
+; With 100 centiseconds per 60 frames, the sum of this table is 128 * 100 / 60 = 213
 $80:9EEC             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02
 $80:9F0C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02
 $80:9F2C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 01, 02, 02, 01, 02, 02, 01, 02

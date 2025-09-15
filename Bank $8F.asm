@@ -8121,7 +8121,7 @@ $8F:E4F9 85 80       STA $80    [$7E:0080]  ;|
 $8F:E4FB A9 F0 03    LDA #$03F0             ;} Mode 7 transformation origin = (80h, 3F0h)
 $8F:E4FE 85 82       STA $82    [$7E:0082]  ;/
 $8F:E500 A9 01 00    LDA #$0001             ;\
-$8F:E503 8D 83 07    STA $0783  [$7E:0783]  ;} Set mode 7
+$8F:E503 8D 83 07    STA $0783  [$7E:0783]  ;} Mode 7 flag = 1
 $8F:E506 A9 22 00    LDA #$0022             ;\
 $8F:E509 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room rotation matrix index = 22h
 $8F:E50C A9 3C 00    LDA #$003C             ;\
@@ -8138,7 +8138,7 @@ $8F:E513 E2 20       SEP #$20
 $8F:E515 A9 09       LDA #$09               ;\
 $8F:E517 85 56       STA $56    [$7E:0056]  ;} Fake mode = 9
 $8F:E519 C2 20       REP #$20
-$8F:E51B 9C 83 07    STZ $0783  [$7E:0783]  ; Clear mode 7
+$8F:E51B 9C 83 07    STZ $0783  [$7E:0783]  ; Mode 7 flag = 0
 $8F:E51E 60          RTS
 }
 }

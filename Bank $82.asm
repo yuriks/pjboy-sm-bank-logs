@@ -10716,11 +10716,11 @@ $82:E54A D0 13       BNE $13    [$E55F]     ;/
 $82:E54C 29 03 00    AND #$0003             ;\
 $82:E54F F0 08       BEQ $08    [$E559]     ;} If door direction is left:
 $82:E551 A9 07 00    LDA #$0007             ;\
-$82:E554 1C F6 0A    TRB $0AF6  [$7E:0AF6]  ;} Samus X &= ~7
+$82:E554 1C F6 0A    TRB $0AF6  [$7E:0AF6]  ;} Samus X position &= ~7
 $82:E557 80 06       BRA $06    [$E55F]
 
 $82:E559 A9 07 00    LDA #$0007             ;\ Else (door direction is right):
-$82:E55C 0C F6 0A    TSB $0AF6  [$7E:0AF6]  ;} Samus X |= 7
+$82:E55C 0C F6 0A    TSB $0AF6  [$7E:0AF6]  ;} Samus X position |= 7
 
 ; BRANCH_RETURN
 $82:E55F A9 59 E6    LDA #$E659             ;\

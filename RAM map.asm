@@ -348,7 +348,7 @@ $0340..5C: VRAM read table. 9 byte entries. 2 byte zero-terminator. No enforced 
     + 4: Destination address
     + 7: Size
 }
-
+$035D..5F: Unused
 $0360: VRAM read table stack pointer
 $0362..6F: Unused
 $0370..058F: OAM (updated during NMI by $80:933A). 80h entries
@@ -840,8 +840,8 @@ $077A: Samus position indicator animation loop counter. Bit 0 is used to toggle 
 $077C..0997: Main gameplay RAM (according to $82:8593)
 {
     $077C: HUD item tilemap palette bits in $80:9CEA
-
-    $0783: Mode 7 flag
+    $077E..82: Unused
+    $0783: Mode 7 flag. If set, BG scrolling updates are disabled and an unused mode 7 rotation matrix routine $80:B0C2 is enabled. Set by Ceres elevator shaft and Ceres Ridley
     $0785: Unused. Mode 7 rotation angle in $80:B032/B0C2 (in units of 2pi/100h radians)
     $0787: Set to 0 when loading file select map foreground tilemap. Never read
     $0789: Current area map collected flag. Effectively a mirror of the $7E:D908 byte for the current area, some code checks this variable, some code checks the other one
@@ -2311,6 +2311,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0DDC: Suit pickup light beam widening speed (or narrowing speed). Unit 1/100h px/frame
     $0DDE: Projectile index (FFFE for grapple)
     $0DE0: Debug invincibility. 7 = invincible. See debug.txt
+    
     $0DE2..E9: Death animation variables
     {
         $0DE2: Death animation timer
@@ -2402,6 +2403,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0E08: Distance to eject Samus up due to post grapple block collision. Used by $90:EF22 (post grapple collision detection)
     $0E0A: Distance to eject Samus down due to post grapple block collision. Tested by $90:EF22 (post grapple collision detection), never used for ejection
 }
+
 $0E0C..108B: Ending shooting stars. 10h byte entries
 {
     + 0: Star index
@@ -2955,7 +2957,7 @@ $198A..8C: Unused
 $198D..1C1E: Enemy projectile data. 12h enemy projectiles max
 {
     $198D: Flag. 8000h enables enemy projectiles
-
+    $198F: Unused
     $1991: Enemy projectile index
     $1993: Enemy projectile initialisation parameter 0
     $1995: Enemy projectile initialisation parameter 1. Used by Draygon's gunk, Ridley's fireball, and polyp
@@ -3120,13 +3122,13 @@ $198D..1C1E: Non-gameplay use
     ;     $8B:F748..EF53: Ending
 
     $19B5..BC: Cinematic BG object indirect instruction pointers (bank $8C)
-
+    $19BD..CC: Unused
     $19CD..D4: Cinematic BG object instruction list pointers
     $19D5..DC: Cinematic BG object pre-instructions
     $19DD..E4: Cinematic BG object instruction timers
     $19E5..EC: Cinematic BG object timers
     $19ED: Cinematic BG object index
-
+    $19EF: Unused
     $19F1: Cinematic BG objects enable flag
     $19F3: Cinematic BG tilemap update flag
     $19F5: Cinematic BG VRAM address
@@ -3185,7 +3187,8 @@ $198D..1C1E: Non-gameplay use
         2: Prepare title screen
         3: Fade in
     }
-
+    $1A55: Unused
+    
     ; Cinematic sprite object definitions are at:
     ;     $8B:A0EF..A12A: Title sequence
     ;     $8B:CE55..CF3E: Intro, Ceres, Zebes
@@ -3198,7 +3201,7 @@ $198D..1C1E: Non-gameplay use
         FFFFh: Samus/projectiles displayed over cinematic sprite objects
     }
     $1A59: Cinematic sprite object index
-
+    $1A5B: Unused
     $1A5D..7C: Cinematic sprite object spritemap pointers (bank $8C)
     $1A7D..9C: Cinematic sprite object X positions
     $1A9D..BC: Cinematic sprite object Y positions
@@ -3258,13 +3261,14 @@ $198D..BC Menus
     $19B5: File copy/clear menu selection
     $19B7: File copy source slot / file clear slot
     $19B9: File copy destination slot
+    $19BB: Unused
 }
 $1A8F..1B4A: Game options menu
 {
     $1A8F: Game options menu object index
-
+    $1A91: Unused
     $1A93: Game options menu object initialisation parameter
-
+    $1A95..9C: Unused
     $1A9D..AC: Game options menu object spritemap pointers
     $1AAD..BC: Game options menu object X positions
     $1ABD..CC: Game options menu object Y positions
@@ -3574,16 +3578,8 @@ $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9
         + 2Ch: Parameter 2
         + 2Eh..39h: Name
     }
-    $7E:7800..7FFF: Extra enemy RAM (40h bytes each). See "enemy data.txt" from lua repo, "Kraid.asm", "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
-    {
-        Botwoon:
-        {
-            $7E:7800..19: Enemy projectile indices. Dh entries. First entry is the tail
-
-            $7E:7820..39: Body hidden flags. Dh entries. First entry is the tail
-        }
-    }
-    $7E:8000..87FF: Extra enemy RAM (40h bytes each). See "enemy data.txt" from lua repo, "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
+    $7E:7800..7FFF: Extra enemy RAM (40h bytes each). See "Enemies/", "Kraid.asm", "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
+    $7E:8000..87FF: Extra enemy RAM (40h bytes each). See "Enemies/", "Draygon.asm", "Crocomire.asm", "Mother Brain.asm"
     {
         Typewriter text:
         {
@@ -3593,108 +3589,8 @@ $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9
             $7E:803C: Typewriter instruction timer reset value
             $7E:803E: Typewriter stroke timer
         }
-
-        Botwoon:
-        {
-            $7E:8000: Initialisation timer. Initialised to 100h, Botwoon waits until it decrements to zero before first moving
-            $7E:8002: Spit timer
-            $7E:8004: Pre-death counter. Counts up to 100h before starting death sequence falling
-            $7E:8006: Death counter. Counts up to C0h before deleting enemy, setting boss bit, and changing music
-            $7E:8008: Large wall explosion timer. Spawns a large explosion sprite every 13 frames for the crumbling wall
-            $7E:800A: Wall smoke timer. Spawns two smoke sprites every 5 frames for the crumbling wall
-            $7E:800C: Decremented when reached target hole. Never read
-
-            $7E:8010: Falling Y speed table index
-
-            $7E:801C: Set by unused routine $967B, read by unused routine $9696
-            $7E:801E: Death flag
-            $7E:8020: Body death flag
-
-            $7E:8026: Head hidden flag
-            $7E:8028: Previous head hidden flag
-            $7E:802A: Hole collision disabled flag
-            $7E:802C: Target position history index. Set when Botwoon's head reaches target hole, body projectiles disappear when they reach this
-            $7E:802E: Target hole index. 0 = left, 8 = bottom, 10h = top, 18h = right
-            $7E:8030: Speed. Used as number of movement data entries to move or px/frame depending on movement function
-            $7E:8032: Target hole angle using the usual SM angle convention (never read)
-            $7E:8034: Target hole angle using the common maths angle convention
-            $7E:8036: Instruction list
-            $7E:8038: Going through hole flag
-            $7E:803A: Spit angle
-            $7E:803C: Tail showing flag
-            $7E:803E: Speed table index. Used for both Botwoon movement and spit projectile movement, although Botwoon only spits when this index is 0
-        }
-
-        Ridley:
-        {
-            $7E:800A: Ridley's final attack swoop counter?
-        }
     }
-    $7E:8800..8FFF: Extra enemy RAM (40h bytes each). Includes variables for corpse rotting effect. See "enemy data.txt" from lua repo, "Draygon.asm"
-    {
-        Corpse rotting:
-        {
-            $7E:8802: Corpse rotting rot entry Y offset
-            $7E:8804..13: Working copy of enemy $7E:8828..37. Not enemy indexed, absolute addresses
-            {
-                $7E:8804: Corpse rotting rot entry copy function
-                $7E:8806: Corpse rotting rot entry move function
-                $7E:8808: Corpse rotting tile data row offsets pointer
-                $7E:880A: Corpse rotting sprite height
-                $7E:880C: Corpse rotting sprite height - 1
-                $7E:880E: Corpse rotting sprite height - 2
-                $7E:8810: Tile data offset to get from pixel row 6 of current tile row to pixel row 0 of next tile row
-                $7E:8812: Corpse rotting rot entry finished hook
-            }
-
-            $7E:8824: Corpse rotting rot table pointer. Format: yyyy,tttt, ... where y is the Y offset of sprite to rot and t is rot activation timer
-            $7E:8826: Corpse rotting VRAM transfers pointer. Format: size, source bank, source address, VRAM address (all 16 bit)
-            $7E:8828: Corpse rotting rot entry copy function
-            $7E:882A: Corpse rotting rot entry move function
-            $7E:882C: Corpse rotting tile data row offsets pointer
-            $7E:882E: Corpse rotting sprite height
-            $7E:8830: Corpse rotting sprite height - 1
-            $7E:8832: Corpse rotting sprite height - 2
-            $7E:8834: Tile data offset to get from pixel row 6 of current tile row to pixel row 0 of next tile row
-            $7E:8836: Corpse rotting rot entry finished hook
-        }
-
-        Botwoon:
-        {
-            $7E:8800: Movement table index
-            $7E:8802: Set to 0 when Botwoon reaches end of movement data
-            $7E:8804: Movement data pointer
-
-            $7E:8808: Movement direction. 0 = forwards, FFFFh = backwards
-
-            $7E:8816: Set to 0 sometimes, never read
-            $7E:8818: Previous health during enemy shot
-
-            $7E:881C: Palette data offset (should be 1E0h)
-            $7E:881E: Health-based palette index. Multiple of 2
-            $7E:8820: X position 1 frame ago
-            $7E:8822: Y position 1 frame ago
-            $7E:8824: X position 2 frames ago
-            $7E:8826: Y position 2 frames ago
-            $7E:8828: X position 3 frames ago
-            $7E:882A: Y position 3 frames ago
-            $7E:882C: X position 4 frames ago
-            $7E:882E: Y position 4 frames ago
-
-            $7E:8832: Initial leave hole action flag. Initialised to 1, set to 0 after leave hole action determined, makes the initial action movement (as opposed to spitting)
-            $7E:8834: Spitting flag
-            $7E:8836: Max health. Never read
-            $7E:8838: Max health * 1/2
-            $7E:883A: Max health * 1/4
-
-            $7E:883E: Body death flag
-        }
-
-        Rinka:
-        {
-            $7E:8800..15: Rinka spawn point availability table (for Mother Brain's room only). 0 = available
-        }
-    }
+    $7E:8800..8FFF: Extra enemy RAM (40h bytes each). Includes variables for corpse rotting effect. See "Enemies/", "Draygon.asm"
 
     $7E:9000..97FF: Debug enemy log for unused function $A0:918B
     $7E:9000..953F: Mother Brain corpse rotting graphics
