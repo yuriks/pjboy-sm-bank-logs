@@ -12142,37 +12142,37 @@ $82:EDED AD E2 09    LDA $09E2  [$7E:09E2]  ;\
 $82:EDF0 D0 32       BNE $32    [$EE24]     ;} If Japanese text disabled:
 $82:EDF2 A2 88 02    LDX #$0288             ;\
 $82:EDF5 A0 18 00    LDY #$0018             ;|
-$82:EDF8 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Ah) to palette 0
+$82:EDF8 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Fh, Ah) to palette 0
 $82:EDFB 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EDFE A2 C8 02    LDX #$02C8             ;\
 $82:EE01 A0 18 00    LDY #$0018             ;|
-$82:EE04 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Bh) to palette 0
+$82:EE04 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Fh, Bh) to palette 0
 $82:EE07 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE0A A2 48 03    LDX #$0348             ;\
 $82:EE0D A0 32 00    LDY #$0032             ;|
-$82:EE10 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Dh) to palette 2
+$82:EE10 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..1Ch, Dh) to palette 2
 $82:EE13 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE16 A2 88 03    LDX #$0388             ;\
 $82:EE19 A0 32 00    LDY #$0032             ;|
-$82:EE1C A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Eh) to palette 2
+$82:EE1C A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..1Ch, Eh) to palette 2
 $82:EE1F 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE22 80 30       BRA $30    [$EE54]
 
 $82:EE24 A2 88 02    LDX #$0288             ;\ Else (Japanese text enabled):
 $82:EE27 A0 18 00    LDY #$0018             ;|
-$82:EE2A A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Ah) to palette 2
+$82:EE2A A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Fh, Ah) to palette 2
 $82:EE2D 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE30 A2 C8 02    LDX #$02C8             ;\
 $82:EE33 A0 18 00    LDY #$0018             ;|
-$82:EE36 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Bh) to palette 2
+$82:EE36 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Fh, Bh) to palette 2
 $82:EE39 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE3C A2 48 03    LDX #$0348             ;\
 $82:EE3F A0 32 00    LDY #$0032             ;|
-$82:EE42 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Dh) to palette 0
+$82:EE42 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..1Ch, Dh) to palette 0
 $82:EE45 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE48 A2 88 03    LDX #$0388             ;\
 $82:EE4B A0 32 00    LDY #$0032             ;|
-$82:EE4E A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Eh) to palette 0
+$82:EE4E A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..1Ch, Eh) to palette 0
 $82:EE51 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 
 $82:EE54 60          RTS
