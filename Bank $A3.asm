@@ -9835,6 +9835,7 @@ $A3:EAD6             dw 0050, ; Random metroid cry / metroid draining Samus
 
 ;;; $EAE6: Frozen AI - enemy $DD7F (metroid) ;;;
 {
+; BUG: The setting of the sprite objects' VRAM index to 0 causes graphical garbage if metroid is not first in enemy set
 $A3:EAE6 22 41 80 A3 JSL $A38041[$A3:8041]  ; Normal frozen AI
 $A3:EAEA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EAED BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
