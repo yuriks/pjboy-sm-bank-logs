@@ -9735,7 +9735,7 @@ $A8:E9BA             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 03
 }
 
 
-;;; $E9DA: Palette - enemy $EB7F/$EBBF (red ki-hunter) ;;;
+;;; $E9DA: Palette - enemy $EBBF/$EBFF (red ki-hunter) ;;;
 {
 $A8:E9DA             dw 3800, 5ADF, 3975, 0C0A, 0006, 4E1A, 2D33, 1C8E, 102B, 6F11, 522A, 3124, 1824, 02FF, 01BF, 000F
 }
