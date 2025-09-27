@@ -1850,7 +1850,7 @@ $A5:95EE 80 1D       BRA $1D    [$960D]     ; Go to Draygon reaction
 $A5:95F0 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
 $A5:95F4 18          CLC                    ;|
 $A5:95F5 69 08 00    ADC #$0008             ;|
-$A5:95F8 C9 A0 00    CMP #$00A0             ;} Draygon swoop Y acceleration = min(98h, [$Draygon swoop Y acceleration] + 8)
+$A5:95F8 C9 A0 00    CMP #$00A0             ;} Draygon swoop Y acceleration = min(98h, [Draygon swoop Y acceleration] + 8)
 $A5:95FB 10 04       BPL $04    [$9601]     ;|
 $A5:95FD 8F 1E 78 7E STA $7E781E[$7E:781E]  ;/
 
