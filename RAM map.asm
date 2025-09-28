@@ -3509,9 +3509,9 @@ $7E:3500..35: Backup of regular IO registers ($51..86) during game over menu
 
 $7E:3600..3DFF: Menu tilemap. BG1 for game over menu, BG2 (Zebes and stars) for file select menu in $81:9E93, then used for BG1 thereafter
 
-$7E:3800..3FFF: Cinematic BG tilemap. (Samus' head during intro)
+$7E:3800..3FFF: Intro BG2 tilemap (Samus' head). Unused except for Samus' eyes (transferred by $8B:87D3, updated by $8B:88FD)
 {
-    $7E:3B40..BF: Samus' eyes
+    $7E:3B40..BF: Samus' eyes tilemap (rows Dh/Eh)
 }
 $7E:3800..3FFF: Room select map BG1 tilemap
 $7E:3800..3FFF: Equipment screen BG1 tilemap. Transferred to VRAM $3000..33FF
