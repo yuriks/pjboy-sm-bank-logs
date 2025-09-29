@@ -1010,7 +1010,7 @@ $82:8947 58          CLI                    ; Enable IRQ
 $82:8948 08          PHP
 $82:8949 C2 30       REP #$30
 $82:894B 22 B9 84 88 JSL $8884B9[$88:84B9]  ; HDMA object handler (also handle music queue)
-$82:894F 22 11 81 80 JSL $808111[$80:8111]  ; Generate new random number
+$82:894F 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $82:8953 22 1A 8B 80 JSL $808B1A[$80:8B1A]  ; Clear high OAM
 $82:8957 9C 90 05    STZ $0590  [$7E:0590]  ; OAM stack pointer = 0
 $82:895A 9C 1D 07    STZ $071D  [$7E:071D]  ; Clear Samus tiles transfer flags
