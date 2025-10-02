@@ -294,6 +294,7 @@ $90:81A4             db 01, ;* 0: Standing
 ; 22h: Unused
 
 ; Contains lava damage / gravity suit check
+; The code at $90:81C9..D7 is responsible for the lava shinespark near-zero X speed
 
 $90:81C0 AD 62 19    LDA $1962  [$7E:1962]  ;\
 $90:81C3 30 47       BMI $47    [$820C]     ;} If [lava Y position] < 0: go to animate Samus - FX = none
