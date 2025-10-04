@@ -1577,7 +1577,7 @@ $91:8AB9 F0 12       BEQ $12    [$8ACD]     ;/
 $91:8ABB A9 9B 8A    LDA #$8A9B             ;\
 $91:8ABE 8D 7A 0A    STA $0A7A  [$7E:0A7A]  ;} Demo input pre-instruction = $8A9B (normal)
 $91:8AC1 A9 46 93    LDA #$9346             ;\
-$91:8AC4 8D 7E 0A    STA $0A7E  [$7E:0A7E]  ;} Demo input instruction list pointer = $9346 (shinespark - unseen section)
+$91:8AC4 8D 7E 0A    STA $0A7E  [$7E:0A7E]  ;} Demo input instruction list pointer = $9346 (shinespark - post-crash section)
 $91:8AC7 A9 01 00    LDA #$0001             ;\
 $91:8ACA 8D 7C 0A    STA $0A7C  [$7E:0A7C]  ;} Demo input instruction timer = 1
 
@@ -2007,9 +2007,10 @@ $91:933C             dx 00A5,0000,0000, ;
 }
 
 
-;;; $9346: Instruction list - demo input - shinespark - unseen section ;;;
+;;; $9346: Instruction list - demo input - shinespark - post-crash section ;;;
 {
-; The demo timer expires before these inputs are used
+; Pre-instruction ($8AB0) switches to this instruction list when Samus regains control (when the shinespark crash finishes)
+; The demo timer expires before the input beyond the first are used
 $91:9346             dx 0096,0000,0000, ;
                         0001,0200,0200, ;       <
                         00CC,0200,0000, ;       <
