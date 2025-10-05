@@ -9698,7 +9698,6 @@ $A6:E1AF             dw 3800, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E
 
 ;;; $E1CF: Palettes ;;;
 {
-; Enemy $E1FF (steam) palette points to $E23F, right in the middle of this section...
 $A6:E1CF             dw 3800, 6B5A, 5652, 28E7, 1863, 62B5, 4A10, 396B, 3129, 43FF, 0113, 000F, 175C, 0299, 01D6, 3BE0
 $A6:E1EF             dw 3800, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0
 

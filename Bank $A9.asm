@@ -12504,6 +12504,7 @@ $A9:EF05 6B          RTL
 ;;; $EF06: Check for enemy collision with rectangle ;;;
 {
 ;; Parameters:
+;;     X: Enemy index
 ;;     $12: Rectangle centre X position
 ;;     $14: Rectangle centre Y position
 ;;     $16: Rectangle X radius
