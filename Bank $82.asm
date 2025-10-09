@@ -3711,7 +3711,7 @@ $82:9F8B D0 C8       BNE $C8    [$9F55]     ;} If [X] != 20h: go to LOOP_COLUMNS
 $82:9F8D A5 00       LDA $00    [$7E:0000]  ;\
 $82:9F8F 18          CLC                    ;|
 $82:9F90 69 7B       ADC #$7B               ;|
-$82:9F92 85 00       STA $00    [$7E:0000]  ;} $00 += 80h - 4 - 1 (80h to get to right map page, 4 to go to back to start of row, 1 to undo the increment that just happened)
+$82:9F92 85 00       STA $00    [$7E:0000]  ;} $00 += 80h - 4 - 1 (80h to get to right map page, 4 to go to back to start of row, off-by-one error)
 $82:9F94 A5 01       LDA $01    [$7E:0001]  ;|
 $82:9F96 69 00       ADC #$00               ;|
 $82:9F98 85 01       STA $01    [$7E:0001]  ;/
