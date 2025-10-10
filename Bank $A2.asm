@@ -3171,7 +3171,7 @@ $A2:A509 3A          DEC A                  ;} Decrement enemy underground timer
 $A2:A50A 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
 $A2:A50E D0 06       BNE $06    [$A516]     ; If [enemy underground timer] = 0:
 $A2:A510 A9 04 00    LDA #$0004             ;\
-$A2:A513 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function index = 4
+$A2:A513 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function index = 4 (rising)
 
 $A2:A516 60          RTS
 }
@@ -3186,7 +3186,7 @@ $A2:A520 BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
 $A2:A523 C9 10 00    CMP #$0010             ;} If [enemy sink Y offset] >= 10h:
 $A2:A526 30 15       BMI $15    [$A53D]     ;/
 $A2:A528 A9 02 00    LDA #$0002             ;\
-$A2:A52B 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy function index = 2
+$A2:A52B 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy function index = 2 (underground)
 $A2:A52E BD B5 0F    LDA $0FB5,x[$7E:1175]  ;\
 $A2:A531 29 FF 00    AND #$00FF             ;|
 $A2:A534 0A          ASL A                  ;|
@@ -3205,7 +3205,7 @@ $A2:A541 DE 7E 0F    DEC $0F7E,x[$7E:0FBE]  ; Enemy Y position -= 1
 $A2:A544 DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Enemy sink Y offset -= 1
 $A2:A547 D0 09       BNE $09    [$A552]     ; If [enemy sink Y offset] = 0:
 $A2:A549 AD E6 05    LDA $05E6  [$7E:05E6]  ;\
-$A2:A54C 29 01 00    AND #$0001             ;} Enemy function index = [random number] / 100h % 2
+$A2:A54C 29 01 00    AND #$0001             ;} Enemy function index = [random number] / 100h % 2 (moving left/right)
 $A2:A54F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;/
 
 $A2:A552 60          RTS
@@ -3230,7 +3230,7 @@ $A2:A56C 60          RTS
 }
 
 
-;;; $A56D: Instruction - enemy function index = 0 ;;;
+;;; $A56D: Instruction - enemy function index = 0 (moving left) ;;;
 {
 ;; Parameters:
 ;;     X: Enemy index
@@ -3239,7 +3239,7 @@ $A2:A570 6B          RTL
 }
 
 
-;;; $A571: Instruction - enemy function index = 1 ;;;
+;;; $A571: Instruction - enemy function index = 1 (moving right) ;;;
 {
 ;; Parameters:
 ;;     X: Enemy index
@@ -3257,9 +3257,11 @@ $A2:A578 6B          RTL
 
 ;;; $A579: Enemy shot - enemy $D03F (owtch) ;;;
 {
+; BUG: Owtch is only vulnerable when moving left due to this function index check...
+;      It should be < 2 to include moving left and moving right, or remove the check entirely
 $A2:A579 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A57C BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
-$A2:A57F C9 01 00    CMP #$0001             ;} If [enemy function index] < 1:
+$A2:A57F C9 01 00    CMP #$0001             ;} If [enemy function index] < 1: (moving left)
 $A2:A582 10 04       BPL $04    [$A588]     ;/
 $A2:A584 22 2D 80 A2 JSL $A2802D[$A2:802D]  ; Normal enemy shot AI
 
