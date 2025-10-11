@@ -245,7 +245,7 @@ $A7:8887             dw B633,       ; NOP
                         0001,8D2B,
                         0001,8D19,
                         0001,8D07,
-                        0001,8CF5 
+                        0001,8CF5
 $A7:8939             dw 80ED,8887   ; Go to $8887
 }
 
@@ -1332,7 +1332,7 @@ $A7:AB88 8D 28 10    STA $1028  [$7E:1028]  ;} Kraid top lint function = RTL
 $A7:AB8B A9 FF 7F    LDA #$7FFF             ;\
 $A7:AB8E 8D 32 10    STA $1032  [$7E:1032]  ;} Kraid top lint function timer = 7FFFh
 $A7:AB91 A9 00 00    LDA #$0000             ;\
-$A7:AB94 8D 2C 10    STA $102C  [$7E:102C]  ;} Kraid lint X additional spawning velocity = 0
+$A7:AB94 8D 2C 10    STA $102C  [$7E:102C]  ;} Kraid lint initial X offset = 0
 $A7:AB97 6B          RTL                    ; Return
 
 $A7:AB98 20 43 A9    JSR $A943  [$A7:A943]  ; Set enemy properties to dead
@@ -1355,7 +1355,7 @@ $A7:ABB6 8D 4E 10    STA $104E  [$7E:104E]  ;} Kraid middle lint spritemap point
 $A7:ABB9 A9 31 B8    LDA #$B831             ;\
 $A7:ABBC 8D 68 10    STA $1068  [$7E:1068]  ;} Kraid middle lint function = RTL
 $A7:ABBF A9 F0 FF    LDA #$FFF0             ;\
-$A7:ABC2 8D 6C 10    STA $106C  [$7E:106C]  ;} Kraid lint X additional spawning velocity = -10h
+$A7:ABC2 8D 6C 10    STA $106C  [$7E:106C]  ;} Kraid lint initial X offset = -10h
 $A7:ABC5 6B          RTL                    ; Return
 
 $A7:ABC6 20 43 A9    JSR $A943  [$A7:A943]  ; Set enemy properties to dead
@@ -1378,7 +1378,7 @@ $A7:ABE4 8D 8E 10    STA $108E  [$7E:108E]  ;} Kraid bottom lint spritemap point
 $A7:ABE7 A9 31 B8    LDA #$B831             ;\
 $A7:ABEA 8D A8 10    STA $10A8  [$7E:10A8]  ;} Kraid bottom lint function = RTL
 $A7:ABED A9 F0 FF    LDA #$FFF0             ;\
-$A7:ABF0 8D AC 10    STA $10AC  [$7E:10AC]  ;} Kraid lint X additional spawning velocity = -10h
+$A7:ABF0 8D AC 10    STA $10AC  [$7E:10AC]  ;} Kraid lint initial X offset = -10h
 $A7:ABF3 6B          RTL                    ; Return
 
 $A7:ABF4 20 43 A9    JSR $A943  [$A7:A943]  ; Set enemy properties to dead
@@ -2817,7 +2817,7 @@ $A7:B83B 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
 $A7:B83E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B841 18          CLC                    ;|
 $A7:B842 7D AC 0F    ADC $0FAC,x[$7E:10AC]  ;|
-$A7:B845 38          SEC                    ;} Enemy X position += [Kraid lint X additional spawning velocity] - [Kraid lint spawning X speed]
+$A7:B845 38          SEC                    ;} Enemy X position = [Kraid X position] + [Kraid lint initial X offset] - [Kraid lint spawning X speed]
 $A7:B846 FD AA 0F    SBC $0FAA,x[$7E:10AA]  ;|
 $A7:B849 9D 7A 0F    STA $0F7A,x[$7E:107A]  ;/
 $A7:B84C BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
@@ -2848,7 +2848,7 @@ $A7:B877 9D 96 0F    STA $0F96,x[$7E:1096]  ;} Enemy palette index = [Y]
 $A7:B87A AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B87D 18          CLC                    ;|
 $A7:B87E 7D AC 0F    ADC $0FAC,x[$7E:10AC]  ;|
-$A7:B881 38          SEC                    ;} Enemy X position += [Kraid lint X additional spawning velocity] - [Kraid lint spawning X speed]
+$A7:B881 38          SEC                    ;} Enemy X position = [Kraid X position] + [Kraid lint initial X offset] - [Kraid lint spawning X speed]
 $A7:B882 FD AA 0F    SBC $0FAA,x[$7E:10AA]  ;|
 $A7:B885 9D 7A 0F    STA $0F7A,x[$7E:107A]  ;/
 $A7:B888 DE B2 0F    DEC $0FB2,x[$7E:10B2]  ; Decrement Kraid enemy function timer
@@ -5718,7 +5718,7 @@ $A7:D080 29 07 00    AND #$0007             ;\
 $A7:D083 0A          ASL A                  ;|
 $A7:D084 A8          TAY                    ;} Phantoon eye timer = [$CD53 + [random number] % 8 * 2]
 $A7:D085 B9 53 CD    LDA $CD53,y[$A7:CD5B]  ;|
-$A7:D088 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;/ 
+$A7:D088 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;/
 $A7:D08B AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A7:D08E 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: go to BRANCH_REVERSED
 $A7:D091 D0 25       BNE $25    [$D0B8]     ;/
@@ -5879,7 +5879,7 @@ $A7:D1BD 1A          INC A                  ;} Phantoon speed = 0.0
 $A7:D1BE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;|
 $A7:D1C1 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
 $A7:D1C4 EE AE 0F    INC $0FAE  [$7E:0FAE]  ; Increment Phantoon movement stage
-                                            
+
 $A7:D1C7 60          RTS                    ; Return
 
 ; BRANCH_1
@@ -7242,7 +7242,7 @@ $A7:DBA5 A9 00 00    LDA #$0000             ;\
 $A7:DBA8 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Phantoon palette change numerator = 0
 $A7:DBAB 38          SEC                    ;\
 $A7:DBAC 60          RTS                    ;} Return carry set
-                                            
+
 $A7:DBAD A2 00 00    LDX #$0000             ; X = 0
 
 ; LOOP
@@ -7362,7 +7362,7 @@ $A7:DC65 A9 00 00    LDA #$0000             ;\
 $A7:DC68 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Phantoon palette change numerator = 0
 $A7:DC6B 38          SEC                    ;\
 $A7:DC6C 60          RTS                    ;} Return carry set
-                                            
+
 $A7:DC6D A2 00 00    LDX #$0000             ; X = 0
 
 ; LOOP
@@ -7490,19 +7490,19 @@ $A7:DD0C 49 FF FF    EOR #$FFFF
 $A7:DD0F 1A          INC A
 
 $A7:DD10 E2 21       SEP #$21
-$A7:DD12 9C 04 42    STZ $4204            
-$A7:DD15 8D 05 42    STA $4205            
+$A7:DD12 9C 04 42    STZ $4204
+$A7:DD15 8D 05 42    STA $4205
 $A7:DD18 AD EE 0F    LDA $0FEE  [$7E:0FEE]
 $A7:DD1B E5 14       SBC $14    [$7E:0014]
 $A7:DD1D 1A          INC A
-$A7:DD1E 8D 06 42    STA $4206            
+$A7:DD1E 8D 06 42    STA $4206
 $A7:DD21 C2 20       REP #$20
 $A7:DD23 EA          NOP
 $A7:DD24 EA          NOP
 $A7:DD25 EA          NOP
 $A7:DD26 EA          NOP
 $A7:DD27 EA          NOP
-$A7:DD28 AD 14 42    LDA $4214            
+$A7:DD28 AD 14 42    LDA $4214
 $A7:DD2B 24 12       BIT $12    [$7E:0012]
 $A7:DD2D 10 04       BPL $04    [$DD33]
 $A7:DD2F 49 FF FF    EOR #$FFFF
@@ -9642,7 +9642,7 @@ $A7:F7A8 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F806 (shinespar
 $A7:F7AB 9E E8 0F    STZ $0FE8,x[$7E:11E8]  ; Enemy ([X] + 1) position update timer = 0
 $A7:F7AE 9E EE 0F    STZ $0FEE,x[$7E:11EE]  ; Enemy ([X] + 1) visibility timer = 0
 $A7:F7B1 9E 2E 10    STZ $102E,x[$7E:122E]  ; Enemy ([X] + 2) visibility timer = 0
-$A7:F7B4 9E 6E 10    STZ $106E,x[$7E:126E]  ; Enemy ([X] + 3) visibility timer = 0 
+$A7:F7B4 9E 6E 10    STZ $106E,x[$7E:126E]  ; Enemy ([X] + 3) visibility timer = 0
 $A7:F7B7 9E AE 10    STZ $10AE,x[$7E:12AE]  ; Enemy ([X] + 4) visibility timer = 0
 $A7:F7BA 9E AC 0F    STZ $0FAC,x[$7E:11AC]  ;\
 $A7:F7BD 9E AE 0F    STZ $0FAE,x[$7E:11AE]  ;} Enemy Y acceleration = 0.0
