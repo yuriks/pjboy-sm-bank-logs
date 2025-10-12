@@ -1157,7 +1157,7 @@ $09A2..0A01: Samus data and game options. Saved to SRAM
         4000h: Grapple
         8000h: X-ray
     }
-    $09A6: Equipped beams. Note for additional custom beams, the fire beam routines ($91:B887/B986) set projectile type ($0C18) directly to [equipped beams] | 8000h/8010h (possibly masked with 100Fh), which in turn is masked with Fh to extract beam type.
+    $09A6: Equipped beams. Note for additional custom beams, the fire beam routines ($90:B887/B986) set projectile type ($0C18) directly to [equipped beams] | 8000h/8010h (possibly masked with 100Fh), which in turn is masked with Fh to extract beam type.
     $09A8: Collected beams
     {
         1: Wave
