@@ -10236,7 +10236,7 @@ $82:E168 6B          RTL
 }
 
 
-;;; $E169: Game state 9 (hit a door block) ;;;
+;;; $E169: Game state 9 (door transition - delay) ;;;
 {
 $82:E169 08          PHP
 $82:E16A C2 30       REP #$30
@@ -10246,7 +10246,7 @@ $82:E172 B0 02       BCS $02    [$E176]     ; If carry clear (not finished delay
 $82:E174 28          PLP
 $82:E175 60          RTS                    ; Return
 
-$82:E176 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Ah (loading next room)
+$82:E176 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Ah (door transition - setup)
 $82:E179 28          PLP
 $82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]  ; Go to game state Ah
 }
@@ -10291,7 +10291,7 @@ $82:E1B6 60          RTS
 }
 
 
-;;; $E1B7: Game state Ah (loading next room) ;;;
+;;; $E1B7: Game state Ah (door transition - setup) ;;;
 {
 $82:E1B7 08          PHP
 $82:E1B8 8B          PHB
@@ -10366,14 +10366,14 @@ $82:E276 A9 FF FF    LDA #$FFFF             ;\
 $82:E279 8D F5 05    STA $05F5  [$7E:05F5]  ;} Disable sounds
 $82:E27C A9 9E E2    LDA #$E29E             ;\
 $82:E27F 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E29E
-$82:E282 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Bh (loading next room)
+$82:E282 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Bh (door transition - main)
 $82:E285 AB          PLB
 $82:E286 28          PLP
 $82:E287 60          RTS
 }
 
 
-;;; $E288: Game state Bh (loading next room) ;;;
+;;; $E288: Game state Bh (door transition - main) ;;;
 {
 $82:E288 08          PHP
 $82:E289 8B          PHB

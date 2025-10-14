@@ -1077,9 +1077,9 @@ $0998: Game state
     6: Loading game data.                                                               Set by $8B:CADF (cinematic function - load game data)
     7: Main gameplay fading in.                                                         Set by $82:8000 (loading game data / set up new game)
     8: Main gameplay.                                                                   Set by $82:8B20 (main gameplay fading in), $82:93A1 (game state 12h), $82:DC10 (reserve tank auto), $82:E737 (finish door transition)
-    9: Hit a door block.                                                                Set by $94:938B (horizontal door collision), $94:93CE (vertical door collision)
-    Ah: Loading next room.                                                              Set by $82:E169 (hit a door block)
-    Bh: Loading next room.                                                              Set by $82:E1B7 (game state Ah)
+    9: Door transition - delay.                                                         Set by $94:938B (horizontal door collision), $94:93CE (vertical door collision)
+    Ah: Door transition - setup.                                                        Set by $82:E169 (game state 9)
+    Bh: Door transition - main.                                                         Set by $82:E1B7 (game state Ah)
     Ch: Pausing, normal gameplay but darkening.                                         Set by $85:80FA (map data access completed), $90:EA45 (pause check)
     Dh: Pausing, loading pause menu.                                                    Set by $82:8CCF (game state Ch)
     Eh: Paused, loading pause menu.                                                     Set by $82:8CEF (game state Dh)
@@ -1134,7 +1134,7 @@ $099C: Door transition function
     $E737: Fade in the screen and run enemies; finish room transition
 
     $E17D..E19F is a chain of functions whose initial value is written by door block collision
-    $E29E..E737 is a chain of functions whose initial value is written by game state Ah (loading next room)
+    $E29E..E737 is a chain of functions whose initial value is written by game state Ah (door transition - setup)
     $E737 is also written by $80:A07B (start gameplay) and checked for by $88:DE18 (Ceres haze HDMA object)
     $E2DB is checked for by $88:DE74 (Ceres haze HDMA object)
 }

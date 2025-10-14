@@ -4840,8 +4840,8 @@ $80:9F4C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 
 ; Called by:
 ;     $82:8367: Game state 20h (made it to Ceres elevator)
 ;     $82:8388: Game state 21h (blackout from Ceres)
-;     $82:E1B7: Game state Ah (loading next room)
-;     $82:E288: Game state Bh (loading next room)
+;     $82:E1B7: Game state Ah (door transition - setup)
+;     $82:E288: Game state Bh (door transition - main)
 ;     $90:E0E6: Timer / Samus hack handler - handle timer
 ;     $90:E114: Timer / Samus hack handler - draw timer
 ;     $90:E12E: Timer / Samus hack handler - push Samus out of Ceres Ridley's way

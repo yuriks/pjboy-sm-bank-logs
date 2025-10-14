@@ -2385,7 +2385,7 @@ $94:93AC BF 00 00 83 LDA $830000,x[$83:AB4C];\
 $94:93B0 10 0B       BPL $0B    [$93BD]     ;} If [$83:0000 + [X]] (destination room header pointer) >= $8000:
 $94:93B2 8E 8D 07    STX $078D  [$7E:078D]  ; Door pointer = [X]
 $94:93B5 A9 09 00    LDA #$0009             ;\
-$94:93B8 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (hit a door block)
+$94:93B8 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (door transition - delay)
 $94:93BB 18          CLC                    ;\
 $94:93BC 60          RTS                    ;} Return carry clear
 
@@ -2425,7 +2425,7 @@ $94:93EF BF 00 00 83 LDA $830000,x[$83:898E];\
 $94:93F3 10 0B       BPL $0B    [$9400]     ;} If [$83:0000 + [X]] (destination room header pointer) >= $8000:
 $94:93F5 8E 8D 07    STX $078D  [$7E:078D]  ; Door pointer = [X]
 $94:93F8 A9 09 00    LDA #$0009             ;\
-$94:93FB 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (hit a door block)
+$94:93FB 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (door transition - delay)
 $94:93FE 18          CLC                    ;\
 $94:93FF 60          RTS                    ;} Return carry clear
 
