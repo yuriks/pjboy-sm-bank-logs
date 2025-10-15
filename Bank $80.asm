@@ -286,7 +286,7 @@ $80:8145 6B          RTL
 ;;     A: Timed held input timer reset value ("timed held input" is input held for [A] + 1 frames)
 
 ; Called by:
-;     $82:90E8: Game state Fh (paused, map and item screens) with A = 3
+;     $82:90E8: Game state Fh (paused - main) with A = 3
 
 ; Held input is [$8B] & ![$8F]: the input pressed, but not newly
 $80:8146 08          PHP
@@ -2554,7 +2554,7 @@ $80:8FF6 6B          RTL
 ;;     Y: Delay
 
 ; Called by:
-;     $82:DCE0 with A = 5, Y = 14: Game state 14h (death sequence, black out surroundings)
+;     $82:DCE0 with A = 5, Y = 14: Game state 14h (death sequence - black out surroundings)
 ;     $82:E0D5 with Y = 6: Load new music track if changed
 ;     $82:E118 with A = 0: Play room music track after [A] frames
 ;     $8B:A613 with A = 5, Y = 14: Cinematic function - intro - queue "the galaxy is at peace" music
@@ -5032,7 +5032,7 @@ $80:A148 60          RTS
 ;;; $A149: Resume gameplay ;;;
 {
 ; Called by:
-;     $82:9367: Game state 11h (unpausing, loading normal gameplay)
+;     $82:9367: Game state 11h (unpausing - loading main gameplay)
 $80:A149 08          PHP
 $80:A14A 8B          PHB
 $80:A14B 4B          PHK                    ;\
@@ -5147,7 +5147,7 @@ $80:A210 6B          RTL
 ;;; $A211: Queue clearing of FX tilemap ;;;
 {
 ; Called by:
-;     $82:8CEF: Game state Dh (pausing, loading pause menu)
+;     $82:8CEF: Game state Dh (pausing - loading pause menu)
 $80:A211 A2 FE 0E    LDX #$0EFE             ;\
 $80:A214 A9 4E 18    LDA #$184E             ;|
                                             ;|

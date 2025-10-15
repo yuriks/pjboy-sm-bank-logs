@@ -550,7 +550,7 @@ $82:84A3 CA          DEX                    ;} $1A8D..1B8C = 0 (?)
 $82:84A4 CA          DEX                    ;|
 $82:84A5 10 F9       BPL $F9    [$84A0]     ;/
 $82:84A7 A9 19 00    LDA #$0019             ;\
-$82:84AA 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence, black out)
+$82:84AA 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence - black out)
 $82:84AD 28          PLP
 $82:84AE 60          RTS                    ; Return
 
@@ -1639,7 +1639,7 @@ $82:8CCE 60          RTS
 
 ;;; $8CCF..BA34: Pause menu ;;;
 {
-;;; $8CCF: Game state Ch (pausing, normal gameplay but darkening) ;;;
+;;; $8CCF: Game state Ch (pausing - fading out) ;;;
 {
 $82:8CCF 08          PHP
 $82:8CD0 C2 30       REP #$30
@@ -1651,14 +1651,14 @@ $82:8CDE D0 0D       BNE $0D    [$8CED]     ;/
 $82:8CE0 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:8CE4 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:8CE7 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$82:8CEA EE 98 09    INC $0998  [$7E:0998]  ; Game state = Dh (pausing, loading pause menu)
+$82:8CEA EE 98 09    INC $0998  [$7E:0998]  ; Game state = Dh (pausing - loading pause menu)
 
 $82:8CED 28          PLP
 $82:8CEE 60          RTS
 }
 
 
-;;; $8CEF: Game state Dh (pausing, loading pause menu) ;;;
+;;; $8CEF: Game state Dh (pausing - loading pause menu) ;;;
 {
 $82:8CEF 08          PHP
 $82:8CF0 C2 30       REP #$30
@@ -1696,7 +1696,7 @@ $82:8D3E 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause menu palette animation time
 $82:8D41 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
 $82:8D44 9C FF 05    STZ $05FF  [$7E:05FF]  ; Map scrolling speed index = 0
 $82:8D47 22 11 A2 80 JSL $80A211[$80:A211]  ; Queue clearing of FX tilemap
-$82:8D4B EE 98 09    INC $0998  [$7E:0998]  ; Game state = Eh (paused, loading pause menu)
+$82:8D4B EE 98 09    INC $0998  [$7E:0998]  ; Game state = Eh (paused - fading in)
 $82:8D4E AB          PLB
 $82:8D4F 28          PLP
 $82:8D50 60          RTS
@@ -2161,7 +2161,7 @@ $82:90C7 6B          RTL
 }
 
 
-;;; $90C8: Game state Eh (paused, loading pause menu) ;;;
+;;; $90C8: Game state Eh (paused - fading in) ;;;
 {
 $82:90C8 08          PHP
 $82:90C9 C2 30       REP #$30
@@ -2174,14 +2174,14 @@ $82:90D9 D0 0B       BNE $0B    [$90E6]     ;|
 $82:90DB C2 20       REP #$20               ;/
 $82:90DD 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:90E0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$82:90E3 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Fh (paused, map and item screens)
+$82:90E3 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Fh (paused - main)
 
 $82:90E6 28          PLP
 $82:90E7 60          RTS
 }
 
 
-;;; $90E8: Game state Fh (paused, map and item screens) ;;;
+;;; $90E8: Game state Fh (paused - main) ;;;
 {
 $82:90E8 8B          PHB
 $82:90E9 4B          PHK                    ;\
@@ -2492,7 +2492,7 @@ $82:9304             dw 0000, 0000, 0000, 0008, 0000, 0000, 0000, 0000, 0000, 00
 }
 
 
-;;; $9324: Game state 10h (unpausing, loading normal gameplay) ;;;
+;;; $9324: Game state 10h (paused - fading out) ;;;
 {
 $82:9324 08          PHP
 $82:9325 C2 30       REP #$30
@@ -2507,7 +2507,7 @@ $82:933A 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:933E C2 20       REP #$20
 $82:9340 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:9343 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$82:9346 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 11h (unpausing, loading normal gameplay)
+$82:9346 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 11h (unpausing - loading main gameplay)
 
 $82:9349 28          PLP
 $82:934A 60          RTS
@@ -2529,7 +2529,7 @@ $82:9364 4C 6D A5    JMP $A56D  [$82:A56D]  ; Go to handle pause menu L/R presse
 }
 
 
-;;; $9367: Game state 11h (unpausing, loading normal gameplay) ;;;
+;;; $9367: Game state 11h (unpausing - loading main gameplay) ;;;
 {
 $82:9367 08          PHP
 $82:9368 C2 30       REP #$30
@@ -2553,13 +2553,13 @@ $82:9392 22 00 80 87 JSL $878000[$87:8000]  ; Enable animated tiles objects
 $82:9396 22 2F BE 82 JSL $82BE2F[$82:BE2F]  ; Queue Samus movement sound effects
 $82:939A AB          PLB
 $82:939B 28          PLP
-$82:939C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 12h (unpausing, normal gameplay but brightening)
+$82:939C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 12h (unpausing - fading in)
 $82:939F 28          PLP
 $82:93A0 60          RTS
 }
 
 
-;;; $93A1: Game state 12h (unpausing, normal gameplay but brightening) ;;;
+;;; $93A1: Game state 12h (unpausing - fading in) ;;;
 {
 $82:93A1 08          PHP
 $82:93A2 C2 30       REP #$30
@@ -4642,7 +4642,7 @@ $82:A5DF 68          PLA                    ;|
 $82:A5E0 8D 53 07    STA $0753  [$7E:0753]  ;/
 $82:A5E3 A9 0B 00    LDA #$000B             ;\
 $82:A5E6 8D 29 07    STA $0729  [$7E:0729]  ;} Start button pressed highlight timer = Bh
-$82:A5E9 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 10h (unpausing, loading normal gameplay)
+$82:A5E9 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 10h (paused - fading out)
 
 $82:A5EC 20 4D A8    JSR $A84D  [$82:A84D]  ; Update pause menu L/R/start VRAM tilemap
 $82:A5EF 28          PLP
@@ -9414,7 +9414,7 @@ $82:DBA2 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $82:DBA5 A9 11 00    LDA #$0011             ;\
 $82:DBA8 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for death sequence
 $82:DBAC A9 13 00    LDA #$0013             ;\
-$82:DBAF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 13h (death sequence, start)
+$82:DBAF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 13h (death sequence - start)
 
 ; BRANCH_TICK_GAME_TIME
 $82:DBB2 AD DA 09    LDA $09DA  [$7E:09DA]  ;\
@@ -9525,7 +9525,7 @@ $82:DC7F 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DC80: Game state 13h (death sequence, start) ;;;
+;;; $DC80: Game state 13h (death sequence - start) ;;;
 {
 $82:DC80 08          PHP
 $82:DC81 C2 30       REP #$30
@@ -9567,13 +9567,13 @@ $82:DCCF 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
 $82:DCD2 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
 $82:DCD5 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $82:DCD8 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
-$82:DCDB EE 98 09    INC $0998  [$7E:0998]  ; Game state = 14h (death sequence, black out surroundings)
+$82:DCDB EE 98 09    INC $0998  [$7E:0998]  ; Game state = 14h (death sequence - black out surroundings)
 $82:DCDE 28          PLP
 $82:DCDF 60          RTS
 }
 
 
-;;; $DCE0: Game state 14h (death sequence, black out surroundings) ;;;
+;;; $DCE0: Game state 14h (death sequence - black out surroundings) ;;;
 {
 $82:DCE0 08          PHP
 $82:DCE1 C2 30       REP #$30
@@ -9615,7 +9615,7 @@ $82:DD30 A9 03 00    LDA #$0003             ;\
 $82:DD33 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Death animation timer = 3
 $82:DD36 9C E4 0D    STZ $0DE4  [$7E:0DE4]  ; Death animation index = 0
 $82:DD39 9C E6 0D    STZ $0DE6  [$7E:0DE6]  ; Death animation counter = 0
-$82:DD3C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 15h (death sequence, wait for music)
+$82:DD3C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 15h (death sequence - wait for music)
 $82:DD3F 9C 92 05    STZ $0592  [$7E:0592]  ; Power bomb explosion status = 0
 $82:DD42 A9 02 00    LDA #$0002             ;\
 $82:DD45 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
@@ -9635,7 +9635,7 @@ $82:DD70 60          RTS
 }
 
 
-;;; $DD71: Game state 15h (death sequence, wait for music) ;;;
+;;; $DD71: Game state 15h (death sequence - wait for music) ;;;
 {
 $82:DD71 08          PHP
 $82:DD72 C2 30       REP #$30
@@ -9643,14 +9643,14 @@ $82:DD74 22 00 8A 90 JSL $908A00[$90:8A00]  ; Draw inanimate Samus
 $82:DD78 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $82:DD7C B0 07       BCS $07    [$DD85]     ;} If music is queued: return
 $82:DD7E 22 A7 B3 9B JSL $9BB3A7[$9B:B3A7]  ; Set Samus death sequence pose
-$82:DD82 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 16h (death sequence, pre-flashing)
+$82:DD82 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 16h (death sequence - pre-flashing)
 
 $82:DD85 28          PLP
 $82:DD86 60          RTS
 }
 
 
-;;; $DD87: Game state 16h (death sequence, pre-flashing) ;;;
+;;; $DD87: Game state 16h (death sequence - pre-flashing) ;;;
 {
 ; Death animation pre-flashing timer is initialised to 10h by $DCE0
 $82:DD87 08          PHP
@@ -9660,21 +9660,21 @@ $82:DD8E CE E8 0D    DEC $0DE8  [$7E:0DE8]  ; Decrement death animation pre-flas
 $82:DD91 F0 02       BEQ $02    [$DD95]     ;\
 $82:DD93 10 03       BPL $03    [$DD98]     ;} If [death animation pre-flashing timer] > 0: return
 
-$82:DD95 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 17h (death sequence, flashing)
+$82:DD95 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 17h (death sequence - flashing)
 
 $82:DD98 28          PLP
 $82:DD99 60          RTS
 }
 
 
-;;; $DD9A: Game state 17h (death sequence, flashing) ;;;
+;;; $DD9A: Game state 17h (death sequence - flashing) ;;;
 {
 $82:DD9A 08          PHP
 $82:DD9B C2 30       REP #$30
 $82:DD9D 22 41 B4 9B JSL $9BB441[$9B:B441]  ; Handle death animation flashing
 $82:DDA1 AA          TAX                    ;\
 $82:DDA2 F0 05       BEQ $05    [$DDA9]     ;} If flashing has ended:
-$82:DDA4 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 18h (death sequence, explosion white out)
+$82:DDA4 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 18h (death sequence - explosion white out)
 $82:DDA7 80 04       BRA $04    [$DDAD]     ; Return
 
 $82:DDA9 22 98 89 90 JSL $908998[$90:8998]  ; Draw Samus during death animation
@@ -9684,7 +9684,7 @@ $82:DDAE 60          RTS
 }
 
 
-;;; $DDAF: Game state 18h (death sequence, explosion white out) ;;;
+;;; $DDAF: Game state 18h (death sequence - explosion white out) ;;;
 {
 $82:DDAF 08          PHP
 $82:DDB0 C2 30       REP #$30
@@ -9694,14 +9694,14 @@ $82:DDB7 F0 0C       BEQ $0C    [$DDC5]     ;} If finished:
 $82:DDB9 A9 01 00    LDA #$0001             ;\
 $82:DDBC 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $82:DDBF 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
-$82:DDC2 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 19h (death sequence, black out)
+$82:DDC2 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 19h (death sequence - black out)
 
 $82:DDC5 28          PLP
 $82:DDC6 60          RTS
 }
 
 
-;;; $DDC7: Game state 19h (death sequence, black out) ;;;
+;;; $DDC7: Game state 19h (death sequence - black out) ;;;
 {
 ; Also cut to by timeup death
 $82:DDC7 08          PHP

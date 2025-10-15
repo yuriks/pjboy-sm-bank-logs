@@ -1990,7 +1990,7 @@ $81:909B A9 02       LDA #$02               ;|
 $81:909D 8D 0B 42    STA $420B              ;/
 $81:90A0 C2 30       REP #$30
 $81:90A2 A9 10 00    LDA #$0010             ;\
-$81:90A5 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 10h (unpausing, loading normal gameplay)
+$81:90A5 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 10h (paused - fading out)
 $81:90A8 9C 50 09    STZ $0950  [$7E:0950]  ; Debug game over menu selection = 0
 $81:90AB 4C 5B 90    JMP $905B  [$81:905B]  ; Go to restore palettes and regular IO registers from debug game over menu
 }

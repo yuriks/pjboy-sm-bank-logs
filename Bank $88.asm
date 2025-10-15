@@ -8647,7 +8647,7 @@ $88:E7BB 6B          RTL
 $88:E7BC 08          PHP
 $88:E7BD C2 30       REP #$30
 $88:E7BF AD 98 09    LDA $0998  [$7E:0998]  ;\
-$88:E7C2 C9 13 00    CMP #$0013             ;} If [game state] = death sequence, start: go to BRANCH_DELETE
+$88:E7C2 C9 13 00    CMP #$0013             ;} If [game state] = death sequence - start: go to BRANCH_DELETE
 $88:E7C5 F0 1E       BEQ $1E    [$E7E5]     ;/
 $88:E7C7 A9 24 00    LDA #$0024             ;\
 $88:E7CA 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 24h (BG1/BG2/sprites are drawn the backdrop is added on top inside window 1)

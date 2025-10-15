@@ -108,7 +108,7 @@ $85:80FC AD 1F 1C    LDA $1C1F  [$7E:1C1F]  ;\
 $85:80FF C9 14 00    CMP #$0014             ;} If [message box index] = map data access completed:
 $85:8102 D0 07       BNE $07    [$810B]     ;/
 $85:8104 A9 0C 00    LDA #$000C             ;\
-$85:8107 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = Ch (pausing, normal gameplay but darkening)
+$85:8107 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = Ch (pausing - fading out)
 $85:810A 60          RTS                    ; Return
 
 $85:810B C9 1C 00    CMP #$001C             ;\

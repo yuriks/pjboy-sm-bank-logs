@@ -1811,7 +1811,7 @@ $90:89FF 6B          RTL
 ;     Door transition
 ;     Using elevator
 ;     Taken fatal damage
-;     Game state 15h (death sequence, pre-flashing)
+;     Game state 15h (death sequence - pre-flashing)
 
 ; Compared to $85E2, this routine doesn't update $0A96/$0ACA for speed echo drawing,
 ; and doesn't have the checks for being invisible
@@ -15687,7 +15687,7 @@ $90:EA6E A9 01 00    LDA #$0001             ;\
 $90:EA71 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $90:EA74 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $90:EA77 A9 0C 00    LDA #$000C             ;\
-$90:EA7A 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = Ch (pausing, normal gameplay but darkening)
+$90:EA7A 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = Ch (pausing - fading out)
 
 $90:EA7D 28          PLP
 $90:EA7E 60          RTS

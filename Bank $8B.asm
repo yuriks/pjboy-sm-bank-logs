@@ -9546,7 +9546,7 @@ $8B:C68E CA          DEX                    ;} $1A8D..1B8C = 0 (?)
 $8B:C68F CA          DEX                    ;|
 $8B:C690 10 F9       BPL $F9    [$C68B]     ;/
 $8B:C692 A9 19 00    LDA #$0019             ;\
-$8B:C695 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence, black out)
+$8B:C695 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence - black out)
 
 $8B:C698 60          RTS
 }
