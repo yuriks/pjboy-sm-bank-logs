@@ -3393,9 +3393,9 @@ $86:93EB 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
 $86:93EE A9 00 0A    LDA #$0A00             ;\
 $86:93F1 99 BB 19    STA $19BB,y[$7E:19DB]  ;} Enemy projectile VRAM graphics index = 0, palette 5
 $86:93F4 AF 32 78 7E LDA $7E7832[$7E:7832]  ;\
-$86:93F8 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = [$7E:7832]
+$86:93F8 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = [Ridley fireball X velocity]
 $86:93FB AF 34 78 7E LDA $7E7834[$7E:7834]  ;\
-$86:93FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = [$7E:7834]
+$86:93FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = [Ridley fireball Y velocity]
 }
 
 
@@ -8010,7 +8010,7 @@ $86:B3B8 DA          PHX
 $86:B3B9 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
 $86:B3BC AA          TAX                    ;} X = [enemy projectile $1B23] (enemy index)
 $86:B3BD BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
-$86:B3C1 10 04       BPL $04    [$B3C7]     ;} If [enemy $7E:780C] & 8000h != 0 (eye beam explosions enabled):
+$86:B3C1 10 04       BPL $04    [$B3C7]     ;} If [enemy eye beam explosions enabled flag] & 8000h != 0:
 $86:B3C3 FA          PLX
 $86:B3C4 C8          INY                    ;\
 $86:B3C5 C8          INY                    ;} Y += 2
@@ -17135,7 +17135,7 @@ $86:F10E BF 10 F4 7E LDA $7EF410,x[$7E:F432];\
 $86:F112 29 FF 7F    AND #$7FFF             ;} $0E2A = [enemy projectile killed enemy index] & 7FFFh (never read)
 $86:F115 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;/
 $86:F118 BF C8 F3 7E LDA $7EF3C8,x[$7E:F3EA];\
-$86:F11C AA          TAX                    ;} X = $0E28 = [enemy projectile $7E:F3C8] (enemy header pointer)
+$86:F11C AA          TAX                    ;} X = $0E28 = [enemy projectile enemy header pointer]
 $86:F11D 8D 28 0E    STA $0E28  [$7E:0E28]  ;/
 $86:F120 BF 3A 00 A0 LDA $A0003A,x[$A0:F38D];\
 $86:F124 AA          TAX                    ;} X = (enemy drop chances pointer)
