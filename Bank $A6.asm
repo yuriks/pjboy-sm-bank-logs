@@ -2373,146 +2373,147 @@ $A6:A0EE             dx 0001, 01FC,FC,610F
 {
 ;;; $A0F5: Initialisation AI - enemy $E13F/$E17F (Ridley) ;;;
 {
-$A6:A0F5 AE 9F 07    LDX $079F  [$7E:079F]
-$A6:A0F8 BF 28 D8 7E LDA $7ED828,x[$7E:D82E]
-$A6:A0FC 29 01 00    AND #$0001
-$A6:A0FF F0 0D       BEQ $0D    [$A10E]
-$A6:A101 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A6:A104 29 FF FF    AND #$FFFF
-$A6:A107 09 00 07    ORA #$0700
-$A6:A10A 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:A10D 6B          RTL
+$A6:A0F5 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A6:A0F8 BF 28 D8 7E LDA $7ED828,x[$7E:D82E];|
+$A6:A0FC 29 01 00    AND #$0001             ;} If area boss is dead:
+$A6:A0FF F0 0D       BEQ $0D    [$A10E]     ;/
+$A6:A101 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A6:A104 29 FF FF    AND #$FFFF             ;|
+$A6:A107 09 00 07    ORA #$0700             ;} Set Ridley as intangible, invisible, and mark for deletion
+$A6:A10A 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A6:A10D 6B          RTL                    ; Return
 
-$A6:A10E 8B          PHB
-$A6:A10F F4 7E 7E    PEA $7E7E
-$A6:A112 AB          PLB
-$A6:A113 AB          PLB
-$A6:A114 A9 00 00    LDA #$0000
-$A6:A117 A2 FE 0F    LDX #$0FFE
-
-$A6:A11A 9D 00 20    STA $2000,x[$7E:2FFE]
-$A6:A11D CA          DEX
-$A6:A11E CA          DEX
-$A6:A11F 10 F9       BPL $F9    [$A11A]
-$A6:A121 AB          PLB
+$A6:A10E 8B          PHB                    ;\
+$A6:A10F F4 7E 7E    PEA $7E7E              ;|
+$A6:A112 AB          PLB                    ;|
+$A6:A113 AB          PLB                    ;|
+$A6:A114 A9 00 00    LDA #$0000             ;|
+$A6:A117 A2 FE 0F    LDX #$0FFE             ;|
+                                            ;} $7E:2000..2FFF = 0 (probably copy+paste from another boss, Ridley doesn't use $7E:20AC+)
+$A6:A11A 9D 00 20    STA $2000,x[$7E:2FFE]  ;|
+$A6:A11D CA          DEX                    ;|
+$A6:A11E CA          DEX                    ;|
+$A6:A11F 10 F9       BPL $F9    [$A11A]     ;|
+$A6:A121 AB          PLB                    ;/
 $A6:A122 22 E2 A7 90 JSL $90A7E2[$90:A7E2]  ; Disable mini-map and mark boss room map tiles as explored
-$A6:A126 9C B4 0F    STZ $0FB4  [$7E:0FB4]
-$A6:A129 9C B6 0F    STZ $0FB6  [$7E:0FB6]
-$A6:A12C A9 38 E5    LDA #$E538
-$A6:A12F 20 67 D4    JSR $D467  [$A6:D467]
-$A6:A132 A9 00 0E    LDA #$0E00
-$A6:A135 8D 96 0F    STA $0F96  [$7E:0F96]
-$A6:A138 8F 18 78 7E STA $7E7818[$7E:7818]
-$A6:A13C AD 88 0F    LDA $0F88  [$7E:0F88]
-$A6:A13F 09 04 00    ORA #$0004
-$A6:A142 8D 88 0F    STA $0F88  [$7E:0F88]
-$A6:A145 A9 00 00    LDA #$0000
-$A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]
-$A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]
+$A6:A126 9C B4 0F    STZ $0FB4  [$7E:0FB4]  ; $0FB4 = 0 (unused except as temporary in unused routine $E828)
+$A6:A129 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; $0FB6 = 0 (unused)
+$A6:A12C A9 38 E5    LDA #$E538             ;\
+$A6:A12F 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E538
+$A6:A132 A9 00 0E    LDA #$0E00             ;\
+$A6:A135 8D 96 0F    STA $0F96  [$7E:0F96]  ;} $7E:7818 = Ridley palette index = E00h (palette 7)
+$A6:A138 8F 18 78 7E STA $7E7818[$7E:7818]  ;/
+$A6:A13C AD 88 0F    LDA $0F88  [$7E:0F88]  ;\
+$A6:A13F 09 04 00    ORA #$0004             ;} Enable Ridley extended spritemap format
+$A6:A142 8D 88 0F    STA $0F88  [$7E:0F88]  ;/
+$A6:A145 A9 00 00    LDA #$0000             ;\
+$A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]  ; $7E:781A = 0
 $A6:A150 9C 3E 18    STZ $183E  [$7E:183E]  ; Earthquake type = 0
 $A6:A153 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
-$A6:A156 20 D6 D2    JSR $D2D6  [$A6:D2D6]
-$A6:A159 20 FD D9    JSR $D9FD  [$A6:D9FD]
-$A6:A15C AD 9F 07    LDA $079F  [$7E:079F]
-$A6:A15F C9 02 00    CMP #$0002
-$A6:A162 F0 03       BEQ $03    [$A167]
-$A6:A164 4C EE A1    JMP $A1EE  [$A6:A1EE]
+$A6:A156 20 D6 D2    JSR $D2D6  [$A6:D2D6]  ; Execute $D2D6
+$A6:A159 20 FD D9    JSR $D9FD  [$A6:D9FD]  ; Execute $D9FD
+$A6:A15C AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$A6:A15F C9 02 00    CMP #$0002             ;} If [area index] != Norfair:
+$A6:A162 F0 03       BEQ $03    [$A167]     ;/
+$A6:A164 4C EE A1    JMP $A1EE  [$A6:A1EE]  ; Go to BRANCH_CERES
 
-$A6:A167 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A6:A16A 09 00 14    ORA #$1400
-$A6:A16D 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:A170 A9 60 00    LDA #$0060
-$A6:A173 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A6:A176 A9 8A 01    LDA #$018A
-$A6:A179 8D 7E 0F    STA $0F7E  [$7E:0F7E]
+$A6:A167 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A6:A16A 09 00 14    ORA #$1400             ;} Set Ridley as intangible and to block plasma beam
+$A6:A16D 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A6:A170 A9 60 00    LDA #$0060             ;\
+$A6:A173 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Ridley X position = 60h
+$A6:A176 A9 8A 01    LDA #$018A             ;\
+$A6:A179 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Ridley Y position = 18Ah
 $A6:A17C A9 F3 B2    LDA #$B2F3             ; >_<;
-$A6:A17F A9 5B A3    LDA #$A35B
-$A6:A182 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A6:A185 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A6:A188 9C AC 0F    STZ $0FAC  [$7E:0FAC]
-$A6:A18B A9 05 00    LDA #$0005
-$A6:A18E 8D 9A 0F    STA $0F9A  [$7E:0F9A]
-$A6:A191 A9 00 00    LDA #$0000
-$A6:A194 8F 02 78 7E STA $7E7802[$7E:7802]
-$A6:A198 1A          INC A
-$A6:A199 8F 04 78 7E STA $7E7804[$7E:7804]
-$A6:A19D A9 40 00    LDA #$0040
-$A6:A1A0 8F 00 80 7E STA $7E8000[$7E:8000]
-$A6:A1A4 A9 A0 01    LDA #$01A0
-$A6:A1A7 8F 02 80 7E STA $7E8002[$7E:8002]
-$A6:A1AB A9 40 00    LDA #$0040
-$A6:A1AE 8F 04 80 7E STA $7E8004[$7E:8004]
-$A6:A1B2 A9 E0 00    LDA #$00E0
-$A6:A1B5 8F 06 80 7E STA $7E8006[$7E:8006]
-$A6:A1B9 A9 02 00    LDA #$0002
-$A6:A1BC 8F 20 78 7E STA $7E7820[$7E:7820]
-$A6:A1C0 A9 78 00    LDA #$0078
-$A6:A1C3 8F 38 78 7E STA $7E7838[$7E:7838]
-$A6:A1C7 A0 CF E1    LDY #$E1CF
-$A6:A1CA A2 40 01    LDX #$0140
-$A6:A1CD A9 20 00    LDA #$0020
-$A6:A1D0 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]
-$A6:A1D4 A2 E2 00    LDX #$00E2
-$A6:A1D7 A2 00 00    LDX #$0000
-$A6:A1DA A0 0F 00    LDY #$000F
-$A6:A1DD A9 00 00    LDA #$0000
+$A6:A17F A9 5B A3    LDA #$A35B             ;\
+$A6:A182 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A35B
+$A6:A185 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
+$A6:A188 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; $0FAC = 0
+$A6:A18B A9 05 00    LDA #$0005             ;\
+$A6:A18E 8D 9A 0F    STA $0F9A  [$7E:0F9A]  ;} Ridley layer = 5
+$A6:A191 A9 00 00    LDA #$0000             ;\
+$A6:A194 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A198 1A          INC A                  ;\
+$A6:A199 8F 04 78 7E STA $7E7804[$7E:7804]  ;} $7E:7804 = 1
+$A6:A19D A9 40 00    LDA #$0040             ;\
+$A6:A1A0 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 40h
+$A6:A1A4 A9 A0 01    LDA #$01A0             ;\
+$A6:A1A7 8F 02 80 7E STA $7E8002[$7E:8002]  ;} $7E:8002 = 1A0h
+$A6:A1AB A9 40 00    LDA #$0040             ;\
+$A6:A1AE 8F 04 80 7E STA $7E8004[$7E:8004]  ;} $7E:8004 = 40h
+$A6:A1B2 A9 E0 00    LDA #$00E0             ;\
+$A6:A1B5 8F 06 80 7E STA $7E8006[$7E:8006]  ;} $7E:8006 = E0h
+$A6:A1B9 A9 02 00    LDA #$0002             ;\
+$A6:A1BC 8F 20 78 7E STA $7E7820[$7E:7820]  ;} $7E:7820 = 2
+$A6:A1C0 A9 78 00    LDA #$0078             ;\
+$A6:A1C3 8F 38 78 7E STA $7E7838[$7E:7838]  ;} $7E:7838 = 78h
+$A6:A1C7 A0 CF E1    LDY #$E1CF             ;\
+$A6:A1CA A2 40 01    LDX #$0140             ;|
+$A6:A1CD A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E1CF..E20E]
+$A6:A1D0 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
+$A6:A1D4 A2 E2 00    LDX #$00E2             ; >_<;
+$A6:A1D7 A2 00 00    LDX #$0000             ;\
+$A6:A1DA A0 0F 00    LDY #$000F             ;|
+$A6:A1DD A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A6:A1E0 9F E2 C2 7E STA $7EC2E2,x[$7E:C2E2];|
+$A6:A1E4 9F E2 C3 7E STA $7EC3E2,x[$7E:C3E2];} Target BG1/2/sprite palette 7 colours 1..Fh = 0
+$A6:A1E8 E8          INX                    ;|
+$A6:A1E9 E8          INX                    ;|
+$A6:A1EA 88          DEY                    ;|
+$A6:A1EB D0 F3       BNE $F3    [$A1E0]     ;/
+$A6:A1ED 6B          RTL                    ; Return
 
-$A6:A1E0 9F E2 C2 7E STA $7EC2E2,x[$7E:C2E2]
-$A6:A1E4 9F E2 C3 7E STA $7EC3E2,x[$7E:C3E2]
-$A6:A1E8 E8          INX
-$A6:A1E9 E8          INX
-$A6:A1EA 88          DEY
-$A6:A1EB D0 F3       BNE $F3    [$A1E0]
-$A6:A1ED 6B          RTL
-
-$A6:A1EE AD 86 0F    LDA $0F86  [$7E:0F86]
-$A6:A1F1 09 00 14    ORA #$1400
-$A6:A1F4 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:A1F7 A9 BA 00    LDA #$00BA
-$A6:A1FA 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A6:A1FD A9 A9 00    LDA #$00A9
-$A6:A200 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A6:A203 A9 00 00    LDA #$0000
-$A6:A206 8D 3F 09    STA $093F  [$7E:093F]
-$A6:A209 8F 20 78 7E STA $7E7820[$7E:7820]
-$A6:A20D 8F 04 78 7E STA $7E7804[$7E:7804]
-$A6:A211 1A          INC A
-$A6:A212 8F 02 20 7E STA $7E2002[$7E:2002]
-$A6:A216 A9 0F 00    LDA #$000F
-$A6:A219 8F 38 78 7E STA $7E7838[$7E:7838]
-$A6:A21D A9 5B A3    LDA #$A35B
-$A6:A220 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A6:A223 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A6:A226 9C AC 0F    STZ $0FAC  [$7E:0FAC]
-$A6:A229 A9 E0 FF    LDA #$FFE0
-$A6:A22C 8F 00 80 7E STA $7E8000[$7E:8000]
-$A6:A230 A9 B0 00    LDA #$00B0
-$A6:A233 8F 02 80 7E STA $7E8002[$7E:8002]
-$A6:A237 A9 28 00    LDA #$0028
-$A6:A23A 8F 04 80 7E STA $7E8004[$7E:8004]
-$A6:A23E A9 E0 00    LDA #$00E0
-$A6:A241 8F 06 80 7E STA $7E8006[$7E:8006]
-$A6:A245 A0 6F E1    LDY #$E16F
-$A6:A248 A2 40 01    LDX #$0140
-$A6:A24B A9 20 00    LDA #$0020
-$A6:A24E 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]
-$A6:A252 A2 E2 01    LDX #$01E2
-$A6:A255 A0 0F 00    LDY #$000F
-$A6:A258 A9 00 00    LDA #$0000
-
-$A6:A25B 9F 00 C2 7E STA $7EC200,x[$7E:C3E2]
-$A6:A25F E8          INX
-$A6:A260 E8          INX
-$A6:A261 88          DEY
-$A6:A262 D0 F7       BNE $F7    [$A25B]
-$A6:A264 A9 31 BF    LDA #$BF31
-$A6:A267 8F 06 78 7E STA $7E7806[$7E:7806]
-$A6:A26B A9 01 00    LDA #$0001
-$A6:A26E 8F 08 78 7E STA $7E7808[$7E:7808]
-$A6:A272 A9 9C BE    LDA #$BE9C
-$A6:A275 8F 00 88 7E STA $7E8800[$7E:8800]
-$A6:A279 A9 05 00    LDA #$0005
-$A6:A27C 8F 0E 78 7E STA $7E780E[$7E:780E]
+; BRANCH_CERES
+$A6:A1EE AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A6:A1F1 09 00 14    ORA #$1400             ;} Set Ridley as intangible and to block plasma beam
+$A6:A1F4 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A6:A1F7 A9 BA 00    LDA #$00BA             ;\
+$A6:A1FA 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Ridley X position = BAh
+$A6:A1FD A9 A9 00    LDA #$00A9             ;\
+$A6:A200 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Ridley Y position = A9h
+$A6:A203 A9 00 00    LDA #$0000             ;\
+$A6:A206 8D 3F 09    STA $093F  [$7E:093F]  ;} Ceres status = 0 (before Ridley escape)
+$A6:A209 8F 20 78 7E STA $7E7820[$7E:7820]  ; $7E:7820 = 0
+$A6:A20D 8F 04 78 7E STA $7E7804[$7E:7804]  ; $7E:7804 = 0
+$A6:A211 1A          INC A                  ;\
+$A6:A212 8F 02 20 7E STA $7E2002[$7E:2002]  ;} $7E:2002 = 1
+$A6:A216 A9 0F 00    LDA #$000F             ;\
+$A6:A219 8F 38 78 7E STA $7E7838[$7E:7838]  ;} $7E:7838 = Fh
+$A6:A21D A9 5B A3    LDA #$A35B             ;\
+$A6:A220 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A35B
+$A6:A223 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
+$A6:A226 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; $0FAC = 0
+$A6:A229 A9 E0 FF    LDA #$FFE0             ;\
+$A6:A22C 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = -20h
+$A6:A230 A9 B0 00    LDA #$00B0             ;\
+$A6:A233 8F 02 80 7E STA $7E8002[$7E:8002]  ;} $7E:8002 = B0h
+$A6:A237 A9 28 00    LDA #$0028             ;\
+$A6:A23A 8F 04 80 7E STA $7E8004[$7E:8004]  ;} $7E:8004 = 28h
+$A6:A23E A9 E0 00    LDA #$00E0             ;\
+$A6:A241 8F 06 80 7E STA $7E8006[$7E:8006]  ;} $7E:8006 = E0h
+$A6:A245 A0 6F E1    LDY #$E16F             ;\
+$A6:A248 A2 40 01    LDX #$0140             ;|
+$A6:A24B A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E16F..AE]
+$A6:A24E 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
+$A6:A252 A2 E2 01    LDX #$01E2             ;\
+$A6:A255 A0 0F 00    LDY #$000F             ;|
+$A6:A258 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A6:A25B 9F 00 C2 7E STA $7EC200,x[$7E:C3E2];} Target sprite palette 7 colours 1..Fh = 0
+$A6:A25F E8          INX                    ;|
+$A6:A260 E8          INX                    ;|
+$A6:A261 88          DEY                    ;|
+$A6:A262 D0 F7       BNE $F7    [$A25B]     ;/
+$A6:A264 A9 31 BF    LDA #$BF31             ;\
+$A6:A267 8F 06 78 7E STA $7E7806[$7E:7806]  ;} $7E:7806 = $BF31
+$A6:A26B A9 01 00    LDA #$0001             ;\
+$A6:A26E 8F 08 78 7E STA $7E7808[$7E:7808]  ;} $7E:7808 = 1
+$A6:A272 A9 9C BE    LDA #$BE9C             ;\
+$A6:A275 8F 00 88 7E STA $7E8800[$7E:8800]  ;} $7E:8800 = $BE9C
+$A6:A279 A9 05 00    LDA #$0005             ;\
+$A6:A27C 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} $7E:780E = 5
 $A6:A280 A9 00 00    LDA #$0000             ;\
 $A6:A283 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A6:A287 6B          RTL
@@ -2534,7 +2535,7 @@ $A6:A29F 20 DA D4    JSR $D4DA  [$A6:D4DA]
 $A6:A2A2 20 6B D8    JSR $D86B  [$A6:D86B]
 $A6:A2A5 20 7D D9    JSR $D97D  [$A6:D97D]
 $A6:A2A8 20 BD A2    JSR $A2BD  [$A6:A2BD]
-$A6:A2AB 20 F5 CA    JSR $CAF5  [$A6:CAF5]
+$A6:A2AB 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
 $A6:A2AE 20 B5 D4    JSR $D4B5  [$A6:D4B5]
 $A6:A2B1 20 0C DA    JSR $DA0C  [$A6:DA0C]
 $A6:A2B4 20 2A DB    JSR $DB2A  [$A6:DB2A]
@@ -2643,8 +2644,8 @@ $A6:A35A 60          RTS
 ; Startup, 1st run
 $A6:A35B AD 97 07    LDA $0797  [$7E:0797]
 $A6:A35E D0 28       BNE $28    [$A388]
-$A6:A360 A9 77 A3    LDA #$A377
-$A6:A363 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A360 A9 77 A3    LDA #$A377             ;\
+$A6:A363 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A377
 $A6:A366 A9 00 02    LDA #$0200
 $A6:A369 AC 9F 07    LDY $079F  [$7E:079F]
 $A6:A36C C0 02 00    CPY #$0002
@@ -2660,8 +2661,8 @@ $A6:A374 8D B2 0F    STA $0FB2  [$7E:0FB2]
 ; Startup, initial wait
 $A6:A377 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A37A 10 0C       BPL $0C    [$A388]
-$A6:A37C A9 89 A3    LDA #$A389
-$A6:A37F 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A37C A9 89 A3    LDA #$A389             ;\
+$A6:A37F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A389
 $A6:A382 9C B0 0F    STZ $0FB0  [$7E:0FB0]
 $A6:A385 9C B2 0F    STZ $0FB2  [$7E:0FB2]
 
@@ -2704,8 +2705,8 @@ $A6:A3C9 9F 04 C0 7E STA $7EC004,x[$7E:C1FC]
 $A6:A3CD 60          RTS
 
 $A6:A3CE 9C B0 0F    STZ $0FB0  [$7E:0FB0]
-$A6:A3D1 A9 DF A3    LDA #$A3DF
-$A6:A3D4 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A3D1 A9 DF A3    LDA #$A3DF             ;\
+$A6:A3D4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A3DF
 $A6:A3D7 A9 01 00    LDA #$0001
 $A6:A3DA 8F 04 78 7E STA $7E7804[$7E:7804]
 $A6:A3DE 60          RTS
@@ -2759,8 +2760,8 @@ $A6:A435 29 FF FB    AND #$FBFF
 $A6:A438 8D 86 0F    STA $0F86  [$7E:0F86]
 $A6:A43B A0 00 00    LDY #$0000
 $A6:A43E 8C B0 0F    STY $0FB0  [$7E:0FB0]
-$A6:A441 A9 55 A4    LDA #$A455
-$A6:A444 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A441 A9 55 A4    LDA #$A455             ;\
+$A6:A444 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A455
 $A6:A447 A9 04 00    LDA #$0004
 $A6:A44A 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:A44D A9 05 00    LDA #$0005             ;\
@@ -2774,11 +2775,11 @@ $A6:A454 60          RTS
 ; Startup, Ridley roars
 $A6:A455 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A458 10 1D       BPL $1D    [$A477]
-$A6:A45A A9 90 E6    LDA #$E690
-$A6:A45D 20 67 D4    JSR $D467  [$A6:D467]
+$A6:A45A A9 90 E6    LDA #$E690             ;\
+$A6:A45D 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E690
 $A6:A460 9C B2 0F    STZ $0FB2  [$7E:0FB2]
-$A6:A463 A9 78 A4    LDA #$A478
-$A6:A466 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A463 A9 78 A4    LDA #$A478             ;\
+$A6:A466 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A478
 $A6:A469 AD 9F 07    LDA $079F  [$7E:079F]
 $A6:A46C C9 02 00    CMP #$0002
 $A6:A46F F0 06       BEQ $06    [$A477]
@@ -2817,16 +2818,16 @@ $A6:A4AC CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A4AF 10 C6       BPL $C6    [$A477]
 
 $A6:A4B1 9C B0 0F    STZ $0FB0  [$7E:0FB0]
-$A6:A4B4 A9 1D E9    LDA #$E91D
-$A6:A4B7 20 67 D4    JSR $D467  [$A6:D467]
+$A6:A4B4 A9 1D E9    LDA #$E91D             ;\
+$A6:A4B7 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E91D
 $A6:A4BA A9 08 00    LDA #$0008
 $A6:A4BD 8F 10 78 7E STA $7E7810[$7E:7810]
 $A6:A4C1 8F 12 78 7E STA $7E7812[$7E:7812]
 $A6:A4C5 20 D9 D3    JSR $D3D9  [$A6:D3D9]
 $A6:A4C8 A9 01 00    LDA #$0001
 $A6:A4CB 8F 00 20 7E STA $7E2000[$7E:2000]
-$A6:A4CF A9 54 A3    LDA #$A354
-$A6:A4D2 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A4CF A9 54 A3    LDA #$A354             ;\
+$A6:A4D2 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A354
 $A6:A4D5 60          RTS
 }
 
@@ -2879,8 +2880,8 @@ $A6:A6BC C9 70 00    CMP #$0070
 $A6:A6BF 30 01       BMI $01    [$A6C2]
 $A6:A6C1 60          RTS
 
-$A6:A6C2 A9 C8 A6    LDA #$A6C8
-$A6:A6C5 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A6C2 A9 C8 A6    LDA #$A6C8             ;\
+$A6:A6C5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6C8
 }
 
 
@@ -2894,8 +2895,8 @@ $A6:A6CF 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:A6D2 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A6:A6D5 C9 50 00    CMP #$0050
 $A6:A6D8 10 0D       BPL $0D    [$A6E7]
-$A6:A6DA A9 E8 A6    LDA #$A6E8
-$A6:A6DD 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A6DA A9 E8 A6    LDA #$A6E8             ;\
+$A6:A6DD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
 $A6:A6E0 A9 01 00    LDA #$0001
 $A6:A6E3 8F 02 78 7E STA $7E7802[$7E:7802]
 
@@ -2914,14 +2915,14 @@ $A6:A6F4 C9 1E 00    CMP #$001E
 $A6:A6F7 10 20       BPL $20    [$A719]
 $A6:A6F9 A9 00 00    LDA #$0000
 $A6:A6FC 8F 02 78 7E STA $7E7802[$7E:7802]
-$A6:A700 A9 71 A9    LDA #$A971
-$A6:A703 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A700 A9 71 A9    LDA #$A971             ;\
+$A6:A703 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971
 $A6:A706 4C 71 A9    JMP $A971  [$A6:A971]
 
 $A6:A709 A9 00 00    LDA #$0000
 $A6:A70C 8F 02 78 7E STA $7E7802[$7E:7802]
-$A6:A710 A9 9A BD    LDA #$BD9A
-$A6:A713 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A710 A9 9A BD    LDA #$BD9A             ;\
+$A6:A713 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD9A
 $A6:A716 4C 9A BD    JMP $BD9A  [$A6:BD9A]
 
 $A6:A719 20 63 A7    JSR $A763  [$A6:A763]
@@ -3000,10 +3001,10 @@ $A6:A7BF AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A6:A7C2 8F 2E 78 7E STA $7E782E[$7E:782E]
 $A6:A7C6 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A6:A7C9 8F 30 78 7E STA $7E7830[$7E:7830]
-$A6:A7CD A9 3A E7    LDA #$E73A
-$A6:A7D0 20 67 D4    JSR $D467  [$A6:D467]
-$A6:A7D3 A9 F9 A7    LDA #$A7F9
-$A6:A7D6 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A7CD A9 3A E7    LDA #$E73A             ;\
+$A6:A7D0 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
+$A6:A7D3 A9 F9 A7    LDA #$A7F9             ;\
+$A6:A7D6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A7F9
 $A6:A7D9 A9 E0 00    LDA #$00E0
 $A6:A7DC 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:A7E0 4C F9 A7    JMP $A7F9  [$A6:A7F9]
@@ -3015,8 +3016,8 @@ $A6:A7E8 1A          INC A
 $A6:A7E9 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:A7ED C9 30 00    CMP #$0030
 $A6:A7F0 90 F1       BCC $F1    [$A7E3]
-$A6:A7F2 A9 8D A8    LDA #$A88D
-$A6:A7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A7F2 A9 8D A8    LDA #$A88D             ;\
+$A6:A7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A88D
 $A6:A7F8 60          RTS
 }
 
@@ -3046,8 +3047,8 @@ $A6:A828 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:A82C 10 0D       BPL $0D    [$A83B]
 $A6:A82E A9 00 00    LDA #$0000
 $A6:A831 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:A835 A9 E8 A6    LDA #$A6E8
-$A6:A838 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A835 A9 E8 A6    LDA #$A6E8             ;\
+$A6:A838 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
 
 $A6:A83B 60          RTS
 }
@@ -3056,10 +3057,10 @@ $A6:A83B 60          RTS
 ;;; $A83C: Ridley function ;;;
 {
 ; Ceres Ridley start lunging
-$A6:A83C A9 48 E5    LDA #$E548
-$A6:A83F 20 67 D4    JSR $D467  [$A6:D467]
-$A6:A842 A9 4E A8    LDA #$A84E
-$A6:A845 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A83C A9 48 E5    LDA #$E548             ;\
+$A6:A83F 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E548
+$A6:A842 A9 4E A8    LDA #$A84E             ;\
+$A6:A845 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A84E
 $A6:A848 A9 40 00    LDA #$0040
 $A6:A84B 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -3090,8 +3091,8 @@ $A6:A87D 10 0D       BPL $0D    [$A88C]
 
 $A6:A87F A9 00 00    LDA #$0000
 $A6:A882 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:A886 A9 E8 A6    LDA #$A6E8
-$A6:A889 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A886 A9 E8 A6    LDA #$A6E8             ;\
+$A6:A889 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
 
 $A6:A88C 60          RTS
 }
@@ -3100,8 +3101,8 @@ $A6:A88C 60          RTS
 ;;; $A88D: Ridley function ;;;
 {
 ; Ceres Ridley start swoop
-$A6:A88D A9 A4 A8    LDA #$A8A4
-$A6:A890 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A88D A9 A4 A8    LDA #$A8A4             ;\
+$A6:A890 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8A4
 $A6:A893 A9 0A 00    LDA #$000A
 $A6:A896 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:A899 A9 00 00    LDA #$0000
@@ -3125,8 +3126,8 @@ $A6:A8BA C9 60 00    CMP #$0060
 $A6:A8BD 30 01       BMI $01    [$A8C0]
 $A6:A8BF 60          RTS
 
-$A6:A8C0 A9 D4 A8    LDA #$A8D4
-$A6:A8C3 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A8C0 A9 D4 A8    LDA #$A8D4             ;\
+$A6:A8C3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8D4
 $A6:A8C6 A9 0A 00    LDA #$000A
 $A6:A8C9 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:A8CC A9 00 00    LDA #$0000
@@ -3147,8 +3148,8 @@ $A6:A8E1 85 16       STA $16    [$7E:0016]
 $A6:A8E3 20 00 D8    JSR $D800  [$A6:D800]
 $A6:A8E6 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A8E9 10 0C       BPL $0C    [$A8F7]
-$A6:A8EB A9 F8 A8    LDA #$A8F8
-$A6:A8EE 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A8EB A9 F8 A8    LDA #$A8F8             ;\
+$A6:A8EE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8F8
 $A6:A8F1 A9 24 00    LDA #$0024
 $A6:A8F4 8D B2 0F    STA $0FB2  [$7E:0FB2]
 
@@ -3167,8 +3168,8 @@ $A6:A905 85 16       STA $16    [$7E:0016]
 $A6:A907 20 00 D8    JSR $D800  [$A6:D800]
 $A6:A90A CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A90D 10 13       BPL $13    [$A922]
-$A6:A90F A9 23 A9    LDA #$A923
-$A6:A912 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A90F A9 23 A9    LDA #$A923             ;\
+$A6:A912 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A923
 $A6:A915 A9 1C 00    LDA #$001C
 $A6:A918 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:A91B A9 01 00    LDA #$0001
@@ -3189,8 +3190,8 @@ $A6:A930 85 16       STA $16    [$7E:0016]
 $A6:A932 20 00 D8    JSR $D800  [$A6:D800]
 $A6:A935 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A938 10 0C       BPL $0C    [$A946]
-$A6:A93A A9 47 A9    LDA #$A947
-$A6:A93D 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A93A A9 47 A9    LDA #$A947             ;\
+$A6:A93D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A947
 $A6:A940 A9 01 00    LDA #$0001
 $A6:A943 8D B2 0F    STA $0FB2  [$7E:0FB2]
 
@@ -3209,8 +3210,8 @@ $A6:A954 85 16       STA $16    [$7E:0016]
 $A6:A956 20 00 D8    JSR $D800  [$A6:D800]
 $A6:A959 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A95C 10 12       BPL $12    [$A970]
-$A6:A95E A9 E8 A6    LDA #$A6E8
-$A6:A961 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A95E A9 E8 A6    LDA #$A6E8             ;\
+$A6:A961 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
 $A6:A964 A9 00 00    LDA #$0000
 $A6:A967 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:A96B 1A          INC A
@@ -3237,8 +3238,8 @@ $A6:A98E C9 80 FF    CMP #$FF80
 $A6:A991 30 01       BMI $01    [$A994]
 $A6:A993 60          RTS
 
-$A6:A994 A9 A0 A9    LDA #$A9A0
-$A6:A997 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A994 A9 A0 A9    LDA #$A9A0             ;\
+$A6:A997 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A9A0
 $A6:A99A A9 40 00    LDA #$0040
 $A6:A99D 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -3253,8 +3254,8 @@ $A6:A9A8 9C AA 0F    STZ $0FAA  [$7E:0FAA]
 $A6:A9AB 9C AC 0F    STZ $0FAC  [$7E:0FAC]
 $A6:A9AE A9 00 00    LDA #$0000
 $A6:A9B1 8F 00 20 7E STA $7E2000[$7E:2000]
-$A6:A9B5 A9 11 AA    LDA #$AA11
-$A6:A9B8 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:A9B5 A9 11 AA    LDA #$AA11             ;\
+$A6:A9B8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA11
 $A6:A9BB A0 E3 A9    LDY #$A9E3
 $A6:A9BE A2 A2 00    LDX #$00A2
 $A6:A9C1 A9 0F 00    LDA #$000F
@@ -3279,8 +3280,8 @@ $A6:AA01             dw 7E20, 6560, 2060, 1000, 7940, 5D00, 4CA0, 3CA0
 
 ;;; $AA11: Ridley function ;;;
 {
-$A6:AA11 A9 4F AA    LDA #$AA4F
-$A6:AA14 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:AA11 A9 4F AA    LDA #$AA4F             ;\
+$A6:AA14 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA4F
 $A6:AA17 A9 01 00    LDA #$0001
 $A6:AA1A 8D 3F 09    STA $093F  [$7E:093F]
 $A6:AA1D 4C 54 AA    JMP $AA54  [$A6:AA54]
@@ -3438,8 +3439,8 @@ $A6:AB4D 64 80       STZ $80    [$7E:0080]  ;\
 $A6:AB4F 64 82       STZ $82    [$7E:0082]  ;} Mode 7 transformation origin = (0, 0)
 $A6:AB51 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
 $A6:AB53 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
-$A6:AB55 A9 4E C0    LDA #$C04E
-$A6:AB58 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:AB55 A9 4E C0    LDA #$C04E             ;\
+$A6:AB58 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C04E
 $A6:AB5B 9C B2 0F    STZ $0FB2  [$7E:0FB2]
 $A6:AB5E 60          RTS
 }
@@ -3600,46 +3601,46 @@ $A6:AC5B 08          PHP
 $A6:AC5C C2 20       REP #$20
 $A6:AC5E E2 10       SEP #$10
 $A6:AC60 A6 26       LDX $26    [$7E:0026]
-$A6:AC62 8E 02 42    STX $4202            
+$A6:AC62 8E 02 42    STX $4202
 $A6:AC65 A6 28       LDX $28    [$7E:0028]
-$A6:AC67 8E 03 42    STX $4203            
+$A6:AC67 8E 03 42    STX $4203
 $A6:AC6A EA          NOP
 $A6:AC6B EA          NOP
 $A6:AC6C EA          NOP
-$A6:AC6D AD 16 42    LDA $4216            
+$A6:AC6D AD 16 42    LDA $4216
 $A6:AC70 85 2A       STA $2A    [$7E:002A]
 $A6:AC72 A6 27       LDX $27    [$7E:0027]
-$A6:AC74 8E 02 42    STX $4202            
+$A6:AC74 8E 02 42    STX $4202
 $A6:AC77 A6 29       LDX $29    [$7E:0029]
-$A6:AC79 8E 03 42    STX $4203            
+$A6:AC79 8E 03 42    STX $4203
 $A6:AC7C EA          NOP
 $A6:AC7D EA          NOP
 $A6:AC7E EA          NOP
-$A6:AC7F AE 16 42    LDX $4216            
+$A6:AC7F AE 16 42    LDX $4216
 $A6:AC82 86 2C       STX $2C    [$7E:002C]
-$A6:AC84 AC 17 42    LDY $4217            
+$A6:AC84 AC 17 42    LDY $4217
 $A6:AC87 A6 27       LDX $27    [$7E:0027]
-$A6:AC89 8E 02 42    STX $4202            
+$A6:AC89 8E 02 42    STX $4202
 $A6:AC8C A6 28       LDX $28    [$7E:0028]
-$A6:AC8E 8E 03 42    STX $4203            
+$A6:AC8E 8E 03 42    STX $4203
 $A6:AC91 EA          NOP
 $A6:AC92 EA          NOP
 $A6:AC93 A5 2B       LDA $2B    [$7E:002B]
 $A6:AC95 18          CLC
-$A6:AC96 6D 16 42    ADC $4216            
+$A6:AC96 6D 16 42    ADC $4216
 $A6:AC99 85 2B       STA $2B    [$7E:002B]
 $A6:AC9B 90 01       BCC $01    [$AC9E]
 $A6:AC9D C8          INY
 
 $A6:AC9E A6 26       LDX $26    [$7E:0026]
-$A6:ACA0 8E 02 42    STX $4202            
+$A6:ACA0 8E 02 42    STX $4202
 $A6:ACA3 A6 29       LDX $29    [$7E:0029]
-$A6:ACA5 8E 03 42    STX $4203            
+$A6:ACA5 8E 03 42    STX $4203
 $A6:ACA8 EA          NOP
 $A6:ACA9 EA          NOP
 $A6:ACAA A5 2B       LDA $2B    [$7E:002B]
 $A6:ACAC 18          CLC
-$A6:ACAD 6D 16 42    ADC $4216            
+$A6:ACAD 6D 16 42    ADC $4216
 $A6:ACB0 85 2B       STA $2B    [$7E:002B]
 $A6:ACB2 90 01       BCC $01    [$ACB5]
 $A6:ACB4 C8          INY
@@ -3680,15 +3681,15 @@ $A6:ACDA             dw ACE2, ACF5, AD08, ACF5
 $A6:ACE2             dx 80,A6AD1B,0002,0504,00,
                         80,A6AD1D,0002,0584,00,
                         00
-                        
+
 $A6:ACF5             dx 80,A6AD1F,0002,0504,00,
                         80,A6AD21,0002,0584,00,
                         00
-                        
+
 $A6:AD08             dx 80,A6AD23,0002,0504,00,
                         80,A6AD25,0002,0584,00,
                         00
-                        
+
 
 $A6:AD1B             db 59,5A
 $A6:AD1D             db 69,6A
@@ -3839,7 +3840,7 @@ $A6:B248 F0 21       BEQ $21    [$B26B]
 $A6:B24A 20 DA D4    JSR $D4DA  [$A6:D4DA]
 $A6:B24D 20 6B D8    JSR $D86B  [$A6:D86B]
 $A6:B250 20 7D D9    JSR $D97D  [$A6:D97D]
-$A6:B253 20 F5 CA    JSR $CAF5  [$A6:CAF5]
+$A6:B253 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
 $A6:B256 20 88 E0    JSR $E088  [$A6:E088]
 $A6:B259 20 2A DB    JSR $DB2A  [$A6:DB2A]
 $A6:B25C 20 D8 DA    JSR $DAD8  [$A6:DAD8]
@@ -3899,7 +3900,7 @@ $A6:B2AB AF 04 78 7E LDA $7E7804[$7E:7804]
 $A6:B2AF F0 38       BEQ $38    [$B2E9]
 $A6:B2B1 20 6B D8    JSR $D86B  [$A6:D86B]
 $A6:B2B4 20 7D D9    JSR $D97D  [$A6:D97D]
-$A6:B2B7 20 F5 CA    JSR $CAF5  [$A6:CAF5]
+$A6:B2B7 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
 
 $A6:B2BA 20 88 E0    JSR $E088  [$A6:E088]
 $A6:B2BD 20 DA D4    JSR $D4DA  [$A6:D4DA]
@@ -3946,8 +3947,8 @@ $A6:B313 60          RTS
 
 $A6:B314 A9 01 00    LDA #$0001
 $A6:B317 8F 02 78 7E STA $7E7802[$7E:7802]
-$A6:B31B A9 21 B3    LDA #$B321
-$A6:B31E 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B31B A9 21 B3    LDA #$B321             ;\
+$A6:B31E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321
 }
 
 
@@ -4032,8 +4033,8 @@ $A6:B3DC             dw BAB7,BAB7,BAB7,BAB7,BAB7,BAB7,BAB7,BAB7
 ;;; $B3EC: Ridley function ;;;
 {
 ; Initailize movement to center
-$A6:B3EC A9 F8 B3    LDA #$B3F8
-$A6:B3EF 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B3EC A9 F8 B3    LDA #$B3F8             ;\
+$A6:B3EF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B3F8
 $A6:B3F2 A9 80 00    LDA #$0080
 $A6:B3F5 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -4062,8 +4063,8 @@ $A6:B420 22 06 EF A9 JSL $A9EF06[$A9:EF06]
 $A6:B424 90 01       BCC $01    [$B427]
 $A6:B426 60          RTS
 
-$A6:B427 A9 21 B3    LDA #$B321
-$A6:B42A 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B427 A9 21 B3    LDA #$B321             ;\
+$A6:B42A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321
 $A6:B42D 60          RTS
 }
 
@@ -4085,8 +4086,8 @@ $A6:B439             dw 0004, 0008, 000A, 000C
 ;;; $B441: Ridley function ;;;
 {
 ; Chose to do a U swoop
-$A6:B441 A9 55 B4    LDA #$B455
-$A6:B444 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B441 A9 55 B4    LDA #$B455             ;\
+$A6:B444 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B455
 $A6:B447 A9 0A 00    LDA #$000A
 $A6:B44A 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B44E A9 00 00    LDA #$0000
@@ -4113,8 +4114,8 @@ $A6:B474 85 16       STA $16    [$7E:0016]
 $A6:B476 85 18       STA $18    [$7E:0018]
 $A6:B478 22 06 EF A9 JSL $A9EF06[$A9:EF06]
 $A6:B47C B0 14       BCS $14    [$B492]
-$A6:B47E A9 93 B4    LDA #$B493
-$A6:B481 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B47E A9 93 B4    LDA #$B493             ;\
+$A6:B481 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B493
 $A6:B484 A9 20 00    LDA #$0020
 $A6:B487 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B48B A9 00 00    LDA #$0000
@@ -4149,8 +4150,8 @@ $A6:B4BD 3A          DEC A
 $A6:B4BE 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B4C2 60          RTS
 
-$A6:B4C3 A9 D1 B4    LDA #$B4D1
-$A6:B4C6 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B4C3 A9 D1 B4    LDA #$B4D1             ;\
+$A6:B4C6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B4D1
 $A6:B4C9 A9 14 00    LDA #$0014
 $A6:B4CC 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B4D0 60          RTS
@@ -4182,8 +4183,8 @@ $A6:B4FB 3A          DEC A
 $A6:B4FC 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B500 60          RTS
 
-$A6:B501 A9 16 B5    LDA #$B516
-$A6:B504 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B501 A9 16 B5    LDA #$B516             ;\
+$A6:B504 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B516
 $A6:B507 A9 10 00    LDA #$0010
 $A6:B50A 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B50E A9 01 00    LDA #$0001
@@ -4217,8 +4218,8 @@ $A6:B540 3A          DEC A
 $A6:B541 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B545 60          RTS
 
-$A6:B546 A9 54 B5    LDA #$B554
-$A6:B549 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B546 A9 54 B5    LDA #$B554             ;\
+$A6:B549 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B554
 $A6:B54C A9 20 00    LDA #$0020
 $A6:B54F 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B553 60          RTS
@@ -4250,8 +4251,8 @@ $A6:B57E 3A          DEC A
 $A6:B57F 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B583 60          RTS
 
-$A6:B584 A9 94 B5    LDA #$B594
-$A6:B587 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B584 A9 94 B5    LDA #$B594             ;\
+$A6:B587 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B594
 $A6:B58A A9 20 00    LDA #$0020
 $A6:B58D 8F 00 78 7E STA $7E7800[$7E:7800]
 $A6:B591 4C 55 D9    JMP $D955  [$A6:D955]
@@ -4296,8 +4297,8 @@ $A6:B5C4 A9 0B 00    LDA #$000B
 $A6:B5C7 8F 1E 20 7E STA $7E201E[$7E:201E]
 $A6:B5CB A9 80 01    LDA #$0180
 $A6:B5CE 8F 12 20 7E STA $7E2012[$7E:2012]
-$A6:B5D2 A9 E5 B5    LDA #$B5E5
-$A6:B5D5 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B5D2 A9 E5 B5    LDA #$B5E5             ;\
+$A6:B5D5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5
 $A6:B5D8 AD E5 05    LDA $05E5  [$7E:05E5]
 $A6:B5DB 29 1F 00    AND #$001F
 $A6:B5DE 18          CLC
@@ -4320,8 +4321,8 @@ $A6:B5F5 4C 8B B6    JMP $B68B  [$A6:B68B]
 
 $A6:B5F8 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:B5FB 10 0F       BPL $0F    [$B60C]
-$A6:B5FD A9 13 B6    LDA #$B613
-$A6:B600 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B5FD A9 13 B6    LDA #$B613             ;\
+$A6:B600 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B613
 $A6:B603 A9 80 00    LDA #$0080
 $A6:B606 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:B609 4C 55 D9    JMP $D955  [$A6:D955]
@@ -4346,8 +4347,8 @@ $A6:B623 4C 8B B6    JMP $B68B  [$A6:B68B]
 
 $A6:B626 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:B629 10 0F       BPL $0F    [$B63A]
-$A6:B62B A9 E5 B5    LDA #$B5E5
-$A6:B62E 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B62B A9 E5 B5    LDA #$B5E5             ;\
+$A6:B62E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5
 $A6:B631 A9 80 00    LDA #$0080
 $A6:B634 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:B637 4C 55 D9    JMP $D955  [$A6:D955]
@@ -4386,8 +4387,8 @@ $A6:B678 D0 0D       BNE $0D    [$B687]
 $A6:B67A AF 20 78 7E LDA $7E7820[$7E:7820]
 $A6:B67E 3A          DEC A
 $A6:B67F F0 06       BEQ $06    [$B687]
-$A6:B681 A9 3A E7    LDA #$E73A
-$A6:B684 20 67 D4    JSR $D467  [$A6:D467]
+$A6:B681 A9 3A E7    LDA #$E73A             ;\
+$A6:B684 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
 
 $A6:B687 18          CLC
 $A6:B688 60          RTS
@@ -4405,8 +4406,8 @@ $A6:B692 A9 10 00    LDA #$0010
 $A6:B695 8F 1E 20 7E STA $7E201E[$7E:201E]
 $A6:B699 A9 01 00    LDA #$0001
 $A6:B69C 8F 00 20 7E STA $7E2000[$7E:2000]
-$A6:B6A0 A9 A7 B6    LDA #$B6A7
-$A6:B6A3 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B6A0 A9 A7 B6    LDA #$B6A7             ;\
+$A6:B6A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6A7
 $A6:B6A6 60          RTS
 }
 
@@ -4431,8 +4432,8 @@ $A6:B6C5 4C 23 D5    JMP $D523  [$A6:D523]
 $A6:B6C8             dw 00B0, 0080, 0060
 
 $A6:B6CE 20 55 D9    JSR $D955  [$A6:D955]
-$A6:B6D1 A9 DD B6    LDA #$B6DD
-$A6:B6D4 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B6D1 A9 DD B6    LDA #$B6DD             ;\
+$A6:B6D4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6DD
 $A6:B6D7 A9 20 00    LDA #$0020
 $A6:B6DA 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -4452,8 +4453,8 @@ $A6:B6F0 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:B6F3 10 18       BPL $18    [$B70D]
 $A6:B6F5 20 33 CB    JSR $CB33  [$A6:CB33]
 $A6:B6F8 20 0F B9    JSR $B90F  [$A6:B90F]
-$A6:B6FB A9 0E B7    LDA #$B70E
-$A6:B6FE 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B6FB A9 0E B7    LDA #$B70E             ;\
+$A6:B6FE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
 $A6:B701 AD E5 05    LDA $05E5  [$7E:05E5]
 $A6:B704 29 3F 00    AND #$003F
 $A6:B707 69 80 00    ADC #$0080
@@ -4520,14 +4521,14 @@ $A6:B79C 30 10       BMI $10    [$B7AE]
 $A6:B79E AF 20 78 7E LDA $7E7820[$7E:7820]
 $A6:B7A2 3A          DEC A
 $A6:B7A3 F0 06       BEQ $06    [$B7AB]
-$A6:B7A5 A9 3A E7    LDA #$E73A
-$A6:B7A8 20 67 D4    JSR $D467  [$A6:D467]
+$A6:B7A5 A9 3A E7    LDA #$E73A             ;\
+$A6:B7A8 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
 
 $A6:B7AB A9 00 00    LDA #$0000
 
 $A6:B7AE 8F 0C 80 7E STA $7E800C[$7E:800C]
-$A6:B7B2 A9 B9 B7    LDA #$B7B9
-$A6:B7B5 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B7B2 A9 B9 B7    LDA #$B7B9             ;\
+$A6:B7B5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B7B9
 $A6:B7B8 60          RTS
 }
 
@@ -4546,14 +4547,14 @@ $A6:B7CB 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:B7CE 30 0C       BMI $0C    [$B7DC]
 $A6:B7D0 A9 00 00    LDA #$0000
 $A6:B7D3 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A6:B7D6 A9 0E B7    LDA #$B70E
-$A6:B7D9 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B7D6 A9 0E B7    LDA #$B70E             ;\
+$A6:B7D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
 
 $A6:B7DC 60          RTS
 
 $A6:B7DD 20 4D B8    JSR $B84D  [$A6:B84D]
-$A6:B7E0 A9 21 B3    LDA #$B321
-$A6:B7E3 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B7E0 A9 21 B3    LDA #$B321             ;\
+$A6:B7E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321
 $A6:B7E6 60          RTS
 }
 
@@ -4656,8 +4657,8 @@ $A6:B897 A9 00 FE    LDA #$FE00
 
 $A6:B89A 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:B89D 20 4D B8    JSR $B84D  [$A6:B84D]
-$A6:B8A0 A9 8F BB    LDA #$BB8F
-$A6:B8A3 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:B8A0 A9 8F BB    LDA #$BB8F             ;\
+$A6:B8A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BB8F
 $A6:B8A6 4C 8F BB    JMP $BB8F  [$A6:BB8F]
 }
 
@@ -4867,18 +4868,18 @@ $A6:BA85 AF 0A 80 7E LDA $7E800A[$7E:800A]
 $A6:BA89 C9 0A 00    CMP #$000A
 $A6:BA8C 30 0D       BMI $0D    [$BA9B]
 $A6:BA8E 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]
-$A6:BA92 A9 3E C5    LDA #$C53E
-$A6:BA95 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BA92 A9 3E C5    LDA #$C53E             ;\
+$A6:BA95 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C53E
 $A6:BA98 4C 3E C5    JMP $C53E  [$A6:C53E]
 
 $A6:BA9B AD EE 0C    LDA $0CEE  [$7E:0CEE]
 $A6:BA9E F0 09       BEQ $09    [$BAA9]
-$A6:BAA0 A9 4E BD    LDA #$BD4E
-$A6:BAA3 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BAA0 A9 4E BD    LDA #$BD4E             ;\
+$A6:BAA3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
 $A6:BAA6 4C 4E BD    JMP $BD4E  [$A6:BD4E]
 
-$A6:BAA9 A9 EC B3    LDA #$B3EC
-$A6:BAAC 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BAA9 A9 EC B3    LDA #$B3EC             ;\
+$A6:BAAC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B3EC
 $A6:BAAF A9 01 00    LDA #$0001
 $A6:BAB2 8F 04 20 7E STA $7E2004[$7E:2004]
 $A6:BAB6 60          RTS
@@ -4972,8 +4973,8 @@ $A6:BB65 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ; >_<;
 $A6:BB68 AD EE 0C    LDA $0CEE  [$7E:0CEE]
 $A6:BB6B F0 22       BEQ $22    [$BB8F]
 $A6:BB6D 20 68 BC    JSR $BC68  [$A6:BC68]
-$A6:BB70 A9 4E BD    LDA #$BD4E
-$A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BB70 A9 4E BD    LDA #$BD4E             ;\
+$A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
 $A6:BB76 4C 4E BD    JMP $BD4E  [$A6:BD4E]
 
 $A6:BB79 AF 36 78 7E LDA $7E7836[$7E:7836]
@@ -4981,8 +4982,8 @@ $A6:BB7D D0 03       BNE $03    [$BB82]
 $A6:BB7F 20 68 BC    JSR $BC68  [$A6:BC68]
 
 $A6:BB82 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]
-$A6:BB86 A9 38 C5    LDA #$C538
-$A6:BB89 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BB86 A9 38 C5    LDA #$C538             ;\
+$A6:BB89 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538
 $A6:BB8C 4C 38 C5    JMP $C538  [$A6:C538]
 }
 
@@ -5007,8 +5008,8 @@ $A6:BBAF AF 36 78 7E LDA $7E7836[$7E:7836]
 $A6:BBB3 D0 03       BNE $03    [$BBB8]
 $A6:BBB5 20 68 BC    JSR $BC68  [$A6:BC68]
 
-$A6:BBB8 A9 C4 BB    LDA #$BBC4
-$A6:BBBB 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BBB8 A9 C4 BB    LDA #$BBC4             ;\
+$A6:BBBB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BBC4
 $A6:BBBE A9 20 00    LDA #$0020
 $A6:BBC1 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -5026,8 +5027,8 @@ $A6:BBD3 A0 00 00    LDY #$0000
 $A6:BBD6 20 23 D5    JSR $D523  [$A6:D523]
 $A6:BBD9 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:BBDC 10 0C       BPL $0C    [$BBEA]
-$A6:BBDE A9 F1 BB    LDA #$BBF1
-$A6:BBE1 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BBDE A9 F1 BB    LDA #$BBF1             ;\
+$A6:BBE1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BBF1
 $A6:BBE4 A9 20 00    LDA #$0020
 $A6:BBE7 8D B2 0F    STA $0FB2  [$7E:0FB2]
 
@@ -5055,8 +5056,8 @@ $A6:BC0D 8F 1E 20 7E STA $7E201E[$7E:201E]
 $A6:BC11 A9 F0 00    LDA #$00F0
 $A6:BC14 8F 12 20 7E STA $7E2012[$7E:2012]
 $A6:BC18 20 84 BC    JSR $BC84  [$A6:BC84]
-$A6:BC1B A9 2E BC    LDA #$BC2E
-$A6:BC1E 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BC1B A9 2E BC    LDA #$BC2E             ;\
+$A6:BC1E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BC2E
 $A6:BC21 A9 40 00    LDA #$0040
 $A6:BC24 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:BC27 60          RTS
@@ -5087,8 +5088,8 @@ $A6:BC4D A9 10 00    LDA #$0010
 $A6:BC50 8F 1E 20 7E STA $7E201E[$7E:201E]
 $A6:BC54 A9 F0 00    LDA #$00F0
 $A6:BC57 8F 12 20 7E STA $7E2012[$7E:2012]
-$A6:BC5B A9 21 B3    LDA #$B321
-$A6:BC5E 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BC5B A9 21 B3    LDA #$B321             ;\
+$A6:BC5E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321
 $A6:BC61 60          RTS
 
 $A6:BC62             dw 00B0, 0000, 0050
@@ -5242,8 +5243,8 @@ $A6:BD3C F0 0F       BEQ $0F    [$BD4D]
 $A6:BD3E AF 36 78 7E LDA $7E7836[$7E:7836]
 $A6:BD42 D0 09       BNE $09    [$BD4D]
 $A6:BD44 20 4D B8    JSR $B84D  [$A6:B84D]
-$A6:BD47 A0 B7 BA    LDY #$BAB7
-$A6:BD4A 8C A8 0F    STY $0FA8  [$7E:0FA8]
+$A6:BD47 A0 B7 BA    LDY #$BAB7             ;\
+$A6:BD4A 8C A8 0F    STY $0FA8  [$7E:0FA8]  ;} Ridley function = $BAB7
 
 $A6:BD4D 60          RTS
 }
@@ -5299,8 +5300,8 @@ $A6:BDAA 20 2F D6    JSR $D62F  [$A6:D62F]
 $A6:BDAD AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A6:BDB0 C9 C0 00    CMP #$00C0
 $A6:BDB3 30 06       BMI $06    [$BDBB]
-$A6:BDB5 A9 BC BD    LDA #$BDBC
-$A6:BDB8 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BDB5 A9 BC BD    LDA #$BDBC             ;\
+$A6:BDB8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BDBC
 
 $A6:BDBB 60          RTS
 }
@@ -5323,8 +5324,8 @@ $A6:BDD9 C9 20 00    CMP #$0020
 $A6:BDDC 10 63       BPL $63    [$BE41]
 $A6:BDDE A9 CA BE    LDA #$BECA
 $A6:BDE1 8F 00 88 7E STA $7E8800[$7E:8800]
-$A6:BDE5 A9 F2 BD    LDA #$BDF2
-$A6:BDE8 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BDE5 A9 F2 BD    LDA #$BDF2             ;\
+$A6:BDE8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BDF2
 $A6:BDEB A9 15 00    LDA #$0015
 $A6:BDEE 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:BDF1 60          RTS
@@ -5336,10 +5337,10 @@ $A6:BDF1 60          RTS
 ; Ceres Ridley pickup baby metroid delay
 $A6:BDF2 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:BDF5 10 4A       BPL $4A    [$BE41]
-$A6:BDF7 A9 58 E6    LDA #$E658
-$A6:BDFA 20 67 D4    JSR $D467  [$A6:D467]
-$A6:BDFD A9 03 BE    LDA #$BE03
-$A6:BE00 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BDF7 A9 58 E6    LDA #$E658             ;\
+$A6:BDFA 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E658
+$A6:BDFD A9 03 BE    LDA #$BE03             ;\
+$A6:BE00 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BE03
 }
 
 
@@ -5381,8 +5382,8 @@ $A6:BE4D A9 00 FE    LDA #$FE00
 $A6:BE50 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:BE53 A9 B3 BE    LDA #$BEB3
 $A6:BE56 8F 00 88 7E STA $7E8800[$7E:8800]
-$A6:BE5A A9 71 A9    LDA #$A971
-$A6:BE5D 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:BE5A A9 71 A9    LDA #$A971             ;\
+$A6:BE5D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971
 $A6:BE60 60          RTS
 }
 
@@ -5709,8 +5710,8 @@ $A6:C116 60          RTS
 $A6:C117 20 9C C1    JSR $C19C  [$A6:C19C]
 $A6:C11A 20 54 A3    JSR $A354  [$A6:A354]
 $A6:C11D 9C B2 0F    STZ $0FB2  [$7E:0FB2]
-$A6:C120 A9 50 AA    LDA #$AA50
-$A6:C123 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C120 A9 50 AA    LDA #$AA50             ;\
+$A6:C123 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA50
 $A6:C126 A9 01 00    LDA #$0001
 $A6:C129 8D 43 09    STA $0943  [$7E:0943]
 $A6:C12C 1A          INC A
@@ -6121,10 +6122,10 @@ $A6:C53D 60          RTS
 ;;; $C53E: Ridley function ;;;
 {
 ; Final roar
-$A6:C53E A9 C8 E6    LDA #$E6C8
-$A6:C541 20 67 D4    JSR $D467  [$A6:D467]
-$A6:C544 A9 51 C5    LDA #$C551
-$A6:C547 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C53E A9 C8 E6    LDA #$E6C8             ;\
+$A6:C541 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E6C8
+$A6:C544 A9 51 C5    LDA #$C551             ;\
+$A6:C547 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C551
 $A6:C54A A9 20 00    LDA #$0020
 $A6:C54D 8D B2 0F    STA $0FB2  [$7E:0FB2]
 
@@ -6149,8 +6150,8 @@ $A6:C56E 8D 80 19    STA $1980  [$7E:1980]
 $A6:C571 A9 00 00    LDA #$0000
 $A6:C574 8F 0E 80 7E STA $7E800E[$7E:800E]
 $A6:C578 8F 10 80 7E STA $7E8010[$7E:8010]
-$A6:C57C A9 88 C5    LDA #$C588
-$A6:C57F 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C57C A9 88 C5    LDA #$C588             ;\
+$A6:C57F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C588
 $A6:C582 A9 A0 00    LDA #$00A0
 $A6:C585 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
@@ -6166,8 +6167,8 @@ $A6:C590 AF 36 78 7E LDA $7E7836[$7E:7836]
 $A6:C594 F0 03       BEQ $03    [$C599]
 $A6:C596 20 84 BC    JSR $BC84  [$A6:BC84]
 
-$A6:C599 A9 A8 C5    LDA #$C5A8
-$A6:C59C 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C599 A9 A8 C5    LDA #$C5A8             ;\
+$A6:C59C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C5A8
 $A6:C59F 9C AA 0F    STZ $0FAA  [$7E:0FAA]
 $A6:C5A2 9C AC 0F    STZ $0FAC  [$7E:0FAC]
 $A6:C5A5 4C 32 C9    JMP $C932  [$A6:C932]
@@ -6183,8 +6184,8 @@ $A6:C5AE 8F 04 78 7E STA $7E7804[$7E:7804]
 $A6:C5B2 AD 86 0F    LDA $0F86  [$7E:0F86]
 $A6:C5B5 09 00 01    ORA #$0100
 $A6:C5B8 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:C5BB A9 C8 C5    LDA #$C5C8
-$A6:C5BE 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C5BB A9 C8 C5    LDA #$C5C8             ;\
+$A6:C5BE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C5C8
 $A6:C5C1 A9 20 00    LDA #$0020
 $A6:C5C4 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:C5C7 60          RTS
@@ -6196,8 +6197,8 @@ $A6:C5C7 60          RTS
 ; Wait 20 frames
 $A6:C5C8 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:C5CB 10 83       BPL $83    [$C550]
-$A6:C5CD A9 DA C5    LDA #$C5DA
-$A6:C5D0 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C5CD A9 DA C5    LDA #$C5DA             ;\
+$A6:C5D0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C5DA
 $A6:C5D3 A9 00 01    LDA #$0100
 $A6:C5D6 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:C5D9 60          RTS
@@ -6217,8 +6218,8 @@ $A6:C5ED 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 $A6:C5F1 AD 86 0F    LDA $0F86  [$7E:0F86]
 $A6:C5F4 09 00 02    ORA #$0200
 $A6:C5F7 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:C5FA A9 00 C6    LDA #$C600
-$A6:C5FD 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:C5FA A9 00 C6    LDA #$C600             ;\
+$A6:C5FD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C600
 
 $A6:C600 60          RTS
 }
@@ -6452,8 +6453,8 @@ $A6:C80C A0 00 00    LDY #$0000             ; Y = 0
 $A6:C80F AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:C813 F0 03       BEQ $03    [$C818]     ;} If [$7E:7820] != 0:
 $A6:C815 A0 02 00    LDY #$0002             ; Y = 2
-                                            
-$A6:C818 AE 54 0E    LDX $0E54  [$7E:0E54]  
+
+$A6:C818 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C81B B9 36 C8    LDA $C836,y[$A6:C838]  ;\
 $A6:C81E 18          CLC                    ;|
 $A6:C81F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C836 + [Y]]
@@ -6477,8 +6478,8 @@ $A6:C83E A0 00 00    LDY #$0000             ; Y = 0
 $A6:C841 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:C845 F0 03       BEQ $03    [$C84A]     ;} If [$7E:7820] != 0:
 $A6:C847 A0 02 00    LDY #$0002             ; Y = 2
-                                            
-$A6:C84A AE 54 0E    LDX $0E54  [$7E:0E54]  
+
+$A6:C84A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C84D B9 68 C8    LDA $C868,y[$A6:C86A]  ;\
 $A6:C850 18          CLC                    ;|
 $A6:C851 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C868 + [Y]]
@@ -6502,8 +6503,8 @@ $A6:C870 A0 00 00    LDY #$0000             ; Y = 0
 $A6:C873 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:C877 F0 03       BEQ $03    [$C87C]     ;} If [$7E:7820] != 0:
 $A6:C879 A0 02 00    LDY #$0002             ; Y = 2
-                                            
-$A6:C87C AE 54 0E    LDX $0E54  [$7E:0E54]  
+
+$A6:C87C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C87F B9 9A C8    LDA $C89A,y[$A6:C89C]  ;\
 $A6:C882 18          CLC                    ;|
 $A6:C883 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C89A + [Y]]
@@ -6527,8 +6528,8 @@ $A6:C8A2 A0 00 00    LDY #$0000             ; Y = 0
 $A6:C8A5 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:C8A9 F0 03       BEQ $03    [$C8AE]     ;} If [$7E:7820] != 0:
 $A6:C8AB A0 02 00    LDY #$0002             ; Y = 2
-                                            
-$A6:C8AE AE 54 0E    LDX $0E54  [$7E:0E54]  
+
+$A6:C8AE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C8B1 B9 CC C8    LDA $C8CC,y[$A6:C8CE]  ;\
 $A6:C8B4 18          CLC                    ;|
 $A6:C8B5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C8CC + [Y]]
@@ -6601,52 +6602,52 @@ $A6:C931 60          RTS
 ;;; $C932: Spawn Ridley explosion enemies ;;;
 {
 $A6:C932 A2 E7 C9    LDX #$C9E7             ;\
-$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 0
+$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = Ch
 $A6:C939 A2 D7 C9    LDX #$C9D7             ;\
-$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 1
+$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = Ah
 $A6:C940 A2 C7 C9    LDX #$C9C7             ;\
-$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 2
+$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 8
 $A6:C947 A2 B7 C9    LDX #$C9B7             ;\
-$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 3
+$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 6
 $A6:C94E A2 A7 C9    LDX #$C9A7             ;\
-$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 4
+$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 4
 $A6:C955 A2 97 C9    LDX #$C997             ;\
-$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 5
+$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 2
 $A6:C95C A2 87 C9    LDX #$C987             ;\
-$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 6
+$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 0
 $A6:C963 A2 F7 C9    LDX #$C9F7             ;\
-$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 7
+$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = Eh
 $A6:C96A A2 07 CA    LDX #$CA07             ;\
-$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 8
+$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 10h
 $A6:C971 A2 27 CA    LDX #$CA27             ;\
-$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 9
+$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 14h
 $A6:C978 A2 17 CA    LDX #$CA17             ;\
-$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion Ah
+$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 12h
 $A6:C97F A2 37 CA    LDX #$CA37             ;\
-$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion Bh
+$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion - index = 16h
 $A6:C986 60          RTS
 
-;                        ______________________________________ Enemy ID
-;                       |     _________________________________ X position
-;                       |    |     ____________________________ Y position
-;                       |    |    |     _______________________ Initialisation parameter
-;                       |    |    |    |     __________________ Properties
-;                       |    |    |    |    |     _____________ Extra properties
-;                       |    |    |    |    |    |     ________ Parameter 1
-;                       |    |    |    |    |    |    |     ___ Parameter 2
-;                       |    |    |    |    |    |    |    |
-$A6:C987             dw E1BF,0000,0000,0000,2C00,0000,0000,0000 ; Ridley explosion
-$A6:C997             dw E1BF,0000,0000,0000,2C00,0000,0002,0000 ; Ridley explosion
-$A6:C9A7             dw E1BF,0000,0000,0000,2C00,0000,0004,0000 ; Ridley explosion
-$A6:C9B7             dw E1BF,0000,0000,0000,2C00,0000,0006,0000 ; Ridley explosion
-$A6:C9C7             dw E1BF,0000,0000,0000,2C00,0000,0008,0000 ; Ridley explosion
-$A6:C9D7             dw E1BF,0000,0000,0000,2C00,0000,000A,0000 ; Ridley explosion
-$A6:C9E7             dw E1BF,0000,0000,0000,2C00,0000,000C,0000 ; Ridley explosion
-$A6:C9F7             dw E1BF,0000,0000,0000,2C00,0000,000E,0000 ; Ridley explosion
-$A6:CA07             dw E1BF,0000,0000,0000,2C00,0000,0010,0000 ; Ridley explosion
-$A6:CA17             dw E1BF,0000,0000,0000,2C00,0000,0012,0000 ; Ridley explosion
-$A6:CA27             dw E1BF,0000,0000,0000,2C00,0000,0014,0000 ; Ridley explosion
-$A6:CA37             dw E1BF,0000,0000,0000,2C00,0000,0016,0000 ; Ridley explosion
+;                        __________________________________________ Enemy ID
+;                       |      ____________________________________ X position
+;                       |     |     _______________________________ Y position
+;                       |     |    |      _________________________ Initialisation parameter
+;                       |     |    |     |      ___________________ Properties
+;                       |     |    |     |     |     ______________ Extra properties
+;                       |     |    |     |     |    |      ________ Parameter 1
+;                       |     |    |     |     |    |     |     ___ Parameter 2
+;                       |     |    |     |     |    |     |    |
+$A6:C987             dw E1BF, 0000,0000, 0000, 2C00,0000, 0000,0000 ; Ridley explosion
+$A6:C997             dw E1BF, 0000,0000, 0000, 2C00,0000, 0002,0000 ; Ridley explosion
+$A6:C9A7             dw E1BF, 0000,0000, 0000, 2C00,0000, 0004,0000 ; Ridley explosion
+$A6:C9B7             dw E1BF, 0000,0000, 0000, 2C00,0000, 0006,0000 ; Ridley explosion
+$A6:C9C7             dw E1BF, 0000,0000, 0000, 2C00,0000, 0008,0000 ; Ridley explosion
+$A6:C9D7             dw E1BF, 0000,0000, 0000, 2C00,0000, 000A,0000 ; Ridley explosion
+$A6:C9E7             dw E1BF, 0000,0000, 0000, 2C00,0000, 000C,0000 ; Ridley explosion
+$A6:C9F7             dw E1BF, 0000,0000, 0000, 2C00,0000, 000E,0000 ; Ridley explosion
+$A6:CA07             dw E1BF, 0000,0000, 0000, 2C00,0000, 0010,0000 ; Ridley explosion
+$A6:CA17             dw E1BF, 0000,0000, 0000, 2C00,0000, 0012,0000 ; Ridley explosion
+$A6:CA27             dw E1BF, 0000,0000, 0000, 2C00,0000, 0014,0000 ; Ridley explosion
+$A6:CA37             dw E1BF, 0000,0000, 0000, 2C00,0000, 0016,0000 ; Ridley explosion
 }
 
 
@@ -6857,27 +6858,26 @@ $A6:CAEF             dx 0001,DD35,
 }
 
 
-;;; $CAF5:  ;;;
+;;; $CAF5: Handle Ridley tail ;;;
 {
-; Run Tail AI: Sound, control AI, X/Y positions, tail extension, hurt Samus
-$A6:CAF5 20 AA D2    JSR $D2AA  [$A6:D2AA]
-$A6:CAF8 AF 00 20 7E LDA $7E2000[$7E:2000]
-$A6:CAFC 0A          ASL A
-$A6:CAFD AA          TAX
-$A6:CAFE FC 21 CB    JSR ($CB21,x)[$A6:CB20]
+$A6:CAF5 20 AA D2    JSR $D2AA  [$A6:D2AA]  ; Handle Ridley tail whip sound effect
+$A6:CAF8 AF 00 20 7E LDA $7E2000[$7E:2000]  ;\
+$A6:CAFC 0A          ASL A                  ;|
+$A6:CAFD AA          TAX                    ;} Execute [$CB21 + [$7E:2000] * 2]
+$A6:CAFE FC 21 CB    JSR ($CB21,x)[$A6:CB20];/
 $A6:CB01 8B          PHB
-$A6:CB02 F4 7E 7E    PEA $7E7E
-$A6:CB05 AB          PLB
-$A6:CB06 AB          PLB
-$A6:CB07 20 BA CE    JSR $CEBA  [$A6:CEBA]
-$A6:CB0A 20 5A CF    JSR $CF5A  [$A6:CF5A]
+$A6:CB02 F4 7E 7E    PEA $7E7E              ;\
+$A6:CB05 AB          PLB                    ;} DB = $7E
+$A6:CB06 AB          PLB                    ;/
+$A6:CB07 20 BA CE    JSR $CEBA  [$A6:CEBA]  ; Calculate Ridley tail segment positions
+$A6:CB0A 20 5A CF    JSR $CF5A  [$A6:CF5A]  ; Update Ridley tail segment distances
 $A6:CB0D AB          PLB
-$A6:CB0E AD 86 0F    LDA $0F86  [$7E:0F86]
-$A6:CB11 29 00 04    AND #$0400
-$A6:CB14 0D A8 18    ORA $18A8  [$7E:18A8]
-$A6:CB17 0F 36 78 7E ORA $7E7836[$7E:7836]
-$A6:CB1B D0 03       BNE $03    [$CB20]
-$A6:CB1D 4C D9 DF    JMP $DFD9  [$A6:DFD9]
+$A6:CB0E AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A6:CB11 29 00 04    AND #$0400             ;|
+$A6:CB14 0D A8 18    ORA $18A8  [$7E:18A8]  ;} If Ridley is tangible and [Samus invincibility timer] = 0 and [$7E:7836] = 0:
+$A6:CB17 0F 36 78 7E ORA $7E7836[$7E:7836]  ;|
+$A6:CB1B D0 03       BNE $03    [$CB20]     ;/
+$A6:CB1D 4C D9 DF    JMP $DFD9  [$A6:DFD9]  ; Go to Ridley tail / Samus collision handling
 
 $A6:CB20 60          RTS
 
@@ -6962,7 +6962,7 @@ $A6:CBBF 60          RTS
 {
 $A6:CBC0 A9 39 CC    LDA #$CC39
 $A6:CBC3 85 12       STA $12    [$7E:0012]
-$A6:CBC5 80 15       BRA $15    [$CBDC]
+$A6:CBC5 80 15       BRA $15    [$CBDC]     ; Go to update Ridley tail segment angles
 }
 
 
@@ -6970,7 +6970,7 @@ $A6:CBC5 80 15       BRA $15    [$CBDC]
 {
 $A6:CBC7 A9 24 CD    LDA #$CD24
 $A6:CBCA 85 12       STA $12    [$7E:0012]
-$A6:CBCC 80 0E       BRA $0E    [$CBDC]
+$A6:CBCC 80 0E       BRA $0E    [$CBDC]     ; Go to update Ridley tail segment angles
 }
 
 
@@ -6978,7 +6978,7 @@ $A6:CBCC 80 0E       BRA $0E    [$CBDC]
 {
 $A6:CBCE A9 AA CD    LDA #$CDAA
 $A6:CBD1 85 12       STA $12    [$7E:0012]
-$A6:CBD3 80 07       BRA $07    [$CBDC]
+$A6:CBD3 80 07       BRA $07    [$CBDC]     ; Go to update Ridley tail segment angles
 }
 
 
@@ -6986,31 +6986,37 @@ $A6:CBD3 80 07       BRA $07    [$CBDC]
 {
 $A6:CBD5 A9 BD CC    LDA #$CCBD
 $A6:CBD8 85 12       STA $12    [$7E:0012]
-$A6:CBDA 80 00       BRA $00    [$CBDC]
+$A6:CBDA 80 00       BRA $00    [$CBDC]     ; Go to update Ridley tail segment angles (>_<;)
 }
 
 
-;;; $CBDC:  ;;;
+;;; $CBDC: Update Ridley tail segment angles ;;;
 {
+;; Parameters:
+;;     $12: Function to execute. Unsure why callers pass a function pointer instead of just execute the function...
+
+; Also recalculates the X/Y offsets from previous tail segments
+
 $A6:CBDC 8B          PHB
-$A6:CBDD F4 7E 7E    PEA $7E7E
-$A6:CBE0 AB          PLB
-$A6:CBE1 AB          PLB
-$A6:CBE2 F4 E7 CB    PEA $CBE7
-$A6:CBE5 6C 12 00    JMP ($0012)[$A6:CC39]
+$A6:CBDD F4 7E 7E    PEA $7E7E              ;\
+$A6:CBE0 AB          PLB                    ;} DB = $7E
+$A6:CBE1 AB          PLB                    ;/
+$A6:CBE2 F4 E7 CB    PEA $CBE7              ;\
+$A6:CBE5 6C 12 00    JMP ($0012)[$A6:CC39]  ;} Execute [$12]
 
-$A6:CBE8 A9 07 00    LDA #$0007
-$A6:CBEB A2 00 00    LDX #$0000
+$A6:CBE8 A9 07 00    LDA #$0007             ; A = 7 (loop counter)
+$A6:CBEB A2 00 00    LDX #$0000             ; X = 0 (tail segment index)
 
+; LOOP
 $A6:CBEE 48          PHA
-$A6:CBEF 20 9F D0    JSR $D09F  [$A6:D09F]
-$A6:CBF2 8A          TXA
-$A6:CBF3 18          CLC
-$A6:CBF4 69 14 00    ADC #$0014
-$A6:CBF7 AA          TAX
+$A6:CBEF 20 9F D0    JSR $D09F  [$A6:D09F]  ; Update Ridley tail segment angle
+$A6:CBF2 8A          TXA                    ;\
+$A6:CBF3 18          CLC                    ;|
+$A6:CBF4 69 14 00    ADC #$0014             ;} X += 14h (next tail segment)
+$A6:CBF7 AA          TAX                    ;/
 $A6:CBF8 68          PLA
-$A6:CBF9 3A          DEC A
-$A6:CBFA D0 F2       BNE $F2    [$CBEE]
+$A6:CBF9 3A          DEC A                  ; Decrement A
+$A6:CBFA D0 F2       BNE $F2    [$CBEE]     ; If [A] != 0: go to LOOP
 $A6:CBFC AB          PLB
 $A6:CBFD 60          RTS
 }
@@ -7358,358 +7364,386 @@ $A6:CEB9 60          RTS
 }
 
 
-;;; $CEBA:  ;;;
+;;; $CEBA: Calculate Ridley tail segment positions ;;;
 {
-; Update tail positions
-$A6:CEBA AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:CEBD 18          CLC
-$A6:CEBE 6D 32 20    ADC $2032  [$7E:2032]
-$A6:CEC1 18          CLC
-$A6:CEC2 69 10 00    ADC #$0010
-$A6:CEC5 8D 2E 20    STA $202E  [$7E:202E]
-$A6:CEC8 18          CLC
-$A6:CEC9 6D 46 20    ADC $2046  [$7E:2046]
-$A6:CECC 8D 42 20    STA $2042  [$7E:2042]
-$A6:CECF 18          CLC
-$A6:CED0 6D 5A 20    ADC $205A  [$7E:205A]
-$A6:CED3 8D 56 20    STA $2056  [$7E:2056]
-$A6:CED6 18          CLC
-$A6:CED7 6D 6E 20    ADC $206E  [$7E:206E]
-$A6:CEDA 8D 6A 20    STA $206A  [$7E:206A]
-$A6:CEDD 18          CLC
-$A6:CEDE 6D 82 20    ADC $2082  [$7E:2082]
-$A6:CEE1 8D 7E 20    STA $207E  [$7E:207E]
-$A6:CEE4 18          CLC
-$A6:CEE5 6D 96 20    ADC $2096  [$7E:2096]
-$A6:CEE8 8D 92 20    STA $2092  [$7E:2092]
-$A6:CEEB 18          CLC
-$A6:CEEC 6D AA 20    ADC $20AA  [$7E:20AA]
-$A6:CEEF 8D A6 20    STA $20A6  [$7E:20A6]
-$A6:CEF2 AD 20 78    LDA $7820  [$7E:7820]
-$A6:CEF5 3A          DEC A
-$A6:CEF6 F0 0A       BEQ $0A    [$CF02]
-$A6:CEF8 1A          INC A
-$A6:CEF9 0A          ASL A
-$A6:CEFA AA          TAX
-$A6:CEFB BF 54 CF A6 LDA $A6CF54,x[$A6:CF54]
-$A6:CEFF 6D 30 20    ADC $2030  [$7E:2030]
+$A6:CEBA AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:CEBD 18          CLC                    ;|
+$A6:CEBE 6D 32 20    ADC $2032  [$7E:2032]  ;|
+$A6:CEC1 18          CLC                    ;} Ridley tail segment 0 Y position = [Ridley Y position] + [Ridley tail segment 0 Y offset]
+$A6:CEC2 69 10 00    ADC #$0010             ;|
+$A6:CEC5 8D 2E 20    STA $202E  [$7E:202E]  ;/
+$A6:CEC8 18          CLC                    ;\
+$A6:CEC9 6D 46 20    ADC $2046  [$7E:2046]  ;} Ridley tail segment 1 Y position = [Ridley tail segment 0 Y position] + [Ridley tail segment 1 Y offset]
+$A6:CECC 8D 42 20    STA $2042  [$7E:2042]  ;/
+$A6:CECF 18          CLC                    ;\
+$A6:CED0 6D 5A 20    ADC $205A  [$7E:205A]  ;} Ridley tail segment 2 Y position = [Ridley tail segment 1 Y position] + [Ridley tail segment 2 Y offset]
+$A6:CED3 8D 56 20    STA $2056  [$7E:2056]  ;/
+$A6:CED6 18          CLC                    ;\
+$A6:CED7 6D 6E 20    ADC $206E  [$7E:206E]  ;} Ridley tail segment 3 Y position = [Ridley tail segment 2 Y position] + [Ridley tail segment 3 Y offset]
+$A6:CEDA 8D 6A 20    STA $206A  [$7E:206A]  ;/
+$A6:CEDD 18          CLC                    ;\
+$A6:CEDE 6D 82 20    ADC $2082  [$7E:2082]  ;} Ridley tail segment 4 Y position = [Ridley tail segment 3 Y position] + [Ridley tail segment 4 Y offset]
+$A6:CEE1 8D 7E 20    STA $207E  [$7E:207E]  ;/
+$A6:CEE4 18          CLC                    ;\
+$A6:CEE5 6D 96 20    ADC $2096  [$7E:2096]  ;} Ridley tail segment 5 Y position = [Ridley tail segment 4 Y position] + [Ridley tail segment 5 Y offset]
+$A6:CEE8 8D 92 20    STA $2092  [$7E:2092]  ;/
+$A6:CEEB 18          CLC                    ;\
+$A6:CEEC 6D AA 20    ADC $20AA  [$7E:20AA]  ;} Ridley tail segment 6 Y position = [Ridley tail segment 5 Y position] + [Ridley tail segment 6 Y offset]
+$A6:CEEF 8D A6 20    STA $20A6  [$7E:20A6]  ;/
+$A6:CEF2 AD 20 78    LDA $7820  [$7E:7820]  ;\
+$A6:CEF5 3A          DEC A                  ;} A = 0
+$A6:CEF6 F0 0A       BEQ $0A    [$CF02]     ; If [Ridley facing direction] != forwards:
+$A6:CEF8 1A          INC A                  ;\
+$A6:CEF9 0A          ASL A                  ;|
+$A6:CEFA AA          TAX                    ;} A = [Ridley tail segment 0 X offset from previous segment] + [$A6:CF54 + [Ridley facing direction] * 2]
+$A6:CEFB BF 54 CF A6 LDA $A6CF54,x[$A6:CF54];|
+$A6:CEFF 6D 30 20    ADC $2030  [$7E:2030]  ;/
 
-$A6:CF02 18          CLC
-$A6:CF03 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:CF06 8D 2C 20    STA $202C  [$7E:202C]
-$A6:CF09 AD 20 78    LDA $7820  [$7E:7820]
-$A6:CF0C 3A          DEC A
-$A6:CF0D D0 17       BNE $17    [$CF26]
-$A6:CF0F AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A6:CF12 8D 40 20    STA $2040  [$7E:2040]
-$A6:CF15 8D 54 20    STA $2054  [$7E:2054]
-$A6:CF18 8D 68 20    STA $2068  [$7E:2068]
-$A6:CF1B 8D 7C 20    STA $207C  [$7E:207C]
-$A6:CF1E 8D 90 20    STA $2090  [$7E:2090]
-$A6:CF21 8D A4 20    STA $20A4  [$7E:20A4]
-$A6:CF24 80 2D       BRA $2D    [$CF53]
+$A6:CF02 18          CLC                    ;\
+$A6:CF03 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Ridley tail segment 0 X position = [Ridley X position] + [A]
+$A6:CF06 8D 2C 20    STA $202C  [$7E:202C]  ;/
+$A6:CF09 AD 20 78    LDA $7820  [$7E:7820]  ;\
+$A6:CF0C 3A          DEC A                  ;} If [Ridley facing direction] = forwards:
+$A6:CF0D D0 17       BNE $17    [$CF26]     ;/
+$A6:CF0F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A6:CF12 8D 40 20    STA $2040  [$7E:2040]  ;} Ridley tail segment 1 X position = [Ridley X position]
+$A6:CF15 8D 54 20    STA $2054  [$7E:2054]  ; Ridley tail segment 2 X position = [Ridley X position]
+$A6:CF18 8D 68 20    STA $2068  [$7E:2068]  ; Ridley tail segment 3 X position = [Ridley X position]
+$A6:CF1B 8D 7C 20    STA $207C  [$7E:207C]  ; Ridley tail segment 4 X position = [Ridley X position]
+$A6:CF1E 8D 90 20    STA $2090  [$7E:2090]  ; Ridley tail segment 5 X position = [Ridley X position]
+$A6:CF21 8D A4 20    STA $20A4  [$7E:20A4]  ; Ridley tail segment 6 X position = [Ridley X position]
+$A6:CF24 80 2D       BRA $2D    [$CF53]     ; Return
 
-$A6:CF26 AD 2C 20    LDA $202C  [$7E:202C]
-$A6:CF29 18          CLC
-$A6:CF2A 6D 44 20    ADC $2044  [$7E:2044]
-$A6:CF2D 8D 40 20    STA $2040  [$7E:2040]
-$A6:CF30 18          CLC
-$A6:CF31 6D 58 20    ADC $2058  [$7E:2058]
-$A6:CF34 8D 54 20    STA $2054  [$7E:2054]
-$A6:CF37 18          CLC
-$A6:CF38 6D 6C 20    ADC $206C  [$7E:206C]
-$A6:CF3B 8D 68 20    STA $2068  [$7E:2068]
-$A6:CF3E 18          CLC
-$A6:CF3F 6D 80 20    ADC $2080  [$7E:2080]
-$A6:CF42 8D 7C 20    STA $207C  [$7E:207C]
-$A6:CF45 18          CLC
-$A6:CF46 6D 94 20    ADC $2094  [$7E:2094]
-$A6:CF49 8D 90 20    STA $2090  [$7E:2090]
-$A6:CF4C 18          CLC
-$A6:CF4D 6D A8 20    ADC $20A8  [$7E:20A8]
-$A6:CF50 8D A4 20    STA $20A4  [$7E:20A4]
+$A6:CF26 AD 2C 20    LDA $202C  [$7E:202C]  ;\
+$A6:CF29 18          CLC                    ;|
+$A6:CF2A 6D 44 20    ADC $2044  [$7E:2044]  ;} Ridley tail segment 1 X position = [Ridley tail segment 0 X position] + [Ridley tail segment 1 X offset]
+$A6:CF2D 8D 40 20    STA $2040  [$7E:2040]  ;/
+$A6:CF30 18          CLC                    ;\
+$A6:CF31 6D 58 20    ADC $2058  [$7E:2058]  ;} Ridley tail segment 2 X position = [Ridley tail segment 1 X position] + [Ridley tail segment 2 X offset]
+$A6:CF34 8D 54 20    STA $2054  [$7E:2054]  ;/
+$A6:CF37 18          CLC                    ;\
+$A6:CF38 6D 6C 20    ADC $206C  [$7E:206C]  ;} Ridley tail segment 3 X position = [Ridley tail segment 2 X position] + [Ridley tail segment 3 X offset]
+$A6:CF3B 8D 68 20    STA $2068  [$7E:2068]  ;/
+$A6:CF3E 18          CLC                    ;\
+$A6:CF3F 6D 80 20    ADC $2080  [$7E:2080]  ;} Ridley tail segment 4 X position = [Ridley tail segment 3 X position] + [Ridley tail segment 4 X offset]
+$A6:CF42 8D 7C 20    STA $207C  [$7E:207C]  ;/
+$A6:CF45 18          CLC                    ;\
+$A6:CF46 6D 94 20    ADC $2094  [$7E:2094]  ;} Ridley tail segment 5 X position = [Ridley tail segment 4 X position] + [Ridley tail segment 5 X offset]
+$A6:CF49 8D 90 20    STA $2090  [$7E:2090]  ;/
+$A6:CF4C 18          CLC                    ;\
+$A6:CF4D 6D A8 20    ADC $20A8  [$7E:20A8]  ;} Ridley tail segment 6 X position = [Ridley tail segment 5 X position] + [Ridley tail segment 6 X offset]
+$A6:CF50 8D A4 20    STA $20A4  [$7E:20A4]  ;/
 
 $A6:CF53 60          RTS
 
-$A6:CF54             dw 0020, 0000, FFE0
+; Tail base X offsets from Ridley X position
+$A6:CF54             dw 0020, ; Facing left
+                        0000, ; Facing forwards. This entry is never used
+                        FFE0  ; Facing right
 }
 
 
-;;; $CF5A:  ;;;
+;;; $CF5A: Update Ridley tail segment distances ;;;
 {
-; Tail extending
-$A6:CF5A AD 3C 20    LDA $203C  [$7E:203C]
-$A6:CF5D F0 1F       BEQ $1F    [$CF7E]
-$A6:CF5F CD 3A 20    CMP $203A  [$7E:203A]
-$A6:CF62 10 06       BPL $06    [$CF6A]
-$A6:CF64 A9 00 00    LDA #$0000
-$A6:CF67 8D 3C 20    STA $203C  [$7E:203C]
+$A6:CF5A AD 3C 20    LDA $203C  [$7E:203C]  ;\
+$A6:CF5D F0 1F       BEQ $1F    [$CF7E]     ;} If [Ridley tail segment 1 target distance] = 0: go to BRANCH_SEGMENT_1_SHRINK
+$A6:CF5F CD 3A 20    CMP $203A  [$7E:203A]  ;\
+$A6:CF62 10 06       BPL $06    [$CF6A]     ;} If [Ridley tail segment 1 target distance] < [Ridley tail segment 1 distance]:
+$A6:CF64 A9 00 00    LDA #$0000             ;\
+$A6:CF67 8D 3C 20    STA $203C  [$7E:203C]  ;} Ridley tail segment 1 target distance = 0
 
-$A6:CF6A AD 3A 20    LDA $203A  [$7E:203A]
-$A6:CF6D 18          CLC
-$A6:CF6E 6D 12 20    ADC $2012  [$7E:2012]
-$A6:CF71 C9 00 18    CMP #$1800
-$A6:CF74 30 03       BMI $03    [$CF79]
-$A6:CF76 A9 00 18    LDA #$1800
+$A6:CF6A AD 3A 20    LDA $203A  [$7E:203A]  ;\
+$A6:CF6D 18          CLC                    ;|
+$A6:CF6E 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:CF71 C9 00 18    CMP #$1800             ;|
+$A6:CF74 30 03       BMI $03    [$CF79]     ;} Ridley tail segment 1 distance = min(1800h, [Ridley tail segment 1 distance] + [Ridley tail extension speed])
+$A6:CF76 A9 00 18    LDA #$1800             ;|
+                                            ;|
+$A6:CF79 8D 3A 20    STA $203A  [$7E:203A]  ;/
+$A6:CF7C 80 12       BRA $12    [$CF90]     ; Go to BRANCH_SEGMENT_2
 
-$A6:CF79 8D 3A 20    STA $203A  [$7E:203A]
-$A6:CF7C 80 12       BRA $12    [$CF90]
+; BRANCH_SEGMENT_1_SHRINK
+$A6:CF7E A9 00 08    LDA #$0800             ;\
+$A6:CF81 CD 3A 20    CMP $203A  [$7E:203A]  ;} If [Ridley tail segment 1 distance] > 800h:
+$A6:CF84 10 0A       BPL $0A    [$CF90]     ;/
+$A6:CF86 AD 3A 20    LDA $203A  [$7E:203A]  ;\
+$A6:CF89 38          SEC                    ;|
+$A6:CF8A E9 80 00    SBC #$0080             ;} Ridley tail segment 1 distance -= 80h
+$A6:CF8D 8D 3A 20    STA $203A  [$7E:203A]  ;/
 
-$A6:CF7E A9 00 08    LDA #$0800
-$A6:CF81 CD 3A 20    CMP $203A  [$7E:203A]
-$A6:CF84 10 0A       BPL $0A    [$CF90]
-$A6:CF86 AD 3A 20    LDA $203A  [$7E:203A]
-$A6:CF89 38          SEC
-$A6:CF8A E9 80 00    SBC #$0080
-$A6:CF8D 8D 3A 20    STA $203A  [$7E:203A]
+; BRANCH_SEGMENT_2
+$A6:CF90 AD 50 20    LDA $2050  [$7E:2050]  ;\
+$A6:CF93 F0 1F       BEQ $1F    [$CFB4]     ;} If [Ridley tail segment 2 target distance] = 0: go to BRANCH_SEGMENT_2_SHRINK
+$A6:CF95 CD 4E 20    CMP $204E  [$7E:204E]  ;\
+$A6:CF98 10 06       BPL $06    [$CFA0]     ;} If [Ridley tail segment 2 target distance] < [Ridley tail segment 2 distance]:
+$A6:CF9A A9 00 00    LDA #$0000             ;\
+$A6:CF9D 8D 50 20    STA $2050  [$7E:2050]  ;} Ridley tail segment 2 target distance = 0
 
-$A6:CF90 AD 50 20    LDA $2050  [$7E:2050]
-$A6:CF93 F0 1F       BEQ $1F    [$CFB4]
-$A6:CF95 CD 4E 20    CMP $204E  [$7E:204E]
-$A6:CF98 10 06       BPL $06    [$CFA0]
-$A6:CF9A A9 00 00    LDA #$0000
-$A6:CF9D 8D 50 20    STA $2050  [$7E:2050]
+$A6:CFA0 AD 4E 20    LDA $204E  [$7E:204E]  ;\
+$A6:CFA3 18          CLC                    ;|
+$A6:CFA4 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:CFA7 C9 00 18    CMP #$1800             ;|
+$A6:CFAA 30 03       BMI $03    [$CFAF]     ;} Ridley tail segment 2 distance = min(1800h, [Ridley tail segment 2 distance] + [Ridley tail extension speed])
+$A6:CFAC A9 00 18    LDA #$1800             ;|
+                                            ;|
+$A6:CFAF 8D 4E 20    STA $204E  [$7E:204E]  ;/
+$A6:CFB2 80 12       BRA $12    [$CFC6]     ; Go to BRANCH_SEGMENT_3
 
-$A6:CFA0 AD 4E 20    LDA $204E  [$7E:204E]
-$A6:CFA3 18          CLC
-$A6:CFA4 6D 12 20    ADC $2012  [$7E:2012]
-$A6:CFA7 C9 00 18    CMP #$1800
-$A6:CFAA 30 03       BMI $03    [$CFAF]
-$A6:CFAC A9 00 18    LDA #$1800
+; BRANCH_SEGMENT_2_SHRINK
+$A6:CFB4 A9 00 08    LDA #$0800             ;\
+$A6:CFB7 CD 4E 20    CMP $204E  [$7E:204E]  ;} If [Ridley tail segment 2 distance] > 800h:
+$A6:CFBA 10 0A       BPL $0A    [$CFC6]     ;/
+$A6:CFBC AD 4E 20    LDA $204E  [$7E:204E]  ;\
+$A6:CFBF 38          SEC                    ;|
+$A6:CFC0 E9 80 00    SBC #$0080             ;} Ridley tail segment 2 distance -= 80h
+$A6:CFC3 8D 4E 20    STA $204E  [$7E:204E]  ;/
 
-$A6:CFAF 8D 4E 20    STA $204E  [$7E:204E]
-$A6:CFB2 80 12       BRA $12    [$CFC6]
+; BRANCH_SEGMENT_3
+$A6:CFC6 AD 64 20    LDA $2064  [$7E:2064]  ;\
+$A6:CFC9 F0 1F       BEQ $1F    [$CFEA]     ;} If [Ridley tail segment 3 target distance] = 0: go to BRANCH_SEGMENT_3_SHRINK
+$A6:CFCB CD 62 20    CMP $2062  [$7E:2062]  ;\
+$A6:CFCE 10 06       BPL $06    [$CFD6]     ;} If [Ridley tail segment 3 target distance] < [Ridley tail segment 3 distance]:
+$A6:CFD0 A9 00 00    LDA #$0000             ;\
+$A6:CFD3 8D 64 20    STA $2064  [$7E:2064]  ;} Ridley tail segment 3 target distance = 0
 
-$A6:CFB4 A9 00 08    LDA #$0800
-$A6:CFB7 CD 4E 20    CMP $204E  [$7E:204E]
-$A6:CFBA 10 0A       BPL $0A    [$CFC6]
-$A6:CFBC AD 4E 20    LDA $204E  [$7E:204E]
-$A6:CFBF 38          SEC
-$A6:CFC0 E9 80 00    SBC #$0080
-$A6:CFC3 8D 4E 20    STA $204E  [$7E:204E]
+$A6:CFD6 AD 62 20    LDA $2062  [$7E:2062]  ;\
+$A6:CFD9 18          CLC                    ;|
+$A6:CFDA 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:CFDD C9 00 16    CMP #$1600             ;|
+$A6:CFE0 30 03       BMI $03    [$CFE5]     ;} Ridley tail segment 3 distance = min(1800h, [Ridley tail segment 3 distance] + [Ridley tail extension speed])
+$A6:CFE2 A9 00 16    LDA #$1600             ;|
+                                            ;|
+$A6:CFE5 8D 62 20    STA $2062  [$7E:2062]  ;/
+$A6:CFE8 80 12       BRA $12    [$CFFC]     ; Go to BRANCH_SEGMENT_4
 
-$A6:CFC6 AD 64 20    LDA $2064  [$7E:2064]
-$A6:CFC9 F0 1F       BEQ $1F    [$CFEA]
-$A6:CFCB CD 62 20    CMP $2062  [$7E:2062]
-$A6:CFCE 10 06       BPL $06    [$CFD6]
-$A6:CFD0 A9 00 00    LDA #$0000
-$A6:CFD3 8D 64 20    STA $2064  [$7E:2064]
+; BRANCH_SEGMENT_3_SHRINK
+$A6:CFEA A9 00 08    LDA #$0800             ;\
+$A6:CFED CD 62 20    CMP $2062  [$7E:2062]  ;} If [Ridley tail segment 3 distance] > 800h:
+$A6:CFF0 10 0A       BPL $0A    [$CFFC]     ;/
+$A6:CFF2 AD 62 20    LDA $2062  [$7E:2062]  ;\
+$A6:CFF5 38          SEC                    ;|
+$A6:CFF6 E9 80 00    SBC #$0080             ;} Ridley tail segment 3 distance -= 80h
+$A6:CFF9 8D 62 20    STA $2062  [$7E:2062]  ;/
 
-$A6:CFD6 AD 62 20    LDA $2062  [$7E:2062]
-$A6:CFD9 18          CLC
-$A6:CFDA 6D 12 20    ADC $2012  [$7E:2012]
-$A6:CFDD C9 00 16    CMP #$1600
-$A6:CFE0 30 03       BMI $03    [$CFE5]
-$A6:CFE2 A9 00 16    LDA #$1600
+; BRANCH_SEGMENT_4
+$A6:CFFC AD 78 20    LDA $2078  [$7E:2078]  ;\
+$A6:CFFF F0 1F       BEQ $1F    [$D020]     ;} If [Ridley tail segment 4 target distance] = 0: go to BRANCH_SEGMENT_4_SHRINK
+$A6:D001 CD 76 20    CMP $2076  [$7E:2076]  ;\
+$A6:D004 10 06       BPL $06    [$D00C]     ;} If [Ridley tail segment 4 target distance] < [Ridley tail segment 4 distance]:
+$A6:D006 A9 00 00    LDA #$0000             ;\
+$A6:D009 8D 78 20    STA $2078  [$7E:2078]  ;} Ridley tail segment 4 target distance = 0
 
-$A6:CFE5 8D 62 20    STA $2062  [$7E:2062]
-$A6:CFE8 80 12       BRA $12    [$CFFC]
+$A6:D00C AD 76 20    LDA $2076  [$7E:2076]  ;\
+$A6:D00F 18          CLC                    ;|
+$A6:D010 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:D013 C9 00 16    CMP #$1600             ;|
+$A6:D016 30 03       BMI $03    [$D01B]     ;} Ridley tail segment 4 distance = min(1800h, [Ridley tail segment 4 distance] + [Ridley tail extension speed])
+$A6:D018 A9 00 16    LDA #$1600             ;|
+                                            ;|
+$A6:D01B 8D 76 20    STA $2076  [$7E:2076]  ;/
+$A6:D01E 80 12       BRA $12    [$D032]     ; Go to BRANCH_SEGMENT_5
 
-$A6:CFEA A9 00 08    LDA #$0800
-$A6:CFED CD 62 20    CMP $2062  [$7E:2062]
-$A6:CFF0 10 0A       BPL $0A    [$CFFC]
-$A6:CFF2 AD 62 20    LDA $2062  [$7E:2062]
-$A6:CFF5 38          SEC
-$A6:CFF6 E9 80 00    SBC #$0080
-$A6:CFF9 8D 62 20    STA $2062  [$7E:2062]
+; BRANCH_SEGMENT_4_SHRINK
+$A6:D020 A9 00 08    LDA #$0800             ;\
+$A6:D023 CD 76 20    CMP $2076  [$7E:2076]  ;} If [Ridley tail segment 4 distance] > 800h:
+$A6:D026 10 0A       BPL $0A    [$D032]     ;/
+$A6:D028 AD 76 20    LDA $2076  [$7E:2076]  ;\
+$A6:D02B 38          SEC                    ;|
+$A6:D02C E9 80 00    SBC #$0080             ;} Ridley tail segment 4 distance -= 80h
+$A6:D02F 8D 76 20    STA $2076  [$7E:2076]  ;/
 
-$A6:CFFC AD 78 20    LDA $2078  [$7E:2078]
-$A6:CFFF F0 1F       BEQ $1F    [$D020]
-$A6:D001 CD 76 20    CMP $2076  [$7E:2076]
-$A6:D004 10 06       BPL $06    [$D00C]
-$A6:D006 A9 00 00    LDA #$0000
-$A6:D009 8D 78 20    STA $2078  [$7E:2078]
+; BRANCH_SEGMENT_5
+$A6:D032 AD 8C 20    LDA $208C  [$7E:208C]  ;\
+$A6:D035 F0 1F       BEQ $1F    [$D056]     ;} If [Ridley tail segment 5 target distance] = 0: go to BRANCH_SEGMENT_5_SHRINK
+$A6:D037 CD 8A 20    CMP $208A  [$7E:208A]  ;\
+$A6:D03A 10 06       BPL $06    [$D042]     ;} If [Ridley tail segment 5 target distance] < [Ridley tail segment 5 distance]:
+$A6:D03C A9 00 00    LDA #$0000             ;\
+$A6:D03F 8D 8C 20    STA $208C  [$7E:208C]  ;} Ridley tail segment 5 target distance = 0
 
-$A6:D00C AD 76 20    LDA $2076  [$7E:2076]
-$A6:D00F 18          CLC
-$A6:D010 6D 12 20    ADC $2012  [$7E:2012]
-$A6:D013 C9 00 16    CMP #$1600
-$A6:D016 30 03       BMI $03    [$D01B]
-$A6:D018 A9 00 16    LDA #$1600
+$A6:D042 AD 8A 20    LDA $208A  [$7E:208A]  ;\
+$A6:D045 18          CLC                    ;|
+$A6:D046 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:D049 C9 00 12    CMP #$1200             ;|
+$A6:D04C 30 03       BMI $03    [$D051]     ;} Ridley tail segment 5 distance = min(1800h, [Ridley tail segment 5 distance] + [Ridley tail extension speed])
+$A6:D04E A9 00 12    LDA #$1200             ;|
+                                            ;|
+$A6:D051 8D 8A 20    STA $208A  [$7E:208A]  ;/
+$A6:D054 80 12       BRA $12    [$D068]     ; Go to BRANCH_SEGMENT_6
 
-$A6:D01B 8D 76 20    STA $2076  [$7E:2076]
-$A6:D01E 80 12       BRA $12    [$D032]
+; BRANCH_SEGMENT_5_SHRINK
+$A6:D056 A9 00 08    LDA #$0800             ;\
+$A6:D059 CD 8A 20    CMP $208A  [$7E:208A]  ;} If [Ridley tail segment 5 distance] > 800h:
+$A6:D05C 10 0A       BPL $0A    [$D068]     ;/
+$A6:D05E AD 8A 20    LDA $208A  [$7E:208A]  ;\
+$A6:D061 38          SEC                    ;|
+$A6:D062 E9 80 00    SBC #$0080             ;} Ridley tail segment 5 distance -= 80h
+$A6:D065 8D 8A 20    STA $208A  [$7E:208A]  ;/
 
-$A6:D020 A9 00 08    LDA #$0800
-$A6:D023 CD 76 20    CMP $2076  [$7E:2076]
-$A6:D026 10 0A       BPL $0A    [$D032]
-$A6:D028 AD 76 20    LDA $2076  [$7E:2076]
-$A6:D02B 38          SEC
-$A6:D02C E9 80 00    SBC #$0080
-$A6:D02F 8D 76 20    STA $2076  [$7E:2076]
+; BRANCH_SEGMENT_6
+$A6:D068 AD A0 20    LDA $20A0  [$7E:20A0]  ;\
+$A6:D06B F0 1F       BEQ $1F    [$D08C]     ;} If [Ridley tail segment 6 target distance] = 0: go to BRANCH_SEGMENT_6_SHRINK
+$A6:D06D CD 9E 20    CMP $209E  [$7E:209E]  ;\
+$A6:D070 10 06       BPL $06    [$D078]     ;} If [Ridley tail segment 6 target distance] < [Ridley tail segment 6 distance]:
+$A6:D072 A9 00 00    LDA #$0000             ;\
+$A6:D075 8D A0 20    STA $20A0  [$7E:20A0]  ;} Ridley tail segment 6 target distance = 0
 
-$A6:D032 AD 8C 20    LDA $208C  [$7E:208C]
-$A6:D035 F0 1F       BEQ $1F    [$D056]
-$A6:D037 CD 8A 20    CMP $208A  [$7E:208A]
-$A6:D03A 10 06       BPL $06    [$D042]
-$A6:D03C A9 00 00    LDA #$0000
-$A6:D03F 8D 8C 20    STA $208C  [$7E:208C]
+$A6:D078 AD 9E 20    LDA $209E  [$7E:209E]  ;\
+$A6:D07B 18          CLC                    ;|
+$A6:D07C 6D 12 20    ADC $2012  [$7E:2012]  ;|
+$A6:D07F C9 00 05    CMP #$0500             ;|
+$A6:D082 30 03       BMI $03    [$D087]     ;} Ridley tail segment 6 distance = min(1800h, [Ridley tail segment 6 distance] + [Ridley tail extension speed])
+$A6:D084 A9 00 05    LDA #$0500             ;|
+                                            ;|
+$A6:D087 8D 9E 20    STA $209E  [$7E:209E]  ;/
+$A6:D08A 80 12       BRA $12    [$D09E]     ; Return
 
-$A6:D042 AD 8A 20    LDA $208A  [$7E:208A]
-$A6:D045 18          CLC
-$A6:D046 6D 12 20    ADC $2012  [$7E:2012]
-$A6:D049 C9 00 12    CMP #$1200
-$A6:D04C 30 03       BMI $03    [$D051]
-$A6:D04E A9 00 12    LDA #$1200
-
-$A6:D051 8D 8A 20    STA $208A  [$7E:208A]
-$A6:D054 80 12       BRA $12    [$D068]
-
-$A6:D056 A9 00 08    LDA #$0800
-$A6:D059 CD 8A 20    CMP $208A  [$7E:208A]
-$A6:D05C 10 0A       BPL $0A    [$D068]
-$A6:D05E AD 8A 20    LDA $208A  [$7E:208A]
-$A6:D061 38          SEC
-$A6:D062 E9 80 00    SBC #$0080
-$A6:D065 8D 8A 20    STA $208A  [$7E:208A]
-
-$A6:D068 AD A0 20    LDA $20A0  [$7E:20A0]
-$A6:D06B F0 1F       BEQ $1F    [$D08C]
-$A6:D06D CD 9E 20    CMP $209E  [$7E:209E]
-$A6:D070 10 06       BPL $06    [$D078]
-$A6:D072 A9 00 00    LDA #$0000
-$A6:D075 8D A0 20    STA $20A0  [$7E:20A0]
-
-$A6:D078 AD 9E 20    LDA $209E  [$7E:209E]
-$A6:D07B 18          CLC
-$A6:D07C 6D 12 20    ADC $2012  [$7E:2012]
-$A6:D07F C9 00 05    CMP #$0500
-$A6:D082 30 03       BMI $03    [$D087]
-$A6:D084 A9 00 05    LDA #$0500
-
-$A6:D087 8D 9E 20    STA $209E  [$7E:209E]
-$A6:D08A 80 12       BRA $12    [$D09E]
-
-$A6:D08C A9 00 05    LDA #$0500
-$A6:D08F CD 9E 20    CMP $209E  [$7E:209E]
-$A6:D092 10 0A       BPL $0A    [$D09E]
-$A6:D094 AD 9E 20    LDA $209E  [$7E:209E]
-$A6:D097 38          SEC
-$A6:D098 E9 80 00    SBC #$0080
-$A6:D09B 8D 9E 20    STA $209E  [$7E:209E]
+; BRANCH_SEGMENT_6_SHRINK
+$A6:D08C A9 00 05    LDA #$0500             ;\
+$A6:D08F CD 9E 20    CMP $209E  [$7E:209E]  ;} If [Ridley tail segment 6 distance] > 500h:
+$A6:D092 10 0A       BPL $0A    [$D09E]     ;/
+$A6:D094 AD 9E 20    LDA $209E  [$7E:209E]  ;\
+$A6:D097 38          SEC                    ;|
+$A6:D098 E9 80 00    SBC #$0080             ;} Ridley tail segment 6 distance -= 80h
+$A6:D09B 8D 9E 20    STA $209E  [$7E:209E]  ;/
 
 $A6:D09E 60          RTS
 }
 
 
-;;; $D09F:  ;;;
+;;; $D09F: Update Ridley tail segment angle ;;;
 {
-$A6:D09F BD 20 20    LDA $2020,x[$7E:2020]
-$A6:D0A2 30 21       BMI $21    [$D0C5]
+;; Parameters:
+;;     X: Tail segment index
+
+; Also recalculates X/Y offset from previous segment
+
+$A6:D09F BD 20 20    LDA $2020,x[$7E:2020]  ;\
+$A6:D0A2 30 21       BMI $21    [$D0C5]     ;} If [tail segment active flag] & 8000h != 0: go to BRANCH_ACTIVE
 $A6:D0A4 BD 2A 20    LDA $202A,x[$7E:202A]
-$A6:D0A7 4C 6D D1    JMP $D16D  [$A6:D16D]
+$A6:D0A7 4C 6D D1    JMP $D16D  [$A6:D16D]  ; Go to BRANCH_INACTIVE
 
-$A6:D0AA 9E 20 20    STZ $2020,x[$7E:2020]
-$A6:D0AD 9E 22 20    STZ $2022,x[$7E:2022]
-$A6:D0B0 BD 24 20    LDA $2024,x[$7E:2024]
-$A6:D0B3 49 00 80    EOR #$8000
-$A6:D0B6 9D 24 20    STA $2024,x[$7E:2024]
-$A6:D0B9 60          RTS
+; BRANCH_D0AA
+$A6:D0AA 9E 20 20    STZ $2020,x[$7E:2020]  ; Tail segment active flag = 0
+$A6:D0AD 9E 22 20    STZ $2022,x[$7E:2022]  ; Tail segment stagger angle = 0
+$A6:D0B0 BD 24 20    LDA $2024,x[$7E:2024]  ;\
+$A6:D0B3 49 00 80    EOR #$8000             ;} Tail segment movement direction ^= 8000h
+$A6:D0B6 9D 24 20    STA $2024,x[$7E:2024]  ;/
+$A6:D0B9 60          RTS                    ; Return
 
-$A6:D0BA BD 22 20    LDA $2022,x[$7E:2022]
-$A6:D0BD 18          CLC
-$A6:D0BE 6D 14 20    ADC $2014  [$7E:2014]
-$A6:D0C1 9D 22 20    STA $2022,x[$7E:2022]
-$A6:D0C4 60          RTS
+; BRANCH_DELAY
+$A6:D0BA BD 22 20    LDA $2022,x[$7E:2022]  ;\
+$A6:D0BD 18          CLC                    ;|
+$A6:D0BE 6D 14 20    ADC $2014  [$7E:2014]  ;} Tail segment stagger angle += [Ridley tail angle delta]
+$A6:D0C1 9D 22 20    STA $2022,x[$7E:2022]  ;/
+$A6:D0C4 60          RTS                    ; Return
 
-$A6:D0C5 BD 22 20    LDA $2022,x[$7E:2022]
-$A6:D0C8 CD 1E 20    CMP $201E  [$7E:201E]
-$A6:D0CB 90 ED       BCC $ED    [$D0BA]
-$A6:D0CD C9 FF FF    CMP #$FFFF
-$A6:D0D0 F0 12       BEQ $12    [$D0E4]
-$A6:D0D2 A9 FF FF    LDA #$FFFF
-$A6:D0D5 9D 22 20    STA $2022,x[$7E:2022]
-$A6:D0D8 A9 00 80    LDA #$8000
-$A6:D0DB 9D 34 20    STA $2034,x[$7E:2034]
-$A6:D0DE BD 24 20    LDA $2024,x[$7E:2024]
-$A6:D0E1 9D 38 20    STA $2038,x[$7E:2038]
+; BRANCH_ACTIVE
+$A6:D0C5 BD 22 20    LDA $2022,x[$7E:2022]  ;\
+$A6:D0C8 CD 1E 20    CMP $201E  [$7E:201E]  ;} If [tail segment stagger angle] < [Ridley tail ideal inter-segment angle]: go to BRANCH_DELAY
+$A6:D0CB 90 ED       BCC $ED    [$D0BA]     ;/
+$A6:D0CD C9 FF FF    CMP #$FFFF             ;\
+$A6:D0D0 F0 12       BEQ $12    [$D0E4]     ;} If [tail segment stagger angle] != FFFFh:
+$A6:D0D2 A9 FF FF    LDA #$FFFF             ;\
+$A6:D0D5 9D 22 20    STA $2022,x[$7E:2022]  ;} Tail segment stagger angle = FFFFh
+$A6:D0D8 A9 00 80    LDA #$8000             ;\
+$A6:D0DB 9D 34 20    STA $2034,x[$7E:2034]  ;} Tail segment ([X] + 1) active flag = 8000h
+$A6:D0DE BD 24 20    LDA $2024,x[$7E:2024]  ;\
+$A6:D0E1 9D 38 20    STA $2038,x[$7E:2038]  ;} Tail segment ([X] + 1) movement direction = [tail segment movement direction]
 
-$A6:D0E4 BD 24 20    LDA $2024,x[$7E:2024]
-$A6:D0E7 30 3F       BMI $3F    [$D128]
-$A6:D0E9 AD 1C 20    LDA $201C  [$7E:201C]
-$A6:D0EC 30 23       BMI $23    [$D111]
-$A6:D0EE A9 00 0C    LDA #$0C00
-$A6:D0F1 9D 28 20    STA $2028,x[$7E:208C]
-$A6:D0F4 BD 2A 20    LDA $202A,x[$7E:208E]
-$A6:D0F7 18          CLC
-$A6:D0F8 6D 14 20    ADC $2014  [$7E:2014]
-$A6:D0FB CD 1C 20    CMP $201C  [$7E:201C]
-$A6:D0FE 30 6A       BMI $6A    [$D16A]
-$A6:D100 8A          TXA
-$A6:D101 F0 05       BEQ $05    [$D108]
-$A6:D103 BD 0C 20    LDA $200C,x[$7E:2070]
-$A6:D106 D0 15       BNE $15    [$D11D]
+$A6:D0E4 BD 24 20    LDA $2024,x[$7E:2024]  ;\
+$A6:D0E7 30 3F       BMI $3F    [$D128]     ;} If [tail segment movement direction] & 8000h != 0: go to BRANCH_CLOCKWISE
+$A6:D0E9 AD 1C 20    LDA $201C  [$7E:201C]  ;\
+$A6:D0EC 30 23       BMI $23    [$D111]     ;} If [$201C] & 8000h != 0: go to BRANCH_D111
+$A6:D0EE A9 00 0C    LDA #$0C00             ;\
+$A6:D0F1 9D 28 20    STA $2028,x[$7E:208C]  ;} Tail segment target distance = C00h
+$A6:D0F4 BD 2A 20    LDA $202A,x[$7E:208E]  ;\
+$A6:D0F7 18          CLC                    ;} A = [tail segment angle from previous segment] + [Ridley tail angle delta]
+$A6:D0F8 6D 14 20    ADC $2014  [$7E:2014]  ;/
+$A6:D0FB CD 1C 20    CMP $201C  [$7E:201C]  ;\
+$A6:D0FE 30 6A       BMI $6A    [$D16A]     ;} If [A] < [$201C]: go to BRANCH_ANGLE_CALCULATED
+$A6:D100 8A          TXA                    ;\
+$A6:D101 F0 05       BEQ $05    [$D108]     ;} If [X] != 0 (base segment):
+$A6:D103 BD 0C 20    LDA $200C,x[$7E:2070]  ;\
+$A6:D106 D0 15       BNE $15    [$D11D]     ;} If [tail segment ([X] - 1) active flag] & 8000h != 0: go to BRANCH_D11D
 
-$A6:D108 AD 1C 20    LDA $201C  [$7E:201C]
-$A6:D10B 9D 2A 20    STA $202A,x[$7E:202A]
-$A6:D10E 4C AA D0    JMP $D0AA  [$A6:D0AA]
+$A6:D108 AD 1C 20    LDA $201C  [$7E:201C]  ;\
+$A6:D10B 9D 2A 20    STA $202A,x[$7E:202A]  ;} Tail segment angle from previous segment = [$201C]
+$A6:D10E 4C AA D0    JMP $D0AA  [$A6:D0AA]  ; Go to BRANCH_D0AA
 
-$A6:D111 BD 2A 20    LDA $202A,x[$7E:202A]
-$A6:D114 18          CLC
-$A6:D115 6D 14 20    ADC $2014  [$7E:2014]
-$A6:D118 CD 18 20    CMP $2018  [$7E:2018]
-$A6:D11B 30 4D       BMI $4D    [$D16A]
+; BRANCH_D111
+$A6:D111 BD 2A 20    LDA $202A,x[$7E:202A]  ;\
+$A6:D114 18          CLC                    ;} A = [tail segment angle from previous segment] + [Ridley tail angle delta]
+$A6:D115 6D 14 20    ADC $2014  [$7E:2014]  ;/
+$A6:D118 CD 18 20    CMP $2018  [$7E:2018]  ;\
+$A6:D11B 30 4D       BMI $4D    [$D16A]     ;} If [A] < [Ridley tail maximum anticlockwise angle]: go to BRANCH_ANGLE_CALCULATED
 
-$A6:D11D A9 00 80    LDA #$8000
-$A6:D120 9D 24 20    STA $2024,x[$7E:2024]
-$A6:D123 AD 18 20    LDA $2018  [$7E:2018]
-$A6:D126 80 42       BRA $42    [$D16A]
+; BRANCH_D11D
+$A6:D11D A9 00 80    LDA #$8000             ;\
+$A6:D120 9D 24 20    STA $2024,x[$7E:2024]  ;} Tail segment movement direction = clockwise
+$A6:D123 AD 18 20    LDA $2018  [$7E:2018]  ; A = [Ridley tail maximum anticlockwise angle]
+$A6:D126 80 42       BRA $42    [$D16A]     ; Go to BRANCH_ANGLE_CALCULATED
 
-$A6:D128 AD 1A 20    LDA $201A  [$7E:201A]
-$A6:D12B 30 24       BMI $24    [$D151]
-$A6:D12D A9 00 0C    LDA #$0C00
-$A6:D130 9D 28 20    STA $2028,x[$7E:2064]
-$A6:D133 BD 2A 20    LDA $202A,x[$7E:2066]
-$A6:D136 38          SEC
-$A6:D137 ED 14 20    SBC $2014  [$7E:2014]
-$A6:D13A 3A          DEC A
-$A6:D13B CD 1A 20    CMP $201A  [$7E:201A]
-$A6:D13E 10 29       BPL $29    [$D169]
-$A6:D140 8A          TXA
-$A6:D141 F0 05       BEQ $05    [$D148]
-$A6:D143 BD 0C 20    LDA $200C,x[$7E:2048]
-$A6:D146 D0 16       BNE $16    [$D15E]
+; BRANCH_CLOCKWISE
+$A6:D128 AD 1A 20    LDA $201A  [$7E:201A]  ;\
+$A6:D12B 30 24       BMI $24    [$D151]     ;} If [$201A] & 8000h != 0: go to BRANCH_D151
+$A6:D12D A9 00 0C    LDA #$0C00             ;\
+$A6:D130 9D 28 20    STA $2028,x[$7E:2064]  ;} Tail segment target distance = C00h
+$A6:D133 BD 2A 20    LDA $202A,x[$7E:2066]  ;\
+$A6:D136 38          SEC                    ;|
+$A6:D137 ED 14 20    SBC $2014  [$7E:2014]  ;} A = [tail segment angle from previous segment] - [Ridley tail angle delta] - 1
+$A6:D13A 3A          DEC A                  ;/
+$A6:D13B CD 1A 20    CMP $201A  [$7E:201A]  ;\
+$A6:D13E 10 29       BPL $29    [$D169]     ;} If [A] < [$201A]: go to BRANCH_ANGLE_CALCULATED_LESS_ONE
+$A6:D140 8A          TXA                    ;\
+$A6:D141 F0 05       BEQ $05    [$D148]     ;} If [X] != 0 (base segment):
+$A6:D143 BD 0C 20    LDA $200C,x[$7E:2048]  ;\
+$A6:D146 D0 16       BNE $16    [$D15E]     ;} If [tail segment ([X] - 1) active flag] & 8000h != 0: go to BRANCH_D15E
 
-$A6:D148 AD 1A 20    LDA $201A  [$7E:201A]
-$A6:D14B 9D 2A 20    STA $202A,x[$7E:202A]
-$A6:D14E 4C AA D0    JMP $D0AA  [$A6:D0AA]
+$A6:D148 AD 1A 20    LDA $201A  [$7E:201A]  ;\
+$A6:D14B 9D 2A 20    STA $202A,x[$7E:202A]  ;} Tail segment angle from previous segment = [$201A]
+$A6:D14E 4C AA D0    JMP $D0AA  [$A6:D0AA]  ; Go to BRANCH_D0AA
 
-$A6:D151 BD 2A 20    LDA $202A,x[$7E:202A]
-$A6:D154 38          SEC
-$A6:D155 ED 14 20    SBC $2014  [$7E:2014]
-$A6:D158 3A          DEC A
-$A6:D159 CD 16 20    CMP $2016  [$7E:2016]
-$A6:D15C 10 0B       BPL $0B    [$D169]
+; BRANCH_D151
+$A6:D151 BD 2A 20    LDA $202A,x[$7E:202A]  ;\
+$A6:D154 38          SEC                    ;|
+$A6:D155 ED 14 20    SBC $2014  [$7E:2014]  ;} A = [tail segment angle from previous segment] - [Ridley tail angle delta] - 1
+$A6:D158 3A          DEC A                  ;/
+$A6:D159 CD 16 20    CMP $2016  [$7E:2016]  ;\
+$A6:D15C 10 0B       BPL $0B    [$D169]     ;} If [A] + 1 > [Ridley tail minimum clockwise angle]: go to BRANCH_ANGLE_CALCULATED_LESS_ONE
 
-$A6:D15E A9 00 00    LDA #$0000
-$A6:D161 9D 24 20    STA $2024,x[$7E:2024]
-$A6:D164 AD 16 20    LDA $2016  [$7E:2016]
-$A6:D167 80 01       BRA $01    [$D16A]
+; BRANCH_D15E
+$A6:D15E A9 00 00    LDA #$0000             ;\
+$A6:D161 9D 24 20    STA $2024,x[$7E:2024]  ;} Tail segment movement direction = anticlockwise
+$A6:D164 AD 16 20    LDA $2016  [$7E:2016]  ; A = [Ridley tail minimum clockwise angle]
+$A6:D167 80 01       BRA $01    [$D16A]     ; Go to BRANCH_ANGLE_CALCULATED
 
-$A6:D169 1A          INC A
+; BRANCH_ANGLE_CALCULATED_LESS_ONE
+$A6:D169 1A          INC A                  ; A += 1
 
-$A6:D16A 9D 2A 20    STA $202A,x[$7E:202A]
+; BRANCH_ANGLE_CALCULATED
+$A6:D16A 9D 2A 20    STA $202A,x[$7E:202A]  ; Tail segment angle from previous segment = [A]
 
-$A6:D16D 29 FF 00    AND #$00FF
-$A6:D170 85 12       STA $12    [$7E:0012]
-$A6:D172 8A          TXA
-$A6:D173 F0 0B       BEQ $0B    [$D180]
-$A6:D175 A5 12       LDA $12    [$7E:0012]
-$A6:D177 18          CLC
-$A6:D178 7D 16 20    ADC $2016,x[$7E:202A]
-$A6:D17B 29 FF 00    AND #$00FF
-$A6:D17E 85 12       STA $12    [$7E:0012]
+; BRANCH_INACTIVE
+$A6:D16D 29 FF 00    AND #$00FF             ;\
+$A6:D170 85 12       STA $12    [$7E:0012]  ;} $12 = [tail segment angle from previous segment] % 100h
+$A6:D172 8A          TXA                    ;\
+$A6:D173 F0 0B       BEQ $0B    [$D180]     ;} If [X] != 0 (base segment):
+$A6:D175 A5 12       LDA $12    [$7E:0012]  ;\
+$A6:D177 18          CLC                    ;|
+$A6:D178 7D 16 20    ADC $2016,x[$7E:202A]  ;} $12 += [tail segment ([X] - 1) angle from previous segment]
+$A6:D17B 29 FF 00    AND #$00FF             ;|
+$A6:D17E 85 12       STA $12    [$7E:0012]  ;/
 
-$A6:D180 BD 26 20    LDA $2026,x[$7E:2026]
-$A6:D183 EB          XBA
-$A6:D184 29 FF 00    AND #$00FF
-$A6:D187 22 60 C4 A9 JSL $A9C460[$A9:C460]
-$A6:D18B 9D 30 20    STA $2030,x[$7E:2030]
-$A6:D18E BD 26 20    LDA $2026,x[$7E:2026]
-$A6:D191 EB          XBA
-$A6:D192 29 FF 00    AND #$00FF
-$A6:D195 22 65 C4 A9 JSL $A9C465[$A9:C465]
-$A6:D199 9D 32 20    STA $2032,x[$7E:2032]
+$A6:D180 BD 26 20    LDA $2026,x[$7E:2026]  ;\
+$A6:D183 EB          XBA                    ;|
+$A6:D184 29 FF 00    AND #$00FF             ;} Tail segment X offset from previous segment = [tail segment distance from previous segment] * sin([$12] * pi / 80h)
+$A6:D187 22 60 C4 A9 JSL $A9C460[$A9:C460]  ;|
+$A6:D18B 9D 30 20    STA $2030,x[$7E:2030]  ;/
+$A6:D18E BD 26 20    LDA $2026,x[$7E:2026]  ;\
+$A6:D191 EB          XBA                    ;|
+$A6:D192 29 FF 00    AND #$00FF             ;} Tail segment Y offset from previous segment = [tail segment distance from previous segment] * cos([$12] * pi / 80h)
+$A6:D195 22 65 C4 A9 JSL $A9C465[$A9:C465]  ;|
+$A6:D199 9D 32 20    STA $2032,x[$7E:2032]  ;/
 $A6:D19C 60          RTS
 }
 
@@ -7869,24 +7903,24 @@ $A6:D2A9 60          RTS
 }
 
 
-;;; $D2AA:  ;;;
+;;; $D2AA: Handle Ridley tail whip sound effect ;;;
 {
 ; Play swishing sound if tail is moving quickly
-$A6:D2AA AF 14 20 7E LDA $7E2014[$7E:2014]
-$A6:D2AE C9 08 00    CMP #$0008
-$A6:D2B1 30 1B       BMI $1B    [$D2CE]
-$A6:D2B3 AF 1C 78 7E LDA $7E781C[$7E:781C]
-$A6:D2B7 1A          INC A
-$A6:D2B8 8F 1C 78 7E STA $7E781C[$7E:781C]
-$A6:D2BC C9 10 00    CMP #$0010
-$A6:D2BF 30 14       BMI $14    [$D2D5]
-$A6:D2C1 AF 1E 78 7E LDA $7E781E[$7E:781E]
-$A6:D2C5 D0 07       BNE $07    [$D2CE]
+$A6:D2AA AF 14 20 7E LDA $7E2014[$7E:2014]  ;\
+$A6:D2AE C9 08 00    CMP #$0008             ;} If [tail angle delta] >= 8:
+$A6:D2B1 30 1B       BMI $1B    [$D2CE]     ;/
+$A6:D2B3 AF 1C 78 7E LDA $7E781C[$7E:781C]  ;\
+$A6:D2B7 1A          INC A                  ;} Increment Ridley tail whip sound effect counter
+$A6:D2B8 8F 1C 78 7E STA $7E781C[$7E:781C]  ;/
+$A6:D2BC C9 10 00    CMP #$0010             ;\
+$A6:D2BF 30 14       BMI $14    [$D2D5]     ;} If [Ridley tail whip sound effect counter] < 10h: return
+$A6:D2C1 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
+$A6:D2C5 D0 07       BNE $07    [$D2CE]     ;} If [$7E:781E] = 0:
 $A6:D2C7 A9 21 00    LDA #$0021             ;\
 $A6:D2CA 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 21h, sound library 3, max queued sounds allowed = 6 (Ridley whips its tail)
 
-$A6:D2CE A9 00 00    LDA #$0000
-$A6:D2D1 8F 1C 78 7E STA $7E781C[$7E:781C]
+$A6:D2CE A9 00 00    LDA #$0000             ;\
+$A6:D2D1 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} Ridley tail whip sound effect counter = 0
 
 $A6:D2D5 60          RTS
 }
@@ -8064,10 +8098,12 @@ $A6:D466 6B          RTL
 
 ;;; $D467: Set Ridley instruction list ;;;
 {
-$A6:D467 8D 92 0F    STA $0F92  [$7E:0F92]
-$A6:D46A A9 01 00    LDA #$0001
-$A6:D46D 8D 94 0F    STA $0F94  [$7E:0F94]
-$A6:D470 9C 90 0F    STZ $0F90  [$7E:0F90]
+;; Parameters:
+;;     A: Instruction list
+$A6:D467 8D 92 0F    STA $0F92  [$7E:0F92]  ; Ridley instruction list pointer = [A]
+$A6:D46A A9 01 00    LDA #$0001             ;\
+$A6:D46D 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Ridley instruction list timer = 1
+$A6:D470 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Ridley timer = 1
 $A6:D473 60          RTS
 }
 
@@ -8172,9 +8208,9 @@ $A6:D4FB 4A          LSR A
 $A6:D4FC 4A          LSR A
 $A6:D4FD 4A          LSR A
 $A6:D4FE E2 20       SEP #$20
-$A6:D500 8D 02 42    STA $4202            
+$A6:D500 8D 02 42    STA $4202
 $A6:D503 AD A5 07    LDA $07A5  [$7E:07A5]
-$A6:D506 8D 03 42    STA $4203            
+$A6:D506 8D 03 42    STA $4203
 $A6:D509 C2 20       REP #$20
 $A6:D50B 8A          TXA
 $A6:D50C 4A          LSR A
@@ -8182,7 +8218,7 @@ $A6:D50D 4A          LSR A
 $A6:D50E 4A          LSR A
 $A6:D50F 4A          LSR A
 $A6:D510 18          CLC
-$A6:D511 6D 16 42    ADC $4216            
+$A6:D511 6D 16 42    ADC $4216
 $A6:D514 0A          ASL A
 $A6:D515 AA          TAX
 $A6:D516 BF 02 00 7F LDA $7F0002,x[$7F:0102]
@@ -8220,16 +8256,16 @@ $A6:D539 F0 39       BEQ $39    [$D574]
 $A6:D53B 10 38       BPL $38    [$D575]
 $A6:D53D 49 FF FF    EOR #$FFFF
 $A6:D540 1A          INC A
-$A6:D541 8D 04 42    STA $4204            
+$A6:D541 8D 04 42    STA $4204
 $A6:D544 E2 20       SEP #$20
 $A6:D546 A5 18       LDA $18    [$7E:0018]
-$A6:D548 8D 06 42    STA $4206            
+$A6:D548 8D 06 42    STA $4206
 $A6:D54B C2 20       REP #$20
 $A6:D54D EB          XBA
 $A6:D54E EB          XBA
 $A6:D54F EA          NOP
 $A6:D550 EA          NOP
-$A6:D551 AD 14 42    LDA $4214            
+$A6:D551 AD 14 42    LDA $4214
 $A6:D554 D0 01       BNE $01    [$D557]
 $A6:D556 1A          INC A
 
@@ -8251,16 +8287,16 @@ $A6:D571 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 
 $A6:D574 60          RTS
 
-$A6:D575 8D 04 42    STA $4204            
+$A6:D575 8D 04 42    STA $4204
 $A6:D578 E2 20       SEP #$20
 $A6:D57A A5 18       LDA $18    [$7E:0018]
-$A6:D57C 8D 06 42    STA $4206            
+$A6:D57C 8D 06 42    STA $4206
 $A6:D57F C2 20       REP #$20
 $A6:D581 EB          XBA
 $A6:D582 EB          XBA
 $A6:D583 EA          NOP
 $A6:D584 EA          NOP
-$A6:D585 AD 14 42    LDA $4214            
+$A6:D585 AD 14 42    LDA $4214
 $A6:D588 D0 01       BNE $01    [$D58B]
 $A6:D58A 1A          INC A
 
@@ -8294,16 +8330,16 @@ $A6:D5AF F0 39       BEQ $39    [$D5EA]
 $A6:D5B1 10 38       BPL $38    [$D5EB]
 $A6:D5B3 49 FF FF    EOR #$FFFF
 $A6:D5B6 1A          INC A
-$A6:D5B7 8D 04 42    STA $4204            
+$A6:D5B7 8D 04 42    STA $4204
 $A6:D5BA E2 20       SEP #$20
 $A6:D5BC A5 18       LDA $18    [$7E:0018]
-$A6:D5BE 8D 06 42    STA $4206            
+$A6:D5BE 8D 06 42    STA $4206
 $A6:D5C1 C2 20       REP #$20
 $A6:D5C3 EB          XBA
 $A6:D5C4 EB          XBA
 $A6:D5C5 EA          NOP
 $A6:D5C6 EA          NOP
-$A6:D5C7 AD 14 42    LDA $4214            
+$A6:D5C7 AD 14 42    LDA $4214
 $A6:D5CA D0 01       BNE $01    [$D5CD]
 $A6:D5CC 1A          INC A
 
@@ -8325,16 +8361,16 @@ $A6:D5E7 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
 $A6:D5EA 60          RTS
 
-$A6:D5EB 8D 04 42    STA $4204            
+$A6:D5EB 8D 04 42    STA $4204
 $A6:D5EE E2 20       SEP #$20
 $A6:D5F0 A5 18       LDA $18    [$7E:0018]
-$A6:D5F2 8D 06 42    STA $4206            
+$A6:D5F2 8D 06 42    STA $4206
 $A6:D5F5 C2 20       REP #$20
 $A6:D5F7 EB          XBA
 $A6:D5F8 EB          XBA
 $A6:D5F9 EA          NOP
 $A6:D5FA EA          NOP
-$A6:D5FB AD 14 42    LDA $4214            
+$A6:D5FB AD 14 42    LDA $4214
 $A6:D5FE D0 01       BNE $01    [$D601]
 $A6:D600 1A          INC A
 
@@ -8376,16 +8412,16 @@ $A6:D640 F0 34       BEQ $34    [$D676]
 $A6:D642 10 33       BPL $33    [$D677]
 $A6:D644 49 FF FF    EOR #$FFFF
 $A6:D647 1A          INC A
-$A6:D648 8D 04 42    STA $4204            
+$A6:D648 8D 04 42    STA $4204
 $A6:D64B E2 20       SEP #$20
 $A6:D64D A5 18       LDA $18    [$7E:0018]
-$A6:D64F 8D 06 42    STA $4206            
+$A6:D64F 8D 06 42    STA $4206
 $A6:D652 C2 20       REP #$20
 $A6:D654 EB          XBA
 $A6:D655 EB          XBA
 $A6:D656 EA          NOP
 $A6:D657 EA          NOP
-$A6:D658 AD 14 42    LDA $4214            
+$A6:D658 AD 14 42    LDA $4214
 $A6:D65B D0 01       BNE $01    [$D65E]
 $A6:D65D 1A          INC A
 
@@ -8404,16 +8440,16 @@ $A6:D673 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 
 $A6:D676 60          RTS
 
-$A6:D677 8D 04 42    STA $4204            
+$A6:D677 8D 04 42    STA $4204
 $A6:D67A E2 20       SEP #$20
 $A6:D67C A5 18       LDA $18    [$7E:0018]
-$A6:D67E 8D 06 42    STA $4206            
+$A6:D67E 8D 06 42    STA $4206
 $A6:D681 C2 20       REP #$20
 $A6:D683 EB          XBA
 $A6:D684 EB          XBA
 $A6:D685 EA          NOP
 $A6:D686 EA          NOP
-$A6:D687 AD 14 42    LDA $4214            
+$A6:D687 AD 14 42    LDA $4214
 $A6:D68A D0 01       BNE $01    [$D68D]
 $A6:D68C 1A          INC A
 
@@ -8442,16 +8478,16 @@ $A6:D6AC F0 34       BEQ $34    [$D6E2]
 $A6:D6AE 10 33       BPL $33    [$D6E3]
 $A6:D6B0 49 FF FF    EOR #$FFFF
 $A6:D6B3 1A          INC A
-$A6:D6B4 8D 04 42    STA $4204            
+$A6:D6B4 8D 04 42    STA $4204
 $A6:D6B7 E2 20       SEP #$20
 $A6:D6B9 A5 18       LDA $18    [$7E:0018]
-$A6:D6BB 8D 06 42    STA $4206            
+$A6:D6BB 8D 06 42    STA $4206
 $A6:D6BE C2 20       REP #$20
 $A6:D6C0 EB          XBA
 $A6:D6C1 EB          XBA
 $A6:D6C2 EA          NOP
 $A6:D6C3 EA          NOP
-$A6:D6C4 AD 14 42    LDA $4214            
+$A6:D6C4 AD 14 42    LDA $4214
 $A6:D6C7 D0 01       BNE $01    [$D6CA]
 $A6:D6C9 1A          INC A
 
@@ -8470,16 +8506,16 @@ $A6:D6DF 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
 $A6:D6E2 60          RTS
 
-$A6:D6E3 8D 04 42    STA $4204            
+$A6:D6E3 8D 04 42    STA $4204
 $A6:D6E6 E2 20       SEP #$20
 $A6:D6E8 A5 18       LDA $18    [$7E:0018]
-$A6:D6EA 8D 06 42    STA $4206            
+$A6:D6EA 8D 06 42    STA $4206
 $A6:D6ED C2 20       REP #$20
 $A6:D6EF EB          XBA
 $A6:D6F0 EB          XBA
 $A6:D6F1 EA          NOP
 $A6:D6F2 EA          NOP
-$A6:D6F3 AD 14 42    LDA $4214            
+$A6:D6F3 AD 14 42    LDA $4214
 $A6:D6F6 D0 01       BNE $01    [$D6F9]
 $A6:D6F8 1A          INC A
 
@@ -9380,42 +9416,53 @@ $A6:DF28 60          RTS
 }
 
 
-;;; $DF29:  ;;;
+;;; $DF29: Check for Samus collision with rectangle ;;;
 {
-; Efficient collision detection for Samus and $12/$14 (size of $12/$14 is $16/$18). SEC if collision
-$A6:DF29 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:DF2C 38          SEC
-$A6:DF2D E5 12       SBC $12    [$7E:0012]
-$A6:DF2F 10 04       BPL $04    [$DF35]
-$A6:DF31 49 FF FF    EOR #$FFFF
-$A6:DF34 1A          INC A
+;; Parameters:
+;;     $12: Rectangle centre X position
+;;     $14: Rectangle centre Y position
+;;     $16: Rectangle X radius
+;;     $18: Rectangle Y radius
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+$A6:DF29 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A6:DF2C 38          SEC                    ;|
+$A6:DF2D E5 12       SBC $12    [$7E:0012]  ;|
+$A6:DF2F 10 04       BPL $04    [$DF35]     ;|
+$A6:DF31 49 FF FF    EOR #$FFFF             ;|
+$A6:DF34 1A          INC A                  ;|
+                                            ;} If |[Samus X position] - [$12]| >= [Samus X radius] + [$16]: return carry clear
+$A6:DF35 38          SEC                    ;|
+$A6:DF36 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$A6:DF39 90 04       BCC $04    [$DF3F]     ;|
+$A6:DF3B C5 16       CMP $16    [$7E:0016]  ;|
+$A6:DF3D B0 16       BCS $16    [$DF55]     ;/
 
-$A6:DF35 38          SEC
-$A6:DF36 ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$A6:DF39 90 04       BCC $04    [$DF3F]
-$A6:DF3B C5 16       CMP $16    [$7E:0016]
-$A6:DF3D B0 16       BCS $16    [$DF55]
+$A6:DF3F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A6:DF42 38          SEC                    ;|
+$A6:DF43 E5 14       SBC $14    [$7E:0014]  ;|
+$A6:DF45 10 04       BPL $04    [$DF4B]     ;|
+$A6:DF47 49 FF FF    EOR #$FFFF             ;|
+$A6:DF4A 1A          INC A                  ;|
+                                            ;} If |[Samus Y position] - [$14]| < [Samus Y radius] + [$18]: return carry set
+$A6:DF4B 38          SEC                    ;|
+$A6:DF4C ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
+$A6:DF4F 90 06       BCC $06    [$DF57]     ;|
+$A6:DF51 C5 18       CMP $18    [$7E:0018]  ;|
+$A6:DF53 90 02       BCC $02    [$DF57]     ;/
 
-$A6:DF3F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:DF42 38          SEC
-$A6:DF43 E5 14       SBC $14    [$7E:0014]
-$A6:DF45 10 04       BPL $04    [$DF4B]
-$A6:DF47 49 FF FF    EOR #$FFFF
-$A6:DF4A 1A          INC A
-
-$A6:DF4B 38          SEC
-$A6:DF4C ED 00 0B    SBC $0B00  [$7E:0B00]
-$A6:DF4F 90 06       BCC $06    [$DF57]
-$A6:DF51 C5 18       CMP $18    [$7E:0018]
-$A6:DF53 90 02       BCC $02    [$DF57]
-
-$A6:DF55 18          CLC
-$A6:DF56 60          RTS
+$A6:DF55 18          CLC                    ;\
+$A6:DF56 60          RTS                    ;} Return carry clear
 
 $A6:DF57 38          SEC
 $A6:DF58 60          RTS
+}
+
+
+;;; $DF59:  ;;;
+{
 $A6:DF59 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
-$A6:DF5D 4C B6 DF    JMP $DFB6  [$A6:DFB6]
+$A6:DF5D 4C B6 DF    JMP $DFB6  [$A6:DFB6]  ; Return
 }
 
 
@@ -9488,38 +9535,37 @@ $A6:DFC5 8F 02 78 7E STA $7E7802[$7E:7802]
 $A6:DFC9 AD 86 0F    LDA $0F86  [$7E:0F86]
 $A6:DFCC 09 00 04    ORA #$0400
 $A6:DFCF 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:DFD2 A9 38 C5    LDA #$C538
-$A6:DFD5 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:DFD2 A9 38 C5    LDA #$C538             ;\
+$A6:DFD5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538
 
 $A6:DFD8 6B          RTL
 }
 
 
-;;; $DFD9:  ;;;
+;;; $DFD9: Ridley tail / Samus collision handling ;;;
 {
-; Tail/Samus interaction
-$A6:DFD9 A9 0E 00    LDA #$000E
-$A6:DFDC 85 16       STA $16    [$7E:0016]
-$A6:DFDE 85 18       STA $18    [$7E:0018]
-$A6:DFE0 AF A4 20 7E LDA $7E20A4[$7E:20A4]
-$A6:DFE4 85 12       STA $12    [$7E:0012]
-$A6:DFE6 AF A6 20 7E LDA $7E20A6[$7E:20A6]
-$A6:DFEA 85 14       STA $14    [$7E:0014]
-$A6:DFEC 20 29 DF    JSR $DF29  [$A6:DF29]
-$A6:DFEF 90 29       BCC $29    [$E01A]
+$A6:DFD9 A9 0E 00    LDA #$000E             ;\
+$A6:DFDC 85 16       STA $16    [$7E:0016]  ;|
+$A6:DFDE 85 18       STA $18    [$7E:0018]  ;|
+$A6:DFE0 AF A4 20 7E LDA $7E20A4[$7E:20A4]  ;|
+$A6:DFE4 85 12       STA $12    [$7E:0012]  ;} Check for Samus collision with Eh x Eh px^2 region around ([Ridley tail tip X position], [Ridley tail tip Y position])
+$A6:DFE6 AF A6 20 7E LDA $7E20A6[$7E:20A6]  ;|
+$A6:DFEA 85 14       STA $14    [$7E:0014]  ;|
+$A6:DFEC 20 29 DF    JSR $DF29  [$A6:DF29]  ;/
+$A6:DFEF 90 29       BCC $29    [$E01A]     ; If no collision: return
 $A6:DFF1 AF 38 78 7E LDA $7E7838[$7E:7838]  ;\
-$A6:DFF5 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal [$7E:7838] suit-adjusted damage to Samus
+$A6:DFF5 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal [Ridley tail damage] suit-adjusted damage to Samus
 $A6:DFF9 22 51 DF 91 JSL $91DF51[$91:DF51]  ;/
-$A6:DFFD A9 60 00    LDA #$0060
-$A6:E000 8D A8 18    STA $18A8  [$7E:18A8]
-$A6:E003 A9 05 00    LDA #$0005
-$A6:E006 8D AA 18    STA $18AA  [$7E:18AA]
-$A6:E009 A0 00 00    LDY #$0000
-$A6:E00C AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:E00F 38          SEC
-$A6:E010 EF A4 20 7E SBC $7E20A4[$7E:20A4]
-$A6:E014 30 01       BMI $01    [$E017]
-$A6:E016 C8          INY
+$A6:DFFD A9 60 00    LDA #$0060             ;\
+$A6:E000 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60h
+$A6:E003 A9 05 00    LDA #$0005             ;\
+$A6:E006 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 5
+$A6:E009 A0 00 00    LDY #$0000             ; Knockback X direction = left
+$A6:E00C AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A6:E00F 38          SEC                    ;|
+$A6:E010 EF A4 20 7E SBC $7E20A4[$7E:20A4]  ;} If [Samus X position] >= [Ridley tail tip X position]:
+$A6:E014 30 01       BMI $01    [$E017]     ;/
+$A6:E016 C8          INY                    ; Knockback X direction = right
 
 $A6:E017 8C 54 0A    STY $0A54  [$7E:0A54]
 
@@ -10215,8 +10261,13 @@ $A6:E7B4             dx E4D2,E820,  ; ???
 }
 
 
-;;; $E828: Unused ;;;
+;;; $E828: Unused. Spawn unused enemy projectiles ;;;
 {
+; From $86:9634:
+;     Enemy projectile $9634 seems to be a version of the fireball that has no afterburn
+;     It's fired at one of 4 down-left angles, the angle and its spawn position depend on enemy 0
+;     It's possible that it was intended to use the unused instruction list $958C, which uses 8x8 sprites
+;     Hard to guess what this must have been for, but I would guess an abandoned version of Ceres Ridley's fireballs
 $A6:E828 A9 00 00    LDA #$0000
 $A6:E82B 22 40 E8 A6 JSL $A6E840[$A6:E840]
 $A6:E82F A9 01 00    LDA #$0001
@@ -10227,13 +10278,15 @@ $A6:E83D A9 03 00    LDA #$0003
 }
 
 
-;;; $E840:  ;;;
+;;; $E840: Spawn unused enemy projectile ;;;
 {
-$A6:E840 8D B4 0F    STA $0FB4  [$7E:0FB4]
-$A6:E843 5A          PHY
-$A6:E844 A0 34 96    LDY #$9634             ;\
+;; Parameters:
+;;     A: Angle. Unit pi/12 radians. 0 = left, positive = anticlockwise. Range 0..3
+$A6:E840 8D B4 0F    STA $0FB4  [$7E:0FB4]  ; $0FB4 = [A]
+$A6:E843 5A          PHY                    ;\
+$A6:E844 A0 34 96    LDY #$9634             ;|
 $A6:E847 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn enemy projectile $9634
-$A6:E84B 7A          PLY
+$A6:E84B 7A          PLY                    ;/
 $A6:E84C 6B          RTL
 }
 
@@ -10390,8 +10443,8 @@ $A6:E945             dx 0003,E9A5,
 ;;; $E969: Instruction ;;;
 {
 ; Set Ridley's main AI to A6AF, and vertical speed to FEA0. (Ceres)
-$A6:E969 A9 AF A6    LDA #$A6AF
-$A6:E96C 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:E969 A9 AF A6    LDA #$A6AF             ;\
+$A6:E96C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6AF
 $A6:E96F A9 A0 FE    LDA #$FEA0
 $A6:E972 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:E975 6B          RTL
@@ -10401,8 +10454,8 @@ $A6:E975 6B          RTL
 ;;; $E976: Instruction ;;;
 {
 ; Set Ridley's main AI to B2F3, and vertical speed to FEA0. (Norfair)
-$A6:E976 A9 F3 B2    LDA #$B2F3
-$A6:E979 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A6:E976 A9 F3 B2    LDA #$B2F3             ;\
+$A6:E979 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B2F3
 $A6:E97C A9 A0 FE    LDA #$FEA0
 $A6:E97F 8D AC 0F    STA $0FAC  [$7E:0FAC]
 $A6:E982 6B          RTL
