@@ -10432,6 +10432,11 @@ $86:C334 60          RTS
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
+
+; Note that the call to $C3A9 can return out of *this* routine if [Shitroid health] = 0,
+; and is assuming that nothing gets pushed to the stack by this routine
+; (and also assuming this routine returns by RTS)
+
 $86:C335 BD FF 1A    LDA $1AFF,x[$7E:1B1D]  ;\
 $86:C338 F0 07       BEQ $07    [$C341]     ;} If [enemy projectile initial delay timer] = 0: go to BRANCH_ACTIVE
 $86:C33A DE FF 1A    DEC $1AFF,x[$7E:1B1D]  ; Decrement enemy projectile initial delay timer
@@ -10694,6 +10699,11 @@ $86:C4C7 60          RTS
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
+
+; Note that the call to $C564 can return out of *this* routine if a collision is detected,
+; and is assuming that nothing gets pushed to the stack by this routine
+; (and also assuming this routine returns by RTS)
+
 $86:C4C8 20 64 C5    JSR $C564  [$86:C564]  ; Mother Brain's bomb / bomb collision detection
 $86:C4CB BD 23 1B    LDA $1B23,x[$7E:1B43]  ;\
 $86:C4CE D0 2D       BNE $2D    [$C4FD]     ;} If [enemy projectile bounce counter] != 0: go to BRANCH_HAVE_BOUNCED
@@ -10765,8 +10775,6 @@ $86:C550             dw 0007, 0010, 0020, 0040, 0070, 00B0, 00F0, 0130, 0170, 00
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
-
-; Relies on caller having nothing pushed
 $86:C564 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
 $86:C567 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:C569 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\

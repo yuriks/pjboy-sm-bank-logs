@@ -1585,8 +1585,8 @@ $A9:92B4 AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
 $A9:92B8 30 0D       BMI $0D    [$92C7]     ;} If [Mother Brain brain instruction list pointer] & 8000h != 0: go to BRANCH_PROCESS_INSTRUCTION_LIST
 
 ; BRANCH_NO_DRAW
-$A9:92BA 68          PLA                    ;\
-$A9:92BB 60          RTS                    ;} Return out of caller routine
+$A9:92BA 68          PLA                    ; Set return to caller's return
+$A9:92BB 60          RTS                    ; Return
 
 ; BRANCH_FROZEN_TIME
 $A9:92BC AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
