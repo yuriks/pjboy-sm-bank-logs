@@ -2002,7 +2002,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         1: Wave / normal bomb explosion
         2: Ice
         4: Spazer
-        8: Plasma
+        8: Plasma / hyper
         10h: Charged
 
         24h: Spazer SBA trail
@@ -2020,7 +2020,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         700h: Beam explosion
         800h: (Super) missile explosion
 
-        1000h: Charge beam equipped
+        1000h: Charge beam equipped. TOOD: check if *anything* cares about this bit
         8000h: Don't interact with Samus (bomb spread sets this bit, reflec/bang clear this bit)
     }
     $0C2C..3F: Projectile damages

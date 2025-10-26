@@ -8678,7 +8678,7 @@ $90:B8C8 A6 14       LDX $14    [$7E:0014]
 $90:B8CA A9 04 00    LDA #$0004             ;\
 $90:B8CD 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 4
 $90:B8D0 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
-$90:B8D3 09 00 80    ORA #$8000             ;} Projectile type = [equipped beams] | 8000h
+$90:B8D3 09 00 80    ORA #$8000             ;} Projectile type = [equipped beams] | 8000h (don't interact with Samus)
 $90:B8D6 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $90:B8D9 29 0F 00    AND #$000F             ;\
 $90:B8DC 0A          ASL A                  ;|
@@ -8805,7 +8805,7 @@ $90:B9C1 A9 04 00    LDA #$0004             ;\
 $90:B9C4 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 4
 $90:B9C7 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $90:B9CA 29 0F 10    AND #$100F             ;|
-$90:B9CD 09 10 80    ORA #$8010             ;} Projectile type = [equipped beams] | 8010h
+$90:B9CD 09 10 80    ORA #$8010             ;} Projectile type = [equipped beams] | 8010h (don't interact with Samus, charged)
 $90:B9D0 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $90:B9D3 29 0F 00    AND #$000F             ;\
 $90:B9D6 0A          ASL A                  ;|
@@ -9253,7 +9253,7 @@ $90:BCF3 8D AC 18    STA $18AC  [$7E:18AC]  ;} Projectile invincibility timer = 
 $90:BCF6 A6 14       LDX $14    [$7E:0014]
 $90:BCF8 DA          PHX
 $90:BCF9 A9 18 90    LDA #$9018             ;\
-$90:BCFC 9D 18 0C    STA $0C18,x[$7E:0C18]  ;} Projectile type = live charged plasma beam | 1000h
+$90:BCFC 9D 18 0C    STA $0C18,x[$7E:0C18]  ;} Projectile type = charged plasma beam
 $90:BCFF 29 0F 00    AND #$000F             ;\
 $90:BD02 0A          ASL A                  ;|
 $90:BD03 AA          TAX                    ;} Queue sound 1Fh, sound library 1, max queued sounds = 15 (charged plasma beam / hyper beam)
@@ -11481,7 +11481,7 @@ $90:CE52 22 A4 81 93 JSL $9381A4[$93:81A4]  ; Initialise SBA projectile
 $90:CE56 80 0A       BRA $0A    [$CE62]
 
 $90:CE58 A9 24 80    LDA #$8024             ;\ Else ([X] >= 4):
-$90:CE5B 9D 18 0C    STA $0C18,x            ;} Projectile type = 8024h
+$90:CE5B 9D 18 0C    STA $0C18,x            ;} Projectile type = spazer SBA trail
 $90:CE5E 22 63 81 93 JSL $938163[$93:8163]  ; Initialise spazer SBA trail projectile
 
 $90:CE62 CA          DEX                    ;\
@@ -13302,7 +13302,7 @@ $90:DC80 99 68 0C    STA $0C68,y            ;} Projectile pre-instruction = $DC9
 $90:DC83 C0 04 00    CPY #$0004             ;\
 $90:DC86 10 0B       BPL $0B    [$DC93]     ;} If [Y] < 4:
 $90:DC88 A9 24 80    LDA #$8024             ;\
-$90:DC8B 99 18 0C    STA $0C18,y            ;} Projectile type = 8024h
+$90:DC8B 99 18 0C    STA $0C18,y            ;} Projectile type = spazer SBA trail
 $90:DC8E BB          TYX                    ; X = [Y]
 $90:DC8F 22 63 81 93 JSL $938163[$93:8163]  ; Initialise spazer SBA trail projectile
 

@@ -1757,10 +1757,10 @@ $A9:93EB 4C EE 93    JMP $93EE  [$A9:93EE]  ; Go to add spritemap to OAM
 ;;; $93EE: Add spritemap to OAM ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = X position of spritemap centre
-;;     $14     = Y position of spritemap centre
-;;     $16     = palette bits of sprite (palette * 200h)
+;;     DB:Y: Address of first entry in spritemap
+;;     $12: Spritemap Y origin
+;;     $14: Spritemap X origin
+;;     $16: Palette bits of sprite (palette * 200h)
 
 ; Compared to the usual 'add spritemap to OAM' routine,
 ; this one's X/Y position parameters ($12/14) are room co-ordinates rather than screen co-ordinates,
@@ -1796,6 +1796,7 @@ $A9:93F3 85 18       STA $18    [$7E:0018]
 $A9:93F5 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $A9:93F8 18          CLC
 
+; LOOP
 $A9:93F9 B9 01 00    LDA $0001,y[$A9:D764]  ;\
 $A9:93FC 29 00 FF    AND #$FF00             ;|
 $A9:93FF 10 03       BPL $03    [$9404]     ;|
