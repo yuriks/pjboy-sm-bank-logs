@@ -2401,14 +2401,14 @@ $A6:A129 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; $0FB6 = 0 (unused)
 $A6:A12C A9 38 E5    LDA #$E538             ;\
 $A6:A12F 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E538
 $A6:A132 A9 00 0E    LDA #$0E00             ;\
-$A6:A135 8D 96 0F    STA $0F96  [$7E:0F96]  ;} $7E:7818 = Ridley palette index = E00h (palette 7)
+$A6:A135 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Ridley spritemap palette index = Ridley palette index = E00h (palette 7)
 $A6:A138 8F 18 78 7E STA $7E7818[$7E:7818]  ;/
 $A6:A13C AD 88 0F    LDA $0F88  [$7E:0F88]  ;\
 $A6:A13F 09 04 00    ORA #$0004             ;} Enable Ridley extended spritemap format
 $A6:A142 8D 88 0F    STA $0F88  [$7E:0F88]  ;/
 $A6:A145 A9 00 00    LDA #$0000             ;\
 $A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
-$A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]  ; $7E:781A = 0
+$A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]  ; Ridley hit counter = 0
 $A6:A150 9C 3E 18    STZ $183E  [$7E:183E]  ; Earthquake type = 0
 $A6:A153 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
 $A6:A156 20 D6 D2    JSR $D2D6  [$A6:D2D6]  ; Initialise Ridley tail RAM
@@ -2450,7 +2450,7 @@ $A6:A1C0 A9 78 00    LDA #$0078             ;\
 $A6:A1C3 8F 38 78 7E STA $7E7838[$7E:7838]  ;} Ridley tail damage = 78h
 $A6:A1C7 A0 CF E1    LDY #$E1CF             ;\
 $A6:A1CA A2 40 01    LDX #$0140             ;|
-$A6:A1CD A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E1CF..E20E]
+$A6:A1CD A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E1CF..E20E] (never used)
 $A6:A1D0 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A6:A1D4 A2 E2 00    LDX #$00E2             ; >_<;
 $A6:A1D7 A2 00 00    LDX #$0000             ;\
@@ -2495,7 +2495,7 @@ $A6:A23E A9 E0 00    LDA #$00E0             ;\
 $A6:A241 8F 06 80 7E STA $7E8006[$7E:8006]  ;} $7E:8006 = E0h
 $A6:A245 A0 6F E1    LDY #$E16F             ;\
 $A6:A248 A2 40 01    LDX #$0140             ;|
-$A6:A24B A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E16F..AE]
+$A6:A24B A9 20 00    LDA #$0020             ;} Target sprite palettes 2..3 = [$E16F..AE] (Ceres door, baby metroid)
 $A6:A24E 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A6:A252 A2 E2 01    LDX #$01E2             ;\
 $A6:A255 A0 0F 00    LDY #$000F             ;|
@@ -2507,11 +2507,11 @@ $A6:A260 E8          INX                    ;|
 $A6:A261 88          DEY                    ;|
 $A6:A262 D0 F7       BNE $F7    [$A25B]     ;/
 $A6:A264 A9 31 BF    LDA #$BF31             ;\
-$A6:A267 8F 06 78 7E STA $7E7806[$7E:7806]  ;} $7E:7806 = $BF31
+$A6:A267 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Baby metroid instruction list pointer = $BF31
 $A6:A26B A9 01 00    LDA #$0001             ;\
-$A6:A26E 8F 08 78 7E STA $7E7808[$7E:7808]  ;} $7E:7808 = 1
+$A6:A26E 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Baby metroid instruction timer = 1
 $A6:A272 A9 9C BE    LDA #$BE9C             ;\
-$A6:A275 8F 00 88 7E STA $7E8800[$7E:8800]  ;} $7E:8800 = $BE9C
+$A6:A275 8F 00 88 7E STA $7E8800[$7E:8800]  ;} Baby metroid function = $BE9C (held by Ridley)
 $A6:A279 A9 05 00    LDA #$0005             ;\
 $A6:A27C 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} $7E:780E = 5
 $A6:A280 A9 00 00    LDA #$0000             ;\
@@ -2522,25 +2522,25 @@ $A6:A287 6B          RTL
 
 ;;; $A288: Main AI - enemy $E13F (Ceres Ridley) ;;;
 {
-$A6:A288 A9 FF 7F    LDA #$7FFF
-$A6:A28B 8D 8C 0F    STA $0F8C  [$7E:0F8C]
-$A6:A28E F4 93 A2    PEA $A293
-$A6:A291 6C A8 0F    JMP ($0FA8)[$A6:A35B]
+$A6:A288 A9 FF 7F    LDA #$7FFF             ;\
+$A6:A28B 8D 8C 0F    STA $0F8C  [$7E:0F8C]  ;} Ridley health = 7FFFh
+$A6:A28E F4 93 A2    PEA $A293              ;\
+$A6:A291 6C A8 0F    JMP ($0FA8)[$A6:A35B]  ;} Execute [Ridley function]
 
-$A6:A294 AD 3F 09    LDA $093F  [$7E:093F]
-$A6:A297 D0 23       BNE $23    [$A2BC]
-$A6:A299 AF 04 78 7E LDA $7E7804[$7E:7804]
-$A6:A29D F0 3D       BEQ $3D    [$A2DC]
-$A6:A29F 20 DA D4    JSR $D4DA  [$A6:D4DA]
+$A6:A294 AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$A6:A297 D0 23       BNE $23    [$A2BC]     ;} If [Ceres status] != before Ridley escape: return
+$A6:A299 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
+$A6:A29D F0 3D       BEQ $3D    [$A2DC]     ;} If [$7E:7804] = 0: go to handle baby metroid
+$A6:A29F 20 DA D4    JSR $D4DA  [$A6:D4DA]  ; Ridley hurt flash handling
 $A6:A2A2 20 6B D8    JSR $D86B  [$A6:D86B]
 $A6:A2A5 20 7D D9    JSR $D97D  [$A6:D97D]
 $A6:A2A8 20 BD A2    JSR $A2BD  [$A6:A2BD]
 $A6:A2AB 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
-$A6:A2AE 20 B5 D4    JSR $D4B5  [$A6:D4B5]
+$A6:A2AE 20 B5 D4    JSR $D4B5  [$A6:D4B5]  ; Ceres Ridley health-based palette handling
 $A6:A2B1 20 0C DA    JSR $DA0C  [$A6:DA0C]
 $A6:A2B4 20 2A DB    JSR $DB2A  [$A6:DB2A]  ; Draw Ridley tail
 $A6:A2B7 20 D8 DA    JSR $DAD8  [$A6:DAD8]
-$A6:A2BA 80 20       BRA $20    [$A2DC]
+$A6:A2BA 80 20       BRA $20    [$A2DC]     ; Go to handle baby metroid
 
 $A6:A2BC 6B          RTL
 }
@@ -2562,31 +2562,31 @@ $A6:A2D2 60          RTS
 
 ;;; $A2D3: Hurt AI - enemy $E13F (Ceres Ridley) ;;;
 {
-$A6:A2D3 20 DA D4    JSR $D4DA  [$A6:D4DA]
+$A6:A2D3 20 DA D4    JSR $D4DA  [$A6:D4DA]  ; Ridley hurt flash handling
 $A6:A2D6 20 2A DB    JSR $DB2A  [$A6:DB2A]  ; Draw Ridley tail
 $A6:A2D9 20 D8 DA    JSR $DAD8  [$A6:DAD8]
 }
 
 
-;;; $A2DC:  ;;;
+;;; $A2DC: Handle baby metroid ;;;
 {
-$A6:A2DC 20 93 BE    JSR $BE93  [$A6:BE93]
-$A6:A2DF AF 04 78 7E LDA $7E7804[$7E:7804]
-$A6:A2E3 F0 0D       BEQ $0D    [$A2F2]
-$A6:A2E5 A9 00 A6    LDA #$A600
-$A6:A2E8 8D 8D 17    STA $178D  [$7E:178D]
-$A6:A2EB A9 F2 A2    LDA #$A2F2
-$A6:A2EE 8D 8C 17    STA $178C  [$7E:178C]
-$A6:A2F1 6B          RTL
+$A6:A2DC 20 93 BE    JSR $BE93  [$A6:BE93]  ; Execute baby metroid function
+$A6:A2DF AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
+$A6:A2E3 F0 0D       BEQ $0D    [$A2F2]     ;} If [$7E:7804] != 0:
+$A6:A2E5 A9 00 A6    LDA #$A600             ;\
+$A6:A2E8 8D 8D 17    STA $178D  [$7E:178D]  ;|
+$A6:A2EB A9 F2 A2    LDA #$A2F2             ;} Enemy graphics drawn hook = $A6:A2F2
+$A6:A2EE 8D 8C 17    STA $178C  [$7E:178C]  ;/
+$A6:A2F1 6B          RTL                    ; Return
 }
 
 
-;;; $A2F2: Enemy graphics drawn hook - Ceres Ridley - draw Baby Metroid and door ;;;
+;;; $A2F2: Enemy graphics drawn hook - Ceres Ridley - draw baby metroid and door ;;;
 {
 ; Enemy 1 is the Ceres door
 $A6:A2F2 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:A2F5 D0 03       BNE $03    [$A2FA]     ;} If [Ceres status] = before Ridley escape:
-$A6:A2F7 20 1A BF    JSR $BF1A  [$A6:BF1A]  ; Draw Baby Metroid
+$A6:A2F7 20 1A BF    JSR $BF1A  [$A6:BF1A]  ; Draw baby metroid
 
 $A6:A2FA AD EA 0F    LDA $0FEA  [$7E:0FEA]  ;\
 $A6:A2FD F0 21       BEQ $21    [$A320]     ;} If [enemy 1 drawn by Ridley flag] = 0: return
@@ -2629,18 +2629,16 @@ $A6:A353 6B          RTL
 }
 
 
-;;; $A354: Ridley function ;;;
+;;; $A354: Ridley function - transition to flying ;;;
 {
-; Clear speeds, that's it
 $A6:A354 9C AA 0F    STZ $0FAA  [$7E:0FAA]
 $A6:A357 9C AC 0F    STZ $0FAC  [$7E:0FAC]
 $A6:A35A 60          RTS
 }
 
 
-;;; $A35B: Ridley function ;;;
+;;; $A35B: Ridley function - initial ;;;
 {
-; Startup, 1st run
 $A6:A35B AD 97 07    LDA $0797  [$7E:0797]
 $A6:A35E D0 28       BNE $28    [$A388]
 $A6:A360 A9 77 A3    LDA #$A377             ;\
@@ -2655,9 +2653,8 @@ $A6:A374 8D B2 0F    STA $0FB2  [$7E:0FB2]
 }
 
 
-;;; $A377: Ridley function ;;;
+;;; $A377: Ridley function - wait to fade in ;;;
 {
-; Startup, initial wait
 $A6:A377 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A37A 10 0C       BPL $0C    [$A388]
 $A6:A37C A9 89 A3    LDA #$A389             ;\
@@ -2669,9 +2666,8 @@ $A6:A388 60          RTS
 }
 
 
-;;; $A389: Ridley function ;;;
+;;; $A389: Ridley function - fade in eye ;;;
 {
-; Startup, eyes appear + wait
 $A6:A389 AD B0 0F    LDA $0FB0  [$7E:0FB0]
 $A6:A38C 30 3F       BMI $3F    [$A3CD]
 $A6:A38E A8          TAY
@@ -2712,9 +2708,8 @@ $A6:A3DE 60          RTS
 }
 
 
-;;; $A3DF: Ridley function ;;;
+;;; $A3DF: Ridley function - fade in body ;;;
 {
-; Startup, main body appears
 $A6:A3DF EE B2 0F    INC $0FB2  [$7E:0FB2]
 $A6:A3E2 AD B2 0F    LDA $0FB2  [$7E:0FB2]
 $A6:A3E5 C9 02 00    CMP #$0002
@@ -2769,9 +2764,8 @@ $A6:A454 60          RTS
 }
 
 
-;;; $A455: Ridley function ;;;
+;;; $A455: Ridley function - wait to roar ;;;
 {
-; Startup, Ridley roars
 $A6:A455 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:A458 10 1D       BPL $1D    [$A477]
 $A6:A45A A9 90 E6    LDA #$E690             ;\
@@ -2789,7 +2783,7 @@ $A6:A477 60          RTS
 }
 
 
-;;; $A478: Ridley function ;;;
+;;; $A478: Ridley function - roar before fly ;;;
 {
 ; Startup, color background in Norfair, raise acid, start main AI
 $A6:A478 AD 9F 07    LDA $079F  [$7E:079F]
@@ -2906,9 +2900,9 @@ $A6:A6E7 60          RTS
 ;;; $A6E8: Ridley function ;;;
 {
 ; Ceres main AI?
-$A6:A6E8 AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A6:A6EC C9 64 00    CMP #$0064
-$A6:A6EF B0 18       BCS $18    [$A709]
+$A6:A6E8 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A6:A6EC C9 64 00    CMP #$0064             ;} If [Ridley hit counter] < 100:
+$A6:A6EF B0 18       BCS $18    [$A709]     ;/
 $A6:A6F1 AD C2 09    LDA $09C2  [$7E:09C2]
 $A6:A6F4 C9 1E 00    CMP #$001E
 $A6:A6F7 10 20       BPL $20    [$A719]
@@ -3836,7 +3830,7 @@ $A6:B241 6C A8 0F    JMP ($0FA8)[$A6:A35B]
 
 $A6:B244 AF 04 78 7E LDA $7E7804[$7E:7804]
 $A6:B248 F0 21       BEQ $21    [$B26B]
-$A6:B24A 20 DA D4    JSR $D4DA  [$A6:D4DA]
+$A6:B24A 20 DA D4    JSR $D4DA  [$A6:D4DA]  ; Ridley hurt flash handling
 $A6:B24D 20 6B D8    JSR $D86B  [$A6:D86B]
 $A6:B250 20 7D D9    JSR $D97D  [$A6:D97D]
 $A6:B253 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
@@ -3902,7 +3896,7 @@ $A6:B2B4 20 7D D9    JSR $D97D  [$A6:D97D]
 $A6:B2B7 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
 
 $A6:B2BA 20 88 E0    JSR $E088  [$A6:E088]  ; Ridley tail / projectile collision handling
-$A6:B2BD 20 DA D4    JSR $D4DA  [$A6:D4DA]
+$A6:B2BD 20 DA D4    JSR $D4DA  [$A6:D4DA]  ; Ridley hurt flash handling
 $A6:B2C0 20 2A DB    JSR $DB2A  [$A6:DB2A]  ; Draw Ridley tail
 $A6:B2C3 20 D8 DA    JSR $DAD8  [$A6:DAD8]
 $A6:B2C6 20 74 D4    JSR $D474  [$A6:D474]
@@ -5323,8 +5317,8 @@ $A6:BDD3 20 2F D6    JSR $D62F  [$A6:D62F]
 $A6:BDD6 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A6:BDD9 C9 20 00    CMP #$0020
 $A6:BDDC 10 63       BPL $63    [$BE41]
-$A6:BDDE A9 CA BE    LDA #$BECA
-$A6:BDE1 8F 00 88 7E STA $7E8800[$7E:8800]
+$A6:BDDE A9 CA BE    LDA #$BECA             ;\
+$A6:BDE1 8F 00 88 7E STA $7E8800[$7E:8800]  ;} Baby metroid function = $BECA (start falling)
 $A6:BDE5 A9 F2 BD    LDA #$BDF2             ;\
 $A6:BDE8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BDF2
 $A6:BDEB A9 15 00    LDA #$0015
@@ -5381,8 +5375,8 @@ $A6:BE49 38          SEC
 $A6:BE4A 20 8B DA    JSR $DA8B  [$A6:DA8B]
 $A6:BE4D A9 00 FE    LDA #$FE00
 $A6:BE50 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A6:BE53 A9 B3 BE    LDA #$BEB3
-$A6:BE56 8F 00 88 7E STA $7E8800[$7E:8800]
+$A6:BE53 A9 B3 BE    LDA #$BEB3             ;\
+$A6:BE56 8F 00 88 7E STA $7E8800[$7E:8800]  ;} Baby metroid function = $BEB3 (held by Ridley's feet)
 $A6:BE5A A9 71 A9    LDA #$A971             ;\
 $A6:BE5D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971
 $A6:BE60 60          RTS
@@ -5425,78 +5419,78 @@ $A6:BE92 60          RTS
 }
 
 
-;;; $BE93:  ;;;
+;;; $BE93: Execute baby metroid function ;;;
 {
-$A6:BE93 AF 00 88 7E LDA $7E8800[$7E:8800]
-$A6:BE97 85 12       STA $12    [$7E:0012]
-$A6:BE99 6C 12 00    JMP ($0012)[$A6:BE9C]
+$A6:BE93 AF 00 88 7E LDA $7E8800[$7E:8800]  ;\
+$A6:BE97 85 12       STA $12    [$7E:0012]  ;} Go to [baby metroid function]
+$A6:BE99 6C 12 00    JMP ($0012)[$A6:BE9C]  ;/
 }
 
 
-;;; $BE9C:  ;;;
+;;; $BE9C: Baby metroid function - held by Ridley ;;;
 {
-$A6:BE9C A9 F0 FF    LDA #$FFF0
-$A6:BE9F 18          CLC
-$A6:BEA0 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:BEA3 8F 04 88 7E STA $7E8804[$7E:8804]
-$A6:BEA7 A9 16 00    LDA #$0016
-$A6:BEAA 18          CLC
-$A6:BEAB 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:BEAE 8F 08 88 7E STA $7E8808[$7E:8808]
+$A6:BE9C A9 F0 FF    LDA #$FFF0             ;\
+$A6:BE9F 18          CLC                    ;|
+$A6:BEA0 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Baby metroid X position = [Ridley X position] - 10h
+$A6:BEA3 8F 04 88 7E STA $7E8804[$7E:8804]  ;/
+$A6:BEA7 A9 16 00    LDA #$0016             ;\
+$A6:BEAA 18          CLC                    ;|
+$A6:BEAB 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Baby metroid Y position = [Ridley Y position] + 16h
+$A6:BEAE 8F 08 88 7E STA $7E8808[$7E:8808]  ;/
 $A6:BEB2 60          RTS
 }
 
 
-;;; $BEB3:  ;;;
+;;; $BEB3: Baby metroid function - held by Ridley's feet ;;;
 {
-$A6:BEB3 A9 0E 00    LDA #$000E
-$A6:BEB6 18          CLC
-$A6:BEB7 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:BEBA 8F 04 88 7E STA $7E8804[$7E:8804]
-$A6:BEBE A9 42 00    LDA #$0042
-$A6:BEC1 18          CLC
-$A6:BEC2 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:BEC5 8F 08 88 7E STA $7E8808[$7E:8808]
+$A6:BEB3 A9 0E 00    LDA #$000E             ;\
+$A6:BEB6 18          CLC                    ;|
+$A6:BEB7 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Baby metroid X position = [Ridley X position] + Eh
+$A6:BEBA 8F 04 88 7E STA $7E8804[$7E:8804]  ;/
+$A6:BEBE A9 42 00    LDA #$0042             ;\
+$A6:BEC1 18          CLC                    ;|
+$A6:BEC2 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Baby metroid Y position = [Ridley Y position] + 42h
+$A6:BEC5 8F 08 88 7E STA $7E8808[$7E:8808]  ;/
 $A6:BEC9 60          RTS
 }
 
 
-;;; $BECA:  ;;;
+;;; $BECA: Baby metroid function - start falling ;;;
 {
 ; Initialise baby metroid falling to ground
-$A6:BECA A9 00 00    LDA #$0000
-$A6:BECD 8F 0A 88 7E STA $7E880A[$7E:880A]
-$A6:BED1 8F 0C 88 7E STA $7E880C[$7E:880C]
-$A6:BED5 A9 DC BE    LDA #$BEDC
-$A6:BED8 8F 00 88 7E STA $7E8800[$7E:8800]
+$A6:BECA A9 00 00    LDA #$0000             ;\
+$A6:BECD 8F 0A 88 7E STA $7E880A[$7E:880A]  ;} $7E:880A = 0 (never read)
+$A6:BED1 8F 0C 88 7E STA $7E880C[$7E:880C]  ; Baby metroid Y velocity = 0
+$A6:BED5 A9 DC BE    LDA #$BEDC             ;\
+$A6:BED8 8F 00 88 7E STA $7E8800[$7E:8800]  ;} Baby metroid function = $BEDC (falling)
 }
 
 
-;;; $BEDC:  ;;;
+;;; $BEDC: Baby metroid function - falling ;;;
 {
 ; Baby metroid falls to ground
-$A6:BEDC AF 0C 88 7E LDA $7E880C[$7E:880C]
-$A6:BEE0 18          CLC
-$A6:BEE1 69 08 00    ADC #$0008
-$A6:BEE4 8F 0C 88 7E STA $7E880C[$7E:880C]
-$A6:BEE8 E2 20       SEP #$20
-$A6:BEEA 18          CLC
-$A6:BEEB 6F 07 88 7E ADC $7E8807[$7E:8807]
-$A6:BEEF 8F 07 88 7E STA $7E8807[$7E:8807]
-$A6:BEF3 C2 20       REP #$20
-$A6:BEF5 29 00 FF    AND #$FF00
-$A6:BEF8 EB          XBA
-$A6:BEF9 10 03       BPL $03    [$BEFE]
-$A6:BEFB 09 00 FF    ORA #$FF00
-
-$A6:BEFE 6F 08 88 7E ADC $7E8808[$7E:8808]
-$A6:BF02 8F 08 88 7E STA $7E8808[$7E:8808]
-$A6:BF06 C9 C0 00    CMP #$00C0
-$A6:BF09 30 0E       BMI $0E    [$BF19]
-$A6:BF0B A9 C0 00    LDA #$00C0
-$A6:BF0E 8F 08 88 7E STA $7E8808[$7E:8808]
-$A6:BF12 A9 19 BF    LDA #$BF19
-$A6:BF15 8F 00 88 7E STA $7E8800[$7E:8800]
+$A6:BEDC AF 0C 88 7E LDA $7E880C[$7E:880C]  ;\
+$A6:BEE0 18          CLC                    ;|
+$A6:BEE1 69 08 00    ADC #$0008             ;} Baby metroid Y velocity += 8
+$A6:BEE4 8F 0C 88 7E STA $7E880C[$7E:880C]  ;/
+$A6:BEE8 E2 20       SEP #$20               ;\
+$A6:BEEA 18          CLC                    ;|
+$A6:BEEB 6F 07 88 7E ADC $7E8807[$7E:8807]  ;|
+$A6:BEEF 8F 07 88 7E STA $7E8807[$7E:8807]  ;|
+$A6:BEF3 C2 20       REP #$20               ;|
+$A6:BEF5 29 00 FF    AND #$FF00             ;|
+$A6:BEF8 EB          XBA                    ;} Baby metroid Y position += ±[$7E:880C] / 100h
+$A6:BEF9 10 03       BPL $03    [$BEFE]     ;|
+$A6:BEFB 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$A6:BEFE 6F 08 88 7E ADC $7E8808[$7E:8808]  ;|
+$A6:BF02 8F 08 88 7E STA $7E8808[$7E:8808]  ;/
+$A6:BF06 C9 C0 00    CMP #$00C0             ;\
+$A6:BF09 30 0E       BMI $0E    [$BF19]     ;} If [baby metroid Y position] >= C0h:
+$A6:BF0B A9 C0 00    LDA #$00C0             ;\
+$A6:BF0E 8F 08 88 7E STA $7E8808[$7E:8808]  ;} Baby metroid Y position = C0h
+$A6:BF12 A9 19 BF    LDA #$BF19             ;\
+$A6:BF15 8F 00 88 7E STA $7E8800[$7E:8800]  ;} Baby metroid function = $BF19
 
 $A6:BF19 60          RTS
 }
@@ -5504,67 +5498,75 @@ $A6:BF19 60          RTS
 
 ;;; $BF1A: Draw baby metroid ;;;
 {
-$A6:BF1A A9 06 78    LDA #$7806
-$A6:BF1D 20 CB DB    JSR $DBCB  [$A6:DBCB]
-$A6:BF20 AF 04 88 7E LDA $7E8804[$7E:8804]
-$A6:BF24 85 12       STA $12    [$7E:0012]
-$A6:BF26 AF 08 88 7E LDA $7E8808[$7E:8808]
-$A6:BF2A 85 14       STA $14    [$7E:0014]
-$A6:BF2C 64 16       STZ $16    [$7E:0016]
-$A6:BF2E 4C 13 DC    JMP $DC13  [$A6:DC13]
+; Note that the call to $DBCB can return out of *this* routine if no spritemap is to be drawn,
+; and is assuming that nothing gets pushed to the stack by this routine
+; (and also assuming this routine returns by RTS)
+
+$A6:BF1A A9 06 78    LDA #$7806             ;\
+$A6:BF1D 20 CB DB    JSR $DBCB  [$A6:DBCB]  ;} Y = baby metroid spritemap pointer
+$A6:BF20 AF 04 88 7E LDA $7E8804[$7E:8804]  ;\
+$A6:BF24 85 12       STA $12    [$7E:0012]  ;} $12 = [baby metroid X position]
+$A6:BF26 AF 08 88 7E LDA $7E8808[$7E:8808]  ;\
+$A6:BF2A 85 14       STA $14    [$7E:0014]  ;} $14 = [baby metroid Y position]
+$A6:BF2C 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (palette 0)
+$A6:BF2E 4C 13 DC    JMP $DC13  [$A6:DC13]  ; Go to add spritemap to OAM
 }
 
 
 ;;; $BF31: Baby metroid instruction list ;;;
 {
-$A6:BF31             dw BFF2,BF59,  ; ???
+$A6:BF31             dw BFF2,BF59,  ; Go to $BF59 if moving
                         000A,BFFD,
                         000A,C018,
                         000A,C033,
                         000A,C018,
-                        BFF2,BF59,  ; ???
+                        BFF2,BF59,  ; Go to $BF59 if moving
                         000A,BFFD,
                         000A,C018,
                         000A,C033,
                         000A,C018
-$A6:BF59             dw BFC9,BF31,  ; ???
-                        BFE1,E20F,  ; ???
+$A6:BF59             dw BFC9,BF31,  ; Go to $BF31 with 50% chance if not moving
+                        BFE1,E20F,  ; Load palette data $E20F
                         0006,BFFD,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0005,C018,
-                        BFE1,E24B,  ; ???
+                        BFE1,E24B,  ; Load palette data $E24B
                         0004,C033,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0003,C018,
-                        BFE1,E20F,  ; ???
+                        BFE1,E20F,  ; Load palette data $E20F
                         0002,BFFD,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0003,C018,
-                        BFE1,E24B,  ; ???
+                        BFE1,E24B,  ; Load palette data $E24B
                         0004,C033,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0005,C018,
-                        BFE1,E20F,  ; ???
+                        BFE1,E20F,  ; Load palette data $E20F
                         0006,BFFD,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0007,C018,
-                        BFE1,E24B,  ; ???
+                        BFE1,E24B,  ; Load palette data $E24B
                         0008,C033,
-                        BFE1,E22D,  ; ???
+                        BFE1,E22D,  ; Load palette data $E22D
                         0009,C018,
-                        BFE1,E1F1,  ; ???
-                        BFF2,BF59,  ; ???
+                        BFE1,E1F1,  ; Load palette data $E1F1
+                        BFF2,BF59,  ; Go to $BF59 if moving
                         BFF8,BF31   ; Go to $BF31
 }
 
 
-;;; $BFC9: Baby metroid instruction ;;;
+;;; $BFC9: Baby metroid instruction - go to [[X]] with 50% chance if not moving ;;;
 {
-$A6:BFC9 AF 0C 88 7E LDA $7E880C[$7E:880C]
-$A6:BFCD D0 08       BNE $08    [$BFD7]
-$A6:BFCF AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:BFD2 29 01 00    AND #$0001
-$A6:BFD5 D0 21       BNE $21    [$BFF8]
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
+$A6:BFC9 AF 0C 88 7E LDA $7E880C[$7E:880C]  ;\
+$A6:BFCD D0 08       BNE $08    [$BFD7]     ;} If [baby metroid Y velocity] = 0:
+$A6:BFCF AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:BFD2 29 01 00    AND #$0001             ;} If [random number] % 2 != 0: go to go to [[X]]
+$A6:BFD5 D0 21       BNE $21    [$BFF8]     ;/
 
 $A6:BFD7 A9 24 00    LDA #$0024             ;\
 $A6:BFDA 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 24h, sound library 3, max queued sounds allowed = 6 (baby metroid cry - Ceres)
@@ -5579,27 +5581,39 @@ $A6:BFE0 60          RTS
 }
 
 
-;;; $BFE1: Baby metroid instruction ;;;
+;;; $BFE1: Baby metroid instruction - load palette data [[X]] ;;;
 {
-$A6:BFE1 BC 00 00    LDY $0000,x[$A6:BF5F]
-$A6:BFE4 DA          PHX
-$A6:BFE5 A2 62 01    LDX #$0162
-$A6:BFE8 A9 0F 00    LDA #$000F
-$A6:BFEB 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
-$A6:BFEF FA          PLX
-$A6:BFF0 80 EC       BRA $EC    [$BFDE]
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
+$A6:BFE1 BC 00 00    LDY $0000,x[$A6:BF5F]  ;\
+$A6:BFE4 DA          PHX                    ;|
+$A6:BFE5 A2 62 01    LDX #$0162             ;|
+$A6:BFE8 A9 0F 00    LDA #$000F             ;} Sprite palette 3 colours 1..Fh = 1Eh bytes from [[X]]
+$A6:BFEB 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;|
+$A6:BFEF FA          PLX                    ;/
+$A6:BFF0 80 EC       BRA $EC    [$BFDE]     ; Go to X += 2
 }
 
 
-;;; $BFF2: Baby metroid instruction ;;;
+;;; $BFF2: Baby metroid instruction - go to [[X]] if moving ;;;
 {
-$A6:BFF2 AF 0C 88 7E LDA $7E880C[$7E:880C]
-$A6:BFF6 F0 E6       BEQ $E6    [$BFDE]
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
+$A6:BFF2 AF 0C 88 7E LDA $7E880C[$7E:880C]  ;\
+$A6:BFF6 F0 E6       BEQ $E6    [$BFDE]     ;} If [baby metroid Y velocity] = 0: go to X += 2
 }
 
 
 ;;; $BFF8: Baby metroid instruction - go to [[X]] ;;;
 {
+;; Parameters:
+;;     X: Pointer to instruction arguments
+;; Returns:
+;;     X: Pointer to next instruction
 $A6:BFF8 BD 00 00    LDA $0000,x[$A6:BFC7]
 $A6:BFFB AA          TAX
 $A6:BFFC 60          RTS
@@ -8179,8 +8193,10 @@ $A6:D493 30 1F       BMI $1F    [$D4B4]
 }
 
 
-;;; $D495:  ;;;
+;;; $D495: Load Ceres Ridley health-based palette ;;;
 {
+;; Parameters:
+;;     $12: Health-based palettes index. Range 0..2
 $A6:D495 AF 00 C4 7E LDA $7EC400[$7E:C400]
 $A6:D499 D0 19       BNE $19    [$D4B4]
 $A6:D49B A5 12       LDA $12    [$7E:0012]
@@ -8202,43 +8218,43 @@ $A6:D4B4 60          RTS
 }
 
 
-;;; $D4B5:  ;;;
+;;; $D4B5: Ceres Ridley health-based palette handling ;;;
 {
-; Determine and set Ridley's color pallete
-$A6:D4B5 AF 02 78 7E LDA $7E7802[$7E:7802]
-$A6:D4B9 F0 F9       BEQ $F9    [$D4B4]
-$A6:D4BB AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A6:D4BF C9 32 00    CMP #$0032
-$A6:D4C2 90 F0       BCC $F0    [$D4B4]
-$A6:D4C4 A0 00 00    LDY #$0000
-$A6:D4C7 C9 46 00    CMP #$0046
-$A6:D4CA 90 09       BCC $09    [$D4D5]
-$A6:D4CC A0 01 00    LDY #$0001
-$A6:D4CF C9 5A 00    CMP #$005A
-$A6:D4D2 A0 02 00    LDY #$0002
+; Based on hit counter, strictly speaking
+; Someone forgot to write a branch instruction after the CMP at $D4CF
+$A6:D4B5 AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
+$A6:D4B9 F0 F9       BEQ $F9    [$D4B4]     ;} If [$7E:7802] = 0: return
+$A6:D4BB AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A6:D4BF C9 32 00    CMP #$0032             ;} If [Ridley hit counter] < 50: return
+$A6:D4C2 90 F0       BCC $F0    [$D4B4]     ;/
+$A6:D4C4 A0 00 00    LDY #$0000             ; $12 = 0
+$A6:D4C7 C9 46 00    CMP #$0046             ;\
+$A6:D4CA 90 09       BCC $09    [$D4D5]     ;} If [Ridley hit counter] >= 70:
+$A6:D4CC A0 01 00    LDY #$0001             ;\
+$A6:D4CF C9 5A 00    CMP #$005A             ;} >_<;
+$A6:D4D2 A0 02 00    LDY #$0002             ; $12 = 2
 
 $A6:D4D5 84 12       STY $12    [$7E:0012]
-$A6:D4D7 4C 95 D4    JMP $D495  [$A6:D495]
+$A6:D4D7 4C 95 D4    JMP $D495  [$A6:D495]  ; Go to load Ceres Ridley health-based palette
 }
 
 
-;;; $D4DA:  ;;;
+;;; $D4DA: Ridley hurt flash handling ;;;
 {
-; Make wings/tail flash when hit
 $A6:D4DA DA          PHX
-$A6:D4DB A2 00 0E    LDX #$0E00
-$A6:D4DE AD 9C 0F    LDA $0F9C  [$7E:0F9C]
-$A6:D4E1 F0 0F       BEQ $0F    [$D4F2]
-$A6:D4E3 3A          DEC A
-$A6:D4E4 F0 0C       BEQ $0C    [$D4F2]
-$A6:D4E6 AD 44 0E    LDA $0E44  [$7E:0E44]
-$A6:D4E9 1A          INC A
-$A6:D4EA 29 02 00    AND #$0002
-$A6:D4ED F0 03       BEQ $03    [$D4F2]
-$A6:D4EF A2 00 00    LDX #$0000
+$A6:D4DB A2 00 0E    LDX #$0E00             ; X = E00h (palette 7)
+$A6:D4DE AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
+$A6:D4E1 F0 0F       BEQ $0F    [$D4F2]     ;|
+$A6:D4E3 3A          DEC A                  ;} If [Ridley flash timer] > 1:
+$A6:D4E4 F0 0C       BEQ $0C    [$D4F2]     ;/
+$A6:D4E6 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
+$A6:D4E9 1A          INC A                  ;|
+$A6:D4EA 29 02 00    AND #$0002             ;} If ([number of times main enemy routine has been executed] + 1) / 2 % 2 != 0:
+$A6:D4ED F0 03       BEQ $03    [$D4F2]     ;/
+$A6:D4EF A2 00 00    LDX #$0000             ; X = 0 (palette 0)
 
-$A6:D4F2 8A          TXA
-$A6:D4F3 8F 18 78 7E STA $7E7818[$7E:7818]
+$A6:D4F2 8A          TXA                    ;\
+$A6:D4F3 8F 18 78 7E STA $7E7818[$7E:7818]  ;} Ridley spritemap palette index = [X]
 $A6:D4F7 FA          PLX
 $A6:D4F8 60          RTS
 }
@@ -8779,6 +8795,8 @@ $A6:D86A 60          RTS
 ;;; $D86B:  ;;;
 {
 ; Handles movement and main body wall collisions
+
+; Makes a vain attempt to use enemy index
 $A6:D86B A9 00 00    LDA #$0000
 $A6:D86E 8F 3E 78 7E STA $7E783E[$7E:783E]
 $A6:D872 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9179,61 +9197,66 @@ $A6:DBBF A0 90 DC    LDY #$DC90             ;/
 ;;     $12: Spritemap Y origin
 ;;     $14: Spritemap X origin
 $A6:DBC2 AF 18 78 7E LDA $7E7818[$7E:7818]  ;\
-$A6:DBC6 85 16       STA $16    [$7E:0016]  ;} $16 = [$7E:7818]
+$A6:DBC6 85 16       STA $16    [$7E:0016]  ;} $16 = [Ridley spritemap palette index]
 $A6:DBC8 4C 13 DC    JMP $DC13  [$A6:DC13]  ; Go to add spritemap to OAM
 }
 
 
-;;; $DBCB:  ;;;
+;;; $DBCB: Y = baby metroid spritemap pointer ;;;
 {
-; Calculate graphic to use.
-; JSR to with an address (in ram) of a pointer followed by a counter,
-; data at pointer (to rom) should be a counter (frame duration) followed by a graphic pointer,
-; OR a pointer to code.
-$A6:DBCB 85 00       STA $00    [$7E:0000]
-$A6:DBCD 1A          INC A
-$A6:DBCE 1A          INC A
-$A6:DBCF 85 03       STA $03    [$7E:0003]
+;; Parameters:
+;;     A: $7806. RAM address of baby metroid instruction list pointer
+;; Returns:
+;;     Y: Spritemap pointer
+
+$A6:DBCB 85 00       STA $00    [$7E:0000]  ; $00 = baby metroid instruction list pointer
+$A6:DBCD 1A          INC A                  ;\
+$A6:DBCE 1A          INC A                  ;} $03 = baby metroid instruction timer
+$A6:DBCF 85 03       STA $03    [$7E:0003]  ;/
 $A6:DBD1 E2 20       SEP #$20
-$A6:DBD3 A9 7E       LDA #$7E
-$A6:DBD5 85 02       STA $02    [$7E:0002]
-$A6:DBD7 85 05       STA $05    [$7E:0005]
+$A6:DBD3 A9 7E       LDA #$7E               ;\
+$A6:DBD5 85 02       STA $02    [$7E:0002]  ;} $02 = $7E
+$A6:DBD7 85 05       STA $05    [$7E:0005]  ; $05 = $7E
 $A6:DBD9 C2 20       REP #$20
-$A6:DBDB A7 00       LDA [$00]  [$7E:7806]
-$A6:DBDD 30 02       BMI $02    [$DBE1]
-$A6:DBDF 68          PLA
-$A6:DBE0 60          RTS
+$A6:DBDB A7 00       LDA [$00]  [$7E:7806]  ;\
+$A6:DBDD 30 02       BMI $02    [$DBE1]     ;} If [baby metroid instruction list pointer] & 8000h = 0:
+$A6:DBDF 68          PLA                    ; Set return to caller's return
+$A6:DBE0 60          RTS                    ; Return
 
-$A6:DBE1 AA          TAX
-$A6:DBE2 BD 00 00    LDA $0000,x[$A6:BF31]
-$A6:DBE5 30 0D       BMI $0D    [$DBF4]
-$A6:DBE7 C7 03       CMP [$03]  [$7E:7808]
-$A6:DBE9 D0 1F       BNE $1F    [$DC0A]
-$A6:DBEB E8          INX
-$A6:DBEC E8          INX
-$A6:DBED E8          INX
-$A6:DBEE E8          INX
+$A6:DBE1 AA          TAX                    ; X = [baby metroid instruction list pointer]
+$A6:DBE2 BD 00 00    LDA $0000,x[$A6:BF31]  ;\
+$A6:DBE5 30 0D       BMI $0D    [$DBF4]     ;} If [[X]] & 8000h != 0: go to BRANCH_ASM_INSTRUCTION
+$A6:DBE7 C7 03       CMP [$03]  [$7E:7808]  ;\
+$A6:DBE9 D0 1F       BNE $1F    [$DC0A]     ;} If [[X]] != [baby metroid instruction timer]: go to BRANCH_TICK
+$A6:DBEB E8          INX                    ;\
+$A6:DBEC E8          INX                    ;|
+$A6:DBED E8          INX                    ;} X += 4
+$A6:DBEE E8          INX                    ;/
 
-$A6:DBEF BD 00 00    LDA $0000,x[$A6:BF35]
-$A6:DBF2 10 0A       BPL $0A    [$DBFE]
+; LOOP
+$A6:DBEF BD 00 00    LDA $0000,x[$A6:BF35]  ;\
+$A6:DBF2 10 0A       BPL $0A    [$DBFE]     ;} If [[X]] & 8000h = 0: go to BRANCH_SPECIAL_INSTRUCTION
 
+; BRANCH_ASM_INSTRUCTION
 $A6:DBF4 85 06       STA $06    [$7E:0006]
-$A6:DBF6 E8          INX
-$A6:DBF7 E8          INX
-$A6:DBF8 F4 EE DB    PEA $DBEE
-$A6:DBFB 6C 06 00    JMP ($0006)[$A6:BFF2]
+$A6:DBF6 E8          INX                    ;\
+$A6:DBF7 E8          INX                    ;} X += 2
+$A6:DBF8 F4 EE DB    PEA $DBEE              ; Return to LOOP
+$A6:DBFB 6C 06 00    JMP ($0006)[$A6:BFF2]  ; Go to [[X] - 2]
 
-$A6:DBFE A9 01 00    LDA #$0001
-$A6:DC01 87 03       STA [$03]  [$7E:7808]
-$A6:DC03 8A          TXA
-$A6:DC04 87 00       STA [$00]  [$7E:7806]
-$A6:DC06 BC 02 00    LDY $0002,x[$A6:BF37]
-$A6:DC09 60          RTS
+; BRANCH_SPECIAL_INSTRUCTION
+$A6:DBFE A9 01 00    LDA #$0001             ;\
+$A6:DC01 87 03       STA [$03]  [$7E:7808]  ;} Baby metroid instruction timer = 1
+$A6:DC03 8A          TXA                    ;\
+$A6:DC04 87 00       STA [$00]  [$7E:7806]  ;} Baby metroid instruction list pointer = [X]
+$A6:DC06 BC 02 00    LDY $0002,x[$A6:BF37]  ; Y = [[baby metroid instruction list pointer] + 2]
+$A6:DC09 60          RTS                    ; Return
 
-$A6:DC0A A7 03       LDA [$03]  [$7E:7808]
-$A6:DC0C 1A          INC A
-$A6:DC0D 87 03       STA [$03]  [$7E:7808]
-$A6:DC0F BC 02 00    LDY $0002,x[$A6:BF37]
+; BRANCH_TICK
+$A6:DC0A A7 03       LDA [$03]  [$7E:7808]  ;\
+$A6:DC0C 1A          INC A                  ;} Increment baby metroid instruction timer
+$A6:DC0D 87 03       STA [$03]  [$7E:7808]  ;/
+$A6:DC0F BC 02 00    LDY $0002,x[$A6:BF37]  ; Y = [[baby metroid instruction list pointer] + 2]
 $A6:DC12 60          RTS
 }
 
@@ -9596,9 +9619,9 @@ $A6:DF9B 90 01       BCC $01    [$DF9E]
 $A6:DF9D C8          INY
 
 $A6:DF9E 8C 9C 0F    STY $0F9C  [$7E:0F9C]
-$A6:DFA1 AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A6:DFA5 1A          INC A
-$A6:DFA6 8F 1A 78 7E STA $7E781A[$7E:781A]
+$A6:DFA1 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A6:DFA5 1A          INC A                  ;} Increment Ridley hit counter
+$A6:DFA6 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
 $A6:DFAA 80 0A       BRA $0A    [$DFB6]
 
 $A6:DFAC 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
@@ -9817,10 +9840,13 @@ $A6:E14F             dw 0000, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E
 }
 
 
-;;; $E16F: Palettes ;;;
+;;; $E16F: Initial additional palettes - Ceres Ridley ;;;
 {
-$A6:E16F             dw 0000, 7E20, 6560, 2060, 1000, 7940, 5D00, 4CA0, 3CA0, 43FF, 0113, 000F, 175C, 0299, 01D6, 57E0
-$A6:E18F             dw 0000, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0
+; Ceres door, baby metroid container
+$A6:E16F             dw 0000, 7E20, 6560, 2060, 1000, 7940, 5D00, 4CA0, 3CA0, 43FF, 0113, 000F, 175C, 0299, 01D6, 57E0 ; Sprite palette 2
+
+; Initial baby metroid
+$A6:E18F             dw 0000, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0 ; Sprite palette 3
 }
 
 
@@ -9830,19 +9856,30 @@ $A6:E1AF             dw 3800, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E
 }
 
 
-;;; $E1CF: Palettes ;;;
+;;; $E1CF: Initial additional palettes - Norfair Ridley ;;;
 {
-$A6:E1CF             dw 3800, 6B5A, 5652, 28E7, 1863, 62B5, 4A10, 396B, 3129, 43FF, 0113, 000F, 175C, 0299, 01D6, 3BE0
-$A6:E1EF             dw 3800, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0
+; Loaded, but unused
 
+; Same colours as Ceres door during escape sequence $F50C
+$A6:E1CF             dw 3800, 6B5A, 5652, 28E7, 1863, 62B5, 4A10, 396B, 3129, 43FF, 0113, 000F, 175C, 0299, 01D6, 3BE0 ; Sprite palette 2
+
+; Same colours as baby metroid $E18F
+$A6:E1EF             dw 3800, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0 ; Sprite palette 3
+}
+
+
+;;; $E20F: Baby metroid animation palettes ;;;
+{
+; Sprite palette 3 colours 1..Fh
 $A6:E20F             dw 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 0404, 4F9F, 3ED8, 2E12, 6F70, 7FFF, 5EE0
 $A6:E22D             dw 77F8, 1344, 12A4, 1204, 6ABF, 249F, 1C77, 146D, 1067, 5BFF, 4B38, 3A72, 7BD3, 7FFF, 6B43
 $A6:E24B             dw 7FFB, 1FA7, 1F07, 1E67, 771F, 30FF, 28DA, 20D0, 1CCA, 67FF, 579B, 46D5, 7BD6, 7FFF, 77A6
 }
 
 
-;;; $E269:  ;;;
+;;; $E269: Ridley eye fade-in index table ;;;
 {
+; Indexed by $0FB0, used to index $E2AA. FFh = finish fade-in
 $A6:E269             db 0F, 0E, 0D, 0C, 0B, 0A, 09, 08, 07, 06, 05, 04, 03, 02, 01, 00,
                         00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
                         00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
@@ -9851,53 +9888,56 @@ $A6:E269             db 0F, 0E, 0D, 0C, 0B, 0A, 09, 08, 07, 06, 05, 04, 03, 02, 
 }
 
 
-;;; $E2AA:  ;;;
+;;; $E2AA: Ridley eye fade-in colours ;;;
 {
-$A6:E2AA             dw 031F,01DA,00F5,
-                        02DD,01B8,00D3,
-                        029A,0196,00D2,
-                        0278,0174,00B0,
-                        0236,0153,00AF,
-                        0214,0131,008E,
-                        01D2,010F,008C,
-                        0190,00ED,006B,
-                        016E,00CC,0069,
-                        012C,00AA,0048,
-                        010A,0088,0047,
-                        00C8,0067,0025,
-                        0086,0045,0024,
-                        0064,0023,0022,
-                        0022,0021,0001,
-                        0000,0000,0000
+; Colours Ch..Eh
+$A6:E2AA             dw 031F, 01DA, 00F5,
+                        02DD, 01B8, 00D3,
+                        029A, 0196, 00D2,
+                        0278, 0174, 00B0,
+                        0236, 0153, 00AF,
+                        0214, 0131, 008E,
+                        01D2, 010F, 008C,
+                        0190, 00ED, 006B,
+                        016E, 00CC, 0069,
+                        012C, 00AA, 0048,
+                        010A, 0088, 0047,
+                        00C8, 0067, 0025,
+                        0086, 0045, 0024,
+                        0064, 0023, 0022,
+                        0022, 0021, 0001,
+                        0000, 0000, 0000
 }
 
 
-;;; $E30A:  ;;;
+;;; $E30A: Ridley body fade-in colours ;;;
 {
-$A6:E30A             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,
-                        0421,0401,0000,0000,0421,0001,0000,0000,0422,0002,0001,
-                        0843,0822,0001,0000,0842,0422,0401,0001,0C44,0004,0002,
-                        1085,0C43,0401,0000,0C64,0843,0422,0401,1066,0406,0004,
-                        14A7,1064,0401,0000,1485,0C64,0823,0402,1888,0408,0405,
-                        1CE8,1486,0402,0001,18A7,1065,0C43,0822,1CCA,080A,0406,
-                        210A,18A7,0802,0001,1CC8,1486,0C44,0823,24EC,080C,0408,
-                        252C,1CC8,0823,0001,20E9,18A7,1045,0823,290E,080E,0409,
-                        2D6D,20E9,0823,0001,290B,1CA8,1065,0C24,3130,0C10,080A,
-                        318F,24EA,0C24,0001,2D2C,1CC9,1466,0C24,3552,0C12,080C,
-                        39D1,290C,0C24,0002,314E,20EA,1887,1045,3D94,1014,080D,
-                        3DF3,2D2D,0C25,0002,396F,250B,1888,1045,41B6,1016,0C0E,
-                        4214,314E,1025,0002,3D90,290C,1C88,1046,49D8,1018,0C10,
-                        4A56,356F,1026,0002,41B2,2D2D,1CA9,1447,51FA,141A,0C11,
-                        4E78,3D90,1026,0402,45F3,314F,20AA,1447,561D,143D,0C12,
-                        56BA,41B2,1447,0403,4E15,3570,24CB,1868,5E5F,183F,1014
+; Colours 1..Bh
+$A6:E30A             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+                        0421, 0401, 0000, 0000, 0421, 0001, 0000, 0000, 0422, 0002, 0001,
+                        0843, 0822, 0001, 0000, 0842, 0422, 0401, 0001, 0C44, 0004, 0002,
+                        1085, 0C43, 0401, 0000, 0C64, 0843, 0422, 0401, 1066, 0406, 0004,
+                        14A7, 1064, 0401, 0000, 1485, 0C64, 0823, 0402, 1888, 0408, 0405,
+                        1CE8, 1486, 0402, 0001, 18A7, 1065, 0C43, 0822, 1CCA, 080A, 0406,
+                        210A, 18A7, 0802, 0001, 1CC8, 1486, 0C44, 0823, 24EC, 080C, 0408,
+                        252C, 1CC8, 0823, 0001, 20E9, 18A7, 1045, 0823, 290E, 080E, 0409,
+                        2D6D, 20E9, 0823, 0001, 290B, 1CA8, 1065, 0C24, 3130, 0C10, 080A,
+                        318F, 24EA, 0C24, 0001, 2D2C, 1CC9, 1466, 0C24, 3552, 0C12, 080C,
+                        39D1, 290C, 0C24, 0002, 314E, 20EA, 1887, 1045, 3D94, 1014, 080D,
+                        3DF3, 2D2D, 0C25, 0002, 396F, 250B, 1888, 1045, 41B6, 1016, 0C0E,
+                        4214, 314E, 1025, 0002, 3D90, 290C, 1C88, 1046, 49D8, 1018, 0C10,
+                        4A56, 356F, 1026, 0002, 41B2, 2D2D, 1CA9, 1447, 51FA, 141A, 0C11,
+                        4E78, 3D90, 1026, 0402, 45F3, 314F, 20AA, 1447, 561D, 143D, 0C12,
+                        56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E5F, 183F, 1014
 }
 
 
-;;; $E46A:  ;;;
+;;; $E46A: Ceres Ridley health-based palettes ;;;
 {
-$A6:E46A             dw 4E7A,3D73,1449,0405,45D6,3151,20AD,184A,561F,183F,1015,02BF,019A,00D6,
-                        4A5A,3973,142A,0407,45B6,3132,20AE,184B,51FF,183F,1015,029F,019A,00D6,
-                        4A3B,3954,142B,0808,41B7,2D33,20AF,184C,4DDF,183F,1016,067F,057B,04B7
+; Palette 7 colours 1..Eh. Based on hit counter, strictly speaking
+$A6:E46A             dw 4E7A, 3D73, 1449, 0405, 45D6, 3151, 20AD, 184A, 561F, 183F, 1015, 02BF, 019A, 00D6, ; 50..69
+                        4A5A, 3973, 142A, 0407, 45B6, 3132, 20AE, 184B, 51FF, 183F, 1015, 029F, 019A, 00D6, ; Unused (due to a bug, see $D4B5)
+                        4A3B, 3954, 142B, 0808, 41B7, 2D33, 20AF, 184C, 4DDF, 183F, 1016, 067F, 057B, 04B7  ; 70+
 }
 
 

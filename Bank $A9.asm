@@ -1579,6 +1579,8 @@ $A9:92AE 60          RTS
 
 ;;; $92AF: Y = Mother Brain brain spritemap pointer ;;;
 {
+;; Returns:
+;;     Y: Spritemap pointer
 $A9:92AF AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $A9:92B2 D0 08       BNE $08    [$92BC]     ;} If time is frozen: go to BRANCH_FROZEN_TIME
 $A9:92B4 AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
@@ -1615,7 +1617,7 @@ $A9:92DC 85 00       STA $00    [$7E:0000]
 $A9:92DE E8          INX                    ;\
 $A9:92DF E8          INX                    ;} X += 2
 $A9:92E0 F4 D6 92    PEA $92D6              ; Return to LOOP
-$A9:92E3 6C 00 00    JMP ($0000)[$A9:9B0F]  ; Go to [A]
+$A9:92E3 6C 00 00    JMP ($0000)[$A9:9B0F]  ; Go to [[X] - 2]
 
 ; BRANCH_SPECIAL_INSTRUCTION
 $A9:92E6 A9 01 00    LDA #$0001             ;\
