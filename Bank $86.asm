@@ -3384,11 +3384,11 @@ $86:93D8 80 03       BRA $03    [$93DD]
 $86:93DA A9 19 00    LDA #$0019             ; A = 19h
 
 $86:93DD 18          CLC                    ;\
-$86:93DE 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [enemy 0 X position] + [A]
+$86:93DE 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [Ridley X position] + [A]
 $86:93E1 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
 $86:93E4 A9 D5 FF    LDA #$FFD5             ;\
 $86:93E7 18          CLC                    ;|
-$86:93E8 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy projectile Y position = [enemy 0 Y position] - 2Bh
+$86:93E8 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy projectile Y position = [Ridley Y position] - 2Bh
 $86:93EB 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
 $86:93EE A9 00 0A    LDA #$0A00             ;\
 $86:93F1 99 BB 19    STA $19BB,y[$7E:19DB]  ;} Enemy projectile VRAM graphics index = 0, palette 5

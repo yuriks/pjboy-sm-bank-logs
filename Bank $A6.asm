@@ -2911,9 +2911,8 @@ $A6:A6E7 60          RTS
 }
 
 
-;;; $A6E8: Ridley function ;;;
+;;; $A6E8: Ridley function - hovering ;;;
 {
-; Ceres main AI?
 $A6:A6E8 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
 $A6:A6EC C9 64 00    CMP #$0064             ;} If [Ridley hit counter] < 100:
 $A6:A6EF B0 18       BCS $18    [$A709]     ;/
@@ -2923,18 +2922,18 @@ $A6:A6F7 10 20       BPL $20    [$A719]     ;/
 $A6:A6F9 A9 00 00    LDA #$0000             ;\
 $A6:A6FC 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
 $A6:A700 A9 71 A9    LDA #$A971             ;\
-$A6:A703 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971
-$A6:A706 4C 71 A9    JMP $A971  [$A6:A971]  ; Go to $A971
+$A6:A703 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971 (real retreat)
+$A6:A706 4C 71 A9    JMP $A971  [$A6:A971]  ; Go to [Ridley function]
 
 $A6:A709 A9 00 00    LDA #$0000             ;\
 $A6:A70C 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
 $A6:A710 A9 9A BD    LDA #$BD9A             ;\
-$A6:A713 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD9A
-$A6:A716 4C 9A BD    JMP $BD9A  [$A6:BD9A]  ; Go to $BD9A
+$A6:A713 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD9A (fake retreat)
+$A6:A716 4C 9A BD    JMP $BD9A  [$A6:BD9A]  ; Go to [Ridley function]
 
 ; BRANCH_FIGHT
-$A6:A719 20 63 A7    JSR $A763  [$A6:A763]  ; Execute $A763
-$A6:A71C 90 0F       BCC $0F    [$A72D]     ; If carry set:
+$A6:A719 20 63 A7    JSR $A763  [$A6:A763]  ; Ceres Ridley hovering movement
+$A6:A71C 90 0F       BCC $0F    [$A72D]     ; If not near hover position:
 $A6:A71E AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A6:A722 1A          INC A                  ;} Increment $7E:7800
 $A6:A723 8F 00 78 7E STA $7E7800[$7E:7800]  ;/
@@ -2960,10 +2959,10 @@ $A6:A743             dw A782, A782, A782, A782, A83C, A83C, A83C, A83C, A83C, A7
 }
 
 
-;;; $A763:  ;;;
+;;; $A763: Ceres Ridley hovering movement ;;;
 {
 ;; Returns:
-;;     Carry:
+;;     Carry: Clear if near target, otherwise set
 
 ; Ceres Ridley attack cooldown; fly towards (C0h, 64h) (return carry set if reached, carry clear otherwise)
 $A6:A763 A2 C0 00    LDX #$00C0             ;\
@@ -2973,32 +2972,32 @@ $A6:A76B 84 14       STY $14    [$7E:0014]  ;/
 $A6:A76D A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A770 A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:A773 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A776 A9 08 00    LDA #$0008
-$A6:A779 85 16       STA $16    [$7E:0016]
-$A6:A77B 85 18       STA $18    [$7E:0018]
-$A6:A77D 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ; Check for enemy collision with rectangle
+$A6:A776 A9 08 00    LDA #$0008             ;\
+$A6:A779 85 16       STA $16    [$7E:0016]  ;|
+$A6:A77B 85 18       STA $18    [$7E:0018]  ;} Check for enemy collision with 16x16 px^2 region around ([$12], [$14])
+$A6:A77D 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
 $A6:A781 60          RTS
 }
 
 
-;;; $A782: Ridley function ;;;
+;;; $A782: Ridley function - shoot fireballs - move to position ;;;
 {
 ; Ceres Ridley fireballing
-$A6:A782 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A6:A785 10 04       BPL $04    [$A78B]
-$A6:A787 49 FF FF    EOR #$FFFF
-$A6:A78A 1A          INC A
-
-$A6:A78B C9 80 00    CMP #$0080
-$A6:A78E B0 03       BCS $03    [$A793]
-$A6:A790 A9 80 00    LDA #$0080
-
-$A6:A793 2C AC 0F    BIT $0FAC  [$7E:0FAC]
-$A6:A796 10 04       BPL $04    [$A79C]
-$A6:A798 49 FF FF    EOR #$FFFF
-$A6:A79B 1A          INC A
-
-$A6:A79C 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A6:A782 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A6:A785 10 04       BPL $04    [$A78B]     ;|
+$A6:A787 49 FF FF    EOR #$FFFF             ;|
+$A6:A78A 1A          INC A                  ;|
+                                            ;|
+$A6:A78B C9 80 00    CMP #$0080             ;|
+$A6:A78E B0 03       BCS $03    [$A793]     ;|
+$A6:A790 A9 80 00    LDA #$0080             ;} Ridley Y velocity = clamp([Ridley Y velocity], -80h, 80h)
+                                            ;|
+$A6:A793 2C AC 0F    BIT $0FAC  [$7E:0FAC]  ;|
+$A6:A796 10 04       BPL $04    [$A79C]     ;|
+$A6:A798 49 FF FF    EOR #$FFFF             ;|
+$A6:A79B 1A          INC A                  ;|
+                                            ;|
+$A6:A79C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
 $A6:A79F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A6:A7A2 85 12       STA $12    [$7E:0012]  ;} $12 = [Ridley X position] (hover X position)
 $A6:A7A4 A9 58 00    LDA #$0058             ;/
@@ -3006,126 +3005,126 @@ $A6:A7A7 85 14       STA $14    [$7E:0014]  ;} $14 = 58h (hover Y position)
 $A6:A7A9 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A7AC A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:A7AF 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A7B2 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:A7B5 C9 50 00    CMP #$0050
-$A6:A7B8 30 2A       BMI $2A    [$A7E4]
-$A6:A7BA C9 80 00    CMP #$0080
-$A6:A7BD 10 24       BPL $24    [$A7E3]
-$A6:A7BF AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A6:A7C2 8F 2E 78 7E STA $7E782E[$7E:782E]
-$A6:A7C6 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:A7C9 8F 30 78 7E STA $7E7830[$7E:7830]
+$A6:A7B2 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:A7B5 C9 50 00    CMP #$0050             ;} If [Ridley Y position] < 50h: go to BRANCH_A7E4
+$A6:A7B8 30 2A       BMI $2A    [$A7E4]     ;/
+$A6:A7BA C9 80 00    CMP #$0080             ;\
+$A6:A7BD 10 24       BPL $24    [$A7E3]     ;} If [Ridley Y position] >= 80h: return
+$A6:A7BF AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A6:A7C2 8F 2E 78 7E STA $7E782E[$7E:782E]  ;} $7E:782E = [Ridley X position]
+$A6:A7C6 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:A7C9 8F 30 78 7E STA $7E7830[$7E:7830]  ;} $7E:7830 = [Ridley Y position]
 $A6:A7CD A9 3A E7    LDA #$E73A             ;\
-$A6:A7D0 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
+$A6:A7D0 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A (shoot fireballs)
 $A6:A7D3 A9 F9 A7    LDA #$A7F9             ;\
 $A6:A7D6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A7F9
-$A6:A7D9 A9 E0 00    LDA #$00E0
-$A6:A7DC 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:A7E0 4C F9 A7    JMP $A7F9  [$A6:A7F9]
+$A6:A7D9 A9 E0 00    LDA #$00E0             ;\
+$A6:A7DC 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = E0h
+$A6:A7E0 4C F9 A7    JMP $A7F9  [$A6:A7F9]  ; Go to [Ridley function]
 
 $A6:A7E3 60          RTS
 
-$A6:A7E4 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:A7E8 1A          INC A
-$A6:A7E9 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:A7ED C9 30 00    CMP #$0030
-$A6:A7F0 90 F1       BCC $F1    [$A7E3]
+; BRANCH_A7E4
+$A6:A7E4 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:A7E8 1A          INC A                  ;} Increment $7E:7800
+$A6:A7E9 8F 00 78 7E STA $7E7800[$7E:7800]  ;/
+$A6:A7ED C9 30 00    CMP #$0030             ;\
+$A6:A7F0 90 F1       BCC $F1    [$A7E3]     ;} If [$7E:7800] < 30h: return
 $A6:A7F2 A9 8D A8    LDA #$A88D             ;\
-$A6:A7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A88D
+$A6:A7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A88D (swoop)
 $A6:A7F8 60          RTS
 }
 
 
-;;; $A7F9: Ridley function ;;;
+;;; $A7F9: Ridley function - shoot fireballs - shooting ;;;
 {
-$A6:A7F9 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:A7FC 29 07 00    AND #$0007
-$A6:A7FF 2C E5 05    BIT $05E5  [$7E:05E5]
-$A6:A802 10 04       BPL $04    [$A808]
-$A6:A804 49 FF FF    EOR #$FFFF
-$A6:A807 1A          INC A
-
-$A6:A808 85 16       STA $16    [$7E:0016]
-$A6:A80A AF 2E 78 7E LDA $7E782E[$7E:782E]
-$A6:A80E 65 16       ADC $16    [$7E:0016]
-$A6:A810 85 12       STA $12    [$7E:0012]
-$A6:A812 AF 30 78 7E LDA $7E7830[$7E:7830]
-$A6:A816 65 16       ADC $16    [$7E:0016]
-$A6:A818 85 14       STA $14    [$7E:0014]
+$A6:A7F9 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:A7FC 29 07 00    AND #$0007             ;|
+$A6:A7FF 2C E5 05    BIT $05E5  [$7E:05E5]  ;|
+$A6:A802 10 04       BPL $04    [$A808]     ;|
+$A6:A804 49 FF FF    EOR #$FFFF             ;} $16 = [random number] % 8 * sgn([random number])
+$A6:A807 1A          INC A                  ;|
+                                            ;|
+$A6:A808 85 16       STA $16    [$7E:0016]  ;/
+$A6:A80A AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
+$A6:A80E 65 16       ADC $16    [$7E:0016]  ;} $12 = [$7E:782E] + [$16] + carry (hover X position)
+$A6:A810 85 12       STA $12    [$7E:0012]  ;/
+$A6:A812 AF 30 78 7E LDA $7E7830[$7E:7830]  ;\
+$A6:A816 65 16       ADC $16    [$7E:0016]  ;} $14 = [$7E:7830] + [$16] (hover Y position)
+$A6:A818 85 14       STA $14    [$7E:0014]  ;/
 $A6:A81A A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A81D A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:A820 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A823 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:A827 3A          DEC A
-$A6:A828 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:A82C 10 0D       BPL $0D    [$A83B]
-$A6:A82E A9 00 00    LDA #$0000
-$A6:A831 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:A823 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:A827 3A          DEC A                  ;} Decrement $7E:7800
+$A6:A828 8F 00 78 7E STA $7E7800[$7E:7800]  ;/
+$A6:A82C 10 0D       BPL $0D    [$A83B]     ; If [$7E:7800] < 0:
+$A6:A82E A9 00 00    LDA #$0000             ;\
+$A6:A831 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 0
 $A6:A835 A9 E8 A6    LDA #$A6E8             ;\
-$A6:A838 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
+$A6:A838 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8 (hovering)
 
 $A6:A83B 60          RTS
 }
 
 
-;;; $A83C: Ridley function ;;;
+;;; $A83C: Ridley function - lunge - setup ;;;
 {
-; Ceres Ridley start lunging
 $A6:A83C A9 48 E5    LDA #$E548             ;\
-$A6:A83F 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E548
+$A6:A83F 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E548 (Ceres Ridley lunge)
 $A6:A842 A9 4E A8    LDA #$A84E             ;\
 $A6:A845 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A84E
-$A6:A848 A9 40 00    LDA #$0040
-$A6:A84B 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:A848 A9 40 00    LDA #$0040             ;\
+$A6:A84B 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 40h
 }
 
 
-;;; $A84E: Ridley function ;;;
+;;; $A84E: Ridley function - lunge - main ;;;
 {
-$A6:A84E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:A851 85 12       STA $12    [$7E:0012]
-$A6:A853 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:A856 38          SEC
-$A6:A857 E9 44 00    SBC #$0044
-$A6:A85A C9 40 00    CMP #$0040
-$A6:A85D 10 03       BPL $03    [$A862]
-$A6:A85F A9 40 00    LDA #$0040
-
-$A6:A862 85 14       STA $14    [$7E:0014]
+$A6:A84E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A6:A851 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position] (hover X position)
+$A6:A853 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A6:A856 38          SEC                    ;|
+$A6:A857 E9 44 00    SBC #$0044             ;|
+$A6:A85A C9 40 00    CMP #$0040             ;|
+$A6:A85D 10 03       BPL $03    [$A862]     ;} $14 = max(40h, [Samus Y position] - 44h) (hover Y position)
+$A6:A85F A9 40 00    LDA #$0040             ;|
+                                            ;|
+$A6:A862 85 14       STA $14    [$7E:0014]  ;/
 $A6:A864 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A867 A0 0D 00    LDY #$000D             ; Y = Dh (acceleration factor)
 $A6:A86A 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A86D A9 02 00    LDA #$0002
-$A6:A870 85 16       STA $16    [$7E:0016]
-$A6:A872 85 18       STA $18    [$7E:0018]
-$A6:A874 22 06 EF A9 JSL $A9EF06[$A9:EF06]
-$A6:A878 90 05       BCC $05    [$A87F]
+$A6:A86D A9 02 00    LDA #$0002             ;\
+$A6:A870 85 16       STA $16    [$7E:0016]  ;|
+$A6:A872 85 18       STA $18    [$7E:0018]  ;} Check for enemy collision with 4x4 px^2 region around ([$12], [$14])
+$A6:A874 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
+$A6:A878 90 05       BCC $05    [$A87F]     ; If no collision:
 $A6:A87A CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A87D 10 0D       BPL $0D    [$A88C]     ; If [Ridley function timer] >= 0: return
 
-$A6:A87F A9 00 00    LDA #$0000
-$A6:A882 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:A87F A9 00 00    LDA #$0000             ;\
+$A6:A882 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 0
 $A6:A886 A9 E8 A6    LDA #$A6E8             ;\
-$A6:A889 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
+$A6:A889 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8 (hovering)
 
 $A6:A88C 60          RTS
 }
 
 
-;;; $A88D: Ridley function ;;;
+;;; $A88D: Ridley function - swoop - setup ;;;
 {
 ; Ceres Ridley start swoop
 $A6:A88D A9 A4 A8    LDA #$A8A4             ;\
 $A6:A890 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8A4
-$A6:A893 A9 0A 00    LDA #$000A
-$A6:A896 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A6:A899 A9 00 00    LDA #$0000
-$A6:A89C 8F 14 78 7E STA $7E7814[$7E:7814]
+$A6:A893 A9 0A 00    LDA #$000A             ;\
+$A6:A896 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = Ah
+$A6:A899 A9 00 00    LDA #$0000             ;\
+$A6:A89C 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 $A6:A8A0 8F 02 20 7E STA $7E2002[$7E:2002]  ; Ridley idle tail whip enable flag = 0
 }
 
 
-;;; $A8A4: Ridley function ;;;
+;;; $A8A4: Ridley function - swoop - move to position ;;;
 {
 ; Ceres Ridley fly towards (C0h, 50h) to swoop
 $A6:A8A4 A2 C0 00    LDX #$00C0             ;\
@@ -3135,58 +3134,57 @@ $A6:A8AC 84 14       STY $14    [$7E:0014]  ;/
 $A6:A8AE A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A8B1 A0 01 00    LDY #$0001             ; Y = 1 (acceleration factor)
 $A6:A8B4 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A8B7 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:A8BA C9 60 00    CMP #$0060
-$A6:A8BD 30 01       BMI $01    [$A8C0]
-$A6:A8BF 60          RTS
+$A6:A8B7 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:A8BA C9 60 00    CMP #$0060             ;} If [Ridley Y position] >= 60h:
+$A6:A8BD 30 01       BMI $01    [$A8C0]     ;/
+$A6:A8BF 60          RTS                    ; Return
 
 $A6:A8C0 A9 D4 A8    LDA #$A8D4             ;\
 $A6:A8C3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8D4
-$A6:A8C6 A9 0A 00    LDA #$000A
-$A6:A8C9 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A6:A8CC A9 00 00    LDA #$0000
-$A6:A8CF 8F 14 78 7E STA $7E7814[$7E:7814]
+$A6:A8C6 A9 0A 00    LDA #$000A             ;\
+$A6:A8C9 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = Ah
+$A6:A8CC A9 00 00    LDA #$0000             ;\
+$A6:A8CF 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 $A6:A8D3 60          RTS
 }
 
 
-;;; $A8D4: Ridley function ;;;
+;;; $A8D4: Ridley function - swoop - descending - aiming down ;;;
 {
 ; Ceres Ridley swoop
-$A6:A8D4 A9 E0 FF    LDA #$FFE0
-$A6:A8D7 85 12       STA $12    [$7E:0012]
-$A6:A8D9 A9 00 FC    LDA #$FC00
-$A6:A8DC 85 14       STA $14    [$7E:0014]
-$A6:A8DE A9 00 03    LDA #$0300
-$A6:A8E1 85 16       STA $16    [$7E:0016]
-$A6:A8E3 20 00 D8    JSR $D800  [$A6:D800]
+$A6:A8D4 A9 E0 FF    LDA #$FFE0             ;\
+$A6:A8D7 85 12       STA $12    [$7E:0012]  ;} $12 = -20h (angle delta)
+$A6:A8D9 A9 00 FC    LDA #$FC00             ;\
+$A6:A8DC 85 14       STA $14    [$7E:0014]  ;} $14 = -400h (target angle)
+$A6:A8DE A9 00 03    LDA #$0300             ;\
+$A6:A8E1 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:A8E3 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:A8E6 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A8E9 10 0C       BPL $0C    [$A8F7]     ; If [Ridley function timer] >= 0: return
 $A6:A8EB A9 F8 A8    LDA #$A8F8             ;\
 $A6:A8EE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A8F8
-$A6:A8F1 A9 24 00    LDA #$0024
-$A6:A8F4 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:A8F1 A9 24 00    LDA #$0024             ;\
+$A6:A8F4 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 24h
 
 $A6:A8F7 60          RTS
 }
 
 
-;;; $A8F8: Ridley function ;;;
+;;; $A8F8: Ridley function - swoop - descending - aiming left ;;;
 {
-; Ceres swoop descending
-$A6:A8F8 A9 00 FE    LDA #$FE00
-$A6:A8FB 85 12       STA $12    [$7E:0012]
-$A6:A8FD A9 00 C0    LDA #$C000
-$A6:A900 85 14       STA $14    [$7E:0014]
-$A6:A902 A9 00 03    LDA #$0300
-$A6:A905 85 16       STA $16    [$7E:0016]
-$A6:A907 20 00 D8    JSR $D800  [$A6:D800]
+$A6:A8F8 A9 00 FE    LDA #$FE00             ;\
+$A6:A8FB 85 12       STA $12    [$7E:0012]  ;} $12 = -200h (angle delta)
+$A6:A8FD A9 00 C0    LDA #$C000             ;\
+$A6:A900 85 14       STA $14    [$7E:0014]  ;} $14 = -4000h (target angle)
+$A6:A902 A9 00 03    LDA #$0300             ;\
+$A6:A905 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:A907 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:A90A CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A90D 10 13       BPL $13    [$A922]     ; If [Ridley function timer] >= 0: return
 $A6:A90F A9 23 A9    LDA #$A923             ;\
 $A6:A912 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A923
-$A6:A915 A9 1C 00    LDA #$001C
-$A6:A918 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:A915 A9 1C 00    LDA #$001C             ;\
+$A6:A918 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 1Ch
 $A6:A91B A9 01 00    LDA #$0001             ;\
 $A6:A91E 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
 
@@ -3194,42 +3192,41 @@ $A6:A922 60          RTS
 }
 
 
-;;; $A923: Ridley function ;;;
+;;; $A923: Ridley function - swoop - ascending - aiming up ;;;
 {
-; Ceres swoop tail whip
-$A6:A923 A9 00 FE    LDA #$FE00
-$A6:A926 85 12       STA $12    [$7E:0012]
-$A6:A928 A9 00 88    LDA #$8800
-$A6:A92B 85 14       STA $14    [$7E:0014]
-$A6:A92D A9 00 03    LDA #$0300
-$A6:A930 85 16       STA $16    [$7E:0016]
-$A6:A932 20 00 D8    JSR $D800  [$A6:D800]
+$A6:A923 A9 00 FE    LDA #$FE00             ;\
+$A6:A926 85 12       STA $12    [$7E:0012]  ;} $12 = -200h (angle delta)
+$A6:A928 A9 00 88    LDA #$8800             ;\
+$A6:A92B 85 14       STA $14    [$7E:0014]  ;} $14 = -7800h (target angle)
+$A6:A92D A9 00 03    LDA #$0300             ;\
+$A6:A930 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:A932 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:A935 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A938 10 0C       BPL $0C    [$A946]     ; If [Ridley function timer] >= 0: return
 $A6:A93A A9 47 A9    LDA #$A947             ;\
 $A6:A93D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A947
-$A6:A940 A9 01 00    LDA #$0001
-$A6:A943 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:A940 A9 01 00    LDA #$0001             ;\
+$A6:A943 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 1
 
 $A6:A946 60          RTS
 }
 
 
-;;; $A947: Ridley function ;;;
+;;; $A947: Ridley function - swoop - ascending - aiming up faster ;;;
 {
-$A6:A947 A9 00 FD    LDA #$FD00
-$A6:A94A 85 12       STA $12    [$7E:0012]
-$A6:A94C A9 00 88    LDA #$8800
-$A6:A94F 85 14       STA $14    [$7E:0014]
-$A6:A951 A9 00 03    LDA #$0300
-$A6:A954 85 16       STA $16    [$7E:0016]
-$A6:A956 20 00 D8    JSR $D800  [$A6:D800]
+$A6:A947 A9 00 FD    LDA #$FD00             ;\
+$A6:A94A 85 12       STA $12    [$7E:0012]  ;} $12 = -300h (angle delta)
+$A6:A94C A9 00 88    LDA #$8800             ;\
+$A6:A94F 85 14       STA $14    [$7E:0014]  ;} $14 = -7800h (target angle)
+$A6:A951 A9 00 03    LDA #$0300             ;\
+$A6:A954 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:A956 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:A959 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A95C 10 12       BPL $12    [$A970]     ; If [Ridley function timer] >= 0: return
 $A6:A95E A9 E8 A6    LDA #$A6E8             ;\
 $A6:A961 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
-$A6:A964 A9 00 00    LDA #$0000
-$A6:A967 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:A964 A9 00 00    LDA #$0000             ;\
+$A6:A967 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 0
 $A6:A96B 1A          INC A                  ;\
 $A6:A96C 8F 02 20 7E STA $7E2002[$7E:2002]  ;} Ridley idle tail whip enable flag = 1
 
@@ -3237,7 +3234,7 @@ $A6:A970 60          RTS
 }
 
 
-;;; $A971: Ridley function ;;;
+;;; $A971: Ridley function - real retreat - rising ;;;
 {
 ; Ceres Ridley flying away after Samus has low health or after he picks up baby metroid
 $A6:A971 A9 40 FF    LDA #$FF40             ;\
@@ -3249,41 +3246,41 @@ $A6:A980 85 14       STA $14    [$7E:0014]  ;} $14 = -80h (hover Y position)
 $A6:A982 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:A985 A0 01 00    LDY #$0001             ; Y = 1 (acceleration factor)
 $A6:A988 20 2F D6    JSR $D62F  [$A6:D62F]  ; Ridley hovering acceleration
-$A6:A98B AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:A98E C9 80 FF    CMP #$FF80
-$A6:A991 30 01       BMI $01    [$A994]
-$A6:A993 60          RTS
+$A6:A98B AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:A98E C9 80 FF    CMP #$FF80             ;} If [Ridley Y position] >= -80h:
+$A6:A991 30 01       BMI $01    [$A994]     ;/
+$A6:A993 60          RTS                    ; Return
 
 $A6:A994 A9 A0 A9    LDA #$A9A0             ;\
 $A6:A997 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A9A0
-$A6:A99A A9 40 00    LDA #$0040
-$A6:A99D 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:A99A A9 40 00    LDA #$0040             ;\
+$A6:A99D 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 40h
 }
 
 
-;;; $A9A0: Ridley function ;;;
+;;; $A9A0: Ridley function - real retreat - write palettes and spawn walls ;;;
 {
 $A6:A9A0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A9A3 10 EE       BPL $EE    [$A993]     ; If [Ridley function timer] >= 0: return
 $A6:A9A5 20 20 AA    JSR $AA20  [$A6:AA20]  ; Spawn walls during Ceres Ridley getaway cutscene
-$A6:A9A8 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A6:A9AB 9C AC 0F    STZ $0FAC  [$7E:0FAC]
+$A6:A9A8 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Ridley X velocity = 0
+$A6:A9AB 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; Ridley Y velocity = 0
 $A6:A9AE A9 00 00    LDA #$0000             ;\
 $A6:A9B1 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 0
 $A6:A9B5 A9 11 AA    LDA #$AA11             ;\
 $A6:A9B8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA11
-$A6:A9BB A0 E3 A9    LDY #$A9E3
-$A6:A9BE A2 A2 00    LDX #$00A2
-$A6:A9C1 A9 0F 00    LDA #$000F
-$A6:A9C4 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
-$A6:A9C8 A0 01 AA    LDY #$AA01
-$A6:A9CB A2 42 00    LDX #$0042
-$A6:A9CE A9 08 00    LDA #$0008
-$A6:A9D1 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
-$A6:A9D5 A0 01 AA    LDY #$AA01
-$A6:A9D8 A2 E2 01    LDX #$01E2
-$A6:A9DB A9 08 00    LDA #$0008
-$A6:A9DE 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
+$A6:A9BB A0 E3 A9    LDY #$A9E3             ;\
+$A6:A9BE A2 A2 00    LDX #$00A2             ;|
+$A6:A9C1 A9 0F 00    LDA #$000F             ;} BG1/2 palette 5 colours 1..Fh = [$A9E3..AA00]
+$A6:A9C4 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
+$A6:A9C8 A0 01 AA    LDY #$AA01             ;\
+$A6:A9CB A2 42 00    LDX #$0042             ;|
+$A6:A9CE A9 08 00    LDA #$0008             ;} BG1/2 palette 2 colours 1..8 = [$AA01..10]
+$A6:A9D1 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
+$A6:A9D5 A0 01 AA    LDY #$AA01             ;\
+$A6:A9D8 A2 E2 01    LDX #$01E2             ;|
+$A6:A9DB A9 08 00    LDA #$0008             ;} Sprite palette 7 colours 1..8 = [$AA01..10]
+$A6:A9DE 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $A6:A9E2 60          RTS
 
 ; BG1/2 palette 5 colours 1..Fh
@@ -3294,13 +3291,13 @@ $A6:AA01             dw 7E20, 6560, 2060, 1000, 7940, 5D00, 4CA0, 3CA0
 }
 
 
-;;; $AA11: Ridley function ;;;
+;;; $AA11: Ridley function - real retreat - set up getaway cutscene ;;;
 {
 $A6:AA11 A9 4F AA    LDA #$AA4F             ;\
-$A6:AA14 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA4F
-$A6:AA17 A9 01 00    LDA #$0001
-$A6:AA1A 8D 3F 09    STA $093F  [$7E:093F]
-$A6:AA1D 4C 54 AA    JMP $AA54  [$A6:AA54]
+$A6:AA14 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = RTS
+$A6:AA17 A9 01 00    LDA #$0001             ;\
+$A6:AA1A 8D 3F 09    STA $093F  [$7E:093F]  ;} Ceres status = 1 (during Ridley escape sequence)
+$A6:AA1D 4C 54 AA    JMP $AA54  [$A6:AA54]  ; Go to $AA54
 }
 
 
@@ -3326,13 +3323,13 @@ $A6:AA3F             dw E23F, 00F8,007F, 0000, 2800,0000, 0006,0000 ; Ceres door
 }
 
 
-;;; $AA4F: RTS. Ridley function ;;;
+;;; $AA4F: RTS ;;;
 {
 $A6:AA4F 60          RTS
 }
 
 
-;;; $AA50: Ridley function ;;;
+;;; $AA50: Ridley function - real retreat -  ;;;
 {
 $A6:AA50 20 9C C1    JSR $C19C  [$A6:C19C]
 $A6:AA53 60          RTS
@@ -3344,9 +3341,9 @@ $A6:AA53 60          RTS
 $A6:AA54 E2 20       SEP #$20
 $A6:AA56 A9 07       LDA #$07               ;\
 $A6:AA58 85 56       STA $56    [$7E:0056]  ;} Fake BG mode = 7
-$A6:AA5A C2 20       REP #$20
-$A6:AA5C A9 01 00    LDA #$0001
-$A6:AA5F 8D 83 07    STA $0783  [$7E:0783]
+$A6:AA5A C2 20       REP #$20               ;\
+$A6:AA5C A9 01 00    LDA #$0001             ;} Mode 7 flag = 1
+$A6:AA5F 8D 83 07    STA $0783  [$7E:0783]  ;/
 $A6:AA62 E2 20       SEP #$20               ;\
 $A6:AA64 A9 80       LDA #$80               ;|
 $A6:AA66 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
@@ -3359,21 +3356,21 @@ $A6:AA73 85 7E       STA $7E    [$7E:007E]  ;/
 $A6:AA75 A9 40 00    LDA #$0040             ;\
 $A6:AA78 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (40h, 40h)
 $A6:AA7A 85 82       STA $82    [$7E:0082]  ;/
-$A6:AA7C A9 00 00    LDA #$0000
-$A6:AA7F 8F 24 80 7E STA $7E8024[$7E:8024]
-$A6:AA83 8F 26 80 7E STA $7E8026[$7E:8026]
-$A6:AA87 A9 01 00    LDA #$0001
-$A6:AA8A 8F 14 78 7E STA $7E7814[$7E:7814]
-$A6:AA8E A9 80 FF    LDA #$FF80
-$A6:AA91 8F 28 80 7E STA $7E8028[$7E:8028]
-$A6:AA95 85 B1       STA $B1    [$7E:00B1]
-$A6:AA97 A9 20 00    LDA #$0020
-$A6:AA9A 8F 2A 80 7E STA $7E802A[$7E:802A]
-$A6:AA9E 85 B3       STA $B3    [$7E:00B3]
-$A6:AAA0 A9 00 08    LDA #$0800
-$A6:AAA3 8F 20 80 7E STA $7E8020[$7E:8020]
-$A6:AAA7 A9 00 04    LDA #$0400
-$A6:AAAA 8F 22 80 7E STA $7E8022[$7E:8022]
+$A6:AA7C A9 00 00    LDA #$0000             ;\
+$A6:AA7F 8F 24 80 7E STA $7E8024[$7E:8024]  ;} $7E:8024 = 0
+$A6:AA83 8F 26 80 7E STA $7E8026[$7E:8026]  ; $7E:8026 = 0
+$A6:AA87 A9 01 00    LDA #$0001             ;\
+$A6:AA8A 8F 14 78 7E STA $7E7814[$7E:7814]  ;} $7E:7814 = 1
+$A6:AA8E A9 80 FF    LDA #$FF80             ;\
+$A6:AA91 8F 28 80 7E STA $7E8028[$7E:8028]  ;} $7E:8028 = -80h
+$A6:AA95 85 B1       STA $B1    [$7E:00B1]  ; BG1 X scroll = -80h
+$A6:AA97 A9 20 00    LDA #$0020             ;\
+$A6:AA9A 8F 2A 80 7E STA $7E802A[$7E:802A]  ;} $7E:802A = 20h
+$A6:AA9E 85 B3       STA $B3    [$7E:00B3]  ; BG1 Y scroll = 20h
+$A6:AAA0 A9 00 08    LDA #$0800             ;\
+$A6:AAA3 8F 20 80 7E STA $7E8020[$7E:8020]  ;} $7E:8020 = 800h
+$A6:AAA7 A9 00 04    LDA #$0400             ;\
+$A6:AAAA 8F 22 80 7E STA $7E8022[$7E:8022]  ;} $7E:8022 = 400h
 $A6:AAAE 60          RTS
 }
 }
@@ -3381,6 +3378,7 @@ $A6:AAAE 60          RTS
 
 ;;; $AAAF: Handle Ceres Ridley getaway cutscene ;;;
 {
+; Called by room main ASM if Ceres status = 1 (during Ridley escape sequence)
 $A6:AAAF 8B          PHB
 $A6:AAB0 4B          PHK
 $A6:AAB1 AB          PLB
@@ -3947,6 +3945,8 @@ $A6:B2F2 6B          RTL
 }
 
 
+;;; $B2F3..BD99: Norfair Ridley functions ;;;
+{
 ;;; $B2F3: Ridley function ;;;
 {
 ; Startup liftoff, facing right
@@ -4110,8 +4110,8 @@ $A6:B441 A9 55 B4    LDA #$B455             ;\
 $A6:B444 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B455
 $A6:B447 A9 0A 00    LDA #$000A
 $A6:B44A 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B44E A9 00 00    LDA #$0000
-$A6:B451 8F 14 78 7E STA $7E7814[$7E:7814]
+$A6:B44E A9 00 00    LDA #$0000             ;\
+$A6:B451 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 }
 
 
@@ -4138,8 +4138,8 @@ $A6:B47E A9 93 B4    LDA #$B493             ;\
 $A6:B481 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B493
 $A6:B484 A9 20 00    LDA #$0020
 $A6:B487 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B48B A9 00 00    LDA #$0000
-$A6:B48E 8F 14 78 7E STA $7E7814[$7E:7814]
+$A6:B48B A9 00 00    LDA #$0000             ;\
+$A6:B48E 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 
 $A6:B492 60          RTS
 }
@@ -4150,20 +4150,20 @@ $A6:B492 60          RTS
 ; U swoop, first dive
 $A6:B493 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B497 D0 0C       BNE $0C    [$B4A5]     ;} If [Ridley facing direction] = left:
-$A6:B499 A9 E0 FF    LDA #$FFE0
-$A6:B49C 85 12       STA $12    [$7E:0012]
-$A6:B49E A9 00 FE    LDA #$FE00
-$A6:B4A1 85 14       STA $14    [$7E:0014]
+$A6:B499 A9 E0 FF    LDA #$FFE0             ;\
+$A6:B49C 85 12       STA $12    [$7E:0012]  ;} $12 = -20h (angle delta)
+$A6:B49E A9 00 FE    LDA #$FE00             ;\
+$A6:B4A1 85 14       STA $14    [$7E:0014]  ;} $14 = -200h (target angle)
 $A6:B4A3 80 0A       BRA $0A    [$B4AF]
 
-$A6:B4A5 A9 20 00    LDA #$0020
-$A6:B4A8 85 12       STA $12    [$7E:0012]
-$A6:B4AA A9 00 02    LDA #$0200
-$A6:B4AD 85 14       STA $14    [$7E:0014]
+$A6:B4A5 A9 20 00    LDA #$0020             ;\ Else ([Ridley facing direction] != left):
+$A6:B4A8 85 12       STA $12    [$7E:0012]  ;} $12 = 20h (angle delta)
+$A6:B4AA A9 00 02    LDA #$0200             ;\
+$A6:B4AD 85 14       STA $14    [$7E:0014]  ;} $14 = 200h (target angle)
 
-$A6:B4AF A9 80 04    LDA #$0480
-$A6:B4B2 85 16       STA $16    [$7E:0016]
-$A6:B4B4 20 00 D8    JSR $D800  [$A6:D800]
+$A6:B4AF A9 80 04    LDA #$0480             ;\
+$A6:B4B2 85 16       STA $16    [$7E:0016]  ;} $16 = 480h (target speed)
+$A6:B4B4 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:B4B7 AF 00 78 7E LDA $7E7800[$7E:7800]
 $A6:B4BB F0 06       BEQ $06    [$B4C3]
 $A6:B4BD 3A          DEC A
@@ -4183,20 +4183,20 @@ $A6:B4D0 60          RTS
 ; U swoop, dive to half point
 $A6:B4D1 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B4D5 D0 0C       BNE $0C    [$B4E3]     ;} If [Ridley facing direction] = left:
-$A6:B4D7 A9 C0 FE    LDA #$FEC0
-$A6:B4DA 85 12       STA $12    [$7E:0012]
-$A6:B4DC A9 00 C0    LDA #$C000
-$A6:B4DF 85 14       STA $14    [$7E:0014]
-$A6:B4E1 80 0A       BRA $0A    [$B4ED]
-
-$A6:B4E3 A9 40 01    LDA #$0140
-$A6:B4E6 85 12       STA $12    [$7E:0012]
-$A6:B4E8 A9 00 40    LDA #$4000
-$A6:B4EB 85 14       STA $14    [$7E:0014]
-
-$A6:B4ED A9 00 05    LDA #$0500
-$A6:B4F0 85 16       STA $16    [$7E:0016]
-$A6:B4F2 20 00 D8    JSR $D800  [$A6:D800]
+$A6:B4D7 A9 C0 FE    LDA #$FEC0             ;\
+$A6:B4DA 85 12       STA $12    [$7E:0012]  ;} $12 = -140h (angle delta)
+$A6:B4DC A9 00 C0    LDA #$C000             ;\
+$A6:B4DF 85 14       STA $14    [$7E:0014]  ;} $14 = -4000h (target angle)
+$A6:B4E1 80 0A       BRA $0A    [$B4ED]     
+                                            
+$A6:B4E3 A9 40 01    LDA #$0140             ;\ Else ([Ridley facing direction] != left):
+$A6:B4E6 85 12       STA $12    [$7E:0012]  ;} $12 = 140h (angle delta)
+$A6:B4E8 A9 00 40    LDA #$4000             ;\
+$A6:B4EB 85 14       STA $14    [$7E:0014]  ;} $14 = 4000h (target angle)
+                                            
+$A6:B4ED A9 00 05    LDA #$0500             ;\
+$A6:B4F0 85 16       STA $16    [$7E:0016]  ;} $16 = 500h (target speed)
+$A6:B4F2 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:B4F5 AF 00 78 7E LDA $7E7800[$7E:7800]
 $A6:B4F9 F0 06       BEQ $06    [$B501]
 $A6:B4FB 3A          DEC A
@@ -4218,20 +4218,20 @@ $A6:B515 60          RTS
 ; U swoop, climb after half point
 $A6:B516 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B51A D0 0C       BNE $0C    [$B528]     ;} If [Ridley facing direction] = left:
-$A6:B51C A9 00 FE    LDA #$FE00
-$A6:B51F 85 12       STA $12    [$7E:0012]
-$A6:B521 A9 00 88    LDA #$8800
-$A6:B524 85 14       STA $14    [$7E:0014]
-$A6:B526 80 0A       BRA $0A    [$B532]
-
-$A6:B528 A9 00 02    LDA #$0200
-$A6:B52B 85 12       STA $12    [$7E:0012]
-$A6:B52D A9 00 78    LDA #$7800
-$A6:B530 85 14       STA $14    [$7E:0014]
-
-$A6:B532 A9 00 03    LDA #$0300
-$A6:B535 85 16       STA $16    [$7E:0016]
-$A6:B537 20 00 D8    JSR $D800  [$A6:D800]
+$A6:B51C A9 00 FE    LDA #$FE00             ;\
+$A6:B51F 85 12       STA $12    [$7E:0012]  ;} $12 = -200h (angle delta)
+$A6:B521 A9 00 88    LDA #$8800             ;\
+$A6:B524 85 14       STA $14    [$7E:0014]  ;} $14 = -7800h (target angle)
+$A6:B526 80 0A       BRA $0A    [$B532]     
+                                            
+$A6:B528 A9 00 02    LDA #$0200             ;\ Else ([Ridley facing direction] != left):
+$A6:B52B 85 12       STA $12    [$7E:0012]  ;} $12 = 200h (angle delta)
+$A6:B52D A9 00 78    LDA #$7800             ;\
+$A6:B530 85 14       STA $14    [$7E:0014]  ;} $14 = 7800h (target angle)
+                                            
+$A6:B532 A9 00 03    LDA #$0300             ;\
+$A6:B535 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:B537 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:B53A AF 00 78 7E LDA $7E7800[$7E:7800]
 $A6:B53E F0 06       BEQ $06    [$B546]
 $A6:B540 3A          DEC A
@@ -4251,20 +4251,20 @@ $A6:B553 60          RTS
 ; U Swoop, still climbing
 $A6:B554 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B558 D0 0C       BNE $0C    [$B566]     ;} If [Ridley facing direction] = left:
-$A6:B55A A9 00 FC    LDA #$FC00
-$A6:B55D 85 12       STA $12    [$7E:0012]
-$A6:B55F A9 00 88    LDA #$8800
-$A6:B562 85 14       STA $14    [$7E:0014]
-$A6:B564 80 0A       BRA $0A    [$B570]
-
-$A6:B566 A9 00 04    LDA #$0400
-$A6:B569 85 12       STA $12    [$7E:0012]
-$A6:B56B A9 00 78    LDA #$7800
-$A6:B56E 85 14       STA $14    [$7E:0014]
-
-$A6:B570 A9 00 03    LDA #$0300
-$A6:B573 85 16       STA $16    [$7E:0016]
-$A6:B575 20 00 D8    JSR $D800  [$A6:D800]
+$A6:B55A A9 00 FC    LDA #$FC00             ;\
+$A6:B55D 85 12       STA $12    [$7E:0012]  ;} $12 = -400h (angle delta)
+$A6:B55F A9 00 88    LDA #$8800             ;\
+$A6:B562 85 14       STA $14    [$7E:0014]  ;} $14 = -7800h (target angle)
+$A6:B564 80 0A       BRA $0A    [$B570]     
+                                            
+$A6:B566 A9 00 04    LDA #$0400             ;\ Else ([Ridley facing direction] != left):
+$A6:B569 85 12       STA $12    [$7E:0012]  ;} $12 = 400h (angle delta)
+$A6:B56B A9 00 78    LDA #$7800             ;\
+$A6:B56E 85 14       STA $14    [$7E:0014]  ;} $14 = 7800h (target angle)
+                                            
+$A6:B570 A9 00 03    LDA #$0300             ;\
+$A6:B573 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
+$A6:B575 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:B578 AF 00 78 7E LDA $7E7800[$7E:7800]
 $A6:B57C F0 06       BEQ $06    [$B584]
 $A6:B57E 3A          DEC A
@@ -4282,12 +4282,12 @@ $A6:B591 4C 55 D9    JMP $D955  [$A6:D955]
 ;;; $B594: Ridley function ;;;
 {
 ; U Swoop End (Chooses BAB7 for next script if Samus is not spinjumping, else B321)
-$A6:B594 64 12       STZ $12    [$7E:0012]
-$A6:B596 A9 00 80    LDA #$8000
-$A6:B599 85 14       STA $14    [$7E:0014]
-$A6:B59B A9 C0 01    LDA #$01C0
-$A6:B59E 85 16       STA $16    [$7E:0016]
-$A6:B5A0 20 00 D8    JSR $D800  [$A6:D800]
+$A6:B594 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (angle delta)
+$A6:B596 A9 00 80    LDA #$8000             ;\
+$A6:B599 85 14       STA $14    [$7E:0014]  ;} $14 = 8000h (target angle)
+$A6:B59B A9 C0 01    LDA #$01C0             ;\
+$A6:B59E 85 16       STA $16    [$7E:0016]  ;} $16 = 1C0h (target speed)
+$A6:B5A0 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:B5A3 AF 00 78 7E LDA $7E7800[$7E:7800]
 $A6:B5A7 F0 06       BEQ $06    [$B5AF]
 $A6:B5A9 3A          DEC A
@@ -4408,7 +4408,7 @@ $A6:B67A AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B67E 3A          DEC A                  ;} If [Ridley facing direction] != forwards:
 $A6:B67F F0 06       BEQ $06    [$B687]     ;/
 $A6:B681 A9 3A E7    LDA #$E73A             ;\
-$A6:B684 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
+$A6:B684 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A (shoot fireballs)
 
 $A6:B687 18          CLC
 $A6:B688 60          RTS
@@ -4542,7 +4542,7 @@ $A6:B79E AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B7A2 3A          DEC A                  ;} If [Ridley facing direction] != forwards:
 $A6:B7A3 F0 06       BEQ $06    [$B7AB]     ;/
 $A6:B7A5 A9 3A E7    LDA #$E73A             ;\
-$A6:B7A8 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A
+$A6:B7A8 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A (shoot fireballs)
 
 $A6:B7AB A9 00 00    LDA #$0000
 
@@ -5309,6 +5309,7 @@ $A6:BD93 A0 8F BB    LDY #$BB8F
 $A6:BD96 8C A8 0F    STY $0FA8  [$7E:0FA8]
 $A6:BD99 60          RTS
 }
+}
 
 
 ;;; $BD9A..BE92: Ceres Ridley functions ;;;
@@ -5451,6 +5452,8 @@ $A6:BE92 60          RTS
 }
 
 
+;;; $BE93..C04D: Baby metroid ;;;
+{
 ;;; $BE93: Execute baby metroid function ;;;
 {
 $A6:BE93 AF 00 88 7E LDA $7E8800[$7E:8800]  ;\
@@ -5658,9 +5661,12 @@ $A6:BFFD             dx 0005, 0000,08,F50D, 01F8,08,B50D, 0000,F0,750D, 01F8,F0,
 $A6:C018             dx 0005, 0000,08,F50D, 01F8,08,B50D, 0000,F0,750D, 01F8,F0,350D, 81F8,F8,374C
 $A6:C033             dx 0005, 0000,08,F50D, 01F8,08,B50D, 0000,F0,750D, 01F8,F0,350D, 81F8,F8,374E
 }
+}
 
 
-;;; $C04E: Ridley function ;;;
+;;; $C04E..C537: Ceres escape sequence ;;;
+{
+;;; $C04E: Ridley function - real retreat - activating self destruct sequence ;;;
 {
 $A6:C04E AE B2 0F    LDX $0FB2  [$7E:0FB2]
 $A6:C051 7C 54 C0    JMP ($C054,x)[$A6:C062]
@@ -5759,12 +5765,12 @@ $A6:C11A 20 54 A3    JSR $A354  [$A6:A354]
 $A6:C11D 9C B2 0F    STZ $0FB2  [$7E:0FB2]
 $A6:C120 A9 50 AA    LDA #$AA50             ;\
 $A6:C123 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA50
-$A6:C126 A9 01 00    LDA #$0001
-$A6:C129 8D 43 09    STA $0943  [$7E:0943]
-$A6:C12C 1A          INC A
-$A6:C12D 8D 3F 09    STA $093F  [$7E:093F]
-$A6:C130 3A          DEC A
-$A6:C131 22 A6 81 80 JSL $8081A6[$80:81A6]
+$A6:C126 A9 01 00    LDA #$0001             ;\
+$A6:C129 8D 43 09    STA $0943  [$7E:0943]  ;} Timer status = 1 (Ceres start)
+$A6:C12C 1A          INC A                  ;\
+$A6:C12D 8D 3F 09    STA $093F  [$7E:093F]  ;} Ceres status = 2 (during escape sequence)
+$A6:C130 3A          DEC A                  ;\
+$A6:C131 22 A6 81 80 JSL $8081A6[$80:81A6]  ;} Set area boss bit
 $A6:C135 60          RTS
 }
 
@@ -6155,8 +6161,11 @@ $A6:C4FE             dx 0200,B7DA00,1820, ; Escape timer text
                         0200,B0BE00,0F00,
                         0000
 }
+}
 
 
+;;; $C538..C695: Norfair Ridley functions ;;;
+{
 ;;; $C538: Ridley function ;;;
 {
 ; Move Ridley towards 80,148
@@ -6328,6 +6337,7 @@ $A6:C669 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 24h, sound library 2,
 $A6:C66D 60          RTS
 
 $A6:C66E             dw FFE8,FFE8, FFEC,0014, 0010,FFE2, 001E,FFFD, 000E,FFF3, FFFE,0012, FFFE,FFE0, FFE1,0008, FFFC,FFF6, 0013,0013
+}
 }
 
 
@@ -6905,6 +6915,8 @@ $A6:CAEF             dx 0001,DD35,
 }
 
 
+;;; $CAF5..D452: Ridley tail ;;;
+{
 ;;; $CAF5: Handle Ridley tail ;;;
 {
 $A6:CAF5 20 AA D2    JSR $D2AA  [$A6:D2AA]  ; Handle Ridley tail whip sound effect
@@ -8190,6 +8202,7 @@ $A6:D450 60          RTS
 $A6:D451 38          SEC
 $A6:D452 60          RTS
 }
+}
 
 
 ;;; $D453: Deal suit-adjusted enemy damage to Samus ;;;
@@ -8810,57 +8823,63 @@ $A6:D7FF 60          RTS
 }
 
 
-;;; $D800:  ;;;
+;;; $D800: Calculate swoop velocities ;;;
 {
-; Update Ridley's U Swoop speed and U Swoop angle, and calculate current X and Y speed
-$A6:D800 A5 16       LDA $16    [$7E:0016]
-$A6:D802 CF 16 78 7E CMP $7E7816[$7E:7816]
-$A6:D806 F0 28       BEQ $28    [$D830]
-$A6:D808 10 14       BPL $14    [$D81E]
-$A6:D80A AF 16 78 7E LDA $7E7816[$7E:7816]
-$A6:D80E 38          SEC
-$A6:D80F E9 20 00    SBC #$0020
-$A6:D812 C5 16       CMP $16    [$7E:0016]
-$A6:D814 10 02       BPL $02    [$D818]
-$A6:D816 A5 16       LDA $16    [$7E:0016]
+;; Parameters:
+;;     $12: Angle delta
+;;     $14: Target angle
+;;     $16: Target speed
+$A6:D800 A5 16       LDA $16    [$7E:0016]  ;\
+$A6:D802 CF 16 78 7E CMP $7E7816[$7E:7816]  ;} If [$16] = [Ridley swoop speed]: go to BRANCH_SPEED_CALCULATED
+$A6:D806 F0 28       BEQ $28    [$D830]     ;/
+$A6:D808 10 14       BPL $14    [$D81E]     ; If [$16] > [Ridley swoop speed]: go to BRANCH_ACCELERATE
+$A6:D80A AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
+$A6:D80E 38          SEC                    ;|
+$A6:D80F E9 20 00    SBC #$0020             ;|
+$A6:D812 C5 16       CMP $16    [$7E:0016]  ;|
+$A6:D814 10 02       BPL $02    [$D818]     ;} Ridley swoop speed = max([Ridley swoop speed] - 20h, [$16])
+$A6:D816 A5 16       LDA $16    [$7E:0016]  ;|
+                                            ;|
+$A6:D818 8F 16 78 7E STA $7E7816[$7E:7816]  ;/
+$A6:D81C 80 12       BRA $12    [$D830]     ; Go to BRANCH_SPEED_CALCULATED
 
-$A6:D818 8F 16 78 7E STA $7E7816[$7E:7816]
-$A6:D81C 80 12       BRA $12    [$D830]
+; BRANCH_ACCELERATE
+$A6:D81E AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
+$A6:D822 18          CLC                    ;|
+$A6:D823 69 20 00    ADC #$0020             ;|
+$A6:D826 C5 16       CMP $16    [$7E:0016]  ;|
+$A6:D828 30 02       BMI $02    [$D82C]     ;} Ridley swoop speed = min([Ridley swoop speed] + 20h, [$16])
+$A6:D82A A5 16       LDA $16    [$7E:0016]  ;|
+                                            ;|
+$A6:D82C 8F 16 78 7E STA $7E7816[$7E:7816]  ;/
 
-$A6:D81E AF 16 78 7E LDA $7E7816[$7E:7816]
-$A6:D822 18          CLC
-$A6:D823 69 20 00    ADC #$0020
-$A6:D826 C5 16       CMP $16    [$7E:0016]
-$A6:D828 30 02       BMI $02    [$D82C]
-$A6:D82A A5 16       LDA $16    [$7E:0016]
-
-$A6:D82C 8F 16 78 7E STA $7E7816[$7E:7816]
-
-$A6:D830 A5 12       LDA $12    [$7E:0012]
-$A6:D832 30 0B       BMI $0B    [$D83F]
-$A6:D834 18          CLC
-$A6:D835 6F 14 78 7E ADC $7E7814[$7E:7814]
-$A6:D839 C5 14       CMP $14    [$7E:0014]
-$A6:D83B 30 0D       BMI $0D    [$D84A]
+; BRANCH_SPEED_CALCULATED
+$A6:D830 A5 12       LDA $12    [$7E:0012]  ;\
+$A6:D832 30 0B       BMI $0B    [$D83F]     ;} If [$12] >= 0:
+$A6:D834 18          CLC                    ;\
+$A6:D835 6F 14 78 7E ADC $7E7814[$7E:7814]  ;} Ridley swoop angle = min([Ridley swoop angle] + [$12], [$14])
+$A6:D839 C5 14       CMP $14    [$7E:0014]  ;} Go to BRANCH_ANGLE_CALCULATED
+$A6:D83B 30 0D       BMI $0D    [$D84A]     ;/
 $A6:D83D 80 09       BRA $09    [$D848]
 
-$A6:D83F 18          CLC
-$A6:D840 6F 14 78 7E ADC $7E7814[$7E:7814]
-$A6:D844 C5 14       CMP $14    [$7E:0014]
-$A6:D846 10 02       BPL $02    [$D84A]
+$A6:D83F 18          CLC                    ;\ Else ([$12] < 0):
+$A6:D840 6F 14 78 7E ADC $7E7814[$7E:7814]  ;|
+$A6:D844 C5 14       CMP $14    [$7E:0014]  ;} Ridley swoop angle = max([Ridley swoop angle] + [$12], [$14])
+$A6:D846 10 02       BPL $02    [$D84A]     ;} Go to BRANCH_ANGLE_CALCULATED
+                                            ;|
+$A6:D848 A5 14       LDA $14    [$7E:0014]  ;/
 
-$A6:D848 A5 14       LDA $14    [$7E:0014]
-
+; BRANCH_ANGLE_CALCULATED
 $A6:D84A 8F 14 78 7E STA $7E7814[$7E:7814]
-$A6:D84E EB          XBA
-$A6:D84F 29 FF 00    AND #$00FF
-$A6:D852 85 12       STA $12    [$7E:0012]
-$A6:D854 AF 16 78 7E LDA $7E7816[$7E:7816]
-$A6:D858 22 6C C2 86 JSL $86C26C[$86:C26C]  ; Calculate X velocity from speed and angle
-$A6:D85C 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A6:D85F AF 16 78 7E LDA $7E7816[$7E:7816]
-$A6:D863 22 72 C2 86 JSL $86C272[$86:C272]  ; Calculate Y velocity from speed and angle
-$A6:D867 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A6:D84E EB          XBA                    ;\
+$A6:D84F 29 FF 00    AND #$00FF             ;} $12 = [Ridley swoop angle] / 100h
+$A6:D852 85 12       STA $12    [$7E:0012]  ;/
+$A6:D854 AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
+$A6:D858 22 6C C2 86 JSL $86C26C[$86:C26C]  ;} Ridley X velocity = [Ridley swoop speed] * sin([$12] * pi / 80h)
+$A6:D85C 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
+$A6:D85F AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
+$A6:D863 22 72 C2 86 JSL $86C272[$86:C272]  ;} Ridley Y velocity = [Ridley swoop speed] * cos([$12] * pi / 80h)
+$A6:D867 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
 $A6:D86A 60          RTS
 }
 
@@ -10014,6 +10033,8 @@ $A6:E46A             dw 4E7A, 3D73, 1449, 0405, 45D6, 3151, 20AD, 184A, 561F, 18
 }
 
 
+;;; $E4BE..E537: Instructions ;;;
+{
 ;;; $E4BE: Instruction ;;;
 {
 $A6:E4BE A9 59 00    LDA #$0059             ;\
@@ -10031,17 +10052,16 @@ $A6:E4D1 6B          RTL
 }
 
 
-;;; $E4D2: Instruction ;;;
+;;; $E4D2: Instruction - go to [[Y]] if not Norfair and Samus has low health ;;;
 {
-; If in Norfair or Samus is below 30 health, go to next instruction. Else go to argument, and set main AI script timer to 8
-$A6:E4D2 AD 9F 07    LDA $079F  [$7E:079F]
-$A6:E4D5 C9 02 00    CMP #$0002
-$A6:E4D8 F0 3A       BEQ $3A    [$E514]
-$A6:E4DA AD C2 09    LDA $09C2  [$7E:09C2]
-$A6:E4DD C9 1E 00    CMP #$001E
-$A6:E4E0 10 32       BPL $32    [$E514]
-$A6:E4E2 A9 08 00    LDA #$0008
-$A6:E4E5 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:E4D2 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$A6:E4D5 C9 02 00    CMP #$0002             ;} If [area index] = Norfair: go to Y += 2
+$A6:E4D8 F0 3A       BEQ $3A    [$E514]     ;/
+$A6:E4DA AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$A6:E4DD C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30: go to Y += 2
+$A6:E4E0 10 32       BPL $32    [$E514]     ;/
+$A6:E4E2 A9 08 00    LDA #$0008             ;\
+$A6:E4E5 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 8
 }
 
 
@@ -10079,12 +10099,16 @@ $A6:E500 6B          RTL
 
 ;;; $E501: Instruction ;;;
 {
-$A6:E501 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:E504 8D 10 0B    STA $0B10  [$7E:0B10]
-$A6:E507 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:E50A 8D 14 0B    STA $0B14  [$7E:0B14]
-$A6:E50D B9 00 00    LDA $0000,y
-$A6:E510 8F 3A 78 7E STA $7E783A[$7E:783A]
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+$A6:E501 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A6:E504 8D 10 0B    STA $0B10  [$7E:0B10]  ;} Samus previous X position = [Samus X position]
+$A6:E507 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A6:E50A 8D 14 0B    STA $0B14  [$7E:0B14]  ;} Samus previous Y position = [Samus Y position]
+$A6:E50D B9 00 00    LDA $0000,y            ;\
+$A6:E510 8F 3A 78 7E STA $7E783A[$7E:783A]  ;} $7E:783A = [[Y]]
 }
 
 
@@ -10124,6 +10148,7 @@ $A6:E535 C8          INY                    ;} Y += 4
 $A6:E536 C8          INY                    ;/
 $A6:E537 6B          RTL
 }
+}
 
 
 ;;; $E538..E71B: Instruction lists ;;;
@@ -10134,17 +10159,12 @@ $A6:E537 6B          RTL
 $A6:E538             dx E517,E542,  ; Go to $E542 if not facing left
                         000C,E983,
                         812F        ; Sleep
-}
-
-
-;;; $E542: Instruction list -  ;;;
-{
 $A6:E542             dx 000C,E9A5,
                         812F        ; Sleep
 }
 
 
-;;; $E548: Instruction list -  ;;;
+;;; $E548: Instruction list - Ceres Ridley lunge ;;;
 {
 $A6:E548             dx E517,E576,  ; Go to $E576 if not facing left
                         E501,0000,  ; ???
@@ -10158,11 +10178,6 @@ $A6:E548             dx E517,E576,  ; Go to $E576 if not facing left
                         E501,0000,  ; ???
                         0004,E983,
                         812F        ; Sleep
-}
-
-
-;;; $E576: Instruction list -  ;;;
-{
 $A6:E576             dx E501,0000,  ; ???
                         0004,E9A5,
                         E501,0002,  ; ???
@@ -10179,16 +10194,11 @@ $A6:E576             dx E501,0000,  ; ???
 
 ;;; $E5A0: Instruction list -  ;;;
 {
-$A6:E5A0             dx E517,E5FE,  ; Go to $E5FE if not facing left
-                        E501,0000,  ; ???
+$A6:E5A0             dx E517,E5FE,      ; Go to $E5FE if not facing left
+                        E501,0000,      ; ???
                         0002,E983,
-                        E4F8,E5B2,  ; ???
-                        812F        ; Sleep
-}
-
-
-;;; $E5B2: Instruction list -  ;;;
-{
+                        E4F8,E5B2,      ; ???
+                        812F            ; Sleep
 $A6:E5B2             dx E501,0002,      ; ???
                         0003,EA4F,
                         E4F8,E5C8,      ; ???
@@ -10207,20 +10217,10 @@ $A6:E5B2             dx E501,0002,      ; ???
                         E501,0000,      ; ???
                         0002,E983,
                         812F            ; Sleep
-}
-
-
-;;; $E5FE: Instruction list -  ;;;
-{
-$A6:E5FE             dx E501,0000,  ; ???
+$A6:E5FE             dx E501,0000,      ; ???
                         0002,E9A5,
-                        E4F8,E60C,  ; ???
-                        812F        ; Sleep
-}
-
-
-;;; $E60C: Instruction list -  ;;;
-{
+                        E4F8,E60C,      ; ???
+                        812F            ; Sleep
 $A6:E60C             dx E501,0002,      ; ???
                         0003,EA93,
                         E4F8,E622,      ; ???
@@ -10252,11 +10252,6 @@ $A6:E658             dx E517,E676,  ; Go to $E676 if not facing left
                         E501,0004,  ; ???
                         0001,EA71,
                         812F        ; Sleep
-}
-
-
-;;; $E676: Instruction list -  ;;;
-{
 $A6:E676             dx E501,0000,  ; ???
                         0004,E9A5,
                         E501,0002,  ; ???
@@ -10299,11 +10294,6 @@ $A6:E6C8             dx E517,E6DE,  ; Go to $E6DE if not facing left
                         0010,E9E9,
                         E4CA,       ; ???
                         812F        ; Sleep
-}
-
-
-;;; $E6DE: Instruction list -  ;;;
-{
 $A6:E6DE             dx 0006,E9A5,
                         E4BE,       ; ???
                         0008,EA0B,
@@ -10371,92 +10361,86 @@ $A6:E739 6B          RTL
 }
 
 
-;;; $E73A: Instruction list -  ;;;
+;;; $E73A: Instruction list - shoot fireballs ;;;
 {
-; Fireballing
-$A6:E73A             dx E517,E7B4,  ; Go to $E7B4 if not facing left
-                        E4D2,E7AC,  ; ???
+$A6:E73A             dw E517,E7B4,  ; Go to $E7B4 if not facing left
+                        E4D2,E7AC,  ; Go to $E7AC if not Norfair and Samus has low health
                         0008,E983,
                         E4BE,       ; ???
                         0008,E9C7,
                         0002,E9E9,
-                        E84D,       ; ???
-                        E904,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E904,       ; Spawn Ridley's fireball enemy projectile - with afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,E9E9,
                         0008,E9C7,
-                        E4D2,E7AC,  ; ???
+                        E4D2,E7AC,  ; Go to $E7AC if not Norfair and Samus has low health
                         0020,E983,
-                        E84D,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
                         E4BE,       ; ???
                         0008,E9C7,
                         0002,E9E9,
-                        E84D,       ; ???
-                        E904,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E904,       ; Spawn Ridley's fireball enemy projectile - with afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,E9E9,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,E9E9,
-                        0008,E9C7,
-                        E4CA,       ; ???
+                        0008,E9C7
+$A6:E7AC             dw E4CA,       ; ???
                         0001,E983,
                         812F        ; Sleep
-}
-
-
-;;; $E7B4: Instruction list -  ;;;
-{
-$A6:E7B4             dx E4D2,E820,  ; ???
+$A6:E7B4             dw E4D2,E820,  ; Go to $E820 if not Norfair and Samus has low health
                         0008,E9A5,
                         E4BE,       ; ???
                         0008,EA0B,
                         0002,EA2D,
-                        E84D,       ; ???
-                        E904,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E904,       ; Spawn Ridley's fireball enemy projectile - with afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,EA2D,
                         0008,EA0B,
-                        E4D2,E820,  ; ???
+                        E4D2,E820,  ; Go to $E820 if not Norfair and Samus has low health
                         0020,E9A5,
                         E4BE,       ; ???
                         0008,EA0B,
                         0002,EA2D,
-                        E84D,       ; ???
-                        E904,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E904,       ; Spawn Ridley's fireball enemy projectile - with afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0005,EA2D,
-                        E84D,       ; ???
-                        E909,       ; ???
+                        E84D,       ; Calculate fireball X/Y velocities
+                        E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,EA2D,
-                        0008,EA0B,
-                        E4CA,       ; ???
+                        0008,EA0B
+$A6:E820             dw E4CA,       ; ???
                         0001,E9A5,
                         812F        ; Sleep
 }
@@ -10492,9 +10476,8 @@ $A6:E84C 6B          RTL
 }
 
 
-;;; $E84D: Instruction ;;;
+;;; $E84D: Instruction - calculate fireball X/Y velocities ;;;
 {
-; Calculate fireball angle and X/Y speeds
 $A6:E84D DA          PHX
 $A6:E84E 5A          PHY
 $A6:E84F AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
@@ -10516,25 +10499,25 @@ $A6:E872 38          SEC                    ;|
 $A6:E873 E5 14       SBC $14    [$7E:0014]  ;|
 $A6:E875 85 14       STA $14    [$7E:0014]  ;|
 $A6:E877 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
-$A6:E87B 38          SEC
-$A6:E87C E9 80 00    SBC #$0080
-$A6:E87F 49 FF FF    EOR #$FFFF
-$A6:E882 1A          INC A
-$A6:E883 29 FF 00    AND #$00FF
-$A6:E886 C9 B0 00    CMP #$00B0
-$A6:E889 B0 0A       BCS $0A    [$E895]
-$A6:E88B C9 40 00    CMP #$0040
-$A6:E88E 90 0A       BCC $0A    [$E89A]
-$A6:E890 A9 B0 00    LDA #$00B0
-$A6:E893 80 08       BRA $08    [$E89D]
-
-$A6:E895 C9 EB 00    CMP #$00EB
-$A6:E898 90 03       BCC $03    [$E89D]
-
-$A6:E89A A9 EB 00    LDA #$00EB
-
-$A6:E89D 85 12       STA $12    [$7E:0012]
-$A6:E89F 80 4A       BRA $4A    [$E8EB]
+$A6:E87B 38          SEC                    ;\
+$A6:E87C E9 80 00    SBC #$0080             ;|
+$A6:E87F 49 FF FF    EOR #$FFFF             ;} A = (80h - [A]) % 100h (convert to Ridley angle convention: 0 = down, positive = anticlockwise)
+$A6:E882 1A          INC A                  ;|
+$A6:E883 29 FF 00    AND #$00FF             ;/
+$A6:E886 C9 B0 00    CMP #$00B0             ;\
+$A6:E889 B0 0A       BCS $0A    [$E895]     ;|
+$A6:E88B C9 40 00    CMP #$0040             ;|
+$A6:E88E 90 0A       BCC $0A    [$E89A]     ;|
+$A6:E890 A9 B0 00    LDA #$00B0             ;|
+$A6:E893 80 08       BRA $08    [$E89D]     ;} If -15h <= [A] < 40h: $12 = -15h
+                                            ;} If -C0h <= [A] < -50h: $12 = -50h
+$A6:E895 C9 EB 00    CMP #$00EB             ;} If -50h <= [A] < -15h: $12 = [A]
+$A6:E898 90 03       BCC $03    [$E89D]     ;}
+                                            ;|
+$A6:E89A A9 EB 00    LDA #$00EB             ;|
+                                            ;|
+$A6:E89D 85 12       STA $12    [$7E:0012]  ;/
+$A6:E89F 80 4A       BRA $4A    [$E8EB]     ; Go to BRANCH_ANGLE_CALCULATED
 
 ; BRANCH_FACING_RIGHT
 $A6:E8A1 A9 19 00    LDA #$0019             ;\
@@ -10545,7 +10528,7 @@ $A6:E8AA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
 $A6:E8AD 38          SEC                    ;|
 $A6:E8AE E5 12       SBC $12    [$7E:0012]  ;|
 $A6:E8B0 85 12       STA $12    [$7E:0012]  ;|
-$A6:E8B2 A9 D5 FF    LDA #$FFD5             ;} A = angle from enemy position + (19h, -2Bh) to Samus
+$A6:E8B2 A9 D5 FF    LDA #$FFD5             ;} A = angle from enemy position - (-19h, 2Bh) to Samus
 $A6:E8B5 18          CLC                    ;|
 $A6:E8B6 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
 $A6:E8B9 85 14       STA $14    [$7E:0014]  ;|
@@ -10554,55 +10537,56 @@ $A6:E8BE 38          SEC                    ;|
 $A6:E8BF E5 14       SBC $14    [$7E:0014]  ;|
 $A6:E8C1 85 14       STA $14    [$7E:0014]  ;|
 $A6:E8C3 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
-$A6:E8C7 38          SEC
-$A6:E8C8 E9 80 00    SBC #$0080
-$A6:E8CB 49 FF FF    EOR #$FFFF
-$A6:E8CE 1A          INC A
-$A6:E8CF 29 FF 00    AND #$00FF
-$A6:E8D2 C9 50 00    CMP #$0050
-$A6:E8D5 90 0A       BCC $0A    [$E8E1]
-$A6:E8D7 C9 C0 00    CMP #$00C0
-$A6:E8DA B0 0A       BCS $0A    [$E8E6]
-$A6:E8DC A9 50 00    LDA #$0050
-$A6:E8DF 80 08       BRA $08    [$E8E9]
+$A6:E8C7 38          SEC                    ;\
+$A6:E8C8 E9 80 00    SBC #$0080             ;|
+$A6:E8CB 49 FF FF    EOR #$FFFF             ;} A = (80h - [A]) % 100h (convert to Ridley angle convention: 0 = down, positive = anticlockwise)
+$A6:E8CE 1A          INC A                  ;|
+$A6:E8CF 29 FF 00    AND #$00FF             ;/
+$A6:E8D2 C9 50 00    CMP #$0050             ;\
+$A6:E8D5 90 0A       BCC $0A    [$E8E1]     ;|
+$A6:E8D7 C9 C0 00    CMP #$00C0             ;|
+$A6:E8DA B0 0A       BCS $0A    [$E8E6]     ;|
+$A6:E8DC A9 50 00    LDA #$0050             ;|
+$A6:E8DF 80 08       BRA $08    [$E8E9]     ;} If -40h <= [A] < 15h: $12 = 15h
+                                            ;} If 50h <= [A] < C0h: $12 = 50h
+$A6:E8E1 C9 15 00    CMP #$0015             ;} If 15h <= [A] < 50h: $12 = [A]
+$A6:E8E4 B0 03       BCS $03    [$E8E9]     ;}
+                                            ;|
+$A6:E8E6 A9 15 00    LDA #$0015             ;|
+                                            ;|
+$A6:E8E9 85 12       STA $12    [$7E:0012]  ;/
 
-$A6:E8E1 C9 15 00    CMP #$0015
-$A6:E8E4 B0 03       BCS $03    [$E8E9]
-
-$A6:E8E6 A9 15 00    LDA #$0015
-
-$A6:E8E9 85 12       STA $12    [$7E:0012]
-
-$A6:E8EB A9 00 05    LDA #$0500
-$A6:E8EE 22 6C C2 86 JSL $86C26C[$86:C26C]
-$A6:E8F2 8F 32 78 7E STA $7E7832[$7E:7832]
-$A6:E8F6 A9 00 05    LDA #$0500
-$A6:E8F9 22 72 C2 86 JSL $86C272[$86:C272]
-$A6:E8FD 8F 34 78 7E STA $7E7834[$7E:7834]
+; BRANCH_ANGLE_CALCULATED
+$A6:E8EB A9 00 05    LDA #$0500             ;\
+$A6:E8EE 22 6C C2 86 JSL $86C26C[$86:C26C]  ;} Ridley fireball X velocity = 500h * sin([$12] * pi / 80h)
+$A6:E8F2 8F 32 78 7E STA $7E7832[$7E:7832]  ;/
+$A6:E8F6 A9 00 05    LDA #$0500             ;\
+$A6:E8F9 22 72 C2 86 JSL $86C272[$86:C272]  ;} Ridley fireball Y velocity = 500h * cos([$12] * pi / 80h)
+$A6:E8FD 8F 34 78 7E STA $7E7834[$7E:7834]  ;/
 $A6:E901 7A          PLY
 $A6:E902 FA          PLX
 $A6:E903 6B          RTL
 }
 
 
-;;; $E904: Instruction ;;;
+;;; $E904: Instruction - spawn Ridley's fireball enemy projectile - with afterburn ;;;
 {
-; Fires lead fireball
-$A6:E904 A9 00 00    LDA #$0000
-$A6:E907 80 03       BRA $03    [$E90C]
+$A6:E904 A9 00 00    LDA #$0000             ; A = 0 (spawn afterburn)
+$A6:E907 80 03       BRA $03    [$E90C]     ; Go to spawn Ridley's fireball enemy projectile
 }
 
 
-;;; $E909: Instruction ;;;
+;;; $E909: Instruction - spawn Ridley's fireball enemy projectile - without afterburn ;;;
 {
-; Fires following fireball
-$A6:E909 A9 0E 00    LDA #$000E
+$A6:E909 A9 0E 00    LDA #$000E             ; A = Eh (no afterburn)
 }
 
 
-;;; $E90C:  ;;;
+;;; $E90C: Spawn Ridley's fireball enemy projectile ;;;
 {
-$A6:E90C 8D 95 19    STA $1995  [$7E:1995]
+;; Parameters:
+;;     A: Afterburn flag. 0 = spawn afterburn
+$A6:E90C 8D 95 19    STA $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = [A]
 $A6:E90F AF 20 78 7E LDA $7E7820[$7E:7820]  ; A = [Ridley facing direction]
 $A6:E913 5A          PHY
 $A6:E914 A0 42 96    LDY #$9642             ;\
