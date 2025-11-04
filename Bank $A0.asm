@@ -6830,13 +6830,17 @@ $A0:B6FE 6B          RTL
 }
 
 
-;;; $B6FF: 16bit ($26) * 16bit ($28) = 32bit ($2A) ;;;
+;;; $B6FF: 16-bit unsigned multiplication ;;;
 {
 ;; Parameters:
-;;     $26: Multiplicand. Let $26 = a + b * 100h
-;;     $28: Multiplicand. Let $28 = c + d * 100h
+;;     $26: Multiplicand
+;;     $28: Multiplicand
 ;; Returns:
 ;;     $2A..2D: 32-bit result
+
+; Let:
+;     $26 = a + b * 100h
+;     $28 = c + d * 100h
 
 $A0:B6FF DA          PHX
 $A0:B700 5A          PHY

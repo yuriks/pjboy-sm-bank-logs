@@ -8199,7 +8199,7 @@ $8F:E551             dw 0050, 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, 00
 $8F:E571 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $8F:E574 4A          LSR A                  ;} If [Ceres status] = 1 (during Ridley escape cutscene):
 $8F:E575 90 04       BCC $04    [$E57B]     ;/
-$8F:E577 22 AF AA A6 JSL $A6AAAF[$A6:AAAF]  ; Handle Ceres Ridley getaway cutscene
+$8F:E577 22 AF AA A6 JSL $A6AAAF[$A6:AAAF]  ; Handle Ceres Ridley getaway cutscene if active
 
 $8F:E57B 60          RTS
 }

@@ -10321,7 +10321,7 @@ $86:C29A 6B          RTL
 }
 
 
-;;; $C29B: $2A = [$26] * [$28] (16-bit unsigned multiplication) ;;;
+;;; $C29B: 16-bit unsigned multiplication ;;;
 {
 ;; Parameters:
 ;;     $26: Multiplicand
@@ -10349,11 +10349,11 @@ $86:C2B0 A6 27       LDX $27    [$7E:0027]  ;\
 $86:C2B2 8E 02 42    STX $4202              ;|
 $86:C2B5 A6 29       LDX $29    [$7E:0029]  ;|
 $86:C2B7 8E 03 42    STX $4203              ;|
-$86:C2BA EB          XBA                    ;} Result += bd * 10000h
+$86:C2BA EB          XBA                    ;} Result += bd % 100h * 10000h
 $86:C2BB EA          NOP                    ;|
 $86:C2BC AE 16 42    LDX $4216              ;|
-$86:C2BF 86 2C       STX $2C    [$7E:002C]  ;|
-$86:C2C1 AC 17 42    LDY $4217              ;/
+$86:C2BF 86 2C       STX $2C    [$7E:002C]  ;/
+$86:C2C1 AC 17 42    LDY $4217              ; Y = bd / 100h
 $86:C2C4 A6 27       LDX $27    [$7E:0027]  ;\
 $86:C2C6 8E 02 42    STX $4202              ;|
 $86:C2C9 A6 28       LDX $28    [$7E:0028]  ;|
@@ -10362,8 +10362,8 @@ $86:C2CE A5 2B       LDA $2B    [$7E:002B]  ;} Result += bc * 100h
 $86:C2D0 18          CLC                    ;|
 $86:C2D1 6D 16 42    ADC $4216              ;|
 $86:C2D4 85 2B       STA $2B    [$7E:002B]  ;/
-$86:C2D6 90 01       BCC $01    [$C2D9]     ;\
-$86:C2D8 C8          INY                    ;} Propagate carry
+$86:C2D6 90 01       BCC $01    [$C2D9]     ; If carry set:
+$86:C2D8 C8          INY                    ; Y += 1
 
 $86:C2D9 A6 26       LDX $26    [$7E:0026]  ;\
 $86:C2DB 8E 02 42    STX $4202              ;|
@@ -10373,10 +10373,10 @@ $86:C2E3 A5 2B       LDA $2B    [$7E:002B]  ;} Result += ad * 100h
 $86:C2E5 18          CLC                    ;|
 $86:C2E6 6D 16 42    ADC $4216              ;|
 $86:C2E9 85 2B       STA $2B    [$7E:002B]  ;/
-$86:C2EB 90 01       BCC $01    [$C2EE]     ;\
-$86:C2ED C8          INY                    ;} Propagate carry
+$86:C2EB 90 01       BCC $01    [$C2EE]     ; If carry set:
+$86:C2ED C8          INY                    ; Y += 1
 
-$86:C2EE 84 2D       STY $2D    [$7E:002D]  ; Correct result for carries
+$86:C2EE 84 2D       STY $2D    [$7E:002D]  ; Result += [Y] * 1000000h
 $86:C2F0 C2 10       REP #$10
 $86:C2F2 60          RTS
 }

@@ -2586,7 +2586,7 @@ $8B:920C 9C 14 21    STZ $2114              ;\
 $8B:920F 9C 14 21    STZ $2114              ;} BG4 Y scroll = 0
 $8B:9212 9C 15 21    STZ $2115              ; VRAM address increment mode = 8-bit access
 $8B:9215 9C 1A 21    STZ $211A              ;\
-$8B:9218 64 5F       STZ $5F    [$7E:005F]  ;} Mode 7 settings = 0
+$8B:9218 64 5F       STZ $5F    [$7E:005F]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
 $8B:921A 9C 1B 21    STZ $211B              ;\
 $8B:921D 9C 1C 21    STZ $211C              ;|
 $8B:9220 9C 1D 21    STZ $211D              ;} Mode 7 transformation matrix = 0
