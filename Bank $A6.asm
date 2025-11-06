@@ -4428,24 +4428,24 @@ $A6:B651 20 2E B4    JSR $B42E  [$A6:B42E]  ; Y = [$B439 + [$7E:7824] * 2] (acce
 $A6:B654 20 23 D5    JSR $D523  [$A6:D523]  ; Ridley acceleration
 $A6:B657 A9 01 00    LDA #$0001             ;\
 $A6:B65A 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
-$A6:B65E AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$A6:B661 29 FF 00    AND #$00FF
-$A6:B664 C9 03 00    CMP #$0003
-$A6:B667 D0 20       BNE $20    [$B689]
-$A6:B669 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:B66C 29 FF 00    AND #$00FF
-$A6:B66F C9 80 00    CMP #$0080
-$A6:B672 90 13       BCC $13    [$B687]
-$A6:B674 AF 1E 78 7E LDA $7E781E[$7E:781E]
-$A6:B678 D0 0D       BNE $0D    [$B687]
+$A6:B65E AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$A6:B661 29 FF 00    AND #$00FF             ;|
+$A6:B664 C9 03 00    CMP #$0003             ;} If [Samus movement type] != spin jumping: return carry set
+$A6:B667 D0 20       BNE $20    [$B689]     ;/
+$A6:B669 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:B66C 29 FF 00    AND #$00FF             ;|
+$A6:B66F C9 80 00    CMP #$0080             ;} If [random number] % 100h >= 80h:
+$A6:B672 90 13       BCC $13    [$B687]     ;/
+$A6:B674 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
+$A6:B678 D0 0D       BNE $0D    [$B687]     ;} If [$7E:781E] = 0:
 $A6:B67A AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B67E 3A          DEC A                  ;} If [Ridley facing direction] != forwards:
 $A6:B67F F0 06       BEQ $06    [$B687]     ;/
 $A6:B681 A9 3A E7    LDA #$E73A             ;\
 $A6:B684 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A (shoot fireballs)
 
-$A6:B687 18          CLC
-$A6:B688 60          RTS
+$A6:B687 18          CLC                    ;\
+$A6:B688 60          RTS                    ;} Return carry clear
 
 $A6:B689 38          SEC
 $A6:B68A 60          RTS
@@ -5798,7 +5798,7 @@ $A6:C100 22 83 C3 A6 JSL $A6C383[$A6:C383]  ; Draw Japanese "self destruct seque
 ;;; $C104: Self destruct sequence function index Ah - typing "self destruct sequence" text ;;;
 {
 $A6:C104 20 9C C1    JSR $C19C  [$A6:C19C]  ; Ceres escape sequence "emergency" text glow
-$A6:C107 A9 82 35    LDA #$3582             ; A = 3582h
+$A6:C107 A9 82 35    LDA #$3582             ; A = 3582h (tile index 182h, palette 5, high priority)
 $A6:C10A 22 A7 C2 A6 JSL $A6C2A7[$A6:C2A7]  ; Handle typewriter text
 $A6:C10E 90 06       BCC $06    [$C116]     ; If finished typing:
 $A6:C110 EE B2 0F    INC $0FB2  [$7E:0FB2]  ;\
@@ -5851,23 +5851,23 @@ $A6:C164             dw 3986, 398E, 3986, 3993, 3988, 3986, 398F, 3984, 399A
 }
 
 
-;;; $C176: Unused ;;;
+;;; $C176: Unused. Red background glow ;;;
 {
-$A6:C176 A2 16 00    LDX #$0016
-$A6:C179 AF 32 80 7E LDA $7E8032[$7E:8032]
-$A6:C17D 1A          INC A
-$A6:C17E C9 20 00    CMP #$0020
-$A6:C181 30 03       BMI $03    [$C186]
-$A6:C183 A9 E1 FF    LDA #$FFE1
+$A6:C176 A2 16 00    LDX #$0016             ; X = 16h
+$A6:C179 AF 32 80 7E LDA $7E8032[$7E:8032]  ;\
+$A6:C17D 1A          INC A                  ;} Increment red background glow colour
+$A6:C17E C9 20 00    CMP #$0020             ;\
+$A6:C181 30 03       BMI $03    [$C186]     ;} If [red background glow animation frame] >= 20h:
+$A6:C183 A9 E1 FF    LDA #$FFE1             ; Red background glow animation frame = -1Fh
 
 $A6:C186 8F 32 80 7E STA $7E8032[$7E:8032]
-$A6:C18A AF 32 80 7E LDA $7E8032[$7E:8032]
-$A6:C18E 10 04       BPL $04    [$C194]
-$A6:C190 49 FF FF    EOR #$FFFF
-$A6:C193 1A          INC A
-
-$A6:C194 29 1F 00    AND #$001F
-$A6:C197 9F 00 C0 7E STA $7EC000,x
+$A6:C18A AF 32 80 7E LDA $7E8032[$7E:8032]  ;\
+$A6:C18E 10 04       BPL $04    [$C194]     ;|
+$A6:C190 49 FF FF    EOR #$FFFF             ;|
+$A6:C193 1A          INC A                  ;} BG1/2 palette 0 colour Bh = |[red background glow animation frame]|
+                                            ;|
+$A6:C194 29 1F 00    AND #$001F             ;|
+$A6:C197 9F 00 C0 7E STA $7EC000,x          ;/
 $A6:C19B 60          RTS
 }
 
@@ -5977,7 +5977,9 @@ $A6:C2A6 60          RTS                    ;} Return carry set
 ;;; $C2A7: Handle typewriter text (external) ;;;
 {
 ;; Parameters:
-;;     A: 
+;;     A: Base tilemap value (this is how 'A' will be drawn)
+;; Returns:
+;;     Carry: Set if finished, clear otherwise
 $A6:C2A7 85 12       STA $12    [$7E:0012]  ; $12 = [A]
 $A6:C2A9 8B          PHB
 $A6:C2AA 4B          PHK                    ;\
@@ -5991,108 +5993,108 @@ $A6:C2B0 6B          RTL
 ;;; $C2B1: Handle typewriter text ;;;
 {
 ;; Parameters:
-;;     $12: 
+;;     $12: Base tilemap value (this is how 'A' will be drawn)
 ;; Returns:
 ;;     Carry: Set if finished, clear otherwise
 
 ; Incrementally writes text like "TIME BOMB SET EVACUATE IMMEDIATELY",
-$A6:C2B1 AF 3A 80 7E LDA $7E803A[$7E:803A]
-$A6:C2B5 F0 06       BEQ $06    [$C2BD]
-$A6:C2B7 3A          DEC A
-$A6:C2B8 8F 3A 80 7E STA $7E803A[$7E:803A]
-$A6:C2BC 60          RTS
+$A6:C2B1 AF 3A 80 7E LDA $7E803A[$7E:803A]  ;\
+$A6:C2B5 F0 06       BEQ $06    [$C2BD]     ;} If [typewriter instruction timer] != 0:
+$A6:C2B7 3A          DEC A                  ;\
+$A6:C2B8 8F 3A 80 7E STA $7E803A[$7E:803A]  ;} Decrement typewriter instruction timer
+$A6:C2BC 60          RTS                    ; Return
 
-$A6:C2BD AF 3C 80 7E LDA $7E803C[$7E:803C]
-$A6:C2C1 8F 3A 80 7E STA $7E803A[$7E:803A]
-$A6:C2C5 AF 36 80 7E LDA $7E8036[$7E:8036]
-$A6:C2C9 AA          TAX
+$A6:C2BD AF 3C 80 7E LDA $7E803C[$7E:803C]  ;\
+$A6:C2C1 8F 3A 80 7E STA $7E803A[$7E:803A]  ;} Typewriter instruction timer = [typewriter instruction timer reset value]
+$A6:C2C5 AF 36 80 7E LDA $7E8036[$7E:8036]  ;\
+$A6:C2C9 AA          TAX                    ;} X = [typewriter instruction list pointer]
 
 ; LOOP
-$A6:C2CA BD 00 00    LDA $0000,x[$A6:C450]
-$A6:C2CD D0 02       BNE $02    [$C2D1]
-$A6:C2CF 38          SEC
-$A6:C2D0 60          RTS
+$A6:C2CA BD 00 00    LDA $0000,x[$A6:C450]  ; A = [[X]]
+$A6:C2CD D0 02       BNE $02    [$C2D1]     ;} If [A] = 0: (terminator)
+$A6:C2CF 38          SEC                    ;\
+$A6:C2D0 60          RTS                    ;} Return carry set
 
-$A6:C2D1 C9 01 00    CMP #$0001
-$A6:C2D4 D0 0E       BNE $0E    [$C2E4]
-$A6:C2D6 E8          INX
-$A6:C2D7 E8          INX
-$A6:C2D8 BD 00 00    LDA $0000,x[$A6:C452]
-$A6:C2DB 8F 3C 80 7E STA $7E803C[$7E:803C]
-$A6:C2DF E8          INX
-$A6:C2E0 E8          INX
-$A6:C2E1 4C CA C2    JMP $C2CA  [$A6:C2CA]
+$A6:C2D1 C9 01 00    CMP #$0001             ;\
+$A6:C2D4 D0 0E       BNE $0E    [$C2E4]     ;} If [A] = 1: (set timer reset value)
+$A6:C2D6 E8          INX                    ;\
+$A6:C2D7 E8          INX                    ;|
+$A6:C2D8 BD 00 00    LDA $0000,x[$A6:C452]  ;} Typewriter instruction timer reset value = [[X] + 2]
+$A6:C2DB 8F 3C 80 7E STA $7E803C[$7E:803C]  ;} X += 4
+$A6:C2DF E8          INX                    ;|
+$A6:C2E0 E8          INX                    ;/
+$A6:C2E1 4C CA C2    JMP $C2CA  [$A6:C2CA]  ; Go to LOOP
 
-$A6:C2E4 C9 0D 00    CMP #$000D
-$A6:C2E7 D0 0E       BNE $0E    [$C2F7]
-$A6:C2E9 E8          INX
-$A6:C2EA E8          INX
-$A6:C2EB BD 00 00    LDA $0000,x[$A6:C456]
-$A6:C2EE 8F 38 80 7E STA $7E8038[$7E:8038]
-$A6:C2F2 E8          INX
-$A6:C2F3 E8          INX
-$A6:C2F4 4C CA C2    JMP $C2CA  [$A6:C2CA]
+$A6:C2E4 C9 0D 00    CMP #$000D             ;\
+$A6:C2E7 D0 0E       BNE $0E    [$C2F7]     ;} If [A] = Dh: (used for newline)
+$A6:C2E9 E8          INX                    ;\
+$A6:C2EA E8          INX                    ;|
+$A6:C2EB BD 00 00    LDA $0000,x[$A6:C456]  ;} Typewriter VRAM tilemap address = [[X] + 2]
+$A6:C2EE 8F 38 80 7E STA $7E8038[$7E:8038]  ;} X += 4
+$A6:C2F2 E8          INX                    ;|
+$A6:C2F3 E8          INX                    ;/
+$A6:C2F4 4C CA C2    JMP $C2CA  [$A6:C2CA]  ; Go to LOOP
 
-$A6:C2F7 29 FF 00    AND #$00FF
-$A6:C2FA C9 20 00    CMP #$0020
-$A6:C2FD D0 11       BNE $11    [$C310]
-$A6:C2FF AF 38 80 7E LDA $7E8038[$7E:8038]
-$A6:C303 1A          INC A
-$A6:C304 8F 38 80 7E STA $7E8038[$7E:8038]
-$A6:C308 E8          INX
-$A6:C309 8A          TXA
-$A6:C30A 8F 36 80 7E STA $7E8036[$7E:8036]
-$A6:C30E 18          CLC
-$A6:C30F 60          RTS
+$A6:C2F7 29 FF 00    AND #$00FF             ;\
+$A6:C2FA C9 20 00    CMP #$0020             ;} If [A] & FFh = 20h: (space)
+$A6:C2FD D0 11       BNE $11    [$C310]     ;/
+$A6:C2FF AF 38 80 7E LDA $7E8038[$7E:8038]  ;\
+$A6:C303 1A          INC A                  ;} Increment typewriter VRAM tilemap address
+$A6:C304 8F 38 80 7E STA $7E8038[$7E:8038]  ;/
+$A6:C308 E8          INX                    ;\
+$A6:C309 8A          TXA                    ;} Typewriter instruction list pointer = [X] + 1
+$A6:C30A 8F 36 80 7E STA $7E8036[$7E:8036]  ;/
+$A6:C30E 18          CLC                    ;\
+$A6:C30F 60          RTS                    ;} Return carry clear
 
-$A6:C310 C9 21 00    CMP #$0021
-$A6:C313 D0 03       BNE $03    [$C318]
-$A6:C315 A9 5B 00    LDA #$005B
+$A6:C310 C9 21 00    CMP #$0021             ;\
+$A6:C313 D0 03       BNE $03    [$C318]     ;} If [A] & FFh = 21h: (exclamation mark, Zebes only)
+$A6:C315 A9 5B 00    LDA #$005B             ; A = 5Bh
 
 $A6:C318 48          PHA
-$A6:C319 8A          TXA
-$A6:C31A 1A          INC A
-$A6:C31B 8F 36 80 7E STA $7E8036[$7E:8036]
-$A6:C31F AC 30 03    LDY $0330  [$7E:0330]
-$A6:C322 A9 02 00    LDA #$0002
-$A6:C325 99 D0 00    STA $00D0,y[$7E:00D0]
-$A6:C328 A9 00 7E    LDA #$7E00
-$A6:C32B 99 D3 00    STA $00D3,y[$7E:00D3]
-$A6:C32E 68          PLA
-$A6:C32F 38          SEC
-$A6:C330 E9 41 00    SBC #$0041
-$A6:C333 18          CLC
-$A6:C334 65 12       ADC $12    [$7E:0012]
-$A6:C336 8F 34 80 7E STA $7E8034[$7E:8034]
-$A6:C33A A9 34 80    LDA #$8034
-$A6:C33D 99 D2 00    STA $00D2,y[$7E:00D2]
-$A6:C340 AF 38 80 7E LDA $7E8038[$7E:8038]
-$A6:C344 99 D5 00    STA $00D5,y[$7E:00D5]
-$A6:C347 1A          INC A
-$A6:C348 8F 38 80 7E STA $7E8038[$7E:8038]
-$A6:C34C 98          TYA
-$A6:C34D 18          CLC
-$A6:C34E 69 07 00    ADC #$0007
-$A6:C351 8D 30 03    STA $0330  [$7E:0330]
-$A6:C354 AF 3E 80 7E LDA $7E803E[$7E:803E]
-$A6:C358 1A          INC A
-$A6:C359 8F 3E 80 7E STA $7E803E[$7E:803E]
-$A6:C35D C9 02 00    CMP #$0002
-$A6:C360 30 1F       BMI $1F    [$C381]
-$A6:C362 A9 00 00    LDA #$0000
-$A6:C365 8F 3E 80 7E STA $7E803E[$7E:803E]
-$A6:C369 AD 9F 07    LDA $079F  [$7E:079F]
-$A6:C36C C9 06 00    CMP #$0006
-$A6:C36F D0 09       BNE $09    [$C37A]
+$A6:C319 8A          TXA                    ;\
+$A6:C31A 1A          INC A                  ;} Typewriter instruction list pointer = [X] + 1
+$A6:C31B 8F 36 80 7E STA $7E8036[$7E:8036]  ;/
+$A6:C31F AC 30 03    LDY $0330  [$7E:0330]  ;\
+$A6:C322 A9 02 00    LDA #$0002             ;|
+$A6:C325 99 D0 00    STA $00D0,y[$7E:00D0]  ;|
+$A6:C328 A9 00 7E    LDA #$7E00             ;|
+$A6:C32B 99 D3 00    STA $00D3,y[$7E:00D3]  ;|
+$A6:C32E 68          PLA                    ;|
+$A6:C32F 38          SEC                    ; \ <-- why; why push/pop A and interrupt the $D0 table writing code to do this >_<;
+$A6:C330 E9 41 00    SBC #$0041             ; |
+$A6:C333 18          CLC                    ; } Typewriter tilemap entry = [A] + [$12] - 41h
+$A6:C334 65 12       ADC $12    [$7E:0012]  ; |
+$A6:C336 8F 34 80 7E STA $7E8034[$7E:8034]  ; /
+$A6:C33A A9 34 80    LDA #$8034             ;} Queue transfer of 2 bytes from typewriter tilemap entry to VRAM [typewriter VRAM tilemap address]
+$A6:C33D 99 D2 00    STA $00D2,y[$7E:00D2]  ;} Increment typewriter VRAM tilemap address
+$A6:C340 AF 38 80 7E LDA $7E8038[$7E:8038]  ;|
+$A6:C344 99 D5 00    STA $00D5,y[$7E:00D5]  ;|
+$A6:C347 1A          INC A                  ;|
+$A6:C348 8F 38 80 7E STA $7E8038[$7E:8038]  ;|
+$A6:C34C 98          TYA                    ;|
+$A6:C34D 18          CLC                    ;|
+$A6:C34E 69 07 00    ADC #$0007             ;|
+$A6:C351 8D 30 03    STA $0330  [$7E:0330]  ;/
+$A6:C354 AF 3E 80 7E LDA $7E803E[$7E:803E]  ;\
+$A6:C358 1A          INC A                  ;} Increment typewriter stroke timer
+$A6:C359 8F 3E 80 7E STA $7E803E[$7E:803E]  ;/
+$A6:C35D C9 02 00    CMP #$0002             ;\
+$A6:C360 30 1F       BMI $1F    [$C381]     ;} If [typewriter stroke timer] < 2: return carry clear
+$A6:C362 A9 00 00    LDA #$0000             ;\
+$A6:C365 8F 3E 80 7E STA $7E803E[$7E:803E]  ;} Typewriter stroke timer = 0
+$A6:C369 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$A6:C36C C9 06 00    CMP #$0006             ;} If [area index] = Ceres:
+$A6:C36F D0 09       BNE $09    [$C37A]     ;/
 $A6:C371 A9 45 00    LDA #$0045             ;\
 $A6:C374 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 45h, sound library 2, max queued sounds allowed = 3 (typewriter stroke - Ceres self destruct sequence)
 $A6:C378 80 07       BRA $07    [$C381]
 
-$A6:C37A A9 0D 00    LDA #$000D             ;\
+$A6:C37A A9 0D 00    LDA #$000D             ;\ Else ([area index] != Ceres):
 $A6:C37D 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound Dh, sound library 3, max queued sounds allowed = 3 (typewriter stroke - intro)
 
-$A6:C381 18          CLC
-$A6:C382 60          RTS
+$A6:C381 18          CLC                    ;\
+$A6:C382 60          RTS                    ;} Return carry clear
 }
 
 
@@ -8785,8 +8787,9 @@ $A6:D733 60          RTS
 }
 
 
-;;; $D734:  ;;;
+;;; $D734: Unused ;;;
 {
+; Called by unused routine $D722
 $A6:D734 BD 7E 0F    LDA $0F7E,x
 $A6:D737 38          SEC
 $A6:D738 E5 14       SBC $14    [$7E:0014]
@@ -8843,8 +8846,9 @@ $A6:D797 60          RTS
 }
 
 
-;;; $D798:  ;;;
+;;; $D798: Unused ;;;
 {
+; Called by unused routine $D722
 $A6:D798 BD 7A 0F    LDA $0F7A,x
 $A6:D79B 38          SEC
 $A6:D79C E5 12       SBC $12    [$7E:0012]
@@ -9702,7 +9706,7 @@ $A6:DF07 60          RTS                    ;} Return carry set
 }
 
 
-;;; $DF08:  ;;;
+;;; $DF08: Unused.  ;;;
 {
 $A6:DF08 B9 04 0C    LDA $0C04,y
 $A6:DF0B 29 0F 00    AND #$000F
@@ -9773,10 +9777,16 @@ $A6:DF5D 4C B6 DF    JMP $DFB6  [$A6:DFB6]  ; Return
 }
 
 
-;;; $DF60:  ;;;
+;;; $DF60: Unused.  ;;;
 {
 $A6:DF60 20 66 DF    JSR $DF66  [$A6:DF66]
 $A6:DF63 4C B6 DF    JMP $DFB6  [$A6:DFB6]
+}
+
+
+;;; $DF66: Unused.  ;;;
+{
+; Called by unused routine $DF60
 $A6:DF66 22 53 D4 A6 JSL $A6D453[$A6:D453]
 $A6:DF6A A9 60 00    LDA #$0060
 $A6:DF6D 8D A8 18    STA $18A8  [$7E:18A8]
@@ -9881,7 +9891,7 @@ $A6:E01A 60          RTS
 }
 
 
-;;; $E01B:  ;;;
+;;; $E01B: Unused ;;;
 {
 $A6:E01B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:E01E AD 64 0B    LDA $0B64  [$7E:0B64]  ;\
@@ -10024,6 +10034,8 @@ $A6:E14E 60          RTS
 }
 
 
+;;; $E14F..E4BD: Palettes ;;;
+{
 ;;; $E14F: Palette - enemy $E13F/$E17F (Ridley) ;;;
 {
 $A6:E14F             dw 0000, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E5F, 183F, 1014, 031F, 01DA, 00F5, 0C63
@@ -10128,6 +10140,7 @@ $A6:E30A             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 $A6:E46A             dw 4E7A, 3D73, 1449, 0405, 45D6, 3151, 20AD, 184A, 561F, 183F, 1015, 02BF, 019A, 00D6, ; 5400..8999 hp / 50..69 hits
                         4A5A, 3973, 142A, 0407, 45B6, 3132, 20AE, 184B, 51FF, 183F, 1015, 029F, 019A, 00D6, ; 1800..5399 hp. Unused by Ceres Ridley (due to a bug, see $D4B5)
                         4A3B, 3954, 142B, 0808, 41B7, 2D33, 20AF, 184C, 4DDF, 183F, 1016, 067F, 057B, 04B7  ; 0..1799 hp / 70+ hits
+}
 }
 
 
@@ -10290,7 +10303,7 @@ $A6:E576             dw E501,0000,  ; ???
 }
 
 
-;;; $E5A0: Instruction list -  ;;;
+;;; $E5A0: Unused. Instruction list -  ;;;
 {
 $A6:E5A0             dx E517,E5FE,      ; Go to $E5FE if not facing left
                         E501,0000,      ; ???

@@ -4096,7 +4096,7 @@ $A9:B2DF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn enemy projectile $CBBB (tim
 
 ;;; $B2E3: Mother Brain body function - third phase - death sequence - type out Zebes escape text ;;;
 {
-$A9:B2E3 A9 10 26    LDA #$2610             ; A = 2610h
+$A9:B2E3 A9 10 26    LDA #$2610             ; A = 2610h (tile index 210h, palette 1, high priority)
 $A9:B2E6 22 A7 C2 A6 JSL $A6C2A7[$A6:C2A7]  ; Handle typewriter text
 $A9:B2EA 90 0C       BCC $0C    [$B2F8]     ; If not finished typing: return
 $A9:B2EC A9 F9 B2    LDA #$B2F9             ;\
