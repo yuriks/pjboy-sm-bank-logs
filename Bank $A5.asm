@@ -297,9 +297,8 @@ $A5:8900 60          RTS
 }
 
 
-;;; $8901: Unused.  ;;;
+;;; $8901: Unused. Fire goop ;;;
 {
-; Fire goop?
 $A5:8901 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A5:8904 29 0F 00    AND #$000F             ;} If [frame counter] % 10h != 0: return
 $A5:8907 D0 18       BNE $18    [$8921]     ;/
@@ -1726,6 +1725,10 @@ $A5:94DC 60          RTS
 
 ;;; $94DD: Instruction - Draygon instructions lists = [[Y]], [[Y] + 2], [[Y] + 4], [[Y] + 6] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:94DD 5A          PHY
 $A5:94DE B9 00 00    LDA $0000,y[$A5:97D3]  ;\
 $A5:94E1 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = [[Y]]
@@ -2003,6 +2006,10 @@ $A5:9735 60          RTS
 {
 ;;; $9736: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:9736 B9 00 00    LDA $0000,y
 $A5:9739 9D A8 0F    STA $0FA8,x
 $A5:973C C8          INY
@@ -2799,6 +2806,10 @@ $A5:9D9E             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
 
 ;;; $9E0A: Instruction - displace Draygon body graphics [[Y]] px left, [[Y] + 2] px down ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:9E0A DA          PHX
 $A5:9E0B 5A          PHY
 $A5:9E0C B9 00 00    LDA $0000,y[$A5:99FE]
@@ -2905,6 +2916,10 @@ $A5:9F55             dx 812F        ; Sleep
 
 ;;; $9F57: Instruction - Draygon body function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:9F57 B9 00 00    LDA $0000,y
 $A5:9F5A 8D A8 0F    STA $0FA8  [$7E:0FA8]
 $A5:9F5D C8          INY
@@ -2915,6 +2930,10 @@ $A5:9F5F 6B          RTL
 
 ;;; $9F60: Instruction - queue sound [[Y]], sound library 2, max sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:9F60 DA          PHX
 $A5:9F61 5A          PHY
 $A5:9F62 B9 00 00    LDA $0000,y[$A5:9CA0]
@@ -2929,6 +2948,10 @@ $A5:9F6D 6B          RTL
 
 ;;; $9F6E: Instruction - queue sound [[Y]], sound library 3, max sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:9F6E DA          PHX
 $A5:9F6F 5A          PHY
 $A5:9F70 B9 00 00    LDA $0000,y[$A5:989D]
@@ -3907,6 +3930,10 @@ $A5:C47A 6B          RTL
 
 ;;; $C47B: Instruction - Draygon eye function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:C47B 5A          PHY
 $A5:C47C B9 00 00    LDA $0000,y[$A5:988D]
 $A5:C47F 8D E8 0F    STA $0FE8  [$7E:0FE8]
@@ -4807,6 +4834,10 @@ $A5:E7BD             dx E96E,       ; Spawn Spore Spawn hardening dust cloud
 
 ;;; $E811: Unused. Instruction - Spore Spawn max X radius = [[Y]], angle delta = [[Y] + 2], angle = [[Y] + 4] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E811 B9 00 00    LDA $0000,y
 $A5:E814 8F 16 78 7E STA $7E7816[$7E:7816]
 $A5:E818 B9 02 00    LDA $0002,y
@@ -4823,6 +4854,10 @@ $A5:E82C 6B          RTL
 
 ;;; $E82D: Instruction - Spore Spawn max X radius = [[Y]], angle delta = [[Y] + 2] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E82D B9 00 00    LDA $0000,y[$A5:E6D7]
 $A5:E830 8F 16 78 7E STA $7E7816[$7E:7816]
 $A5:E834 B9 02 00    LDA $0002,y[$A5:E6D9]
@@ -4837,6 +4872,10 @@ $A5:E83F 6B          RTL
 
 ;;; $E840: Unused. Instruction - Spore Spawn max X radius = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E840 B9 00 00    LDA $0000,y
 $A5:E843 8F 16 78 7E STA $7E7816[$7E:7816]
 $A5:E847 C8          INY
@@ -4847,6 +4886,10 @@ $A5:E849 6B          RTL
 
 ;;; $E84A: Unused. Instruction - Spore Spawn angle delta = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E84A B9 00 00    LDA $0000,y
 $A5:E84D 8F 18 78 7E STA $7E7818[$7E:7818]
 $A5:E851 C8          INY
@@ -4857,6 +4900,10 @@ $A5:E853 6B          RTL
 
 ;;; $E854: Unused. Instruction - Spore Spawn max X radius += [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E854 AF 16 78 7E LDA $7E7816[$7E:7816]
 $A5:E858 18          CLC
 $A5:E859 79 00 00    ADC $0000,y
@@ -4869,6 +4916,10 @@ $A5:E862 6B          RTL
 
 ;;; $E863: Unused. Instruction - Spore Spawn angle delta += [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E863 AF 18 78 7E LDA $7E7818[$7E:7818]
 $A5:E867 18          CLC
 $A5:E868 79 00 00    ADC $0000,y
@@ -4881,6 +4932,10 @@ $A5:E871 6B          RTL
 
 ;;; $E872: Instruction - spore generation flag = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E872 B9 00 00    LDA $0000,y[$A5:E6E5]
 $A5:E875 8F 00 90 7E STA $7E9000[$7E:9000]
 $A5:E879 C8          INY
@@ -4905,6 +4960,10 @@ $A5:E894 6B          RTL
 
 ;;; $E895: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E895 DA          PHX
 $A5:E896 5A          PHY
 $A5:E897 B9 00 00    LDA $0000,y[$A5:E6E9]
@@ -4919,6 +4978,10 @@ $A5:E8A2 6B          RTL
 
 ;;; $E8A3: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E8A3 DA          PHX
 $A5:E8A4 5A          PHY
 $A5:E8A5 B9 00 00    LDA $0000,y
@@ -4944,6 +5007,10 @@ $A5:E8B9 6B          RTL
 
 ;;; $E8BA: Instruction - enemy function = [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E8BA 5A          PHY
 $A5:E8BB DA          PHX
 $A5:E8BC AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4959,6 +5026,10 @@ $A5:E8C9 6B          RTL
 
 ;;; $E8CA: Instruction - load Spore Spawn death sequence palette, palette data offset [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
 $A5:E8CA 5A          PHY
 $A5:E8CB DA          PHX
 $A5:E8CC 84 12       STY $12    [$7E:0012]  ;\
@@ -5010,6 +5081,11 @@ $A5:E91B 6B          RTL
 
 ;;; $E91C: Instruction - load Spore Spawn death sequence target palette, palette data offset [[Y]] ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
 ; Similar to $E8CA, but writing to target palette colours instead (called before fade-in)
 $A5:E91C 5A          PHY
 $A5:E91D DA          PHX

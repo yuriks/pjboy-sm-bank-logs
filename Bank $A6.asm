@@ -4309,7 +4309,7 @@ $A6:B584 A9 94 B5    LDA #$B594             ;\
 $A6:B587 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B594
 $A6:B58A A9 20 00    LDA #$0020
 $A6:B58D 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B591 4C 55 D9    JMP $D955  [$A6:D955]
+$A6:B591 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not facing room middle
 }
 
 
@@ -4379,7 +4379,7 @@ $A6:B5FD A9 13 B6    LDA #$B613             ;\
 $A6:B600 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B613
 $A6:B603 A9 80 00    LDA #$0080
 $A6:B606 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A6:B609 4C 55 D9    JMP $D955  [$A6:D955]
+$A6:B609 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not facing room middle
 
 $A6:B60C 60          RTS
 
@@ -4405,7 +4405,7 @@ $A6:B62B A9 E5 B5    LDA #$B5E5             ;\
 $A6:B62E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5
 $A6:B631 A9 80 00    LDA #$0080
 $A6:B634 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A6:B637 4C 55 D9    JMP $D955  [$A6:D955]
+$A6:B637 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not facing room middle
 
 $A6:B63A 60          RTS
 
@@ -4485,7 +4485,7 @@ $A6:B6C5 4C 23 D5    JMP $D523  [$A6:D523]  ; Ridley acceleration
 
 $A6:B6C8             dw 00B0, 0080, 0060
 
-$A6:B6CE 20 55 D9    JSR $D955  [$A6:D955]
+$A6:B6CE 20 55 D9    JSR $D955  [$A6:D955]  ; Turn Ridley around if not facing room middle
 $A6:B6D1 A9 DD B6    LDA #$B6DD             ;\
 $A6:B6D4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6DD
 $A6:B6D7 A9 20 00    LDA #$0020
@@ -4690,12 +4690,12 @@ $A6:B86F B9 D5 B9    LDA $B9D5,y[$A6:B9D9]  ;} $12 = [Ridley X position] + [$B9D
 $A6:B872 18          CLC                    ;|
 $A6:B873 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
 $A6:B876 85 12       STA $12    [$7E:0012]  ;/
-$A6:B878 AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A6:B87C A8          TAY
-$A6:B87D B9 DB B9    LDA $B9DB,y[$A6:B9DB]
-$A6:B880 18          CLC
-$A6:B881 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:B884 85 14       STA $14    [$7E:0014]
+$A6:B878 AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A6:B87C A8          TAY                    ;|
+$A6:B87D B9 DB B9    LDA $B9DB,y[$A6:B9DB]  ;|
+$A6:B880 18          CLC                    ;} $14 = [Ridley Y position] + [$B9DB + [Ridley feet distance index] * 2]
+$A6:B881 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
+$A6:B884 85 14       STA $14    [$7E:0014]  ;/
 $A6:B886 4C 29 DF    JMP $DF29  [$A6:DF29]
 }
 
@@ -4823,9 +4823,12 @@ $A6:B9C9             dw FDC0,FD40,FC40,FB60,FA20,F920
 }
 
 
-;;; $B9D5:  ;;;
+;;; $B9D5: Ridley feet X/Y offsets ;;;
 {
+; X offsets. Indexed by [$7E:7820] * 2
 $A6:B9D5             dw 000C, 0000, FFF4
+
+; Y offsets. Indexed by [$7E:783A]
 $A6:B9DB             dw 0023, 002E, 0038
 }
 
@@ -4877,18 +4880,18 @@ $A6:BA2B AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:BA2F 0A          ASL A                  ;|
 $A6:BA30 A8          TAY                    ;|
 $A6:BA31 B9 D5 B9    LDA $B9D5,y[$A6:B9D5]  ;|
-$A6:BA34 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Samus X position = [Ridley X position] + [$B9D5 + [Ridley facing direction] * 2] + [$7E:7828] + carry
+$A6:BA34 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Samus X position = [Ridley X position] + [$B9D5 + [Ridley facing direction] * 2] + [$7E:7828]
 $A6:BA37 18          CLC                    ;|
 $A6:BA38 6F 28 78 7E ADC $7E7828[$7E:7828]  ;|
 $A6:BA3C 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
-$A6:BA3F AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A6:BA43 A8          TAY
-$A6:BA44 B9 DB B9    LDA $B9DB,y[$A6:B9DB]
-$A6:BA47 18          CLC
-$A6:BA48 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:BA4B 18          CLC
-$A6:BA4C 6F 2A 78 7E ADC $7E782A[$7E:782A]
-$A6:BA50 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$A6:BA3F AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A6:BA43 A8          TAY                    ;|
+$A6:BA44 B9 DB B9    LDA $B9DB,y[$A6:B9DB]  ;|
+$A6:BA47 18          CLC                    ;|
+$A6:BA48 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Samus Y position = [Ridley Y position] + [$B9DB + [Ridley feet distance index]] + [$7E:782A]
+$A6:BA4B 18          CLC                    ;|
+$A6:BA4C 6F 2A 78 7E ADC $7E782A[$7E:782A]  ;|
+$A6:BA50 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $A6:BA53 60          RTS
 }
 
@@ -4901,21 +4904,21 @@ $A6:BA58 0A          ASL A                  ;|
 $A6:BA59 A8          TAY                    ;|
 $A6:BA5A B9 D5 B9    LDA $B9D5,y[$A6:B9D5]  ;|
 $A6:BA5D 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
-$A6:BA60 38          SEC                    ;} $7E:7828 = [Samus X position] - [Ridley X position] - [$B9D5 + [Ridley facing direction] * 2] - carry
+$A6:BA60 38          SEC                    ;} $7E:7828 = [Samus X position] - [Ridley X position] - [$B9D5 + [Ridley facing direction] * 2] - 1
 $A6:BA61 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
 $A6:BA64 49 FF FF    EOR #$FFFF             ;|
 $A6:BA67 1A          INC A                  ;|
 $A6:BA68 8F 28 78 7E STA $7E7828[$7E:7828]  ;/
-$A6:BA6C AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A6:BA70 A8          TAY
-$A6:BA71 B9 DB B9    LDA $B9DB,y[$A6:B9DB]
-$A6:BA74 18          CLC
-$A6:BA75 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:BA78 38          SEC
-$A6:BA79 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A6:BA7C 49 FF FF    EOR #$FFFF
-$A6:BA7F 1A          INC A
-$A6:BA80 8F 2A 78 7E STA $7E782A[$7E:782A]
+$A6:BA6C AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A6:BA70 A8          TAY                    ;|
+$A6:BA71 B9 DB B9    LDA $B9DB,y[$A6:B9DB]  ;|
+$A6:BA74 18          CLC                    ;|
+$A6:BA75 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
+$A6:BA78 38          SEC                    ;} $7E:782A = [Samus Y position] - [Ridley Y position] - [$B9DB + [Ridley feet distance index]]
+$A6:BA79 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$A6:BA7C 49 FF FF    EOR #$FFFF             ;|
+$A6:BA7F 1A          INC A                  ;|
+$A6:BA80 8F 2A 78 7E STA $7E782A[$7E:782A]  ;/
 $A6:BA84 60          RTS
 }
 
@@ -6451,26 +6454,26 @@ $A6:C715 6B          RTL
 
 ;;; $C716: Ridley explosion initialisation - index = 2 ;;;
 {
-$A6:C716 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
-$A6:C719 AF 40 20 7E LDA $7E2040[$7E:2040]  ;} Enemy X position = [Ridley tail segment 1 X position]
-$A6:C71D 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;\
-$A6:C720 AF 42 20 7E LDA $7E2042[$7E:2042]  ;} Enemy Y position = [Ridley tail segment 1 Y position]
-$A6:C724 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;\
-$A6:C727 A9 47 CA    LDA #$CA47             ;} Enemy instruction list pointer = $CA47
-$A6:C72A 9D 92 0F    STA $0F92,x[$7E:1112]
+$A6:C716 AE 54 0E    LDX $0E54  [$7E:0E54]
+$A6:C719 AF 40 20 7E LDA $7E2040[$7E:2040]  ;\
+$A6:C71D 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = [Ridley tail segment 1 X position]
+$A6:C720 AF 42 20 7E LDA $7E2042[$7E:2042]  ;\
+$A6:C724 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = [Ridley tail segment 1 Y position]
+$A6:C727 A9 47 CA    LDA #$CA47             ;\
+$A6:C72A 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $CA47
 $A6:C72D 6B          RTL
 }
 
 
 ;;; $C72E: Ridley explosion initialisation - index = 4 ;;;
 {
-$A6:C72E AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
-$A6:C731 AF 54 20 7E LDA $7E2054[$7E:2054]  ;} Enemy X position = [Ridley tail segment 2 X position]
-$A6:C735 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;\
-$A6:C738 AF 56 20 7E LDA $7E2056[$7E:2056]  ;} Enemy Y position = [Ridley tail segment 2 Y position]
-$A6:C73C 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;\
-$A6:C73F A9 4D CA    LDA #$CA4D             ;} Enemy instruction list pointer = $CA4D
-$A6:C742 9D 92 0F    STA $0F92,x[$7E:10D2]
+$A6:C72E AE 54 0E    LDX $0E54  [$7E:0E54]
+$A6:C731 AF 54 20 7E LDA $7E2054[$7E:2054]  ;\
+$A6:C735 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;} Enemy X position = [Ridley tail segment 2 X position]
+$A6:C738 AF 56 20 7E LDA $7E2056[$7E:2056]  ;\
+$A6:C73C 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;} Enemy Y position = [Ridley tail segment 2 Y position]
+$A6:C73F A9 4D CA    LDA #$CA4D             ;\
+$A6:C742 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $CA4D
 $A6:C745 6B          RTL
 }
 
@@ -8211,7 +8214,7 @@ $A6:D3F8 60          RTS
 }
 
 
-;;; $D3F9:  ;;;
+;;; $D3F9: Flip Ridley tail ;;;
 {
 $A6:D3F9 DA          PHX
 $A6:D3FA 5A          PHY
@@ -8431,7 +8434,7 @@ $A6:D523 A9 00 00    LDA #$0000
 ;; Parameters:
 ;;     A: Additional deceleration. Only 0 and 10h are used
 ;;     X: 0. Enemy index
-;;     Y: Acceleration factor. Range 0..Fh. 
+;;     Y: Acceleration factor. Range 0..Fh.
 ;;     $12: Target X position
 ;;     $14: Target Y position
 
@@ -9079,26 +9082,25 @@ $A6:D954 60          RTS
 }
 
 
-;;; $D955:  ;;;
+;;; $D955: Turn Ridley around if not facing room middle ;;;
 {
-; Turn around if facing away from the center of the room (facing a wall)
 $A6:D955 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:D959 F0 0D       BEQ $0D    [$D968]     ;} If [Ridley facing direction] != left:
-$A6:D95B 3A          DEC A
-$A6:D95C F0 1E       BEQ $1E    [$D97C]
-$A6:D95E AD 79 0F    LDA $0F79  [$7E:0F79]
-$A6:D961 10 19       BPL $19    [$D97C]
-$A6:D963 A9 06 E7    LDA #$E706
+$A6:D95B 3A          DEC A                  ;\
+$A6:D95C F0 1E       BEQ $1E    [$D97C]     ;} If [Ridley facing direction] = forward: return
+$A6:D95E AD 79 0F    LDA $0F79  [$7E:0F79]  ;\
+$A6:D961 10 19       BPL $19    [$D97C]     ;} If [Ridley X position] % 100h < 80h: return
+$A6:D963 A9 06 E7    LDA #$E706             ; Ridley instruction list pointer = $E706 (turn to face left)
 $A6:D966 80 08       BRA $08    [$D970]
 
-$A6:D968 AD 79 0F    LDA $0F79  [$7E:0F79]
-$A6:D96B 30 0F       BMI $0F    [$D97C]
-$A6:D96D A9 F0 E6    LDA #$E6F0
+$A6:D968 AD 79 0F    LDA $0F79  [$7E:0F79]  ;\ Else ([Ridley facing direction] = left):
+$A6:D96B 30 0F       BMI $0F    [$D97C]     ;} If [Ridley X position] % 100h >= 80h: return
+$A6:D96D A9 F0 E6    LDA #$E6F0             ; Ridley instruction list pointer = $E6F0 (turn to face right)
 
 $A6:D970 8D 92 0F    STA $0F92  [$7E:0F92]
-$A6:D973 A9 02 00    LDA #$0002
-$A6:D976 8D 94 0F    STA $0F94  [$7E:0F94]
-$A6:D979 9C 90 0F    STZ $0F90  [$7E:0F90]
+$A6:D973 A9 02 00    LDA #$0002             ;\
+$A6:D976 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Ridley instruction timer = 2
+$A6:D979 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Ridley timer = 0
 
 $A6:D97C 60          RTS
 }
@@ -10188,8 +10190,14 @@ $A6:E4ED 6B          RTL
 }
 
 
-;;; $E4EE: Instruction ;;;
+;;; $E4EE: Unused. Instruction ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
+; Used by unused instruction list $E5A0
 $A6:E4EE AF 36 78 7E LDA $7E7836[$7E:7836]
 $A6:E4F2 D0 F5       BNE $F5    [$E4E9]
 $A6:E4F4 C8          INY
@@ -10198,8 +10206,14 @@ $A6:E4F6 80 F1       BRA $F1    [$E4E9]
 }
 
 
-;;; $E4F8: Instruction ;;;
+;;; $E4F8: Unused. Instruction ;;;
 {
+;; Parameters:
+;;     Y: Pointer to instruction arguments
+;; Returns:
+;;     Y: Pointer to next instruction
+
+; Used by unused instruction list $E5A0
 $A6:E4F8 AF 36 78 7E LDA $7E7836[$7E:7836]
 $A6:E4FC F0 EB       BEQ $EB    [$E4E9]
 $A6:E4FE C8          INY
@@ -10208,18 +10222,21 @@ $A6:E500 6B          RTL
 }
 
 
-;;; $E501: Instruction ;;;
+;;; $E501: Instruction - Ridley feet distance index = [[Y]] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
 ;; Returns:
 ;;     Y: Pointer to next instruction
+
+; Also prevents scrolling o_O
+
 $A6:E501 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A6:E504 8D 10 0B    STA $0B10  [$7E:0B10]  ;} Samus previous X position = [Samus X position]
 $A6:E507 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A6:E50A 8D 14 0B    STA $0B14  [$7E:0B14]  ;} Samus previous Y position = [Samus Y position]
 $A6:E50D B9 00 00    LDA $0000,y            ;\
-$A6:E510 8F 3A 78 7E STA $7E783A[$7E:783A]  ;} $7E:783A = [[Y]]
+$A6:E510 8F 3A 78 7E STA $7E783A[$7E:783A]  ;} Ridley feet distance index = [[Y]]
 }
 
 
@@ -10264,9 +10281,8 @@ $A6:E537 6B          RTL
 
 ;;; $E538..E71B: Instruction lists ;;;
 {
-;;; $E538: Instruction list -  ;;;
+;;; $E538: Instruction list - initial ;;;
 {
-; Initialization (draws and avoids crashing)
 $A6:E538             dx E517,E542,  ; Go to $E542 if not facing left
                         000C,E983,
                         812F        ; Sleep
@@ -10278,26 +10294,26 @@ $A6:E542             dx 000C,E9A5,
 ;;; $E548: Instruction list - Ceres Ridley lunge ;;;
 {
 $A6:E548             dw E517,E576,  ; Go to $E576 if not facing left
-                        E501,0000,  ; ???
+                        E501,0000,  ; Ridley feet distance index = 0
                         0004,E983,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA4F,
-                        E501,0004,  ; ???
+                        E501,0004,  ; Ridley feet distance index = 4
                         0050,EA71,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA4F,
-                        E501,0000,  ; ???
+                        E501,0000,  ; Ridley feet distance index = 0
                         0004,E983,
                         812F        ; Sleep
-$A6:E576             dw E501,0000,  ; ???
+$A6:E576             dw E501,0000,  ; Ridley feet distance index = 0
                         0004,E9A5,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA93,
-                        E501,0004,  ; ???
+                        E501,0004,  ; Ridley feet distance index = 4
                         0050,EAB5,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA93,
-                        E501,0000,  ; ???
+                        E501,0000,  ; Ridley feet distance index = 0
                         0004,E9A5,
                         812F        ; Sleep
 }
@@ -10306,48 +10322,48 @@ $A6:E576             dw E501,0000,  ; ???
 ;;; $E5A0: Unused. Instruction list -  ;;;
 {
 $A6:E5A0             dx E517,E5FE,      ; Go to $E5FE if not facing left
-                        E501,0000,      ; ???
+                        E501,0000,      ; Ridley feet distance index = 0
                         0002,E983,
                         E4F8,E5B2,      ; ???
                         812F            ; Sleep
-$A6:E5B2             dx E501,0002,      ; ???
+$A6:E5B2             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA4F,
                         E4F8,E5C8,      ; ???
                         0001,EA4F,
                         E4EE,E5BE,E5F4, ; ???
-                        E501,0004,      ; ???
+                        E501,0004,      ; Ridley feet distance index = 4
                         0004,EA71,
                         E4F8,E5DE,      ; ???
                         0001,EA71,
                         E4EE,E5D4,E5DE, ; ???
-                        E501,0002,      ; ???
+                        E501,0002,      ; Ridley feet distance index = 2
                         0003,EA4F,
                         E4F8,E5F4,      ; ???
                         0001,EA4F,
                         E4EE,E5EA,E5F4, ; ???
-                        E501,0000,      ; ???
+                        E501,0000,      ; Ridley feet distance index = 0
                         0002,E983,
                         812F            ; Sleep
-$A6:E5FE             dx E501,0000,      ; ???
+$A6:E5FE             dx E501,0000,      ; Ridley feet distance index = 0
                         0002,E9A5,
                         E4F8,E60C,      ; ???
                         812F            ; Sleep
-$A6:E60C             dx E501,0002,      ; ???
+$A6:E60C             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA93,
                         E4F8,E622,      ; ???
                         0001,EA93,
                         E4EE,E618,E64E, ; ???
-                        E501,0004,      ; ???
+                        E501,0004,      ; Ridley feet distance index = 4
                         0004,EAB5,
                         E4F8,E638,      ; ???
                         0001,EA71,
                         E4EE,E62E,E638, ; ???
-                        E501,0002,      ; ???
+                        E501,0002,      ; Ridley feet distance index = 2
                         0003,EA93,
                         E4F8,E64E,      ; ???
                         0001,EA4F,
                         E4EE,E644,E64E, ; ???
-                        E501,0000,      ; ???
+                        E501,0000,      ; Ridley feet distance index = 0
                         0002,E9A5,
                         812F            ; Sleep
 }
@@ -10356,18 +10372,18 @@ $A6:E60C             dx E501,0002,      ; ???
 ;;; $E658: Instruction list - retrieve baby metroid ;;;
 {
 $A6:E658             dw E517,E676,  ; Go to $E676 if not facing left
-                        E501,0000,  ; ???
+                        E501,0000,  ; Ridley feet distance index = 0
                         0004,E983,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA4F,
-                        E501,0004,  ; ???
+                        E501,0004,  ; Ridley feet distance index = 4
                         0001,EA71,
                         812F        ; Sleep
-$A6:E676             dw E501,0000,  ; ???
+$A6:E676             dw E501,0000,  ; Ridley feet distance index = 0
                         0004,E9A5,
-                        E501,0002,  ; ???
+                        E501,0002,  ; Ridley feet distance index = 2
                         0006,EA93,
-                        E501,0004,  ; ???
+                        E501,0004,  ; Ridley feet distance index = 4
                         0001,EAB5,
                         812F        ; Sleep
 }
@@ -10414,26 +10430,24 @@ $A6:E6DE             dx 0006,E9A5,
 }
 
 
-;;; $E6F0: Instruction list -  ;;;
+;;; $E6F0: Instruction list - turn to face right ;;;
 {
-; Turn from left to right
-$A6:E6F0             dx E727,       ; ???
+$A6:E6F0             dx E727,       ; Face Ridley forward
                         0001,E983,
                         0008,EAD7,
-                        E72F,       ; ???
+                        E72F,       ; Flip Ridley right
                         0001,EAD7,
                         0001,E9A5,
                         812F        ; Sleep
 }
 
 
-;;; $E706: Instruction list -  ;;;
+;;; $E706: Instruction list - turn to face left ;;;
 {
-; Turn from right to left
-$A6:E706             dx E727,       ; ???
+$A6:E706             dx E727,       ; Face Ridley forward
                         0001,E9A5,
                         0008,EAD7,
-                        E71C,       ; ???
+                        E71C,       ; Flip Ridley left
                         0001,EAD7,
                         0001,E983,
                         812F        ; Sleep
@@ -10441,33 +10455,28 @@ $A6:E706             dx E727,       ; ???
 }
 
 
-;;; $E71C: Instruction ;;;
+;;; $E71C: Instruction - flip Ridley left ;;;
 {
-; Set 7E:7820 to 0 (Ridley is facing left) and JSR to D3F9 (Updates a bunch of tail values.
-; Includes JSR $D3B4: Copy 7 entries from (X) to 7E:(Y), 7E:(Y+14), 7E:(Y+28), 7E:(Y+3C), etc.)
 $A6:E71C A9 00 00    LDA #$0000             ;\
 $A6:E71F 8F 20 78 7E STA $7E7820[$7E:7820]  ;} Ridley facing direction = left
-$A6:E723 20 F9 D3    JSR $D3F9  [$A6:D3F9]
+$A6:E723 20 F9 D3    JSR $D3F9  [$A6:D3F9]  ; Flip Ridley tail
 $A6:E726 6B          RTL
 }
 
 
-;;; $E727: Instruction ;;;
+;;; $E727: Instruction - face Ridley forward ;;;
 {
-; Set 7E:7820 to 1 (Ridley is facing forward / turning)
 $A6:E727 A9 01 00    LDA #$0001             ;\
 $A6:E72A 8F 20 78 7E STA $7E7820[$7E:7820]  ;} Ridley facing direction = forwards
 $A6:E72E 6B          RTL
 }
 
 
-;;; $E72F: Instruction ;;;
+;;; $E72F: Instruction - flip Ridley right ;;;
 {
-; Set 7E:7820 to 2 (Ridley is facing right) and JSR to D3F9 (Updates a bunch of tail values.
-; Includes JSR $D3B4: Copy 7 entries from (X) to 7E:(Y), 7E:(Y+14), 7E:(Y+28), 7E:(Y+3C), etc.)
 $A6:E72F A9 02 00    LDA #$0002             ;\
 $A6:E732 8F 20 78 7E STA $7E7820[$7E:7820]  ;} Ridley facing direction = right
-$A6:E736 20 F9 D3    JSR $D3F9  [$A6:D3F9]
+$A6:E736 20 F9 D3    JSR $D3F9  [$A6:D3F9]  ; Flip Ridley tail
 $A6:E739 6B          RTL
 }
 
