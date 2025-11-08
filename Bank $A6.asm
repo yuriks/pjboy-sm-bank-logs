@@ -3895,9 +3895,9 @@ $A6:B256 20 88 E0    JSR $E088  [$A6:E088]  ; Ridley tail / projectile collision
 $A6:B259 20 2A DB    JSR $DB2A  [$A6:DB2A]  ; Draw Ridley tail
 $A6:B25C 20 D8 DA    JSR $DAD8  [$A6:DAD8]  ; Draw Ridley wings
 $A6:B25F 20 0C DA    JSR $DA0C  [$A6:DA0C]  ; Handle Ridley ribs animation
-$A6:B262 AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:B266 F0 03       BEQ $03    [$B26B]
-$A6:B268 20 E1 B9    JSR $B9E1  [$A6:B9E1]
+$A6:B262 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:B266 F0 03       BEQ $03    [$B26B]     ;} If [Ridley holding Samus flag] != 0:
+$A6:B268 20 E1 B9    JSR $B9E1  [$A6:B9E1]  ; Execute $B9E1
 
 $A6:B26B 20 74 D4    JSR $D474  [$A6:D474]  ; Norfair Ridley health-based palette handling
 $A6:B26E 6B          RTL
@@ -3906,9 +3906,9 @@ $A6:B26E 6B          RTL
 
 ;;; $B26F:  ;;;
 {
-$A6:B26F AF 3C 78 7E LDA $7E783C[$7E:783C]
-$A6:B273 0F 36 78 7E ORA $7E7836[$7E:7836]
-$A6:B277 D0 0B       BNE $0B    [$B284]
+$A6:B26F AF 3C 78 7E LDA $7E783C[$7E:783C]  ;\
+$A6:B273 0F 36 78 7E ORA $7E7836[$7E:7836]  ;} If [Ridley holding Samus flag] != 0 or [$7E:783C] != 0: return
+$A6:B277 D0 0B       BNE $0B    [$B284]     ;/
 $A6:B279 A2 04 00    LDX #$0004
 $A6:B27C A0 04 00    LDY #$0004
 $A6:B27F 20 65 B8    JSR $B865  [$A6:B865]
@@ -3972,9 +3972,9 @@ $A6:B2E4 CD 88 B2    CMP $B288  [$A6:B288]  ;\
 $A6:B2E7 30 09       BMI $09    [$B2F2]     ;} If [$7E:8008] < 8: return
 
 ; BRANCH_B2E9
-$A6:B2E9 AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:B2ED F0 03       BEQ $03    [$B2F2]
-$A6:B2EF 20 E1 B9    JSR $B9E1  [$A6:B9E1]
+$A6:B2E9 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:B2ED F0 03       BEQ $03    [$B2F2]     ;} If [Ridley holding Samus flag] != 0:
+$A6:B2EF 20 E1 B9    JSR $B9E1  [$A6:B9E1]  ; Execute $B9E1
 
 $A6:B2F2 6B          RTL
 }
@@ -4437,7 +4437,7 @@ $A6:B66C 29 FF 00    AND #$00FF             ;|
 $A6:B66F C9 80 00    CMP #$0080             ;} If [random number] % 100h >= 80h:
 $A6:B672 90 13       BCC $13    [$B687]     ;/
 $A6:B674 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
-$A6:B678 D0 0D       BNE $0D    [$B687]     ;} If [$7E:781E] = 0:
+$A6:B678 D0 0D       BNE $0D    [$B687]     ;} If [Ridley roaring flag] = 0:
 $A6:B67A AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B67E 3A          DEC A                  ;} If [Ridley facing direction] != forwards:
 $A6:B67F F0 06       BEQ $06    [$B687]     ;/
@@ -5038,8 +5038,8 @@ $A6:BB70 A9 4E BD    LDA #$BD4E             ;\
 $A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
 $A6:BB76 4C 4E BD    JMP $BD4E  [$A6:BD4E]
 
-$A6:BB79 AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:BB7D D0 03       BNE $03    [$BB82]
+$A6:BB79 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:BB7D D0 03       BNE $03    [$BB82]     ;} If [Ridley holding Samus flag] = 0:
 $A6:BB7F 20 68 BC    JSR $BC68  [$A6:BC68]
 
 $A6:BB82 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]
@@ -5065,8 +5065,8 @@ $A6:BBA6 10 03       BPL $03    [$BBAB]
 $A6:BBA8 A9 00 01    LDA #$0100
 
 $A6:BBAB 8F 30 78 7E STA $7E7830[$7E:7830]
-$A6:BBAF AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:BBB3 D0 03       BNE $03    [$BBB8]
+$A6:BBAF AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:BBB3 D0 03       BNE $03    [$BBB8]     ;} If [Ridley holding Samus flag] = 0:
 $A6:BBB5 20 68 BC    JSR $BC68  [$A6:BC68]
 
 $A6:BBB8 A9 C4 BB    LDA #$BBC4             ;\
@@ -5161,11 +5161,11 @@ $A6:BC62             dw 00B0, 0000, 0050
 {
 ; Grab Samus
 $A6:BC68 20 54 BA    JSR $BA54  [$A6:BA54]
-$A6:BC6B AD 86 0F    LDA $0F86  [$7E:0F86]
-$A6:BC6E 09 00 04    ORA #$0400
-$A6:BC71 8D 86 0F    STA $0F86  [$7E:0F86]
-$A6:BC74 A9 01 00    LDA #$0001
-$A6:BC77 8F 36 78 7E STA $7E7836[$7E:7836]
+$A6:BC6B AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A6:BC6E 09 00 04    ORA #$0400             ;} Set Ridley as intangible
+$A6:BC71 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A6:BC74 A9 01 00    LDA #$0001             ;\
+$A6:BC77 8F 36 78 7E STA $7E7836[$7E:7836]  ;} Ridley holding Samus flag = 1
 $A6:BC7B 3A          DEC A                  ;\
 $A6:BC7C 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $A6:BC80 38          SEC                    ;\
@@ -5188,8 +5188,8 @@ $A6:BC9D A9 0A 00    LDA #$000A
 
 $A6:BCA0 8F 3C 78 7E STA $7E783C[$7E:783C]
 
-$A6:BCA4 A9 00 00    LDA #$0000
-$A6:BCA7 8F 36 78 7E STA $7E7836[$7E:7836]
+$A6:BCA4 A9 00 00    LDA #$0000             ;\
+$A6:BCA7 8F 36 78 7E STA $7E7836[$7E:7836]  ;} Ridley holding Samus flag = 0
 $A6:BCAB 1A          INC A                  ;\
 $A6:BCAC 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A6:BCB0 18          CLC                    ;\
@@ -5301,8 +5301,8 @@ $A6:BD34 C9 02 00    CMP #$0002
 $A6:BD37 F0 14       BEQ $14    [$BD4D]
 $A6:BD39 AD EE 0C    LDA $0CEE  [$7E:0CEE]
 $A6:BD3C F0 0F       BEQ $0F    [$BD4D]
-$A6:BD3E AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:BD42 D0 09       BNE $09    [$BD4D]
+$A6:BD3E AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:BD42 D0 09       BNE $09    [$BD4D]     ;} If [Ridley holding Samus flag] = 0:
 $A6:BD44 20 4D B8    JSR $B84D  [$A6:B84D]
 $A6:BD47 A0 B7 BA    LDY #$BAB7             ;\
 $A6:BD4A 8C A8 0F    STY $0FA8  [$7E:0FA8]  ;} Ridley function = $BAB7
@@ -5339,8 +5339,8 @@ $A6:BD80 4C 23 D5    JMP $D523  [$A6:D523]  ; Go to Ridley acceleration
 $A6:BD83 A9 01 00    LDA #$0001
 $A6:BD86 8F 02 78 7E STA $7E7802[$7E:7802]
 $A6:BD8A A0 21 B3    LDY #$B321
-$A6:BD8D AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:BD91 F0 03       BEQ $03    [$BD96]
+$A6:BD8D AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:BD91 F0 03       BEQ $03    [$BD96]     ;} If [Ridley holding Samus flag] != 0:
 $A6:BD93 A0 8F BB    LDY #$BB8F
 
 $A6:BD96 8C A8 0F    STY $0FA8  [$7E:0FA8]
@@ -5438,7 +5438,7 @@ $A6:BE3F B0 01       BCS $01    [$BE42]     ; If no collision:
 $A6:BE41 60          RTS                    ; Return
 
 $A6:BE42 A9 01 00    LDA #$0001             ;\
-$A6:BE45 8F 36 78 7E STA $7E7836[$7E:7836]  ;} $7E:7836 = 1
+$A6:BE45 8F 36 78 7E STA $7E7836[$7E:7836]  ;} Ridley holding Samus flag = 1
 $A6:BE49 38          SEC                    ;\
 $A6:BE4A 20 8B DA    JSR $DA8B  [$A6:DA8B]  ;} Draw Ridley's feet - clenched
 $A6:BE4D A9 00 FE    LDA #$FE00             ;\
@@ -6283,8 +6283,8 @@ $A6:C585 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A6:C588 20 23 C6    JSR $C623  [$A6:C623]
 $A6:C58B CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:C58E 10 C0       BPL $C0    [$C550]     ; If [Ridley function timer] >= 0: return
-$A6:C590 AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:C594 F0 03       BEQ $03    [$C599]
+$A6:C590 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:C594 F0 03       BEQ $03    [$C599]     ;} If [Ridley holding Samus flag] != 0:
 $A6:C596 20 84 BC    JSR $BC84  [$A6:BC84]
 
 $A6:C599 A9 A8 C5    LDA #$C5A8             ;\
@@ -6997,7 +6997,7 @@ $A6:CB0A 20 5A CF    JSR $CF5A  [$A6:CF5A]  ; Update Ridley tail segment distanc
 $A6:CB0D AB          PLB
 $A6:CB0E AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A6:CB11 29 00 04    AND #$0400             ;|
-$A6:CB14 0D A8 18    ORA $18A8  [$7E:18A8]  ;} If Ridley is tangible and [Samus invincibility timer] = 0 and [$7E:7836] = 0:
+$A6:CB14 0D A8 18    ORA $18A8  [$7E:18A8]  ;} If Ridley is tangible and [Samus invincibility timer] = 0 and [Ridley holding Samus flag] = 0:
 $A6:CB17 0F 36 78 7E ORA $7E7836[$7E:7836]  ;|
 $A6:CB1B D0 03       BNE $03    [$CB20]     ;/
 $A6:CB1D 4C D9 DF    JMP $DFD9  [$A6:DFD9]  ; Go to Ridley tail / Samus collision handling
@@ -8086,7 +8086,7 @@ $A6:D2B8 8F 1C 78 7E STA $7E781C[$7E:781C]  ;/
 $A6:D2BC C9 10 00    CMP #$0010             ;\
 $A6:D2BF 30 14       BMI $14    [$D2D5]     ;} If [Ridley tail whip sound effect counter] < 10h: return
 $A6:D2C1 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
-$A6:D2C5 D0 07       BNE $07    [$D2CE]     ;} If [$7E:781E] = 0:
+$A6:D2C5 D0 07       BNE $07    [$D2CE]     ;} If [Ridley roaring flag] = 0:
 $A6:D2C7 A9 21 00    LDA #$0021             ;\
 $A6:D2CA 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 21h, sound library 3, max queued sounds allowed = 6 (Ridley whips its tail)
 
@@ -10148,19 +10148,19 @@ $A6:E46A             dw 4E7A, 3D73, 1449, 0405, 45D6, 3151, 20AD, 184A, 561F, 18
 
 ;;; $E4BE..E537: Instructions ;;;
 {
-;;; $E4BE: Instruction ;;;
+;;; $E4BE: Instruction - roar ;;;
 {
 $A6:E4BE A9 59 00    LDA #$0059             ;\
-$A6:E4C1 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} $7E:781E = 59h
+$A6:E4C1 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} Ridley roaring flag = 59h
 $A6:E4C5 22 CB 90 80 JSL $8090CB[$80:90CB]  ; Queue sound 59h, sound library 2, max queued sounds allowed = 6 (Ridley's roar)
 $A6:E4C9 6B          RTL
 }
 
 
-;;; $E4CA: Instruction ;;;
+;;; $E4CA: Instruction - clear roaring flag ;;;
 {
 $A6:E4CA A9 00 00    LDA #$0000             ;\
-$A6:E4CD 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} $7E:781E = 0
+$A6:E4CD 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} Ridley roaring flag = 0
 $A6:E4D1 6B          RTL
 }
 
@@ -10190,7 +10190,7 @@ $A6:E4ED 6B          RTL
 }
 
 
-;;; $E4EE: Unused. Instruction ;;;
+;;; $E4EE: Unused. Instruction - go to [[Y]] if holding Samus, else go to [[Y] + 2] ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -10198,15 +10198,15 @@ $A6:E4ED 6B          RTL
 ;;     Y: Pointer to next instruction
 
 ; Used by unused instruction list $E5A0
-$A6:E4EE AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:E4F2 D0 F5       BNE $F5    [$E4E9]
-$A6:E4F4 C8          INY
-$A6:E4F5 C8          INY
-$A6:E4F6 80 F1       BRA $F1    [$E4E9]
+$A6:E4EE AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:E4F2 D0 F5       BNE $F5    [$E4E9]     ;} If [Ridley holding Samus flag] != 0: go to go to [[Y]]
+$A6:E4F4 C8          INY                    ;\
+$A6:E4F5 C8          INY                    ;} Y += 2
+$A6:E4F6 80 F1       BRA $F1    [$E4E9]     ; Go to go to [[Y]]
 }
 
 
-;;; $E4F8: Unused. Instruction ;;;
+;;; $E4F8: Unused. Instruction - go to [[Y]] if not holding Samus ;;;
 {
 ;; Parameters:
 ;;     Y: Pointer to instruction arguments
@@ -10214,10 +10214,10 @@ $A6:E4F6 80 F1       BRA $F1    [$E4E9]
 ;;     Y: Pointer to next instruction
 
 ; Used by unused instruction list $E5A0
-$A6:E4F8 AF 36 78 7E LDA $7E7836[$7E:7836]
-$A6:E4FC F0 EB       BEQ $EB    [$E4E9]
-$A6:E4FE C8          INY
-$A6:E4FF C8          INY
+$A6:E4F8 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
+$A6:E4FC F0 EB       BEQ $EB    [$E4E9]     ;} If [Ridley holding Samus flag] = 0: go to go to [[Y]]
+$A6:E4FE C8          INY                    ;\
+$A6:E4FF C8          INY                    ;} Y += 2
 $A6:E500 6B          RTL
 }
 
@@ -10324,46 +10324,46 @@ $A6:E576             dw E501,0000,  ; Ridley feet distance index = 0
 $A6:E5A0             dx E517,E5FE,      ; Go to $E5FE if not facing left
                         E501,0000,      ; Ridley feet distance index = 0
                         0002,E983,
-                        E4F8,E5B2,      ; ???
+                        E4F8,E5B2,      ; Go to $E5B2 if not holding Samus
                         812F            ; Sleep
 $A6:E5B2             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA4F,
-                        E4F8,E5C8,      ; ???
-                        0001,EA4F,
-                        E4EE,E5BE,E5F4, ; ???
-                        E501,0004,      ; Ridley feet distance index = 4
+                        E4F8,E5C8       ; Go to $E5C8 if not holding Samus
+$A6:E5BE             dx 0001,EA4F,
+                        E4EE,E5BE,E5F4  ; Go to $E5BE if holding Samus, else go to $E5F4
+$A6:E5C8             dx E501,0004,      ; Ridley feet distance index = 4
                         0004,EA71,
-                        E4F8,E5DE,      ; ???
-                        0001,EA71,
-                        E4EE,E5D4,E5DE, ; ???
-                        E501,0002,      ; Ridley feet distance index = 2
+                        E4F8,E5DE       ; Go to $E5DE if not holding Samus
+$A6:E5D4             dx 0001,EA71,
+                        E4EE,E5D4,E5DE  ; Go to $E5D4 if holding Samus, else go to $E5DE
+$A6:E5DE             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA4F,
-                        E4F8,E5F4,      ; ???
-                        0001,EA4F,
-                        E4EE,E5EA,E5F4, ; ???
-                        E501,0000,      ; Ridley feet distance index = 0
+                        E4F8,E5F4       ; Go to $E5F4 if not holding Samus
+$A6:E5EA             dx 0001,EA4F,
+                        E4EE,E5EA,E5F4  ; Go to $E5EA if holding Samus, else go to $E5F4
+$A6:E5F4             dx E501,0000,      ; Ridley feet distance index = 0
                         0002,E983,
                         812F            ; Sleep
 $A6:E5FE             dx E501,0000,      ; Ridley feet distance index = 0
                         0002,E9A5,
-                        E4F8,E60C,      ; ???
+                        E4F8,E60C,      ; Go to $E60C if not holding Samus
                         812F            ; Sleep
 $A6:E60C             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA93,
-                        E4F8,E622,      ; ???
-                        0001,EA93,
-                        E4EE,E618,E64E, ; ???
-                        E501,0004,      ; Ridley feet distance index = 4
+                        E4F8,E622       ; Go to $E622 if not holding Samus
+$A6:E618             dx 0001,EA93,
+                        E4EE,E618,E64E  ; Go to $E618 if holding Samus, else go to $E64E
+$A6:E622             dx E501,0004,      ; Ridley feet distance index = 4
                         0004,EAB5,
-                        E4F8,E638,      ; ???
-                        0001,EA71,
-                        E4EE,E62E,E638, ; ???
-                        E501,0002,      ; Ridley feet distance index = 2
+                        E4F8,E638       ; Go to $E638 if not holding Samus
+$A6:E62E             dx 0001,EA71,
+                        E4EE,E62E,E638  ; Go to $E62E if holding Samus, else go to $E638
+$A6:E638             dx E501,0002,      ; Ridley feet distance index = 2
                         0003,EA93,
-                        E4F8,E64E,      ; ???
-                        0001,EA4F,
-                        E4EE,E644,E64E, ; ???
-                        E501,0000,      ; Ridley feet distance index = 0
+                        E4F8,E64E       ; Go to $E64E if not holding Samus
+$A6:E644             dx 0001,EA4F,
+                        E4EE,E644,E64E  ; Go to $E644 if holding Samus, else go to $E64E
+$A6:E64E             dx E501,0000,      ; Ridley feet distance index = 0
                         0002,E9A5,
                         812F            ; Sleep
 }
@@ -10393,19 +10393,19 @@ $A6:E676             dw E501,0000,  ; Ridley feet distance index = 0
 {
 $A6:E690             dx E517,E6AE,  ; Go to $E6AE if not facing left
                         0006,E983,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,E9C7,
                         0060,E9E9,
                         0008,E9C7,
-                        E4CA,       ; ???
+                        E4CA,       ; Clear roaring flag
                         0001,E983,
                         812F        ; Sleep
 $A6:E6AE             dx 0006,E9A5,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,EA0B,
                         0060,EA2D,
                         0008,EA0B,
-                        E4CA,       ; ???
+                        E4CA,       ; Clear roaring flag
                         0001,E9A5,
                         812F        ; Sleep
 }
@@ -10416,16 +10416,16 @@ $A6:E6AE             dx 0006,E9A5,
 ; Death roar
 $A6:E6C8             dx E517,E6DE,  ; Go to $E6DE if not facing left
                         0006,E983,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,E9C7,
                         0010,E9E9,
-                        E4CA,       ; ???
+                        E4CA,       ; Clear roaring flag
                         812F        ; Sleep
 $A6:E6DE             dx 0006,E9A5,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,EA0B,
                         0010,EA2D,
-                        E4CA,       ; ???
+                        E4CA,       ; Clear roaring flag
                         812F        ; Sleep
 }
 
@@ -10486,7 +10486,7 @@ $A6:E739 6B          RTL
 $A6:E73A             dw E517,E7B4,  ; Go to $E7B4 if not facing left
                         E4D2,E7AC,  ; Go to $E7AC if not Norfair and Samus has low health
                         0008,E983,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,E9C7,
                         0002,E9E9,
                         E84D,       ; Calculate fireball X/Y velocities
@@ -10505,7 +10505,7 @@ $A6:E73A             dw E517,E7B4,  ; Go to $E7B4 if not facing left
                         E4D2,E7AC,  ; Go to $E7AC if not Norfair and Samus has low health
                         0020,E983,
                         E84D,       ; Calculate fireball X/Y velocities
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,E9C7,
                         0002,E9E9,
                         E84D,       ; Calculate fireball X/Y velocities
@@ -10521,12 +10521,12 @@ $A6:E73A             dw E517,E7B4,  ; Go to $E7B4 if not facing left
                         E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,E9E9,
                         0008,E9C7
-$A6:E7AC             dw E4CA,       ; ???
+$A6:E7AC             dw E4CA,       ; Clear roaring flag
                         0001,E983,
                         812F        ; Sleep
 $A6:E7B4             dw E4D2,E820,  ; Go to $E820 if not Norfair and Samus has low health
                         0008,E9A5,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,EA0B,
                         0002,EA2D,
                         E84D,       ; Calculate fireball X/Y velocities
@@ -10544,7 +10544,7 @@ $A6:E7B4             dw E4D2,E820,  ; Go to $E820 if not Norfair and Samus has l
                         0008,EA0B,
                         E4D2,E820,  ; Go to $E820 if not Norfair and Samus has low health
                         0020,E9A5,
-                        E4BE,       ; ???
+                        E4BE,       ; Roar
                         0008,EA0B,
                         0002,EA2D,
                         E84D,       ; Calculate fireball X/Y velocities
@@ -10560,7 +10560,7 @@ $A6:E7B4             dw E4D2,E820,  ; Go to $E820 if not Norfair and Samus has l
                         E909,       ; Spawn Ridley's fireball enemy projectile - without afterburn
                         0030,EA2D,
                         0008,EA0B
-$A6:E820             dw E4CA,       ; ???
+$A6:E820             dw E4CA,       ; Clear roaring flag
                         0001,E9A5,
                         812F        ; Sleep
 }
