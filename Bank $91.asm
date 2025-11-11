@@ -4680,22 +4680,22 @@ $91:BB49             db 08,00,FF,02,03,00,15,00 ; A4h: Facing right - landing fr
 $91:BB51             db 04,00,FF,07,03,00,15,00 ; A5h: Facing left  - landing from normal jump
 $91:BB59             db 08,00,FF,02,03,00,15,00 ; A6h: Facing right - landing from spin jump
 $91:BB61             db 04,00,FF,07,03,00,15,00 ; A7h: Facing left  - landing from spin jump
-$91:BB69             db 08,16,01,02,06,00,15,00 ; A8h: Unused
-$91:BB71             db 04,16,02,07,06,00,15,00 ; A9h: Unused
-$91:BB79             db 08,16,07,03,06,00,15,00 ; AAh: Unused
-$91:BB81             db 04,16,08,06,06,00,15,00 ; ABh: Unused
-$91:BB89             db 08,16,67,02,08,00,13,00 ; ACh: Unused
-$91:BB91             db 04,16,68,07,08,00,13,00 ; ADh: Unused
-$91:BB99             db 08,16,2D,04,06,00,0A,00 ; AEh: Unused
-$91:BBA1             db 04,16,2E,05,06,00,0A,00 ; AFh: Unused
-$91:BBA9             db 08,16,6F,03,08,00,13,00 ; B0h: Unused
-$91:BBB1             db 04,16,70,06,08,00,13,00 ; B1h: Unused
+$91:BB69             db 08,16,01,02,06,00,15,00 ; A8h: Facing right - grappling
+$91:BB71             db 04,16,02,07,06,00,15,00 ; A9h: Facing left  - grappling
+$91:BB79             db 08,16,07,03,06,00,15,00 ; AAh: Facing right - grappling - aiming down-right
+$91:BB81             db 04,16,08,06,06,00,15,00 ; ABh: Facing left  - grappling - aiming down-left
+$91:BB89             db 08,16,67,02,08,00,13,00 ; ACh: Unused. Facing right - grappling - in air
+$91:BB91             db 04,16,68,07,08,00,13,00 ; ADh: Unused. Facing left  - grappling - in air
+$91:BB99             db 08,16,2D,04,06,00,0A,00 ; AEh: Unused. Facing right - grappling - in air - aiming down
+$91:BBA1             db 04,16,2E,05,06,00,0A,00 ; AFh: Unused. Facing left  - grappling - in air - aiming down
+$91:BBA9             db 08,16,6F,03,08,00,13,00 ; B0h: Unused. Facing right - grappling - in air - aiming down-right
+$91:BBB1             db 04,16,70,06,08,00,13,00 ; B1h: Unused. Facing left  - grappling - in air - aiming down-left
 $91:BBB9             db 08,16,B2,FF,10,00,11,00 ; B2h: Facing clockwise     - grapple swinging
 $91:BBC1             db 04,16,B3,FF,10,00,11,00 ; B3h: Facing anticlockwise - grapple swinging
-$91:BBC9             db 08,16,27,02,00,00,10,00 ; B4h: Unused
-$91:BBD1             db 04,16,28,07,00,00,10,00 ; B5h: Unused
-$91:BBD9             db 08,16,27,03,00,00,10,00 ; B6h: Unused
-$91:BBE1             db 04,16,28,06,00,00,10,00 ; B7h: Unused
+$91:BBC9             db 08,16,27,02,00,00,10,00 ; B4h: Facing right - grappling - crouching
+$91:BBD1             db 04,16,28,07,00,00,10,00 ; B5h: Facing left  - grappling - crouching
+$91:BBD9             db 08,16,27,03,00,00,10,00 ; B6h: Facing right - grappling - crouching - aiming down-right
+$91:BBE1             db 04,16,28,06,00,00,10,00 ; B7h: Facing left  - grappling - crouching - aiming down-left
 $91:BBE9             db 08,16,FF,03,00,00,10,00 ; B8h: Facing left  - grapple wall jump pose
 $91:BBF1             db 04,16,FF,06,00,00,10,00 ; B9h: Facing right - grapple wall jump pose
 $91:BBF9             db 04,1A,FF,07,06,00,15,00 ; BAh: Facing left  - grabbed by Draygon - not moving - not aiming
@@ -4744,8 +4744,8 @@ $91:BD49             db 08,00,FF,03,03,00,15,00 ; E4h: Facing right - landing fr
 $91:BD51             db 04,00,FF,06,03,00,15,00 ; E5h: Facing left  - landing from normal jump - aiming down-left
 $91:BD59             db 08,00,FF,02,03,00,15,00 ; E6h: Facing right - landing from normal jump - firing
 $91:BD61             db 04,00,FF,07,03,00,15,00 ; E7h: Facing left  - landing from normal jump - firing
-$91:BD69             db 08,1B,FF,FF,FC,00,15,00 ; E8h: Facing right - Samus drained - crouching
-$91:BD71             db 04,1B,FF,FF,FC,00,15,00 ; E9h: Facing left  - Samus drained - crouching
+$91:BD69             db 08,1B,FF,FF,FC,00,15,00 ; E8h: Facing right - Samus drained - crouching/falling
+$91:BD71             db 04,1B,FF,FF,FC,00,15,00 ; E9h: Facing left  - Samus drained - crouching/falling
 $91:BD79             db 08,1B,FF,FF,FC,00,15,00 ; EAh: Facing right - Samus drained - standing
 $91:BD81             db 04,1B,FF,FF,FC,00,15,00 ; EBh: Facing left  - Samus drained - standing
 $91:BD89             db 08,1A,FF,02,06,00,15,00 ; ECh: Facing right - grabbed by Draygon - not moving - not aiming
