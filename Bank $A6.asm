@@ -3150,7 +3150,6 @@ $A6:A8D3 60          RTS
 
 ;;; $A8D4: Ridley function - swoop - descending - aiming down ;;;
 {
-; Ceres Ridley swoop
 $A6:A8D4 A9 E0 FF    LDA #$FFE0             ;\
 $A6:A8D7 85 12       STA $12    [$7E:0012]  ;} $12 = -20h (angle delta)
 $A6:A8D9 A9 00 FC    LDA #$FC00             ;\
@@ -3223,7 +3222,7 @@ $A6:A956 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
 $A6:A959 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:A95C 10 12       BPL $12    [$A970]     ; If [Ridley function timer] >= 0: return
 $A6:A95E A9 E8 A6    LDA #$A6E8             ;\
-$A6:A961 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8
+$A6:A961 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8 (hovering)
 $A6:A964 A9 00 00    LDA #$0000             ;\
 $A6:A967 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 0
 $A6:A96B 1A          INC A                  ;\
@@ -4147,19 +4146,17 @@ $A6:B439             dw 0004, 0008, 000A, 000C
 {
 ;;; $B441: Ridley action - swoop ;;;
 {
-; Chose to do a U swoop
 $A6:B441 A9 55 B4    LDA #$B455             ;\
-$A6:B444 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B455
-$A6:B447 A9 0A 00    LDA #$000A
-$A6:B44A 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B444 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B455 (swoop)
+$A6:B447 A9 0A 00    LDA #$000A             ;\
+$A6:B44A 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = Ah (never read)
 $A6:B44E A9 00 00    LDA #$0000             ;\
 $A6:B451 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 }
 
 
-;;; $B455: Ridley function ;;;
+;;; $B455: Ridley function - swoop - move to position ;;;
 {
-; Fly to U swoop start
 $A6:B455 A2 C0 00    LDX #$00C0             ; $12 = C0h (target X position)
 $A6:B458 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B45C F0 03       BEQ $03    [$B461]     ;} If [Ridley facing direction] != left:
@@ -4178,8 +4175,8 @@ $A6:B478 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
 $A6:B47C B0 14       BCS $14    [$B492]     ; If collision:
 $A6:B47E A9 93 B4    LDA #$B493             ;\
 $A6:B481 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B493
-$A6:B484 A9 20 00    LDA #$0020
-$A6:B487 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B484 A9 20 00    LDA #$0020             ;\
+$A6:B487 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Ridley function timer = 20h
 $A6:B48B A9 00 00    LDA #$0000             ;\
 $A6:B48E 8F 14 78 7E STA $7E7814[$7E:7814]  ;} Ridley swoop angle = 0
 
@@ -4187,9 +4184,8 @@ $A6:B492 60          RTS
 }
 
 
-;;; $B493: Ridley function ;;;
+;;; $B493: Ridley function - swoop - descending - aiming down ;;;
 {
-; U swoop, first dive
 $A6:B493 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B497 D0 0C       BNE $0C    [$B4A5]     ;} If [Ridley facing direction] = left:
 $A6:B499 A9 E0 FF    LDA #$FFE0             ;\
@@ -4206,23 +4202,22 @@ $A6:B4AD 85 14       STA $14    [$7E:0014]  ;} $14 = 200h (target angle)
 $A6:B4AF A9 80 04    LDA #$0480             ;\
 $A6:B4B2 85 16       STA $16    [$7E:0016]  ;} $16 = 480h (target speed)
 $A6:B4B4 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
-$A6:B4B7 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:B4BB F0 06       BEQ $06    [$B4C3]
-$A6:B4BD 3A          DEC A
-$A6:B4BE 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B4C2 60          RTS
+$A6:B4B7 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:B4BB F0 06       BEQ $06    [$B4C3]     ;} If [Ridley function timer] != 0:
+$A6:B4BD 3A          DEC A                  ;\
+$A6:B4BE 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Decrement Ridley function timer
+$A6:B4C2 60          RTS                    ; Return
 
 $A6:B4C3 A9 D1 B4    LDA #$B4D1             ;\
 $A6:B4C6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B4D1
-$A6:B4C9 A9 14 00    LDA #$0014
-$A6:B4CC 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B4C9 A9 14 00    LDA #$0014             ;\
+$A6:B4CC 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Ridley function timer = 14h
 $A6:B4D0 60          RTS
 }
 
 
-;;; $B4D1: Ridley function ;;;
+;;; $B4D1: Ridley function - swoop - descending - aiming left ;;;
 {
-; U swoop, dive to half point
 $A6:B4D1 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B4D5 D0 0C       BNE $0C    [$B4E3]     ;} If [Ridley facing direction] = left:
 $A6:B4D7 A9 C0 FE    LDA #$FEC0             ;\
@@ -4239,25 +4234,24 @@ $A6:B4EB 85 14       STA $14    [$7E:0014]  ;} $14 = 4000h (target angle)
 $A6:B4ED A9 00 05    LDA #$0500             ;\
 $A6:B4F0 85 16       STA $16    [$7E:0016]  ;} $16 = 500h (target speed)
 $A6:B4F2 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
-$A6:B4F5 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:B4F9 F0 06       BEQ $06    [$B501]
-$A6:B4FB 3A          DEC A
-$A6:B4FC 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B500 60          RTS
+$A6:B4F5 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:B4F9 F0 06       BEQ $06    [$B501]     ;} If [Ridley function timer] != 0:
+$A6:B4FB 3A          DEC A                  ;\
+$A6:B4FC 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Decrement Ridley function timer
+$A6:B500 60          RTS                    ; Return
 
 $A6:B501 A9 16 B5    LDA #$B516             ;\
 $A6:B504 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B516
-$A6:B507 A9 10 00    LDA #$0010
-$A6:B50A 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B507 A9 10 00    LDA #$0010             ;\
+$A6:B50A 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Ridley function timer = 10h
 $A6:B50E A9 01 00    LDA #$0001             ;\
 $A6:B511 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
 $A6:B515 60          RTS
 }
 
 
-;;; $B516: Ridley function ;;;
+;;; $B516: Ridley function - swoop - ascending - aiming up ;;;
 {
-; U swoop, climb after half point
 $A6:B516 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B51A D0 0C       BNE $0C    [$B528]     ;} If [Ridley facing direction] = left:
 $A6:B51C A9 00 FE    LDA #$FE00             ;\
@@ -4274,23 +4268,22 @@ $A6:B530 85 14       STA $14    [$7E:0014]  ;} $14 = 7800h (target angle)
 $A6:B532 A9 00 03    LDA #$0300             ;\
 $A6:B535 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
 $A6:B537 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
-$A6:B53A AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:B53E F0 06       BEQ $06    [$B546]
-$A6:B540 3A          DEC A
-$A6:B541 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B545 60          RTS
+$A6:B53A AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:B53E F0 06       BEQ $06    [$B546]     ;} If [Ridley function timer] != 0:
+$A6:B540 3A          DEC A                  ;\
+$A6:B541 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Decrement Ridley function timer
+$A6:B545 60          RTS                    ; Return
 
 $A6:B546 A9 54 B5    LDA #$B554             ;\
 $A6:B549 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B554
-$A6:B54C A9 20 00    LDA #$0020
-$A6:B54F 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B54C A9 20 00    LDA #$0020             ;\
+$A6:B54F 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Ridley function timer = 20h
 $A6:B553 60          RTS
 }
 
 
-;;; $B554: Ridley function ;;;
+;;; $B554: Ridley function - swoop - ascending - aiming up faster ;;;
 {
-; U Swoop, still climbing
 $A6:B554 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B558 D0 0C       BNE $0C    [$B566]     ;} If [Ridley facing direction] = left:
 $A6:B55A A9 00 FC    LDA #$FC00             ;\
@@ -4307,34 +4300,33 @@ $A6:B56E 85 14       STA $14    [$7E:0014]  ;} $14 = 7800h (target angle)
 $A6:B570 A9 00 03    LDA #$0300             ;\
 $A6:B573 85 16       STA $16    [$7E:0016]  ;} $16 = 300h (target speed)
 $A6:B575 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
-$A6:B578 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:B57C F0 06       BEQ $06    [$B584]
-$A6:B57E 3A          DEC A
-$A6:B57F 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B583 60          RTS
+$A6:B578 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:B57C F0 06       BEQ $06    [$B584]     ;} If [Ridley function timer] != 0:
+$A6:B57E 3A          DEC A                  ;\
+$A6:B57F 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Decrement Ridley function timer
+$A6:B583 60          RTS                    ; Return
 
 $A6:B584 A9 94 B5    LDA #$B594             ;\
 $A6:B587 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B594
-$A6:B58A A9 20 00    LDA #$0020
-$A6:B58D 8F 00 78 7E STA $7E7800[$7E:7800]
+$A6:B58A A9 20 00    LDA #$0020             ;\
+$A6:B58D 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Ridley function timer = 20h
 $A6:B591 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not facing room middle
 }
 
 
-;;; $B594: Ridley function ;;;
+;;; $B594: Ridley function - swoop - ascending - decelerate ;;;
 {
-; U Swoop End (Chooses BAB7 for next script if Samus is not spinjumping, else B321)
 $A6:B594 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (angle delta)
 $A6:B596 A9 00 80    LDA #$8000             ;\
 $A6:B599 85 14       STA $14    [$7E:0014]  ;} $14 = 8000h (target angle)
 $A6:B59B A9 C0 01    LDA #$01C0             ;\
 $A6:B59E 85 16       STA $16    [$7E:0016]  ;} $16 = 1C0h (target speed)
 $A6:B5A0 20 00 D8    JSR $D800  [$A6:D800]  ; Calculate swoop velocities
-$A6:B5A3 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A6:B5A7 F0 06       BEQ $06    [$B5AF]
-$A6:B5A9 3A          DEC A
-$A6:B5AA 8F 00 78 7E STA $7E7800[$7E:7800]
-$A6:B5AE 60          RTS
+$A6:B5A3 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A6:B5A7 F0 06       BEQ $06    [$B5AF]     ;} If [Ridley function timer] != 0:
+$A6:B5A9 3A          DEC A                  ;\
+$A6:B5AA 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Decrement Ridley function timer
+$A6:B5AE 60          RTS                    ; Return
 
 $A6:B5AF 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ; Check if Samus is spin jumping / damage boosting
 $A6:B5B2 A0 21 B3    LDY #$B321             ; Ridley function = $B321 (decide action)
@@ -4362,7 +4354,7 @@ $A6:B5C7 8F 1E 20 7E STA $7E201E[$7E:201E]  ;} Ridley tail ideal inter-segment a
 $A6:B5CB A9 80 01    LDA #$0180             ;\
 $A6:B5CE 8F 12 20 7E STA $7E2012[$7E:2012]  ;} Ridley tail extension speed = 180h
 $A6:B5D2 A9 E5 B5    LDA #$B5E5             ;\
-$A6:B5D5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5
+$A6:B5D5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5 (hover)
 $A6:B5D8 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:B5DB 29 1F 00    AND #$001F             ;|
 $A6:B5DE 18          CLC                    ;} Ridley function timer = 20h + [random number] % 20h
@@ -4371,17 +4363,16 @@ $A6:B5E2 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;/
 }
 
 
-;;; $B5E5: Ridley function - hover -  ;;;
+;;; $B5E5: Ridley function - hover - move to wall behind Ridley ;;;
 {
-; Considering tailbouncing
 $A6:B5E5 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B5E9 0A          ASL A                  ;|
 $A6:B5EA A8          TAY                    ;} $12 = [$B60D + [Ridley facing direction] * 2]
 $A6:B5EB B9 0D B6    LDA $B60D,y            ;|
 $A6:B5EE 85 12       STA $12    [$7E:0012]  ;/
-$A6:B5F0 20 41 B6    JSR $B641  [$A6:B641]
-$A6:B5F3 90 03       BCC $03    [$B5F8]
-$A6:B5F5 4C 8B B6    JMP $B68B  [$A6:B68B]
+$A6:B5F0 20 41 B6    JSR $B641  [$A6:B641]  ; Ridley hover movement
+$A6:B5F3 90 03       BCC $03    [$B5F8]     ; If not spin jumping:
+$A6:B5F5 4C 8B B6    JMP $B68B  [$A6:B68B]  ; Go to set up Ridley pogo from hover
 
 $A6:B5F8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:B5FB 10 0F       BPL $0F    [$B60C]     ; If [Ridley function timer] >= 0: return
@@ -4393,40 +4384,45 @@ $A6:B609 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not fa
 
 $A6:B60C 60          RTS
 
-$A6:B60D             dw 00C0, 0080, 0040
+$A6:B60D             dw 00C0, ; Facing left
+                        0080, ; Facing forward
+                        0040  ; Facing right
 }
 
 
-;;; $B613: Ridley function - hover -  ;;;
+;;; $B613: Ridley function - hover - move to wall in front of Ridley ;;;
 {
-; Hover since Samus is spinjumping
 $A6:B613 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B617 0A          ASL A                  ;|
 $A6:B618 A8          TAY                    ;} $12 = [$B63B + [Ridley facing direction] * 2]
 $A6:B619 B9 3B B6    LDA $B63B,y            ;|
 $A6:B61C 85 12       STA $12    [$7E:0012]  ;/
-$A6:B61E 20 41 B6    JSR $B641  [$A6:B641]
-$A6:B621 90 03       BCC $03    [$B626]
-$A6:B623 4C 8B B6    JMP $B68B  [$A6:B68B]
+$A6:B61E 20 41 B6    JSR $B641  [$A6:B641]  ; Ridley hover movement
+$A6:B621 90 03       BCC $03    [$B626]     ; If not spin jumping:
+$A6:B623 4C 8B B6    JMP $B68B  [$A6:B68B]  ; Go to set up Ridley pogo from hover
 
 $A6:B626 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:B629 10 0F       BPL $0F    [$B63A]     ; If [Ridley function timer] >= 0: return
 $A6:B62B A9 E5 B5    LDA #$B5E5             ;\
-$A6:B62E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5
+$A6:B62E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B5E5 (move to wall behind Ridley)
 $A6:B631 A9 80 00    LDA #$0080             ;\
 $A6:B634 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 80h
 $A6:B637 4C 55 D9    JMP $D955  [$A6:D955]  ; Go to turn Ridley around if not facing room middle
 
 $A6:B63A 60          RTS
 
-$A6:B63B             dw 0040, 0080, 00C0
+$A6:B63B             dw 0040, ; Facing left
+                        0080, ; Facing forward
+                        00C0  ; Facing right
 }
 
 
-;;; $B641:  ;;;
+;;; $B641: Ridley hover movement ;;;
 {
-; Fly towards $12 (X position) / Samus's Y position
-; If Samus is not spin jumping, SEC before RTS. Else CLC and randomly fireball if allowed.
+;; Parameters:
+;;     $12: Target X position
+;; Returns:
+;;     Carry: Clear if spin jumping, otherwise set
 $A6:B641 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A6:B644 C9 60 01    CMP #$0160             ;|
 $A6:B647 30 03       BMI $03    [$B64C]     ;|
@@ -4462,7 +4458,7 @@ $A6:B68A 60          RTS
 }
 
 
-;;; $B68B:  ;;;
+;;; $B68B: Set up Ridley pogo from hover ;;;
 {
 $A6:B68B A9 F0 00    LDA #$00F0             ;\
 $A6:B68E 8F 12 20 7E STA $7E2012[$7E:2012]  ;} Ridley tail extension speed = F0h
@@ -4471,13 +4467,13 @@ $A6:B695 8F 1E 20 7E STA $7E201E[$7E:201E]  ;} Ridley tail ideal inter-segment a
 $A6:B699 A9 01 00    LDA #$0001             ;\
 $A6:B69C 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1
 $A6:B6A0 A9 A7 B6    LDA #$B6A7             ;\
-$A6:B6A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6A7
+$A6:B6A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6A7 (pogo)
 $A6:B6A6 60          RTS
 }
 }
 
 
-;;; $B6A7..BBC3: Pogo ;;;
+;;; $B6A7..B9D4: Pogo ;;;
 {
 ;;; $B6A7: Ridley action / function - pogo - fly to position ;;;
 {
@@ -4508,7 +4504,6 @@ $A6:B6DA 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 20h
 
 ;;; $B6DD: Ridley function - pogo - wait at position ;;;
 {
-; Start tailbouncing
 $A6:B6DD AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A6:B6E0 85 12       STA $12    [$7E:0012]  ;} $12 = [Ridley X position] (target X position)
 $A6:B6E2 A9 20 01    LDA #$0120             ;\
@@ -4518,7 +4513,7 @@ $A6:B6EA A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:B6ED 20 23 D5    JSR $D523  [$A6:D523]  ; Ridley acceleration
 $A6:B6F0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:B6F3 10 18       BPL $18    [$B70D]     ; If [Ridley function timer] >= 0: return
-$A6:B6F5 20 33 CB    JSR $CB33  [$A6:CB33]
+$A6:B6F5 20 33 CB    JSR $CB33  [$A6:CB33]  ; Execute $CB33 (Ridley tail function index 2)
 $A6:B6F8 20 0F B9    JSR $B90F  [$A6:B90F]  ; Set Ridley pogo speeds
 $A6:B6FB A9 0E B7    LDA #$B70E             ;\
 $A6:B6FE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
@@ -4848,6 +4843,7 @@ $A6:B9B1             dw FE00,FD80, FC80,FBC0,FA60,F960
 $A6:B9BD             dw FDE0,FD60, FC60,FB80,FA40,F940
 $A6:B9C9             dw FDC0,FD40, FC40,FB60,FA20,F920
 }
+}
 
 
 ;;; $B9D5: Ridley feet X/Y offsets ;;;
@@ -5078,6 +5074,8 @@ $A6:BB8C 4C 38 C5    JMP $C538  [$A6:C538]  ; Go to [Ridley function]
 }
 
 
+;;; $BB8F..BC67: Lunge - grabbed Samus ;;;
+{
 ;;; $BB8F: Ridley function ;;;
 {
 ; Ridley in position to grab Samus, no powerbombs
@@ -5103,11 +5101,8 @@ $A6:BBBB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BBC4
 $A6:BBBE A9 20 00    LDA #$0020             ;\
 $A6:BBC1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 20h
 }
-}
 
 
-;;; $BBC4..BC67: Lunge - grabbed Samus ;;;
-{
 ;;; $BBC4: Ridley function ;;;
 {
 ; Ridley is holding Samus, move towards target position then go to next script
@@ -5314,7 +5309,7 @@ $A6:BD04             db 80, ; 0: Standing
 ;;; $BD20: Check if Samus is in pogo zone ;;;
 {
 ;; Returns:
-;;     Carry: Set if 
+;;     Carry: Set if Samus is in pogo zone
 $A6:BD20 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A6:BD23 C9 60 01    CMP #$0160             ;} If [Samus Y position] < 160h:
 $A6:BD26 10 02       BPL $02    [$BD2A]     ;/
