@@ -4491,7 +4491,9 @@ $A6:B6BF A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:B6C2 A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:B6C5 4C 23 D5    JMP $D523  [$A6:D523]  ; Go to Ridley acceleration
 
-$A6:B6C8             dw 00B0, 0080, 0060
+$A6:B6C8             dw 00B0, ; Facing left
+                        0080, ; Facing forward
+                        0060  ; Facing right
 
 ; BRANCH_REACHED_POSITION
 $A6:B6CE 20 55 D9    JSR $D955  [$A6:D955]  ; Turn Ridley around if not facing room middle
@@ -4519,23 +4521,23 @@ $A6:B6FB A9 0E B7    LDA #$B70E             ;\
 $A6:B6FE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
 $A6:B701 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:B704 29 3F 00    AND #$003F             ;|
-$A6:B707 69 80 00    ADC #$0080             ;} Ridley function timer = 80h + [random number] % 40h
+$A6:B707 69 80 00    ADC #$0080             ;} Ridley function timer = 80h + [random number] % 40h (only decremented while ascending)
 $A6:B70A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;/
 
 $A6:B70D 60          RTS
 }
 
 
-;;; $B70E: Ridley function ;;;
+;;; $B70E: Ridley function - pogo - descending ;;;
 {
-; Main tailbouncing
-$A6:B70E 20 59 B8    JSR $B859  [$A6:B859]
-$A6:B711 90 07       BCC $07    [$B71A]
-$A6:B713 20 4D B8    JSR $B84D  [$A6:B84D]
-$A6:B716 4C 89 B8    JMP $B889  [$A6:B889]
+$A6:B70E 20 59 B8    JSR $B859  [$A6:B859]  ;\
+$A6:B711 90 07       BCC $07    [$B71A]     ;} If Samus is not grabbable: go to BRANCH_CONTINUE
+$A6:B713 20 4D B8    JSR $B84D  [$A6:B84D]  ; Execute $B84D <-- redundant, $B889 calls this subroutine
+$A6:B716 4C 89 B8    JMP $B889  [$A6:B889]  ; Go to Ridley grabs Samus from pogo
 
 $A6:B719 60          RTS
 
+; BRANCH_CONTINUE
 $A6:B71A AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A6:B71D 18          CLC                    ;|
 $A6:B71E 6F 0C 20 7E ADC $7E200C[$7E:200C]  ;|
@@ -4561,11 +4563,11 @@ $A6:B753 A9 0D 00    LDA #$000D             ;\
 $A6:B756 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
 $A6:B759 A9 04 00    LDA #$0004             ;\
 $A6:B75C 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 4
-$A6:B75F 20 A9 B8    JSR $B8A9  [$A6:B8A9]
+$A6:B75F 20 A9 B8    JSR $B8A9  [$A6:B8A9]  ; Set Ridley pogo X movement direction
 $A6:B762 20 0F B9    JSR $B90F  [$A6:B90F]  ; Set Ridley pogo speeds
-$A6:B765 A2 7C D3    LDX #$D37C
-$A6:B768 A0 26 20    LDY #$2026
-$A6:B76B 20 B4 D3    JSR $D3B4  [$A6:D3B4]
+$A6:B765 A2 7C D3    LDX #$D37C             ;\
+$A6:B768 A0 26 20    LDY #$2026             ;} Set Ridley tail segment distances from $D37C
+$A6:B76B 20 B4 D3    JSR $D3B4  [$A6:D3B4]  ;/
 $A6:B76E A9 00 0C    LDA #$0C00             ;\
 $A6:B771 8F 28 20 7E STA $7E2028[$7E:2028]  ;} Ridley tail segment 0 target distance = C00h
 $A6:B775 8F 3C 20 7E STA $7E203C[$7E:203C]  ; Ridley tail segment 1 target distance = C00h
@@ -4576,18 +4578,19 @@ $A6:B785 8F 8C 20 7E STA $7E208C[$7E:208C]  ; Ridley tail segment 5 target dista
 $A6:B789 8F A0 20 7E STA $7E20A0[$7E:20A0]  ; Ridley tail segment 6 target distance = C00h
 $A6:B78D A9 04 00    LDA #$0004             ;\
 $A6:B790 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4
-$A6:B794 AF 0C 80 7E LDA $7E800C[$7E:800C]
-$A6:B798 1A          INC A
-$A6:B799 C9 02 00    CMP #$0002
-$A6:B79C 30 10       BMI $10    [$B7AE]
+$A6:B794 AF 0C 80 7E LDA $7E800C[$7E:800C]  ;\
+$A6:B798 1A          INC A                  ;} Increment Ridley fireball counter
+$A6:B799 C9 02 00    CMP #$0002             ;\
+$A6:B79C 30 10       BMI $10    [$B7AE]     ;} If [Ridley fireball counter] < 2: go to BRANCH_NO_FIREBALLS
 $A6:B79E AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B7A2 3A          DEC A                  ;} If [Ridley facing direction] != forwards:
 $A6:B7A3 F0 06       BEQ $06    [$B7AB]     ;/
 $A6:B7A5 A9 3A E7    LDA #$E73A             ;\
 $A6:B7A8 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E73A (shoot fireballs)
 
-$A6:B7AB A9 00 00    LDA #$0000
+$A6:B7AB A9 00 00    LDA #$0000             ; Ridley fireball counter = 0
 
+; BRANCH_NO_FIREBALLS
 $A6:B7AE 8F 0C 80 7E STA $7E800C[$7E:800C]
 $A6:B7B2 A9 B9 B7    LDA #$B7B9             ;\
 $A6:B7B5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B7B9
@@ -4595,9 +4598,8 @@ $A6:B7B8 60          RTS
 }
 
 
-;;; $B7B9: Ridley function ;;;
+;;; $B7B9: Ridley function - pogo - ascending ;;;
 {
-; Tailbouncing, hit ground
 $A6:B7B9 20 20 BD    JSR $BD20  [$A6:BD20]  ;\
 $A6:B7BC 90 1F       BCC $1F    [$B7DD]     ;} If Samus is not in pogo zone: go to BRANCH_B7DD
 $A6:B7BE CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
@@ -4610,7 +4612,7 @@ $A6:B7CE 30 0C       BMI $0C    [$B7DC]     ; If [Ridley Y velocity] >= 0:
 $A6:B7D0 A9 00 00    LDA #$0000             ;\
 $A6:B7D3 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Ridley Y velocity = 0
 $A6:B7D6 A9 0E B7    LDA #$B70E             ;\
-$A6:B7D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
+$A6:B7D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E (descending)
 
 $A6:B7DC 60          RTS                    ; Return
 
@@ -4682,15 +4684,16 @@ $A6:B858 60          RTS
 }
 
 
-;;; $B859:  ;;;
+;;; $B859: Check if Samus is grabbable ;;;
 {
-; Attempt to grab Samus
+;; Returns:
+;;     Carry: Set if Samus is grabbable, otherwise clear
 $A6:B859 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ;\
 $A6:B85C B0 01       BCS $01    [$B85F]     ;} If Samus is spin jumping / damage boosting:
 $A6:B85E 60          RTS                    ; Return
 
-$A6:B85F A2 04 00    LDX #$0004
-$A6:B862 A0 04 00    LDY #$0004
+$A6:B85F A2 04 00    LDX #$0004             ; X = 4 (Ridley feet X radius)
+$A6:B862 A0 04 00    LDY #$0004             ; Y = 4 (Ridley feet Y radius)
 }
 
 
@@ -4720,76 +4723,78 @@ $A6:B886 4C 29 DF    JMP $DF29  [$A6:DF29]  ; Go to check for Samus collision wi
 }
 
 
-;;; $B889:  ;;;
+;;; $B889: Ridley grabs Samus from pogo ;;;
 {
-$A6:B889 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A6:B88C 30 04       BMI $04    [$B892]
-$A6:B88E 49 FF FF    EOR #$FFFF
-$A6:B891 1A          INC A
-
-$A6:B892 C9 00 FE    CMP #$FE00
-$A6:B895 30 03       BMI $03    [$B89A]
-$A6:B897 A9 00 FE    LDA #$FE00
-
-$A6:B89A 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A6:B89D 20 4D B8    JSR $B84D  [$A6:B84D]
+$A6:B889 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A6:B88C 30 04       BMI $04    [$B892]     ;|
+$A6:B88E 49 FF FF    EOR #$FFFF             ;|
+$A6:B891 1A          INC A                  ;|
+                                            ;|
+$A6:B892 C9 00 FE    CMP #$FE00             ;} Ridley Y velocity = -max(200h, |[Ridley Y velocity]|)
+$A6:B895 30 03       BMI $03    [$B89A]     ;|
+$A6:B897 A9 00 FE    LDA #$FE00             ;|
+                                            ;|
+$A6:B89A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A6:B89D 20 4D B8    JSR $B84D  [$A6:B84D]  ; Execute $B84D
 $A6:B8A0 A9 8F BB    LDA #$BB8F             ;\
-$A6:B8A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BB8F
-$A6:B8A6 4C 8F BB    JMP $BB8F  [$A6:BB8F]
+$A6:B8A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BB8F (grabbed Samus)
+$A6:B8A6 4C 8F BB    JMP $BB8F  [$A6:BB8F]  ; Go to [Ridley function]
 }
 
 
-;;; $B8A9:  ;;;
+;;; $B8A9: Set Ridley pogo X movement direction ;;;
 {
-$A6:B8A9 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A6:B8AC D0 0F       BNE $0F    [$B8BD]
-$A6:B8AE A9 C0 00    LDA #$00C0
-$A6:B8B1 2C 79 0F    BIT $0F79  [$7E:0F79]
-$A6:B8B4 10 04       BPL $04    [$B8BA]
-$A6:B8B6 49 FF FF    EOR #$FFFF
-$A6:B8B9 1A          INC A
+$A6:B8A9 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A6:B8AC D0 0F       BNE $0F    [$B8BD]     ;} If [Ridley X velocity] = 0:
+$A6:B8AE A9 C0 00    LDA #$00C0             ; Ridley X velocity = C0h
+$A6:B8B1 2C 79 0F    BIT $0F79  [$7E:0F79]  ;\
+$A6:B8B4 10 04       BPL $04    [$B8BA]     ;} If [Ridley X position] % 100h >= 80h:
+$A6:B8B6 49 FF FF    EOR #$FFFF             ;\
+$A6:B8B9 1A          INC A                  ;} Ridley X velocity = -C0h
 
 $A6:B8BA 8D AA 0F    STA $0FAA  [$7E:0FAA]
 
-$A6:B8BD AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A6:B8C0 38          SEC
-$A6:B8C1 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A6:B8C4 4D AA 0F    EOR $0FAA  [$7E:0FAA]
-$A6:B8C7 30 22       BMI $22    [$B8EB]
+$A6:B8BD AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A6:B8C0 38          SEC                    ;|
+$A6:B8C1 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If sgn([Ridley X position] - [Samus X position]) != sgn([Ridley X velocity]): go to BRANCH_MOVING_TOWARDS_SAMUS
+$A6:B8C4 4D AA 0F    EOR $0FAA  [$7E:0FAA]  ;|
+$A6:B8C7 30 22       BMI $22    [$B8EB]     ;/
 $A6:B8C9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A6:B8CC CF 04 80 7E CMP $7E8004[$7E:8004]  ;} If [Ridley X position] < [Ridley minimum X position]: go to BRANCH_B903
+$A6:B8CC CF 04 80 7E CMP $7E8004[$7E:8004]  ;} If [Ridley X position] < [Ridley minimum X position]: go to BRANCH_MOVE_RIGHTWARDS
 $A6:B8D0 30 31       BMI $31    [$B903]     ;/
 $A6:B8D2 CF 06 80 7E CMP $7E8006[$7E:8006]  ;\
-$A6:B8D6 10 31       BPL $31    [$B909]     ;} If [Ridley X position] >= [Ridley maximum X position]: go to BRANCH_B909
-$A6:B8D8 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:B8DB C9 55 05    CMP #$0555
-$A6:B8DE 90 0A       BCC $0A    [$B8EA]
+$A6:B8D6 10 31       BPL $31    [$B909]     ;} If [Ridley X position] >= [Ridley maximum X position]: go to BRANCH_MOVE_LEFTWARDS
+$A6:B8D8 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:B8DB C9 55 05    CMP #$0555             ;} If [random number] < 555h: return
+$A6:B8DE 90 0A       BCC $0A    [$B8EA]     ;/
 
-$A6:B8E0 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A6:B8E3 49 FF FF    EOR #$FFFF
-$A6:B8E6 1A          INC A
-$A6:B8E7 8D AA 0F    STA $0FAA  [$7E:0FAA]
+; BRANCH_NEGATE_VELOCITY
+$A6:B8E0 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A6:B8E3 49 FF FF    EOR #$FFFF             ;|
+$A6:B8E6 1A          INC A                  ;} Negate Ridley X velocity
+$A6:B8E7 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 
-$A6:B8EA 60          RTS
+$A6:B8EA 60          RTS                    ; Return
 
+; BRANCH_MOVING_TOWARDS_SAMUS
 $A6:B8EB AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A6:B8EE CF 04 80 7E CMP $7E8004[$7E:8004]  ;} If [Ridley X position] < [Ridley minimum X position]: go to BRANCH_B903
+$A6:B8EE CF 04 80 7E CMP $7E8004[$7E:8004]  ;} If [Ridley X position] < [Ridley minimum X position]: go to BRANCH_MOVE_RIGHTWARDS
 $A6:B8F2 30 0F       BMI $0F    [$B903]     ;/
 $A6:B8F4 CF 06 80 7E CMP $7E8006[$7E:8006]  ;\
-$A6:B8F8 10 0F       BPL $0F    [$B909]     ;} If [Ridley X position] >= [Ridley maximum X position]: go to BRANCH_B909
-$A6:B8FA AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:B8FD C9 55 05    CMP #$0555
-$A6:B900 90 DE       BCC $DE    [$B8E0]
-$A6:B902 60          RTS
+$A6:B8F8 10 0F       BPL $0F    [$B909]     ;} If [Ridley X position] >= [Ridley maximum X position]: go to BRANCH_MOVE_LEFTWARDS
+$A6:B8FA AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:B8FD C9 55 05    CMP #$0555             ;} If [random number] < 555h: go to BRANCH_NEGATE_VELOCITY
+$A6:B900 90 DE       BCC $DE    [$B8E0]     ;/
+$A6:B902 60          RTS                    ; Return
 
-; BRANCH_B903
-$A6:B903 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A6:B906 30 D8       BMI $D8    [$B8E0]
-$A6:B908 60          RTS
+; BRANCH_MOVE_RIGHTWARDS
+$A6:B903 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A6:B906 30 D8       BMI $D8    [$B8E0]     ;} If [Ridley X velocity] < 0: go to BRANCH_NEGATE_VELOCITY
+$A6:B908 60          RTS                    ; Return
 
-; BRANCH_B909
-$A6:B909 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A6:B90C 10 D2       BPL $D2    [$B8E0]
+; BRANCH_MOVE_LEFTWARDS
+$A6:B909 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A6:B90C 10 D2       BPL $D2    [$B8E0]     ;} If [Ridley X velocity] >= 0: go to BRANCH_NEGATE_VELOCITY
 $A6:B90E 60          RTS
 }
 
@@ -5057,7 +5062,7 @@ $A6:BB60 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
 $A6:BB63 F0 14       BEQ $14    [$BB79]     ;} If [Ridley health] != 0:
 $A6:BB65 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ; >_<;
 $A6:BB68 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
-$A6:BB6B F0 22       BEQ $22    [$BB8F]     ;} If [power bomb flag] = 0: go to $BB8F
+$A6:BB6B F0 22       BEQ $22    [$BB8F]     ;} If [power bomb flag] = 0: go to Ridley function - grabbed Samus
 $A6:BB6D 20 68 BC    JSR $BC68  [$A6:BC68]  ; Grab Samus
 $A6:BB70 A9 4E BD    LDA #$BD4E             ;\
 $A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
@@ -5074,24 +5079,24 @@ $A6:BB8C 4C 38 C5    JMP $C538  [$A6:C538]  ; Go to [Ridley function]
 }
 
 
-;;; $BB8F..BC67: Lunge - grabbed Samus ;;;
+;;; $BB8F..BC67: Grabbed Samus ;;;
 {
 ;;; $BB8F: Ridley function ;;;
 {
 ; Ridley in position to grab Samus, no powerbombs
 $A6:BB8F AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:BB93 0A          ASL A                  ;|
-$A6:BB94 A8          TAY                    ;} $7E:782E = [$BBEB + [Ridley facing direction] * 2]
+$A6:BB94 A8          TAY                    ;} Ridley target lunge X position = [$BBEB + [Ridley facing direction] * 2]
 $A6:BB95 B9 EB BB    LDA $BBEB,y[$A6:BBEB]  ;|
 $A6:BB98 8F 2E 78 7E STA $7E782E[$7E:782E]  ;/
-$A6:BB9C AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A6:BB9F 18          CLC
-$A6:BBA0 69 C0 FF    ADC #$FFC0
-$A6:BBA3 C9 00 01    CMP #$0100
-$A6:BBA6 10 03       BPL $03    [$BBAB]
-$A6:BBA8 A9 00 01    LDA #$0100
-
-$A6:BBAB 8F 30 78 7E STA $7E7830[$7E:7830]
+$A6:BB9C AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A6:BB9F 18          CLC                    ;|
+$A6:BBA0 69 C0 FF    ADC #$FFC0             ;|
+$A6:BBA3 C9 00 01    CMP #$0100             ;|
+$A6:BBA6 10 03       BPL $03    [$BBAB]     ;} Ridley target lunge Y position = max(100h, [Ridley Y position] - 40h)
+$A6:BBA8 A9 00 01    LDA #$0100             ;|
+                                            ;|
+$A6:BBAB 8F 30 78 7E STA $7E7830[$7E:7830]  ;/
 $A6:BBAF AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:BBB3 D0 03       BNE $03    [$BBB8]     ;} If [Ridley holding Samus flag] = 0:
 $A6:BBB5 20 68 BC    JSR $BC68  [$A6:BC68]  ; Grab Samus
@@ -5107,9 +5112,9 @@ $A6:BBC1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 20h
 {
 ; Ridley is holding Samus, move towards target position then go to next script
 $A6:BBC4 AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
-$A6:BBC8 85 12       STA $12    [$7E:0012]  ;} $12 = [fireball base target X position] (target X position)
+$A6:BBC8 85 12       STA $12    [$7E:0012]  ;} $12 = [Ridley target lunge X position] (target X position)
 $A6:BBCA AF 30 78 7E LDA $7E7830[$7E:7830]  ;\
-$A6:BBCE 85 14       STA $14    [$7E:0014]  ;} $14 = [fireball base target Y position] (target Y position)
+$A6:BBCE 85 14       STA $14    [$7E:0014]  ;} $14 = [Ridley target lunge Y position] (target Y position)
 $A6:BBD0 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:BBD3 A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:BBD6 20 23 D5    JSR $D523  [$A6:D523]  ; Ridley acceleration
@@ -5121,7 +5126,11 @@ $A6:BBE4 A9 20 00    LDA #$0020             ;\
 $A6:BBE7 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 20h
 
 $A6:BBEA 60          RTS
+}
 
+
+;;; $BBEB: Ridley lunge target X position ;;;
+{
 $A6:BBEB             dw 0040, 0000, 00D0
 }
 
@@ -5132,7 +5141,7 @@ $A6:BBEB             dw 0040, 0000, 00D0
 $A6:BBF1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:BBF4 30 14       BMI $14    [$BC0A]     ; If [Ridley function timer] >= 0:
 $A6:BBF6 AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
-$A6:BBFA 85 12       STA $12    [$7E:0012]  ;} $12 = [fireball base target X position] (target X position)
+$A6:BBFA 85 12       STA $12    [$7E:0012]  ;} $12 = [Ridley target lunge X position] (target X position)
 $A6:BBFC A9 00 01    LDA #$0100             ;\
 $A6:BBFF 85 14       STA $14    [$7E:0014]  ;} $14 = 100h (target Y position)
 $A6:BC01 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
@@ -5372,7 +5381,7 @@ $A6:BD86 8F 02 78 7E STA $7E7802[$7E:7802]
 $A6:BD8A A0 21 B3    LDY #$B321             ; Ridley function = $B321 (decide action)
 $A6:BD8D AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:BD91 F0 03       BEQ $03    [$BD96]     ;} If [Ridley holding Samus flag] != 0:
-$A6:BD93 A0 8F BB    LDY #$BB8F
+$A6:BD93 A0 8F BB    LDY #$BB8F             ; Ridley function = $BB8F (grabbed Samus)
 
 $A6:BD96 8C A8 0F    STY $0FA8  [$7E:0FA8]
 $A6:BD99 60          RTS
@@ -7040,8 +7049,10 @@ $A6:CB21             dw CB20, CBC0, CB33, CB45, CBC7, CBCE, CB4E, CB60, CBD5
 }
 
 
-;;; $CB33: Ridley tail function index 2 -  ;;;
+;;; $CB33:  ;;;
 {
+; Technically, this is Ridley tail function index 2, but index 2 is never used
+; Called as a function by $B6DD (Ridley function - pogo - wait at position)
 $A6:CB33 A9 08 00    LDA #$0008             ;\
 $A6:CB36 8F 14 20 7E STA $7E2014[$7E:2014]  ;} Ridley tail angle delta = 8
 $A6:CB3A 20 72 CB    JSR $CB72  [$A6:CB72]  ; Execute $CB72
