@@ -7107,7 +7107,7 @@ $A6:CB8B 8F 1A 20 7E STA $7E201A[$7E:201A]  ;} Ridley tail whip target clockwise
 $A6:CB8F A9 FF FF    LDA #$FFFF             ;\
 $A6:CB92 8F 1C 20 7E STA $7E201C[$7E:201C]  ;} Ridley tail whip target anticlockwise angle = FFFFh
 
-$A6:CB96 20 C7 CB    JSR $CBC7  [$A6:CBC7]  ; Execute $CBC7
+$A6:CB96 20 C7 CB    JSR $CBC7  [$A6:CBC7]  ; Execute $CBC7 (Ridley tail function index 4)
 $A6:CB99 AF 20 20 7E LDA $7E2020[$7E:2020]  ;\
 $A6:CB9D 0F 34 20 7E ORA $7E2034[$7E:2034]  ;|
 $A6:CBA1 0F 48 20 7E ORA $7E2048[$7E:2048]  ;|
@@ -7119,7 +7119,7 @@ $A6:CBB5 F0 01       BEQ $01    [$CBB8]     ;/
 $A6:CBB7 60          RTS                    ; Return
 
 $A6:CBB8 A9 04 00    LDA #$0004             ;\
-$A6:CBBB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4
+$A6:CBBB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4 <-- overwritten by caller unless index was 3
 $A6:CBBF 60          RTS
 }
 
@@ -7328,7 +7328,7 @@ $A6:CCBC 60          RTS
 $A6:CCBD 20 FE CB    JSR $CBFE  [$A6:CBFE]  ; Set Ridley tail angle extrema
 $A6:CCC0 20 1E CC    JSR $CC1E  [$A6:CC1E]  ;\
 $A6:CCC3 90 03       BCC $03    [$CCC8]     ;} If all Ridley tail segments are active:
-$A6:CCC5 20 0C CD    JSR $CD0C  [$A6:CD0C]  ; Execute $CD0C
+$A6:CCC5 20 0C CD    JSR $CD0C  [$A6:CD0C]  ; Configure Ridley tail whip with extra spinning
 
 $A6:CCC8 AF 20 20 7E LDA $7E2020[$7E:2020]  ;\
 $A6:CCCC 0F 34 20 7E ORA $7E2034[$7E:2034]  ;|
@@ -7376,9 +7376,10 @@ $A6:CD23 60          RTS
 ;;; $CD24:  ;;;
 {
 ; Tail bouncing
+
 $A6:CD24 20 FE CB    JSR $CBFE  [$A6:CBFE]  ; Set Ridley tail angle extrema
 $A6:CD27 20 1E CC    JSR $CC1E  [$A6:CC1E]  ;\
-$A6:CD2A 90 33       BCC $33    [$CD5F]     ;} If not all Ridley tail segments are active: go to BRANCH_CD5F
+$A6:CD2A 90 33       BCC $33    [$CD5F]     ;} If not all Ridley tail segments are active: go to BRANCH_NORMAL
 $A6:CD2C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:CD2F 29 FF 00    AND #$00FF             ;|
 $A6:CD32 C9 F0 00    CMP #$00F0             ;} If [random number] % 100h < F0h:
@@ -7387,22 +7388,22 @@ $A6:CD37 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A6:CD3A 38          SEC                    ;|
 $A6:CD3B EF 7A 0F 00 SBC $000F7A[$7E:0F7A]  ;|
 $A6:CD3F 10 04       BPL $04    [$CD45]     ;|
-$A6:CD41 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] - [Ridley X position]| >= 80h: go to BRANCH_CD5F
+$A6:CD41 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] - [Ridley X position]| >= 80h: go to BRANCH_NORMAL
 $A6:CD44 1A          INC A                  ;|
                                             ;|
 $A6:CD45 C9 80 00    CMP #$0080             ;|
 $A6:CD48 B0 15       BCS $15    [$CD5F]     ;/
 
 $A6:CD4A AD 1C 20    LDA $201C  [$7E:201C]  ;\
-$A6:CD4D 2D 1A 20    AND $201A  [$7E:201A]  ;} If Ridley tail whip active: go to BRANCH_CD5F
+$A6:CD4D 2D 1A 20    AND $201A  [$7E:201A]  ;} If Ridley tail whip active (always true): go to BRANCH_NORMAL
 $A6:CD50 10 0D       BPL $0D    [$CD5F]     ;/
 $A6:CD52 A9 00 3F    LDA #$3F00             ;\
-$A6:CD55 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = 3F00h
+$A6:CD55 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = 3F00h <-- I don't get it
 $A6:CD58 A9 08 00    LDA #$0008             ;\
 $A6:CD5B 8D 14 20    STA $2014  [$7E:2014]  ;} Ridley tail angle delta = 8
 $A6:CD5E 60          RTS                    ; Return
 
-; BRANCH_CD5F
+; BRANCH_NORMAL
 $A6:CD5F AD 20 20    LDA $2020  [$7E:2020]  ;\
 $A6:CD62 0D 34 20    ORA $2034  [$7E:2034]  ;|
 $A6:CD65 0D 48 20    ORA $2048  [$7E:2048]  ;|
@@ -7422,19 +7423,19 @@ $A6:CD82 A9 FF FF    LDA #$FFFF             ;\
 $A6:CD85 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = FFFFh
 $A6:CD88 8D 1C 20    STA $201C  [$7E:201C]  ; Ridley tail whip target anticlockwise angle = FFFFh
 $A6:CD8B AD 10 20    LDA $2010  [$7E:2010]  ;\
-$A6:CD8E D0 04       BNE $04    [$CD94]     ;} If [Ridley pogo tail spin delay timer] != 0: go to BRANCH_CD94
+$A6:CD8E D0 04       BNE $04    [$CD94]     ;} If [Ridley pogo tail activation timer] != 0 (never true): go to BRANCH_TAIL_SPIN
 
 ; BRANCH_RETURN
-$A6:CD90 8D 14 20    STA $2014  [$7E:2014]  ; Ridley tail angle delta = [Ridley pogo tail spin delay timer]
+$A6:CD90 8D 14 20    STA $2014  [$7E:2014]  ; Ridley tail angle delta = [Ridley pogo tail activation timer]
 $A6:CD93 60          RTS                    ; Return
 
-; BRANCH_CD94
+; BRANCH_TAIL_SPIN
 $A6:CD94 3A          DEC A                  ;\
-$A6:CD95 8D 10 20    STA $2010  [$7E:2010]  ;} Decrement Ridley pogo tail spin delay timer
-$A6:CD98 D0 F6       BNE $F6    [$CD90]     ; If [Ridley pogo tail spin delay timer] != 0: go to BRANCH_RETURN
+$A6:CD95 8D 10 20    STA $2010  [$7E:2010]  ;} Decrement Ridley pogo tail activation timer
+$A6:CD98 D0 F6       BNE $F6    [$CD90]     ; If [Ridley pogo tail activation timer] != 0: go to BRANCH_RETURN
 $A6:CD9A A9 00 80    LDA #$8000             ;\
 $A6:CD9D 8D 20 20    STA $2020  [$7E:2020]  ;} Ridley tail segment 0 active flag = 8000h
-$A6:CDA0 20 65 CE    JSR $CE65  [$A6:CE65]  ; Prepare Ridley tail segment angles for pogo tail spin
+$A6:CDA0 20 65 CE    JSR $CE65  [$A6:CE65]  ; Set tail angle high bytes to 40h
 $A6:CDA3 A9 08 00    LDA #$0008             ;\
 $A6:CDA6 8D 14 20    STA $2014  [$7E:2014]  ;} Ridley tail angle delta = 8
 $A6:CDA9 60          RTS
@@ -7444,9 +7445,10 @@ $A6:CDA9 60          RTS
 ;;; $CDAA:  ;;;
 {
 ; Extend tail. Happens only while tail bouncing, moving downwards, and no tail parts currently rotating
+
 $A6:CDAA 20 FE CB    JSR $CBFE  [$A6:CBFE]  ; Set Ridley tail angle extrema
 $A6:CDAD 20 1E CC    JSR $CC1E  [$A6:CC1E]  ;\
-$A6:CDB0 90 33       BCC $33    [$CDE5]     ;} If not all Ridley tail segments are active: go to BRANCH_CDE5
+$A6:CDB0 90 33       BCC $33    [$CDE5]     ;} If not all Ridley tail segments are active (always true): go to BRANCH_NORMAL
 $A6:CDB2 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:CDB5 29 FF 00    AND #$00FF             ;|
 $A6:CDB8 C9 F0 00    CMP #$00F0             ;} If [random number] % 100h < F0h:
@@ -7455,34 +7457,34 @@ $A6:CDBD AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A6:CDC0 38          SEC                    ;|
 $A6:CDC1 EF 7A 0F 00 SBC $000F7A[$7E:0F7A]  ;|
 $A6:CDC5 10 04       BPL $04    [$CDCB]     ;|
-$A6:CDC7 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] - [Ridley X position]| >= 80h: go to BRANCH_CDE5
+$A6:CDC7 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] - [Ridley X position]| >= 80h: go to BRANCH_NORMAL
 $A6:CDCA 1A          INC A                  ;|
                                             ;|
 $A6:CDCB C9 80 00    CMP #$0080             ;|
 $A6:CDCE B0 15       BCS $15    [$CDE5]     ;/
 
 $A6:CDD0 AD 1C 20    LDA $201C  [$7E:201C]  ;\
-$A6:CDD3 2D 1A 20    AND $201A  [$7E:201A]  ;} If Ridley tail whip active: go to BRANCH_CDE5
+$A6:CDD3 2D 1A 20    AND $201A  [$7E:201A]  ;} If Ridley tail whip active: go to BRANCH_NORMAL
 $A6:CDD6 10 0D       BPL $0D    [$CDE5]     ;/
 $A6:CDD8 A9 00 3F    LDA #$3F00             ;\
-$A6:CDDB 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = 3F00h
+$A6:CDDB 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = 3F00h <-- I don't get it
 $A6:CDDE A9 08 00    LDA #$0008             ;\
 $A6:CDE1 8D 14 20    STA $2014  [$7E:2014]  ;} Ridley tail angle delta = 8
 $A6:CDE4 60          RTS                    ; Return
 
-; BRANCH_CDE5
+; BRANCH_NORMAL
 $A6:CDE5 AD 20 20    LDA $2020  [$7E:2020]  ;\
 $A6:CDE8 0D 34 20    ORA $2034  [$7E:2034]  ;|
 $A6:CDEB 0D 48 20    ORA $2048  [$7E:2048]  ;|
 $A6:CDEE 0D 5C 20    ORA $205C  [$7E:205C]  ;|
-$A6:CDF1 0D 70 20    ORA $2070  [$7E:2070]  ;} If any Ridley tail segment is active:
+$A6:CDF1 0D 70 20    ORA $2070  [$7E:2070]  ;} If any Ridley tail segment is active (always false):
 $A6:CDF4 0D 84 20    ORA $2084  [$7E:2084]  ;|
 $A6:CDF7 0D 98 20    ORA $2098  [$7E:2098]  ;|
 $A6:CDFA F0 01       BEQ $01    [$CDFD]     ;/
 $A6:CDFC 60          RTS                    ; Return
 
 $A6:CDFD 2C AC 0F    BIT $0FAC  [$7E:0FAC]  ;\
-$A6:CE00 30 3C       BMI $3C    [$CE3E]     ;} If [Ridley Y velocity] >= 0:
+$A6:CE00 30 3C       BMI $3C    [$CE3E]     ;} If [Ridley Y velocity] >= 0 (always true?):
 $A6:CE02 A9 06 00    LDA #$0006             ;\
 $A6:CE05 8D 00 20    STA $2000  [$7E:2000]  ;} Ridley tail function index = 6
 $A6:CE08 A9 00 0A    LDA #$0A00             ;\
@@ -7508,15 +7510,15 @@ $A6:CE3E A9 FF FF    LDA #$FFFF             ;\
 $A6:CE41 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = FFFFh
 $A6:CE44 8D 1C 20    STA $201C  [$7E:201C]  ; Ridley tail whip target anticlockwise angle = FFFFh
 $A6:CE47 AD 10 20    LDA $2010  [$7E:2010]  ;\
-$A6:CE4A D0 03       BNE $03    [$CE4F]     ;} If [Ridley pogo tail spin delay timer] = 0:
+$A6:CE4A D0 03       BNE $03    [$CE4F]     ;} If [Ridley pogo tail activation timer] = 0:
 $A6:CE4C 4C 61 CE    JMP $CE61  [$A6:CE61]  ; Ridley tail angle delta = 0, return
 
 $A6:CE4F 3A          DEC A                  ;\
-$A6:CE50 8D 10 20    STA $2010  [$7E:2010]  ;} Decrement Ridley pogo tail spin delay timer
-$A6:CE53 D0 0C       BNE $0C    [$CE61]     ; If [Ridley pogo tail spin delay timer] != 0: Ridley tail angle delta = [Ridley pogo tail spin delay timer], return
+$A6:CE50 8D 10 20    STA $2010  [$7E:2010]  ;} Decrement Ridley pogo tail activation timer
+$A6:CE53 D0 0C       BNE $0C    [$CE61]     ; If [Ridley pogo tail activation timer] != 0: Ridley tail angle delta = [Ridley pogo tail activation timer], return
 $A6:CE55 A9 00 80    LDA #$8000             ;\
 $A6:CE58 8D 20 20    STA $2020  [$7E:2020]  ;} Ridley tail segment 0 active flag = 8000h
-$A6:CE5B 20 65 CE    JSR $CE65  [$A6:CE65]  ; Prepare Ridley tail segment angles for pogo tail spin
+$A6:CE5B 20 65 CE    JSR $CE65  [$A6:CE65]  ; Set tail angle high bytes to 40h
 $A6:CE5E A9 08 00    LDA #$0008             ; Ridley tail angle delta = 8
 
 $A6:CE61 8D 14 20    STA $2014  [$7E:2014]
@@ -7524,11 +7526,11 @@ $A6:CE64 60          RTS
 }
 
 
-;;; $CE65: Prepare Ridley tail segment angles for pogo tail spin ;;;
+;;; $CE65: Set tail angle high bytes to 40h ;;;
 {
-; This routine is never called because Ridley pogo tail spin delay timer is always zero
-; Neutral pogo has an angle target of 3F00h, so setting the angles to 40xx causes a revolution
+; This routine is never called because $7E:2010 is always zero
 ; Calculation for tail segment 4 angle is bugged
+; The purpose of this routine might be related to the unreachable code at $CD52/$CDD8
 $A6:CE65 AD 2A 20    LDA $202A  [$7E:202A]  ;\
 $A6:CE68 29 FF 00    AND #$00FF             ;|
 $A6:CE6B 09 00 40    ORA #$4000             ;} Ridley tail segment 0 angle = [Ridley tail segment 0 angle] & FFh | 4000h
@@ -7547,7 +7549,7 @@ $A6:CE8F 09 00 40    ORA #$4000             ;} Ridley tail segment 3 angle = [Ri
 $A6:CE92 8D 66 20    STA $2066  [$7E:2066]  ;/
 $A6:CE95 AD 2A 20    LDA $202A  [$7E:202A]  ;\
 $A6:CE98 29 FF 04    AND #$04FF             ;|
-$A6:CE9B 09 00 40    ORA #$4000             ;} Ridley tail segment 4 angle = [Ridley tail segment 0 angle] & 4FFh | 4000h <-- ?
+$A6:CE9B 09 00 40    ORA #$4000             ;} Ridley tail segment 4 angle = [Ridley tail segment 0 angle] & 4FFh | 4000h <-- ???
 $A6:CE9E 8D 7A 20    STA $207A  [$7E:207A]  ;/
 $A6:CEA1 AD 8E 20    LDA $208E  [$7E:208E]  ;\
 $A6:CEA4 29 FF 00    AND #$00FF             ;|
@@ -8314,6 +8316,7 @@ $A6:D452 60          RTS
 
 ;;; $D453: Deal suit-adjusted enemy damage to Samus ;;;
 {
+; Only called by Mother Brain and unused routine $DF66
 $A6:D453 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A6:D456 BD 78 0F    LDA $0F78,x            ;|
 $A6:D459 AA          TAX                    ;} A = [$A0:0006 + [enemy ID]] (enemy damage)
