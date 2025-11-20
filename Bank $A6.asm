@@ -2826,7 +2826,7 @@ $A6:A4BD 8F 10 78 7E STA $7E7810[$7E:7810]  ;} Ridley wings animation timer delt
 $A6:A4C1 8F 12 78 7E STA $7E7812[$7E:7812]  ; Ridley wings animation timer = 8
 $A6:A4C5 20 D9 D3    JSR $D3D9  [$A6:D3D9]  ; Ridley tail segment active flags = 8000h
 $A6:A4C8 A9 01 00    LDA #$0001             ;\
-$A6:A4CB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1
+$A6:A4CB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1 (neutral)
 $A6:A4CF A9 54 A3    LDA #$A354             ;\
 $A6:A4D2 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A354
 $A6:A4D5 60          RTS
@@ -3264,7 +3264,7 @@ $A6:A9A5 20 20 AA    JSR $AA20  [$A6:AA20]  ; Spawn walls during Ceres Ridley ge
 $A6:A9A8 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Ridley X velocity = 0
 $A6:A9AB 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; Ridley Y velocity = 0
 $A6:A9AE A9 00 00    LDA #$0000             ;\
-$A6:A9B1 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 0
+$A6:A9B1 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 0 (disabled)
 $A6:A9B5 A9 11 AA    LDA #$AA11             ;\
 $A6:A9B8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $AA11
 $A6:A9BB A0 E3 A9    LDY #$A9E3             ;\
@@ -4465,7 +4465,7 @@ $A6:B68E 8F 12 20 7E STA $7E2012[$7E:2012]  ;} Ridley tail extension speed = F0h
 $A6:B692 A9 10 00    LDA #$0010             ;\
 $A6:B695 8F 1E 20 7E STA $7E201E[$7E:201E]  ;} Ridley tail ideal inter-segment angle = 10h
 $A6:B699 A9 01 00    LDA #$0001             ;\
-$A6:B69C 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1
+$A6:B69C 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1 (neutral)
 $A6:B6A0 A9 A7 B6    LDA #$B6A7             ;\
 $A6:B6A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B6A7 (pogo)
 $A6:B6A6 60          RTS
@@ -4515,7 +4515,7 @@ $A6:B6EA A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
 $A6:B6ED 20 23 D5    JSR $D523  [$A6:D523]  ; Ridley acceleration
 $A6:B6F0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:B6F3 10 18       BPL $18    [$B70D]     ; If [Ridley function timer] >= 0: return
-$A6:B6F5 20 33 CB    JSR $CB33  [$A6:CB33]  ; Execute $CB33 (Ridley tail function index 2)
+$A6:B6F5 20 33 CB    JSR $CB33  [$A6:CB33]  ; Set up Ridley pogo tail
 $A6:B6F8 20 0F B9    JSR $B90F  [$A6:B90F]  ; Set Ridley pogo speeds
 $A6:B6FB A9 0E B7    LDA #$B70E             ;\
 $A6:B6FE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E
@@ -4532,7 +4532,7 @@ $A6:B70D 60          RTS
 {
 $A6:B70E 20 59 B8    JSR $B859  [$A6:B859]  ;\
 $A6:B711 90 07       BCC $07    [$B71A]     ;} If Samus is not grabbable: go to BRANCH_CONTINUE
-$A6:B713 20 4D B8    JSR $B84D  [$A6:B84D]  ; Execute $B84D <-- redundant, $B889 calls this subroutine
+$A6:B713 20 4D B8    JSR $B84D  [$A6:B84D]  ; Set neutral Ridley tail <-- redundant, $B889 calls this subroutine
 $A6:B716 4C 89 B8    JMP $B889  [$A6:B889]  ; Go to Ridley grabs Samus from pogo
 
 $A6:B719 60          RTS
@@ -4577,7 +4577,7 @@ $A6:B781 8F 78 20 7E STA $7E2078[$7E:2078]  ; Ridley tail segment 4 target dista
 $A6:B785 8F 8C 20 7E STA $7E208C[$7E:208C]  ; Ridley tail segment 5 target distance = C00h
 $A6:B789 8F A0 20 7E STA $7E20A0[$7E:20A0]  ; Ridley tail segment 6 target distance = C00h
 $A6:B78D A9 04 00    LDA #$0004             ;\
-$A6:B790 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4
+$A6:B790 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4 (pogo - normal)
 $A6:B794 AF 0C 80 7E LDA $7E800C[$7E:800C]  ;\
 $A6:B798 1A          INC A                  ;} Increment Ridley fireball counter
 $A6:B799 C9 02 00    CMP #$0002             ;\
@@ -4601,9 +4601,9 @@ $A6:B7B8 60          RTS
 ;;; $B7B9: Ridley function - pogo - ascending ;;;
 {
 $A6:B7B9 20 20 BD    JSR $BD20  [$A6:BD20]  ;\
-$A6:B7BC 90 1F       BCC $1F    [$B7DD]     ;} If Samus is not in pogo zone: go to BRANCH_B7DD
+$A6:B7BC 90 1F       BCC $1F    [$B7DD]     ;} If Samus is not in pogo zone: go to BRANCH_FINISH_POGO
 $A6:B7BE CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
-$A6:B7C1 30 1A       BMI $1A    [$B7DD]     ; If [Ridley function timer] < 0: go to BRANCH_B7DD
+$A6:B7C1 30 1A       BMI $1A    [$B7DD]     ; If [Ridley function timer] < 0: go to BRANCH_FINISH_POGO
 $A6:B7C3 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A6:B7C6 18          CLC                    ;|
 $A6:B7C7 6F 0E 20 7E ADC $7E200E[$7E:200E]  ;} Ridley Y velocity += [Ridley pogo upwards Y acceleration]
@@ -4616,8 +4616,8 @@ $A6:B7D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B70E (descendi
 
 $A6:B7DC 60          RTS                    ; Return
 
-; BRANCH_B7DD
-$A6:B7DD 20 4D B8    JSR $B84D  [$A6:B84D]
+; BRANCH_FINISH_POGO
+$A6:B7DD 20 4D B8    JSR $B84D  [$A6:B84D]  ; Set neutral Ridley tail
 $A6:B7E0 A9 21 B3    LDA #$B321             ;\
 $A6:B7E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321 (decide action)
 $A6:B7E6 60          RTS
@@ -4674,11 +4674,10 @@ $A6:B84C 60          RTS
 }
 
 
-;;; $B84D:  ;;;
+;;; $B84D: Set neutral Ridley tail ;;;
 {
-; Reset tail?
 $A6:B84D A9 01 00    LDA #$0001             ;\
-$A6:B850 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1
+$A6:B850 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 1 (neutral)
 $A6:B854 8F 14 20 7E STA $7E2014[$7E:2014]  ; Ridley tail angle delta = 1
 $A6:B858 60          RTS
 }
@@ -4735,7 +4734,7 @@ $A6:B895 30 03       BMI $03    [$B89A]     ;|
 $A6:B897 A9 00 FE    LDA #$FE00             ;|
                                             ;|
 $A6:B89A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
-$A6:B89D 20 4D B8    JSR $B84D  [$A6:B84D]  ; Execute $B84D
+$A6:B89D 20 4D B8    JSR $B84D  [$A6:B84D]  ; Set neutral Ridley tail
 $A6:B8A0 A9 8F BB    LDA #$BB8F             ;\
 $A6:B8A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BB8F (grabbed Samus)
 $A6:B8A6 4C 8F BB    JMP $BB8F  [$A6:BB8F]  ; Go to [Ridley function]
@@ -5213,7 +5212,7 @@ $A6:BC81 4C 8B DA    JMP $DA8B  [$A6:DA8B]  ;} Draw Ridley's feet - clenched
 {
 $A6:BC84 A9 01 00    LDA #$0001             ;\
 $A6:BC87 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
-$A6:BC8B 8F 00 20 7E STA $7E2000[$7E:2000]  ; Ridley tail function index = 1
+$A6:BC8B 8F 00 20 7E STA $7E2000[$7E:2000]  ; Ridley tail function index = 1 (neutral)
 $A6:BC8F AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
 $A6:BC93 30 0F       BMI $0F    [$BCA4]     ;} If [$7E:7802] & 8000h != 0: go to BRANCH_BCA4
 $A6:BC95 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ; Check if Samus is morphed
@@ -5342,7 +5341,7 @@ $A6:BD39 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A6:BD3C F0 0F       BEQ $0F    [$BD4D]     ;} If [power bomb flag] != 0:
 $A6:BD3E AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:BD42 D0 09       BNE $09    [$BD4D]     ;} If [Ridley holding Samus flag] = 0:
-$A6:BD44 20 4D B8    JSR $B84D  [$A6:B84D]  ; Execute $B84D
+$A6:BD44 20 4D B8    JSR $B84D  [$A6:B84D]  ; Set neutral Ridley tail
 $A6:BD47 A0 B7 BA    LDY #$BAB7             ;\
 $A6:BD4A 8C A8 0F    STY $0FA8  [$7E:0FA8]  ;} Ridley function = $BAB7 (lunge)
 
@@ -7049,50 +7048,50 @@ $A6:CB21             dw CB20, CBC0, CB33, CB45, CBC7, CBCE, CB4E, CB60, CBD5
 }
 
 
-;;; $CB33:  ;;;
+;;; $CB33: Set up Ridley pogo tail ;;;
 {
 ; Technically, this is Ridley tail function index 2, but index 2 is never used
 ; Called as a function by $B6DD (Ridley function - pogo - wait at position)
 $A6:CB33 A9 08 00    LDA #$0008             ;\
 $A6:CB36 8F 14 20 7E STA $7E2014[$7E:2014]  ;} Ridley tail angle delta = 8
-$A6:CB3A 20 72 CB    JSR $CB72  [$A6:CB72]  ; Execute $CB72
+$A6:CB3A 20 72 CB    JSR $CB72  [$A6:CB72]  ; Ridley pogo tail movement with tail pointed down
 $A6:CB3D A9 03 00    LDA #$0003             ;\
-$A6:CB40 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 3
+$A6:CB40 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 3 (pogo - point tail down)
 $A6:CB44 60          RTS
 }
 
 
-;;; $CB45: Ridley tail function index 3 -  ;;;
+;;; $CB45: Ridley tail function index 3 - pogo - point tail down ;;;
 {
 $A6:CB45 A9 08 00    LDA #$0008             ;\
 $A6:CB48 8F 14 20 7E STA $7E2014[$7E:2014]  ;} Ridley tail angle delta = 8
-$A6:CB4C 80 24       BRA $24    [$CB72]     ; Go to $CB72
+$A6:CB4C 80 24       BRA $24    [$CB72]     ; Go to Ridley pogo tail movement with tail pointed down
 }
 
 
-;;; $CB4E: Ridley tail function index 6 -  ;;;
+;;; $CB4E: Ridley tail function index 6 - pogo - descending - stab ;;;
 {
 $A6:CB4E A9 03 00    LDA #$0003             ;\
 $A6:CB51 8F 14 20 7E STA $7E2014[$7E:2014]  ;} Ridley tail angle delta = 3
-$A6:CB55 20 72 CB    JSR $CB72  [$A6:CB72]  ; Execute $CB72
+$A6:CB55 20 72 CB    JSR $CB72  [$A6:CB72]  ; Ridley pogo tail movement with tail pointed down
 $A6:CB58 A9 06 00    LDA #$0006             ;\
 $A6:CB5B 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 6
 $A6:CB5F 60          RTS
 }
 
 
-;;; $CB60: Ridley tail function index 7 -  ;;;
+;;; $CB60: Ridley tail function index 7 - unused - pogo descending - stab ;;;
 {
 $A6:CB60 A9 02 00    LDA #$0002             ;\
 $A6:CB63 8F 14 20 7E STA $7E2014[$7E:2014]  ;} Ridley tail angle delta = 2
-$A6:CB67 20 72 CB    JSR $CB72  [$A6:CB72]  ; Execute $CB72
+$A6:CB67 20 72 CB    JSR $CB72  [$A6:CB72]  ; Ridley pogo tail movement with tail pointed down
 $A6:CB6A A9 07 00    LDA #$0007             ;\
 $A6:CB6D 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 7
 $A6:CB71 60          RTS
 }
 
 
-;;; $CB72:  ;;;
+;;; $CB72: Ridley pogo tail movement with tail pointed down ;;;
 {
 $A6:CB72 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:CB76 D0 10       BNE $10    [$CB88]     ;} If [Ridley facing direction] = left:
@@ -7107,7 +7106,7 @@ $A6:CB8B 8F 1A 20 7E STA $7E201A[$7E:201A]  ;} Ridley tail whip target clockwise
 $A6:CB8F A9 FF FF    LDA #$FFFF             ;\
 $A6:CB92 8F 1C 20 7E STA $7E201C[$7E:201C]  ;} Ridley tail whip target anticlockwise angle = FFFFh
 
-$A6:CB96 20 C7 CB    JSR $CBC7  [$A6:CBC7]  ; Execute $CBC7 (Ridley tail function index 4)
+$A6:CB96 20 C7 CB    JSR $CBC7  [$A6:CBC7]  ; Ridley pogo tail movement
 $A6:CB99 AF 20 20 7E LDA $7E2020[$7E:2020]  ;\
 $A6:CB9D 0F 34 20 7E ORA $7E2034[$7E:2034]  ;|
 $A6:CBA1 0F 48 20 7E ORA $7E2048[$7E:2048]  ;|
@@ -7119,12 +7118,12 @@ $A6:CBB5 F0 01       BEQ $01    [$CBB8]     ;/
 $A6:CBB7 60          RTS                    ; Return
 
 $A6:CBB8 A9 04 00    LDA #$0004             ;\
-$A6:CBBB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4 <-- overwritten by caller unless index was 3
+$A6:CBBB 8F 00 20 7E STA $7E2000[$7E:2000]  ;} Ridley tail function index = 4 (pogo - normal) <-- overwritten by caller unless index was 3
 $A6:CBBF 60          RTS
 }
 
 
-;;; $CBC0: Ridley tail function index 1 -  ;;;
+;;; $CBC0: Ridley tail function index 1 - neutral (natural tail movement + tail whips) ;;;
 {
 $A6:CBC0 A9 39 CC    LDA #$CC39             ;\
 $A6:CBC3 85 12       STA $12    [$7E:0012]  ;} $12 = $CC39 (handle Ridley tail whip)
@@ -7132,23 +7131,23 @@ $A6:CBC5 80 15       BRA $15    [$CBDC]     ; Go to update Ridley tail segment a
 }
 
 
-;;; $CBC7: Ridley tail function index 4 -  ;;;
+;;; $CBC7: Ridley pogo tail movement / Ridley tail function index 4 - pogo - normal ;;;
 {
 $A6:CBC7 A9 24 CD    LDA #$CD24             ;\
-$A6:CBCA 85 12       STA $12    [$7E:0012]  ;} $12 = $CD24
+$A6:CBCA 85 12       STA $12    [$7E:0012]  ;} $12 = $CD24 (handle normal Ridley pogo tail)
 $A6:CBCC 80 0E       BRA $0E    [$CBDC]     ; Go to update Ridley tail segment angles
 }
 
 
-;;; $CBCE: Ridley tail function index 5 -  ;;;
+;;; $CBCE: Ridley tail function index 5 - pogo - descending - stab setup ;;;
 {
 $A6:CBCE A9 AA CD    LDA #$CDAA             ;\
-$A6:CBD1 85 12       STA $12    [$7E:0012]  ;} $12 = $CDAA
+$A6:CBD1 85 12       STA $12    [$7E:0012]  ;} $12 = $CDAA (handle Ridley pogo tail stab)
 $A6:CBD3 80 07       BRA $07    [$CBDC]     ; Go to update Ridley tail segment angles
 }
 
 
-;;; $CBD5: Ridley tail function index 8 - unused ;;;
+;;; $CBD5: Ridley tail function index 8 - unused - neutral with spinny tail whips ;;;
 {
 $A6:CBD5 A9 BD CC    LDA #$CCBD             ;\
 $A6:CBD8 85 12       STA $12    [$7E:0012]  ;} $12 = $CCBD (handle Ridley tail whip with extra spinning)
@@ -7317,7 +7316,7 @@ $A6:CCBC 60          RTS
 }
 
 
-;;; $CCBD: Handle Ridley tail whip with extra spinning ;;;
+;;; $CCBD: Unused. Handle Ridley tail whip with extra spinning ;;;
 {
 ; Called only Ridley tail function index = 8 (unused)
 
@@ -7356,7 +7355,7 @@ $A6:CD0B 60          RTS
 }
 
 
-;;; $CD0C: Configure Ridley tail whip with extra spinning ;;;
+;;; $CD0C: Unused. Configure Ridley tail whip with extra spinning ;;;
 {
 ; Called only Ridley tail function index = 8 (unused)
 $A6:CD0C AD 04 20    LDA $2004  [$7E:2004]  ;\
@@ -7373,10 +7372,8 @@ $A6:CD23 60          RTS
 }
 
 
-;;; $CD24:  ;;;
+;;; $CD24: Handle normal Ridley pogo tail ;;;
 {
-; Tail bouncing
-
 $A6:CD24 20 FE CB    JSR $CBFE  [$A6:CBFE]  ; Set Ridley tail angle extrema
 $A6:CD27 20 1E CC    JSR $CC1E  [$A6:CC1E]  ;\
 $A6:CD2A 90 33       BCC $33    [$CD5F]     ;} If not all Ridley tail segments are active: go to BRANCH_NORMAL
@@ -7417,7 +7414,7 @@ $A6:CD76 60          RTS                    ; Return
 $A6:CD77 2C AC 0F    BIT $0FAC  [$7E:0FAC]  ;\
 $A6:CD7A 30 06       BMI $06    [$CD82]     ;} If [Ridley Y velocity] >= 0:
 $A6:CD7C A9 05 00    LDA #$0005             ;\
-$A6:CD7F 8D 00 20    STA $2000  [$7E:2000]  ;} Ridley tail function index = 5
+$A6:CD7F 8D 00 20    STA $2000  [$7E:2000]  ;} Ridley tail function index = 5 (pogo - descending - stab setup)
 
 $A6:CD82 A9 FF FF    LDA #$FFFF             ;\
 $A6:CD85 8D 1A 20    STA $201A  [$7E:201A]  ;} Ridley tail whip target clockwise angle = FFFFh
@@ -7442,10 +7439,8 @@ $A6:CDA9 60          RTS
 }
 
 
-;;; $CDAA:  ;;;
+;;; $CDAA: Handle Ridley pogo tail stab ;;;
 {
-; Extend tail. Happens only while tail bouncing, moving downwards, and no tail parts currently rotating
-
 $A6:CDAA 20 FE CB    JSR $CBFE  [$A6:CBFE]  ; Set Ridley tail angle extrema
 $A6:CDAD 20 1E CC    JSR $CC1E  [$A6:CC1E]  ;\
 $A6:CDB0 90 33       BCC $33    [$CDE5]     ;} If not all Ridley tail segments are active (always true): go to BRANCH_NORMAL
@@ -7486,7 +7481,7 @@ $A6:CDFC 60          RTS                    ; Return
 $A6:CDFD 2C AC 0F    BIT $0FAC  [$7E:0FAC]  ;\
 $A6:CE00 30 3C       BMI $3C    [$CE3E]     ;} If [Ridley Y velocity] >= 0 (always true?):
 $A6:CE02 A9 06 00    LDA #$0006             ;\
-$A6:CE05 8D 00 20    STA $2000  [$7E:2000]  ;} Ridley tail function index = 6
+$A6:CE05 8D 00 20    STA $2000  [$7E:2000]  ;} Ridley tail function index = 6 (pogo - descending - stab)
 $A6:CE08 A9 00 0A    LDA #$0A00             ;\
 $A6:CE0B 8D 28 20    STA $2028  [$7E:2028]  ;} Ridley tail segment 0 target distance = A00h
 $A6:CE0E 8D 3C 20    STA $203C  [$7E:203C]  ; Ridley tail segment 1 target distance = A00h
