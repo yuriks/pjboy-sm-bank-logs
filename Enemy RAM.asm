@@ -90,7 +90,7 @@ $0F9A/$0FDA/$101A/$105A: Layer
         Layer 6
         Layer 7
 }
-$0F9C/$0FDC/$101C/$105C: Flash timer (FlashCo in enemy debugger). Graphical effect only
+$0F9C/$0FDC/$101C/$105C: Flash timer (FlashCo in enemy debugger). Graphical effect only. Hurt AI is disabled when less than 8
 $0F9E/$0FDE/$101E/$105E: Frozen timer (IceCoun in enemy debugger)
 $0FA0/$0FE0/$1020/$1060: Invincibility timer (HitCoun in enemy debugger). Decrements even during x-ray. Set to Ah when frozen, set to 10h when hit by plasma, set to 30h by power bomb
 $0FA2/$0FE2/$1022/$1062: Shake timer (PlplCou in enemy debugger)

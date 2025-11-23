@@ -2407,7 +2407,7 @@ $A6:A13C AD 88 0F    LDA $0F88  [$7E:0F88]  ;\
 $A6:A13F 09 04 00    ORA #$0004             ;} Enable Ridley extended spritemap format
 $A6:A142 8D 88 0F    STA $0F88  [$7E:0F88]  ;/
 $A6:A145 A9 00 00    LDA #$0000             ;\
-$A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = fight intro
 $A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]  ; Ridley hit counter = 0
 $A6:A150 9C 3E 18    STZ $183E  [$7E:183E]  ; Earthquake type = 0
 $A6:A153 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
@@ -2433,7 +2433,7 @@ $A6:A188 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; Ridley Y velocity = 0
 $A6:A18B A9 05 00    LDA #$0005             ;\
 $A6:A18E 8D 9A 0F    STA $0F9A  [$7E:0F9A]  ;} Ridley layer = 5
 $A6:A191 A9 00 00    LDA #$0000             ;\
-$A6:A194 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A194 8F 02 78 7E STA $7E7802[$7E:7802]  ;} >_<;
 $A6:A198 1A          INC A                  ;\
 $A6:A199 8F 04 78 7E STA $7E7804[$7E:7804]  ;} Ridley movement and animation enabled flag = 1 <-- allows the silhouette of Ridley's tail and wings to be seen on top of Samus before the fight starts
 $A6:A19D A9 40 00    LDA #$0040             ;\
@@ -2905,7 +2905,7 @@ $A6:A6D8 10 0D       BPL $0D    [$A6E7]     ;/
 $A6:A6DA A9 E8 A6    LDA #$A6E8             ;\
 $A6:A6DD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A6E8 (hovering)
 $A6:A6E0 A9 01 00    LDA #$0001             ;\
-$A6:A6E3 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 1
+$A6:A6E3 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = normal
 
 $A6:A6E7 60          RTS
 }
@@ -2920,13 +2920,13 @@ $A6:A6F1 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $A6:A6F4 C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30: go to BRANCH_FIGHT
 $A6:A6F7 10 20       BPL $20    [$A719]     ;/
 $A6:A6F9 A9 00 00    LDA #$0000             ;\
-$A6:A6FC 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A6FC 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = retreat
 $A6:A700 A9 71 A9    LDA #$A971             ;\
 $A6:A703 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $A971 (real retreat)
 $A6:A706 4C 71 A9    JMP $A971  [$A6:A971]  ; Go to [Ridley function]
 
 $A6:A709 A9 00 00    LDA #$0000             ;\
-$A6:A70C 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A6:A70C 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = retreat
 $A6:A710 A9 9A BD    LDA #$BD9A             ;\
 $A6:A713 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD9A (fake retreat)
 $A6:A716 4C 9A BD    JMP $BD9A  [$A6:BD9A]  ; Go to [Ridley function]
@@ -3880,7 +3880,7 @@ $A6:B231 A9 00 00    LDA #$0000             ;|
                                             ;|
 $A6:B234 8F 08 80 7E STA $7E8008[$7E:8008]  ;/
 $A6:B238 20 B4 BC    JSR $BCB4  [$A6:BCB4]  ; Set Ridley tangibility
-$A6:B23B 20 2C BD    JSR $BD2C  [$A6:BD2C]  ; Execute $BD2C
+$A6:B23B 20 2C BD    JSR $BD2C  [$A6:BD2C]  ; Lunge if power bomb active and not holding Samus
 $A6:B23E F4 43 B2    PEA $B243              ;\
 $A6:B241 6C A8 0F    JMP ($0FA8)[$A6:A35B]  ;} Execute [Ridley function]
 
@@ -3939,20 +3939,20 @@ $A6:B294 8D A4 0F    STA $0FA4  [$7E:0FA4]  ;} Ridley frame counter = 1
 ;;; $B297: Hurt AI - enemy $E17F (Ridley) ;;;
 {
 $A6:B297 AD A4 0F    LDA $0FA4  [$7E:0FA4]  ;\
-$A6:B29A 29 01 00    AND #$0001             ;} If [Ridley frame counter] % 2 != 0: go to BRANCH_B2BA
+$A6:B29A 29 01 00    AND #$0001             ;} If [Ridley frame counter] % 2 != 0: go to BRANCH_NO_AI
 $A6:B29D D0 1B       BNE $1B    [$B2BA]     ;/
 $A6:B29F 20 B4 BC    JSR $BCB4  [$A6:BCB4]  ; Set Ridley tangibility
-$A6:B2A2 20 2C BD    JSR $BD2C  [$A6:BD2C]  ; Execute $BD2C
+$A6:B2A2 20 2C BD    JSR $BD2C  [$A6:BD2C]  ; Lunge if power bomb active and not holding Samus
 $A6:B2A5 F4 AA B2    PEA $B2AA              ;\
 $A6:B2A8 6C A8 0F    JMP ($0FA8)[$A6:A478]  ;} Execute [Ridley function]
 
 $A6:B2AB AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
-$A6:B2AF F0 38       BEQ $38    [$B2E9]     ;} If [Ridley movement and animation enabled flag] = 0: go to BRANCH_B2E9
+$A6:B2AF F0 38       BEQ $38    [$B2E9]     ;} If [Ridley movement and animation enabled flag] = 0: go to BRANCH_MOVEMENT_ANIMATION_DISABLED
 $A6:B2B1 20 6B D8    JSR $D86B  [$A6:D86B]  ; Move Ridley
 $A6:B2B4 20 7D D9    JSR $D97D  [$A6:D97D]  ; Update Ridley wings animation
 $A6:B2B7 20 F5 CA    JSR $CAF5  [$A6:CAF5]  ; Handle Ridley tail
 
-; BRANCH_B2BA
+; BRANCH_NO_AI
 $A6:B2BA 20 88 E0    JSR $E088  [$A6:E088]  ; Ridley tail / projectile collision handling
 $A6:B2BD 20 DA D4    JSR $D4DA  [$A6:D4DA]  ; Ridley hurt flash handling
 $A6:B2C0 20 2A DB    JSR $DB2A  [$A6:DB2A]  ; Draw Ridley tail
@@ -3971,7 +3971,7 @@ $A6:B2E0 AF 08 80 7E LDA $7E8008[$7E:8008]  ; >_<;
 $A6:B2E4 CD 88 B2    CMP $B288  [$A6:B288]  ;\
 $A6:B2E7 30 09       BMI $09    [$B2F2]     ;} If [$7E:8008] < 8: return
 
-; BRANCH_B2E9
+; BRANCH_MOVEMENT_ANIMATION_DISABLED
 $A6:B2E9 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:B2ED F0 03       BEQ $03    [$B2F2]     ;} If [Ridley holding Samus flag] != 0:
 $A6:B2EF 20 E1 B9    JSR $B9E1  [$A6:B9E1]  ; Move Samus with Ridley's feet
@@ -3999,7 +3999,7 @@ $A6:B311 90 01       BCC $01    [$B314]     ; If no collision:
 $A6:B313 60          RTS                    ; Return
 
 $A6:B314 A9 01 00    LDA #$0001             ;\
-$A6:B317 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 1
+$A6:B317 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = normal
 $A6:B31B A9 21 B3    LDA #$B321             ;\
 $A6:B31E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321 (decide action)
 }
@@ -4027,13 +4027,13 @@ $A6:B338 29 FF 00    AND #$00FF             ;|
 $A6:B33B C9 03 00    CMP #$0003             ;} If [Samus movement type] = spin jumping:
 $A6:B33E D0 06       BNE $06    [$B346]     ;/
 $A6:B340 A9 CC B3    LDA #$B3CC             ;\
-$A6:B343 85 12       STA $12    [$7E:0012]  ;} $12 = $B3CC
+$A6:B343 85 12       STA $12    [$7E:0012]  ;} $12 = $B3CC (hover)
 $A6:B345 60          RTS                    ; Return
 
 $A6:B346 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
 $A6:B349 D0 0F       BNE $0F    [$B35A]     ;} If [Ridley health] = 0:
 $A6:B34B A9 DC B3    LDA #$B3DC             ;\
-$A6:B34E 85 12       STA $12    [$7E:0012]  ;} $12 = $B3DC
+$A6:B34E 85 12       STA $12    [$7E:0012]  ;} $12 = $B3DC (lunge)
 $A6:B350 AF 0A 80 7E LDA $7E800A[$7E:800A]  ;\
 $A6:B354 1A          INC A                  ;} Increment Ridley death lunge counter
 $A6:B355 8F 0A 80 7E STA $7E800A[$7E:800A]  ;/
@@ -4054,7 +4054,7 @@ $A6:B36F 60          RTS                    ; Return
 $A6:B370 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ;\
 $A6:B373 90 06       BCC $06    [$B37B]     ;} If [Samus movement type] = damage boost:
 $A6:B375 A0 AC B3    LDY #$B3AC             ;\
-$A6:B378 84 12       STY $12    [$7E:0012]  ;} $12 = $B3AC
+$A6:B378 84 12       STY $12    [$7E:0012]  ;} $12 = $B3AC (lunge or pogo)
 $A6:B37A 60          RTS                    ; Return
 
 $A6:B37B A0 8C B3    LDY #$B38C             ; $12 = $B38C (pogo or swoop)
@@ -4951,24 +4951,24 @@ $A6:BA84 60          RTS
 }
 
 
-;;; $BA85:  ;;;
+;;; $BA85: Ridley lunge missed Samus ;;;
 {
 $A6:BA85 AF 0A 80 7E LDA $7E800A[$7E:800A]  ;\
 $A6:BA89 C9 0A 00    CMP #$000A             ;} If [Ridley death lunge counter] >= Ah:
 $A6:BA8C 30 0D       BMI $0D    [$BA9B]     ;/
-$A6:BA8E 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]  ; Execute $DFB7
+$A6:BA8E 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]  ; Start Norfair Ridley death sequence
 $A6:BA92 A9 3E C5    LDA #$C53E             ;\
-$A6:BA95 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C53E
+$A6:BA95 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C53E (death sequence)
 $A6:BA98 4C 3E C5    JMP $C53E  [$A6:C53E]  ; Go to [Ridley function]
 
 $A6:BA9B AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A6:BA9E F0 09       BEQ $09    [$BAA9]     ;} If [power bomb flag] != 0:
 $A6:BAA0 A9 4E BD    LDA #$BD4E             ;\
-$A6:BAA3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
+$A6:BAA3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E (dodging power bomb)
 $A6:BAA6 4C 4E BD    JMP $BD4E  [$A6:BD4E]  ; Go to [Ridley function]
 
 $A6:BAA9 A9 EC B3    LDA #$B3EC             ;\
-$A6:BAAC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B3EC
+$A6:BAAC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B3EC (lunge - missed Samus)
 $A6:BAAF A9 01 00    LDA #$0001             ;\
 $A6:BAB2 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
 $A6:BAB6 60          RTS
@@ -4977,13 +4977,10 @@ $A6:BAB6 60          RTS
 
 ;;; $BAB7: Ridley action / function - lunge ;;;
 {
-; Check to do Deathswoop/Powerbomb dodge/Move-to-Center, or attempt to ram/grab Samus
-; Deathswoop/Powerbomb dodge/Move if:
-;     Samus is spinjumping, Ridley has collided with a wall, Samus is behind or above Ridley
 $A6:BAB7 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ;\
-$A6:BABA 90 C9       BCC $C9    [$BA85]     ;} If Samus is spin jumping / damage boosting: go to $BA85
+$A6:BABA 90 C9       BCC $C9    [$BA85]     ;} If Samus is spin jumping / damage boosting: go to Ridley lunge missed Samus
 $A6:BABC AF 3E 78 7E LDA $7E783E[$7E:783E]  ;\
-$A6:BAC0 D0 C3       BNE $C3    [$BA85]     ;} If [Ridley hit a room boundary flag] != 0: go to $BA85
+$A6:BAC0 D0 C3       BNE $C3    [$BA85]     ;} If [Ridley hit a room boundary flag] != 0: go to Ridley lunge missed Samus
 $A6:BAC2 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:BAC6 0A          ASL A                  ;|
 $A6:BAC7 A8          TAY                    ;|
@@ -4993,7 +4990,7 @@ $A6:BACD AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
 $A6:BAD0 38          SEC                    ;|
 $A6:BAD1 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
 $A6:BAD4 85 14       STA $14    [$7E:0014]  ;|
-$A6:BAD6 45 12       EOR $12    [$7E:0012]  ;} If Samus is at least 20h px behind Ridley: go to $BA85
+$A6:BAD6 45 12       EOR $12    [$7E:0012]  ;} If Samus is at least 20h px behind Ridley: go to Ridley lunge missed Samus
 $A6:BAD8 10 0D       BPL $0D    [$BAE7]     ;|
 $A6:BADA A5 14       LDA $14    [$7E:0014]  ;|
 $A6:BADC 10 04       BPL $04    [$BAE2]     ;|
@@ -5006,7 +5003,7 @@ $A6:BAE5 10 9E       BPL $9E    [$BA85]     ;/
 $A6:BAE7 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A6:BAEA 18          CLC                    ;|
 $A6:BAEB 69 23 00    ADC #$0023             ;|
-$A6:BAEE 38          SEC                    ;} If [Ridley Y position] + 23h >= [Samus Y position]: go to $BA85
+$A6:BAEE 38          SEC                    ;} If [Ridley Y position] + 23h >= [Samus Y position]: go to Ridley lunge missed Samus
 $A6:BAEF ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
 $A6:BAF2 10 91       BPL $91    [$BA85]     ;/
 $A6:BAF4 A2 F0 FF    LDX #$FFF0             ; X = -10h
@@ -5064,25 +5061,24 @@ $A6:BB68 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A6:BB6B F0 22       BEQ $22    [$BB8F]     ;} If [power bomb flag] = 0: go to Ridley function - grabbed Samus
 $A6:BB6D 20 68 BC    JSR $BC68  [$A6:BC68]  ; Grab Samus
 $A6:BB70 A9 4E BD    LDA #$BD4E             ;\
-$A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E
+$A6:BB73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $BD4E (dodging power bomb)
 $A6:BB76 4C 4E BD    JMP $BD4E  [$A6:BD4E]  ; Go to [Ridley function]
 
 $A6:BB79 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:BB7D D0 03       BNE $03    [$BB82]     ;} If [Ridley holding Samus flag] = 0:
 $A6:BB7F 20 68 BC    JSR $BC68  [$A6:BC68]  ; Grab Samus
 
-$A6:BB82 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]  ; Execute $DFB7
+$A6:BB82 22 B7 DF A6 JSL $A6DFB7[$A6:DFB7]  ; Start Norfair Ridley death sequence
 $A6:BB86 A9 38 C5    LDA #$C538             ;\
-$A6:BB89 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538
+$A6:BB89 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538 (dying - grabbed Samus)
 $A6:BB8C 4C 38 C5    JMP $C538  [$A6:C538]  ; Go to [Ridley function]
 }
 
 
 ;;; $BB8F..BC67: Grabbed Samus ;;;
 {
-;;; $BB8F: Ridley function ;;;
+;;; $BB8F: Ridley function - grabbed Samus - setup ;;;
 {
-; Ridley in position to grab Samus, no powerbombs
 $A6:BB8F AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:BB93 0A          ASL A                  ;|
 $A6:BB94 A8          TAY                    ;} Ridley target lunge X position = [$BBEB + [Ridley facing direction] * 2]
@@ -5107,9 +5103,8 @@ $A6:BBC1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 20h
 }
 
 
-;;; $BBC4: Ridley function ;;;
+;;; $BBC4: Ridley function - grabbed Samus - rising to up to 40h px ;;;
 {
-; Ridley is holding Samus, move towards target position then go to next script
 $A6:BBC4 AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
 $A6:BBC8 85 12       STA $12    [$7E:0012]  ;} $12 = [Ridley target lunge X position] (target X position)
 $A6:BBCA AF 30 78 7E LDA $7E7830[$7E:7830]  ;\
@@ -5130,13 +5125,14 @@ $A6:BBEA 60          RTS
 
 ;;; $BBEB: Ridley lunge target X position ;;;
 {
-$A6:BBEB             dw 0040, 0000, 00D0
+$A6:BBEB             dw 0040, ; Facing left
+                        0000, ; Facing forward
+                        00D0  ; Facing right
 }
 
 
-;;; $BBF1: Ridley function ;;;
+;;; $BBF1: Ridley function - grabbed Samus - rising to room middle ;;;
 {
-; Drop Samus
 $A6:BBF1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:BBF4 30 14       BMI $14    [$BC0A]     ; If [Ridley function timer] >= 0:
 $A6:BBF6 AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
@@ -5163,9 +5159,8 @@ $A6:BC28             dw 00B0, 0000, 0050
 }
 
 
-;;; $BC2E: Ridley function ;;;
+;;; $BC2E: Ridley function - grabbed Samus - release Samus ;;;
 {
-; Short time after dropping Samus, before returning to B321
 $A6:BC2E CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:BC31 30 1A       BMI $1A    [$BC4D]     ; If [Ridley function timer] >= 0:
 $A6:BC33 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
@@ -5188,7 +5183,9 @@ $A6:BC5B A9 21 B3    LDA #$B321             ;\
 $A6:BC5E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321 (decide action)
 $A6:BC61 60          RTS
 
-$A6:BC62             dw 00B0, 0000, 0050
+$A6:BC62             dw 00B0, ; Facing left
+                        0000, ; Facing forward
+                        0050  ; Facing right
 }
 }
 
@@ -5214,7 +5211,7 @@ $A6:BC84 A9 01 00    LDA #$0001             ;\
 $A6:BC87 8F 04 20 7E STA $7E2004[$7E:2004]  ;} Ridley tail whip request flag = 1
 $A6:BC8B 8F 00 20 7E STA $7E2000[$7E:2000]  ; Ridley tail function index = 1 (neutral)
 $A6:BC8F AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
-$A6:BC93 30 0F       BMI $0F    [$BCA4]     ;} If [$7E:7802] & 8000h != 0: go to BRANCH_BCA4
+$A6:BC93 30 0F       BMI $0F    [$BCA4]     ;} If [Ridley fight mode] = death sequence: go to BRANCH_NO_TANGIBILITY_UPDATE
 $A6:BC95 20 F1 BC    JSR $BCF1  [$A6:BCF1]  ; Check if Samus is morphed
 $A6:BC98 A9 06 00    LDA #$0006             ; Ridley intangibility timer = 6
 $A6:BC9B 70 03       BVS $03    [$BCA0]     ; If Samus is not morphed:
@@ -5222,7 +5219,7 @@ $A6:BC9D A9 0A 00    LDA #$000A             ; Ridley intangibility timer = Ah
 
 $A6:BCA0 8F 3C 78 7E STA $7E783C[$7E:783C]
 
-; BRANCH_BCA4
+; BRANCH_NO_TANGIBILITY_UPDATE
 $A6:BCA4 A9 00 00    LDA #$0000             ;\
 $A6:BCA7 8F 36 78 7E STA $7E7836[$7E:7836]  ;} Ridley holding Samus flag = 0
 $A6:BCAB 1A          INC A                  ;\
@@ -5235,8 +5232,8 @@ $A6:BCB1 4C 8B DA    JMP $DA8B  [$A6:DA8B]  ;} Draw Ridley's feet - unclenched
 ;;; $BCB4: Set Ridley tangibility ;;;
 {
 $A6:BCB4 AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
-$A6:BCB8 30 36       BMI $36    [$BCF0]     ;} If [$7E:7802] & 8000h != 0: return
-$A6:BCBA F0 18       BEQ $18    [$BCD4]     ; If [$7E:7802] = 0: go to BRANCH_BCD4
+$A6:BCB8 30 36       BMI $36    [$BCF0]     ;} If [Ridley fight mode] = death sequence: return
+$A6:BCBA F0 18       BEQ $18    [$BCD4]     ; If [Ridley fight mode] = fight intro / retreat: go to BRANCH_NO_TANGIBILITY_UPDATE
 $A6:BCBC 20 7A DE    JSR $DE7A  [$A6:DE7A]  ;\
 $A6:BCBF 90 0A       BCC $0A    [$BCCB]     ;} If Ridley is off-screen:
 $A6:BCC1 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -5248,7 +5245,7 @@ $A6:BCCB AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A6:BCCE 29 FF FB    AND #$FBFF             ;} Set Ridley as tangible
 $A6:BCD1 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 
-; BRANCH_BCD4
+; BRANCH_NO_TANGIBILITY_UPDATE
 $A6:BCD4 AF 3C 78 7E LDA $7E783C[$7E:783C]  ;\
 $A6:BCD8 F0 16       BEQ $16    [$BCF0]     ;} If [Ridley intangibility timer] = 0: return
 $A6:BCDA 3A          DEC A                  ;\
@@ -5329,14 +5326,14 @@ $A6:BD2B 60          RTS                    ;} Return carry set
 }
 
 
-;;; $BD2C:  ;;;
+;;; $BD2C: Lunge if power bomb active and not holding Samus ;;;
 {
-; Power Bomb Check/Reaction
+; Lunge will immediately go to power bomb dodge unless a higher priority action is decided
 $A6:BD2C AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
-$A6:BD30 30 1B       BMI $1B    [$BD4D]     ;} If [$7E:7802] & 8000h != 0: return
-$A6:BD32 F0 19       BEQ $19    [$BD4D]     ; If [$7E:7802] = 0: return
-$A6:BD34 C9 02 00    CMP #$0002             ;\
-$A6:BD37 F0 14       BEQ $14    [$BD4D]     ;} If [$7E:7802] = 2: return
+$A6:BD30 30 1B       BMI $1B    [$BD4D]     ;|
+$A6:BD32 F0 19       BEQ $19    [$BD4D]     ;} If [Ridley fight mode] != normal: return
+$A6:BD34 C9 02 00    CMP #$0002             ;|
+$A6:BD37 F0 14       BEQ $14    [$BD4D]     ;/
 $A6:BD39 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A6:BD3C F0 0F       BEQ $0F    [$BD4D]     ;} If [power bomb flag] != 0:
 $A6:BD3E AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
@@ -5351,22 +5348,21 @@ $A6:BD4D 60          RTS
 
 ;;; $BD4E: Ridley function - dodging power bomb ;;;
 {
-; Ridley is dodging a power bomb (may be holding Samus)
 $A6:BD4E AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A6:BD51 F0 30       BEQ $30    [$BD83]     ;} If [power bomb flag] = 0: go to BRANCH_NO_POWER_BOMB
-$A6:BD53 A9 02 00    LDA #$0002
-$A6:BD56 8F 02 78 7E STA $7E7802[$7E:7802]
+$A6:BD53 A9 02 00    LDA #$0002             ;\
+$A6:BD56 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = power bomb dodge active
 $A6:BD5A A0 50 00    LDY #$0050             ; $12 = 50h (target X position)
-$A6:BD5D AD E2 0C    LDA $0CE2  [$7E:0CE2]
-$A6:BD60 C9 80 00    CMP #$0080
-$A6:BD63 10 03       BPL $03    [$BD68]
+$A6:BD5D AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
+$A6:BD60 C9 80 00    CMP #$0080             ;} If [power bomb explosion X position] < 80h:
+$A6:BD63 10 03       BPL $03    [$BD68]     ;/
 $A6:BD65 A0 C0 00    LDY #$00C0             ; $12 = C0h (target X position)
 
 $A6:BD68 84 12       STY $12    [$7E:0012]
 $A6:BD6A A0 C0 00    LDY #$00C0             ; $14 = C0h (target Y position)
-$A6:BD6D AD E4 0C    LDA $0CE4  [$7E:0CE4]
-$A6:BD70 C9 00 01    CMP #$0100
-$A6:BD73 10 03       BPL $03    [$BD78]
+$A6:BD6D AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
+$A6:BD70 C9 00 01    CMP #$0100             ;} If [power bomb explosion Y position] < 100h:
+$A6:BD73 10 03       BPL $03    [$BD78]     ;/
 $A6:BD75 A0 80 01    LDY #$0180             ; $14 = 180h (target Y position)
 
 $A6:BD78 84 14       STY $14    [$7E:0014]
@@ -5375,8 +5371,8 @@ $A6:BD7D 20 2E B4    JSR $B42E  [$A6:B42E]  ; Y = [$B439 + [Ridley acceleration 
 $A6:BD80 4C 23 D5    JMP $D523  [$A6:D523]  ; Go to Ridley acceleration
 
 ; BRANCH_NO_POWER_BOMB
-$A6:BD83 A9 01 00    LDA #$0001
-$A6:BD86 8F 02 78 7E STA $7E7802[$7E:7802]
+$A6:BD83 A9 01 00    LDA #$0001             ;\
+$A6:BD86 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = normal
 $A6:BD8A A0 21 B3    LDY #$B321             ; Ridley function = $B321 (decide action)
 $A6:BD8D AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
 $A6:BD91 F0 03       BEQ $03    [$BD96]     ;} If [Ridley holding Samus flag] != 0:
@@ -6269,18 +6265,16 @@ $A6:C4FE             dx 0200,B7DA00,1820, ; Escape timer text
 
 ;;; $C538..C695: Norfair Ridley death sequence ;;;
 {
-;;; $C538: Ridley function ;;;
+;;; $C538: Ridley function - dying - grabbed Samus ;;;
 {
-; Move Ridley towards 80,148
 $A6:C538 20 01 C6    JSR $C601  [$A6:C601]  ; Move Ridley to death spot
 $A6:C53B 90 01       BCC $01    [$C53E]     ; If not reached target position:
 $A6:C53D 60          RTS                    ; Return
 }
 
 
-;;; $C53E: Ridley function ;;;
+;;; $C53E: Ridley function - death sequence - death roar ;;;
 {
-; Final roar
 $A6:C53E A9 C8 E6    LDA #$E6C8             ;\
 $A6:C541 20 67 D4    JSR $D467  [$A6:D467]  ;} Set Ridley instruction list to $E6C8 (death roar)
 $A6:C544 A9 51 C5    LDA #$C551             ;\
@@ -6292,23 +6286,22 @@ $A6:C550 60          RTS
 }
 
 
-;;; $C551: Ridley function ;;;
+;;; $C551: Ridley function - death sequence - move to death spot ;;;
 {
-; Move to death spot, wait, then lower acid
 $A6:C551 20 01 C6    JSR $C601  [$A6:C601]  ; Move Ridley to death spot
 $A6:C554 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:C557 10 F7       BPL $F7    [$C550]     ; If [Ridley function timer] >= 0: return
-$A6:C559 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A6:C55C 9C AC 0F    STZ $0FAC  [$7E:0FAC]
-$A6:C55F A9 10 02    LDA #$0210
-$A6:C562 8D 7A 19    STA $197A  [$7E:197A]
-$A6:C565 A9 40 00    LDA #$0040
-$A6:C568 8D 7C 19    STA $197C  [$7E:197C]
-$A6:C56B A9 01 00    LDA #$0001
-$A6:C56E 8D 80 19    STA $1980  [$7E:1980]
-$A6:C571 A9 00 00    LDA #$0000
-$A6:C574 8F 0E 80 7E STA $7E800E[$7E:800E]
-$A6:C578 8F 10 80 7E STA $7E8010[$7E:8010]
+$A6:C559 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Ridley X velocity = 0
+$A6:C55C 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; Ridley Y velocity = 0
+$A6:C55F A9 10 02    LDA #$0210             ;\
+$A6:C562 8D 7A 19    STA $197A  [$7E:197A]  ;} FX target Y position = 210h
+$A6:C565 A9 40 00    LDA #$0040             ;\
+$A6:C568 8D 7C 19    STA $197C  [$7E:197C]  ;} FX Y velocity = 0.40h
+$A6:C56B A9 01 00    LDA #$0001             ;\
+$A6:C56E 8D 80 19    STA $1980  [$7E:1980]  ;} FX timer = 1
+$A6:C571 A9 00 00    LDA #$0000             ;\
+$A6:C574 8F 0E 80 7E STA $7E800E[$7E:800E]  ;} Ridley small explosion timer = 0
+$A6:C578 8F 10 80 7E STA $7E8010[$7E:8010]  ; Ridley small explosion index = 0
 $A6:C57C A9 88 C5    LDA #$C588             ;\
 $A6:C57F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C588
 $A6:C582 A9 A0 00    LDA #$00A0             ;\
@@ -6316,10 +6309,9 @@ $A6:C585 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = A0h
 }
 
 
-;;; $C588: Ridley function ;;;
+;;; $C588: Ridley function - death sequence - lowering acid and release Samus ;;;
 {
-; Explosions for death. After a while, drop Samus if needed
-$A6:C588 20 23 C6    JSR $C623  [$A6:C623]
+$A6:C588 20 23 C6    JSR $C623  [$A6:C623]  ; Spawn small explosion near Ridley
 $A6:C58B CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:C58E 10 C0       BPL $C0    [$C550]     ; If [Ridley function timer] >= 0: return
 $A6:C590 AF 36 78 7E LDA $7E7836[$7E:7836]  ;\
@@ -6328,16 +6320,15 @@ $A6:C596 20 84 BC    JSR $BC84  [$A6:BC84]  ; Release Samus
 
 $A6:C599 A9 A8 C5    LDA #$C5A8             ;\
 $A6:C59C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C5A8
-$A6:C59F 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A6:C5A2 9C AC 0F    STZ $0FAC  [$7E:0FAC]
-$A6:C5A5 4C 32 C9    JMP $C932  [$A6:C932]
+$A6:C59F 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Ridley X velocity = 0
+$A6:C5A2 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ; Ridley Y velocity = 0
+$A6:C5A5 4C 32 C9    JMP $C932  [$A6:C932]  ; Go to spawn Ridley explosion enemies
 }
 
 
-;;; $C5A8: Ridley function ;;;
+;;; $C5A8: Ridley function - death sequence - start falling apart ;;;
 {
-; Disable Ridley
-$A6:C5A8 20 23 C6    JSR $C623  [$A6:C623]
+$A6:C5A8 20 23 C6    JSR $C623  [$A6:C623]  ; Spawn small explosion near Ridley
 $A6:C5AB A9 00 00    LDA #$0000             ;\
 $A6:C5AE 8F 04 78 7E STA $7E7804[$7E:7804]  ;} Ridley movement and animation enabled flag = 0
 $A6:C5B2 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -6351,9 +6342,9 @@ $A6:C5C7 60          RTS
 }
 
 
-;;; $C5C8: Ridley function ;;;
+;;; $C5C8: Ridley function - death sequence - falling apart ;;;
 {
-; Wait 20 frames
+; Useless function. Wait 20h frames before waiting 100h more frames >_<;
 $A6:C5C8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:C5CB 10 83       BPL $83    [$C550]     ; If [Ridley function timer] >= 0: return
 $A6:C5CD A9 DA C5    LDA #$C5DA             ;\
@@ -6364,9 +6355,8 @@ $A6:C5D9 60          RTS
 }
 
 
-;;; $C5DA: Ridley function ;;;
+;;; $C5DA: Ridley function - death sequence - still falling apart ;;;
 {
-; Wait 100 frames, then drop items, change music, and set boss bit
 $A6:C5DA CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
 $A6:C5DD 10 21       BPL $21    [$C600]     ; If [Ridley function timer] >= 0: return
 $A6:C5DF A9 01 00    LDA #$0001             ;\
@@ -6378,7 +6368,7 @@ $A6:C5F1 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A6:C5F4 09 00 02    ORA #$0200             ;} Flag Ridley for deletion
 $A6:C5F7 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A6:C5FA A9 00 C6    LDA #$C600             ;\
-$A6:C5FD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C600
+$A6:C5FD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = RTS
 
 $A6:C600 60          RTS
 }
@@ -6394,7 +6384,7 @@ $A6:C606 A0 48 01    LDY #$0148             ;/
 $A6:C609 84 14       STY $14    [$7E:0014]  ;} $14 = 148h (target Y position)
 $A6:C60B A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:C60E A0 00 00    LDY #$0000             ; Y = 0 (acceleration factor)
-$A6:C611 A9 10 00    LDA #$0010             ; A = 10 (additional deceleration)
+$A6:C611 A9 10 00    LDA #$0010             ; A = 10h (additional deceleration)
 $A6:C614 20 26 D5    JSR $D526  [$A6:D526]  ; Ridley death spot acceleration
 $A6:C617 A9 04 00    LDA #$0004             ;\
 $A6:C61A 85 16       STA $16    [$7E:0016]  ;|
@@ -6404,35 +6394,34 @@ $A6:C622 60          RTS
 }
 
 
-;;; $C623:  ;;;
+;;; $C623: Spawn small explosion near Ridley ;;;
 {
-; Keep playing explosions
-$A6:C623 AF 0E 80 7E LDA $7E800E[$7E:800E]
-$A6:C627 3A          DEC A
-$A6:C628 30 05       BMI $05    [$C62F]
-$A6:C62A 8F 0E 80 7E STA $7E800E[$7E:800E]
-$A6:C62E 60          RTS
+$A6:C623 AF 0E 80 7E LDA $7E800E[$7E:800E]  ;\
+$A6:C627 3A          DEC A                  ;} If [Ridley small explosion timer] > 0:
+$A6:C628 30 05       BMI $05    [$C62F]     ;/
+$A6:C62A 8F 0E 80 7E STA $7E800E[$7E:800E]  ; Decrement Ridley small explosion timer
+$A6:C62E 60          RTS                    ; Return
 
-$A6:C62F A9 04 00    LDA #$0004
-$A6:C632 8F 0E 80 7E STA $7E800E[$7E:800E]
-$A6:C636 AF 10 80 7E LDA $7E8010[$7E:8010]
-$A6:C63A 1A          INC A
-$A6:C63B C9 0A 00    CMP #$000A
-$A6:C63E 30 03       BMI $03    [$C643]
-$A6:C640 A9 00 00    LDA #$0000
-
-$A6:C643 8F 10 80 7E STA $7E8010[$7E:8010]
-$A6:C647 0A          ASL A
-$A6:C648 0A          ASL A
-$A6:C649 A8          TAY
-$A6:C64A B9 6E C6    LDA $C66E,y[$A6:C672]
-$A6:C64D 18          CLC
-$A6:C64E 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C651 85 12       STA $12    [$7E:0012]
-$A6:C653 B9 70 C6    LDA $C670,y[$A6:C674]
-$A6:C656 18          CLC
-$A6:C657 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C65A 85 14       STA $14    [$7E:0014]
+$A6:C62F A9 04 00    LDA #$0004             ;\
+$A6:C632 8F 0E 80 7E STA $7E800E[$7E:800E]  ;} Ridley small explosion timer = 4
+$A6:C636 AF 10 80 7E LDA $7E8010[$7E:8010]  ;\
+$A6:C63A 1A          INC A                  ;|
+$A6:C63B C9 0A 00    CMP #$000A             ;|
+$A6:C63E 30 03       BMI $03    [$C643]     ;} Ridley small explosion index = ([Ridley small explosion index] + 1) % Ah
+$A6:C640 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A6:C643 8F 10 80 7E STA $7E8010[$7E:8010]  ;/
+$A6:C647 0A          ASL A                  ;\
+$A6:C648 0A          ASL A                  ;} Y = [Ridley small explosion index] * 4
+$A6:C649 A8          TAY                    ;/
+$A6:C64A B9 6E C6    LDA $C66E,y[$A6:C672]  ;\
+$A6:C64D 18          CLC                    ;|
+$A6:C64E 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} $12 = [Ridley X position] + [$C66E + [Y]]
+$A6:C651 85 12       STA $12    [$7E:0012]  ;/
+$A6:C653 B9 70 C6    LDA $C670,y[$A6:C674]  ;\
+$A6:C656 18          CLC                    ;|
+$A6:C657 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} $14 = [Ridley Y position] + [$C66E + [Y] + 2]
+$A6:C65A 85 14       STA $14    [$7E:0014]  ;/
 $A6:C65C A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A6:C65F A0 09 E5    LDY #$E509             ;\
 $A6:C662 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -7961,7 +7950,7 @@ $A6:D1A4 AD 20 78    LDA $7820  [$7E:7820]  ;\
 $A6:D1A7 3A          DEC A                  ;} If [Ridley facing direction] = forward: return
 $A6:D1A8 F0 1B       BEQ $1B    [$D1C5]     ;/
 $A6:D1AA AD 02 78    LDA $7802  [$7E:7802]  ;\
-$A6:D1AD F0 16       BEQ $16    [$D1C5]     ;} If [$7E:7802] = 0: return
+$A6:D1AD F0 16       BEQ $16    [$D1C5]     ;} If [Ridley fight mode] = fight intro / retreat: return
 $A6:D1AF 20 42 D2    JSR $D242  [$A6:D242]  ; Detect (super) missile near Ridley tail (sets ($12, $14) to missile position)
 $A6:D1B2 90 12       BCC $12    [$D1C6]     ; If (super) missile not detected: go to BRANCH_NO_MISSILE
 $A6:D1B4 A5 12       LDA $12    [$7E:0012]  ;\
@@ -8387,7 +8376,7 @@ $A6:D4B4 60          RTS
 ; Based on hit counter, strictly speaking
 ; Someone forgot to write a branch instruction after the CMP at $D4CF
 $A6:D4B5 AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
-$A6:D4B9 F0 F9       BEQ $F9    [$D4B4]     ;} If [$7E:7802] = 0: return
+$A6:D4B9 F0 F9       BEQ $F9    [$D4B4]     ;} If [Ridley fight mode] = fight intro / retreat: return
 $A6:D4BB AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
 $A6:D4BF C9 32 00    CMP #$0032             ;} If [Ridley hit counter] < 50: return
 $A6:D4C2 90 F0       BCC $F0    [$D4B4]     ;/
@@ -9911,20 +9900,19 @@ $A6:DFB6 6B          RTL
 }
 
 
-;;; $DFB7:  ;;;
+;;; $DFB7: Start Norfair Ridley death sequence ;;;
 {
-; Set 7802 to dead, disable Samus/Ridley interaction, next AI script is C538
 $A6:DFB7 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
-$A6:DFBA D0 1C       BNE $1C    [$DFD8]     ;} If [Ridley health] = 0:
+$A6:DFBA D0 1C       BNE $1C    [$DFD8]     ;} If [Ridley health] = 0 (always true):
 $A6:DFBC AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
-$A6:DFC0 30 16       BMI $16    [$DFD8]     ;} If [$7E:7802] & 8000h = 0:
+$A6:DFC0 30 16       BMI $16    [$DFD8]     ;} If [Ridley fight mode] != death sequence:
 $A6:DFC2 A9 FF FF    LDA #$FFFF             ;\
-$A6:DFC5 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = FFFFh
+$A6:DFC5 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Ridley fight mode = death sequence
 $A6:DFC9 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A6:DFCC 09 00 04    ORA #$0400             ;} Set Ridley as intangible
 $A6:DFCF 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A6:DFD2 A9 38 C5    LDA #$C538             ;\
-$A6:DFD5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538
+$A6:DFD5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $C538 (dying - grabbed Samus)
 
 $A6:DFD8 6B          RTL
 }
