@@ -4062,5 +4062,5 @@ $DF:D4DB             dw 0000, 1500
 
 ;;; $D4DF: Free space ;;;
 {
-$DF:D4DF             fillto $E08000, $FF	   ; Free space
+$DF:D4DF             fillto $E08000, $FF    ; Free space
 }

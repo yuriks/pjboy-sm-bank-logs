@@ -17594,5 +17594,6 @@ $86:F498             dx F391,F3F0,F353,04,04,0005,0000,84FC ; Falling spark. Ini
 
 ;;; $F4A6: Free space ;;;
 {
-$86:F4A6             fillto $878000, $FF	   ; Free space
+$86:F4A6             fillto $878000, $FF    ; Free space
+$86:F4A6             fillto $878000, $FF    ; Free space
 }

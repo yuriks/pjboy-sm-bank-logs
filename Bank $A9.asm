@@ -13923,7 +13923,7 @@ $A9:F88F 18          CLC                    ;} Enemy X velocity += [A] * sin([$1
 $A9:F890 7D AA 0F    ADC $0FAA,x            ;|
 $A9:F893 9D AA 0F    STA $0FAA,x            ;|
 $A9:F896 68          PLA                    ;/
-$A9:F897 22 72 C2 86 JSL $86C272[$86:C272]  ;|
+$A9:F897 22 72 C2 86 JSL $86C272[$86:C272]  ;\
 $A9:F89B AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
 $A9:F89E 18          CLC                    ;} Enemy Y velocity += [A] * cos([$12] * pi / 80h)
 $A9:F89F 7D AC 0F    ADC $0FAC,x            ;|
