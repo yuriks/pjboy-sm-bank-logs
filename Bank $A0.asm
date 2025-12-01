@@ -2073,6 +2073,10 @@ $A0:920D 60          RTS
 ;;     $14: Y position
 
 ; Used for boss deaths and enemy projectiles, but not normal enemy death
+
+; X and Y are popped off the stack in the wrong order >_<;
+; Fortunately, no caller routine needs X and Y to be preserved
+
 $A0:920E 08          PHP
 $A0:920F 8B          PHB
 $A0:9210 DA          PHX
