@@ -1865,7 +1865,7 @@ $A5:9605 80 06       BRA $06    [$960D]     ; Go to Draygon reaction
 ;;; $9607: Power bomb reaction - enemy $DE3F (Draygon) ;;;
 {
 $A5:9607 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
-$A5:960B 80 00       BRA $00    [$960D]
+$A5:960B 80 00       BRA $00    [$960D]     ; >_<;
 }
 
 
