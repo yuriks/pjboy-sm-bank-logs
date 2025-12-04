@@ -10471,7 +10471,7 @@ $86:C359 A9 50 00    LDA #$0050             ; A = 50h
 ;;     A: Damage
 ;;     X: Enemy projectile index
 
-; Called only by unused routine $9442
+; Called by $C356 (handle blue ring collision with Samus) and unused routine $9442
 $86:C35C 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;\
 $86:C360 22 51 DF 91 JSL $91DF51[$91:DF51]  ;} Deal [A] suit-adjusted damage to Samus
 $86:C364 A9 60 00    LDA #$0060             ;\
