@@ -2144,10 +2144,12 @@ $88:8ACE             dx 8655,89,     ; HDMA table bank = $89
                         8682,        ; Sleep
                         85B4,888B4E, ; Power bomb explosion - clean up and try crystal flash
                         8682,        ; Sleep
-                        8569
+                        8569         ; Delete
 }
 
 
+;;; $8B14..8B7F: Power bomb explosion instruction list calls ;;;
+{
 ;;; $8B14: Power bomb explosion - stage 1 setup (pre-explosion - white) ;;;
 {
 $88:8B14 E2 20       SEP #$20
@@ -2216,6 +2218,7 @@ $88:8B75 9C EA 0C    STZ $0CEA  [$7E:0CEA]  ; Power bomb explosion radius = 0
 $88:8B78 A9 1E 00    LDA #$001E             ;\
 $88:8B7B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - resume sounds after power bomb explosion
 $88:8B7F 6B          RTL
+}
 }
 
 
@@ -2294,6 +2297,8 @@ $88:8BE9 6B          RTL
 }
 
 
+;;; $8BEA..8D84: Calculate power bomb explosion HDMA data tables ;;;
+{
 ;;; $8BEA: Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen ;;;
 {
 ;; Parameters:
@@ -2618,6 +2623,7 @@ $88:8D7E 4C 6F 8D    JMP $8D6F  [$88:8D6F]  ; Go to LOOP_DATA_TABLE
 $88:8D81 C8          INY                    ; Increment Y (next shape definition)
 $88:8D82 10 C2       BPL $C2    [$8D46]     ; If [Y] >= 0: go to LOOP_SHAPE_DEFINITION_TABLE
 $88:8D84 60          RTS
+}
 }
 
 
@@ -3346,6 +3352,8 @@ $88:9245 6B          RTL
 }
 
 
+;;; $9246..A2A5: Power bomb explosion shape definitions tables ;;;
+{
 ;;; $9246: Power bomb explosion shape definitions tables - pre-scaled ;;;
 {
 ; Defines the shape of (the bottom) half of a power bomb explosion
@@ -3408,8 +3416,11 @@ $88:A266             db 00, 0C, 19, 25, 31, 3E, 4A, 56, 61, 6D, 78, 83, 8E, 98, 
 ; Top offset (previous entry used as bottom offset)
 $88:A286             db BF, BF, BE, BD, BA, B8, B6, B2, AF, AB, A6, A2, 9C, 96, 90, 8A, 84, 7D, 75, 6E, 66, 5E, 56, 4D, 45, 3C, 33, 2A, 20, 17, 0D, 04
 }
+}
 
 
+;;; $A2A6..A61A: Crystal flash ;;;
+{
 ;;; $A2A6: Spawn crystal flash HDMA objects ;;;
 {
 ; These HDMAs aren't really needed
@@ -3945,6 +3956,7 @@ $88:A615 8D F0 0C    STA $0CF0  [$7E:0CF0]  ;/
 $88:A618 AB          PLB
 $88:A619 28          PLP
 $88:A61A 6B          RTL
+}
 }
 }
 

@@ -2362,7 +2362,7 @@ $81:9484 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 
 ;;; $9486: Load file select palettes ;;;
 {
-; Clone of $8E60, expect with no `REP #$30`
+; Clone of $8E60, except with no `REP #$30`
 $81:9486 A2 00 00    LDX #$0000             ;\
                                             ;|
 $81:9489 BF 00 E4 8E LDA $8EE400,x[$8E:E400];|

@@ -10865,7 +10865,7 @@ $91:E632 60          RTS                    ;} Return carry set
 
 ;;; $E633: Update Samus pose due to change of equipment ;;;
 {
-; Called by $90:F29E: unlock Samus from map station
+; Called by $90:F29E: update Samus due to unpause
 ; Seems to have been coded far more generally than for just map station release
 ; Notably, this handles equipping speed booster mid-run
 ; (if it did not, the speed boost timer might be 0 and underflow during the speed boost check $90:857D)
