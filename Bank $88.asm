@@ -5385,7 +5385,7 @@ $88:B3AF 60          RTS
 ; The HDMA set up here writes the zero BG3 Y scroll on every scanline up until 8 pixels above the FX tilemap starts,
 ; and then writes the calculated [$7E:9C02] BG3 Y scroll for the remaining scanlines
 ; But there's (more than) a full screen of transparent padding before the FX tilemap, so this is completely unnecessary
-; It would be sufficient to set $7E:CADC instead of $7E:9C02 at $B41A to set the BG3 Y position via *the* BG3 scroll HDMA object
+; It would be sufficient to set $7E:CADE instead of $7E:9C02 at $B41A to set the BG3 Y position via *the* BG3 scroll HDMA object
 
 $88:B3B0 8B          PHB
 $88:B3B1 AD 84 19    LDA $1984  [$7E:1984]  ;\
