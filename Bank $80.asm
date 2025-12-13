@@ -574,8 +574,8 @@ $80:827D 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot C
 $80:8281 90 11       BCC $11    [$8294]     ; If not corrupt: go to BRANCH_NON_CORRUPT
 $80:8283 A2 0A 00    LDX #$000A             ;\
                                             ;|
-$80:8286 BF AD 82 80 LDA $8082AD,x[$80:949A];|
-$80:828A 9F E0 1F 70 STA $701FE0,x[$70:31CD];} $70:1FE0..1FEB = 'madadameyohn' (game not completed)
+$80:8286 BF AD 82 80 LDA $8082AD,x[$80:82B7];|
+$80:828A 9F E0 1F 70 STA $701FE0,x[$70:1FEA];} $70:1FE0..1FEB = 'madadameyohn' (game not completed)
 $80:828E CA          DEX                    ;|
 $80:828F CA          DEX                    ;|
 $80:8290 10 F4       BPL $F4    [$8286]     ;/
