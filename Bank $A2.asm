@@ -4920,13 +4920,13 @@ $A2:B4CD             dx 0001, 81F8,F8,210A
 $A2:B4D4             dx 0001, 81F8,F8,210C
 $A2:B4DB             dx 0001, 81F8,F8,210E
 
-; Unused instruction list
+; Unused instruction list. Tile numbers in these spritemaps are past the end of multiviola tile data
 $A2:B4E2             dx 0001, 81F8,F8,2120
 $A2:B4E9             dx 0001, 81F8,F8,2122
 $A2:B4F0             dx 0001, 81F8,F8,2124
 $A2:B4F7             dx 0001, 81F8,F8,2126
 
-; Unused instruction list
+; Unused instruction list. Tile numbers in these spritemaps are past the end of multiviola tile data
 $A2:B4FE             dx 0001, 81F8,F8,2128
 $A2:B505             dx 0001, 81F8,F8,212A
 $A2:B50C             dx 0001, 81F8,F8,212C
