@@ -2286,7 +2286,7 @@ $B3:994C BF 2E 80 7E LDA $7E802E,x[$7E:802E];\
 $B3:9950 0A          ASL A                  ;|
 $B3:9951 0A          ASL A                  ;|
 $B3:9952 18          CLC                    ;|
-$B3:9953 65 12       ADC $12    [$7E:0012]  ;} Enemy $7E:8800 = [$12] + [enemy target hole index] * 4 + [$14]
+$B3:9953 65 12       ADC $12    [$7E:0012]  ;} Enemy movement table index = [$12] + [enemy target hole index] * 4 + [$14]
 $B3:9955 18          CLC                    ;|
 $B3:9956 65 14       ADC $14    [$7E:0014]  ;|
 $B3:9958 9F 00 88 7E STA $7E8800,x[$7E:8800];/
