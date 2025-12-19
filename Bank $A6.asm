@@ -5453,7 +5453,7 @@ $A6:BE08 69 F6 FF    ADC #$FFF6             ;} $12 = [baby metroid X position] -
 $A6:BE0B 85 12       STA $12    [$7E:0012]  ;/
 $A6:BE0D AF 08 88 7E LDA $7E8808[$7E:8808]  ;\
 $A6:BE11 18          CLC                    ;|
-$A6:BE12 69 C8 FF    ADC #$FFC8             ;} $14 = [baby metroid X position] - 38h (target Y position)
+$A6:BE12 69 C8 FF    ADC #$FFC8             ;} $14 = [baby metroid Y position] - 38h (target Y position)
 $A6:BE15 85 14       STA $14    [$7E:0014]  ;/
 $A6:BE17 A2 00 00    LDX #$0000             ; X = 0 (enemy index)
 $A6:BE1A A0 0C 00    LDY #$000C             ; Y = Ch (acceleration factor)
