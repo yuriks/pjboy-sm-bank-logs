@@ -751,7 +751,7 @@ $A7:970C             dw FFFF
 $A7:970E             dw 0014,97C8,9788,FFFF
 $A7:9716             dw 0014,9AC8,9790,97B0,
                         0014,9DC8,9798,97B8,
-                        AF94                 ; Queue Kraid roar sound effect
+                        AF94,                ; Queue Kraid roar sound effect
                         00C0,A0C8,97A0,97C0,
                         0014,9DC8,9798,97B8,
                         0014,9AC8,9790,97B0,
