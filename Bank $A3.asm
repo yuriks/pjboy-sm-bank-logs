@@ -4374,7 +4374,7 @@ $A3:B0F7             dx 817D,       ; Disable off-screen processing
 }
 
 
-;;; $B111: Tourian super-sidehopper spritemaps ;;;
+;;; $B111: Super-sidehopper spritemaps ;;;
 {
 $A3:B111             dx 0007, 0000,EC,2101, 01F8,EC,2100, C20C,04,6106, C3E4,04,2106, C208,F4,6104, C3E8,F4,2104, C3F8,F4,2110
 $A3:B136             dx 0007, C3F8,F6,2112, C20D,04,610A, C3E3,04,210A, C208,F4,6108, C3E8,F4,2108, 0000,EE,2101, 01F8,EE,2100
@@ -6707,6 +6707,8 @@ $A3:CC26             dx 0003,D857,
 }
 
 
+;;; $CC36..A1: Instructions ;;;
+{
 ;;; $CC36: Instruction - enemy movement function = [[Y]] ;;;
 {
 ;; Parameters:
@@ -6827,8 +6829,11 @@ $A3:CC9F 6B          RTL                    ; Return
 $A3:CCA0 7A          PLY
 $A3:CCA1 6B          RTL
 }
+}
 
 
+;;; $CCA2..CDE1: Yard constants ;;;
+{
 ;;; $CCA2: Yard crawling speeds ;;;
 {
 ; Unit 1/100h px/frame. Indexed by [enemy parameter 1] * 2
@@ -6922,6 +6927,7 @@ $A3:CDD2             dw CFEB, ; 0: Upside up - moving left
                         CFBD, ; 5: Upside right - moving down
                         CFA6, ; 6: Upside right - moving up <-- points to upside down - moving left
                         CFD4  ; 7: Upside left - moving up
+}
 }
 
 
@@ -7137,6 +7143,8 @@ $A3:CF5F 6B          RTL
 }
 
 
+;;; $CF60..D355: Yard movement functions ;;;
+{
 ;;; $CF60: Yard movement function - hiding ;;;
 {
 ;; Parameters:
@@ -7753,6 +7761,7 @@ $A3:D34D BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\ Else ([enemy airborne facing dire
 $A3:D350 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
 $A3:D353 B0 01       BCS $01    [$D356]     ;/
 $A3:D355 6B          RTL                    ; Return carry clear
+}
 }
 
 

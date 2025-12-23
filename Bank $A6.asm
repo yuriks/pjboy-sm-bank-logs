@@ -8277,7 +8277,7 @@ $A6:D430 60          RTS
 }
 
 
-;;; $D431: Check if all Ridley tail segments are active ;;;
+;;; $D431: Unused. Check if all Ridley tail segments are active ;;;
 {
 ;; Returns:
 ;;     Carry: Set if all tail segments are active, clear otherwise
