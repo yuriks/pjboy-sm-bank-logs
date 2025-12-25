@@ -1700,6 +1700,9 @@ $80:896D 6B          RTL
 {
 ; Move unused sprites to Y = F0h and reset OAM stack pointer
 ; Uses one hell of an unrolled loop
+
+; Sprites must be 10h px or less. For large sprites, see $8B:8ED9
+
 $80:896E 08          PHP
 $80:896F C2 30       REP #$30
 $80:8971 AD 90 05    LDA $0590  [$7E:0590]  ;\

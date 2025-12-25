@@ -2188,6 +2188,9 @@ $8B:8ED8 60          RTS
 ; Move unused sprites to X = 180h
 ; Uses one hell of an unrolled loop
 ; TODO: this might be buggy for [OAM stack pointer] = 1FCh
+
+; Handles large sprites, unlike $80:896E
+
 $8B:8ED9 08          PHP
 $8B:8EDA C2 30       REP #$30
 $8B:8EDC AD 90 05    LDA $0590  [$7E:0590]  ;\
