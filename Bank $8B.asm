@@ -2186,10 +2186,10 @@ $8B:8ED8 60          RTS
 ;;; $8ED9: Move unused sprites off-screen ;;;
 {
 ; Move unused sprites to X = 180h
-; Uses one hell of an unrolled loop
-; TODO: this might be buggy for [OAM stack pointer] = 1FCh
-
 ; Handles large sprites, unlike $80:896E
+; Uses one hell of an unrolled loop
+
+; BUG: If (number of sprites) / 4 % 2 != 0, the OAM stack pointer is clobbered
 
 $8B:8ED9 08          PHP
 $8B:8EDA C2 30       REP #$30
