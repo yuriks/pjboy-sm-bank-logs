@@ -3401,6 +3401,7 @@ $1F25..30: Animated tiles object source address (in $87)
 $1F31..3C: Animated tiles object sizes
 $1F3D..48: Animated tiles object VRAM addresses
 $1F49: Animated tiles object instruction
+$1F4B..50: Unused
 $1F51: Cinematic function. Bank $8B. Used for game states 1/1Eh/22h/25h/27h (opening / intro / Ceres goes boom, Samus goes to Zebes / Ceres goes boom with Samus / ending and credits)
 $1F53: Demo timer. Demo scene timer when demo is playing, 15 second delay before transitioning to demos when title screen is active
 $1F55: Demo set
