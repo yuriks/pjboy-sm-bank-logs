@@ -1068,51 +1068,51 @@ $077C..0997: Main gameplay RAM (according to $82:8593)
 }
 $0998: Game state
 {
-    0: Reset/start.                                                                     Set by $82:893D (main game loop)
-    1: Opening (title sequence). Cinematic.                                             Set by $82:85FB (transition from demo), $82:8AE4 (reset/start)
-    2: Game options menu.                                                               Set by $81:94A3 (file select menu, file selected), $81:9E7B (file select map, back)
+    0: Reset/start.                                                 Set by $82:893D (main game loop)
+    1: Opening (title sequence). Cinematic.                         Set by $82:85FB (transition from demo), $82:8AE4 (reset/start)
+    2: Game options menu.                                           Set by $81:94A3 (file select menu, file selected), $81:9E7B (file select map, back)
     3: Unused. Nothing (RTS)
-    4: File select menus.                                                               Set by $82:EE6A (game options menu - transition back to file select), $8B:9F52 (cinematic function - transition to file select menu)
-    5: File select map.                                                                 Set by $81:9116 (game over menu "no", not starting from Ceres), $82:EEB4 (start game, main / debug)
-    6: Loading game data.                                                               Set by $8B:CADF (cinematic function - load game data)
-    7: Main gameplay fading in.                                                         Set by $82:8000 (loading game data / set up new game)
-    8: Main gameplay.                                                                   Set by $82:8B20 (main gameplay fading in), $82:93A1 (game state 12h), $82:DC10 (reserve tank auto), $82:E737 (finish door transition)
-    9: Door transition - delay.                                                         Set by $94:938B (horizontal door collision), $94:93CE (vertical door collision)
-    Ah: Door transition - setup.                                                        Set by $82:E169 (game state 9)
-    Bh: Door transition - main.                                                         Set by $82:E1B7 (game state Ah)
-    Ch: Pausing - fading out (gameplay is active).                                      Set by $85:80FA (map data access completed), $90:EA45 (pause check)
-    Dh: Pausing - loading pause menu.                                                   Set by $82:8CCF (game state Ch)
-    Eh: Paused - fading in.                                                             Set by $82:8CEF (game state Dh)
-    Fh: Paused - main.                                                                  Set by $82:90C8 (game state Eh)
-    10h: Paused - fading out.                                                           Set by $81:907E (debug game over menu continue), $82:A5B7 (pause menu, start)
-    11h: Unpausing - loading main gameplay.                                             Set by $82:9324 (game state 10h)
-    12h: Unpausing - fading in (gameplay is active).                                    Set by $82:9367 (game state 11h)
-    13h: Death sequence - start                                                         Set by $82:DB69 (Samus ran out of health, no reserves)
-    14h: Death sequence - black out surroundings.                                       Set by $82:DC80 (game state 13h)
-    15h: Death sequence - wait for music.                                               Set by $82:DCE0 (game state 14h)
-    16h: Death sequence - pre-flashing.                                                 Set by $82:DD71 (game state 15h)
-    17h: Death sequence - flashing.                                                     Set by $82:DD87 (game state 16h)
-    18h: Death sequence - explosion white out.                                          Set by $82:DD9A (game state 17h)
-    19h: Death sequence - black out.                                                    Set by $82:8431 (whiting out from time up), $82:DDAF (game state 18h), $8B:C627
-    1Ah: Game over menu.                                                                Set by $82:DDC7 (game state 19h)
-    1Bh: Reserve tanks auto.                                                            Set by $82:DB69 (Samus ran out of non-reserve health)
+    4: File select menus.                                           Set by $82:EE6A (game options menu - transition back to file select), $8B:9F52 (cinematic function - transition to file select menu)
+    5: File select map.                                             Set by $81:9116 (game over menu "no", not starting from Ceres), $82:EEB4 (start game, main / debug)
+    6: Loading game data.                                           Set by $8B:CADF (cinematic function - load game data)
+    7: Main gameplay fading in.                                     Set by $82:8000 (loading game data / set up new game)
+    8: Main gameplay.                                               Set by $82:8B20 (main gameplay fading in), $82:93A1 (game state 12h), $82:DC10 (reserve tank auto), $82:E737 (finish door transition)
+    9: Door transition - delay.                                     Set by $94:938B (horizontal door collision), $94:93CE (vertical door collision)
+    Ah: Door transition - setup.                                    Set by $82:E169 (game state 9)
+    Bh: Door transition - main.                                     Set by $82:E1B7 (game state Ah)
+    Ch: Pausing - fading out (gameplay is active).                  Set by $85:80FA (map data access completed), $90:EA45 (pause check)
+    Dh: Pausing - loading pause menu.                               Set by $82:8CCF (game state Ch)
+    Eh: Paused - fading in.                                         Set by $82:8CEF (game state Dh)
+    Fh: Paused - main.                                              Set by $82:90C8 (game state Eh)
+    10h: Paused - fading out.                                       Set by $81:907E (debug game over menu continue), $82:A5B7 (pause menu, start)
+    11h: Unpausing - loading main gameplay.                         Set by $82:9324 (game state 10h)
+    12h: Unpausing - fading in (gameplay is active).                Set by $82:9367 (game state 11h)
+    13h: Death sequence - start                                     Set by $82:DB69 (Samus ran out of health, no reserves)
+    14h: Death sequence - black out surroundings.                   Set by $82:DC80 (game state 13h)
+    15h: Death sequence - wait for music.                           Set by $82:DCE0 (game state 14h)
+    16h: Death sequence - pre-flashing.                             Set by $82:DD71 (game state 15h)
+    17h: Death sequence - flashing.                                 Set by $82:DD87 (game state 16h)
+    18h: Death sequence - explosion white out.                      Set by $82:DD9A (game state 17h)
+    19h: Death sequence - black out.                                Set by $82:8431 (time up - black out), $82:DDAF (game state 18h), $8B:C627 (cinematic function - Ceres goes boom - fade out)
+    1Ah: Game over menu.                                            Set by $82:DDC7 (game state 19h)
+    1Bh: Reserve tanks auto.                                        Set by $82:DB69 (Samus ran out of non-reserve health)
     1Ch: Unused. Does JMP ($0DEA) ($0DEA is never set to a pointer)
-    1Dh: Debug game over menu (end/continue).                                           Set by $B4:9961 (debug controller 2 start)
-    1Eh: Intro. Cinematic. Set up entirely new game with cutscenes.                     Set by $82:EEB4 (start game, intro)
-    1Fh: Set up new game. Post-intro.                                                   Set by $81:912B (game over menu "no", starting from Ceres), $82:EEB4 (start game, starting at Ceres), $8B:C100
-    20h: Made it to Ceres elevator.                                                     Set by $89:ACC3 (Ceres elevator shaft main ASM)
-    21h: Blackout from Ceres.                                                           Set by $82:8367 (made it to Ceres elevator)
-    22h: Ceres goes boom, Samus goes to Zebes. Cinematic.                               Set by $82:8388 (blackout from Ceres), $82:EEB4 (start game, landing on Zebes)
-    23h: Time up.                                                                       Set by $90:E0E6, $90:E8AA, $90:F576 (Zebes timebomb expired)
-    24h: Whiting out from time up.                                                      Set by $82:8411 (time up)
-    25h: Ceres goes boom with Samus. Cinematic.                                         Set by $82:8431 (whiting out from time up)
-    26h: Samus escapes from Zebes. Transition from main gameplay to ending and credits. Set by $A2:AD0E (gunship liftoff)
-    27h: Ending and credits. Cinematic.                                                 Set by $82:84BD (Samus escapes from Zebes)
-    28h: Load demo game data.                                                           Set by $82:85FB (transition from demo), $8B:9FAE (cinematic function - transition to demos)
-    29h: Transition to demo.                                                            Set by $82:8000 (load demo game data)
-    2Ah: Playing demo.                                                                  Set by $82:852D (transition to demo)
-    2Bh: Unload game data.                                                              Set by $82:8548 (playing demo)
-    2Ch: Transition from demo.                                                          Set by $82:8593 (unload game data)
+    1Dh: Debug game over menu (end/continue).                       Set by $B4:9961 (debug controller 2 start)
+    1Eh: Intro. Cinematic. Set up entirely new game with cutscenes. Set by $82:EEB4 (start game, intro)
+    1Fh: Set up new game. Post-intro.                               Set by $81:912B (game over menu "no", starting from Ceres), $82:EEB4 (start game, starting at Ceres), $8B:C100 (cinematic function - fly to Ceres - start game at Ceres)
+    20h: Made it to Ceres elevator.                                 Set by $89:ACC3 (Ceres elevator shaft main ASM)
+    21h: Blackout from Ceres.                                       Set by $82:8367 (made it to Ceres elevator)
+    22h: Ceres goes boom, Samus goes to Zebes. Cinematic.           Set by $82:8388 (blackout from Ceres), $82:EEB4 (start game, landing on Zebes)
+    23h: Time up - white out. Ceres and Zebes.                      Set by $90:E0E6, $90:E8AA, $90:F576 (timebomb expired)
+    24h: Time up - black out. Ceres and Zebes.                      Set by $82:8411 (time up - white out)
+    25h: Ceres goes boom with Samus. Cinematic.                     Set by $82:8431 (time up - black out)
+    26h: Samus escapes from Zebes.                                  Set by $A2:AD0E (gunship liftoff)
+    27h: Ending and credits. Cinematic.                             Set by $82:84BD (Samus escapes from Zebes)
+    28h: Load demo game data.                                       Set by $82:85FB (transition from demo), $8B:9FAE (cinematic function - transition to demos)
+    29h: Transition to demo.                                        Set by $82:8000 (load demo game data)
+    2Ah: Playing demo.                                              Set by $82:852D (transition to demo)
+    2Bh: Unload game data.                                          Set by $82:8548 (playing demo)
+    2Ch: Transition from demo.                                      Set by $82:8593 (unload game data)
 }
 $099A: Unused
 $099C: Door transition function
@@ -2588,7 +2588,7 @@ $0E84..0F67: Enemy drawing queues (list of enemy indices), increasing priority
 $0F68..77: Sizes of enemy drawing queues
 $0F78..1777: Enemy data. See "enemy data.txt" from lua repo, "Enemy RAM.asm"
 {
-	$0F78..B7: Enemy 0
+    $0F78..B7: Enemy 0
     {
         $0F78: ID
         $0F7A: X position
@@ -2623,37 +2623,37 @@ $0F78..1777: Enemy data. See "enemy data.txt" from lua repo, "Enemy RAM.asm"
         $0FB4: Parameter 1 (Speed in SMILE)
         $0FB6: Parameter 2 (Speed2 in SMILE)
     }
-	$0FB8..F7: Enemy 1
-	$0FF8..1037: Enemy 2
-	$1038..77: Enemy 3
-	$1078..B7: Enemy 4
-	$10B8..F7: Enemy 5
-	$10F8..1137: Enemy 6
-	$1138..77: Enemy 7
-	$1178..B7: Enemy 8
-	$11B8..F7: Enemy 9
-	$11F8..1237: Enemy Ah
-	$1238..77: Enemy Bh
-	$1278..B7: Enemy Ch
-	$12B8..F7: Enemy Dh
-	$12F8..1337: Enemy Eh
-	$1338..77: Enemy Fh
-	$1378..B7: Enemy 10h
-	$13B8..F7: Enemy 11h
-	$13F8..1437: Enemy 12h
-	$1438..77: Enemy 13h
-	$1478..B7: Enemy 14h
-	$14B8..F7: Enemy 15h
-	$14F8..1537: Enemy 16h
-	$1538..77: Enemy 17h
-	$1578..B7: Enemy 18h
-	$15B8..F7: Enemy 19h
-	$15F8..1637: Enemy 1Ah
-	$1638..77: Enemy 1Bh
-	$1678..B7: Enemy 1Ch
-	$16B8..F7: Enemy 1Dh
-	$16F8..1737: Enemy 1Eh
-	$1738..77: Enemy 1Fh
+    $0FB8..F7: Enemy 1
+    $0FF8..1037: Enemy 2
+    $1038..77: Enemy 3
+    $1078..B7: Enemy 4
+    $10B8..F7: Enemy 5
+    $10F8..1137: Enemy 6
+    $1138..77: Enemy 7
+    $1178..B7: Enemy 8
+    $11B8..F7: Enemy 9
+    $11F8..1237: Enemy Ah
+    $1238..77: Enemy Bh
+    $1278..B7: Enemy Ch
+    $12B8..F7: Enemy Dh
+    $12F8..1337: Enemy Eh
+    $1338..77: Enemy Fh
+    $1378..B7: Enemy 10h
+    $13B8..F7: Enemy 11h
+    $13F8..1437: Enemy 12h
+    $1438..77: Enemy 13h
+    $1478..B7: Enemy 14h
+    $14B8..F7: Enemy 15h
+    $14F8..1537: Enemy 16h
+    $1538..77: Enemy 17h
+    $1578..B7: Enemy 18h
+    $15B8..F7: Enemy 19h
+    $15F8..1637: Enemy 1Ah
+    $1638..77: Enemy 1Bh
+    $1678..B7: Enemy 1Ch
+    $16B8..F7: Enemy 1Dh
+    $16F8..1737: Enemy 1Eh
+    $1738..77: Enemy 1Fh
 }
 $1778: Fireflea flashing timer. Reset to 6
 $177A: Fireflea flashing index. Cycles within range 0..Bh
@@ -3733,7 +3733,7 @@ $7E:A000..AFFF: Ending font 3 tiles
 
 $7E:C000..C1FF: Palettes, copied straight to CGRAM. First colour ($7E:C000) is main screen backdrop colour
 {
-	$7E:C000..1F: BG1/2 palette 0 (4bpp) - SCE/CRE / BG3 palettes 0..3 (2bpp)
+    $7E:C000..1F: BG1/2 palette 0 (4bpp) - SCE/CRE / BG3 palettes 0..3 (2bpp)
     {
         $7E:C000..07: BG3 palette 0
         {
@@ -3755,7 +3755,7 @@ $7E:C000..C1FF: Palettes, copied straight to CGRAM. First colour ($7E:C000) is m
             $7E:C01E: Mini-map unexplored room background / HUD background (0000h)
         }
     }
-	$7E:C020..3F: BG1/2 palette 1 (4bpp) - SCE/CRE / BG3 palettes 4..7 (2bpp)
+    $7E:C020..3F: BG1/2 palette 1 (4bpp) - SCE/CRE / BG3 palettes 4..7 (2bpp)
     {
         $7E:C020..27: BG3 palette 4
         {
@@ -3782,17 +3782,17 @@ $7E:C000..C1FF: Palettes, copied straight to CGRAM. First colour ($7E:C000) is m
             $7E:C03E: Mini-map background / non-empty reserve auto icon background / save dialog background / message box Samus background (0000h)
         }
     }
-	$7E:C040..5F: BG1/2 palette 2 (4bpp) - SCE/CRE
-	$7E:C060..7F: BG1/2 palette 3 (4bpp) - SCE/CRE
-	$7E:C080..9F: BG1/2 palette 4 (4bpp) - SCE
-	$7E:C0A0..BF: BG1/2 palette 5 (4bpp) - SCE
-	$7E:C0C0..DF: BG1/2 palette 6 (4bpp) - SCE
-	$7E:C0E0..FF: BG1/2 palette 7 (4bpp) - SCE
-	$7E:C100..1F: Sprite palette 0 - white palette for flashing enemies
-	$7E:C120..3F: Sprite palette 1 - enemies
-	$7E:C140..5F: Sprite palette 2 - enemies
-	$7E:C160..7F: Sprite palette 3 - enemies
-	$7E:C180..9F: Sprite palette 4 - Samus
+    $7E:C040..5F: BG1/2 palette 2 (4bpp) - SCE/CRE
+    $7E:C060..7F: BG1/2 palette 3 (4bpp) - SCE/CRE
+    $7E:C080..9F: BG1/2 palette 4 (4bpp) - SCE
+    $7E:C0A0..BF: BG1/2 palette 5 (4bpp) - SCE
+    $7E:C0C0..DF: BG1/2 palette 6 (4bpp) - SCE
+    $7E:C0E0..FF: BG1/2 palette 7 (4bpp) - SCE
+    $7E:C100..1F: Sprite palette 0 - white palette for flashing enemies
+    $7E:C120..3F: Sprite palette 1 - enemies
+    $7E:C140..5F: Sprite palette 2 - enemies
+    $7E:C160..7F: Sprite palette 3 - enemies
+    $7E:C180..9F: Sprite palette 4 - Samus
     {
         $7E:C182: Colour 1. Abdomen - dark
         $7E:C184: Colour 2. Main suit - light
@@ -3810,28 +3810,28 @@ $7E:C000..C1FF: Palettes, copied straight to CGRAM. First colour ($7E:C000) is m
         $7E:C19C: Colour Eh. Helmet - medium
         $7E:C19E: Colour Fh. Helmet - dark
     }
-	$7E:C1A0..BF: Sprite palette 5 - most common sprites (item drops, smoke, explosions, bombs, power bombs, missiles, gates (wall part), water splashes, grapple beam, timer)
-	$7E:C1C0..DF: Sprite palette 6 - beams. Crystal flash uses this palette for some reason
-	$7E:C1E0..FF: Sprite palette 7 - enemies
+    $7E:C1A0..BF: Sprite palette 5 - most common sprites (item drops, smoke, explosions, bombs, power bombs, missiles, gates (wall part), water splashes, grapple beam, timer)
+    $7E:C1C0..DF: Sprite palette 6 - beams. Crystal flash uses this palette for some reason
+    $7E:C1E0..FF: Sprite palette 7 - enemies
 }
 $7E:C200..C3FF: Target palettes
 {
-	$7E:C200..1F: BG palette 0 - SCE/CRE
-	$7E:C220..3F: BG palette 1 - SCE/CRE
-	$7E:C240..5F: BG palette 2 - SCE/CRE
-	$7E:C260..7F: BG palette 3 - SCE/CRE
-	$7E:C280..9F: BG palette 4 - SCE
-	$7E:C2A0..BF: BG palette 5 - SCE
-	$7E:C2C0..DF: BG palette 6 - SCE
-	$7E:C2E0..FF: BG palette 7 - SCE
-	$7E:C300..1F: Sprite palette 0 - white palette for flashing enemies
-	$7E:C320..3F: Sprite palette 1 - enemies
-	$7E:C340..5F: Sprite palette 2 - enemies
-	$7E:C360..7F: Sprite palette 3 - enemies
-	$7E:C380..9F: Sprite palette 4 - Samus. Set to palette data from bank $9B during room transitions by $91:DDD7
-	$7E:C3A0..BF: Sprite palette 5 - most common sprites (item drops, smoke, explosions, bombs, power bombs, missiles, gates (wall part), water splashes, grapple beam)
-	$7E:C3C0..DF: Sprite palette 6 - beams
-	$7E:C3E0..FF: Sprite palette 7 - enemies
+    $7E:C200..1F: BG palette 0 - SCE/CRE
+    $7E:C220..3F: BG palette 1 - SCE/CRE
+    $7E:C240..5F: BG palette 2 - SCE/CRE
+    $7E:C260..7F: BG palette 3 - SCE/CRE
+    $7E:C280..9F: BG palette 4 - SCE
+    $7E:C2A0..BF: BG palette 5 - SCE
+    $7E:C2C0..DF: BG palette 6 - SCE
+    $7E:C2E0..FF: BG palette 7 - SCE
+    $7E:C300..1F: Sprite palette 0 - white palette for flashing enemies
+    $7E:C320..3F: Sprite palette 1 - enemies
+    $7E:C340..5F: Sprite palette 2 - enemies
+    $7E:C360..7F: Sprite palette 3 - enemies
+    $7E:C380..9F: Sprite palette 4 - Samus. Set to palette data from bank $9B during room transitions by $91:DDD7
+    $7E:C3A0..BF: Sprite palette 5 - most common sprites (item drops, smoke, explosions, bombs, power bombs, missiles, gates (wall part), water splashes, grapple beam)
+    $7E:C3C0..DF: Sprite palette 6 - beams
+    $7E:C3E0..FF: Sprite palette 7 - enemies
 }
 $7E:C400: Palette change numerator
 $7E:C402: Palette change denominator

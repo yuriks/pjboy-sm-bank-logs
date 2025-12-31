@@ -2995,7 +2995,7 @@ $86:90D6 AA          TAX                    ;} Enemy projectile Y position = 38h
 $86:90D7 BD 05 91    LDA $9105,x[$86:9113]  ;|
 $86:90DA 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:90DD A9 10 02    LDA #$0210             ;\
-$86:90E0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = 210h
+$86:90E0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = 210h
 $86:90E3 A9 00 00    LDA #$0000             ;\
 $86:90E6 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 0
 $86:90E9 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ; >_<;

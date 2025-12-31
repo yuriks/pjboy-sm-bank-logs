@@ -479,8 +479,9 @@ $82:8410 60          RTS
 }
 
 
-;;; $8411: Game state 23h (time up) ;;;
+;;; $8411: Game state 23h (time up - white out) ;;;
 {
+; Used for Ceres and Zebes
 $82:8411 08          PHP
 $82:8412 C2 30       REP #$30
 $82:8414 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
@@ -489,7 +490,7 @@ $82:841A 8F 02 C4 7E STA $7EC402[$7E:C402]  ;} Palette change denominator = 8
 $82:841E 20 02 DA    JSR $DA02  [$82:DA02]  ; Advance gradual colour change of all palettes
 $82:8421 90 0C       BCC $0C    [$842F]     ; If reached target colour:
 $82:8423 A9 24 00    LDA #$0024             ;\
-$82:8426 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 24h (whiting out from time up)
+$82:8426 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 24h (time up - black out)
 $82:8429 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:842C 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 
@@ -498,8 +499,9 @@ $82:8430 60          RTS
 }
 
 
-;;; $8431: Game state 24h (whiting out from time up) ;;;
+;;; $8431: Game state 24h (time up - black out) ;;;
 {
+; Used for Ceres and Zebes
 $82:8431 08          PHP
 $82:8432 C2 30       REP #$30
 $82:8434 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out

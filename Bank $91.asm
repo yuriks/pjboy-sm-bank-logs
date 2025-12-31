@@ -10173,7 +10173,7 @@ $91:E097 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $91:E09A C9 06 00    CMP #$0006             ;} If [area index] = Ceres:
 $91:E09D D0 08       BNE $08    [$E0A7]     ;/
 $91:E09F A9 E6 E0    LDA #$E0E6             ;\
-$91:E0A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
+$91:E0A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer) <-- o_O
 $91:E0A5 80 06       BRA $06    [$E0AD]
 
 $91:E0A7 A9 0E E9    LDA #$E90E             ;\ Else ([area index] != Ceres):

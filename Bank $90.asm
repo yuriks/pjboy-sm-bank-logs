@@ -14128,10 +14128,11 @@ $90:E0E5 60          RTS
 
 ;;; $E0E6: Timer / Samus hack handler - handle timer ;;;
 {
+; Used for both Ceres (via $90:E1FD/E21C) and Zebes (via $A9:B2F9)
 $90:E0E6 22 E7 9D 80 JSL $809DE7[$80:9DE7]  ; Process timer
 $90:E0EA 90 1E       BCC $1E    [$E10A]     ; If timer hasn't reached zero: go to BRANCH_NOT_ZERO
 $90:E0EC A9 23 00    LDA #$0023             ;\
-$90:E0EF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 23h (time up)
+$90:E0EF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 23h (time up - white out)
 $90:E0F2 A2 FE 01    LDX #$01FE             ;\
 $90:E0F5 A9 FF 7F    LDA #$7FFF             ;|
                                             ;|
@@ -15362,6 +15363,8 @@ $90:E8A9 6B          RTL
 
 ;;; $E8AA: Samus new state handler - Ceres ;;;
 {
+; The setting of the game state to 23h here *should* be unnecessary,
+; it's already handled by the generic timer code $E0E6 and edge case code $F576
 $90:E8AA 08          PHP
 $90:E8AB 8B          PHB
 $90:E8AC 4B          PHK                    ;\
@@ -15375,7 +15378,7 @@ $90:E8BC AD 98 09    LDA $0998  [$7E:0998]  ;\
 $90:E8BF C9 23 00    CMP #$0023             ;} >_<;
 $90:E8C2 F0 06       BEQ $06    [$E8CA]     ;/
 $90:E8C4 A9 23 00    LDA #$0023             ;\
-$90:E8C7 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 23h (time up)
+$90:E8C7 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 23h (time up - white out)
 
 $90:E8CA AB          PLB
 $90:E8CB 28          PLP
@@ -17739,7 +17742,7 @@ $90:F625 C9 14 E1    CMP #$E114             ;} If [timer / Samus hack handler] =
 $90:F628 D0 0E       BNE $0E    [$F638]     ;/
 $90:F62A AD 98 09    LDA $0998  [$7E:0998]  ;\
 $90:F62D C9 23 00    CMP #$0023             ;|
-$90:F630 F0 06       BEQ $06    [$F638]     ;} Game state = 23h (time up)
+$90:F630 F0 06       BEQ $06    [$F638]     ;} Game state = 23h (time up - white out)
 $90:F632 A9 23 00    LDA #$0023             ;|
 $90:F635 8D 98 09    STA $0998  [$7E:0998]  ;/
 
