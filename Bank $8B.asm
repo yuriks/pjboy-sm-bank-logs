@@ -2190,6 +2190,7 @@ $8B:8ED8 60          RTS
 ; Uses one hell of an unrolled loop
 
 ; BUG: If (number of sprites) / 4 % 2 != 0, the OAM stack pointer is clobbered
+;      The loop at $8F00 always writes 2-byte values, but doesn't ensure 2-byte alignment of X
 
 $8B:8ED9 08          PHP
 $8B:8EDA C2 30       REP #$30
