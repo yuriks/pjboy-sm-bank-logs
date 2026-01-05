@@ -2192,6 +2192,17 @@ $8B:8ED8 60          RTS
 ; BUG: If (number of sprites) / 4 % 2 != 0, the OAM stack pointer is clobbered
 ;      The loop at $8F00 always writes 2-byte values, but doesn't ensure 2-byte alignment of X
 
+; Called for cinematic functions:
+;     $D6D7: Cinematic function - ending - wait for music to change
+;     $D6F2: Cinematic function - ending - Zebes destruction scene 0 - zooming out, clouds on left/right - fading in
+;     $D701: Cinematic function - ending - Zebes destruction scene 0 - zooming out, clouds on left/right
+;     $D731: Cinematic function - ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom - setup
+;     $D7F8: Cinematic function - ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom - fading in
+;     $D807: Cinematic function - ending - Zebes destruction scene 1 - zooming out, clouds on top/bottom
+;     $D837: Cinematic function - ending - Zebes destruction scene 2 - cross-fade to space view - setup
+
+; In all these cases, the number of sprites is 40h or 80h
+
 $8B:8ED9 08          PHP
 $8B:8EDA C2 30       REP #$30
 $8B:8EDC AD 90 05    LDA $0590  [$7E:0590]  ;\
