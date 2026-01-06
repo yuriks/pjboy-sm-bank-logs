@@ -8157,7 +8157,7 @@ $A7:E8DA             dx 0008,F107,
 
 ;;; $E900: Etecoon constants ;;;
 {
-$A7:E900             dw FFFD,0000 ; Initial Y velocity of hops and failed jump
+$A7:E900             dw FFFD,0000 ; Initial Y velocity of hops, wall jump and failed jump
 $A7:E904             dw FFFC,0000 ; Initial Y velocity of successful jump
 
 $A7:E908             dw 0002,0000 ; X velocity - right
