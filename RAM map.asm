@@ -1929,7 +1929,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0B34: Samus Y acceleration (i.e. gravity) / shinespark Y acceleration delta / shinespark X acceleration
     $0B36: Samus Y direction
     {
-        0: None. Set when grounded and in a handful of special cases (e.g. shinespark crash)
+        0: None. Set when grounded and in a handful of special cases (e.g. shinespark crash). Transition to spin jump without changing this to 1 or 2 allows moonfall glitch (see $90:90E2)
         1: Up
         2: Down
     }
