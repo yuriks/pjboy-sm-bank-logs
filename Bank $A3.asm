@@ -8432,7 +8432,7 @@ $A3:DC5F 1A          INC A                  ;/
 ; BRANCH_NO_OFFSET
 $A3:DC60 99 04 0C    STA $0C04,y            ; Projectile direction = [A]
 $A3:DC63 B9 18 0C    LDA $0C18,y            ;\
-$A3:DC66 29 FF 7F    AND #$7FFF             ;} Enable projectile collision Samus
+$A3:DC66 29 FF 7F    AND #$7FFF             ;} Enable projectile collision with Samus
 $A3:DC69 99 18 0C    STA $0C18,y            ;/
 $A3:DC6C 84 14       STY $14    [$7E:0014]  ; $14 = [Y] (projectile index)
 $A3:DC6E 22 00 BE 90 JSL $90BE00[$90:BE00]  ; Projectile reflection
