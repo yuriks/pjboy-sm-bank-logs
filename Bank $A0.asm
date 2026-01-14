@@ -1326,7 +1326,7 @@ $A0:8C97 18          CLC                    ;|
 $A0:8C98 69 07 00    ADC #$0007             ;} (Enemy loading data index) += 7
 $A0:8C9B 48          PHA                    ;/
 $A0:8C9C BD 5F 0E    LDA $0E5F,x[$7E:0E5F]  ;\
-$A0:8C9F AA          TAX                    ;} X = [enemy loading tile data offset]
+$A0:8C9F AA          TAX                    ;} X = [enemy loading tile data destination offset]
 
 ; LOOP_TILES
 $A0:8CA0 B9 00 00    LDA $0000,y[$B0:BA00]  ;\
@@ -1533,7 +1533,7 @@ $A0:8E3D FA          PLX                    ;/
 $A0:8E3E 9D 5F 0E    STA $0E5F,x[$7E:0E5F]  ; Enemy loading tile data destination offset = [A]
 $A0:8E41 E2 20       SEP #$20               ;\
 $A0:8E43 A5 1A       LDA $1A    [$7E:001A]  ;|
-$A0:8E45 9D 5E 0E    STA $0E5E,x[$7E:0E5E]  ;} Enemy loading tile data = (enemy tile data bank)
+$A0:8E45 9D 5E 0E    STA $0E5E,x[$7E:0E5E]  ;} Enemy loading tile data bank = (enemy tile data bank)
 $A0:8E48 C2 20       REP #$20               ;/
 $A0:8E4A AD 7A 0E    LDA $0E7A  [$7E:0E7A]  ;\
 $A0:8E4D 18          CLC                    ;|
@@ -2257,7 +2257,7 @@ $A0:930B 99 98 0F    STA $0F98,y[$7E:1018]  ;} New enemy VRAM tiles index = 0
 $A0:930E 99 96 0F    STA $0F96,y[$7E:1016]  ; New enemy palette index = 0
 $A0:9311 80 10       BRA $10    [$9323]
 
-$A0:9313 BF 64 EF 7E LDA $7EEF64,x[$7E:EF66];\ Else:
+$A0:9313 BF 64 EF 7E LDA $7EEF64,x[$7E:EF66];\ Else (found matching enemy ID):
 $A0:9317 99 98 0F    STA $0F98,y[$7E:1018]  ;} New enemy VRAM tiles index = [enemy GFX data enemy tiles index]
 $A0:931A BF 6C EF 7E LDA $7EEF6C,x[$7E:EF6E];\
 $A0:931E EB          XBA                    ;|
@@ -4002,8 +4002,9 @@ $A0:A03D 6B          RTL
 }
 
 
-;;; $A03E: Samus latches on with grapple - paralyse enemy ;;;
+;;; $A03E: Unused. Samus latches on with grapple - paralyse enemy ;;;
 {
+; Called by unused routine $8019
 $A0:A03E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A041 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A044 BD 78 0F    LDA $0F78,x            ;\
