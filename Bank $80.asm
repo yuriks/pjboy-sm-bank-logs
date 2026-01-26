@@ -8190,9 +8190,9 @@ $80:C4B5             dw C4C5, C5CF, C6D9, C81B, C917, CA2F, CB2B, CC19
 ; Indices 10h+ are debug load points, except for Crateria's index 12h, which is used for the gunship landing sequence,
 ; these debug load points are unconditionally selectable in the debug file select map
 
-;                        _______________________________ Room pointer
-;                       |     __________________________ Door pointer
-;                       |    |     _____________________ Door BTS
+;                        _______________________________ Room pointer (used for the room select screen)
+;                       |     __________________________ Door pointer (used for room pointer to load the room, door ASM and scrolling sky library background)
+;                       |    |     _____________________ Door BTS (used only for demo recorder)
 ;                       |    |    |     ________________ Screen X position
 ;                       |    |    |    |     ___________ Screen Y position
 ;                       |    |    |    |    |     ______ Samus Y offset (relative to screen top)

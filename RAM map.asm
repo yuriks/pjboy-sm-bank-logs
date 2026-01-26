@@ -847,7 +847,7 @@ $077C..0997: Main gameplay RAM (according to $82:8593)
     $0789: Current area map collected flag. Effectively a mirror of the $7E:D908 byte for the current area, some code checks this variable, some code checks the other one
     $078B: Load station index
     $078D: Door pointer
-    $078F: Door BTS
+    $078F: Debug. Door BTS. Recorded (along with area index) as part of demo recorder
     $0791: Door direction
     {
         0: Right
