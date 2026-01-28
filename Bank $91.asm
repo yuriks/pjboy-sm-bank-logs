@@ -10233,8 +10233,8 @@ $91:E13B 9C 24 0A    STZ $0A24  [$7E:0A24]  ; Samus last different pose = 0
 $91:E13E 9C 26 0A    STZ $0A26  [$7E:0A26]  ; Samus last different pose X direction = Samus last different pose movement type = 0
 $91:E141 A9 FF FF    LDA #$FFFF             ;\
 $91:E144 8D 1C 0E    STA $0E1C  [$7E:0E1C]  ;} Enemy index to shake = FFFFh
-$91:E147 9C D2 09    STZ $09D2  [$7E:09D2]  ; Currently selected status bar item = 0
-$91:E14A 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Item selected for auto-cancel = 0
+$91:E147 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = 0
+$91:E14A 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = 0
 $91:E14D 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $91:E150 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
 $91:E153 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0 (again)

@@ -10276,7 +10276,7 @@ $90:C4AE             db 04, 03, 02, 02, 02, 02, FF
 $90:C4B5 08          PHP
 $90:C4B6 C2 30       REP #$30
 $90:C4B8 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
-$90:C4BB 85 12       STA $12    [$7E:0012]  ;} $12 = currently selected HUD item
+$90:C4BB 85 12       STA $12    [$7E:0012]  ;} $12 = [HUD item index]
 $90:C4BD A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:C4BF 2C B8 09    BIT $09B8  [$7E:09B8]  ;} If newly pressed item cancel:
 $90:C4C2 F0 05       BEQ $05    [$C4C9]     ;/
@@ -10287,7 +10287,7 @@ $90:C4C9 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:C4CB 2C B8 09    BIT $09B8  [$7E:09B8]  ;|
 $90:C4CE D0 04       BNE $04    [$C4D4]     ;|
 $90:C4D0 64 16       STZ $16    [$7E:0016]  ;|
-$90:C4D2 80 05       BRA $05    [$C4D9]     ;} $16 = pressing item cancel flag
+$90:C4D2 80 05       BRA $05    [$C4D9]     ;} $16 = (pressing item cancel flag)
                                             ;|
 $90:C4D4 A9 01 00    LDA #$0001             ;|
 $90:C4D7 85 16       STA $16    [$7E:0016]  ;/
@@ -10296,12 +10296,12 @@ $90:C4D9 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:C4DB 2C BA 09    BIT $09BA  [$7E:09BA]  ;} If not newly pressed item select: go to BRANCH_ITEM_SELECT_END
 $90:C4DE F0 39       BEQ $39    [$C519]     ;/
 $90:C4E0 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
-$90:C4E3 1A          INC A                  ;} Increment currently selected HUD item
+$90:C4E3 1A          INC A                  ;} Increment HUD item index
 $90:C4E4 C9 06 00    CMP #$0006             ;\
-$90:C4E7 30 03       BMI $03    [$C4EC]     ;} If [currently selected HUD item] < 6: go to BRANCH_ITEM_CANCEL_END
+$90:C4E7 30 03       BMI $03    [$C4EC]     ;} If [HUD item index] < 6: go to BRANCH_ITEM_CANCEL_END
 
 ; BRANCH_ITEM_CANCEL
-$90:C4E9 A9 00 00    LDA #$0000             ; Currently selected HUD item = nothing
+$90:C4E9 A9 00 00    LDA #$0000             ; HUD item index = nothing
 
 ; BRANCH_ITEM_CANCEL_END
 $90:C4EC 8D D2 09    STA $09D2  [$7E:09D2]
@@ -10312,25 +10312,25 @@ $90:C4F0 AA          TAX                    ;} Execute switched to HUD item hand
 $90:C4F1 FC 39 C5    JSR ($C539,x)[$90:C551];/
 $90:C4F4 90 14       BCC $14    [$C50A]     ; If returned carry set (e.g. switching to missiles but out of ammo or switching to x-ray from missiles):
 $90:C4F6 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
-$90:C4F9 1A          INC A                  ;} Increment currently selected HUD item
+$90:C4F9 1A          INC A                  ;} Increment HUD item index
 $90:C4FA 8D D2 09    STA $09D2  [$7E:09D2]  ;/
 $90:C4FD C9 06 00    CMP #$0006             ;\
-$90:C500 30 ED       BMI $ED    [$C4EF]     ;} If [currently selected HUD item] < 6: go to LOOP
+$90:C500 30 ED       BMI $ED    [$C4EF]     ;} If [HUD item index] < 6: go to LOOP
 $90:C502 A9 00 00    LDA #$0000             ;\
-$90:C505 8D D2 09    STA $09D2  [$7E:09D2]  ;} Currently selected HUD item = nothing
+$90:C505 8D D2 09    STA $09D2  [$7E:09D2]  ;} HUD item index = nothing
 $90:C508 80 E5       BRA $E5    [$C4EF]     ; Go to LOOP
 
 $90:C50A A5 16       LDA $16    [$7E:0016]  ;\
 $90:C50C F0 08       BEQ $08    [$C516]     ;} If holding item cancel:
 $90:C50E AD D2 09    LDA $09D2  [$7E:09D2]  ;\
-$90:C511 8D 04 0A    STA $0A04  [$7E:0A04]  ;} Auto-cancelling HUD item = [currently selected HUD item]
+$90:C511 8D 04 0A    STA $0A04  [$7E:0A04]  ;} Auto-cancel HUD item index = [HUD item index]
 $90:C514 80 03       BRA $03    [$C519]
                                             ; Else (not holding item cancel):
-$90:C516 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancelling HUD item = nothing
+$90:C516 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
 
 ; BRANCH_ITEM_SELECT_END
 $90:C519 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
-$90:C51C C5 12       CMP $12    [$7E:0012]  ;} If currently selected HUD item changed: go to BRANCH_ITEM_CHANGED
+$90:C51C C5 12       CMP $12    [$7E:0012]  ;} If HUD item index changed: go to BRANCH_ITEM_CHANGED
 $90:C51E D0 11       BNE $11    [$C531]     ;/
 $90:C520 AD AA 0A    LDA $0AAA  [$7E:0AAA]  ;\
 $90:C523 1A          INC A                  ;|

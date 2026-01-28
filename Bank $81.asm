@@ -6079,7 +6079,7 @@ $81:B354 9C DE 09    STZ $09DE  [$7E:09DE]  ;} In-game timer = 0:0:0.0
 $81:B357 9C E0 09    STZ $09E0  [$7E:09E0]  ;/
 $81:B35A 9C E2 09    STZ $09E2  [$7E:09E2]  ; Disable Japanese text
 $81:B35D 9C E4 09    STZ $09E4  [$7E:09E4]  ; Disable moonwalk
-$81:B360 9C EA 09    STZ $09EA  [$7E:09EA]  ; Disable HUD auto-cancel
+$81:B360 9C EA 09    STZ $09EA  [$7E:09EA]  ; Disable icon cancel
 $81:B363 A9 01 00    LDA #$0001             ;\
 $81:B366 8D E6 09    STA $09E6  [$7E:09E6]  ;} Disable Samus placement mode (debug)
 $81:B369 8D E8 09    STA $09E8  [$7E:09E8]  ; $09E8 = 1 (never read)
