@@ -3152,7 +3152,7 @@ $94:9785 90 1B       BCC $1B    [$97A2]     ; If no collision: go to BRANCH_NO_C
 $94:9787 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $94:978A 18          CLC                    ;|
 $94:978B 65 14       ADC $14    [$7E:0014]  ;|
-$94:978D 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus vertical position += [$12].[$14]
+$94:978D 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y position += [$12].[$14]
 $94:9790 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $94:9793 65 12       ADC $12    [$7E:0012]  ;|
 $94:9795 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
