@@ -4132,6 +4132,7 @@ $A6:B42D 60          RTS
 
 ;;; $B42E: Y = [$B439 + [Ridley acceleration index] * 2] ;;;
 {
+; Acceleration factor for lunge missed and dodging power bomb
 $A6:B42E AF 24 78 7E LDA $7E7824[$7E:7824]
 $A6:B432 0A          ASL A
 $A6:B433 A8          TAY
@@ -4802,6 +4803,7 @@ $A6:B90E 60          RTS
 
 ;;; $B90F: Set Ridley pogo speeds ;;;
 {
+; Called for initial downwards movement, then called for each subsequent upwards movement
 $A6:B90F AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:B912 29 03 00    AND #$0003             ;|
 $A6:B915 0A          ASL A                  ;} Y = [random number] % 4 * 2
@@ -4835,7 +4837,7 @@ $A6:B94D             dw 000A,0010, 0020,0030,0040,0050 ; Pogo upwards Y accelera
 $A6:B959             dw 0010,0020, 0040,0080,0400,0500 ; Pogo downwards Y acceleration table
 
 $A6:B965             dw B975,B981,B98D,B999 ; X velocity table pointers
-$A6:B96D             dw B9A5,B9B1,B9BD,B9C9 ; Y velocity table pointers
+$A6:B96D             dw B9A5,B9B1,B9BD,B9C9 ; Initial Y velocity table pointers
 
 ; X velocity tables. First two entries are unused, then indexed by [$7E:7824] * 2
 $A6:B975             dw 0058,0070, 00A0,00A8,00B0,00B8
@@ -4843,7 +4845,7 @@ $A6:B981             dw 0078,0090, 00C0,00C8,00D0,00D8
 $A6:B98D             dw 0098,00B0, 00E0,00E8,00F0,00F8
 $A6:B999             dw 00B8,00D0, 0100,0108,0110,0118
 
-; Y velocity tables. First two entries are unused, then indexed by [$7E:7824] * 2
+; Initial Y velocity tables (determines bounce height). First two entries are unused, then indexed by [$7E:7824] * 2
 $A6:B9A5             dw FE60,FDE0, FCE0,FC20,FA80,F980
 $A6:B9B1             dw FE00,FD80, FC80,FBC0,FA60,F960
 $A6:B9BD             dw FDE0,FD60, FC60,FB80,FA40,F940
