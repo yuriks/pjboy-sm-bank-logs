@@ -4103,7 +4103,7 @@ $A6:B3F5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Ridley function timer = 80h
 ;;; $B3F8: Ridley function - lunge missed - move to position ;;;
 {
 $A6:B3F8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Ridley function timer
-$A6:B3FB 30 2A       BMI $2A    [$B427]     ; If [Ridley function timer] < 0: go to BRANCH_B427
+$A6:B3FB 30 2A       BMI $2A    [$B427]     ; If [Ridley function timer] < 0: go to BRANCH_DONE
 $A6:B3FD A2 C0 00    LDX #$00C0             ; $12 = C0h (target X position)
 $A6:B400 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B404 F0 03       BEQ $03    [$B409]     ;} If [Ridley facing direction] != left:
@@ -4122,7 +4122,7 @@ $A6:B420 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
 $A6:B424 90 01       BCC $01    [$B427]     ; If no collision:
 $A6:B426 60          RTS                    ; Return
 
-; BRANCH_B427
+; BRANCH_DONE
 $A6:B427 A9 21 B3    LDA #$B321             ;\
 $A6:B42A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Ridley function = $B321 (decide action)
 $A6:B42D 60          RTS
@@ -4218,7 +4218,7 @@ $A6:B4D0 60          RTS
 }
 
 
-;;; $B4D1: Ridley function - swoop - descending - aiming left ;;;
+;;; $B4D1: Ridley function - swoop - descending - aiming horizontal ;;;
 {
 $A6:B4D1 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
 $A6:B4D5 D0 0C       BNE $0C    [$B4E3]     ;} If [Ridley facing direction] = left:
