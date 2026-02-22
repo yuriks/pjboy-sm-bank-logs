@@ -302,6 +302,7 @@ Zebes destruction cutscene
     $4000..5FFF: BG1/2 tiles
     
     $6000..7FFF: Sprite tiles (yellow clouds)
+    
     $7000..77FF: BG1 tilemaps
     {
         $7000..73FF: Wide part of Zebes explosion
