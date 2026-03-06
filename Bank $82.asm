@@ -131,7 +131,7 @@ $82:8124 AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
 $82:8128 C9 1F 00    CMP #$001F             ;} If starting at Ceres:
 $82:812B D0 10       BNE $10    [$813D]     ;/
 $82:812D A9 00 00    LDA #$0000             ;\
-$82:8130 8F BE C1 7E STA $7EC1BE[$7E:C1BE]  ;} Sprite palette 5, colour Fh = 0
+$82:8130 8F BE C1 7E STA $7EC1BE[$7E:C1BE]  ;} Sprite palette 5 colour Fh = 0
 $82:8134 A9 08 00    LDA #$0008             ;\
 $82:8137 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for Ceres start
 $82:813B 28          PLP
