@@ -5521,6 +5521,10 @@ $A8:BD8B 60          RTS
 
 ;;; $BD8C: Update beetom button counter ;;;
 {
+; This function updates (enemy previous controller 1 input) for the next button counter check
+; For the first button counter check,
+; (enemy previous controller 1 input) is stale input from either the init AI or when it was last flung
+; $0DFE, which is updated every frame, would have been a better source of previous input for the check
 $A8:BD8C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:BD8F A5 8B       LDA $8B    [$7E:008B]  ;\
 $A8:BD91 DD B2 0F    CMP $0FB2,x[$7E:1032]  ;} If [controller 1 input] != [enemy previous controller 1 input]:
