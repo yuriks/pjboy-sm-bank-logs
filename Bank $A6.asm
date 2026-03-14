@@ -714,7 +714,7 @@ $A6:8CA0 60          RTS
 ;; Parameters:
 ;;     X: Enemy index
 ;; Returns:
-;;     Zero: clear if touching Samus, otherwise set
+;;     Zero: Clear if touching Samus, otherwise set
 
 ; This is a copy+paste of $A0:ABE7 with the Y delta threshold changed from 3 to 5
 $A6:8CA1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
