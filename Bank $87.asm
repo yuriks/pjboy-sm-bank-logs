@@ -915,6 +915,7 @@ $87:8542             dw 8352,8008,       ; Set Tourian entrance statue not proce
 
 ;;; $854C: Animated tiles objects - Tourian entrance statue ;;;
 {
+; Instruction list, size, VRAM address
 $87:854C             dw 83AC,0080,7800 ; Tourian entrance statue - Phantoon
 $87:8552             dw 8414,0040,7220 ; Tourian entrance statue - Ridley
 $87:8558             dw 847C,0040,0B40 ; Tourian entrance statue - Kraid

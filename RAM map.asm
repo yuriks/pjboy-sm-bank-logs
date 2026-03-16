@@ -1115,7 +1115,7 @@ $0998: Game state
     2Ch: Transition from demo.                                      Set by $82:8593 (unload game data)
 }
 $099A: Unused
-$099C: Door transition function
+$099C: Door transition function. Bank $82
 {
     $E17D: Handle elevator
     $E19F: Wait 48 frames for down elevator
@@ -1130,7 +1130,7 @@ $099C: Door transition function
     $E4A9: Load sprites, background, PLMs, audio; execute custom door and room ASM; and wait for scrolling to end
     $E659: Handle animated tiles
     $E664: Wait for music queue to clear and possibly load new music
-    $E6A2: Positions Samus to avoid collision with the door (kinda useless), and enables some Layer 2 and Layer 3 stuff
+    $E6A2: Nudge Samus if she's intercepting the door
     $E737: Fade in the screen and run enemies; finish room transition
 
     $E17D..E19F is a chain of functions whose initial value is written by door block collision

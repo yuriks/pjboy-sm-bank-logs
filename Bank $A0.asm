@@ -591,9 +591,9 @@ $A0:8187             dw 0000,0000,0000,0000, 0000,1000,FFFF,F000, 0000,2000,FFFF
 ; From 22 onwards, values in the table are too low by a multiple of 0.0900h with occasional discontinuities (see "Quadratic speed table.png")
 ; My best guess is that buggy calculation determined the whole and fractional parts separately using the high and low bytes of T(t):
 ;     v_frac(t) = (T(t) & FFh) * 109h
-;     v_whole(t) = (T(t) >> 8) / 0x10000
+;     v_whole(t) = (T(t) >> 8) / 10000h
 ; And truncated the value of v_frac to 16 bits without carrying bit 17 into v_whole
-;     v(t) = v_whole(t) + (v_frac(t) & FFFFh) / 0x10000
+;     v(t) = v_whole(t) + (v_frac(t) & FFFFh) / 10000h
 
 ; Generate the table with this python code
 ;     def triangle(n):

@@ -251,7 +251,7 @@ $80:8110 60          RTS
 ;; Returns:
 ;;     A: New random number
 
-; r(t+1) = r(t) * 5 + 0x111 (roughly; if the adding of x * 100h causes overflow, then a further 1 is added)
+; r(t+1) = r(t) * 5 + 111h (roughly; if the adding of x * 100h causes overflow, then a further 1 is added)
 $80:8111 E2 20       SEP #$20
 $80:8113 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $80:8116 8D 02 42    STA $4202              ;|
@@ -5301,7 +5301,7 @@ $80:A308 29 FE       AND #$FE               ;\
 $80:A30A 8D 02 42    STA $4202              ;|
 $80:A30D AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A310 8D 03 42    STA $4203              ;|
-$80:A313 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 X position] % 0x100 * ([layer 2 scroll X] & ~1) / 100h
+$80:A313 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 X position] % 100h * ([layer 2 scroll X] & ~1) / 100h
 $80:A316 48          PHA                    ;|
 $80:A317 68          PLA                    ;|
 $80:A318 AD 17 42    LDA $4217              ;|
@@ -5358,7 +5358,7 @@ $80:A349 29 FE       AND #$FE               ;\
 $80:A34B 8D 02 42    STA $4202              ;|
 $80:A34E AD 15 09    LDA $0915  [$7E:0915]  ;|
 $80:A351 8D 03 42    STA $4203              ;|
-$80:A354 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 Y position] % 0x100 * ([layer 2 scroll Y] & ~1) / 100h
+$80:A354 9C 34 09    STZ $0934  [$7E:0934]  ;} $0933 = [layer 1 Y position] % 100h * ([layer 2 scroll Y] & ~1) / 100h
 $80:A357 48          PHA                    ;|
 $80:A358 68          PLA                    ;|
 $80:A359 AD 17 42    LDA $4217              ;|

@@ -3269,12 +3269,12 @@ $A5:A19F             dw FC80, FD00, FD80, FE00,
 ;                        ________ X subspeed
 ;                       |     ___ Y subspeed
 ;                       |    |
-$A5:A1AF             dw D4DA,8E39, ; -0xFFFF * cos(68h * pi / 80h), 0xFFFF * sin(68h * pi / 80h)
-                        8E39,D4DA, ; -0xFFFF * cos(58h * pi / 80h), 0xFFFF * sin(58h * pi / 80h)
-                        31F1,FB13, ; -0xFFFF * cos(48h * pi / 80h), 0xFFFF * sin(48h * pi / 80h)
-                        31F1,FB13, ;  0xFFFF * cos(38h * pi / 80h), 0xFFFF * sin(38h * pi / 80h)
-                        8E39,D4DA, ;  0xFFFF * cos(28h * pi / 80h), 0xFFFF * sin(28h * pi / 80h)
-                        D4DA,8E39  ;  0xFFFF * cos(18h * pi / 80h), 0xFFFF * sin(18h * pi / 80h)
+$A5:A1AF             dw D4DA,8E39, ; -FFFFh * cos(68h * pi / 80h), FFFFh * sin(68h * pi / 80h)
+                        8E39,D4DA, ; -FFFFh * cos(58h * pi / 80h), FFFFh * sin(58h * pi / 80h)
+                        31F1,FB13, ; -FFFFh * cos(48h * pi / 80h), FFFFh * sin(48h * pi / 80h)
+                        31F1,FB13, ;  FFFFh * cos(38h * pi / 80h), FFFFh * sin(38h * pi / 80h)
+                        8E39,D4DA, ;  FFFFh * cos(28h * pi / 80h), FFFFh * sin(28h * pi / 80h)
+                        D4DA,8E39  ;  FFFFh * cos(18h * pi / 80h), FFFFh * sin(18h * pi / 80h)
 }
 
 
