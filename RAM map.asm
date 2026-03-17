@@ -2247,7 +2247,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0DBC: Total Samus X speed. (base speed + run speed) / 2^(speed divisor), doesn't include distance moved due to $0B58
     $0DBE: Total Samus X subspeed
     $0DC0: Resume charging beam sound effect flag. If set, $90:F576 plays resume charging beam sound effect. Set when landing from damage boost
-    $0DC2: Previous beam charge counter
+    $0DC2: Previous beam charge counter. Used as temporary in $90:B80D for fire (un)charged beam routines to check if charging sound effect needs stopping
     $0DC4: Current block index (nth block of the room)
     $0DC6: Samus solid vertical collision result. Something for setting Samus prospective pose ($0A28/$0A2E)
     {
