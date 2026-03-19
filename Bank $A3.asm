@@ -2972,7 +2972,7 @@ $A3:A513 B9 11 A1    LDA $A111,y            ;} Enemy new instruction list = [$A1
 $A3:A516 9F 08 80 7E STA $7E8008,x          ;/
 $A3:A51A 20 2F A1    JSR $A12F  [$A3:A12F]  ; Set roach instruction list
 $A3:A51D A9 20 00    LDA #$0020             ;\
-$A3:A520 9D B2 0F    STA $0FB2,x            ;} Enemy enemy movement timer = 20h
+$A3:A520 9D B2 0F    STA $0FB2,x            ;} Enemy movement timer = 20h
 $A3:A523 A9 62 A4    LDA #$A462             ;\
 $A3:A526 9D AA 0F    STA $0FAA,x            ;} Enemy function = $A462 (move along custom angle and wait for Samus if hit block)
 $A3:A529 60          RTS
