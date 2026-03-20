@@ -10369,8 +10369,8 @@ $A9:DF4E 60          RTS
 
 ;;; $DF4F: Corpse rotting initialisation function - zoomer - enemy parameter 1 = 0 ;;;
 {
-; $7E:2940..99
-; $7E:29A0..FF
+; $7E:2940..99: Row 0
+; $7E:29A0..FF: Row 1
 $A9:DF4F 8B          PHB
 $A9:DF50 A2 60 CA    LDX #$CA60  ;\
 $A9:DF53 A0 40 29    LDY #$2940  ;|
