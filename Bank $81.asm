@@ -81,7 +81,7 @@ $81:8084 6B          RTL
 ;; Parameter:
 ;;     A: SRAM slot (0, 1 or 2)
 ;; Returns:
-;;     Carry: Set if SRAM was corrupt
+;;     Carry: Set if SRAM was cleared
 
 ; Copies all the data from the SRAM slot out to $7E:D7C0..DE1B
 ; If SRAM is not corrupt (according to the checksums):
@@ -3502,24 +3502,24 @@ $81:9D31 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1,
 $81:9D35 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Bh (file clear to main)
 $81:9D38 A9 00 00    LDA #$0000             ;\
 $81:9D3B 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot A
-$81:9D3F B0 07       BCS $07    [$9D48]     ; If corrupt: go to BRANCH_SLOT_A_CORRUPT
+$81:9D3F B0 07       BCS $07    [$9D48]     ; If save slot A is empty: go to BRANCH_SLOT_A_EMPTY
 
 ; BRANCH_SELECT_SLOT_A
 $81:9D41 A9 00 00    LDA #$0000             ;\
 $81:9D44 8D 52 09    STA $0952  [$7E:0952]  ;} File select menu selection = 0
 $81:9D47 60          RTS                    ; Return
 
-; BRANCH_SLOT_A_CORRUPT
+; BRANCH_SLOT_A_EMPTY
 $81:9D48 A9 01 00    LDA #$0001             ;\
 $81:9D4B 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot B
-$81:9D4F B0 07       BCS $07    [$9D58]     ; If not corrupt:
+$81:9D4F B0 07       BCS $07    [$9D58]     ; If save slot B is not empty:
 $81:9D51 A9 01 00    LDA #$0001             ;\
 $81:9D54 8D 52 09    STA $0952  [$7E:0952]  ;} File select menu selection = 1
 $81:9D57 60          RTS                    ; Return
 
 $81:9D58 A9 02 00    LDA #$0002             ;\
 $81:9D5B 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot C
-$81:9D5F B0 E0       BCS $E0    [$9D41]     ; If corrupt: go to BRANCH_SELECT_SLOT_A
+$81:9D5F B0 E0       BCS $E0    [$9D41]     ; If save slot C is empty: go to BRANCH_SELECT_SLOT_A
 $81:9D61 A9 02 00    LDA #$0002             ;\
 $81:9D64 8D 52 09    STA $0952  [$7E:0952]  ;} File select menu selection = 2
 
@@ -3744,15 +3744,15 @@ $81:9F13 A0 36 B4    LDY #$B436             ;\
 $81:9F16 A2 46 01    LDX #$0146             ;} Load menu tilemap $B40A to (3, 5) (SAMUS A)
 $81:9F19 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F1C A9 00 00    LDA #$0000             ;\
-$81:9F1F 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A (carry set if corrupt)
+$81:9F1F 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot A (carry set if cleared)
 $81:9F22 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F25 A2 5C 01    LDX #$015C             ; X = 15Ch (Eh, 5)
 $81:9F28 AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9F2B 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9F2B 89 00 80    BIT #$8000             ;} Clear zero if save slot A is empty, otherwise set zero
 $81:9F2E 20 87 A0    JSR $A087  [$81:A087]  ; Draw file selection health
 $81:9F31 A2 B4 01    LDX #$01B4             ; X = 1B4h (1Ah, 6)
 $81:9F34 AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9F37 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9F37 89 00 80    BIT #$8000             ;} Clear zero if save slot A is empty, otherwise set zero
 $81:9F3A 20 4E A1    JSR $A14E  [$81:A14E]  ; Draw file selection time
 $81:9F3D A0 A0 B4    LDY #$B4A0             ;\
 $81:9F40 A2 76 01    LDX #$0176             ;} Load menu tilemap $B4A0 to (1Bh, 5) (TIME)
@@ -3762,15 +3762,15 @@ $81:9F49 A2 86 02    LDX #$0286             ;|
 $81:9F4C 9C 96 0F    STZ $0F96  [$7E:0F96]  ;} Load menu tilemap $B456 to (3, Ah) (SAMUS B)
 $81:9F4F 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F52 A9 01 00    LDA #$0001             ;\
-$81:9F55 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B (carry set if corrupt)
+$81:9F55 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot B (carry set if cleared)
 $81:9F58 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F5B A2 9C 02    LDX #$029C             ; X = 29Ch (Eh, Ah)
 $81:9F5E AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9F61 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9F61 89 00 80    BIT #$8000             ;} Clear zero if save slot B is empty, otherwise set zero
 $81:9F64 20 87 A0    JSR $A087  [$81:A087]  ; Draw file selection health
 $81:9F67 A2 F4 02    LDX #$02F4             ; X = 2F4h (1Ah, Bh)
 $81:9F6A AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9F6D 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9F6D 89 00 80    BIT #$8000             ;} Clear zero if save slot B is empty, otherwise set zero
 $81:9F70 20 4E A1    JSR $A14E  [$81:A14E]  ; Draw file selection time
 $81:9F73 A0 A0 B4    LDY #$B4A0             ;\
 $81:9F76 A2 B6 02    LDX #$02B6             ;} Load menu tilemap $B4A0 to (1Bh, Ah) (TIME)
@@ -3780,15 +3780,15 @@ $81:9F7F A2 C6 03    LDX #$03C6             ;|
 $81:9F82 9C 96 0F    STZ $0F96  [$7E:0F96]  ;} Load menu tilemap $B476 to (3, Fh) (SAMUS C)
 $81:9F85 20 E2 B3    JSR $B3E2  [$81:B3E2]  ;/
 $81:9F88 A9 02 00    LDA #$0002             ;\
-$81:9F8B 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C (carry set if corrupt)
+$81:9F8B 20 53 A0    JSR $A053  [$81:A053]  ;} Load SRAM / clear SRAM slot C (carry set if cleared)
 $81:9F8E 6E 54 09    ROR $0954  [$7E:0954]  ; $0954 = [$0954] >> 1 | carry << Fh
 $81:9F91 A2 DC 03    LDX #$03DC             ; X = 3DCh (Eh, Fh)
 $81:9F94 AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9F97 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9F97 89 00 80    BIT #$8000             ;} Clear zero if save slot C is empty, otherwise set zero
 $81:9F9A 20 87 A0    JSR $A087  [$81:A087]  ; Draw file selection health
 $81:9F9D A2 34 04    LDX #$0434             ; X = 434h (1Ah, 10h)
 $81:9FA0 AD 54 09    LDA $0954  [$7E:0954]  ;\
-$81:9FA3 89 00 80    BIT #$8000             ;} Clear zero if SRAM is corrupt, otherwise set zero
+$81:9FA3 89 00 80    BIT #$8000             ;} Clear zero if save slot C is empty, otherwise set zero
 $81:9FA6 20 4E A1    JSR $A14E  [$81:A14E]  ; Draw file selection time
 $81:9FA9 A0 A0 B4    LDY #$B4A0             ;\
 $81:9FAC A2 F6 03    LDX #$03F6             ;} Load menu tilemap $B4A0 to (1Bh, Fh) (TIME)
@@ -3861,7 +3861,7 @@ $81:A052 60          RTS
 ;; Parameter:
 ;;     A: SRAM slot (0, 1 or 2)
 ;; Returns:
-;;     Carry: Set if SRAM was corrupt
+;;     Carry: Set if SRAM was cleared
 
 $81:A053 22 85 80 81 JSL $818085[$81:8085]
 $81:A057 60          RTS
@@ -3896,7 +3896,7 @@ $81:A086 60          RTS
 {
 ;; Parameters:
 ;;     X: Menu tilemap index
-;;     Zero: Clear if SRAM is corrupt
+;;     Zero: Clear if save slot is empty
 $81:A087 F0 10       BEQ $10    [$A099]     ; If zero clear:
 $81:A089 DA          PHX
 $81:A08A 20 C5 B3    JSR $B3C5  [$81:B3C5]  ; Clear rest of menu tilemap row
@@ -3968,7 +3968,7 @@ $81:A107 38          SEC                    ;|
 $81:A108 E9 4E 00    SBC #$004E             ;} X -= 4Eh (one row up, 7 columns left)
 $81:A10B AA          TAX                    ;/
 $81:A10C A9 08 00    LDA #$0008             ;\
-$81:A10F 85 18       STA $18    [$7E:0018]  ;} $18 = 8 (more than 7 so that the above branch is taken)
+$81:A10F 85 18       STA $18    [$7E:0018]  ;} $18 = 8 (harmless off-by-one error)
 $81:A111 80 D5       BRA $D5    [$A0E8]     ; Go to LOOP
 
 ; BRANCH_ETANKS_DRAWN
@@ -4006,7 +4006,7 @@ $81:A14D 60          RTS
 {
 ;; Parameters:
 ;;     X: Menu tilemap index
-;;     Zero: Clear if SRAM is corrupt
+;;     Zero: Clear if save slot is empty
 $81:A14E D0 71       BNE $71    [$A1C1]     ; If zero clear: return
 $81:A150 86 1A       STX $1A    [$7E:001A]  ; $1A = [X]
 $81:A152 AD E0 09    LDA $09E0  [$7E:09E0]  ;\
@@ -4118,7 +4118,7 @@ $81:A240 49 FF FF    EOR #$FFFF             ;\
 $81:A243 8F EE 1F 70 STA $701FEE[$70:1FEE]  ;} SRAM save slot selected complement = ~[SRAM save slot selected]
 $81:A247 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:A24A 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
-$81:A24E B0 06       BCS $06    [$A256]     ; If not corrupt:
+$81:A24E B0 06       BCS $06    [$A256]     ; If not empty:
 $81:A250 22 8C 85 80 JSL $80858C[$80:858C]  ; Load map explored
 $81:A254 80 63       BRA $63    [$A2B9]     ; Go to BRANCH_DONE
 

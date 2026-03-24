@@ -9449,6 +9449,10 @@ $90:BDFF 60          RTS
 {
 ;; Parameters:
 ;;     $14: Projectile index
+
+; Used by gold ninja space pirate, and unused enemies reflect and bang
+; Reflected projectile is non-damaging by default
+; For a damaging projectile, the caller has to clear the MSb of projectile type
 $90:BE00 08          PHP
 $90:BE01 8B          PHB
 $90:BE02 4B          PHK                    ;\
