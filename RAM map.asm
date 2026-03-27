@@ -2558,8 +2558,8 @@ $0E48: Set to 0 when enemies are initialised (if there are enemies in the room).
 $0E4A: New enemy index (when spawning an enemy)
 $0E4C: First unused enemy index. Written as an enemy index by enemy initialisation routine ($A0:8A9E), but only checked for non-zero by main enemy routine ($A0:8FD4). If zero, main enemy routine skips enemy processing
 $0E4E: Number of enemies in the room. Never read
-$0E50: Number of enemies killed in the current room.
-$0E52: Number of enemy deaths needed to clear current room
+$0E50: Number of enemy deaths in room
+$0E52: Number of enemy deaths needed to clear room
 $0E54: Enemy index
 $0E56: Backup of enemy index when spawning new enemy
 $0E58: Enemy data pointer ($0F78 + [enemy index]). Never read
@@ -3964,7 +3964,7 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
         {
             1:   Event 0 - Zebes is awake
             2:   Event 1 - Shitroid ate sidehopper
-            4:   Event 2 - Mother Brain's glass is broken
+            4:   Event 2 - Mother Brain's glass is broken. Set by Mother Brain's glass PLM
             8:   Event 3 - zebetite destroyed bit 0 (set if 1 or 3 zebetites are destroyed)
             10h: Event 4 - zebetite destroyed bit 1 (set if 2 or 3 zebetites are destroyed)
             20h: Event 5 - zebetite destroyed bit 2 (set if all 4 zebetites are destroyed)
@@ -3977,8 +3977,8 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
             2:   Event 9  - Kraid statue is grey
             4:   Event Ah - entrance to Tourian is unlocked
             8:   Event Bh - n00b tube is broken
-            10h: Event Ch - Lower Norfair chozo has lowered the acid
-            20h: Event Dh - Shaktool cleared a path
+            10h: Event Ch - Lower Norfair chozo has lowered the acid. Set by alternate Lower Norfair chozo hand PLM
+            20h: Event Dh - Shaktool cleared a path. Set by Shaktool's room PLM
             40h: Event Eh - Zebes timebomb set
             80h: Event Fh - critters escaped
         }
@@ -3989,7 +3989,7 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
             4:   Event 12h - 2nd metroid hall cleared
             8:   Event 13h - 2nd metroid shaft cleared
             10h: Event 14h - unused
-            20h: Event 15h - outran speed booster lavaquake
+            20h: Event 15h - outran speed booster lavaquake. Set by speed booster escape PLM
         }
 
     }

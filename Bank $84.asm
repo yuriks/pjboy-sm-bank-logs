@@ -8174,7 +8174,7 @@ $84:B86D 60          RTS                    ; Return
 
 ; BRANCH_DONE
 $84:B86E A9 15 00    LDA #$0015             ;\
-$84:B871 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set speed booster lavaquake event
+$84:B871 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 15h (outran speed booster lavaquake)
 $84:B875 60          RTS
 
 ;                        _____________ Target Samus X position
@@ -12212,7 +12212,7 @@ $84:D44E             dx 882D,000C,D46E, ; Go to $D46E if the event Ch is set
                         86B4            ; Sleep
 $84:D462             dx 0001,9CBF,
                         D476,           ; Drain acid lake
-                        883E,000C,      ; Set the event Ch
+                        883E,000C,      ; Set the event Ch (Lower Norfair chozo has lowered the acid)
                         86BC            ; Delete
 $84:D46E             dx D489,           ; FX base Y position = 2D2h
                         0001,9CBF,
@@ -12304,7 +12304,7 @@ $84:D4F2             dx 86CA,           ; Clear pre-instruction
                         D543,           ; Spawn ten n00b tube shards and six n00b tube released air bubbles
                         D536,           ; Trigger n00b tube earthquake
                         0060,98DD,
-                        883E,000B,      ; Set the event Bh
+                        883E,000B,      ; Set the event Bh (n00b tube is broken)
                         D525,           ; Enable water physics
                         D5EE,           ; Unlock Samus
                         86BC            ; Delete

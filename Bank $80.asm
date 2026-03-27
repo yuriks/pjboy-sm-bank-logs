@@ -457,7 +457,7 @@ $80:81F9 6B          RTL
 ;;         8: Draygon statue is grey
 ;;         9: Kraid statue is grey
 ;;         Ah: Entrance to Tourian is unlocked
-;;         Bh: Maridia noobtube is broken
+;;         Bh: Maridia n00btube is broken
 ;;         Ch: Lower Norfair chozo has lowered the acid
 ;;         Dh: Shaktool cleared a path
 ;;         Eh: Zebes timebomb set
