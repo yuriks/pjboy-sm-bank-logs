@@ -105,7 +105,7 @@ $70:0010..066B: Slot 0. Copied from $7E:D7C0..DE1B
         $70:0070:
         {
             1:   Event 0 - Zebes is awake
-            2:   Event 1 - Shitroid ate sidehopper
+            2:   Event 1 - unused
             4:   Event 2 - Mother Brain's glass is broken
             8:   Event 3 - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
             10h: Event 4 - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
@@ -118,7 +118,7 @@ $70:0010..066B: Slot 0. Copied from $7E:D7C0..DE1B
             1:   Event 8  - Draygon statue is grey
             2:   Event 9  - Kraid statue is grey
             4:   Event Ah - entrance to Tourian is unlocked
-            8:   Event Bh - Maridia noobtube is broken
+            8:   Event Bh - Maridia n00btube is broken
             10h: Event Ch - Lower Norfair chozo has lowered the acid
             20h: Event Dh - Shaktool cleared a path
             40h: Event Eh - Zebes timebomb set
@@ -374,7 +374,7 @@ $70:066C..0CC7: Slot 1. Copied from $7E:D7C0..DE1B
         $70:06CC:
         {
             1:   Event 0 - Zebes is awake
-            2:   Event 1 - Shitroid ate sidehopper
+            2:   Event 1 - unused
             4:   Event 2 - Mother Brain's glass is broken
             8:   Event 3 - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
             10h: Event 4 - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
@@ -387,7 +387,7 @@ $70:066C..0CC7: Slot 1. Copied from $7E:D7C0..DE1B
             1:   Event 8  - Draygon statue is grey
             2:   Event 9  - Kraid statue is grey
             4:   Event Ah - entrance to Tourian is unlocked
-            8:   Event Bh - Maridia noobtube is broken
+            8:   Event Bh - Maridia n00btube is broken
             10h: Event Ch - Lower Norfair chozo has lowered the acid
             20h: Event Dh - Shaktool cleared a path
             40h: Event Eh - Zebes timebomb set
@@ -643,7 +643,7 @@ $70:0CC8..1323: Slot 2. Copied from $7E:D7C0..DE1B
         $70:0D28:
         {
             1:   Event 0 - Zebes is awake
-            2:   Event 1 - Shitroid ate sidehopper
+            2:   Event 1 - unused
             4:   Event 2 - Mother Brain's glass is broken
             8:   Event 3 - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
             10h: Event 4 - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
@@ -656,7 +656,7 @@ $70:0CC8..1323: Slot 2. Copied from $7E:D7C0..DE1B
             1:   Event 8  - Draygon statue is grey
             2:   Event 9  - Kraid statue is grey
             4:   Event Ah - entrance to Tourian is unlocked
-            8:   Event Bh - Maridia noobtube is broken
+            8:   Event Bh - Maridia n00btube is broken
             10h: Event Ch - Lower Norfair chozo has lowered the acid
             20h: Event Dh - Shaktool cleared a path
             40h: Event Eh - Zebes timebomb set

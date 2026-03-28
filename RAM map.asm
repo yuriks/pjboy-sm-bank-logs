@@ -3353,7 +3353,7 @@ $1E17..66: PLM variables
     Respawn block (drawn by $84:8B17)
     Scroll PLM triggered flag ($84:B393)
     Samus X position for Brinstar plants (used by $84:AC89, set by $84:B0DC/B113)
-    Grey door type ($84:BE3F)
+    Grey door type ($84:BE3F, set by $84:C794)
     Draygon turret damaged flag address ($84:DB8E)
 }
 $1E67..6C: Custom draw instruction
@@ -3962,33 +3962,33 @@ $7E:D7C0..DE1B: RAM that is saved to SRAM
     {
         $7E:D820:
         {
-            1:   Event 0 - Zebes is awake
-            2:   Event 1 - Shitroid ate sidehopper
+            1:   Event 0 - Zebes is awake. Set by grey door type 3
+            2:   Event 1 - unused
             4:   Event 2 - Mother Brain's glass is broken. Set by Mother Brain's glass PLM
-            8:   Event 3 - zebetite destroyed bit 0 (set if 1 or 3 zebetites are destroyed)
-            10h: Event 4 - zebetite destroyed bit 1 (set if 2 or 3 zebetites are destroyed)
-            20h: Event 5 - zebetite destroyed bit 2 (set if all 4 zebetites are destroyed)
-            40h: Event 6 - Phantoon statue is grey
-            80h: Event 7 - Ridley statue is grey
+            8:   Event 3 - zebetite destroyed bit 0 (set if 1 or 3 zebetites are destroyed). Set by zebetites
+            10h: Event 4 - zebetite destroyed bit 1 (set if 2 or 3 zebetites are destroyed). Set by zebetites
+            20h: Event 5 - zebetite destroyed bit 2 (set if all 4 zebetites are destroyed).  Set by zebetites
+            40h: Event 6 - Phantoon statue is grey. Set by Tourian entrance statue - Phantoon animated tiles object
+            80h: Event 7 - Ridley statue is grey.   Set by Tourian entrance statue - Ridley animated tiles object
         }
         $7E:D821:
         {
-            1:   Event 8  - Draygon statue is grey
-            2:   Event 9  - Kraid statue is grey
-            4:   Event Ah - entrance to Tourian is unlocked
-            8:   Event Bh - n00b tube is broken
-            10h: Event Ch - Lower Norfair chozo has lowered the acid. Set by alternate Lower Norfair chozo hand PLM
+            1:   Event 8  - Draygon statue is grey. Set by Tourian entrance statue - Draygon animated tiles object
+            2:   Event 9  - Kraid statue is grey.   Set by Tourian entrance statue - Kraid animated tiles object
+            4:   Event Ah - entrance to Tourian is unlocked. Set by Tourian entrance statue FX
+            8:   Event Bh - n00b tube is broken. Set by n00b tube PLM
+            10h: Event Ch - Lower Norfair chozo has lowered the acid. Set by Lower Norfair chozo hand trigger PLM and unused alternate Lower Norfair chozo hand PLM
             20h: Event Dh - Shaktool cleared a path. Set by Shaktool's room PLM
-            40h: Event Eh - Zebes timebomb set
-            80h: Event Fh - critters escaped
+            40h: Event Eh - Zebes timebomb set. Set by Mother Brain and escape room 1 room setup ASM
+            80h: Event Fh - critters escaped. Set by critters escape block PLM
         }
         $7E:D822:
         {
-            1:   Event 10h - 1st metroid hall cleared
-            2:   Event 11h - 1st metroid shaft cleared
-            4:   Event 12h - 2nd metroid hall cleared
-            8:   Event 13h - 2nd metroid shaft cleared
-            10h: Event 14h - unused
+            1:   Event 10h - 1st metroid hall cleared.  Set by PLM $DB44 (sets Metroids cleared states when required)
+            2:   Event 11h - 1st metroid shaft cleared. Set by PLM $DB44 (sets Metroids cleared states when required)
+            4:   Event 12h - 2nd metroid hall cleared.  Set by PLM $DB44 (sets Metroids cleared states when required)
+            8:   Event 13h - 2nd metroid shaft cleared. Set by PLM $DB44 (sets Metroids cleared states when required)
+            10h: Event 14h - unused. Never set. If set, Tourian super-sidehopper room and Torizo corpse room don't play pre-boss music
             20h: Event 15h - outran speed booster lavaquake. Set by speed booster escape PLM
         }
 

@@ -447,7 +447,7 @@ $80:81F9 6B          RTL
 ;; Parameter:
 ;;     A: Event number
 ;;         0: Zebes is awake
-;;         1: Shitroid ate sidehopper
+;;         1: Unused
 ;;         2: Mother Brain's glass is destroyed
 ;;         3: Zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
 ;;         4: Zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)

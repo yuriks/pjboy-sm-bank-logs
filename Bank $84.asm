@@ -8239,7 +8239,7 @@ $84:B8C3 A9 48 03    LDA #$0348             ;\
 $84:B8C6 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [Samus X position] <= 348h: return
 $84:B8C9 B0 0A       BCS $0A    [$B8D5]     ;/
 $84:B8CB A9 0D 00    LDA #$000D             ;\
-$84:B8CE 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set Shaktool event
+$84:B8CE 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Dh (Shaktool cleared a path)
 $84:B8D2 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; PLM ID = 0
 
 $84:B8D5 60          RTS
@@ -8448,8 +8448,8 @@ $84:B9A2             dx 8C10,0A,    ; Queue sound Ah, sound library 2, max queue
 
 ;;; $B9B9: Instruction - set critters escaped event ;;;
 {
-$84:B9B9 A9 0F 00    LDA #$000F
-$84:B9BC 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:B9B9 A9 0F 00    LDA #$000F             ;\
+$84:B9BC 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Fh (critters escaped)
 $84:B9C0 60          RTS
 }
 
@@ -9250,18 +9250,18 @@ $84:BDFE 4C C4 BD    JMP $BDC4  [$84:BDC4]
 ;;     X: PLM index
 $84:BE01 5A          PHY
 $84:BE02 DA          PHX
-$84:BE03 AD 50 0E    LDA $0E50  [$7E:0E50]
-$84:BE06 CD 52 0E    CMP $0E52  [$7E:0E52]
-$84:BE09 90 0C       BCC $0C    [$BE17]
-$84:BE0B A9 00 00    LDA #$0000
-$84:BE0E 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:BE03 AD 50 0E    LDA $0E50  [$7E:0E50]  ;\
+$84:BE06 CD 52 0E    CMP $0E52  [$7E:0E52]  ;} If [number of enemy deaths in room] >= [number of enemy deaths need to clear room]:
+$84:BE09 90 0C       BCC $0C    [$BE17]     ;/
+$84:BE0B A9 00 00    LDA #$0000             ;\
+$84:BE0E 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 0 (Zebes is awake)
 $84:BE12 FA          PLX
 $84:BE13 7A          PLY
-$84:BE14 4C B2 BD    JMP $BDB2  [$84:BDB2]
+$84:BE14 4C B2 BD    JMP $BDB2  [$84:BDB2]  ; Go to go to link instruction
 
 $84:BE17 FA          PLX
 $84:BE18 7A          PLY
-$84:BE19 4C C4 BD    JMP $BDC4  [$84:BDC4]
+$84:BE19 4C C4 BD    JMP $BDC4  [$84:BDC4]  ; Go to play dud sound
 }
 
 
@@ -11803,7 +11803,7 @@ $84:D13B             dw D12B,D135   ; Unused. Grapple block
 {
 ;;; $D13F: Instruction list - PLM $D6D6 (Lower Norfair chozo hand) ;;;
 {
-$84:D13F             dx 882D,000C,D14D, ; Go to $D14D if the event Ch is set
+$84:D13F             dx 882D,000C,D14D, ; Go to $D14D if the event Ch is set (Lower Norfair chozo has lowered the acid)
                         86C1,D15C,      ; Pre-instruction = delete PLM and spawn trigger block if block (4, 8) is a blank air block
                         86B4,           ; Sleep
                         86BC            ; Delete
@@ -11882,7 +11882,7 @@ $84:D1AF C9 7A 00    CMP #$007A             ;} If [Samus pose] != morph ball - s
 $84:D1B2 D0 2A       BNE $2A    [$D1DE]     ;/
 
 $84:D1B4 A9 0C 00    LDA #$000C             ;\
-$84:D1B7 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set Lower Norfair chozo event
+$84:D1B7 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Ch (Lower Norfair chozo has lowered the acid)
 $84:D1BB A9 01 00    LDA #$0001             ;\
 $84:D1BE 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 activation flag = 1
 $84:D1C1 BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
@@ -12205,7 +12205,7 @@ $84:D448             dx 0004,9DE9,
 
 ;;; $D44E: Instruction list - PLM $D704 (unused. Alternate Lower Norfair chozo hand) ;;;
 {
-$84:D44E             dx 882D,000C,D46E, ; Go to $D46E if the event Ch is set
+$84:D44E             dx 882D,000C,D46E, ; Go to $D46E if the event Ch is set (Lower Norfair chozo has lowered the acid)
                         8A24,D462,      ; Link instruction = $D462
                         86C1,BD26,      ; Pre-instruction = go to link instruction if shot with a power bomb
                         0001,9CA7,
@@ -12286,7 +12286,7 @@ $84:D4D3 60          RTS
 
 ;;; $D4D4: Instruction list - PLM $D70C (n00b tube) ;;;
 {
-$84:D4D4             dx 882D,000B,D521, ; Go to $D521 if the event Bh is set
+$84:D4D4             dx 882D,000B,D521, ; Go to $D521 if the event Bh is set (n00b tube is broken)
                         8A24,D4E8,      ; Link instruction = $D4E8
                         86C1,BD26,      ; Pre-instruction = go to link instruction if shot with a power bomb
                         0001,98D1,
@@ -13120,11 +13120,11 @@ $84:DADD 60          RTS
 
 ;;; $DADE: Pre-instruction - set Metroids cleared state when required - room argument = 12h ;;;
 {
-$84:DADE AD 50 0E    LDA $0E50  [$7E:0E50]
-$84:DAE1 CD 52 0E    CMP $0E52  [$7E:0E52]
-$84:DAE4 90 07       BCC $07    [$DAED]
-$84:DAE6 A9 10 00    LDA #$0010
-$84:DAE9 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:DADE AD 50 0E    LDA $0E50  [$7E:0E50]  ;\
+$84:DAE1 CD 52 0E    CMP $0E52  [$7E:0E52]  ;} If [number of enemy deaths in room] >= [number of enemy deaths need to clear room]:
+$84:DAE4 90 07       BCC $07    [$DAED]     ;/
+$84:DAE6 A9 10 00    LDA #$0010             ;\
+$84:DAE9 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 10h (1st metroid hall cleared)
 
 $84:DAED 60          RTS
 }
@@ -13132,11 +13132,11 @@ $84:DAED 60          RTS
 
 ;;; $DAEE: Pre-instruction - set Metroids cleared state when required - room argument = 14h ;;;
 {
-$84:DAEE AD 50 0E    LDA $0E50  [$7E:0E50]
-$84:DAF1 CD 52 0E    CMP $0E52  [$7E:0E52]
-$84:DAF4 90 07       BCC $07    [$DAFD]
-$84:DAF6 A9 11 00    LDA #$0011
-$84:DAF9 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:DAEE AD 50 0E    LDA $0E50  [$7E:0E50]  ;\
+$84:DAF1 CD 52 0E    CMP $0E52  [$7E:0E52]  ;} If [number of enemy deaths in room] >= [number of enemy deaths need to clear room]:
+$84:DAF4 90 07       BCC $07    [$DAFD]     ;/
+$84:DAF6 A9 11 00    LDA #$0011             ;\
+$84:DAF9 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 11h (1st metroid shaft cleared)
 
 $84:DAFD 60          RTS
 }
@@ -13144,11 +13144,11 @@ $84:DAFD 60          RTS
 
 ;;; $DAFE: Pre-instruction - set Metroids cleared state when required - room argument = 16h ;;;
 {
-$84:DAFE AD 50 0E    LDA $0E50  [$7E:0E50]
-$84:DB01 CD 52 0E    CMP $0E52  [$7E:0E52]
-$84:DB04 90 07       BCC $07    [$DB0D]
-$84:DB06 A9 12 00    LDA #$0012
-$84:DB09 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:DAFE AD 50 0E    LDA $0E50  [$7E:0E50]  ;\
+$84:DB01 CD 52 0E    CMP $0E52  [$7E:0E52]  ;} If [number of enemy deaths in room] >= [number of enemy deaths need to clear room]:
+$84:DB04 90 07       BCC $07    [$DB0D]     ;/
+$84:DB06 A9 12 00    LDA #$0012             ;\
+$84:DB09 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 12h (2nd metroid hall cleared)
 
 $84:DB0D 60          RTS
 }
@@ -13156,11 +13156,11 @@ $84:DB0D 60          RTS
 
 ;;; $DB0E: Pre-instruction - set Metroids cleared state when required - room argument = 18h ;;;
 {
-$84:DB0E AD 50 0E    LDA $0E50  [$7E:0E50]
-$84:DB11 CD 52 0E    CMP $0E52  [$7E:0E52]
-$84:DB14 90 07       BCC $07    [$DB1D]
-$84:DB16 A9 13 00    LDA #$0013
-$84:DB19 22 FA 81 80 JSL $8081FA[$80:81FA]
+$84:DB0E AD 50 0E    LDA $0E50  [$7E:0E50]  ;\
+$84:DB11 CD 52 0E    CMP $0E52  [$7E:0E52]  ;} If [number of enemy deaths in room] >= [number of enemy deaths need to clear room]:
+$84:DB14 90 07       BCC $07    [$DB1D]     ;/
+$84:DB16 A9 13 00    LDA #$0013             ;\
+$84:DB19 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event 13h (2nd metroid shaft cleared)
 
 $84:DB1D 60          RTS
 }

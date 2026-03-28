@@ -6047,7 +6047,7 @@ $8F:C91E 60          RTS
 ; The Zebes timebomb set event was already marked by Mother Brain when she started the time ($A9:B313),
 ; no reason to do it here
 $8F:C91F A9 0E 00    LDA #$000E             ;\
-$8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark Zebes timebomb set event
+$8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Eh (Zebes timebomb set)
 $8F:C926 A9 12 00    LDA #$0012             ;\
 $8F:C929 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 $8F:C92C A9 FF FF    LDA #$FFFF             ;\

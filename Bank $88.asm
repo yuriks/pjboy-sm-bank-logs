@@ -6987,7 +6987,7 @@ $88:DC9D             dx 06, 0C, B773        ;|
 $88:DCA1 28          PLP                    ;|
 $88:DCA2 FA          PLX                    ;/
 $88:DCA3 A9 0A 00    LDA #$000A             ;\
-$88:DCA6 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark entrance to Tourian is unlocked event
+$88:DCA6 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Ah (entrance to Tourian is unlocked)
 $88:DCAA A9 01 00    LDA #$0001             ;\
 $88:DCAD 9D E4 18    STA $18E4,x[$7E:18E6]  ;} HDMA object instruction timer = 1
 $88:DCB0 FE CC 18    INC $18CC,x[$7E:18CE]  ;\

@@ -800,7 +800,7 @@ $87:83D8             dw 833E,83BA,       ; Go to LOOP if Tourian entrance statue
                         832F,0000,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 0
                         8372,F755,       ; Spawn palette FX object $F755 (grey out Tourian entrance statue - Phantoon)
                         0080,97E4,
-                        8150,0006,       ; Set Phantoon statue is grey event
+                        8150,0006,       ; Mark event 6 (Phantoon statue is grey)
                         8352,8001,       ; Set Tourian entrance statue not processing Phantoon and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
@@ -834,7 +834,7 @@ $87:8440             dw 833E,8422,       ; Go to LOOP if Tourian entrance statue
                         832F,0002,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 2
                         8372,F751,       ; Spawn palette FX object $F751 (grey out Tourian entrance statue - Ridley)
                         0080,9864,
-                        8150,0007,       ; Set Ridley statue is grey event
+                        8150,0007,       ; Mark event 7 (Ridley statue is grey)
                         8352,8002,       ; Set Tourian entrance statue not processing Ridley and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
@@ -868,7 +868,7 @@ $87:84A8             dw 833E,848A,       ; Go to LOOP if Tourian entrance statue
                         832F,0006,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 6
                         8372,F74D,       ; Spawn palette FX object $F74D (grey out Tourian entrance statue - Kraid)
                         0080,98A4,
-                        8150,0009,       ; Set Kraid statue is grey event
+                        8150,0009,       ; Mark event 9 (Kraid statue is grey)
                         8352,8004,       ; Set Tourian entrance statue not processing Kraid and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
@@ -902,7 +902,7 @@ $87:8510             dw 833E,84F2,       ; Go to LOOP if Tourian entrance statue
                         832F,0004,       ; Spawn Tourian entrance statue's soul enemy projectile with parameter 4
                         8372,F749,       ; Spawn palette FX object $F749 (grey out Tourian entrance statue - Draygon)
                         0080,98E4,
-                        8150,0008,       ; Set Draygon statue is grey event
+                        8150,0008,       ; Mark event 8 (Draygon statue is grey)
                         8352,8008,       ; Set Tourian entrance statue not processing Draygon and not busy
                         80B2             ; Delete
 ; BRANCH_STATUE_IS_GREY
