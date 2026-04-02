@@ -9191,7 +9191,7 @@ $84:BDC3 60          RTS
 }
 
 
-;;; $BDC4: Play dud sound ;;;
+;;; $BDC4: Play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9205,7 +9205,7 @@ $84:BDD3 60          RTS
 }
 
 
-;;; $BDD4: Pre-instruction - go to link instruction if area boss is dead else play dud sound ;;;
+;;; $BDD4: Pre-instruction - go to link instruction if area boss is dead else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9218,7 +9218,7 @@ $84:BDE0 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BDE3: Pre-instruction - go to link instruction if area mini-boss (inc. Mother Brain) is dead else play dud sound ;;;
+;;; $BDE3: Pre-instruction - go to link instruction if area mini-boss (inc. Mother Brain) is dead else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9231,7 +9231,7 @@ $84:BDEF 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BDF2: Pre-instruction - go to link instruction if area torizo is dead else play dud sound ;;;
+;;; $BDF2: Pre-instruction - go to link instruction if area torizo is dead else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9244,7 +9244,7 @@ $84:BDFE 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BE01: Pre-instruction - go to link instruction and set Zebes is awake event if enemy death quota is met else play dud sound ;;;
+;;; $BE01: Pre-instruction - go to link instruction and set Zebes is awake event if enemy death quota is met else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9261,11 +9261,11 @@ $84:BE14 4C B2 BD    JMP $BDB2  [$84:BDB2]  ; Go to go to link instruction
 
 $84:BE17 FA          PLX
 $84:BE18 7A          PLY
-$84:BE19 4C C4 BD    JMP $BDC4  [$84:BDC4]  ; Go to play dud sound
+$84:BE19 4C C4 BD    JMP $BDC4  [$84:BDC4]  ; Go to play dud sound if shot
 }
 
 
-;;; $BE1C: Pre-instruction - play dud sound ;;;
+;;; $BE1C: Pre-instruction - play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9273,7 +9273,7 @@ $84:BE1C 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BE1F: Pre-instruction - go to link instruction if Tourian statue has finished processing else play dud sound ;;;
+;;; $BE1F: Pre-instruction - go to link instruction if Tourian statue has finished processing else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
@@ -9291,7 +9291,7 @@ $84:BE2D 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BE30: Pre-instruction - go to link instruction if critters escaped else play dud sound ;;;
+;;; $BE30: Pre-instruction - go to link instruction if critters escaped else play dud sound if shot ;;;
 {
 ;; Parameter:
 ;;     X: PLM index
