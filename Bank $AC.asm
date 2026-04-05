@@ -1487,5 +1487,5 @@ $AC:EA00             db 00,01,01,00,01,00,01,02,03,00,80,41,64,84,4F,0C,00,00,02
 
 ;;; $EE00: Free space ;;;
 {
-$AC:EE00             fillto $AD8000, $FF    ; Free space
+$AC:EE00             fillto $AD8000, $FF
 }

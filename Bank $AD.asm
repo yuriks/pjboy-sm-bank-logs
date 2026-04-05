@@ -2621,5 +2621,5 @@ $AD:F443 6B          RTL
 
 ;;; $F444: Free space ;;;
 {
-$AD:F444             fillto $AE8000, $FF    ; Free space
+$AD:F444             fillto $AE8000, $FF
 }

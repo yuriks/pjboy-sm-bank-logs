@@ -1472,5 +1472,5 @@ $B0:E800             db 00,00,00,00,00,00,06,06,09,09,10,1A,28,3E,2A,3A,00,00,00
 
 ;;; $EE00: Free space ;;;
 {
-$B0:EE00             fillto $B18000, $FF    ; Free space
+$B0:EE00             fillto $B18000, $FF
 }

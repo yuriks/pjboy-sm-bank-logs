@@ -3742,5 +3742,5 @@ $B2:FEA9 60          RTS
 
 ;;; $FEAA: Free space ;;;
 {
-$B2:FEAA             fillto $B38000, $FF        ; Free space
+$B2:FEAA             fillto $B38000, $FF
 }

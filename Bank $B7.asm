@@ -1666,5 +1666,5 @@ $B7:FB00             db 06,08,0C,32,8A,60,A0,0A,D0,28,A1,54,81,24,47,08,36,3E,45
 
 ;;; $FD00: Free space ;;;
 {
-$B7:FD00             fillto $B88000, $FF    ; Free space
+$B7:FD00             fillto $B88000, $FF
 }

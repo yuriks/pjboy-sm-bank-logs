@@ -17779,5 +17779,5 @@ $90:F639 60          RTS
 
 ;;; $F63A: Free space ;;;
 {
-$90:F63A             fillto $918000, $FF       ; Free space
+$90:F63A             fillto $918000, $FF
 }

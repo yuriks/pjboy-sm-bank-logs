@@ -5139,5 +5139,5 @@ $8D:FFED             dw C685,FF27 ; Crateria 40h - slightly modifies an unnotice
 
 ;;; $FFF1: Free space ;;;
 {
-$8D:FFF1             fillto $8E8000, $FF        ; Free space
+$8D:FFF1             fillto $8E8000, $FF
 }

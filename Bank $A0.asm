@@ -5215,6 +5215,9 @@ $A0:A8EF 6B          RTL
 ; The BEQs at $A931/A959/A980/A9A7 I can't make sense of based on the above logic. Seems like the increments/decrements should be unconditional
 ; Perhaps it affects the logic for choosing between BRANCH_TOUCHING and BRANCH_NOT_TOUCHING(?) Didn't notice any jank when NOP'ing the BEQs
 
+; The zeroing of Samus Y subposition at $AAC8 (BRANCH_TOUCHING) is done even for horizontal collision,
+; this means pressing against the side of a solid enemy pushes Samus up each frame
+
 ; On the zebetite skip:
 ; The way this behaviour is implemented is effectively just incrementing the $12 parameter (unfortunately not written so straight forwardly)
 ; Consequently, Samus can collide with enemies one pixel further than she should be able to reach (i.e. one pixel further than in block collision),
@@ -5488,7 +5491,7 @@ $A0:AAC2 EE AA 17    INC $17AA  [$7E:17AA]  ;} Interactive enemies indices index
 $A0:AAC5 4C CA A9    JMP $A9CA  [$A0:A9CA]  ; Go to LOOP
 
 ; BRANCH_TOUCHING
-$A0:AAC8 9C FC 0A    STZ $0AFC  [$7E:0AFC]  ; Samus Y subposition = 0
+$A0:AAC8 9C FC 0A    STZ $0AFC  [$7E:0AFC]  ; Samus Y subposition = 0 (!)
 $A0:AACB AE A6 18    LDX $18A6  [$7E:18A6]
 $A0:AACE AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:AAD1 8D 4A 18    STA $184A  [$7E:184A]  ;} $184A = [Samus X position]
@@ -10308,5 +10311,5 @@ $A0:F793             dx 0C00, 8707, 01F4, 000F, 0010, 0020, B2, 00, 0066, 0000, 
 
 ;;; $F7D3: Free space ;;;
 {
-$A0:F7D3             fillto $A18000, $FF        ; Free space
+$A0:F7D3             fillto $A18000, $FF
 }

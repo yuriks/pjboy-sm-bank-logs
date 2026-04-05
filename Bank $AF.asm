@@ -1429,5 +1429,5 @@ $AF:E800             db 00,00,09,09,3A,26,75,53,7A,20,99,C4,C1,49,C2,5A,01,00,0F
 
 ;;; $EC00: Free space ;;;
 {
-$AF:EC00             fillto $B08000, $FF    ; Free space
+$AF:EC00             fillto $B08000, $FF
 }

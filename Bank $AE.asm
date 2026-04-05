@@ -1736,5 +1736,5 @@ $AE:F920             db 01,01,0F,0F,1F,1F,3C,3F,3B,3C,77,78,6F,70,EF,F0,06,00,10
 
 ;;; $FD20: Free space ;;;
 {
-$AE:FD20             fillto $AF8000, $FF    ; Free space
+$AE:FD20             fillto $AF8000, $FF
 }

@@ -12390,5 +12390,5 @@ $A6:FEB0             dx 0002, 01FC,00,3125, 01FC,F8,3124
 
 ;;; $FEBC: Free space ;;;
 {
-$A6:FEBC             fillto $A78000, $FF        ; Free space
+$A6:FEBC             fillto $A78000, $FF
 }

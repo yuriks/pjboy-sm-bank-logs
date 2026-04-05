@@ -1566,5 +1566,5 @@ $AB:F400             db 00,00,00,00,00,00,18,18,1D,1D,BF,B7,CE,FB,74,66,00,00,00
 
 ;;; $F800: Free space ;;;
 {
-$AB:F800             fillto $AC8000, $FF    ; Free space
+$AB:F800             fillto $AC8000, $FF
 }

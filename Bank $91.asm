@@ -14935,5 +14935,5 @@ $91:FFED 60          RTS                    ;} Return carry clear
 
 ;;; $FFEE: Free space ;;;
 {
-$91:FFEE             fillto $928000, $FF       ; Free space
+$91:FFEE             fillto $928000, $FF
 }
