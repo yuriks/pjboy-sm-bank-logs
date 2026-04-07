@@ -5189,7 +5189,6 @@ $90:A335             dw 001E
 
 ;;; $A337: Samus movement handler - normal ;;;
 {
-; Cause of elevator blue suit
 $90:A337 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $90:A33A D0 0E       BNE $0E    [$A34A]     ;} If time is frozen: return
 $90:A33C AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
@@ -11714,6 +11713,7 @@ $90:CFF9 60          RTS
 {
 ;;; $CFFA: Trigger shinespark windup ;;;
 {
+; Setting speed boost counter to 4 is done to enable echo generation
 $90:CFFA 08          PHP
 $90:CFFB 8B          PHB
 $90:CFFC 4B          PHK                    ;\

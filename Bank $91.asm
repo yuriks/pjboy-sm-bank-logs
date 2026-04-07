@@ -11887,7 +11887,7 @@ $91:ECB4             db 00, ; 0: Standing
 ;;; $ECD0: Prospective pose change command 2 - stop ;;;
 {
 ; Default: not running / jumping / wall jumping / falling / morph ball / spring ball / grappling
-; or running / normal jumping / morph ball in air and [Samus X momentum] = 0.0
+; or running / normal jumping / morph ball in air and [Samus X base speed] = 0.0
 $91:ECD0 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $91:ECD3 22 53 DE 91 JSL $91DE53[$91:DE53]  ; Cancel speed boosting
 $91:ECD7 60          RTS
