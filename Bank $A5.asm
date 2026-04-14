@@ -5604,7 +5604,7 @@ $A5:ED6C 6B          RTL                    ; Return
 
 $A5:ED6D 22 B4 A6 A0 JSL $A0A6B4[$A0:A6B4]  ; Normal enemy shot AI - no death check
 $A5:ED71 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
-$A5:ED74 F0 74       BEQ $74    [$EDEA]     ;} If [enemy flash timer] = 0: go to Spore Spawn reaction
+$A5:ED74 F0 74       BEQ $74    [$EDEA]     ;} If [enemy flash timer] = 0 (if not damaged): go to Spore Spawn reaction
 $A5:ED76 A9 52 EB    LDA #$EB52             ;\
 $A5:ED79 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EB52 (moving)
 $A5:ED7C A0 02 00    LDY #$0002             ; Y = 2
