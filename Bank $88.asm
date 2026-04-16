@@ -8083,13 +8083,13 @@ $88:E335 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - var
 $88:E338 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $88:E33C 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $88:E340 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$88:E343 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$88:E343 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $88:E346 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$88:E349 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$88:E349 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $88:E34C AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$88:E34F 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$88:E34F 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $88:E352 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$88:E355 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$88:E355 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $88:E358 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $88:E35C EE EC 0D    INC $0DEC  [$7E:0DEC]  ; Suit pickup stage = 4
 $88:E35F 38          SEC                    ;\
@@ -8114,13 +8114,13 @@ $88:E376 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - var
 $88:E379 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $88:E37D 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $88:E381 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$88:E384 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$88:E384 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $88:E387 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$88:E38A 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$88:E38A 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $88:E38D AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$88:E390 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$88:E390 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $88:E393 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$88:E396 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$88:E396 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $88:E399 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $88:E39D EE EC 0D    INC $0DEC  [$7E:0DEC]  ; Suit pickup stage = 4
 $88:E3A0 38          SEC                    ;\

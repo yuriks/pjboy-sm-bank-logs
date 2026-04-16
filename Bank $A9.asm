@@ -5635,7 +5635,7 @@ $A9:BD44 60          RTS
 $A9:BD45 A9 50 00    LDA #$0050             ;\
 $A9:BD48 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;|
 $A9:BD4C 0A          ASL A                  ;|
-$A9:BD4D 0A          ASL A                  ;} If [Samus' health] - (320 suit-adjusted damage) <= 20: go to BRANCH_DONE
+$A9:BD4D 0A          ASL A                  ;} If [Samus health] - (320 suit-adjusted damage) <= 20: go to BRANCH_DONE
 $A9:BD4E 69 14 00    ADC #$0014             ;|
 $A9:BD51 CD C2 09    CMP $09C2  [$7E:09C2]  ;|
 $A9:BD54 10 3B       BPL $3B    [$BD91]     ;/
@@ -5646,7 +5646,7 @@ $A9:BD5F 90 25       BCC $25    [$BD86]     ;/
 $A9:BD61 A9 A0 00    LDA #$00A0             ;\
 $A9:BD64 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;|
 $A9:BD68 18          CLC                    ;|
-$A9:BD69 69 14 00    ADC #$0014             ;} If [Samus' health] - (160 suit-adjusted damage) <= 20: go to BRANCH_BLUE_RINGS
+$A9:BD69 69 14 00    ADC #$0014             ;} If [Samus health] - (160 suit-adjusted damage) <= 20: go to BRANCH_BLUE_RINGS
 $A9:BD6C CD C2 09    CMP $09C2  [$7E:09C2]  ;|
 $A9:BD6F 10 0E       BPL $0E    [$BD7F]     ;/
 $A9:BD71 A0 CC 9E    LDY #$9ECC             ; Y = $9ECC (attacking - bomb)

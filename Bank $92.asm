@@ -7793,13 +7793,13 @@ $92:ED52 8D EC 0D    STA $0DEC  [$7E:0DEC]  ; Increment Samus appears fanfare ti
 $92:ED55 80 1F       BRA $1F    [$ED76]     ; Return carry clear
 
 $92:ED57 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$92:ED5A 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$92:ED5A 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $92:ED5D AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$92:ED60 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$92:ED60 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $92:ED63 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$92:ED66 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$92:ED66 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $92:ED69 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$92:ED6C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$92:ED6C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $92:ED6F 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Samus appears fanfare timer = 0
 $92:ED72 AB          PLB
 $92:ED73 28          PLP

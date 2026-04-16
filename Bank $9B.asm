@@ -828,13 +828,13 @@ $9B:B3DF 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - crysta
 $9B:B3E2 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $9B:B3E6 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $9B:B3EA AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$9B:B3ED 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$9B:B3ED 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $9B:B3F0 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$9B:B3F3 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$9B:B3F3 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $9B:B3F6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$9B:B3F9 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$9B:B3F9 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $9B:B3FC AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$9B:B3FF 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$9B:B3FF 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $9B:B402 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $9B:B405 68          PLA
 $9B:B406 8D 96 0A    STA $0A96  [$7E:0A96]  ; Samus animation frame = [A]

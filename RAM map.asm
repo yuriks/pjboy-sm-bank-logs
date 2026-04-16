@@ -1238,11 +1238,11 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0A0C: Samus HUD power bombs
     $0A0E: Previous HUD item index. Used for check to update HUD item highlight
     $0A10: Samus previous pose X direction. Never read. See $0A22
-    $0A11: Samus previous movement type. Used only for an x-ray and sound effect check. See $0A23. TODO: research and rename
+    $0A11: Samus previous movement type. Used only for an x-ray ($91:E16D) and sound effect check ($90:F576). See $0A23. Updated at the end of Samus current state handler
     $0A12: Samus previous health. Used to check to make hurt sound and flash.
     $0A14: Backup of controller 1 input ($8B) during demo (actual hardware buttons, not game generated demo input)
     $0A16: Backup of newly pressed controller 1 input ($8F) during demo (actual hardware buttons, not game generated demo input)
-    $0A18: Cleared in a few places in bank $91, never read
+    $0A18: Cleared in a few places in bank $91. Never read
     $0A1A: Unused
     $0A1C: Samus pose. See "Pose definitions.asm"
     {
@@ -1539,12 +1539,12 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         1Ah: Grabbed by Draygon
         1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
     }
-    $0A20: Samus previous pose
-    $0A22: Samus previous pose X direction
-    $0A23: Samus previous movement type
-    $0A24: Samus last different pose
-    $0A26: Samus last different pose X direction
-    $0A27: Samus last different pose movement type
+    $0A20: Samus old pose.                 Updated when pose is set
+    $0A22: Samus old pose X direction.     Updated when pose is set
+    $0A23: Samus old movement type.        Updated when pose is set
+    $0A24: Samus old old pose.             Updated when pose is set. Never read
+    $0A26: Samus old old pose X direction. Updated when pose is set. Never read
+    $0A27: Samus old old movement type.    Updated when pose is set. Used only for the wall jump check ($90:9D35) and some unused code $91:80BE
     $0A28: Prospective pose due to player input. Set according to transition table or solid vertical collision
     $0A2A: Special prospective pose due to interaction. Set according to grapple, bomb jump, knockback, or shinespark windup
     $0A2C: Super special prospective pose due to action finish. Set according to animation finish, shinespark crash finish, grapple finish, or knockback finish

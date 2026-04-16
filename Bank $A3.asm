@@ -339,7 +339,7 @@ $A3:89AB 6B          RTL
 ;; Parameters:
 ;;     X: Enemy index
 
-; This subroutine assumes [Samus' Y position] >= [enemy Y position]
+; This subroutine assumes [Samus Y position] >= [enemy Y position]
 ; If this is not the case, then due to the unsigned nature of division,
 ; the resulting enemy velocity will be some large value (~AAh) that makes the metaree shoot off-screen in an instant and/or hit the ground from many tiles away
 $A3:89AC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\

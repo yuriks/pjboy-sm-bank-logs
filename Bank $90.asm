@@ -4801,10 +4801,10 @@ $90:9D35 08          PHP
 $90:9D36 C2 30       REP #$30
 $90:9D38 AD 27 0A    LDA $0A27  [$7E:0A27]  ;\
 $90:9D3B 29 FF 00    AND #$00FF             ;|
-$90:9D3E C9 03 00    CMP #$0003             ;} If [Samus last different pose movement type] != spin jumping:
+$90:9D3E C9 03 00    CMP #$0003             ;} If [Samus old old pose movement type] != spin jumping:
 $90:9D41 F0 05       BEQ $05    [$9D48]     ;/
 $90:9D43 C9 14 00    CMP #$0014             ;\
-$90:9D46 D0 2F       BNE $2F    [$9D77]     ;} If [Samus last different pose movement type] != wall jumping: return
+$90:9D46 D0 2F       BNE $2F    [$9D77]     ;} If [Samus old old pose movement type] != wall jumping: return
 
 $90:9D48 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:9D4B C9 81 00    CMP #$0081             ;|
@@ -12487,13 +12487,13 @@ $90:D60E 29 FF 00    AND #$00FF             ;|
 $90:D611 C9 1B 00    CMP #$001B             ;} If [Samus movement type] != crystal flash: return
 $90:D614 D0 D4       BNE $D4    [$D5EA]     ;/
 $90:D616 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$90:D619 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$90:D619 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $90:D61C AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$90:D61F 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$90:D61F 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $90:D622 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:D625 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$90:D625 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $90:D628 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:D62B 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:D62B 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $90:D62E A9 78 D6    LDA #$D678             ;\
 $90:D631 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D678 (crystal flash - start)
 $90:D634 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
@@ -14219,13 +14219,13 @@ $90:E144 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - knockb
 $90:E147 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:E14B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E14F AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$90:E152 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$90:E152 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $90:E155 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$90:E158 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$90:E158 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $90:E15B AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:E15E 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$90:E15E 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $90:E161 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:E164 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:E164 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $90:E167 A9 15 00    LDA #$0015             ;\
 $90:E16A 38          SEC                    ;|
 $90:E16B ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
@@ -14362,13 +14362,13 @@ $90:E268 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Draygon-escape button counter = 0
 $90:E26B 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; Draygon-escape previous d-pad input = 0
 $90:E26E 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0
 $90:E271 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$90:E274 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$90:E274 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $90:E277 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$90:E27A 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$90:E27A 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $90:E27D AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:E280 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$90:E280 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $90:E283 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:E286 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:E286 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $90:E289 A9 FF FF    LDA #$FFFF             ;\
 $90:E28C 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Prospective pose = FFFFh
 $90:E28F 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ; Special prospective pose = FFFFh
@@ -14446,13 +14446,13 @@ $90:E302 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 $90:E305 A9 0E E9    LDA #$E90E             ;\
 $90:E308 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $90:E30B AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$90:E30E 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$90:E30E 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $90:E311 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$90:E314 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$90:E314 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $90:E317 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:E31A 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$90:E31A 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $90:E31D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:E320 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:E320 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $90:E323 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:E326 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:E329 A9 FF FF    LDA #$FFFF             ;\
@@ -15821,7 +15821,7 @@ $90:EB26 EB          XBA                    ;|
 $90:EB27 29 00 FF    AND #$FF00             ;} $0DFA <<= 8 (never read meaningfully)
 $90:EB2A 8D FA 0D    STA $0DFA  [$7E:0DFA]  ;/
 $90:EB2D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:EB30 8D 10 0A    STA $0A10  [$7E:0A10]  ;} Samus' previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:EB30 8D 10 0A    STA $0A10  [$7E:0A10]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
 $90:EB33 28          PLP
 $90:EB34 60          RTS
 }
@@ -16092,7 +16092,7 @@ $90:EC88 BF 2F B6 91 LDA $91B62F,x[$91:B8CF];|
 $90:EC8C 29 FF 00    AND #$00FF             ;|
 $90:EC8F 85 12       STA $12    [$7E:0012]  ;|
 $90:EC91 AD 20 0A    LDA $0A20  [$7E:0A20]  ;|
-$90:EC94 0A          ASL A                  ;} $12 = (Samus previous pose Y radius) - (Samus pose Y radius)
+$90:EC94 0A          ASL A                  ;} $12 = (Samus old pose Y radius) - (Samus pose Y radius)
 $90:EC95 0A          ASL A                  ;|
 $90:EC96 0A          ASL A                  ;|
 $90:EC97 AA          TAX                    ;|
@@ -16741,16 +16741,16 @@ $90:F0AE             dw F109, F117, F125, F152, F19B, F38E, F1AA, F1C8, F1E9, F2
 }
 
 
-;;; $F0EE: Update Samus previous pose ;;;
+;;; $F0EE: Update Samus old pose ;;;
 {
 $90:F0EE AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
-$90:F0F1 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
+$90:F0F1 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus old old pose = [Samus old pose]
 $90:F0F4 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
-$90:F0F7 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus last different pose X direction / movement type = [Samus previous pose X direction / movement type]
+$90:F0F7 8D 26 0A    STA $0A26  [$7E:0A26]  ;} Samus old old pose X direction / movement type = [Samus old pose X direction / movement type]
 $90:F0FA AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:F0FD 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
+$90:F0FD 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
 $90:F100 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:F103 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
+$90:F103 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
 $90:F106 60          RTS
 }
 
@@ -16883,7 +16883,7 @@ $90:F188 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 $90:F18B 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F18E 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F192 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$90:F196 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
+$90:F196 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus old pose
 $90:F199 38          SEC                    ;\
 $90:F19A 60          RTS                    ;} Return carry set
 }
@@ -16978,11 +16978,11 @@ $90:F206 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F20A A9 52 EB    LDA #$EB52             ;\
 $90:F20D 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $90:F210 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$90:F213 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
-$90:F216 8D 24 0A    STA $0A24  [$7E:0A24]  ; Samus last different pose = [Samus pose]
+$90:F213 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus old pose = [Samus pose]
+$90:F216 8D 24 0A    STA $0A24  [$7E:0A24]  ; Samus old old pose = [Samus pose]
 $90:F219 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
-$90:F21C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$90:F21F 8D 26 0A    STA $0A26  [$7E:0A26]  ; Samus last different pose X direction / movement type = [Samus pose X direction / Samus movement type]
+$90:F21C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus old pose X direction / movement type = [Samus pose X direction / movement type]
+$90:F21F 8D 26 0A    STA $0A26  [$7E:0A26]  ; Samus old old pose X direction / movement type = [Samus pose X direction / Samus movement type]
 $90:F222 9C FA 0A    STZ $0AFA  [$7E:0AFA]  ; Samus Y position = 0
 $90:F225 A0 87 A3    LDY #$A387             ;\
 $90:F228 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator pad enemy projectile
@@ -17200,7 +17200,7 @@ $90:F30F 60          RTS                    ;} Return carry set
 ; Called by:
 ;     $91:D4E4: Varia suit pick up
 ;     $91:D5BA: Gravity suit pick up
-$90:F310 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
+$90:F310 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus old pose
 $90:F313 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F316 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear flare animation state
 $90:F319 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
@@ -17319,7 +17319,7 @@ $90:F397 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - knockb
 $90:F39A 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F39D 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F3A1 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$90:F3A5 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
+$90:F3A5 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus old pose
 $90:F3A8 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F3AB 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear charge beam animation state
 $90:F3AE 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
