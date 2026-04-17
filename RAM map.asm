@@ -490,10 +490,11 @@ $0607: Earthquake sound effect index
 $0609: Earthquake sound effect timer. Earthquake sound effect disabled if negative. Used with rising lava/acid and Tourian entrance reveal FX
 $060B:
 {
+    Botwoon's spit enemy projectile angle parameter in $86:EBC6 / $B3:9EE0/9F34
+    Bit index of Samus map co-ordinate in $90:AA43
     Number of remaining enemy spritemap entries in $A0:944A/9A5A/9B7F/9D23
-    Loop counter in enemy death item drop routines
-    Botwoon's spit enemy projectile angle parameter
-    ; Other stuff. TODO
+    Number of drops in enemy death item drop routines
+    Number of colours in Draygon hurt AI, reflec / blue Brinstar face block enemy graphics drawn hook
 }
 $060D:
 {
@@ -1237,8 +1238,8 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0A0A: Samus HUD supers missiles
     $0A0C: Samus HUD power bombs
     $0A0E: Previous HUD item index. Used for check to update HUD item highlight
-    $0A10: Samus previous pose X direction. Never read. See $0A22
-    $0A11: Samus previous movement type. Used only for an x-ray ($91:E16D) and sound effect check ($90:F576). See $0A23. Updated at the end of Samus current state handler
+    $0A10: Samus previous pose X direction. Updated at the end of Samus current state handler. Never read. See $0A22
+    $0A11: Samus previous movement type.    Updated at the end of Samus current state handler. Used only for an x-ray ($91:E16D) and sound effect check ($90:F576). See $0A23
     $0A12: Samus previous health. Used to check to make hurt sound and flash.
     $0A14: Backup of controller 1 input ($8B) during demo (actual hardware buttons, not game generated demo input)
     $0A16: Backup of newly pressed controller 1 input ($8F) during demo (actual hardware buttons, not game generated demo input)
@@ -1548,7 +1549,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0A28: Prospective pose due to player input. Set according to transition table or solid vertical collision
     $0A2A: Special prospective pose due to interaction. Set according to grapple, bomb jump, knockback, or shinespark windup
     $0A2C: Super special prospective pose due to action finish. Set according to animation finish, shinespark crash finish, grapple finish, or knockback finish
-    $0A2E: Prospective pose change command
+    $0A2E: Prospective pose change command. See "Samus.asm"
     {
         0: None
         1: Decelerate
@@ -1558,7 +1559,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         7: Start transition animation (crouching/standing/morphing/unmorphing)
         8: Kill run speed
     }
-    $0A30: Special prospective pose change command
+    $0A30: Special prospective pose change command. See "Samus.asm"
     {
         0: None
         1: Start knockback
@@ -1568,7 +1569,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         9: Connecting grapple - swinging
         Ah: Connecting grapple - stuck in place
     }
-    $0A32: Super special prospective pose change command
+    $0A32: Super special prospective pose change command. See "Samus.asm"
     {
         0: None
         1: Knockback finished
@@ -1585,27 +1586,28 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
     $0A3C: Space to move Samus down (due to blocks)      in $91:FDAE (called if pose is changed to [$0A2A] or [$0A28])
     $0A3E: Space to move Samus up   (due to solid enemy) in $91:FDAE (called if pose is changed to [$0A2A] or [$0A28])
     $0A40: Space to move Samus down (due to solid enemy) in $91:FDAE (called if pose is changed to [$0A2A] or [$0A28])
-    $0A42: Samus current state handler. Sets Samus' radius, runs pose input handler, determines suit palette index and Y acceleration, runs Samus block inside handling, handle projectiles
+    $0A42: Samus current state handler. Bank $90. See "Samus.asm"
     {
-        $E695: Normal
-        $E6C9: Demo
-        $E713: Samus is locked
+        $E695: Normal.          Sets Samus' radius, runs pose input handler, determines suit palette index and Y acceleration, runs Samus block inside handling, handle projectiles
+        $E6C9: Demo.            Normal, but sets controller input backup variables
+        $E713: Samus is locked. Only handles projectiles, excludes HUD specific behaviour
         $E8CD: RTL
     }
-    $0A44: Samus new state handler. Move and animate Samus, then process hit interruption, then handle pose change. Handle Samus' palette, periodic damage, pause check and low health check
+    ; Between execution of [$0A42] and [$0A44] is Samus / projectile interaction handler and main enemy routine
+    $0A44: Samus new state handler. Bank $90. See "Samus.asm"
     {
-        $E725: Normal. Contains demo recorder
-        $E7D2: Debug. Do nothing until controller 2 presses A
-        $E7F5: Title demo
-        $E833: Intro demo
-        $E86A: Samus appearance
-        $E8AA: Ceres
-        $E8CD: RTL. Generic RTL, not checked for by anything
-        $E8D6: RTL. Samus is locked into (map/energy/missile) station. Checked for by $90:F29E (unlock Samus from map station)
-        $E8D9: RTL. Samus is being drained (rainbow beam). Checked for by $90:F2E0 (Samus command 10h: unlock Samus from reserve tank) / $90:F411 (Samus command 1Bh: lock Samus for reserve tank) / $91:D8A5 (handle misc. Samus palette)
-        $E8DC: Samus is locked
-        $E8EC: Riding elevator
-        $E902: Entering/exiting gunship
+        $E725: Normal.                   Move and animate Samus, then process hit interruption, then handle pose change. Handle Samus' palette, periodic damage, pause check and low health check
+        $E7D2: Debug.                    Do nothing until controller 2 presses A
+        $E7F5: Title demo.               Normal, but without hacks, periodic damage, pause or low health checks, and restores input variables
+        $E833: Intro demo.               Title demo, but without updating mini-map
+        $E86A: Samus appearance.         Set Samus' radius, update mini-map, animate Samus, play fanfare
+        $E8AA: Ceres.                    Normal, but also checks for time up
+        $E8CD: RTL.                      Generic RTL, not checked for by anything
+        $E8D6: RTL.                      Samus is locked into (map/energy/missile) station. Checked for by $90:F29E (unlock Samus from map station)
+        $E8D9: RTL.                      Samus is being drained (rainbow beam). Checked for by $90:F2E0 (Samus command 10h: unlock Samus from reserve tank) / $90:F411 (Samus command 1Bh: lock Samus for reserve tank) / $91:D8A5 (handle misc. Samus palette)
+        $E8DC: Samus is locked.          Only updates mini-map
+        $E8EC: Riding elevator.          Move and animate Samus, and update mini-map
+        $E902: Entering/exiting gunship. Only does low health check
     }
     $0A46: If v & 2 != 0, enables $94:87F4 (Samus horizontal slope collision). Always 3. Set to 0/1 by unused solid vertical collision code ($91:F2F0) if collided with solid enemy and previous movement type = 9 (unused)
     $0A48: Samus hurt flash counter
@@ -1654,7 +1656,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         $F04B: Unused. Shinespark beam related?
         $F072: Unused. Shinespark beam related?
     }
-    $0A5A: Timer / Samus hack handler. Bank $90. Called by $0A44 handler $E725
+    $0A5A: Timer / Samus hack handler. Bank $90. Called by $0A44 handler $E725. See "Samus.asm"
     {
         $E09B: Handle letting Samus up from being drained
         $E0C5: Handle letting Samus fail to stand up from being drained

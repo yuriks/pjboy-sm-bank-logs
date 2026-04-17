@@ -13894,7 +13894,7 @@ $90:DF88 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 $90:DF8B 9C 38 0B    STZ $0B38  [$7E:0B38]  ; $0B38 = 0 (never read)
 $90:DF8E 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:DF91 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:DF94 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
+$90:DF94 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with old pose
 
 $90:DF98 60          RTS
 }
@@ -16078,9 +16078,9 @@ $90:EC7D 6B          RTL
 }
 
 
-;;; $EC7E: Align Samus bottom position with previous pose ;;;
+;;; $EC7E: Align Samus bottom position with old pose ;;;
 {
-; Move Samus to align Samus bottom position to be the same as with previous pose
+; Move Samus to align Samus bottom position to be the same as with old pose
 $90:EC7E 08          PHP
 $90:EC7F C2 30       REP #$30
 $90:EC81 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\

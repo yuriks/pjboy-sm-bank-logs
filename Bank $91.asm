@@ -12166,7 +12166,7 @@ $91:EE6F 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 $91:EE72 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $91:EE75 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
 $91:EE78 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$91:EE7B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
+$91:EE7B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with old pose
 $91:EE7F 60          RTS
 }
 
@@ -12894,7 +12894,7 @@ $91:F2EF 60          RTS
 }
 
 
-;;; $F2F0: Solid vertical collision - [Samus solid vertical collision result] = 6 ;;;
+;;; $F2F0: Solid vertical collision - [Samus solid vertical collision result] = 6 (unused) ;;;
 {
 ; This is the only code in the game that sets $0A46 to a non-3 value
 ; Code that checks this variable only cares if the 2 bit is set or not,
@@ -12939,7 +12939,7 @@ $91:F32F A9 01 00    LDA #$0001             ;\
 $91:F332 8D 22 0B    STA $0B22  [$7E:0B22]  ;} Samus is falling flag = 1
 $91:F335 A9 02 00    LDA #$0002             ;\
 $91:F338 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = down
-$91:F33B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
+$91:F33B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with old pose
 $91:F33F AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
 $91:F342 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $91:F345 F0 06       BEQ $06    [$F34D]     ;/
@@ -12952,7 +12952,7 @@ $91:F34D 60          RTS
 
 ;;; $F34E: Super special prospective pose change command 2 - shinespark finished ;;;
 {
-$91:F34E 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
+$91:F34E 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with old pose
 $91:F352 A9 37 A3    LDA #$A337             ;\
 $91:F355 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $91:F358 AD 98 09    LDA $0998  [$7E:0998]  ;\
