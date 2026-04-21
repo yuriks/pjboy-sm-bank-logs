@@ -2432,7 +2432,7 @@ $80:8F2F A9 08 00    LDA #$0008             ;\
 $80:8F32 8D 86 06    STA $0686  [$7E:0686]  ;} Sound handler downtime = 8
 $80:8F35 AE 3B 06    LDX $063B  [$7E:063B]  ;\
 $80:8F38 9E 19 06    STZ $0619,x[$7E:061B]  ;} Music queue entries + [music queue start index] = 0
-$80:8F3B 9E 29 06    STZ $0629,x[$7E:062B]  ; Music queue timer + [music queue start index] = 0
+$80:8F3B 9E 29 06    STZ $0629,x[$7E:062B]  ; Music queue timers + [music queue start index] = 0
 $80:8F3E E8          INX                    ;\
 $80:8F3F E8          INX                    ;|
 $80:8F40 8A          TXA                    ;} Music queue start index = ([music queue start index] + 2) % 10h
