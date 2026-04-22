@@ -12512,7 +12512,7 @@ $90:D654 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} Pointless writes
 $90:D657 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ;/
 $90:D65A A9 07 00    LDA #$0007             ;\
 $90:D65D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 7 (crystal flash)
-$90:D660 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
+$90:D660 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $90:D663 A9 01 00    LDA #$0001             ;\
 $90:D666 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = 1
 $90:D669 8D F2 0D    STA $0DF2  [$7E:0DF2]  ; $0DF2 = 1 (unused)
