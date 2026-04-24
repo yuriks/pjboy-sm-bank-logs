@@ -8526,6 +8526,22 @@ $A8:DCCB             dw 0070 ; X threshold to hide
 
 ;;; $DCCD: Initialisation AI - enemy $E9BF (alcoon) ;;;
 {
+; To calculate landing Y position, this routine simulates a jump and landing
+; It does so by setting an initial Y velocity and calculating Y movement in loop until velocity reaches zero
+; Then from the peak of the jump, it runs Y movement with collision detection in a loop until a collision is detected
+
+; Displacement travelled until velocity reaches zero is given by
+;     u / 2 - u² / (2 a)
+; where
+;     u: Initial velocity
+;     a: Acceleration
+
+; For alcoon (u = -Ch, a = 0.8h), this is -96h
+; So the first loop can be replaced by a single movement upwards of 96h px
+
+; The second loop can be replaced by a single call to collision detection with distance [room height in scrolls] * 100h
+; (or distance 96h if it's guaranteed to be spawned under a solid block)
+
 $A8:DCCD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DCD0 A9 00 00    LDA #$0000             ;\
 $A8:DCD3 9F 08 78 7E STA $7E7808,x[$7E:78C8];} Enemy step counter = 0
@@ -8638,7 +8654,7 @@ $A8:DD9A A0 4B DC    LDY #$DC4B             ; Enemy instruction list pointer = $
 $A8:DD9D A9 FE FF    LDA #$FFFE             ; Enemy X velocity = -2
 $A8:DDA0 28          PLP                    ;\
 $A8:DDA1 30 06       BMI $06    [$DDA9]     ;} If [Samus X position] >= [enemy X position]:
-$A8:DDA3 A0 BB DC    LDY #$DCBB             ; Enemy instruction list pointer = $DCBB (airborne - looking up)
+$A8:DDA3 A0 BB DC    LDY #$DCBB             ; Enemy instruction list pointer = $DCBB (facing right - airborne - looking up)
 $A8:DDA6 A9 02 00    LDA #$0002             ; Enemy X velocity = 2
 
 $A8:DDA9 9D AE 0F    STA $0FAE,x[$7E:10EE]
