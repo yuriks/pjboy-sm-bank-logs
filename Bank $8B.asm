@@ -808,7 +808,7 @@ $8B:8665 60          RTS
 }
 
 
-;;; $8666: Handle fading in ;;;
+;;; $8666: Unused. Handle fading in ;;;
 {
 $8B:8666 22 4D 89 80 JSL $80894D[$80:894D]
 $8B:866A 60          RTS
