@@ -6101,7 +6101,7 @@ $A8:C3EF 6B          RTL                    ; Return
 $A8:C3F0 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy wiggle timer
 $A8:C3F3 F0 02       BEQ $02    [$C3F7]     ;\
 $A8:C3F5 10 27       BPL $27    [$C41E]     ;} If [enemy wiggle timer] <= 0:
-                                            
+
 $A8:C3F7 A9 05 00    LDA #$0005             ;\
 $A8:C3FA 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy wiggle timer = 5
 $A8:C3FD BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
@@ -7993,17 +7993,17 @@ $A8:D885             dw 03FF, 04FF, 05FF, 06FF, 07FF, 08FF, 09FF, 0AFF
 ;                       |     ___ Deceleration interval timer reset value
 ;                       |    |
 $A8:D895             dw 0003,0001,
-                        0004,0001, 
-                        0005,0002, 
-                        0006,0002, 
-                        0007,0002, 
-                        0008,0003, 
-                        0009,0003, 
+                        0004,0001,
+                        0005,0002,
+                        0006,0002,
+                        0007,0002,
+                        0008,0003,
+                        0009,0003,
                         000A,0004,
-                        000B,0004, 
-                        000C,0005, 
-                        000D,0005, 
-                        000E,0006, 
+                        000B,0004,
+                        000C,0005,
+                        000D,0005,
+                        000E,0006,
                         000F,0006
 }
 
@@ -8206,7 +8206,7 @@ $A8:DA3D FA          PLX                    ;/
 $A8:DA3E A5 12       LDA $12    [$7E:0012]  ;\
 $A8:DA40 10 02       BPL $02    [$DA44]     ;} If [$12] < 0:
 $A8:DA42 E6 1A       INC $1A    [$7E:001A]  ; (Moving up flag) = 1
-                                            
+
 $A8:DA44 A5 12       LDA $12    [$7E:0012]  ;\
 $A8:DA46 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
 $A8:DA4A 29 00 FF    AND #$FF00             ;} $16 = |[$12]| / 100h
@@ -8321,7 +8321,7 @@ $A8:DAF5 60          RTS
 ; Actual result is as follows:
 ;     If [$1E].[$1C] = 0.0:
 ;         Return
-;     
+;
 ;     If [$1C] != 0:
 ;         $1E = -[$1E].[$1C]
 ;     Else:
@@ -8429,19 +8429,19 @@ $A8:DC03             dw 0014,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF33,       ; Spawn alcoon fireball with Y velocity index 2
+                        DF33,       ; Spawn alcoon fireball with Y velocity index 2 (horizontal)
                         000A,E09B,
                         000A,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0
+                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0 (angled up)
                         000A,E09B,
                         000A,E027,
                         0009,E047,
                         0010,E06C,
                         0003,E047,
-                        DF39,       ; Spawn alcoon fireball with Y velocity index 4
+                        DF39,       ; Spawn alcoon fireball with Y velocity index 4 (angled down)
                         0028,E09B,
                         DF3F,       ; Start walking
                         0001,E09B
@@ -8482,19 +8482,19 @@ $A8:DC73             dw 0014,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF33,       ; Spawn alcoon fireball with Y velocity index 2
+                        DF33,       ; Spawn alcoon fireball with Y velocity index 2 (horizontal)
                         000A,E1D4,
                         000A,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0
+                        DF1C,       ; Spawn alcoon fireball with Y velocity index 0 (angled up)
                         000A,E1D4,
                         000A,E160,
                         0009,E180,
                         0010,E1A5,
                         0003,E180,
-                        DF39,       ; Spawn alcoon fireball with Y velocity index 4
+                        DF39,       ; Spawn alcoon fireball with Y velocity index 4 (angled down)
                         0028,E1D4,
                         DF3F,       ; Start walking
                         0001,E1D4
@@ -8663,7 +8663,7 @@ $A8:DDAD 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A8:DDB0 A9 01 00    LDA #$0001             ;\
 $A8:DDB3 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A8:DDB6 A9 C6 DD    LDA #$DDC6             ;\
-$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DDC6 (emerging - rising)
+$A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $DDC6 (emerging)
 $A8:DDBC A9 5E 00    LDA #$005E             ;\
 $A8:DDBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (alcoon spawns)
 
@@ -9441,7 +9441,7 @@ $A8:E6B3 20 F6 E6    JSR $E6F6  [$A8:E6F6]  ; Set Wrecked Ship spark function ti
 $A8:E6B6 6B          RTL
 }
 
- 
+
 ;;; $E6B7: Wrecked Ship spark function - intermittent - active ;;;
 {
 ;; Parameters:
