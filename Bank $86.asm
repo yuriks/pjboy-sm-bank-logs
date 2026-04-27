@@ -25,13 +25,13 @@ $86:8015 6B          RTL
 $86:8016 08          PHP
 $86:8017 C2 30       REP #$30
 $86:8019 DA          PHX
-$86:801A A2 22 00    LDX #$0022             ; Y = 22h (enemy projectile index)
+$86:801A A2 22 00    LDX #$0022             ; X = 22h (enemy projectile index)
 
 ; LOOP
 $86:801D 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
 $86:8020 CA          DEX                    ;\
-$86:8021 CA          DEX                    ;} Y -= 2
-$86:8022 10 F9       BPL $F9    [$801D]     ; If [Y] >= 0: go to LOOP
+$86:8021 CA          DEX                    ;} X -= 2
+$86:8022 10 F9       BPL $F9    [$801D]     ; If [X] >= 0: go to LOOP
 $86:8024 FA          PLX
 $86:8025 28          PLP
 $86:8026 6B          RTL
