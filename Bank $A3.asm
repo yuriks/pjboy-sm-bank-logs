@@ -10439,7 +10439,7 @@ $A3:EFBC 10 03       BPL $03    [$EFC1]     ;|
 $A3:EFBE A0 00 FF    LDY #$FF00             ;|
                                             ;|
 $A3:EFC1 48          PHA                    ;|
-$A3:EFC2 98          TYA                    ;} Enemy X velocity = ([enemy X position] - [Samus X position]) / 8
+$A3:EFC2 98          TYA                    ;} Enemy X velocity = ([enemy X position] - [projectile 0 position]) / 8 <-- bug
 $A3:EFC3 9D AA 0F    STA $0FAA,x[$7E:106A]  ;|
 $A3:EFC6 68          PLA                    ;|
 $A3:EFC7 0A          ASL A                  ;|
@@ -10456,7 +10456,7 @@ $A3:EFD9 10 03       BPL $03    [$EFDE]     ;|
 $A3:EFDB A0 00 FF    LDY #$FF00             ;|
                                             ;|
 $A3:EFDE 48          PHA                    ;|
-$A3:EFDF 98          TYA                    ;} Enemy Y velocity = ([enemy Y position] - [Samus Y position] + 8) / 8
+$A3:EFDF 98          TYA                    ;} Enemy Y velocity = ([enemy Y position] - [projectile 0 position] + 8) / 8 <-- bug
 $A3:EFE0 9D AE 0F    STA $0FAE,x[$7E:106E]  ;|
 $A3:EFE3 68          PLA                    ;|
 $A3:EFE4 0A          ASL A                  ;|
