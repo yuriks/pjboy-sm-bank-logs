@@ -10456,7 +10456,7 @@ $A3:EFD9 10 03       BPL $03    [$EFDE]     ;|
 $A3:EFDB A0 00 FF    LDY #$FF00             ;|
                                             ;|
 $A3:EFDE 48          PHA                    ;|
-$A3:EFDF 98          TYA                    ;} Enemy Y velocity = ([enemy Y position] - [projectile 0 position] + 8) / 8 <-- bug
+$A3:EFDF 98          TYA                    ;} Enemy Y velocity = ([enemy Y position] - [projectile 0 position]) / 8 <-- bug
 $A3:EFE0 9D AE 0F    STA $0FAE,x[$7E:106E]  ;|
 $A3:EFE3 68          PLA                    ;|
 $A3:EFE4 0A          ASL A                  ;|
