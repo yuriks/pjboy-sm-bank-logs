@@ -8,7 +8,7 @@
 ;     $8EB6 - determine which enemies to process
 ;     $9785 - Samus / projectile interaction handler
 ;     $8FD4 - main enemy routine
-;         $9758 - enemy collision handling
+;         $9758 - enemy collision handling (projectiles, bombs, Samus)
 ;         $C26A - process enemy instructions
 ;         $9423 - add enemy to drawing queue
 ;     $A8F0 - Samus / solid enemy collision detection, executed at least twice
