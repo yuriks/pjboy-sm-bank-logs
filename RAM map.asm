@@ -885,9 +885,9 @@ $077C..0997: Main gameplay RAM (according to $82:8593)
     }
     $07A1: Room X co-ordinate (on map)
     $07A3: Room Y co-ordinate (on map)
-    $07A5: Room width in blocks
+    $07A5: Room width in blocks. Range 0..FFh due to use as 8-bit divisor
     $07A7: Room height in blocks
-    $07A9: Room width in scrolls (XBA to get room width in pixels)
+    $07A9: Room width in scrolls (XBA to get room width in pixels). Range 0..Fh due to $07A5
     $07AB: Room height in scrolls (XBA to get room height in pixels)
     $07AD: Up scroller
     $07AF: Down scroller
@@ -3836,7 +3836,7 @@ $7E:C200..C3FF: Target palettes
     $7E:C3E0..FF: Sprite palette 7 - enemies
 }
 $7E:C400: Palette change numerator
-$7E:C402: Palette change denominator
+$7E:C402: Palette change denominator. Range 0..FFh due to use as 8-bit divisor
 $7E:C404: Colour index in palette change routines
 $7E:C406..C5: Power bomb explosion window 2 left HDMA data table
 $7E:C4C6..C505: Unused
