@@ -9865,9 +9865,9 @@ $82:DEF2 F4 00 8F    PEA $8F00              ;\
 $82:DEF5 AB          PLB                    ;} DB = $8F
 $82:DEF6 AB          PLB                    ;/
 $82:DEF7 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
-$82:DEFA BD 03 00    LDA $0003,x[$8F:DF5A]  ;|
-$82:DEFD 29 FF 00    AND #$00FF             ;|
-$82:DF00 0A          ASL A                  ;} X = [$8F:E7A7 + (graphic set) * 2]
+$82:DEFA BD 03 00    LDA $0003,x[$8F:DF5A]  ;} A = [[room state pointer] + 3] (tileset)
+$82:DEFD 29 FF 00    AND #$00FF             ;/
+$82:DF00 0A          ASL A                  ;} X = [$8F:E7A7 + [A] * 2]
 $82:DF01 A8          TAY                    ;|
 $82:DF02 BE A7 E7    LDX $E7A7,y[$8F:E7C9]  ;/
 $82:DF05 BD 01 00    LDA $0001,x[$8F:E73C]  ;\
@@ -11121,7 +11121,7 @@ $82:E78B AB          PLB                    ;/
 
 ;;; $E78C: Load CRE tiles, tileset tiles and tileset palette ;;;
 {
-$82:E78C 9C 16 0E    STZ $0E16  [$7E:0E16]  ; Elevator properties = 0
+$82:E78C 9C 16 0E    STZ $0E16  [$7E:0E16]  ; Elevator properties = 0 (ok??)
 $82:E78F A9 80 00    LDA #$0080             ;\
 $82:E792 8D 15 21    STA $2115              ;|
 $82:E795 A9 00 B9    LDA #$B900             ;|

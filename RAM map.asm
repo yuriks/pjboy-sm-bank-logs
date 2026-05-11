@@ -903,8 +903,8 @@ $077C..0997: Main gameplay RAM (according to $82:8593)
     $07B9: Level data size
     $07BB: Room state pointer
     $07BD: Level data pointer
-    $07C0: Tileset tile table pointer
-    $07C3: Tileset tiles pointer
+    $07C0: Tileset tile table pointer. Tile table is decompressed to $7E:A800 (or $7E:A800 if in Ceres) during door transition ($82:EA73) or gameplay start ($82:E7D3)
+    $07C3: Tileset tiles pointer. Tiles and palette are decompressed to $7E:2000 during door transition ($82:E3C0) or gameplay start/resume ($82:E78C)
     $07C6: Tileset palette pointer
     $07C9: Room music track index
     $07CB: Room music data index

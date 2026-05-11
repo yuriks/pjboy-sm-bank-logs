@@ -8482,7 +8482,7 @@ $8F:E68A             dw 0000, ; 0: Non-closing door facing right
 
 ;;; $E6A2: Tileset table ;;;
 {
-;                        _____________________ Tile table pointer
+;                        _____________________ Tile table pointer (see $7E:A000 in RAM map)
 ;                       |        _____________ Tiles pointer
 ;                       |       |        _____ Palette pointer
 ;                       |       |       |
@@ -8520,6 +8520,7 @@ $8F:E79E             dl C2960D, BF9DEA, C2BA2C ; 1Ch: Draygon's room
 
 ;;; $E7A7: Tileset pointers ;;;
 {
+; Indexed by state header tileset
 $8F:E7A7             dw E6A2, E6AB, E6B4, E6BD, E6C6, E6CF, E6D8, E6E1, E6EA, E6F3, E6FC, E705, E70E, E717, E720, E729,
                         E732, E73B, E744, E74D, E756, E75F, E768, E771, E77A, E783, E78C, E795, E79E
 }
