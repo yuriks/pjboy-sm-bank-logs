@@ -2576,15 +2576,15 @@ $0E7A: Stack pointer for enemy tile data loading data
 $0E7C: Enemy tiles VRAM update source address. Bank $7E
 $0E7E: Enemy tiles VRAM update destination address
 $0E80..83: Unused
-$0E84..0F67: Enemy drawing queues (list of enemy indices), increasing priority
+$0E84..0F67: Enemy drawing queues (list of enemy indices), decreasing priority. See "drawing order.txt" or "Enemy RAM.asm"
 {
-    $0E84..A3: Layer 0 (enemies from here onwards are drawn over sprite objects, projectile explosions, and low priority enemy projectiles)
+    $0E84..A3: Layer 0
     $0EA4: Layer 1
     $0EA6..C5: Layer 2
-    $0EC6: Layer 3 (enemies from here onwards are drawn over Samus and projectiles)
+    $0EC6: Layer 3
     $0EC8..E7: Layer 4
     $0EE8..0F27: Layer 5
-    $0F28..47: Layer 6 (enemies from here onwards are drawn over high priority enemy projectiles)
+    $0F28..47: Layer 6
     $0F48..67: Layer 7
 }
 $0F68..77: Sizes of enemy drawing queues
