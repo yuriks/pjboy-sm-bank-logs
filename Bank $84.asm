@@ -1385,10 +1385,10 @@ $84:88F2 60          RTS
 ;; Returns:
 ;;     Y: Pointer to next instruction
 $84:88F3 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
-$84:88F6 19 00 00    ORA $0000,y[$84:E416]  ;} Equipped equipment |= [[Y]]
+$84:88F6 19 00 00    ORA $0000,y[$84:E416]  ;} Equipped items |= [[Y]]
 $84:88F9 8D A2 09    STA $09A2  [$7E:09A2]  ;/
 $84:88FC AD A4 09    LDA $09A4  [$7E:09A4]  ;\
-$84:88FF 19 00 00    ORA $0000,y[$84:E416]  ;} Collected equipment |= [[Y]]
+$84:88FF 19 00 00    ORA $0000,y[$84:E416]  ;} Collected items |= [[Y]]
 $84:8902 8D A4 09    STA $09A4  [$7E:09A4]  ;/
 $84:8905 A9 68 01    LDA #$0168             ;\
 $84:8908 22 18 E1 82 JSL $82E118[$82:E118]  ;} Play room music track after 6 seconds
@@ -1409,10 +1409,10 @@ $84:8919 60          RTS
 ;; Returns:
 ;;     Y: Pointer to next instruction
 $84:891A AD A2 09    LDA $09A2  [$7E:09A2]  ;\
-$84:891D 19 00 00    ORA $0000,y[$84:E81E]  ;} Equipped equipment |= [[Y]]
+$84:891D 19 00 00    ORA $0000,y[$84:E81E]  ;} Equipped items |= [[Y]]
 $84:8920 8D A2 09    STA $09A2  [$7E:09A2]  ;/
 $84:8923 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
-$84:8926 19 00 00    ORA $0000,y[$84:E81E]  ;} Collected equipment |= [[Y]]
+$84:8926 19 00 00    ORA $0000,y[$84:E81E]  ;} Collected items |= [[Y]]
 $84:8929 8D A4 09    STA $09A4  [$7E:09A4]  ;/
 $84:892C 22 2E 9A 80 JSL $809A2E[$80:9A2E]  ; Add grapple to HUD tilemap
 $84:8930 A9 68 01    LDA #$0168             ;\
@@ -1432,10 +1432,10 @@ $84:8940 60          RTS
 ;; Returns:
 ;;     Y: Pointer to next instruction
 $84:8941 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
-$84:8944 19 00 00    ORA $0000,y[$84:E7A9]  ;} Equipped equipment |= [[Y]]
+$84:8944 19 00 00    ORA $0000,y[$84:E7A9]  ;} Equipped items |= [[Y]]
 $84:8947 8D A2 09    STA $09A2  [$7E:09A2]  ;/
 $84:894A AD A4 09    LDA $09A4  [$7E:09A4]  ;\
-$84:894D 19 00 00    ORA $0000,y[$84:E7A9]  ;} Collected equipment |= [[Y]]
+$84:894D 19 00 00    ORA $0000,y[$84:E7A9]  ;} Collected items |= [[Y]]
 $84:8950 8D A4 09    STA $09A4  [$7E:09A4]  ;/
 $84:8953 22 3E 9A 80 JSL $809A3E[$80:9A3E]  ; Add x-ray to HUD tilemap
 $84:8957 A9 68 01    LDA #$0168             ;\
@@ -1477,10 +1477,10 @@ $84:8985 60          RTS
 ;;     Y: Pointer to next instruction
 $84:8986 AD D4 09    LDA $09D4  [$7E:09D4]  ;\
 $84:8989 18          CLC                    ;|
-$84:898A 79 00 00    ADC $0000,y[$84:E909]  ;} Samus reserve energy += [[Y]]
+$84:898A 79 00 00    ADC $0000,y[$84:E909]  ;} Samus max reserve health += [[Y]]
 $84:898D 8D D4 09    STA $09D4  [$7E:09D4]  ;/
 $84:8990 AD C0 09    LDA $09C0  [$7E:09C0]  ;\
-$84:8993 D0 03       BNE $03    [$8998]     ;} If first reserve tank:
+$84:8993 D0 03       BNE $03    [$8998]     ;} If [reserve health mode] = not obtained:
 $84:8995 EE C0 09    INC $09C0  [$7E:09C0]  ; Reserve health mode = auto
 
 $84:8998 A9 68 01    LDA #$0168             ;\

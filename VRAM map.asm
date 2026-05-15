@@ -42,7 +42,7 @@ Gameplay
             }
         }
     }
-    $4000..47FF: BG3 tiles. (2-bit). Standard BG3 tiles are $9A:B200..C1FF
+    $4000..47FF: BG3 tiles (2-bit). Standard BG3 tiles are $9A:B200..C1FF
     {
         $4000..4F: HUD digits. "1".."9", "0" (one tile per character)
         $4050..57: HUD '%'
@@ -110,8 +110,8 @@ Gameplay
     $5000..57FF: BG1 tilemap
     $5800..5FFF: BG3 tilemap
     {
-        $5800..587F: HUD (4 rows, first row is blank tiles)
-        $5880..5BDF: FX padding (1Bh rows of transparent tiles)
+        $5800..587F: HUD. 4 rows, first row is blank tiles
+        $5880..5BDF: FX padding. 1Bh rows of blank tiles. Uses palette blend background colour
         {
             $5880..5B9F: Region displayed on screen (under normal circumstance)
             $5BA0..BF: Never displayed

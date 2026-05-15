@@ -2904,7 +2904,7 @@ $196E: FX type
     2Ch: Haze (used in Ceres via room setup ASM)
 }
 $1970: FX Y suboffset ([$195C] = [$1976] + [$1970])
-$1972: FX Y offset ([$195E] = [$1978] + [$1972])
+$1972: FX Y offset ([$195E] = [$1978] + [$1972]). Used for tide ($88:B2C9)
 $1974: Tide phase (units of pi/8000h radians)
 $1976: FX base Y subposition
 $1978: FX base Y position. Same as lava/acid Y position for lava/acid

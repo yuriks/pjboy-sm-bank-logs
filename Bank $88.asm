@@ -5227,7 +5227,7 @@ $88:B2DA 29 FF 00    AND #$00FF             ;|
 $88:B2DD 0A          ASL A                  ;|
 $88:B2DE AA          TAX                    ;|
 $88:B2DF BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];|
-$88:B2E3 0A          ASL A                  ;} FX Y offset = 8 * -cos([tide phase] / 100h * pi / 80h)
+$88:B2E3 0A          ASL A                  ;} FX Y offset = 8 * -cos([tide phase] * pi / 8000h)
 $88:B2E4 0A          ASL A                  ;|
 $88:B2E5 0A          ASL A                  ;|
 $88:B2E6 10 03       BPL $03    [$B2EB]     ;|
@@ -5235,13 +5235,13 @@ $88:B2E8 CE 72 19    DEC $1972  [$7E:1972]  ;|
                                             ;|
 $88:B2EB 8D 71 19    STA $1971  [$7E:1971]  ;/
 $88:B2EE BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];\
-$88:B2F2 10 09       BPL $09    [$B2FD]     ;} If -40h < [tide phase] / 100h < 40h (tide above midpoint):
+$88:B2F2 10 09       BPL $09    [$B2FD]     ;} If [FX Y offset] < 0: (tide above midpoint)
 $88:B2F4 AD 74 19    LDA $1974  [$7E:1974]  ;\
 $88:B2F7 18          CLC                    ;} Tide phase += C0h
 $88:B2F8 69 C0 00    ADC #$00C0             ;/
 $88:B2FB 80 07       BRA $07    [$B304]
 
-$88:B2FD AD 74 19    LDA $1974  [$7E:1974]  ;\ Else (not -40h < [tide phase] / 100h < 40h (tide below midpoint)):
+$88:B2FD AD 74 19    LDA $1974  [$7E:1974]  ;\ Else ([FX Y offset] >= 0): (tide below midpoint)
 $88:B300 18          CLC                    ;} Tide phase += 120h
 $88:B301 69 20 01    ADC #$0120             ;/
 
@@ -5257,7 +5257,7 @@ $88:B314 0A          ASL A                  ;|
 $88:B315 AA          TAX                    ;|
 $88:B316 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];|
 $88:B31A 0A          ASL A                  ;|
-$88:B31B 0A          ASL A                  ;} FX Y offset = 20h * -cos([tide phase] / 100h * pi / 80h)
+$88:B31B 0A          ASL A                  ;} FX Y offset = 20h * -cos([tide phase] * pi / 8000h)
 $88:B31C 0A          ASL A                  ;|
 $88:B31D 0A          ASL A                  ;|
 $88:B31E 0A          ASL A                  ;|
@@ -5266,13 +5266,13 @@ $88:B321 CE 72 19    DEC $1972  [$7E:1972]  ;|
                                             ;|
 $88:B324 8D 71 19    STA $1971  [$7E:1971]  ;/
 $88:B327 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];\
-$88:B32B 10 09       BPL $09    [$B336]     ;} If -40h < [tide phase] / 100h < 40h (tide above midpoint):
+$88:B32B 10 09       BPL $09    [$B336]     ;} If [FX Y offset] < 0: (tide above midpoint)
 $88:B32D AD 74 19    LDA $1974  [$7E:1974]  ;\
 $88:B330 18          CLC                    ;} Tide phase += 80h
 $88:B331 69 80 00    ADC #$0080             ;/
 $88:B334 80 07       BRA $07    [$B33D]
 
-$88:B336 AD 74 19    LDA $1974  [$7E:1974]  ;\ Else (not -40h < [tide phase] / 100h < 40h (tide below midpoint)):
+$88:B336 AD 74 19    LDA $1974  [$7E:1974]  ;\ Else ([FX Y offset] >= 0): (tide below midpoint)
 $88:B339 18          CLC                    ;} Tide phase += E0h
 $88:B33A 69 E0 00    ADC #$00E0             ;/
 
