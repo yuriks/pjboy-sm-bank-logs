@@ -907,6 +907,18 @@ $077C..0997: Main gameplay RAM (according to $82:8593)
     $07C3: Tileset tiles pointer. Tiles and palette are decompressed to $7E:2000 during door transition ($82:E3C0) or gameplay start/resume ($82:E78C)
     $07C6: Tileset palette pointer
     $07C9: Room music track index
+    {
+        0: No change
+        1: Samus fanfare
+        2: Item fanfare
+        3: Elevator
+        4: Pre-statue hall (also Ridley pre-fight and game over)
+        5: Song 0
+        6: Song 1
+        7: Song 2
+        8: Song 3
+        80h: Stop music
+    }
     $07CB: Room music data index
     $07CD: FX pointer
     $07CF: Enemy population pointer
