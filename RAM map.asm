@@ -3830,8 +3830,8 @@ $7E:C000..C1FF: Palettes, copied straight to CGRAM. First colour ($7E:C000) is m
 }
 $7E:C200..C3FF: Target palettes
 {
-    $7E:C200..1F: BG palette 0 - SCE/CRE
-    $7E:C220..3F: BG palette 1 - SCE/CRE
+    $7E:C200..1F: BG palette 0 - SCE/CRE / BG3 palettes 0..3
+    $7E:C220..3F: BG palette 1 - SCE/CRE / BG3 palettes 4..7
     $7E:C240..5F: BG palette 2 - SCE/CRE
     $7E:C260..7F: BG palette 3 - SCE/CRE
     $7E:C280..9F: BG palette 4 - SCE
