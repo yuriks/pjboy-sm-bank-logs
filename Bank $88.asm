@@ -8854,7 +8854,7 @@ $88:E9B0 85 02       STA $02    [$7E:0002]  ;|
 $88:E9B2 C2 20       REP #$20               ;} $00 = $7E:9100 (morph ball eye beam HDMA data table)
 $88:E9B4 A9 00 91    LDA #$9100             ;|
 $88:E9B7 85 00       STA $00    [$7E:0000]  ;/
-$88:E9B9 22 4B C5 91 JSL $91C54B[$91:C54B]  ; Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen
+$88:E9B9 22 4B C5 91 JSL $91C54B[$91:C54B]  ; Calculate morph ball eye beam HDMA data table - origin is on screen
 $88:E9BD 80 11       BRA $11    [$E9D0]
 
 $88:E9BF E2 20       SEP #$20               ;\ Else (not 0 <= [X] < 100h):
