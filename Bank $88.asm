@@ -4743,7 +4743,7 @@ $88:AFA1 85 02       STA $02    [$7E:0002]  ;/
 ;; Parameters:
 ;;     $00: Address of scrolling sky chunk pointers
 
-; The scrolling sky tilemap is divided into 800h byte chunks, the entire scrolling sky background is 7 scrolls high and it loaded from $8A:B180..E97F.
+; The scrolling sky tilemap is divided into 800h byte chunks, the entire scrolling sky background is 7 scrolls high and is loaded from $8A:B180..E97F.
 ; The landing site scrolling sky uses the first 5 scrolls only;
 ; the ocean part of the background is actually stored starting from $8A:D980, which is the 6th scroll into the tilemap.
 ; So what happens for the ocean rooms is the 5th scroll is skipped and first 4 scrolls and the last 2 scrolls are spliced together.

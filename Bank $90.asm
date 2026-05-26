@@ -15630,7 +15630,15 @@ $90:E9CD 60          RTS
 
 ;;; $E9CE: Handle periodic damage to Samus ;;;
 {
-; (Lava, acid, heat, not Metroids)
+; Used by:
+;     Samus in heat/lava/acid
+;     Spike collision reaction
+;     Air spike inside reaction
+;     Draygon's broken turret grappled reaction
+;     Brinstar floor/ceiling plant inside reaction
+
+; Notably not used for metroid damage (or beetom, rainbow beam, shinespark)
+
 $90:E9CE 08          PHP
 $90:E9CF C2 30       REP #$30
 $90:E9D1 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
