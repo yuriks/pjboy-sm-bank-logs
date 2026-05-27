@@ -16744,8 +16744,38 @@ $90:F0AB AB          PLB
 $90:F0AC 28          PLP
 $90:F0AD 6B          RTL
 
-$90:F0AE             dw F109, F117, F125, F152, F19B, F38E, F1AA, F1C8, F1E9, F23C, F28D, F295, F29E, F2B8, F2CA, F2D8,
-                        F2E0, F2F8, F320, F328, F331, F310, F3C9, F3DD, F3C0, F3FB, F409, F411, F41E, F471, F4A2, F4D0
+$90:F0AE             dw F109, ; 0: Lock Samus
+                        F117, ; 1: Unlock Samus
+                        F125, ; 2: Samus reached Ceres elevator
+                        F152, ; 3: Unspin Samus
+                        F19B, ; 4: End charge beam
+                        F38E, ; 5: Set up Samus for being drained - able to stand
+                        F1AA, ; 6: Lock Samus into recharge station
+                        F1C8, ; 7: Set up Samus for elevator
+                        F1E9, ; 8: Set up Samus for Ceres start
+                        F23C, ; 9: Set up Samus for Zebes start
+                        F28D, ; Ah: Stop drawing Samus
+                        F295, ; Bh: Unlock Samus from facing forward
+                        F29E, ; Ch: Unlock Samus from map station
+                        F2B8, ; Dh: Check if grapple beam is active
+                        F2CA, ; Eh: Unlock Samus from Ceres elevator
+                        F2D8, ; Fh: Enable timer handling
+                        F2E0, ; 10h: Unlock Samus from reserve tank
+                        F2F8, ; 11h: Set up Samus for death sequence
+                        F320, ; 12h: Enable Samus blue flashing
+                        F328, ; 13h: Disable Samus blue flashing
+                        F331, ; 14h: Queue low health and grapple sound effects
+                        F310, ; 15h: Lock Samus into suit pickup
+                        F3C9, ; 16h: Enable rainbow Samus
+                        F3DD, ; 17h: Disable rainbow Samus and stand her up
+                        F3C0, ; 18h: Set up Samus for being drained - unable to stand
+                        F3FB, ; 19h: Freeze drained Samus animation
+                        F409, ; 1Ah: Samus enters gunship
+                        F411, ; 1Bh: Lock Samus for reserve tank
+                        F41E, ; 1Ch: Play spin jump sound if spin jumping
+                        F471, ; 1Dh: Clear sounds when going through door
+                        F4A2, ; 1Eh: Resume sounds after power bomb explosion
+                        F4D0  ; 1Fh: Kill grapple beam
 }
 
 

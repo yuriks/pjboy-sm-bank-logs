@@ -1030,9 +1030,51 @@ $82:897A 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $82:897E 28          PLP
 $82:897F 80 C7       BRA $C7    [$8948]     ; Go to LOOP
 
-$82:8981             dw 8AE4, 8B08, EB9F, 8B0D, 89E5, 89EA, 8000, 8B20, 8B44, E169, E1B7, E288, 8CCF, 8CEF, 90C8, 90E8,
-                        9324, 9367, 93A1, DC80, DCE0, DD71, DD87, DD9A, DDAF, DDC7, 89E0, DC10, 8B3F, 89DB, 8B0E, 8000,
-                        8367, 8388, 8B0E, 8411, 8431, 8B0E, 84BD, 8B13, 8000, 852D, 8548, 8593, 85FB
+$82:8981             dw 8AE4, ; 0: Reset/start
+                        8B08, ; 1: Opening
+                        EB9F, ; 2: Game options menu
+                        8B0D, ; 3: Unused. RTS
+                        89E5, ; 4: File select menus
+                        89EA, ; 5: File select map
+                        8000, ; 6: Loading game data
+                        8B20, ; 7: Main gameplay fading in
+                        8B44, ; 8: Main gameplay
+                        E169, ; 9: Door transition - delay
+                        E1B7, ; Ah: Door transition - setup
+                        E288, ; Bh: Door transition - main
+                        8CCF, ; Ch: Pausing - fading out
+                        8CEF, ; Dh: Pausing - loading pause menu
+                        90C8, ; Eh: Paused - fading in
+                        90E8, ; Fh: Paused - main
+                        9324, ; 10h: Paused - fading out
+                        9367, ; 11h: Unpausing - loading main gameplay
+                        93A1, ; 12h: Unpausing - fading in
+                        DC80, ; 13h: Death sequence - start
+                        DCE0, ; 14h: Death sequence - black out surroundings
+                        DD71, ; 15h: Death sequence - wait for music
+                        DD87, ; 16h: Death sequence - pre-flashing
+                        DD9A, ; 17h: Death sequence - flashing
+                        DDAF, ; 18h: Death sequence - explosion white out
+                        DDC7, ; 19h: Death sequence - black out
+                        89E0, ; 1Ah: Game over menu
+                        DC10, ; 1Bh: Reserve tanks auto
+                        8B3F, ; 1Ch: Unused. JMP ($0DEA)
+                        89DB, ; 1Dh: Debug game over menu
+                        8B0E, ; 1Eh: Intro
+                        8000, ; 1Fh: Set up new game
+                        8367, ; 20h: Made it to Ceres elevator
+                        8388, ; 21h: Blackout from Ceres
+                        8B0E, ; 22h: Ceres goes boom, Samus goes to Zebes
+                        8411, ; 23h: Time up - white out
+                        8431, ; 24h: Time up - black out
+                        8B0E, ; 25h: Ceres goes boom with Samus
+                        84BD, ; 26h: Samus escapes from Zebes
+                        8B13, ; 27h: Ending and credits
+                        8000, ; 28h: Load demo game data
+                        852D, ; 29h: Transition to demo
+                        8548, ; 2Ah: Playing demo
+                        8593, ; 2Bh: Unload game data
+                        85FB  ; 2Ch: Transition from demo
 }
 
 
