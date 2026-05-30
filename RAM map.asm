@@ -1776,7 +1776,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         $0A82: X-ray angle (clockwise, 40h = right, C0h = left)
         $0A84: X-ray angular width
         $0A86: X-ray angular subwidth
-        $0A88..92: X-ray indirect HDMA table
+        $0A88..92: X-ray indirect HDMA table. Initially 1,$9800, 0,$98C8, 98h,$9990, 0,0. Becomes E4h,$9800, E4h,$98C8, 98h,$9990, 0,0 when beam is active
     }
     $0A7A..93: Demo input RAM
     {
@@ -1794,7 +1794,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         $0A90: Backup of previous controller 1 input ($0DFE) during demo (actual hardware buttons, not game generated demo input)
         $0A92: Backup of previous newly pressed controller 1 input ($0E00) during demo (actual hardware buttons, not game generated demo input)
     }
-    $0A88..92: Suit pickup indirect HDMA table. E4h,$9800, E4h,$98C8, 98h,$9990, 00h,00h
+    $0A88..92: Suit pickup indirect HDMA table. E4h,$9800, E4h,$98C8, 98h,$9990, 0,0
 
     $0A94: Samus animation frame timer
     $0A96: Samus animation frame. Indexes animation delay data ([$91:B010 + [Samus pose] * 2]), Samus spritemap table ($92:808D + [$92:9263/945D + [Samus pose] * 2]), tiles animation definitions ([$92:D94E + [Samus pose] * 2]), arm cannon drawing data ([$90:C7DF + [Samus pose] * 2] + 2/4)
