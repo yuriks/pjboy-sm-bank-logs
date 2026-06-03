@@ -10343,7 +10343,7 @@ $82:E1B9 C2 30       REP #$30
 $82:E1BB A9 01 00    LDA #$0001             ;\
 $82:E1BE 8D 97 07    STA $0797  [$7E:0797]  ;} Set door transition flags
 $82:E1C1 8D 95 07    STA $0795  [$7E:0795]  ;/
-$82:E1C4 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable minimap
+$82:E1C4 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $82:E1C7 9C 75 1E    STZ $1E75  [$7E:1E75]  ; Clear save station used flag
 $82:E1CA 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E1CE 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
