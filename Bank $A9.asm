@@ -12548,6 +12548,10 @@ $A9:EF36 6B          RTL
 
 ;;; $EF37: Initialisation AI - enemy $EEBF (Shitroid) ;;;
 {
+; The layer 1 X position check relies on enemy initialisation being run before door transition scrolling finishes
+; I timed 26 frames of scrolling before enemy initialisation is run,
+; which sits comfortably in the 64 frame duration of horizontal door transition scrolling
+; If door transition time were shortened and/or room loading time increased, this check could stop working correctly
 $A9:EF37 8B          PHB                    ;\
 $A9:EF38 F4 7E 7E    PEA $7E7E              ;|
 $A9:EF3B AB          PLB                    ;|
