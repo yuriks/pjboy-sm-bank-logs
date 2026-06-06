@@ -1147,6 +1147,8 @@ $81:8A5E C8          INY                    ;} Y += 2
 ;;     $14: Spritemap X origin
 ;;     $18: Number of entries
 
+; Expects a pushed DB
+
 ; Spritemap format is roughly:
 ;     nnnn         ; Number of entries (2 bytes)
 ;     xxxx yy aatt ; Entry 0 (5 bytes)
