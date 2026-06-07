@@ -801,8 +801,8 @@ $A3:8E40 9D 80 0F    STA $0F80,x[$7E:1080]  ;} Enemy Y position += [$8187 + [Y]]
 $A3:8E43 BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;|
 $A3:8E46 79 87 81    ADC $8187,y[$A3:81CB]  ;|
 $A3:8E49 9D 7E 0F    STA $0F7E,x[$7E:107E]  ;/
-$A3:8E4C BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;\
-$A3:8E4F DF 00 78 7E CMP $7E7800,x[$7E:7900];|
+$A3:8E4C BD 7E 0F    LDA $0F7E,x[$7E:107E]  ; >_<;
+$A3:8E4F DF 00 78 7E CMP $7E7800,x[$7E:7900];\
 $A3:8E53 30 0A       BMI $0A    [$8E5F]     ;|
 $A3:8E55 BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;} If [enemy minimum Y position] <= [enemy Y position] < [enemy maximum Y position]:
 $A3:8E58 DF 02 78 7E CMP $7E7802,x[$7E:7902];|

@@ -7317,7 +7317,7 @@ $80:B032 A9 01 00    LDA #$0001             ;\
 $80:B035 8D 83 07    STA $0783  [$7E:0783]  ;} Set mode 7
 $80:B038 AD 83 07    LDA $0783  [$7E:0783]  ;\
 $80:B03B D0 02       BNE $02    [$B03F]     ;|
-$80:B03D 38          SEC                    ;} ...Ignore this
+$80:B03D 38          SEC                    ;} ...Ignore this >_<;
 $80:B03E 6B          RTL                    ;/
 
 $80:B03F 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI

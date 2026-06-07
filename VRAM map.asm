@@ -175,7 +175,7 @@ Gameplay
 
             $6BE0..FF: Top half of gate
 
-            $6C70..7F: Air bubbles
+            $6C70..7F: Air bubbles. No it isn't. TODO
 
             $6CA0..AF: Bottom half of Water burst from surface Frame 2
 

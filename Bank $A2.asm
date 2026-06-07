@@ -4267,8 +4267,8 @@ $A2:ACD7 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:ACDA 38          SEC                    ;|
 $A2:ACDB E9 02 00    SBC #$0002             ;} Samus Y position -= 2
 $A2:ACDE 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
-$A2:ACE1 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$A2:ACE4 38          SEC                    ;|
+$A2:ACE1 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ; >_<;
+$A2:ACE4 38          SEC                    ;\
 $A2:ACE5 E9 11 00    SBC #$0011             ;} Enemy Y position = [Samus Y position] - 11h
 $A2:ACE8 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:ACEB 3A          DEC A                  ;\
@@ -4337,8 +4337,8 @@ $A2:AD5B 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;|
 $A2:AD5E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $A2:AD61 E5 12       SBC $12    [$7E:0012]  ;|
 $A2:AD63 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
-$A2:AD66 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$A2:AD69 38          SEC                    ;|
+$A2:AD66 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ; >_<;
+$A2:AD69 38          SEC                    ;\
 $A2:AD6A E9 11 00    SBC #$0011             ;} Enemy Y position = [Samus Y position] - 11h
 $A2:AD6D 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:AD70 3A          DEC A                  ;\

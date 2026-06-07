@@ -2528,7 +2528,7 @@ $84:8ECD 95 D5       STA $D5,x  [$7E:00D5]  ;} VRAM write table entry 0 destinat
 $84:8ECF 29 E0 FF    AND #$FFE0             ;\
 $84:8ED2 49 00 04    EOR #$0400             ;} VRAM write table entry 1 destination + [X] = [PLM draw tilemap VRAM destination] & FFE0h ^ 400h (address of start of other screen)
 $84:8ED5 95 DC       STA $DC,x  [$7E:00DC]  ;/
-$84:8ED7 B5 DC       LDA $DC,x  [$7E:00DC]
+$84:8ED7 B5 DC       LDA $DC,x  [$7E:00DC]  ; >_<;
 $84:8ED9 18          CLC                    ;\
 $84:8EDA 69 20 00    ADC #$0020             ;} VRAM write table entry 3 destination + [X] = [VRAM write table entry 1 destination + [X]] + 20h (address of row below entry 1)
 $84:8EDD 95 EA       STA $EA,x  [$7E:00EA]  ;/

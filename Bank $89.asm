@@ -1120,7 +1120,7 @@ $89:ABB7 80 E0       BRA $E0    [$AB99]     ; Go to LOOP_DOOR
 ; BRANCH_LOAD
 $89:ABB9 8C 68 19    STY $1968  [$7E:1968]  ; Current FX entry offset = [Y]
 $89:ABBC 8E 66 19    STX $1966  [$7E:1966]  ; Current FX entry pointer = [X]
-$89:ABBF AE 66 19    LDX $1966  [$7E:1966]  ; >_<
+$89:ABBF AE 66 19    LDX $1966  [$7E:1966]  ; >_<;
 $89:ABC2 BD 02 00    LDA $0002,x[$83:A148]  ;\
 $89:ABC5 8D 78 19    STA $1978  [$7E:1978]  ;} FX base Y position = [[X] + 2]
 $89:ABC8 BD 04 00    LDA $0004,x[$83:A14A]  ;\

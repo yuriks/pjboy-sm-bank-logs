@@ -1744,9 +1744,9 @@ $A8:9C92 9D 80 0F    STA $0F80,x[$7E:0F80]  ;} Enemy Y position += [enemy Y velo
 $A8:9C95 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
 $A8:9C98 7F 04 78 7E ADC $7E7804,x[$7E:7804];|
 $A8:9C9C 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A8:9C9F BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:9CA2 DF 00 78 7E CMP $7E7800,x[$7E:7800];} If [enemy Y position] >= [enemy hover centre Y position]:
-$A8:9CA6 30 19       BMI $19    [$9CC1]     ;/
+$A8:9C9F BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ; >_<;
+$A8:9CA2 DF 00 78 7E CMP $7E7800,x[$7E:7800];\
+$A8:9CA6 30 19       BMI $19    [$9CC1]     ;} If [enemy Y position] >= [enemy hover centre Y position]:
 $A8:9CA8 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A8:9CAC 38          SEC                    ;|
 $A8:9CAD ED A0 9A    SBC $9AA0  [$A8:9AA0]  ;|
@@ -5992,10 +5992,10 @@ $A8:C315 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
 $A8:C318 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A8:C31B 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
 $A8:C31E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
-$A8:C321 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
-$A8:C324 85 14       STA $14    [$7E:0014]  ;|
-$A8:C326 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
-$A8:C329 85 12       STA $12    [$7E:0012]  ;|
+$A8:C321 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ; >_<;
+$A8:C324 85 14       STA $14    [$7E:0014]  ;\
+$A8:C326 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;|
+$A8:C329 85 12       STA $12    [$7E:0012]  ;} Move enemy down by [enemy Y velocity]
 $A8:C32B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:C32F B0 0C       BCS $0C    [$C33D]     ; If not collided with block:
 $A8:C331 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]  ;\
@@ -6075,10 +6075,10 @@ $A8:C3C3 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
 $A8:C3C6 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A8:C3C9 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
 $A8:C3CC 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
-$A8:C3CF BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
-$A8:C3D2 85 14       STA $14    [$7E:0014]  ;|
-$A8:C3D4 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
-$A8:C3D7 85 12       STA $12    [$7E:0012]  ;|
+$A8:C3CF BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ; >_<;
+$A8:C3D2 85 14       STA $14    [$7E:0014]  ;\
+$A8:C3D4 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;|
+$A8:C3D7 85 12       STA $12    [$7E:0012]  ;} Move enemy down by [enemy Y velocity]
 $A8:C3D9 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
 ; BRANCH_RETURN
@@ -6127,10 +6127,10 @@ $A8:C425 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy Y velocity += 0.0 >_<;
 $A8:C428 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;|
 $A8:C42B 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
 $A8:C42E 9D A8 0F    STA $0FA8,x[$7E:1068]  ;/
-$A8:C431 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
-$A8:C434 85 14       STA $14    [$7E:0014]  ;|
-$A8:C436 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y velocity]
-$A8:C439 85 12       STA $12    [$7E:0012]  ;|
+$A8:C431 BD A8 0F    LDA $0FA8,x[$7E:1068]  ; >_<;
+$A8:C434 85 14       STA $14    [$7E:0014]  ;\
+$A8:C436 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;|
+$A8:C439 85 12       STA $12    [$7E:0012]  ;} Move enemy down by [enemy Y velocity]
 $A8:C43B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:C43F B0 0C       BCS $0C    [$C44D]     ; If not collided with block:
 $A8:C441 BD 6A 0F    LDA $0F6A,x[$7E:102A]  ;\
@@ -6205,10 +6205,10 @@ $A8:C4BE 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy Y velocity += 0.0 >_<;
 $A8:C4C1 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;|
 $A8:C4C4 6D B9 C1    ADC $C1B9  [$A8:C1B9]  ;|
 $A8:C4C7 9D A8 0F    STA $0FA8,x[$7E:1068]  ;/
-$A8:C4CA BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
-$A8:C4CD 85 14       STA $14    [$7E:0014]  ;|
-$A8:C4CF BD AA 0F    LDA $0FAA,x[$7E:106A]  ;} Move enemy down by [enemy Y velocity]
-$A8:C4D2 85 12       STA $12    [$7E:0012]  ;|
+$A8:C4CA BD A8 0F    LDA $0FA8,x[$7E:1068]  ; >_<;
+$A8:C4CD 85 14       STA $14    [$7E:0014]  ;\
+$A8:C4CF BD AA 0F    LDA $0FAA,x[$7E:106A]  ;|
+$A8:C4D2 85 12       STA $12    [$7E:0012]  ;} Move enemy down by [enemy Y velocity]
 $A8:C4D4 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 
 ; BRANCH_RETURN
@@ -6269,10 +6269,10 @@ $A8:C524 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy Y velocity += 0.0 >_<;
 $A8:C527 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A8:C52A 6D BD C1    ADC $C1BD  [$A8:C1BD]  ;|
 $A8:C52D 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
-$A8:C530 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
-$A8:C533 85 14       STA $14    [$7E:0014]  ;|
-$A8:C535 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} Move enemy down by [enemy Y velocity]
-$A8:C538 85 12       STA $12    [$7E:0012]  ;|
+$A8:C530 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ; >_<;
+$A8:C533 85 14       STA $14    [$7E:0014]  ;\
+$A8:C535 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;|
+$A8:C538 85 12       STA $12    [$7E:0012]  ;} Move enemy down by [enemy Y velocity]
 $A8:C53A 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:C53E BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
 $A8:C541 DD 6A 0F    CMP $0F6A,x[$7E:0FAA]  ;} If [enemy Y position] >= [enemy ([X] - 1) spawn Y position]:

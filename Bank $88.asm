@@ -5938,8 +5938,8 @@ $88:C4B2 8D 5C 19    STA $195C  [$7E:195C]  ;} FX Y position = [FX base Y positi
 $88:C4B5 AD 78 19    LDA $1978  [$7E:1978]  ;|
 $88:C4B8 6D 72 19    ADC $1972  [$7E:1972]  ;|
 $88:C4BB 8D 5E 19    STA $195E  [$7E:195E]  ;/
-$88:C4BE AD 5E 19    LDA $195E  [$7E:195E]  ;\
-$88:C4C1 30 18       BMI $18    [$C4DB]     ;} If [FX Y position] < 0: go to BRANCH_NEGATIVE
+$88:C4BE AD 5E 19    LDA $195E  [$7E:195E]  ; >_<;
+$88:C4C1 30 18       BMI $18    [$C4DB]     ; If [FX Y position] < 0: go to BRANCH_NEGATIVE
 $88:C4C3 38          SEC                    ;\
 $88:C4C4 ED 15 09    SBC $0915  [$7E:0915]  ;|
 $88:C4C7 F0 02       BEQ $02    [$C4CB]     ;} If [FX Y position] - [layer 1 Y position] > 0: go to BRANCH_NOT_ABOVE_SCREEN

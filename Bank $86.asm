@@ -3066,9 +3066,9 @@ $86:9181 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;} Enemy projectile Y position += [e
 $86:9184 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;|
 $86:9187 7D DB 1A    ADC $1ADB,x[$7E:1AFD]  ;|
 $86:918A 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
-$86:918D BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
-$86:9190 C9 A8 00    CMP #$00A8             ;} If [enemy projectile Y position] < A8h: return
-$86:9193 90 2D       BCC $2D    [$91C2]     ;/
+$86:918D BD 93 1A    LDA $1A93,x[$7E:1AB5]  ; >_<;
+$86:9190 C9 A8 00    CMP #$00A8             ;\
+$86:9193 90 2D       BCC $2D    [$91C2]     ;} If [enemy projectile Y position] < A8h: return
 $86:9195 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
 $86:9198 8A          TXA                    ;\
 $86:9199 89 02 00    BIT #$0002             ;} If [enemy projectile index] / 2 % 2 = 0:

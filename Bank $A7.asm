@@ -4918,9 +4918,9 @@ $A7:C952 8D 80 0F    STA $0F80  [$82:0F80]  ;} Kraid Y position -= 0.8000h
 $A7:C955 AD 7E 0F    LDA $0F7E  [$82:0F7E]  ;|
 $A7:C958 E9 00 00    SBC #$0000             ;|
 $A7:C95B 8D 7E 0F    STA $0F7E  [$82:0F7E]  ;/
-$A7:C95E AD 7E 0F    LDA $0F7E  [$82:0F7E]  ;\
-$A7:C961 C9 C9 01    CMP #$01C9             ;} If [Kraid Y position] >= 1C9h: return
-$A7:C964 10 2E       BPL $2E    [$C994]     ;/
+$A7:C95E AD 7E 0F    LDA $0F7E  [$82:0F7E]  ; >_<;
+$A7:C961 C9 C9 01    CMP #$01C9             ;\
+$A7:C964 10 2E       BPL $2E    [$C994]     ;} If [Kraid Y position] >= 1C9h: return
 $A7:C966 A9 B0 00    LDA #$00B0             ;\
 $A7:C969 8D 7A 0F    STA $0F7A  [$82:0F7A]  ;} Kraid X position = B0h
 $A7:C96C A9 60 B9    LDA #$B960             ;\
