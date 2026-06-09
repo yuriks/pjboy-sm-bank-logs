@@ -16696,7 +16696,7 @@ $90:F083 60          RTS
 ;;         9: Set up Samus for Zebes start
 ;;         Ah: Stop drawing Samus
 ;;         Bh: Unlock Samus from facing forward
-;;         Ch: Unlock Samus from map station
+;;         Ch: Unlock Samus from map station / update Samus due to unpause
 ;;         Dh: Check if grapple beam is active
 ;;         Eh: Unlock Samus from Ceres elevator
 ;;         Fh: Enable timer handling
@@ -16756,7 +16756,7 @@ $90:F0AE             dw F109, ; 0: Lock Samus
                         F23C, ; 9: Set up Samus for Zebes start
                         F28D, ; Ah: Stop drawing Samus
                         F295, ; Bh: Unlock Samus from facing forward
-                        F29E, ; Ch: Unlock Samus from map station
+                        F29E, ; Ch: Unlock Samus from map station / update Samus due to unpause
                         F2B8, ; Dh: Check if grapple beam is active
                         F2CA, ; Eh: Unlock Samus from Ceres elevator
                         F2D8, ; Fh: Enable timer handling

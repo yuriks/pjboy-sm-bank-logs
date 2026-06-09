@@ -198,6 +198,116 @@ Gameplay
     }
 }
 
+WIP. (Used) sprite objects done
+{
+    $6000..7FFF: Sprite tiles (4-bit). Used for BG1/2 tiles in Ceres Ridley's room. Standard sprite tiles are $9A:D200..F1FF, initially loaded to $6000..6FFF, of which only $6200..6CFF is non "X" tiles
+    {
+        $6000..61FF: Samus graphics
+        {
+            $6000..7F: Samus top 1 graphics
+            $6080..FF: Samus bottom 1 graphics
+            $6100..7F: Samus top 2 graphics
+            $6180..FF: Samus bottom 2 graphics
+            {
+                $61F0..FF: Arm cannon when not closed
+            }
+        }
+        $6200..4F: Grapple beam
+        {
+            $6200..0F: Grapple beam end
+            $6210..4F: Four grapple beam segments
+        }
+        $6200..0F: Used as black tiles for Ceres elevator platform for some reason
+        $6210..1F: Left part of Samus' chest when facing forward in power suit (gets overwritten by grapple beam)
+        
+        $6250..5F: Short Draygon breath bubbles - frame 0
+        
+        $6400..0F: Short Draygon breath bubbles - frame 2
+        
+        $6430..3F: Short Draygon breath bubbles - frame 1
+        
+        $6480..8F: Ninja space pirate landing dust cloud - frame 0 / big/small dust cloud - frame 0
+        $6490..9F: Ninja space pirate landing dust cloud - frame 1
+        $64A0..AF: Ninja space pirate landing dust cloud - frame 2
+        $64B0..BF: Ninja space pirate landing dust cloud - frame 3
+        
+        $6510..1F: Dud shot - frame 1
+        
+        $6530..3F: Dud shot - frame 0
+        
+        $65F0..FF: Small explosion - frame 0
+        
+        $6600..0F: Dud shot - frame 2
+        $6610..1F: Dud shot - frame 3
+        $6620..2F: Dud shot - frame 4
+        $6630..3F: Dud shot - frame 5
+        
+        $6760..7F: Upper half. Smoke - frame 0
+        $6780..9F: Upper half. Smoke - frame 1
+        
+        $67C0..DF: Upper half. Big/small dust cloud - frame 1
+        $67E0..FF: Upper half. Big/small dust cloud - frame 2
+        
+        $6860..7F: Lower half. Smoke - frame 0
+        $6880..9F: Lower half. Smoke - frame 1
+        $68A0..AF: Small explosion - frame 1 / big explosion - frame 0
+        
+        $68C0..DF: Lower half. Big/small dust cloud - frame 1
+        $68E0..FF: Lower half. Big/small dust cloud - frame 2
+        $6900..1F: Upper half. Small explosion - frame 2 / big explosion - frame 1
+        $6920..3F: Upper half. Small explosion - frame 3 / big explosion - frame 2
+        $6940..5F: Upper half. Small explosion - frame 4
+        $6960..7F: Upper half. Small explosion - frame 5
+        $6980..9F: Upper half. Smoke - frame 2
+        $69A0..BF: Upper half. Big/small dust cloud - frame 3
+        $69C0..DF: Upper half. Big/small dust cloud - frame 4
+        $69E0..FF: Upper half. Smoke - frame 3
+        $6A00..1F: Lower half. Small explosion - frame 2 / big explosion - frame 1
+        $6A20..3F: Lower half. Small explosion - frame 3 / big explosion - frame 2
+        $6A40..5F: Lower half. Small explosion - frame 4
+        $6A60..7F: Lower half. Small explosion - frame 5
+        $6A80..9F: Lower half. Smoke - frame 2
+        $6AA0..BF: Lower half. Big/small dust cloud - frame 3
+        $6AC0..DF: Lower half. Big/small dust cloud - frame 4
+        $6AE0..FF: Lower half. Smoke - frame 3
+        
+        $6B00..1F: Upper half. Big explosion - frame 3
+        $6B20..2F: Big explosion - frame 3
+        $6B30..4F: Upper half. Big explosion - frame 4
+        $6B50..6F: Upper half. Big explosion - frame 4
+        
+        $6B70..7F: Big explosion - frame 5
+        $6B80..9F: Upper half. Big explosion - frame 5
+        
+        $6BB0..BF: Big explosion - frame 5
+        $6BC0..CF: Enemy shot - frame 0
+        $6BD0..DF: Enemy shot - frame 1
+        
+        $6C00..1F: Lower half. Big explosion - frame 3
+        $6C20..2F: Big explosion - frame 3
+        $6C30..4F: Lower half. Big explosion - frame 4
+        $6C50..6F: Lower half. Big explosion - frame 4
+        
+        $6C80..9F: Lower half. Big explosion - frame 5
+        
+        $6CB0..BF: Enemy shot - frame 2
+        $6CC0..CF: Enemy shot - frame 3
+        
+        $6B00..6FFF: Enemy debugger tiles
+        $6D00..6FFF: Extra enemy tiles. Also used for BG2 tiles in Ceres Ridley's room
+        {
+            $6D00..6FFF: Used by enemies $DDBF (Crocomire), $E23F (Ceres door), $EC7F (Mother Brain's body) and $F03F (Tourian entrance statue ghost). Also used for evir in Draygon fight
+            $6E00..6FFF: Used by enemy $E1BF (Ridley's explosion), enemy projectile function $86:AA3D (torizo)
+        }
+        $7000..7FFF: Enemy and enemy projectile tiles
+        {
+            $7220..3F: Animated tiles - Tourian statue - Ridley
+
+            $7800..3F: Animated tiles - Tourian statue - Phantoon
+        }
+    }
+}
+
 Kraid
 {
     $0000..3FFF: BG1/2 tiles
