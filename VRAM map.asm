@@ -198,7 +198,9 @@ Gameplay
     }
 }
 
-WIP. (Used) sprite objects done
+WIP. 
+Done: (Used) sprite objects, (used) projectiles, atmospheric graphics
+TODO: projectile trails, enemy projectiles
 {
     $6000..7FFF: Sprite tiles (4-bit). Used for BG1/2 tiles in Ceres Ridley's room. Standard sprite tiles are $9A:D200..F1FF, initially loaded to $6000..6FFF, of which only $6200..6CFF is non "X" tiles
     {
@@ -220,76 +222,98 @@ WIP. (Used) sprite objects done
         $6200..0F: Used as black tiles for Ceres elevator platform for some reason
         $6210..1F: Left part of Samus' chest when facing forward in power suit (gets overwritten by grapple beam)
         
-        $6250..5F: Short Draygon breath bubbles - frame 0
+        $6250..5F: Short Draygon breath bubbles - frame 0 / Samus bubbles
+        $6260..6F: Power bomb - frame 0
+        $6270..7F: Power bomb - frame 1
         
-        $6400..0F: Short Draygon breath bubbles - frame 2
+        $62C0..CF: Footstep splashes - frame 0
+        $62D0..DF: Footstep splashes - frame 1
+        $62E0..EF: Footstep splashes - frame 2
+        $62F0..FF: Footstep splashes - frame 3
+        $6300..7F: Beam. Including ice/wave/spazer SBA
         
-        $6430..3F: Short Draygon breath bubbles - frame 1
+        $6400..0F: Short Draygon breath bubbles - frame 2 / Samus bubbles
         
-        $6480..8F: Ninja space pirate landing dust cloud - frame 0 / big/small dust cloud - frame 0
-        $6490..9F: Ninja space pirate landing dust cloud - frame 1
-        $64A0..AF: Ninja space pirate landing dust cloud - frame 2
-        $64B0..BF: Ninja space pirate landing dust cloud - frame 3
+        $6430..3F: Short Draygon breath bubbles - frame 1 / Samus bubbles
         
-        $6510..1F: Dud shot - frame 1
+        $6480..8F: Ninja space pirate landing dust cloud - frame 0 / lava surface damage - frame 0 / dust - frame 0 / big/small dust cloud - frame 0
+        $6490..9F: Ninja space pirate landing dust cloud - frame 1 / lava surface damage - frame 1 / dust - frame 1
+        $64A0..AF: Ninja space pirate landing dust cloud - frame 2 / lava surface damage - frame 2 / dust - frame 2
+        $64B0..BF: Ninja space pirate landing dust cloud - frame 3 / lava surface damage - frame 3 / dust - frame 3
+        $64C0..CF: Bomb - frame 0
+        $64D0..DF: Bomb - frame 1
+        $64E0..EF: Bomb - frame 2
+        $64F0..FF: Bomb - frame 3
+        $6500..3F: Flare (charge beam / hyper beam / grapple beam)
+        $6510..1F: Dud shot - frame 1 / beam explosion - frame 1
         
-        $6530..3F: Dud shot - frame 0
+        $6530..3F: Dud shot - frame 0 / beam explosion - frame 0
+        $6540..5F: Missile - horizontal
+        $6560..8F: Missile - diagonal
+        $6590..AF: Missile - vertical
+        $65B0..DF: Flare sparks (charge beam / hyper beam)
+        $65E0..EF: Diving splash
+        $65F0..FF: Small/missile explosion - frame 0
+        $6600..0F: Dud shot - frame 2 / beam explosion - frame 2
+        $6610..1F: Dud shot - frame 3 / beam explosion - frame 3
+        $6620..2F: Dud shot - frame 4 / beam explosion - frame 4
+        $6630..3F: Dud shot - frame 5 / beam explosion - frame 5
+        $6640..5F: Super missile - horizontal
+        $6660..8F: Super missile - diagonal
+        $6690..AF: Super missile - vertical
         
-        $65F0..FF: Small explosion - frame 0
-        
-        $6600..0F: Dud shot - frame 2
-        $6610..1F: Dud shot - frame 3
-        $6620..2F: Dud shot - frame 4
-        $6630..3F: Dud shot - frame 5
-        
+        $6700..1F: Upper half. Bomb explosion - frame 2 / plasma SBA - frame 2
+        $6720..3F: Upper half. Bomb explosion - frame 3 / plasma SBA - frame 3
+        $6740..5F: Upper half. Bomb explosion - frame 4 / plasma SBA - frame 4
         $6760..7F: Upper half. Smoke - frame 0
         $6780..9F: Upper half. Smoke - frame 1
-        
+        $67A0..AF: Bomb explosion - frame 1 / plasma SBA - frame 1
+        $67B0..BF: Power bomb - frame 2
         $67C0..DF: Upper half. Big/small dust cloud - frame 1
         $67E0..FF: Upper half. Big/small dust cloud - frame 2
-        
+        $6800..1F: Lower half. Bomb explosion - frame 2 / plasma SBA - frame 2
+        $6820..3F: Lower half. Bomb explosion - frame 3 / plasma SBA - frame 3
+        $6840..5F: Lower half. Bomb explosion - frame 4 / plasma SBA - frame 4
         $6860..7F: Lower half. Smoke - frame 0
         $6880..9F: Lower half. Smoke - frame 1
-        $68A0..AF: Small explosion - frame 1 / big explosion - frame 0
-        
+        $68A0..AF: Small/missile explosion - frame 1 / big/super missile explosion - frame 0
+        $68B0..BF: Bomb explosion - frame 0 / plasma SBA - frame 0
         $68C0..DF: Lower half. Big/small dust cloud - frame 1
         $68E0..FF: Lower half. Big/small dust cloud - frame 2
-        $6900..1F: Upper half. Small explosion - frame 2 / big explosion - frame 1
-        $6920..3F: Upper half. Small explosion - frame 3 / big explosion - frame 2
-        $6940..5F: Upper half. Small explosion - frame 4
-        $6960..7F: Upper half. Small explosion - frame 5
+        $6900..1F: Upper half. Small/missile explosion - frame 2 / big/super missile explosion - frame 1
+        $6920..3F: Upper half. Small/missile explosion - frame 3 / big/super missile explosion - frame 2
+        $6940..5F: Upper half. Small/missile explosion - frame 4
+        $6960..7F: Upper half. Small/missile explosion - frame 5
         $6980..9F: Upper half. Smoke - frame 2
-        $69A0..BF: Upper half. Big/small dust cloud - frame 3
-        $69C0..DF: Upper half. Big/small dust cloud - frame 4
+        $69A0..BF: Upper half. Big/small dust cloud - frame 3 / diving splash
+        $69C0..DF: Upper half. Big/small dust cloud - frame 4 / diving splash
         $69E0..FF: Upper half. Smoke - frame 3
-        $6A00..1F: Lower half. Small explosion - frame 2 / big explosion - frame 1
-        $6A20..3F: Lower half. Small explosion - frame 3 / big explosion - frame 2
-        $6A40..5F: Lower half. Small explosion - frame 4
-        $6A60..7F: Lower half. Small explosion - frame 5
+        $6A00..1F: Lower half. Small/missile explosion - frame 2 / big/super missile explosion - frame 1
+        $6A20..3F: Lower half. Small/missile explosion - frame 3 / big/super missile explosion - frame 2
+        $6A40..5F: Lower half. Small/missile explosion - frame 4
+        $6A60..7F: Lower half. Small/missile explosion - frame 5
         $6A80..9F: Lower half. Smoke - frame 2
-        $6AA0..BF: Lower half. Big/small dust cloud - frame 3
-        $6AC0..DF: Lower half. Big/small dust cloud - frame 4
+        $6AA0..BF: Lower half. Big/small dust cloud - frame 3 / diving splash
+        $6AC0..DF: Lower half. Big/small dust cloud - frame 4 / diving splash
         $6AE0..FF: Lower half. Smoke - frame 3
-        
-        $6B00..1F: Upper half. Big explosion - frame 3
-        $6B20..2F: Big explosion - frame 3
-        $6B30..4F: Upper half. Big explosion - frame 4
-        $6B50..6F: Upper half. Big explosion - frame 4
-        
-        $6B70..7F: Big explosion - frame 5
-        $6B80..9F: Upper half. Big explosion - frame 5
-        
-        $6BB0..BF: Big explosion - frame 5
+        $6B00..1F: Upper half. Big/super missile explosion - frame 3
+        $6B20..2F: Big/super missile explosion - frame 3
+        $6B30..4F: Upper half. Big/super missile explosion - frame 4
+        $6B50..6F: Upper half. Big/super missile explosion - frame 4
+        $6B70..7F: Big/super missile explosion - frame 5
+        $6B80..9F: Upper half. Big/super missile explosion - frame 5
+        $6BA0..AF: Diving splash
+        $6BB0..BF: Big/super missile explosion - frame 5
         $6BC0..CF: Enemy shot - frame 0
         $6BD0..DF: Enemy shot - frame 1
         
-        $6C00..1F: Lower half. Big explosion - frame 3
-        $6C20..2F: Big explosion - frame 3
-        $6C30..4F: Lower half. Big explosion - frame 4
-        $6C50..6F: Lower half. Big explosion - frame 4
-        
-        $6C80..9F: Lower half. Big explosion - frame 5
-        
+        $6C00..1F: Lower half. Big/super missile explosion - frame 3
+        $6C20..2F: Big/super missile explosion - frame 3
+        $6C30..4F: Lower half. Big/super missile explosion - frame 4
+        $6C50..6F: Lower half. Big/super missile explosion - frame 4
+        $6C70..7F: Diving splash
+        $6C80..9F: Lower half. Big/super missile explosion - frame 5
+        $6CA0..AF: Diving splash
         $6CB0..BF: Enemy shot - frame 2
         $6CC0..CF: Enemy shot - frame 3
         
@@ -304,6 +328,8 @@ WIP. (Used) sprite objects done
             $7220..3F: Animated tiles - Tourian statue - Ridley
 
             $7800..3F: Animated tiles - Tourian statue - Phantoon
+            
+            $7E00..7F8F: Timer tiles
         }
     }
 }
