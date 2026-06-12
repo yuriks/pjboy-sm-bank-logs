@@ -2217,7 +2217,7 @@ $84:8CFA C9 02 00    CMP #$0002             ;\
 $84:8CFD F0 33       BEQ $33    [$8D32]     ;} If [save confirmation selection] != no:
 $84:8CFF AE 27 1C    LDX $1C27  [$7E:1C27]
 $84:8D02 A0 D2 E6    LDY #$E6D2             ;\
-$84:8D05 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn save station electricity enemy projectile
+$84:8D05 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn save station laser enemy projectile
 $84:8D09 BD C7 1D    LDA $1DC7,x[$7E:1E15]  ;\
 $84:8D0C 29 07 00    AND #$0007             ;} Load station index = [PLM room argument] & 7
 $84:8D0F 8D 8B 07    STA $078B  [$7E:078B]  ;/

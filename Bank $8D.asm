@@ -1117,7 +1117,7 @@ $8D:B52F             dx 0002, C200,0F,2ABE, C200,FF,2ABE
 $8D:B53B             dx 0003, C200,1F,2ABE, C200,0F,2ABE, C200,FF,2ABE
 $8D:B54C             dx 0004, C200,2F,2ABE, C200,1F,2ABE, C200,0F,2ABE, C200,FF,2ABE
 
-; Enemy projectile $E6D2 (save station electricity)
+; Enemy projectile $E6D2 (save station laser)
 $8D:B562             dx 0004, 0008,E0,7ACD, 0000,E0,7A6F, 01F0,E0,3ACD, 01F8,E0,3A6F
 $8D:B578             dx 0004, 0008,E8,7ACD, 0000,E8,7A6F, 01F0,E8,3ACD, 01F8,E8,3A6F
 $8D:B58E             dx 0004, 0008,F0,7ACD, 0000,F0,7A6F, 01F0,F0,3ACD, 01F8,F0,3A6F

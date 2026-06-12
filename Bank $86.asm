@@ -15008,7 +15008,7 @@ $86:E3A0             dx 0008,AD83,
 }
 
 
-;;; $E3C6: Instruction list - dust cloud / explosion - index = 19h (unused. Save station electricity) ;;;
+;;; $E3C6: Instruction list - dust cloud / explosion - index = 19h (unused. Save station laser) ;;;
 {
 $86:E3C6             dx 0001,AE03,
                         0001,AE19,
@@ -15089,7 +15089,7 @@ $86:E42C             dw E0EE, E100, E11A, E138, E152, E168, E17E, E198, E1A6, E1
 ;;         16h: Unused. Weird long beam
 ;;         17h: Unused. Weird long flickering beam
 ;;         18h: Long Draygon breath bubbles
-;;         19h: Unused. Save station electricity
+;;         19h: Unused. Save station laser
 ;;         1Ah: Unused. Expanding vertical gate
 ;;         1Bh: Unused. Contracting vertical gate
 ;;         1Ch: Unused. Elevator pad (same as 8)
@@ -15422,9 +15422,9 @@ $86:E675             dx E5DA,E604,E5A8,00,00,2000,0000,84FC ; Initial closed upw
 }
 
 
-;;; $E683..DF: Save station electricity ;;;
+;;; $E683..DF: Save station laser ;;;
 {
-;;; $E683: Instruction list - enemy projectile $E6D2 (save station electricity) ;;;
+;;; $E683: Instruction list - enemy projectile $E6D2 (save station laser) ;;;
 {
 $86:E683             dx 81D5,0014   ; Timer = 14h
 $86:E687             dx 0001,B562,
@@ -15440,7 +15440,7 @@ $86:E687             dx 0001,B562,
 }
 
 
-;;; $E6AD: Initialisation AI - enemy projectile $E6D2 (save station electricity) ;;;
+;;; $E6AD: Initialisation AI - enemy projectile $E6D2 (save station laser) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -15466,13 +15466,13 @@ $86:E6D0 60          RTS
 }
 
 
-;;; $E6D1: RTS. Pre-instruction - enemy projectile $E6D2 (save station electricity) ;;;
+;;; $E6D1: RTS. Pre-instruction - enemy projectile $E6D2 (save station laser) ;;;
 {
 $86:E6D1 60          RTS
 }
 
 
-;;; $E6D2: Enemy projectile - save station electricity ;;;
+;;; $E6D2: Enemy projectile - save station laser ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -15483,7 +15483,7 @@ $86:E6D1 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:E6D2             dx E6AD,E6D1,E683,00,00,3000,0000,84FC ; Save station electricity
+$86:E6D2             dx E6AD,E6D1,E683,00,00,3000,0000,84FC ; Save station laser
 }
 }
 

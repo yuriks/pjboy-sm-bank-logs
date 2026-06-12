@@ -222,59 +222,67 @@ TODO: enemy projectiles
         $6200..0F: Ceres elevator pad level data concealer
         $6210..1F: Left part of Samus' chest when facing forward in power suit (gets overwritten by grapple beam)
         
-        $6250..5F: Short Draygon breath bubbles - frame 0 / Samus bubbles
+        $6250..5F: Draygon breath bubbles - frame 0 / Samus bubbles / n00b tube released air bubbles
         $6260..7F: Power bomb - frames 0..1
-        
-        $62C0..FF: Footstep splash
+        $6280..8F: Rock particle - frame 3
+        $6290..9F: Rock particle - frame 2
+        $62A0..AF: Rock particle - frame 1
+        $62B0..BF: Rock particle - frame 0
+        $62C0..FF: Water splash (footstep, Tourian statue unlocking particle, eye door sweat)
         $6300..7F: Beam. Including ice/wave/spazer SBA
         $6380..BF: Beam trail - ice beams / charged power beam
         $63C0..FF: Beam trail - wave beam
-        $6400..0F: Short Draygon breath bubbles - frame 2 / Samus bubbles
+        $6400..0F: Draygon breath bubbles - frame 2 / Samus bubbles / n00b tube released air bubbles
         
-        $6430..3F: Short Draygon breath bubbles - frame 1 / Samus bubbles
+        $6430..3F: Draygon breath bubbles - frame 1 / Samus bubbles / eye door sweat falling / n00b tube released air bubbles
         
-        $6480..BF: Ninja space pirate landing dust cloud / lava surface damage / dust / (super) missile trail
-        $6480..8F: Big/small dust cloud - frame 0
+        $6480..BF: Dust (atmospheric, ninja space pirate / torizo landing) / lava surface damage / (super) missile trail
+        $6480..8F: Dust cloud (big, small, Wrecked Ship chozo spike clearing footstep, Tourian statue) - frame 0
         
         $64C0..FF: Bomb
         $6500..3F: Flare (charge beam / hyper beam / grapple beam)
-        $6510..1F: Dud shot - frame 1 / beam explosion - frame 1
+        $6510..1F: Dud shot - frame 1 / beam explosion - frame 1 / laser flare - frame 1 / work robot laser - frame 1
         
-        $6530..3F: Dud shot - frame 0 / beam explosion - frame 0
+        $6530..3F: Dud shot - frame 0 / beam explosion - frame 0 / laser flare - frame 0 / work robot laser - frame 0
         $6540..5F: Missile - horizontal
         $6560..8F: Missile - diagonal
         $6590..AF: Missile - vertical
         $65B0..DF: Flare sparks (charge beam / hyper beam)
         $65E0..EF: Diving splash
-        $65F0..FF: Small/missile explosion - frame 0
-        $6600..3F: Dud shot - frames 2..5 / beam explosion - frames 2..5
+        $65F0..FF: Small/missile explosion - frame 0 / enemy projectile explosion - frame 0
+        
+        $6600..3F: Dud shot - frames 2..5 / beam explosion - frames 2..5 / enemy projectile explosion - frames 1..4 / eye door projectile / Golden Torizo eye beam / work robot laser - frame 2..5
+        $6600..0F: Laser flare - frame 1
+        
         $6640..5F: Super missile - horizontal
         $6660..8F: Super missile - diagonal
         $6690..AF: Super missile - vertical
+        $66B0..BF: Laser - dark (space pirate, Mother Brain)
         
+        $66F0..FF: Laser - light (middle) (space pirate, Mother Brain, save station)
         $6700..5F: Upper half. Bomb explosion - frames 2..4 / plasma SBA - frames 2..4
         $6760..9F: Upper half. Smoke - frames 0..1
         $67A0..AF: Bomb explosion - frame 1 / plasma SBA - frame 1
         $67B0..BF: Power bomb - frame 2
-        $67C0..FF: Upper half. Big/small dust cloud - frames 1..2
+        $67C0..FF: Upper half. Dust cloud - frames 1..2 / n00b tube released air bubbles
         $6800..5F: Lower half. Bomb explosion - frames 2..4 / plasma SBA - frames 2..4
         $6860..9F: Lower half. Smoke - frames 0..1
         $68A0..AF: Small/missile explosion - frame 1 / big/super missile explosion - frame 0
         $68B0..BF: Bomb explosion - frame 0 / plasma SBA - frame 0
-        $68C0..FF: Lower half. Big/small dust cloud - frames 1..2
+        $68C0..FF: Lower half. Dust cloud - frames 1..2 / n00b tube released air bubbles
         
         $6900..7F: Upper half. Small/missile explosion - frames 2..5
         $6900..3F: Upper half. Big/super missile explosion - frames 1..2
         
         $6980..9F: Upper half. Smoke - frame 2
-        $69A0..DF: Upper half. Big/small dust cloud - frames 3..4 / diving splash
+        $69A0..DF: Upper half. Dust cloud - frames 3..4 / diving splash / n00b tube released air bubbles
         $69E0..FF: Upper half. Smoke - frame 3
         
         $6A00..7F: Lower half. Small/missile explosion - frames 2..5
         $6A00..3F: Lower half. Big/super missile explosion - frames 1..2
         
         $6A80..9F: Lower half. Smoke - frame 2
-        $6AA0..DF: Lower half. Big/small dust cloud - frames 3..4 / diving splash
+        $6AA0..DF: Lower half. Dust cloud - frames 3..4 / diving splash / n00b tube released air bubbles
         $6AE0..FF: Lower half. Smoke - frame 3
         $6B00..1F: Upper half. Big/super missile explosion - frame 3
         $6B20..2F: Big/super missile explosion - frame 3
@@ -294,6 +302,7 @@ TODO: enemy projectiles
         $6C80..9F: Lower half. Big/super missile explosion - frame 5
         $6CA0..AF: Diving splash
         $6CB0..CF: Enemy shot - frames 2..3
+        $6CD0..DF: Laser - light (sides) (space pirate, Mother Brain, save station)
         
         $6B00..6FFF: Enemy debugger tiles
         $6D00..6FFF: Extra enemy tiles. Also used for BG2 tiles in Ceres Ridley's room

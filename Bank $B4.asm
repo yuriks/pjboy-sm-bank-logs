@@ -4819,7 +4819,7 @@ $B4:C10C             dx 0003,C920,
 }
 
 
-;;; $C132: Instruction list - sprite object 19h (unused. Save station electricity) ;;;
+;;; $C132: Instruction list - sprite object 19h (unused. Save station laser) ;;;
 {
 $B4:C132             dx 0001,C9A0,
                         0001,C9B6,
@@ -5401,7 +5401,7 @@ $B4:C97C             dx 0003, 0000,EE,3A40, 01FC,F2,3A40, 01FA,EC,3A40
 $B4:C98D             dx 0002, 0000,EC,3A40, 01FC,F0,3A40
 $B4:C999             dx 0001, 01FC,EE,3A40
 
-; Sprite object 19h (unused. Save station electricity)
+; Sprite object 19h (unused. Save station laser)
 $B4:C9A0             dx 0004, 0008,E0,3A6F, 0000,E0,3A6F, 01F8,E0,3A6F, 01F0,E0,3A6F
 $B4:C9B6             dx 0004, 0008,E8,3A6F, 0000,E8,3A6F, 01F8,E8,3A6F, 01F0,E8,3A6F
 $B4:C9CC             dx 0004, 0008,F0,3A6F, 0000,F0,3A6F, 01F8,F0,3A6F, 01F0,F0,3A6F
