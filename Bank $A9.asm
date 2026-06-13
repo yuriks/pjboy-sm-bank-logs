@@ -1252,7 +1252,7 @@ $A9:8F8F             dx 0200,B79000,7400,
                         0200,B79C00,7A00,
                         0200,B79E00,7B00
 
-; Bomb shells, death beam, unused graphics
+; Bomb shells, hand beam, unused graphics
 $A9:8FC7             dx 0200,B7A000,7C00,
                         0200,B7A200,7D00,
                         0200,B7A400,7E00,
@@ -2238,7 +2238,7 @@ $A9:971F 6B          RTL
 }
 
 
-;;; $9720: Instruction - Mother Brain's pose = death beam mode ;;;
+;;; $9720: Instruction - Mother Brain's pose = hand beam mode ;;;
 {
 $A9:9720 A9 04 00    LDA #$0004
 $A9:9723 8F 04 78 7E STA $7E7804[$7E:7804]
@@ -2621,9 +2621,9 @@ $A9:9A26             dx 9718,       ; Mother Brain's pose = crouching transition
 }
 
 
-;;; $9A42: Instruction list - Mother Brain body - death beam mode ;;;
+;;; $9A42: Instruction list - Mother Brain body - hand beam mode ;;;
 {
-$A9:9A42             dx 9720,                   ; Mother Brain's pose = death beam mode
+$A9:9A42             dx 9720,                   ; Mother Brain's pose = hand beam mode
                         0001,9FA0,
                         0001,A384,
                         0001,A3CE,
@@ -2644,18 +2644,18 @@ $A9:9A42             dx 9720,                   ; Mother Brain's pose = death be
                         9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, -2Ah) with parameter 2 (Mother Brain elbow charge energy)
                         0001,A3CE,
                         0001,A3CE,
-                        9AEF,                   ; Spawn death beam enemy projectile
+                        9AEF,                   ; Spawn hand beam enemy projectile
                         0001,A418,
                         0001,A462,
                         00F0,9FA0,
-                        9B05,                   ; Increment Mother Brain death beam attack phase
+                        9B05,                   ; Increment Mother Brain hand beam attack phase
                         9700,                   ; Mother Brain's pose = standing
                         812F                    ; Sleep
 }
 }
 
 
-;;; $9AC8..9B0E: Instructions - Mother Brain body - death beam mode ;;;
+;;; $9AC8..9B0E: Instructions - Mother Brain body - hand beam mode ;;;
 {
 ;;; $9AC8: Instruction - spawn enemy projectile $E509 to offset ([[Y]], [[Y] + 2]) with parameter [[Y] + 4] ;;;
 {
@@ -2690,14 +2690,14 @@ $A9:9AEE 6B          RTL
 }
 
 
-;;; $9AEF: Instruction - spawn death beam enemy projectile ;;;
+;;; $9AEF: Instruction - spawn hand beam enemy projectile ;;;
 {
 $A9:9AEF DA          PHX
 $A9:9AF0 5A          PHY
 $A9:9AF1 A9 63 00    LDA #$0063             ;\
-$A9:9AF4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 63h, sound library 2, max queued sounds allowed = 6 (Mother Brain's death beam)
+$A9:9AF4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 63h, sound library 2, max queued sounds allowed = 6 (Mother Brain's hand beam)
 $A9:9AF8 A2 40 00    LDX #$0040             ;\
-$A9:9AFB A0 67 CB    LDY #$CB67             ;} Spawn Mother Brain's death beam - charging enemy projectile using Mother Brain brain graphics
+$A9:9AFB A0 67 CB    LDY #$CB67             ;} Spawn Mother Brain's hand beam - charging enemy projectile using Mother Brain brain graphics
 $A9:9AFE 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A9:9B02 7A          PLY
 $A9:9B03 FA          PLX
@@ -2705,7 +2705,7 @@ $A9:9B04 6B          RTL
 }
 
 
-;;; $9B05: Instruction - increment Mother Brain death beam attack phase ;;;
+;;; $9B05: Instruction - increment Mother Brain hand beam attack phase ;;;
 {
 $A9:9B05 AF 2E 78 7E LDA $7E782E[$7E:782E]
 $A9:9B09 1A          INC A
@@ -2962,7 +2962,7 @@ $A9:9C7F             dx 0001,A717,
 
 ;;; $9C87: Instruction list - Mother Brain brain - neutral - phase 2 ;;;
 {
-; Includes firing death beam (which is done by body)
+; Includes firing hand beam (which is done by body)
 $A9:9C87             dx 0004,A586,
                         0004,A5BF,
                         0008,A5F8,
@@ -3438,7 +3438,7 @@ $A9:A366             dx 0001, 0000,0000,A717,A4BA ; Unused
 $A9:A370             dx 0001, 0000,0000,A750,A4BA ; Unused
 $A9:A37A             dx 0001, 0000,0000,A789,A4BA ; Unused
 
-; Death beam mode
+; Hand beam mode
 $A9:A384             dx 0009, 0012,003A,A890,A4CA, 001E,001D,A85B,A4C8, 0019,001E,A86E,A4C8, 0000,FFFC,A7C2,A4C8, 0000,0000,A98A,A4E8, 0000,0000,AB70,A51E, FFF6,0038,A974,A4DA, 0007,001C,A93F,A4D8, 0002,001D,A95E,A4D8
 $A9:A3CE             dx 0009, 0012,003A,A890,A4CA, 001E,001D,A85B,A4C8, 0019,001E,A86E,A4C8, 0000,FFFC,A7C2,A4C8, 0000,0000,A98A,A4E8, 0000,0000,ABF6,A538, FFF6,0038,A974,A4DA, 0007,001C,A93F,A4D8, 0002,001D,A95E,A4D8
 $A9:A418             dx 0009, 0012,003A,A890,A4CA, 001E,001D,A85B,A4C8, 0019,001E,A86E,A4C8, 0000,FFFC,A7C2,A4C8, 0000,0000,A98A,A4E8, 0000,0000,AC76,A552, FFF6,0038,A974,A4DA, 0007,001C,A93F,A4D8, 0002,001D,A95E,A4D8
@@ -4596,7 +4596,7 @@ $A9:B63C 4C B8 C6    JMP $C6B8  [$A9:C6B8]  ; Go to handle Mother Brain walking
 $A9:B63F C9 00 A0    CMP #$A000             ;\
 $A9:B642 B0 E9       BCS $E9    [$B62D]     ;} If [random number] >= A000h: go to BRANCH_TRY_ATTACK
 $A9:B644 A9 7D B8    LDA #$B87D             ;\
-$A9:B647 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B87D (firing death beam)
+$A9:B647 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B87D (firing hand beam)
 $A9:B64A 60          RTS
 }
 
@@ -4952,13 +4952,13 @@ $A9:B87A 4C 05 B6    JMP $B605  [$A9:B605]  ; Go to thinking
 }
 
 
-;;; $B87D..B8EA: Mother Brain - firing death beam ;;;
+;;; $B87D..B8EA: Mother Brain - firing hand beam ;;;
 {
-;;; $B87D: Mother Brain body function - second phase - firing death beam ;;;
+;;; $B87D: Mother Brain body function - second phase - firing hand beam ;;;
 {
 $A9:B87D AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
 $A9:B881 0A          ASL A                  ;|
-$A9:B882 AA          TAX                    ;} Execute [$B887 + [Mother Brain death beam attack phase] * 2]
+$A9:B882 AA          TAX                    ;} Execute [$B887 + [Mother Brain hand beam attack phase] * 2]
 $A9:B883 FC 87 B8    JSR ($B887,x)[$A9:B88F];/
 $A9:B886 60          RTS
 
@@ -4966,9 +4966,9 @@ $A9:B887             dw B88F, B8B2, B8C8, B8C9
 }
 
 
-;;; $B88F: Mother Brain second phase - firing death beam - back up ;;;
+;;; $B88F: Mother Brain second phase - firing hand beam - back up ;;;
 {
-; [Mother Brain death beam attack phase] = 0
+; [Mother Brain hand beam attack phase] = 0
 $A9:B88F A0 08 00    LDY #$0008             ;\
 $A9:B892 A9 28 00    LDA #$0028             ;} Make Mother Brain walk backwards slow towards X position 28h
 $A9:B895 20 47 C6    JSR $C647  [$A9:C647]  ;/
@@ -4978,22 +4978,22 @@ $A9:B89D 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:B8A1 A9 06 00    LDA #$0006             ;\
 $A9:B8A4 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 6 (lower)
 $A9:B8A8 AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
-$A9:B8AC 1A          INC A                  ;} Mother Brain death beam attack phase = 1
+$A9:B8AC 1A          INC A                  ;} Mother Brain hand beam attack phase = 1
 $A9:B8AD 8F 2E 78 7E STA $7E782E[$7E:782E]  ;/
 
 $A9:B8B1 60          RTS
 }
 
 
-;;; $B8B2: Mother Brain second phase - firing death beam - wait for any active bombs ;;;
+;;; $B8B2: Mother Brain second phase - firing hand beam - wait for any active bombs ;;;
 {
-; [Mother Brain death beam attack phase] = 1
+; [Mother Brain hand beam attack phase] = 1
 $A9:B8B2 AF 4A 78 7E LDA $7E784A[$7E:784A]  ;\
 $A9:B8B6 D0 0F       BNE $0F    [$B8C7]     ;} If [Mother Brain bomb counter] != 0: return
 $A9:B8B8 A9 42 9A    LDA #$9A42             ;\
-$A9:B8BB 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A42 (death beam mode)
+$A9:B8BB 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A42 (hand beam mode)
 $A9:B8BE AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
-$A9:B8C2 1A          INC A                  ;} Mother Brain death beam attack phase = 2
+$A9:B8C2 1A          INC A                  ;} Mother Brain hand beam attack phase = 2
 $A9:B8C3 8F 2E 78 7E STA $7E782E[$7E:782E]  ;/
 
 $A9:B8C7 60          RTS
@@ -5002,14 +5002,14 @@ $A9:B8C7 60          RTS
 
 ;;; $B8C8: RTS ;;;
 {
-; [Mother Brain death beam attack phase] = 2
+; [Mother Brain hand beam attack phase] = 2
 $A9:B8C8 60          RTS
 }
 
 
-;;; $B8C9: Mother Brain second phase - firing death beam - finish ;;;
+;;; $B8C9: Mother Brain second phase - firing hand beam - finish ;;;
 {
-; [Mother Brain death beam attack phase] = 4
+; [Mother Brain hand beam attack phase] = 4
 $A9:B8C9 A9 87 9C    LDA #$9C87             ;\
 $A9:B8CC 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C87 (neutral)
 $A9:B8CF A9 02 00    LDA #$0002             ;\
@@ -5017,7 +5017,7 @@ $A9:B8D2 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:B8D6 A9 04 00    LDA #$0004             ;\
 $A9:B8D9 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 4 (bob up)
 $A9:B8DD A9 00 00    LDA #$0000             ;\
-$A9:B8E0 8F 2E 78 7E STA $7E782E[$7E:782E]  ;} Mother Brain death beam attack phase = 0
+$A9:B8E0 8F 2E 78 7E STA $7E782E[$7E:782E]  ;} Mother Brain hand beam attack phase = 0
 $A9:B8E4 A9 05 B6    LDA #$B605             ;\
 $A9:B8E7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605 (thinking)
 $A9:B8EA 60          RTS
@@ -7865,7 +7865,7 @@ $A9:CCC3 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CCC6 10 F7       BPL $F7    [$CCBF]     ; If [enemy function timer] >= 0: return
 $A9:CCC8 DA          PHX                    ;\
 $A9:CCC9 A2 C7 8F    LDX #$8FC7             ;|
-$A9:CCCC 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load Mother Brain attack tiles (bomb, death beam)
+$A9:CCCC 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load Mother Brain attack tiles (bomb, hand beam)
 $A9:CCCF FA          PLX                    ;/
 $A9:CCD0 90 ED       BCC $ED    [$CCBF]     ; If not finished loading: return
 $A9:CCD2 A9 DE CC    LDA #$CCDE             ;\

@@ -10860,9 +10860,9 @@ $86:C604 60          RTS
 }
 
 
-;;; $C605..C76D: Mother Brain's death beam ;;;
+;;; $C605..C76D: Mother Brain's hand beam ;;;
 {
-;;; $C605: Initialisation AI - enemy projectile $CB67 (Mother Brain's death beam - charging) ;;;
+;;; $C605: Initialisation AI - enemy projectile $CB67 (Mother Brain's hand beam - charging) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -10873,15 +10873,15 @@ $86:C60E 99 B7 1A    STA $1AB7,y[$7E:1AC7]
 $86:C611 99 DB 1A    STA $1ADB,y[$7E:1AEB]
 $86:C614 99 27 1A    STA $1A27,y[$7E:1A37]
 $86:C617 99 6F 1A    STA $1A6F,y[$7E:1A7F]
-$86:C61A 8F 06 80 7E STA $7E8006[$7E:8006]  ; Mother Brain's death beam next X subposition = 0
-$86:C61E 8F 0A 80 7E STA $7E800A[$7E:800A]  ; Mother Brain's death beam next Y subposition = 0
+$86:C61A 8F 06 80 7E STA $7E8006[$7E:8006]  ; Mother Brain's hand beam next X subposition = 0
+$86:C61E 8F 0A 80 7E STA $7E800A[$7E:800A]  ; Mother Brain's hand beam next Y subposition = 0
 $86:C622 A9 00 04    LDA #$0400             ;\
 $86:C625 99 BB 19    STA $19BB,y[$7E:19CB]  ;} Enemy projectile VRAM graphics index = 0, palette 2
 $86:C628 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $86:C62B 18          CLC                    ;|
 $86:C62C 69 40 00    ADC #$0040             ;} Enemy projectile X position = [Mother Brain body X position] + 40h
 $86:C62F 99 4B 1A    STA $1A4B,y[$7E:1A5B]  ;/
-$86:C632 8F 08 80 7E STA $7E8008[$7E:8008]  ; Mother Brain's death beam next X position = [enemy projectile X position]
+$86:C632 8F 08 80 7E STA $7E8008[$7E:8008]  ; Mother Brain's hand beam next X position = [enemy projectile X position]
 $86:C636 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:C639 38          SEC                    ;|
 $86:C63A EF 08 80 7E SBC $7E8008[$7E:8008]  ;} $12 = [Samus X position] - [enemy projectile X position]
@@ -10890,7 +10890,7 @@ $86:C640 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $86:C643 18          CLC                    ;|
 $86:C644 69 D0 FF    ADC #$FFD0             ;} Enemy projectile Y position = [Mother Brain body Y position] - 30h
 $86:C647 99 93 1A    STA $1A93,y[$7E:1AA3]  ;/
-$86:C64A 8F 0C 80 7E STA $7E800C[$7E:800C]  ; Mother Brain's death beam next Y position = [enemy projectile Y position]
+$86:C64A 8F 0C 80 7E STA $7E800C[$7E:800C]  ; Mother Brain's hand beam next Y position = [enemy projectile Y position]
 $86:C64E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $86:C651 38          SEC                    ;|
 $86:C652 EF 0C 80 7E SBC $7E800C[$7E:800C]  ;} $14 = [Samus Y position] - [enemy projectile Y position]
@@ -10901,48 +10901,48 @@ $86:C65D E9 80 00    SBC #$0080             ;|
 $86:C660 49 FF FF    EOR #$FFFF             ;} A = 80h - [A] (Y flip of angle)
 $86:C663 1A          INC A                  ;/
 $86:C664 29 FF 00    AND #$00FF             ;\
-$86:C667 85 12       STA $12    [$7E:0012]  ;} $12 = Mother Brain's death beam next angle = [A]
+$86:C667 85 12       STA $12    [$7E:0012]  ;} $12 = Mother Brain's hand beam next angle = [A]
 $86:C669 8F 12 80 7E STA $7E8012[$7E:8012]  ;/
 $86:C66D A9 00 0C    LDA #$0C00             ;\
-$86:C670 22 6C C2 86 JSL $86C26C[$86:C26C]  ;} Mother Brain's death beam next X velocity = C00h * sin([$12] * pi / 80h)
+$86:C670 22 6C C2 86 JSL $86C26C[$86:C26C]  ;} Mother Brain's hand beam next X velocity = C00h * sin([$12] * pi / 80h)
 $86:C674 8F 0E 80 7E STA $7E800E[$7E:800E]  ;/
 $86:C678 A9 00 0C    LDA #$0C00             ;\
-$86:C67B 22 72 C2 86 JSL $86C272[$86:C272]  ;} Mother Brain's death beam next Y velocity = C00h * cos([$12] * pi / 80h)
+$86:C67B 22 72 C2 86 JSL $86C272[$86:C272]  ;} Mother Brain's hand beam next Y velocity = C00h * cos([$12] * pi / 80h)
 $86:C67F 8F 10 80 7E STA $7E8010[$7E:8010]  ;/
 $86:C683 60          RTS
 }
 
 
-;;; $C684: Initialisation AI - enemy projectile $CB75 (Mother Brain's death beam - fired) ;;;
+;;; $C684: Initialisation AI - enemy projectile $CB75 (Mother Brain's hand beam - fired) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
 $86:C684 AF 08 80 7E LDA $7E8008[$7E:8008]  ;\
-$86:C688 99 4B 1A    STA $1A4B,y[$7E:1A59]  ;} Enemy projectile X position = [Mother Brain's death beam next X position]
+$86:C688 99 4B 1A    STA $1A4B,y[$7E:1A59]  ;} Enemy projectile X position = [Mother Brain's hand beam next X position]
 $86:C68B AF 06 80 7E LDA $7E8006[$7E:8006]  ;\
-$86:C68F 99 27 1A    STA $1A27,y[$7E:1A35]  ;} Enemy projectile X subposition = [Mother Brain's death beam next X subposition]
+$86:C68F 99 27 1A    STA $1A27,y[$7E:1A35]  ;} Enemy projectile X subposition = [Mother Brain's hand beam next X subposition]
 $86:C692 AF 0C 80 7E LDA $7E800C[$7E:800C]  ;\
-$86:C696 99 93 1A    STA $1A93,y[$7E:1AA1]  ;} Enemy projectile Y position = [Mother Brain's death beam next Y position]
+$86:C696 99 93 1A    STA $1A93,y[$7E:1AA1]  ;} Enemy projectile Y position = [Mother Brain's hand beam next Y position]
 $86:C699 AF 0A 80 7E LDA $7E800A[$7E:800A]  ;\
-$86:C69D 99 6F 1A    STA $1A6F,y[$7E:1A7D]  ;} Enemy projectile Y subposition = [Mother Brain's death beam next Y subposition]
+$86:C69D 99 6F 1A    STA $1A6F,y[$7E:1A7D]  ;} Enemy projectile Y subposition = [Mother Brain's hand beam next Y subposition]
 $86:C6A0 AF 0E 80 7E LDA $7E800E[$7E:800E]  ;\
-$86:C6A4 99 B7 1A    STA $1AB7,y[$7E:1AC5]  ;} Enemy projectile X velocity = [Mother Brain's death beam next X velocity]
+$86:C6A4 99 B7 1A    STA $1AB7,y[$7E:1AC5]  ;} Enemy projectile X velocity = [Mother Brain's hand beam next X velocity]
 $86:C6A7 AF 10 80 7E LDA $7E8010[$7E:8010]  ;\
-$86:C6AB 99 DB 1A    STA $1ADB,y[$7E:1AE9]  ;} Enemy projectile Y velocity = [Mother Brain's death beam next Y velocity]
+$86:C6AB 99 DB 1A    STA $1ADB,y[$7E:1AE9]  ;} Enemy projectile Y velocity = [Mother Brain's hand beam next Y velocity]
 $86:C6AE BB          TYX
 $86:C6AF 20 D6 92    JSR $92D6  [$86:92D6]  ; Move enemy projectile according to enemy projectile velocity
 $86:C6B2 BD 4B 1A    LDA $1A4B,x[$7E:1A59]  ;\
-$86:C6B5 8F 08 80 7E STA $7E8008[$7E:8008]  ;} Mother Brain's death beam next X position = [enemy projectile X position]
+$86:C6B5 8F 08 80 7E STA $7E8008[$7E:8008]  ;} Mother Brain's hand beam next X position = [enemy projectile X position]
 $86:C6B9 BD 27 1A    LDA $1A27,x[$7E:1A35]  ;\
-$86:C6BC 8F 06 80 7E STA $7E8006[$7E:8006]  ;} Mother Brain's death beam next X subposition = [enemy projectile X subposition]
+$86:C6BC 8F 06 80 7E STA $7E8006[$7E:8006]  ;} Mother Brain's hand beam next X subposition = [enemy projectile X subposition]
 $86:C6C0 BD 93 1A    LDA $1A93,x[$7E:1AA1]  ;\
-$86:C6C3 8F 0C 80 7E STA $7E800C[$7E:800C]  ;} Mother Brain's death beam next Y position = [enemy projectile Y position]
+$86:C6C3 8F 0C 80 7E STA $7E800C[$7E:800C]  ;} Mother Brain's hand beam next Y position = [enemy projectile Y position]
 $86:C6C7 BD 6F 1A    LDA $1A6F,x[$7E:1A7D]  ;\
-$86:C6CA 8F 0A 80 7E STA $7E800A[$7E:800A]  ;} Mother Brain's death beam next Y subposition = [enemy projectile Y subposition]
+$86:C6CA 8F 0A 80 7E STA $7E800A[$7E:800A]  ;} Mother Brain's hand beam next Y subposition = [enemy projectile Y subposition]
 $86:C6CE 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:C6D2 29 FF 00    AND #$00FF             ;\
 $86:C6D5 18          CLC                    ;|
-$86:C6D6 6F 12 80 7E ADC $7E8012[$7E:8012]  ;} $12 = [Mother Brain's death beam next angle] + [random number] % 100h
+$86:C6D6 6F 12 80 7E ADC $7E8012[$7E:8012]  ;} $12 = [Mother Brain's hand beam next angle] + [random number] % 100h
 $86:C6DA 29 FF 00    AND #$00FF             ;|
 $86:C6DD 85 12       STA $12    [$7E:0012]  ;/
 $86:C6DF 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -10999,7 +10999,7 @@ $86:C75D             dw 0002,FFFE, 0002,FFFE, FFFE,0002, FFFE,0002
 }
 
 
-;;; $C76D: RTS. Pre-instruction - enemy projectile $CB67/$CB75 (Mother Brain's death beam) ;;;
+;;; $C76D: RTS. Pre-instruction - enemy projectile $CB67/$CB75 (Mother Brain's hand beam) ;;;
 {
 $86:C76D 60          RTS
 }
@@ -11021,10 +11021,10 @@ $86:C76E             dw 0006,82DC,
 }
 
 
-;;; $C796: Instruction list - enemy projectile $CB67/$CB75 (Mother Brain's death beam) ;;;
+;;; $C796: Instruction list - enemy projectile $CB67/$CB75 (Mother Brain's hand beam) ;;;
 {
 $86:C796             dx 0003,835D,
-                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's hand beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
@@ -11032,7 +11032,7 @@ $86:C796             dx 0003,835D,
                         0001,8380,
                         0001,8387,
                         0003,835D,
-                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's hand beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
@@ -11040,7 +11040,7 @@ $86:C796             dx 0003,835D,
                         0001,8380,
                         0001,8387,
                         0003,835D,
-                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's hand beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
@@ -11051,7 +11051,7 @@ $86:C796             dx 0003,835D,
 }
 
 
-;;; $C7FB: Spawn Mother Brain's death beam - fired enemy projectile ;;;
+;;; $C7FB: Spawn Mother Brain's hand beam - fired enemy projectile ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -11059,7 +11059,7 @@ $86:C7FB DA          PHX
 $86:C7FC 5A          PHY
 $86:C7FD BD FF 1A    LDA $1AFF,x[$7E:1B0F]  ; A = [enemy projectile $1AFF] (ignored)
 $86:C800 A0 75 CB    LDY #$CB75             ;\
-$86:C803 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's death beam - fired enemy projectile
+$86:C803 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's hand beam - fired enemy projectile
 $86:C807 7A          PLY
 $86:C808 FA          PLX
 $86:C809 6B          RTL
@@ -11558,8 +11558,8 @@ $86:CB2F             dx CA6A,CAA3,CAA4,00,00,3000,0000,84FC ; Mother Brain's pur
 $86:CB3D             dx CA83,CAA3,CAC8,00,00,3000,0000,84FC ; Mother Brain's purple breath - small
 $86:CB4B             dx C2F3,C335,C432,06,06,3050,C464,84FC ; Mother Brain's blue ring lasers
 $86:CB59             dx C482,C4C8,C76E,06,06,40A0,0000,84FC ; Mother Brain's bomb
-$86:CB67             dx C605,C76D,C796,06,06,1190,0000,84FC ; Mother Brain's death beam - charging
-$86:CB75             dx C684,C76D,C796,06,06,1190,0000,84FC ; Mother Brain's death beam - fired
+$86:CB67             dx C605,C76D,C796,06,06,1190,0000,84FC ; Mother Brain's hand beam - charging
+$86:CB75             dx C684,C76D,C796,06,06,1190,0000,84FC ; Mother Brain's hand beam - fired
 $86:CB83             dx C80A,C814,C829,00,00,7000,0000,84FC ; Mother Brain's rainbow beam charging
 $86:CB91             dx C843,C84D,C8B0,00,00,7000,0000,84FC ; Mother Brain's drool
 $86:CB9F             dx C843,C84D,C8B0,00,00,7000,0000,84FC ; Mother Brain's dying drool

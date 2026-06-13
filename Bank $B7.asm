@@ -412,7 +412,7 @@ $B7:9000             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 }
 
 
-;;; $A000: Tiles - Mother Brain - bomb shells, death beam, unused graphics ;;;
+;;; $A000: Tiles - Mother Brain - bomb shells, hand beam, unused graphics ;;;
 {
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; |     FFD|DD      |      FD|DD      |     FDD|CCDFCD  |CCDFCD  |      FD|DDDF    |        |        |FF      | 45F    |        |        |        |

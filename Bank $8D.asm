@@ -108,7 +108,7 @@ $8D:8348             dx 0001, 01FC,FC,35E0
 $8D:834F             dx 0001, 01FC,FC,35E1
 $8D:8356             dx 0001, 01FC,FC,35E2
 
-; Enemy projectile $CB67/$CB75 (Mother Brain's death beam)
+; Enemy projectile $CB67/$CB75 (Mother Brain's hand beam)
 $8D:835D             dx 0001, 01FC,FC,35E3
 $8D:8364             dx 0001, C3F8,F8,35E4
 $8D:836B             dx 0001, C3F8,F8,35E6
@@ -977,7 +977,7 @@ $8D:B012             dx 0003, 01FC,F6,BA5D, 01FA,FD,BA5D, 0000,02,BA5D
 ; Enemy projectile $DE7A (spores)
 ; Enemy projectile $E509/$E525 (dust cloud / explosion)
 ; Enemy projectile $E517/$E525 (eye door smoke)
-$8D:B023             dx 0001, 01FC,FC,3A5F
+$8D:B023             dx 0001, 01FC,FC,3A5F ; Also used by Mother Brain elbow charge energy
 $8D:B02A             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $8D:B040             dx 0004, 8000,00,FA90, 81F0,00,BA90, 8000,F0,7A90, 81F0,F0,3A90
 $8D:B056             dx 0004, 8000,00,FA92, 81F0,00,BA92, 8000,F0,7A92, 81F0,F0,3A92
