@@ -166,10 +166,11 @@ Gameplay
         $6480..8F: Dust cloud (big, small, Wrecked Ship chozo spike clearing footstep, Tourian statue) - frame 0
         
         $64C0..FF: Bomb
+        
         $6500..3F: Flare (charge beam / hyper beam / grapple beam)
         $6510..1F: Dud shot - frame 1 / tiny/beam explosion - frame 1 / laser flare - frame 1 / work robot laser - frame 1
-        $6520..2F: Unused
         $6530..3F: Dud shot - frame 0 / tiny/beam explosion - frame 0 / laser flare - frame 0 / work robot laser - frame 0
+        
         $6540..5F: Missile - horizontal
         $6560..8F: Missile - diagonal
         $6590..AF: Missile - vertical
