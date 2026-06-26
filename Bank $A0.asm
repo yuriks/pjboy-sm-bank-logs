@@ -4479,6 +4479,11 @@ $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 ;;         3: Fake Kraid explosion
 ;;         4: Big explosion. Used by space pirates, Shaktool, ki-hunter, dragon, kago, yapping maw, evir, metroid, super-sidehopper/desgeega, tatori
 ;;     X: Enemy index
+
+; Callers aren't making an effort to provide the enemy index in X
+; In fact, there are multiple callers passing garbage in X
+; Enemy index is loaded into X at $A3D3, so only the enemy AI handler read is affected
+
 $A0:A3AF 08          PHP
 $A0:A3B0 8B          PHB
 $A0:A3B1 F4 00 A0    PEA $A000              ;\
@@ -4487,7 +4492,7 @@ $A0:A3B5 AB          PLB                    ;/
 $A0:A3B6 C2 30       REP #$30
 $A0:A3B8 48          PHA
 $A0:A3B9 BD 8A 0F    LDA $0F8A,x[$7E:02DD]  ;\
-$A0:A3BC C9 01 00    CMP #$0001             ;} If [enemy AI handler] = grapple:
+$A0:A3BC C9 01 00    CMP #$0001             ;} If [enemy AI handler] = grapple (broken check, see note):
 $A0:A3BF D0 06       BNE $06    [$A3C7]     ;/
 $A0:A3C1 A9 C5 C8    LDA #$C8C5             ;\
 $A0:A3C4 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5 (released from swing)
