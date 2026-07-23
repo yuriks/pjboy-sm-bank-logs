@@ -7599,7 +7599,7 @@ $A7:DDB7 D0 1B       BNE $1B    [$DDD4]     ;} If [enemy health] != 0: go to BRA
 $A7:DDB9 A9 73 00    LDA #$0073             ;\
 $A7:DDBC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 73h, sound library 2, max queued sounds allowed = 6 (Phantoon's cry)
 $A7:DDC0 A9 01 00    LDA #$0001             ;\
-$A7:DDC3 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1, Phantoon hurt flash palette loaded flag = 0
+$A7:DDC3 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1 (never read), Phantoon hurt flash palette loaded flag = 0
 $A7:DDC6 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A7:DDC9 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
 $A7:DDCC 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
@@ -7675,12 +7675,12 @@ $A7:DE5C 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:DE60 29 07 00    AND #$0007             ;\
 $A7:DE63 A8          TAY                    ;} Y = [random number] % 8
 $A7:DE64 B9 A5 CD    LDA $CDA5,y[$A7:CDA5]  ;\
-$A7:DE67 29 FF 00    AND #$00FF             ;} $0FEA = [$CDA5 + [Y]]
+$A7:DE67 29 FF 00    AND #$00FF             ;} $0FEA = [$CDA5 + [Y]] (never read)
 $A7:DE6A 8D EA 0F    STA $0FEA  [$7E:0FEA]  ;/
 $A7:DE6D 98          TYA                    ;\
-$A7:DE6E 8D 76 10    STA $1076  [$7E:1076]  ;} $1076 = [Y]
+$A7:DE6E 8D 76 10    STA $1076  [$7E:1076]  ;} $1076 = [Y] (never read)
 $A7:DE71 A9 01 00    LDA #$0001             ;\
-$A7:DE74 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1, Phantoon hurt flash palette loaded flag = 0
+$A7:DE74 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1 (never read), Phantoon hurt flash palette loaded flag = 0
 $A7:DE77 AD 28 10    LDA $1028  [$7E:1028]  ;\
 $A7:DE7A D0 14       BNE $14    [$DE90]     ;} If swooping flag is not set:
 $A7:DE7C A9 01 00    LDA #$0001             ;\
@@ -7696,7 +7696,7 @@ $A7:DE91 6B          RTL                    ; Return
 
 ; BRANCH_RETURN
 $A7:DE92 A9 02 00    LDA #$0002             ;\
-$A7:DE95 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 2, Phantoon hurt flash palette loaded flag = 0
+$A7:DE95 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 2 (never read), Phantoon hurt flash palette loaded flag = 0
 $A7:DE98 AB          PLB
 $A7:DE99 6B          RTL                    ; Return
 
