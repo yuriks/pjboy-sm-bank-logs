@@ -362,7 +362,7 @@ $8F:8540             dx B6D3, 05,0A, 8000, ; Map station
                         0000
 
 ; Room $9C5E. Fireflea room
-$8F:8548             dx C878, 01,26, 0027, ; Door. Green door facing right
+$8F:8548             dx C878, 01,26, 0027, ; Door. Green door facing right <-- out of bounds
                         0000
 
 ; Room $9C89. Green Brinstar missile station
@@ -5669,7 +5669,7 @@ $8F:C6ED             dx 0000
 
 ; Room $D72A. Maridia grapple room
 $8F:C6EF             dx C88A, 6E,06, 0098, ; Door. Red door facing left
-                        C872, 4E,26, 0099, ; Door. Green door facing left
+                        C872, 4E,26, 0099, ; Door. Green door facing left <-- out of bounds
                         C872, 6E,16, 009A, ; Door. Green door facing left
                         0000
 
