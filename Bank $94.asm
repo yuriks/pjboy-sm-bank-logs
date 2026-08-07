@@ -5552,8 +5552,8 @@ $94:A7F5             dw D0D8, D0DC, D0E0, D0D8
 ;;; $A7FD: Block grapple reaction - spike block ;;;
 {
 ;; Returns:
-;;     Carry/overflow: Clear if BTS >= 80h, otherwise set according to PLM initialisation
-;;         BTS 3h (Draygon's broken turret): Set carry and overflow
+;;     Carry/overflow: Clear if BTS >= 80h, otherwise set according to PLM initialisation:
+;;         BTS 3 (Draygon's broken turret): Set carry and overflow
 ;;         Otherwise: Clear carry and overflow
 
 ; Spawn PLM for spike block

@@ -5357,7 +5357,7 @@ $82:AC00 3C 62 C0    BIT $C062,x            ; <-- Whoops, forgot to write a cond
 $82:AC03 E8          INX                    ;\
 $82:AC04 E8          INX                    ;} X += 2
 $82:AC05 E0 06 00    CPX #$0006             ;\
-$82:AC08 30 F6       BMI $F6    [$AC00]     ;} If [X] < 6h: go to LOOP_BOOTS
+$82:AC08 30 F6       BMI $F6    [$AC00]     ;} If [X] < 6: go to LOOP_BOOTS
 $82:AC0A 80 09       BRA $09    [$AC15]     ; Go to BRANCH_RETURN
 
 ; Nothing points here

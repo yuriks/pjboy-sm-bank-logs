@@ -130,7 +130,7 @@ $90:80B7 60          RTS
 ;;     $12: Samus bottom boundary
 ;;     $14: Samus top boundary
 
-; 6h: Water
+; 6: Water
 ; 26h: Tourian entrance statue
 $90:80B8 AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $90:80BB 30 BB       BMI $BB    [$8078]     ;} If [FX Y position] < 0: go to animate Samus - FX = none
@@ -8703,7 +8703,7 @@ $90:B8D3 09 00 80    ORA #$8000             ;} Projectile type = [equipped beams
 $90:B8D6 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $90:B8D9 29 0F 00    AND #$000F             ;\
 $90:B8DC 0A          ASL A                  ;|
-$90:B8DD A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
+$90:B8DD A8          TAY                    ;} Queue sound [$C28F + ([projectile type] & Fh) * 2], sound library 1, max queued sounds allowed = 15
 $90:B8DE B9 8F C2    LDA $C28F,y[$90:C28F]  ;|
 $90:B8E1 22 21 90 80 JSL $809021[$80:9021]  ;/
 $90:B8E5 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
@@ -8830,7 +8830,7 @@ $90:B9CD 09 10 80    ORA #$8010             ;} Projectile type = [equipped beams
 $90:B9D0 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $90:B9D3 29 0F 00    AND #$000F             ;\
 $90:B9D6 0A          ASL A                  ;|
-$90:B9D7 A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
+$90:B9D7 A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds allowed = 15
 $90:B9D8 B9 A7 C2    LDA $C2A7,y[$90:C2AF]  ;|
 $90:B9DB 22 21 90 80 JSL $809021[$80:9021]  ;/
 $90:B9DF 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
@@ -9277,7 +9277,7 @@ $90:BCF9 A9 18 90    LDA #$9018             ;\
 $90:BCFC 9D 18 0C    STA $0C18,x[$7E:0C18]  ;} Projectile type = charged plasma beam
 $90:BCFF 29 0F 00    AND #$000F             ;\
 $90:BD02 0A          ASL A                  ;|
-$90:BD03 AA          TAX                    ;} Queue sound 1Fh, sound library 1, max queued sounds = 15 (charged plasma beam / hyper beam)
+$90:BD03 AA          TAX                    ;} Queue sound 1Fh, sound library 1, max queued sounds allowed = 15 (charged plasma beam / hyper beam)
 $90:BD04 BD A7 C2    LDA $C2A7,x[$90:C2B7]  ;|
 $90:BD07 22 21 90 80 JSL $809021[$80:9021]  ;/
 $90:BD0B 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0

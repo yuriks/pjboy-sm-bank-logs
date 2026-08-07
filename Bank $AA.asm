@@ -5706,15 +5706,15 @@ $AA:E62F 6B          RTL
 
 ; Enemy X velocity. Unit 1/100h px/frame. Absolute value used for Y velocity
 $AA:E630             dw 0000,0000,0000,0000,FE00,FD00,F200,F800,FE00,FD00,F200,F800, 0000,0000,0000,0000, ; 0..1Eh: Wrecked Ship. Only 0..16h used
-                        0000,0000,0000,0000, 0200,0300,0E00,0800,0200,0300,0E00,0800,0000,0000,0000,0000  ; 20h..3Eh: Lower Norfair. Only 0..6h used
+                        0000,0000,0000,0000, 0200,0300,0E00,0800,0200,0300,0E00,0800,0000,0000,0000,0000  ; 20h..3Eh: Lower Norfair. Only 0..6 used
 
 ; Samus X offsets from enemy
 $AA:E670             dw FFE4,FFE2,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0, FFE0,FFE0,FFE0,FFE0, ; 0..1Eh: Wrecked Ship. Only 0..16h used
-                        001C,001E,0020,0020, 0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020  ; 20h..3Eh: Lower Norfair. Only 0..6h used
+                        001C,001E,0020,0020, 0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020  ; 20h..3Eh: Lower Norfair. Only 0..6 used
 
 ; Samus Y offsets from enemy
 $AA:E6B0             dw FFE0,FFE7,FFE9,FFE9,FFE9,FFE8,FFE7,FFE8,FFE9,FFE8,FFE7,FFE8, FFE9,FFE9,FFE9,FFE9, ; 0..1Eh: Wrecked Ship. Only 0..16h used
-                        FFE0,FFE7,FFE9,FFE9, FFE9,FFE8,FFE7,FFE8,FFE9,FFE8,FFE7,FFE8,FFE9,FFE9,FFE9,FFE9  ; 20h..3Eh: Lower Norfair. Only 0..6h used
+                        FFE0,FFE7,FFE9,FFE9, FFE9,FFE8,FFE7,FFE8,FFE9,FFE8,FFE7,FFE8,FFE9,FFE9,FFE9,FFE9  ; 20h..3Eh: Lower Norfair. Only 0..6 used
 }
 
 
