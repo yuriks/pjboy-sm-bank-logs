@@ -310,7 +310,7 @@ $90:81D8 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:81DB 89 20 00    BIT #$0020             ;} If gravity suit equipped: go to BRANCH_GRAVITY_SUIT_EQUIPPED
 $90:81DE D0 2F       BNE $2F    [$820F]     ;/
 $90:81E0 AD DA 09    LDA $09DA  [$7E:09DA]  ;\
-$90:81E3 89 07 00    BIT #$0007             ;} If [in-game time frames] % 8 = 0:
+$90:81E3 89 07 00    BIT #$0007             ;} If [game time frames] % 8 = 0:
 $90:81E6 D0 0F       BNE $0F    [$81F7]     ;/
 $90:81E8 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $90:81EB C9 47 00    CMP #$0047             ;} If [Samus health] > 70:
@@ -350,7 +350,7 @@ $90:821C 30 EE       BMI $EE    [$820C]     ;} If [acid Y position] < 0: go to a
 $90:821E C5 12       CMP $12    [$7E:0012]  ;\
 $90:8220 10 EA       BPL $EA    [$820C]     ;} If [acid Y position] >= [Samus bottom boundary]: go to animate Samus - FX = none
 $90:8222 AD DA 09    LDA $09DA  [$7E:09DA]  ;\
-$90:8225 89 07 00    BIT #$0007             ;} If [game time, frames] % 8 = 0:
+$90:8225 89 07 00    BIT #$0007             ;} If [game time frames] % 8 = 0:
 $90:8228 D0 0F       BNE $0F    [$8239]     ;/
 $90:822A AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $90:822D C9 47 00    CMP #$0047             ;} If [Samus health] > 70:
@@ -16256,7 +16256,7 @@ $90:ED50             db 00, ;  0: Standing
 }
 
 
-;;; $ED6C: Unused. Display in-game time as ammo ;;;
+;;; $ED6C: Unused. Display game time as ammo ;;;
 {
 $90:ED6C AD E0 09    LDA $09E0  [$7E:09E0]  ;\
 $90:ED6F 8D C6 09    STA $09C6  [$7E:09C6]  ;} Current missiles = max missiles = [game time hours]

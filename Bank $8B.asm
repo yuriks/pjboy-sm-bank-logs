@@ -15054,8 +15054,8 @@ $8B:F3DF 8D 06 42    STA $4206              ;|
 $8B:F3E2 EA          NOP                    ;|
 $8B:F3E3 EA          NOP                    ;|
 $8B:F3E4 EA          NOP                    ;|
-$8B:F3E5 EA          NOP                    ;} Hours tens digit = [game time, hours] / 10
-$8B:F3E6 EA          NOP                    ;} Hours units digit = [game time, hours] % 10
+$8B:F3E5 EA          NOP                    ;} Hours tens digit = [game time hours] / 10
+$8B:F3E6 EA          NOP                    ;} Hours units digit = [game time hours] % 10
 $8B:F3E7 EA          NOP                    ;|
 $8B:F3E8 EA          NOP                    ;|
 $8B:F3E9 C2 20       REP #$20               ;|
@@ -15071,8 +15071,8 @@ $8B:F401 8D 06 42    STA $4206              ;|
 $8B:F404 EA          NOP                    ;|
 $8B:F405 EA          NOP                    ;|
 $8B:F406 EA          NOP                    ;|
-$8B:F407 EA          NOP                    ;} Minutes tens digit = [game time, minutes] / 10
-$8B:F408 EA          NOP                    ;} Minutes units digit = [game time, minutes] % 10
+$8B:F407 EA          NOP                    ;} Minutes tens digit = [game time minutes] / 10
+$8B:F408 EA          NOP                    ;} Minutes units digit = [game time minutes] % 10
 $8B:F409 EA          NOP                    ;|
 $8B:F40A EA          NOP                    ;|
 $8B:F40B C2 20       REP #$20               ;|

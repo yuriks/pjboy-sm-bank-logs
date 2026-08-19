@@ -4015,8 +4015,8 @@ $81:A152 AD E0 09    LDA $09E0  [$7E:09E0]  ;\
 $81:A155 8D 04 42    STA $4204              ;|
 $81:A158 E2 20       SEP #$20               ;|
 $81:A15A A9 0A       LDA #$0A               ;|
-$81:A15C 8D 06 42    STA $4206              ;} $4214 = [game time, hours] / 10
-$81:A15F 48          PHA                    ;} $4216 = [game time, hours] % 10
+$81:A15C 8D 06 42    STA $4206              ;} $4214 = [game time hours] / 10
+$81:A15F 48          PHA                    ;} $4216 = [game time hours] % 10
 $81:A160 68          PLA                    ;|
 $81:A161 48          PHA                    ;|
 $81:A162 68          PLA                    ;|
@@ -4042,8 +4042,8 @@ $81:A190 AD DE 09    LDA $09DE  [$7E:09DE]  ;\
 $81:A193 8D 04 42    STA $4204              ;|
 $81:A196 E2 20       SEP #$20               ;|
 $81:A198 A9 0A       LDA #$0A               ;|
-$81:A19A 8D 06 42    STA $4206              ;} $4214 = [game time, minutes] / 10
-$81:A19D 48          PHA                    ;} $4216 = [game time, minutes] % 10
+$81:A19A 8D 06 42    STA $4206              ;} $4214 = [game time minutes] / 10
+$81:A19D 48          PHA                    ;} $4216 = [game time minutes] % 10
 $81:A19E 68          PLA                    ;|
 $81:A19F 48          PHA                    ;|
 $81:A1A0 68          PLA                    ;|
@@ -6077,7 +6077,7 @@ $81:B348 A9 20 00    LDA #$0020             ;\
 $81:B34B 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down button = L
 $81:B34E 9C DA 09    STZ $09DA  [$7E:09DA]  ;\
 $81:B351 9C DC 09    STZ $09DC  [$7E:09DC]  ;|
-$81:B354 9C DE 09    STZ $09DE  [$7E:09DE]  ;} In-game timer = 0:0:0.0
+$81:B354 9C DE 09    STZ $09DE  [$7E:09DE]  ;} Game time = 0:0:0.0
 $81:B357 9C E0 09    STZ $09E0  [$7E:09E0]  ;/
 $81:B35A 9C E2 09    STZ $09E2  [$7E:09E2]  ; Disable Japanese text
 $81:B35D 9C E4 09    STZ $09E4  [$7E:09E4]  ; Disable moonwalk
