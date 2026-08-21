@@ -323,7 +323,7 @@ $D0..02CF: VRAM write table. 7 byte entries. 2 byte zero-terminator. Table size 
     + 2: Source address
     + 5: Destination address. If [destination address] & 8000h: DMA transfer uses 32-byte increment mode (for writing a column in a tilemap)
 }
-$02D0..032F: Mode 7 transfers. 7 or 9 byte entries. 1 byte zero-terminator. No enforced upper limit (even in mode 7 object handling)
+$02D0..032F: Mode 7 transfers. 7 or 9 byte entries. 1 byte zero-terminator. No enforced upper limit (even in mode 7 object handling). Max used is 8 during Ceres Ridley fight (so $0319..2F is unused). Nothing actually does a CGRAM transfer
 {
     + 0: Control
         DMA control = [control] & 1Fh (transfer unit selection and address increment direction)
@@ -340,7 +340,7 @@ $0330: VRAM write table stack pointer
 $0332: Unused
 $0334: Mode 7 transfers stack pointer
 $0336..3F: Unused
-$0340..5C: VRAM read table. 9 byte entries. 2 byte zero-terminator. No enforced upper limit, but only enough space for 3 entries (only 1 ever used in practice). Used by Kraid pausing code ($A7:C325) and x-ray ($91:CB1C/CB57/CB8E/D0D3)
+$0340..5C: VRAM read table. 9 byte entries. 2 byte zero-terminator. No enforced upper limit, but only enough space for 3 entries. Max used is 1 (so $034B..5C is unused). Used by Kraid pausing code ($A7:C325) and x-ray ($91:CB1C/CB57/CB8E/D0D3)
 {
     + 0: Source address
     + 2: DMA control (usually 81h)
@@ -3562,7 +3562,7 @@ $7E:6000..87FF: Post-credits Super Metroid icon
 
 $7E:7000..97FF: Mostly extra enemy RAM. Cleared by enemy initialisation ($A0:8A9E)
 {
-    $7E:7000..97FF: Enemy tile data. Transferred to VRAM $6C00..7FFF by $A0:8CD7 when loading game. The first 200h bytes are initialised to the last 10h non-X standard sprite tiles and are never overwritten by any enemies, so it's basically wasted memory
+    $7E:7000..97FF: Enemy tile data. Transferred to VRAM $6C00..7FFF by $A0:8CD7 when loading game. Pretty pointless, as evidenced by door transitions not using this RAM. The first 200h bytes are initialised to the last 10h non-X standard sprite tiles and are never overwritten by any enemies >_<;
     $7E:7000..77FF: Enemy spawn data. 40h byte slots
     {
         + 0: If not 0/8, then if enemy is respawning enemy placeholder, it can still interact with Samus, although it won't because its enemy touch is $804C. Never written

@@ -1892,8 +1892,8 @@ $80:8B4E 6B          RTL
 ;     $8B:9537: Process mode 7 object instruction list (used only by baby metroid in title sequence)
 ;     $8B:BDF9: Cinematic function - fly to Ceres - flying into camera with DB:X = $8B:BE74 (back of gunship going to Ceres)
 ;     $8B:C345: Cinematic function - Ceres goes boom - Ceres explosions with DB:X = $8B:C3E6 (front of gunship leaving Ceres) / $8B:C3F0/C3FA (clear Ceres tilemap)
-;     $A6:ACBC (Ceres Ridley)
-;     $A6:AD27 (Ceres Ridley)
+;     $A6:ACBC: Animate Ceres Ridley mode 7 baby metroid with DB:X = $A6:ACE2/ACF5/AD08
+;     $A6:AD27: Animate Ceres Ridley mode 7 wings with DB:X = $A6:AD49/AD80
 ;     $A6:F8F1: Animate Ceres elevator platform with DB:X = $A6:F904/F90E (light/dark)
 
 ; CGRAM transfers are supported, but no mode 7 transfers data actually define any CGRAM transfers, so $8B62..8B8A is dead code
