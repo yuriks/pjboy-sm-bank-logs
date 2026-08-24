@@ -828,9 +828,11 @@ $85:8619 60          RTS
 
 ;;; $861A: Restore PPU ;;;
 {
+; If there's an active power bomb explosion, then the call to $88:84B9 will increase the explosion radius,
+; and no collision detection is done before the next radius increase, resulting in PBs missing a column of blocks sometimes
 $85:861A C2 20       REP #$20
 $85:861C 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
-$85:861F C2 20       REP #$20
+$85:861F C2 20       REP #$20               ; >_<;
 $85:8621 A9 80 58    LDA #$5880             ;\
 $85:8624 8D 16 21    STA $2116              ;|
 $85:8627 A9 01 18    LDA #$1801             ;|
