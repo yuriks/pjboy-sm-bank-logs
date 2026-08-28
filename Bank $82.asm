@@ -1441,7 +1441,7 @@ $82:8BCA 60          RTS
 ;;     A: Game options menu object initialisation parameter
 ;;     Y: Game options menu object ID
 ;; Returns:
-;;     Carry: Set if enemy projectile could not be spawned
+;;     Carry: Set if game options menu object could not be spawned
 
 $82:8BCB 08          PHP
 $82:8BCC C2 30       REP #$30
