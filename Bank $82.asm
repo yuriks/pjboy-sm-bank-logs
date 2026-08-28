@@ -7549,7 +7549,7 @@ $82:BAA0 AD A1 19    LDA $19A1  [$7E:19A1]  ;\
 $82:BAA3 AA          TAX                    ;} X = [menu selection missile X position]
 $82:BAA4 68          PLA
 $82:BAA5 AB          PLB
-$82:BAA6 5C 1F 89 81 JML $81891F[$81:891F]  ; Go add pause menu / menu spritemap to OAM
+$82:BAA6 5C 1F 89 81 JML $81891F[$81:891F]  ; Go to add pause menu / menu spritemap to OAM
 
 $82:BAAA             dw 0008, 0008, 0008, 0008 ; Delays
 $82:BAB2             dw 0037, 0036, 0035, 0034 ; Spritemap IDs (into $82:C569 table)
@@ -7598,7 +7598,7 @@ $82:BB02 BD 0E BB    LDA $BB0E,x            ;\
 $82:BB05 AA          TAX                    ;} X = [$BB0C + [X] + 2]
 $82:BB06 68          PLA
 $82:BB07 AB          PLB
-$82:BB08 5C 1F 89 81 JML $81891F[$81:891F]  ; Go add pause menu / menu spritemap to OAM
+$82:BB08 5C 1F 89 81 JML $81891F[$81:891F]  ; Go to add pause menu / menu spritemap to OAM
 
 ;                        _____________ Spritemap index
 ;                       |     ________ X position
