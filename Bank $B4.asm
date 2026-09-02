@@ -1,6 +1,6 @@
 ;;; $8000: Enemy sets ;;;
 {
-; Enemy population format is:
+; Enemy set format is:
 ;      _ Debug enemy set name
 ;     |
 ;     aa,aa,aa,aa,aa,aa,aa
