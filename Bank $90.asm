@@ -8989,6 +8989,11 @@ $90:BAFB 60          RTS                    ;} Return carry set
 ;;; $BAFC: Handle charging beam graphics / audio ;;;
 {
 ; For grapple beam, see $9B:C036
+
+; Note that charging beam sound is played every frame that beam charge counter is 10h,
+; hence an action like spin jumping that doesn't reset beam charge counter, but that does stop its increment,
+; causes the sound queue to get filled with up to 9 charging beam sounds
+
 $90:BAFC 08          PHP
 $90:BAFD C2 30       REP #$30
 $90:BAFF AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
