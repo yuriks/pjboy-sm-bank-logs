@@ -4289,13 +4289,13 @@ $B4:BC9B AE 44 18    LDX $1844  [$7E:1844]  ;\
 $B4:BC9E BF 78 EF 7E LDA $7EEF78,x[$7E:EFB6];} If [sprite object instruction list pointer] = 0: go to BRANCH_NEXT
 $B4:BCA2 F0 33       BEQ $33    [$BCD7]     ;/
 $B4:BCA4 BF F8 F2 7E LDA $7EF2F8,x[$7E:F336];\
-$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object disable flag] & 1 != 0: return
+$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object disable flag] & 1 != 0: go to BRANCH_NEXT
 $B4:BCAB D0 2A       BNE $2A    [$BCD7]     ;/
 $B4:BCAD BF F8 EF 7E LDA $7EEFF8,x[$7E:F036];\
 $B4:BCB1 30 30       BMI $30    [$BCE3]     ;} If [sprite object instruction/timer] & 8000h: go to BRANCH_ASM_INSTRUCTION
 $B4:BCB3 3A          DEC A                  ;\
 $B4:BCB4 9F F8 EF 7E STA $7EEFF8,x[$7E:F036];} Decrement sprite object instruction timer
-$B4:BCB8 D0 1D       BNE $1D    [$BCD7]     ; If [sprite object instruction timer] != 0: go to BRANCH_RETURN
+$B4:BCB8 D0 1D       BNE $1D    [$BCD7]     ; If [sprite object instruction timer] != 0: go to BRANCH_NEXT
 $B4:BCBA BF 78 EF 7E LDA $7EEF78,x[$7E:EFB6];\
 $B4:BCBE 1A          INC A                  ;|
 $B4:BCBF 1A          INC A                  ;|
