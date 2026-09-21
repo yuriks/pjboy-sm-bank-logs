@@ -4520,19 +4520,19 @@ $A9:B5C5 6B          RTL
 
 ;;; $B5C6: Enemy touch - enemy $EC3F (Mother Brain brain) ;;;
 {
-; I'm pretty sure it's impossible to touch Mother Brain brain due to the custom hitboxes
+; TODO: Check which body hitboxes use this
 $A9:B5C6 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $A9:B5C9 29 FF 00    AND #$00FF             ;|
 $A9:B5CC C9 03 00    CMP #$0003             ;} If [Samus movement type] != spin jumping: return
 $A9:B5CF D0 0F       BNE $0F    [$B5E0]     ;/
-$A9:B5D1 A0 0D 00    LDY #$000D             ; Y = Dh
-$A9:B5D4 AD DC 0F    LDA $0FDC  [$7E:0FDC]  ;\
-$A9:B5D7 F0 04       BEQ $04    [$B5DD]     ;} If [Mother Brain brain invincibility timer] != 0:
-$A9:B5D9 4A          LSR A                  ;\
-$A9:B5DA 90 01       BCC $01    [$B5DD]     ;} If [Mother Brain brain invincibility timer] % 2 != 0:
-$A9:B5DC C8          INY                    ; Y = Eh
-
-$A9:B5DD 8C DC 0F    STY $0FDC  [$7E:0FDC]  ; Mother Brain brain invincibility timer = [Y]
+$A9:B5D1 A0 0D 00    LDY #$000D             ;\
+$A9:B5D4 AD DC 0F    LDA $0FDC  [$7E:0FDC]  ;|
+$A9:B5D7 F0 04       BEQ $04    [$B5DD]     ;|
+$A9:B5D9 4A          LSR A                  ;|
+$A9:B5DA 90 01       BCC $01    [$B5DD]     ;} Mother Brain brain invincibility timer = Dh + [Mother Brain brain invincibility timer] % 2
+$A9:B5DC C8          INY                    ;|
+                                            ;|
+$A9:B5DD 8C DC 0F    STY $0FDC  [$7E:0FDC]  ;/
 
 $A9:B5E0 6B          RTL
 }
