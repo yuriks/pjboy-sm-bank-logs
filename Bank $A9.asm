@@ -4520,7 +4520,6 @@ $A9:B5C5 6B          RTL
 
 ;;; $B5C6: Enemy touch - enemy $EC3F (Mother Brain brain) ;;;
 {
-; TODO: Check which body hitboxes use this
 $A9:B5C6 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $A9:B5C9 29 FF 00    AND #$00FF             ;|
 $A9:B5CC C9 03 00    CMP #$0003             ;} If [Samus movement type] != spin jumping: return
