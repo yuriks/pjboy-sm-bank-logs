@@ -3520,7 +3520,7 @@ $A2:A74F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = 
 
 ; BRANCH_MERGE
 $A2:A752 A9 D7 A7    LDA #$A7D7             ;\
-$A2:A755 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = $A7D7 (RTL)
+$A2:A755 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = $A7D7 (RTL) (never read)
 $A2:A758 6B          RTL
 }
 
@@ -3770,7 +3770,7 @@ $A2:A925 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = [Samus
 $A2:A928 A9 01 00    LDA #$0001             ;\
 $A2:A92B 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:A92E A9 BE A5    LDA #$A5BE             ;\
-$A2:A931 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE
+$A2:A931 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE (opening)
 $A2:A934 A9 90 00    LDA #$0090             ;\
 $A2:A937 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:A93A A9 14 00    LDA #$0014             ;\
@@ -3814,7 +3814,7 @@ $A2:A96A 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A987
 $A2:A96D A9 01 00    LDA #$0001             ;\
 $A2:A970 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:A973 A9 EE A5    LDA #$A5EE             ;\
-$A2:A976 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE
+$A2:A976 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE (closing)
 $A2:A979 A9 90 00    LDA #$0090             ;\
 $A2:A97C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:A97F A9 15 00    LDA #$0015             ;\
@@ -3908,7 +3908,7 @@ $A2:AA32 9D FE 0F    STA $0FFE,x[$7E:0FFE]  ;/
 $A2:AA35 A9 01 00    LDA #$0001             ;\
 $A2:AA38 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:AA3B A9 BE A5    LDA #$A5BE             ;\
-$A2:AA3E 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE
+$A2:AA3E 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE (opening)
 $A2:AA41 A9 90 00    LDA #$0090             ;\
 $A2:AA44 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:AA47 A9 14 00    LDA #$0014             ;\
@@ -3951,7 +3951,7 @@ $A2:AA77 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AA94
 $A2:AA7A A9 01 00    LDA #$0001             ;\
 $A2:AA7D 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:AA80 A9 EE A5    LDA #$A5EE             ;\
-$A2:AA83 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE
+$A2:AA83 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE (closing)
 $A2:AA86 A9 90 00    LDA #$0090             ;\
 $A2:AA89 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:AA8C A9 15 00    LDA #$0015             ;\
@@ -4016,11 +4016,11 @@ $A2:AAF6 F0 20       BEQ $20    [$AB18]     ;/
 
 $A2:AAF8 A9 C7 AB    LDA #$ABC7             ;\
 $A2:AAFB 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ABC7 (liftoff)
-$A2:AAFE 9E F2 0F    STZ $0FF2,x[$7E:0FF2]  ; Enemy ([X] + 1) $0FB2 = 0
-$A2:AB01 9E F0 0F    STZ $0FF0,x[$7E:0FF0]  ; Enemy ([X] + 1) $0FB0 = 0
-$A2:AB04 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ;\
-$A2:AB07 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ;|
-$A2:AB0A 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} Ending clear time digits = 0
+$A2:AAFE 9E F2 0F    STZ $0FF2,x[$7E:0FF2]  ; Enemy ([X] + 1) liftoff Y velocity = 0
+$A2:AB01 9E F0 0F    STZ $0FF0,x[$7E:0FF0]  ; Enemy ([X] + 1) liftoff timer = 0
+$A2:AB04 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Gunship liftoff transfer index = 0
+$A2:AB07 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ;\
+$A2:AB0A 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} $0DEE..F3 = 0 (never read)
 $A2:AB0D 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ;/
 $A2:AB10 A9 0A 00    LDA #$000A             ;\
 $A2:AB13 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - stop drawing Samus
@@ -4054,7 +4054,7 @@ $A2:AB43 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AB60
 $A2:AB46 A9 01 00    LDA #$0001             ;\
 $A2:AB49 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:AB4C A9 BE A5    LDA #$A5BE             ;\
-$A2:AB4F 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE
+$A2:AB4F 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5BE (opening)
 $A2:AB52 A9 90 00    LDA #$0090             ;\
 $A2:AB55 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:AB58 A9 14 00    LDA #$0014             ;\
@@ -4099,7 +4099,7 @@ $A2:AB88 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ABA5
 $A2:AB8B A9 01 00    LDA #$0001             ;\
 $A2:AB8E 9D 14 10    STA $1014,x[$7E:1014]  ;} Enemy ([X] + 2) instruction timer = 1
 $A2:AB91 A9 EE A5    LDA #$A5EE             ;\
-$A2:AB94 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE
+$A2:AB94 9D 12 10    STA $1012,x[$7E:1012]  ;} Enemy ([X] + 2) instruction list pointer = $A5EE (closing)
 $A2:AB97 A9 90 00    LDA #$0090             ;\
 $A2:AB9A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy 0 function timer = 90h
 $A2:AB9D A9 15 00    LDA #$0015             ;\
@@ -4135,8 +4135,8 @@ $A2:ABC6 6B          RTL
 {
 ;; Parameters:
 ;;     X: Enemy index
-$A2:ABC7 AC EC 0D    LDY $0DEC  [$7E:0DEC]  ;\
-$A2:ABCA DA          PHX                    ;|
+$A2:ABC7 AC EC 0D    LDY $0DEC  [$7E:0DEC]  ; Y = [gunship liftoff transfer index]
+$A2:ABCA DA          PHX                    ;\
 $A2:ABCB AE 30 03    LDX $0330  [$7E:0330]  ;|
 $A2:ABCE A9 00 04    LDA #$0400             ;|
 $A2:ABD1 95 D0       STA $D0,x  [$7E:00D0]  ;|
@@ -4146,7 +4146,7 @@ $A2:ABD5 B9 07 AC    LDA $AC07,y[$A2:AC07]  ;|
 $A2:ABD8 95 D0       STA $D0,x  [$7E:00D2]  ;|
 $A2:ABDA E8          INX                    ;|
 $A2:ABDB E8          INX                    ;|
-$A2:ABDC E2 20       SEP #$20               ;} Queue transfer of 400h bytes from $94:C800 + [$0DEC] / 2 * 400h to VRAM $7600 + [$0DEC] / 2 * 200h
+$A2:ABDC E2 20       SEP #$20               ;} Queue transfer of 400h bytes from $94:C800 + [Y] / 2 * 400h to VRAM $7600 + [Y] / 2 * 200h
 $A2:ABDE A9 94       LDA #$94               ;|
 $A2:ABE0 95 D0       STA $D0,x  [$7E:00D4]  ;|
 $A2:ABE2 C2 20       REP #$20               ;|
@@ -4159,13 +4159,13 @@ $A2:ABEC 8E 30 03    STX $0330  [$7E:0330]  ;|
 $A2:ABEF FA          PLX                    ;/
 $A2:ABF0 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $A2:ABF3 1A          INC A                  ;|
-$A2:ABF4 1A          INC A                  ;} $0DEC += 2
+$A2:ABF4 1A          INC A                  ;} Gunship liftoff transfer index += 2
 $A2:ABF5 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;/
 $A2:ABF8 C9 0A 00    CMP #$000A             ;\
-$A2:ABFB 30 09       BMI $09    [$AC06]     ;} If [$0DEC] < Ah: return
+$A2:ABFB 30 09       BMI $09    [$AC06]     ;} If [gunship liftoff transfer index] < Ah: return
 $A2:ABFD A9 1B AC    LDA #$AC1B             ;\
 $A2:AC00 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AC1B
-$A2:AC03 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
+$A2:AC03 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0 (never read)
 
 $A2:AC06 6B          RTL
 
@@ -4179,10 +4179,10 @@ $A2:AC11             dw 7600, 7800, 7A00, 7C00, 7E00 ; Destination VRAM addresse
 ;; Parameters:
 ;;     X: Enemy index
 $A2:AC1B BD F0 0F    LDA $0FF0,x[$7E:0FF0]  ;\
-$A2:AC1E C9 40 00    CMP #$0040             ;} If [enemy ([X] + 1) $0FB0] >= 40h: go to BRANCH_RUMBLE_INTENSIFIES
+$A2:AC1E C9 40 00    CMP #$0040             ;} If [enemy ([X] + 1) liftoff timer] >= 40h: go to BRANCH_RUMBLE_INTENSIFIES
 $A2:AC21 10 23       BPL $23    [$AC46]     ;/
 $A2:AC23 89 01 00    BIT #$0001             ;\
-$A2:AC26 F0 0F       BEQ $0F    [$AC37]     ;} If [enemy ([X] + 1) $0FB0] & 1 != 0:
+$A2:AC26 F0 0F       BEQ $0F    [$AC37]     ;} If [enemy ([X] + 1) liftoff timer] % 2 != 0:
 $A2:AC28 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:AC2B 18          CLC                    ;|
 $A2:AC2C 69 01 00    ADC #$0001             ;} Samus Y position += 1
@@ -4199,7 +4199,7 @@ $A2:AC44 80 21       BRA $21    [$AC67]     ; Go to BRANCH_MERGE
 
 ; BRANCH_RUMBLE_INTENSIFIES
 $A2:AC46 89 01 00    BIT #$0001             ;\
-$A2:AC49 F0 0F       BEQ $0F    [$AC5A]     ;} If [enemy ([X] + 1) $0FB0] & 1 != 0:
+$A2:AC49 F0 0F       BEQ $0F    [$AC5A]     ;} If [enemy ([X] + 1) liftoff timer] % 2 != 0:
 $A2:AC4B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:AC4E 18          CLC                    ;|
 $A2:AC4F 69 02 00    ADC #$0002             ;} Samus Y position += 2
@@ -4225,17 +4225,17 @@ $A2:AC78 18          CLC                    ;|
 $A2:AC79 69 17 00    ADC #$0017             ;} Enemy ([X] + 1) Y position = [Samus Y position] + 17h
 $A2:AC7C 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;/
 $A2:AC7F BD F0 0F    LDA $0FF0,x[$7E:0FF0]  ;\
-$A2:AC82 1A          INC A                  ;} Increment enemy ([X] + 1) $0FB0
+$A2:AC82 1A          INC A                  ;} Increment enemy ([X] + 1) liftoff timer
 $A2:AC83 9D F0 0F    STA $0FF0,x[$7E:0FF0]  ;/
 $A2:AC86 C9 80 00    CMP #$0080             ;\
-$A2:AC89 30 0A       BMI $0A    [$AC95]     ;} If [enemy ([X] + 1) $0FB0] >= 80h:
+$A2:AC89 30 0A       BMI $0A    [$AC95]     ;} If [enemy ([X] + 1) liftoff timer] >= 80h:
 $A2:AC8B A9 D7 AC    LDA #$ACD7             ;\
 $A2:AC8E 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ACD7
 $A2:AC91 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Enemy 0 function timer = 0
 $A2:AC94 6B          RTL                    ; Return
 
 $A2:AC95 C9 40 00    CMP #$0040             ;\
-$A2:AC98 D0 3C       BNE $3C    [$ACD6]     ;} If [enemy ([X] + 1) $0FB0] != 40h: return
+$A2:AC98 D0 3C       BNE $3C    [$ACD6]     ;} If [enemy ([X] + 1) liftoff timer] != 40h: return
 $A2:AC9A A9 00 00    LDA #$0000             ;\
 $A2:AC9D A0 79 A3    LDY #$A379             ;} Spawn gunship liftoff dust clouds enemy projectile with parameter 0 using room graphics
 $A2:ACA0 22 97 80 86 JSL $868097[$86:8097]  ;/
@@ -4283,7 +4283,7 @@ $A2:ACFF 10 0C       BPL $0C    [$AD0D]     ;/
 $A2:AD01 A9 0E AD    LDA #$AD0E             ;\
 $A2:AD04 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AD0E
 $A2:AD07 A9 00 02    LDA #$0200             ;\
-$A2:AD0A 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) $0FB2 = 200h
+$A2:AD0A 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) liftoff Y velocity = 200h
 
 $A2:AD0D 6B          RTL
 }
@@ -4314,13 +4314,13 @@ $A2:AD2C 6B          RTL
 ;;     X: Enemy index
 $A2:AD2D BD F2 0F    LDA $0FF2,x[$7E:0FF2]  ;\
 $A2:AD30 18          CLC                    ;|
-$A2:AD31 69 40 00    ADC #$0040             ;} Enemy ([X] + 1) $0FB2 += 40h
+$A2:AD31 69 40 00    ADC #$0040             ;} Enemy ([X] + 1) liftoff Y velocity += 40h
 $A2:AD34 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;/
 $A2:AD37 29 00 FF    AND #$FF00             ;\
-$A2:AD3A C9 00 0A    CMP #$0A00             ;} If [enemy ([X] + 1) $0FB2] >= A00h:
+$A2:AD3A C9 00 0A    CMP #$0A00             ;} If [enemy ([X] + 1) liftoff Y velocity] >= A00h:
 $A2:AD3D 30 06       BMI $06    [$AD45]     ;/
 $A2:AD3F A9 00 09    LDA #$0900             ;\
-$A2:AD42 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) $0FB2 = 900h
+$A2:AD42 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) liftoff Y velocity = 900h
 
 $A2:AD45 BD F2 0F    LDA $0FF2,x[$7E:0FF2]  ;\
 $A2:AD48 EB          XBA                    ;|
@@ -4329,7 +4329,7 @@ $A2:AD4A 29 00 FF    AND #$FF00             ;|
 $A2:AD4D 85 14       STA $14    [$7E:0014]  ;|
 $A2:AD4F 68          PLA                    ;|
 $A2:AD50 29 FF 00    AND #$00FF             ;|
-$A2:AD53 85 12       STA $12    [$7E:0012]  ;} Samus Y position -= [enemy ([X] + 1) $0FB2] / 100h
+$A2:AD53 85 12       STA $12    [$7E:0012]  ;} Samus Y position -= [enemy ([X] + 1) liftoff Y velocity] / 100h
 $A2:AD55 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;|
 $A2:AD58 38          SEC                    ;|
 $A2:AD59 E5 14       SBC $14    [$7E:0014]  ;|

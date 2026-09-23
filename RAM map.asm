@@ -2392,6 +2392,7 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         Draygon-escape button counter (target is 60)
         Samus appears fanfare timer
         Debug death animation flag. Disables the white-out so that Samus suit explosion animation is unobscured
+        Gunship liftoff transfer index
         Demo control flags
         {
             Set to 1 if pressed button to exit demos
