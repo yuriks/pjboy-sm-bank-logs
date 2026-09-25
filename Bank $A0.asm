@@ -1655,7 +1655,7 @@ $A0:8F3B C8          INY                    ;} Add enemy index to active enemies
 $A0:8F3C C8          INY                    ;|
 $A0:8F3D 8C A4 17    STY $17A4  [$7E:17A4]  ;/
 $A0:8F40 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
-$A0:8F43 89 00 04    BIT #$0400             ;} If enemy ignores Samus/projectiles: go to BRANCH_NEXT
+$A0:8F43 89 00 04    BIT #$0400             ;} If enemy is intangible: go to BRANCH_NEXT
 $A0:8F46 D0 0C       BNE $0C    [$8F54]     ;/
 $A0:8F48 8A          TXA                    ;\
 $A0:8F49 AC A6 17    LDY $17A6  [$7E:17A6]  ;|
@@ -1701,7 +1701,7 @@ $A0:8F9B C8          INY                    ;|
 $A0:8F9C C8          INY                    ;|
 $A0:8F9D 8C A4 17    STY $17A4  [$7E:17A4]  ;/
 $A0:8FA0 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
-$A0:8FA3 89 00 04    BIT #$0400             ;} If enemy ignores Samus/projectiles: go to BRANCH_NEXT_PROCESS_OFFSCREEN
+$A0:8FA3 89 00 04    BIT #$0400             ;} If enemy is intangible: go to BRANCH_NEXT_PROCESS_OFFSCREEN
 $A0:8FA6 D0 0C       BNE $0C    [$8FB4]     ;/
 $A0:8FA8 8A          TXA                    ;\
 $A0:8FA9 AC A6 17    LDY $17A6  [$7E:17A6]  ;|
