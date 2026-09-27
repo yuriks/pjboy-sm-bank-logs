@@ -1112,11 +1112,11 @@ $9C:9A00             db 07,07,1F,1F,79,77,D7,EF,D7,EF,CE,FF,FC,FF,6C,AF,00,00,07
 }
 
 
-;;; $9B00..B2BF: Samus top tiles - set 3 (facing clockwise - grapple swinging - upside up) ;;;
+;;; $9B00..B2BF: Samus top tiles - set 3 (facing anticlockwise - grapple swinging - upside up) ;;;
 {
 ;;; $9B00: Samus top tiles - set 3 - entry 0 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 18h / 38h
+; B2h: Facing anticlockwise - grapple swinging - frames 18h / 38h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        | 88     |        |
 ; |        |        |   5 333|333     |D33     |3DDDDDD3|
@@ -1151,7 +1151,7 @@ $9C:9B00             db 00,00,00,00,00,00,06,06,38,3F,70,7F,E8,FF,E7,FE,00,00,00
 
 ;;; $9C40: Samus top tiles - set 3 - entry 1 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 17h / 37h
+; B2h: Facing anticlockwise - grapple swinging - frames 17h / 37h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |        |        |     333|3       |335     |    3333|
@@ -1186,7 +1186,7 @@ $9C:9C40             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 
 ;;; $9D80: Samus top tiles - set 3 - entry 2 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 16h / 36h
+; B2h: Facing anticlockwise - grapple swinging - frames 16h / 36h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |     333|3       |
@@ -1223,7 +1223,7 @@ $9C:9D80             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 
 ;;; $9F00: Samus top tiles - set 3 - entry 3 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 15h / 35h
+; B2h: Facing anticlockwise - grapple swinging - frames 15h / 35h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |        |
 ; |        |        |        |        |    3333|FF33F   |
@@ -1260,7 +1260,7 @@ $9C:9F00             db 00,00,00,00,00,00,00,00,06,06,19,1F,73,7F,E7,FF,00,00,00
 
 ;;; $A080: Samus top tiles - set 3 - entry 4 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 14h / 34h
+; B2h: Facing anticlockwise - grapple swinging - frames 14h / 34h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -1297,7 +1297,7 @@ $9C:A080             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $A200: Samus top tiles - set 3 - entry 5 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 13h / 33h
+; B2h: Facing anticlockwise - grapple swinging - frames 13h / 33h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |   3    |        |        |
 ; |        |        |        |  333   |    3333|FF33F   |
@@ -1334,7 +1334,7 @@ $9C:A200             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $A380: Samus top tiles - set 3 - entry 6 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 12h / 32h
+; B2h: Facing anticlockwise - grapple swinging - frames 12h / 32h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |33FF    |
 ; |        |        |        |33      |    33FF|FFEEEE  |
@@ -1371,7 +1371,7 @@ $9C:A380             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $A500: Samus top tiles - set 3 - entry 7 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 11h / 31h
+; B2h: Facing anticlockwise - grapple swinging - frames 11h / 31h
 ; |--------|--------|--------|--------|--------|--------|
 ; |       3|3       |      33|FFFEE   | D33333 |        |
 ; |      3B|333     |    333F|FEE69E3 | D575D3 |        |
@@ -1406,7 +1406,7 @@ $9C:A500             db 01,01,03,03,06,07,0C,0F,18,1F,5C,77,16,77,8B,F3,00,00,00
 
 ;;; $A640: Samus top tiles - set 3 - entry 8 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 10h / 30h / 40h..41h
+; B2h: Facing anticlockwise - grapple swinging - frames 10h / 30h / 40h..41h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 | 333333 |        |
 ; |        |333333  |       3|FEE699E3| D575D3 |        |
@@ -1441,7 +1441,7 @@ $9C:A640             db 00,00,00,00,00,00,00,00,01,01,01,01,07,05,07,06,00,00,00
 
 ;;; $A780: Samus top tiles - set 3 - entry 9 ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Fh / 2Fh
+; B2h: Facing anticlockwise - grapple swinging - frames Fh / 2Fh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   | D33333 |        |
 ; |       3|33333   |     3FF|699EE   | D575D3 |        |
@@ -1476,7 +1476,7 @@ $9C:A780             db 00,00,01,01,01,01,01,01,01,01,01,01,01,01,03,02,00,00,00
 
 ;;; $A8C0: Samus top tiles - set 3 - entry Ah ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Eh / 2Eh
+; B2h: Facing anticlockwise - grapple swinging - frames Eh / 2Eh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |      EE|9E3     |
 ; |        |        |    3333|33      |    FF6F|9EFF    |
@@ -1513,7 +1513,7 @@ $9C:A8C0             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $AA40: Samus top tiles - set 3 - entry Bh ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Dh / 2Dh
+; B2h: Facing anticlockwise - grapple swinging - frames Dh / 2Dh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -1550,7 +1550,7 @@ $9C:AA40             db 00,00,00,00,02,02,03,02,07,01,06,06,07,01,0F,02,00,00,00
 
 ;;; $ABC0: Samus top tiles - set 3 - entry Ch ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Ch / 2Ch
+; B2h: Facing anticlockwise - grapple swinging - frames Ch / 2Ch
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |    33  |        |   FFEEE|E       |
 ; |        |        |   33A3 |        |  3FE9EF|F4      |
@@ -1587,7 +1587,7 @@ $9C:ABC0             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $AD40: Samus top tiles - set 3 - entry Dh ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Bh / 2Bh
+; B2h: Facing anticlockwise - grapple swinging - frames Bh / 2Bh
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -1624,7 +1624,7 @@ $9C:AD40             db 00,00,00,00,00,00,00,00,01,00,03,01,07,06,0F,0B,00,00,00
 
 ;;; $AEC0: Samus top tiles - set 3 - entry Eh ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames Ah / 2Ah
+; B2h: Facing anticlockwise - grapple swinging - frames Ah / 2Ah
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |    3   |        |
 ; |        |        |  33    |        |  EEFFF4|        |
@@ -1661,7 +1661,7 @@ $9C:AEC0             db 00,00,00,00,00,00,00,00,00,00,07,07,1F,1C,3F,20,00,00,00
 
 ;;; $B040: Samus top tiles - set 3 - entry Fh ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 9 / 29h
+; B2h: Facing anticlockwise - grapple swinging - frames 9 / 29h
 ; |--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |88      |        |
 ; |  33    |        |        |        |335     |    3333|
@@ -1730,11 +1730,11 @@ $9C:B180             db 00,00,00,00,00,00,7C,7C,8F,FF,FF,FF,C1,FF,C1,FF,00,00,00
 }
 
 
-;;; $B2C0..D2BF: Samus top tiles - set 4 (facing anticlockwise - grapple swinging - upside up) ;;;
+;;; $B2C0..D2BF: Samus top tiles - set 4 (facing clockwise - grapple swinging - upside up) ;;;
 {
 ;;; $B2C0: Samus top tiles - set 4 - entry 0 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 8 / 28h
+; B3h: Facing clockwise     - grapple swinging - frames 8 / 28h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        | 3B33B3 |A       | 88     |        |
 ; |        |  333B3B|   5 333|333     |  332AB |B       |D33     |3DDDDDD3|
@@ -1773,7 +1773,7 @@ $9C:B2C0             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 
 ;;; $B480: Samus top tiles - set 4 - entry 1 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 9 / 29h
+; B3h: Facing clockwise     - grapple swinging - frames 9 / 29h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |      B2|        |        |88      |        | 3B33B3 |A       |
 ; |        |  333B3B|   5 333|333     |335     |    3333|  332AB |B       |
@@ -1812,7 +1812,7 @@ $9C:B480             db 00,00,00,00,00,00,00,00,05,05,0F,0D,3F,3D,3D,3D,00,00,00
 
 ;;; $B640: Samus top tiles - set 4 - entry 2 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Ah / 2Ah
+; B3h: Facing clockwise     - grapple swinging - frames Ah / 2Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -1853,7 +1853,7 @@ $9C:B640             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 
 ;;; $B840: Samus top tiles - set 4 - entry 3 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Bh / 2Bh
+; B3h: Facing clockwise     - grapple swinging - frames Bh / 2Bh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |22B3    |        |753533  |  3D5588|
 ; |        |   3333 |     333|3       |A2B3    |        |5D3D88  |  358885|
@@ -1894,7 +1894,7 @@ $9C:B840             db 00,00,00,00,0E,0E,3F,3D,7F,7D,8D,FD,C5,FD,8F,FF,00,00,00
 
 ;;; $BA40: Samus top tiles - set 4 - entry 4 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Ch / 2Ch
+; B3h: Facing clockwise     - grapple swinging - frames Ch / 2Ch
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |   B3BB3|333D8   |   3D573|        |
 ; |        |        |    3333|FF33F   |   332B3|33D8    |  3D5785|        |
@@ -1934,7 +1934,7 @@ $9C:BA40             db 00,00,00,00,00,00,00,00,0E,0E,2F,3D,7F,7D,CF,FD,00,00,00
 
 ;;; $BC20: Samus top tiles - set 4 - entry 5 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Dh / 2Dh
+; B3h: Facing clockwise     - grapple swinging - frames Dh / 2Dh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |   3AAAB|        |    33  |    D585|
 ; |        |        |    33FF|FFEEEE  |   B62AB|        |   33A3 |   D5885|
@@ -1974,7 +1974,7 @@ $9C:BC20             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 
 ;;; $BE00: Samus top tiles - set 4 - entry 6 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Eh / 2Eh
+; B3h: Facing clockwise     - grapple swinging - frames Eh / 2Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |33FF    |D3      |   3AAAB|    D585|        |
 ; |        |        |    33FF|FFEEEE  |D3      |   B62AB|   D5885|        |
@@ -2014,7 +2014,7 @@ $9C:BE00             db 00,00,00,00,00,00,00,00,00,00,0F,0F,3D,3F,30,3F,00,00,00
 
 ;;; $BFE0: Samus top tiles - set 4 - entry 7 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames Fh / 2Fh
+; B3h: Facing clockwise     - grapple swinging - frames Fh / 2Fh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |      33|FFFEE   |BA2AB3  |       3|        |        |
 ; |     333|33      |    333F|FEE69E3 |3BAB3   |      33|33333   |       3|
@@ -2053,7 +2053,7 @@ $9C:BFE0             db 00,00,07,07,0E,0F,1C,1F,1A,1F,31,3F,31,3F,3B,3F,00,00,00
 
 ;;; $C1A0: Samus top tiles - set 4 - entry 8 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 10h / 30h / 40h..41h
+; B3h: Facing clockwise     - grapple swinging - frames 10h / 30h / 40h..41h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |3FFEEE3 |62B3B3  |   33BBA| 333333 |        |
 ; |        | 33     |       3|FEE699E3|ABAB3   |   3A3B2| D575D3 |        |
@@ -2092,7 +2092,7 @@ $9C:C1A0             db 00,00,00,00,03,03,07,07,0E,0F,0D,0F,0D,0F,0F,0F,00,00,00
 
 ;;; $C360: Samus top tiles - set 4 - entry 9 ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 11h / 31h
+; B3h: Facing clockwise     - grapple swinging - frames 11h / 31h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |EEE33   |3BAAAB3 | 33B3BAB| D33333 |        |
 ; |        |        |     3FF|699EE   |B3B3BB3 |BA33A6A2| D575D3 |        |
@@ -2131,7 +2131,7 @@ $9C:C360             db 00,00,00,00,00,00,00,00,01,01,03,03,06,07,06,07,00,00,00
 
 ;;; $C520: Samus top tiles - set 4 - entry Ah ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 12h / 32h
+; B3h: Facing clockwise     - grapple swinging - frames 12h / 32h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |       3|33      |      EE|9E3     |D3      |        |    D585|        |
 ; |     33B|BBB3    |    FF6F|9EFF    |D3      |   333  |   D5885|        |
@@ -2171,7 +2171,7 @@ $9C:C520             db 01,01,07,07,06,07,0E,0F,0D,0F,0F,0F,0E,08,0F,0E,00,00,00
 
 ;;; $C700: Samus top tiles - set 4 - entry Bh ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 13h / 33h
+; B3h: Facing clockwise     - grapple swinging - frames 13h / 33h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        | 33     |   FFEEE|E       |D3      |    D585|        |        |
 ; |       3|BBBB3   |  3FE9EF|F4      |D3      |   D5885|        |        |
@@ -2212,7 +2212,7 @@ $9C:C700             db 00,00,01,01,03,03,03,03,07,07,05,05,06,06,CF,CF,00,00,00
 
 ;;; $C900: Samus top tiles - set 4 - entry Ch ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 14h / 34h
+; B3h: Facing clockwise     - grapple swinging - frames 14h / 34h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        | 33     |   FFEEE|E       |   BB3BA|        |333D8   |   3D573|
 ; |       3|BBBB3   |  3FE9EF|F4      |    3BA2|        |33D8    |  3D5785|
@@ -2253,7 +2253,7 @@ $9C:C900             db 00,00,01,01,03,03,03,03,07,07,05,05,06,06,CF,CF,00,00,00
 
 ;;; $CB00: Samus top tiles - set 4 - entry Dh ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 15h / 35h
+; B3h: Facing clockwise     - grapple swinging - frames 15h / 35h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |    3   |        |   3BA2A| 3BA3   |753533  |  3D5588|
 ; |        |        |  EEFFF4|        |    3BAA| BA2B3  |5D3D88  |  358885|
@@ -2294,7 +2294,7 @@ $9C:CB00             db 00,00,00,00,00,00,03,03,03,03,07,07,8B,8B,DF,DF,00,00,00
 
 ;;; $CD00: Samus top tiles - set 4 - entry Eh ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 16h / 36h
+; B3h: Facing clockwise     - grapple swinging - frames 16h / 36h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |    3   |        |   3BA2A| 3BA3   |753533  |  3D5588|
 ; |        |        |  EEFFF4|        |    3BAA| BA2B3  |5D3D88  |  358885|
@@ -2335,7 +2335,7 @@ $9C:CD00             db 00,00,00,00,00,00,03,03,03,03,07,07,8B,8B,DF,DF,00,00,00
 
 ;;; $CF00: Samus top tiles - set 4 - entry Fh ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 17h / 37h
+; B3h: Facing clockwise     - grapple swinging - frames 17h / 37h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |  33333A| 333333 |        |33BBB333|
 ; |        |        |        |        |  3A23B2|  3BAB3 |        |BA262AB3|

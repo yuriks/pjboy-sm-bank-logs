@@ -1437,8 +1437,8 @@ $0A02..0E0B: Samus RAM (according to $91:E018)
         AFh: Unused. Facing left  - grappling - in air - aiming down
         B0h: Unused. Facing right - grappling - in air - aiming down-right
         B1h: Unused. Facing left  - grappling - in air - aiming down-left
-        B2h: Facing clockwise     - grapple swinging
-        B3h: Facing anticlockwise - grapple swinging
+        B2h: Facing anticlockwise - grapple swinging
+        B3h: Facing clockwise     - grapple swinging
         B4h: Facing right - grappling - crouching
         B5h: Facing left  - grappling - crouching
         B6h: Facing right - grappling - crouching - aiming down-right

@@ -413,14 +413,14 @@ $92:86ED             dw 99FF
 ; 331h. Unused
 $92:86EF             dw 9B2D, 9B17
 
-; 333h. Top half - B2h: Facing clockwise     - grapple swinging
+; 333h. Top half - B2h: Facing anticlockwise - grapple swinging
 $92:86F3             dw A96B, A955, A944, A933, A922, A911, A900, A8EA, A8D4, A584, A573, A562, A551, A540, A52F, A519,
                         A503, A4ED, A4DC, A4CB, A4BA, A4A9, A498, A482, A46C, A9EC, A9DB, A9CA, A9B9, A9A8, A997, A981,
                         A96B, A955, A944, A933, A922, A911, A900, A8EA, A8D4, A584, A573, A562, A551, A540, A52F, A519,
                         A503, A4ED, A4DC, A4CB, A4BA, A4A9, A498, A482, A46C, A9EC, A9DB, A9CA, A9B9, A9A8, A997, A981,
                         A503, A503
 
-; 375h. Top half - B3h: Facing anticlockwise - grapple swinging
+; 375h. Top half - B3h: Facing clockwise     - grapple swinging
 $92:8777             dw AB8B, ABB5, ABDF, AC0E, AC42, AC76, ACAA, ACDE, A5B0, A5DA, A604, A638, A66C, A69B, A6CA, A6F9,
                         A723, A74D, A777, A7A6, A7DA, A80E, A842, A876, AA18, AA42, AA6C, AAA0, AAD4, AB03, AB32, AB61,
                         AB8B, ABB5, ABDF, AC0E, AC42, AC76, ACAA, ACDE, A5B0, A5DA, A604, A638, A66C, A69B, A6CA, A6F9,
@@ -879,14 +879,14 @@ $92:8BF7             dw AF69
 ; 5B6h. Bottom half - B9h: Facing right - grapple wall jump pose
 $92:8BF9             dw AF5D
 
-; 5B7h. Bottom half - B2h: Facing clockwise     - grapple swinging
+; 5B7h. Bottom half - B2h: Facing anticlockwise - grapple swinging
 $92:8BFB             dw B63F, B624, B60E, B5FD, B5FD, B5DD, B5DD, B5CC, B5CC, B5CC, B4E6, B4E6, B4D0, B4D0, B4BA, B4A9,
                         B48E, B473, B45D, B44C, B44C, B42C, B42C, B41B, B41B, B41B, B697, B697, B681, B681, B66B, B65A,
                         B72B, B715, B709, B6FD, B6FD, B6E7, B6E7, B6DB, B6DB, B6DB, B5B4, B5B4, B59E, B59E, B592, B586,
                         B57A, B564, B558, B54C, B54C, B536, B536, B52A, B52A, B52A, B74F, B74F, B743, B743, B737, B72B,
                         B512, B51E
 
-; 5F9h. Bottom half - B3h: Facing anticlockwise - grapple swinging
+; 5F9h. Bottom half - B3h: Facing clockwise     - grapple swinging
 $92:8C7F             dw B98B, B9A6, B9B7, B9CD, B9CD, B9E3, B9E3, B767, B767, B767, B778, B778, B798, B798, B7A9, B7BF,
                         B7DA, B7F5, B806, B81C, B81C, B832, B832, B918, B918, B918, B929, B929, B949, B949, B95A, B970,
                         BA77, BA83, BA8F, BA9B, BA9B, BAA7, BAA7, B876, B876, B876, B882, B882, B898, B898, B8A4, B8B0,
@@ -2344,264 +2344,264 @@ $92:A440             dx 0003, 0011,FA,2802, 0009,FA,2803, C3FA,F0,2800
 ; Top half - Ch: Moving left  - gun extended - frame 1
 $92:A451             dx 0005, 01EF,FA,6802, 01E7,FA,6803, 01FE,00,2804, 01F6,00,2805, C3F6,F0,2800
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 18h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 38h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 18h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 38h
 $92:A46C             dx 0004, 001C,FD,2804, 0014,FD,2805, C205,F6,2800, C200,F8,2802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 17h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 37h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 17h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 37h
 $92:A482             dx 0004, 001B,F7,2804, 0013,F7,2805, C204,F4,2800, C3FF,F6,2802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 16h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 36h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 16h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 36h
 $92:A498             dx 0003, C210,F1,2800, C204,F3,2802, C3FF,F5,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 15h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 35h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 15h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 35h
 $92:A4A9             dx 0003, C202,EF,2800, C20E,ED,2802, C3FF,F2,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 14h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 34h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 14h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 34h
 $92:A4BA             dx 0003, C20C,E5,2800, C202,EF,2802, C3FF,F2,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 13h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 33h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 13h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 33h
 $92:A4CB             dx 0003, C209,E5,2800, C201,EF,2802, C3FF,F2,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 12h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 32h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 12h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 32h
 $92:A4DC             dx 0003, C207,E3,2800, C201,ED,2802, C3FE,F1,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 11h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 31h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 11h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 31h
 $92:A4ED             dx 0004, 0004,E6,2804, 0004,DE,2805, C3FD,EC,2800, C3FB,F0,2802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 10h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 30h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 40h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 41h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 10h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 30h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 40h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 41h
 $92:A503             dx 0004, 01FD,E5,2804, 01FD,DD,2805, C3F6,EC,2800, C3F8,F0,2802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Fh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Fh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Fh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Fh
 $92:A519             dx 0004, 01F8,E6,6804, 01F8,DE,6805, C3F3,EC,2800, C3F7,F0,2802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Eh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Eh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Eh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Eh
 $92:A52F             dx 0003, C3EE,E2,6800, C3F3,ED,2802, C3F5,F1,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Dh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Dh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Dh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Dh
 $92:A540             dx 0003, C3E8,E4,6800, C3F0,EF,2802, C3F2,F2,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Ch
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Ch
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Ch
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Ch
 $92:A551             dx 0003, C3E3,E5,6800, C3EE,EF,2802, C3F2,F2,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Bh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Bh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Bh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Bh
 $92:A562             dx 0003, C3E0,E9,6800, C3EB,F2,2802, C3F1,F3,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2Ah
-; Top half - B2h: Facing clockwise     - grapple swinging - frame Ah
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2Ah
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame Ah
 $92:A573             dx 0003, C3E0,EF,6800, C3EB,F4,2802, C3F1,F3,2804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 29h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 9
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 29h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 9
 $92:A584             dx 0004, 01DD,F7,6804, 01E5,F7,6805, C3EB,F9,2800, C3F0,F7,2802
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 28h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 8
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 28h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 8
 $92:A5B0             dx 0008, 0001,FB,2804, 0001,F3,2805, C3F1,F3,2800, C3F0,F8,6802, 01DC,FC,6806, 01E4,FC,6807, 01EB,02,2814, 01EB,FA,2815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 29h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 9
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 29h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 9
 $92:A5DA             dx 0008, 01DC,F8,6804, 01E4,F8,6805, 0001,FA,2806, 0001,F2,2807, C3F1,F2,2800, C3F0,F7,6802, 01EB,00,2814, 01EB,F8,2815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Ah
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Ah
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Ah
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Ah
 $92:A604             dx 000A, 0005,FA,2804, 0005,F2,2805, C3F5,F2,2800, C3F1,F5,6802, 01E0,F8,6806, 01E8,F8,6807, 01E0,F0,6814, 01E8,F0,6815, 01EB,FD,2816, 01EB,F5,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Bh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Bh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Bh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Bh
 $92:A638             dx 000A, 0005,F9,2804, 0005,F1,2805, C3F5,F1,2800, C3F1,F4,6802, 01E0,F5,6806, 01E8,F5,6807, 01E0,ED,6814, 01E8,ED,6815, 01EB,FB,2816, 01EB,F3,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Ch
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Ch
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Ch
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Ch
 $92:A66C             dx 0009, 01FD,FE,2804, C3F5,EE,2800, C3F0,F2,6802, 01E2,EC,6805, 01EA,EC,6806, 01E2,E4,6807, 01EA,E4,6814, 01F4,EE,2815, 01EC,EE,2816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Dh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Dh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Dh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Dh
 $92:A69B             dx 0009, 01FE,FE,2804, C3F6,EE,2800, C3F2,F1,6802, 01F6,ED,2805, 01EE,ED,2806, 01ED,EB,6807, 01E5,EB,6814, 01E5,E3,6815, 01ED,E3,6816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Eh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Eh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Eh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Eh
 $92:A6CA             dx 0009, 01E9,E9,6804, 01FE,FE,2805, C3F6,EE,2800, C3F2,F1,6802, 01F1,E9,6806, 01E9,E1,6807, 01F1,E1,6814, 01F6,EC,2815, 01EE,EC,2816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2Fh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame Fh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2Fh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame Fh
 $92:A6F9             dx 0008, 0000,02,2804, 01F8,02,2805, C3F8,F2,2800, C3F6,F0,6802, 01F8,EB,2806, 01F0,EB,2807, 01F5,E5,6814, 01F5,DD,6815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 10h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 30h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 40h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 41h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 10h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 30h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 40h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 41h
 $92:A723             dx 0008, 01FF,03,2804, 01F7,03,2805, C3F7,F3,2800, C3F9,F1,6802, 01FC,E4,2806, 01FC,DC,2807, 01FD,EB,2814, 01F5,EB,2815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 11h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 31h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 11h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 31h
 $92:A74D             dx 0008, 01FF,01,2804, 01F7,01,2805, C3F7,F1,2800, C3FA,F0,6802, 0002,E5,2806, 0002,DD,2807, 0003,EB,2814, 01FB,EB,2815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 12h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 32h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 12h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 32h
 $92:A777             dx 0009, 000B,E8,2804, 01F1,FC,2805, C3F9,F4,2800, C3FB,F0,6802, 0003,E8,2806, 000B,E0,2807, 0003,E0,2814, 0005,EB,2815, 01FD,EB,2816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 13h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 33h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 13h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 33h
 $92:A7A6             dx 000A, 0010,EA,2804, 0008,EA,2805, 0010,E2,2806, 0008,E2,2807, 01F1,FD,2814, 01F1,F5,2815, C3F9,F5,2800, C3FD,F2,6802, 0008,ED,2816, 0000,ED,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 14h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 34h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 14h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 34h
 $92:A7DA             dx 000A, 01F1,FD,2804, 01F1,F5,2805, C3F9,F5,2800, C3FD,F2,6802, 0013,EC,2806, 000B,EC,2807, 0013,E4,2814, 000B,E4,2815, 0009,EE,2816, 0001,EE,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 15h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 35h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 15h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 35h
 $92:A80E             dx 000A, 01F4,FC,2804, 01F4,F4,2805, C3FC,F4,2800, C3FE,F4,6802, 0016,F3,2806, 000E,F3,2807, 0016,EB,2814, 000E,EB,2815, 000A,F6,2816, 000A,EE,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 16h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 36h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 16h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 36h
 $92:A842             dx 000A, 01F4,FC,2804, 01F4,F4,2805, C3FC,F4,2800, C3FE,F4,6802, 0017,F7,2806, 000F,F7,2807, 0017,EF,2814, 000F,EF,2815, 000B,F8,2816, 000B,F0,2817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 17h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 37h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 17h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 37h
 $92:A876             dx 0009, C3FE,F3,2800, 01F6,FB,2804, 01F6,F3,2805, 01F6,EB,2806, C3FF,F7,6802, 000E,FA,2807, 000E,F9,A814, 001C,F7,2815, 0014,F7,2816
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 28h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 8
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 28h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 8
 $92:A8D4             dx 0004, 01DC,FB,E804, 01E4,FB,E805, C3EB,FA,E800, C3F0,F8,E802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 27h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 7
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 27h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 7
 $92:A8EA             dx 0004, 01DD,01,E804, 01E5,01,E805, C3EC,FC,E800, C3F1,FA,E802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 26h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 6
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 26h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 6
 $92:A900             dx 0003, C3E0,FF,E800, C3EC,FD,E802, C3F1,FB,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 25h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 5
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 25h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 5
 $92:A911             dx 0003, C3EE,01,E800, C3E2,03,E802, C3F1,FE,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 24h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 4
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 24h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 4
 $92:A922             dx 0003, C3E4,0B,E800, C3EE,01,E802, C3F1,FE,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 23h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 23h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3
 $92:A933             dx 0003, C3E7,0B,E800, C3EF,01,E802, C3F1,FE,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 2
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 22h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 2
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 22h
 $92:A944             dx 0003, C3E9,0D,E800, C3EF,03,E802, C3F2,FF,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 21h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 21h
 $92:A955             dx 0004, 01F4,12,E804, 01F4,1A,E805, C3F3,04,E800, C3F5,00,E802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 0
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 20h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 0
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 20h
 $92:A96B             dx 0004, 01FB,13,E804, 01FB,1B,E805, C3FA,04,E800, C3F8,00,E802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Fh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Fh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Fh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Fh
 $92:A981             dx 0004, 0000,12,A804, 0000,1A,A805, C3FD,04,E800, C3F9,00,E802
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Eh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Eh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Eh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Eh
 $92:A997             dx 0003, C202,0E,A800, C3FD,03,E802, C3FB,FF,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Dh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Dh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Dh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Dh
 $92:A9A8             dx 0003, C208,0C,A800, C200,01,E802, C3FE,FE,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Ch
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Ch
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Ch
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Ch
 $92:A9B9             dx 0003, C20D,0B,A800, C202,01,E802, C3FE,FE,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Bh
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Bh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Bh
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Bh
 $92:A9CA             dx 0003, C210,07,A800, C205,FE,E802, C3FF,FD,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 1Ah
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 3Ah
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 1Ah
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 3Ah
 $92:A9DB             dx 0003, C210,01,A800, C205,FC,E802, C3FF,FD,E804
 
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 19h
-; Top half - B2h: Facing clockwise     - grapple swinging - frame 39h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 19h
+; Top half - B2h: Facing anticlockwise - grapple swinging - frame 39h
 $92:A9EC             dx 0004, 001B,01,A804, 0013,01,A805, C205,F7,E800, C200,F9,E802
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 18h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 38h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 18h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 38h
 $92:AA18             dx 0008, 01F7,FD,E804, 01F7,05,E805, C3FF,FD,E800, C200,F8,A802, 001C,FC,A806, 0014,FC,A807, 000D,F6,E814, 000D,FE,E815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 19h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 39h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 19h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 39h
 $92:AA42             dx 0008, 001C,00,A804, 0014,00,A805, 01F7,FE,E806, 01F7,06,E807, C3FF,FE,E800, C200,F9,A802, 000D,F8,E814, 000D,00,E815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Ah
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Ah
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Ah
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Ah
 $92:AA6C             dx 000A, 01F3,FE,E804, 01F3,06,E805, C3FB,FE,E800, C3FF,FB,A802, 0018,00,A806, 0010,00,A807, 0018,08,A814, 0010,08,A815, 000D,FB,E816, 000D,03,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Bh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Bh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Bh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Bh
 $92:AAA0             dx 000A, 01F3,FF,E804, 01F3,07,E805, C3FB,FF,E800, C3FF,FC,A802, 0018,03,A806, 0010,03,A807, 0018,0B,A814, 0010,0B,A815, 000D,FD,E816, 000D,05,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Ch
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Ch
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Ch
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Ch
 $92:AAD4             dx 0009, 01FB,FA,E804, C3FB,02,E800, C200,FE,A802, 0016,0C,A805, 000E,0C,A806, 0016,14,A807, 000E,14,A814, 0004,0A,E815, 000C,0A,E816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Dh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Dh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Dh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Dh
 $92:AB03             dx 0009, 01FA,FA,E804, C3FA,02,E800, C3FE,FF,A802, 0002,0B,E805, 000A,0B,E806, 000B,0D,A807, 0013,0D,A814, 0013,15,A815, 000B,15,A816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Eh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Eh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Eh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Eh
 $92:AB32             dx 0009, 000F,0F,A804, 01FA,FA,E805, C3FA,02,E800, C3FE,FF,A802, 0007,0F,A806, 000F,17,A807, 0007,17,A814, 0002,0C,E815, 000A,0C,E816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1Fh
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3Fh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1Fh
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3Fh
 $92:AB61             dx 0008, 01F8,F6,E804, 0000,F6,E805, C3F8,FE,E800, C3FA,00,A802, 0000,0D,E806, 0008,0D,E807, 0003,13,A814, 0003,1B,A815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 0
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 20h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 0
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 20h
 $92:AB8B             dx 0008, 01F9,F5,E804, 0001,F5,E805, C3F9,FD,E800, C3F7,FF,A802, 01FC,14,E806, 01FC,1C,E807, 01FB,0D,E814, 0003,0D,E815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 1
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 21h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 1
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 21h
 $92:ABB5             dx 0008, 01F9,F7,E804, 0001,F7,E805, C3F9,FF,E800, C3F6,00,A802, 01F6,13,E806, 01F6,1B,E807, 01F5,0D,E814, 01FD,0D,E815
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 2
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 22h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 2
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 22h
 $92:ABDF             dx 0009, 01ED,10,E804, 0007,FC,E805, C3F7,FC,E800, C3F5,00,A802, 01F5,10,E806, 01ED,18,E807, 01F5,18,E814, 01F3,0D,E815, 01FB,0D,E816
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 23h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 3
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 23h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 3
 $92:AC0E             dx 000A, 01E8,0E,E804, 01F0,0E,E805, 01E8,16,E806, 01F0,16,E807, 0007,FB,E814, 0007,03,E815, C3F7,FB,E800, C3F3,FE,A802, 01F0,0B,E816, 01F8,0B,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 24h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 4
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 24h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 4
 $92:AC42             dx 000A, 0007,FB,E804, 0007,03,E805, C3F7,FB,E800, C3F3,FE,A802, 01E5,0C,E806, 01ED,0C,E807, 01E5,14,E814, 01ED,14,E815, 01EF,0A,E816, 01F7,0A,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 25h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 5
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 25h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 5
 $92:AC76             dx 000A, 0004,FC,E804, 0004,04,E805, C3F4,FC,E800, C3F2,FC,A802, 01E2,05,E806, 01EA,05,E807, 01E2,0D,E814, 01EA,0D,E815, 01EE,02,E816, 01EE,0A,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 26h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 6
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 26h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 6
 $92:ACAA             dx 000A, 0004,FC,E804, 0004,04,E805, C3F4,FC,E800, C3F2,FC,A802, 01E1,01,E806, 01E9,01,E807, 01E1,09,E814, 01E9,09,E815, 01ED,00,E816, 01ED,08,E817
 
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 27h
-; Top half - B3h: Facing anticlockwise - grapple swinging - frame 7
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 27h
+; Top half - B3h: Facing clockwise     - grapple swinging - frame 7
 $92:ACDE             dx 0009, C3F2,FD,E800, 0002,FD,E804, 0002,05,E805, 0002,0D,E806, C3F1,F9,A802, 01EA,FE,E807, 01EA,FF,6814, 01DC,01,E815, 01E4,01,E816
 
 ; Bottom half - 9: Moving right - not aiming - frame 0
@@ -3577,302 +3577,302 @@ $92:B403             dx 0002, C3F6,0F,2808, C3F6,FF,280A
 ; Bottom half - 77h: Facing left  - moonwalk - aiming down-left - frame 4
 $92:B40F             dx 0002, C3F6,0F,2808, C3F6,FF,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 17h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 18h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 19h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 17h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 18h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 19h
 $92:B41B             dx 0003, 01E8,04,280A, 01E8,FC,280B, C3F0,FC,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 15h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 16h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 15h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 16h
 $92:B42C             dx 0006, 01E9,0D,280A, 01E9,05,280B, 01E9,FD,280C, 01F9,0D,280D, 01F1,0D,280E, C3F1,FD,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 13h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 14h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 13h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 14h
 $92:B44C             dx 0003, C3E9,07,2808, 01E9,FF,280C, C3F1,FF,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 12h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 12h
 $92:B45D             dx 0004, 01F8,10,280A, 01F0,10,280B, 01F0,08,280C, C3F8,00,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 11h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 11h
 $92:B473             dx 0005, 0003,10,280A, 01FB,10,280B, 01F3,10,280C, 01F3,08,280D, C3FB,00,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 10h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 10h
 $92:B48E             dx 0005, 01F5,08,280A, 0005,10,280B, 01FD,10,280C, 01F5,10,280D, C3FD,00,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Fh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Fh
 $92:B4A9             dx 0003, 0005,10,280A, 01FD,10,280B, C3FD,00,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Eh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Eh
 $92:B4BA             dx 0004, 000F,0F,280A, 0007,0F,280B, 01FF,FF,280C, C207,FF,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Ch
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Dh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Ch
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Dh
 $92:B4D0             dx 0004, 0007,0B,280A, 000F,0B,280B, 000F,03,280C, C3FF,FB,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Ah
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame Bh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Ah
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame Bh
 $92:B4E6             dx 0005, 0008,08,280A, 0010,F8,280B, 0010,08,280C, 0010,00,280D, C200,F8,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 40h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 40h
 $92:B512             dx 0002, C3F8,10,2808, C3F8,00,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 41h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 41h
 $92:B51E             dx 0002, C3F8,10,2808, C3F8,00,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 37h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 38h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 39h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 37h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 38h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 39h
 $92:B52A             dx 0002, C3F0,F9,2808, C3E0,F9,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 35h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 36h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 35h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 36h
 $92:B536             dx 0004, 01E1,0F,280A, 01E1,07,280B, 01F9,FF,280C, C3E9,FF,2808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 33h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 34h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 33h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 34h
 $92:B54C             dx 0002, C3E9,07,2808, C3F1,FF,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 32h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 32h
 $92:B558             dx 0002, C3EB,0F,2808, C3F3,FF,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 31h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 31h
 $92:B564             dx 0004, 01F3,07,280A, C3F3,0F,2808, 01FB,07,280B, 01FB,FF,280C
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 30h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 30h
 $92:B57A             dx 0002, C3F9,10,2808, C3F9,00,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Fh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Fh
 $92:B586             dx 0002, C3FD,0E,2808, C3FD,FE,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Eh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Eh
 $92:B592             dx 0002, C207,0F,2808, C3FF,FF,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Ch
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Dh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Ch
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Dh
 $92:B59E             dx 0004, 0018,10,280C, 0018,08,280D, C208,08,2808, C200,00,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Ah
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2Bh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Ah
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2Bh
 $92:B5B4             dx 0002, C20F,04,2808, C3FF,FC,280A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 7
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 8
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 9
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 7
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 8
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 9
 $92:B5CC             dx 0003, 0010,F4,E80A, 0010,FC,E80B, C200,F4,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 5
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 6
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 5
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 6
 $92:B5DD             dx 0006, 000F,EB,E80A, 000F,F3,E80B, 000F,FB,E80C, 01FF,EB,E80D, 0007,EB,E80E, C3FF,F3,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 4
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 4
 $92:B5FD             dx 0003, C207,E9,E808, 000F,F9,E80C, C3FF,F1,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 2
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 2
 $92:B60E             dx 0004, 0000,E8,E80A, 0008,E8,E80B, 0008,F0,E80C, C3F8,F0,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1
 $92:B624             dx 0005, 01F5,E8,E80A, 01FD,E8,E80B, 0005,E8,E80C, 0005,F0,E80D, C3F5,F0,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 0
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 0
 $92:B63F             dx 0005, 0003,F0,E80A, 01F3,E8,E80B, 01FB,E8,E80C, 0003,E8,E80D, C3F3,F0,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Fh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Fh
 $92:B65A             dx 0003, 01F3,E8,E80A, 01FB,E8,E80B, C3F3,F0,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Eh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Eh
 $92:B66B             dx 0004, 01E9,E9,E80A, 01F1,E9,E80B, 01F9,F9,E80C, C3E9,F1,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Ch
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Dh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Ch
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Dh
 $92:B681             dx 0004, 01F1,ED,E80A, 01E9,ED,E80B, 01E9,F5,E80C, C3F1,F5,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Ah
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 1Bh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Ah
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 1Bh
 $92:B697             dx 0005, 01F0,F0,E80A, 01E8,00,E80B, 01E8,F0,E80C, 01E8,F8,E80D, C3F0,F8,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 27h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 28h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 29h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 27h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 28h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 29h
 $92:B6DB             dx 0002, C200,F7,E808, C210,F7,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 25h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 26h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 25h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 26h
 $92:B6E7             dx 0004, 0017,E9,E80A, 0017,F1,E80B, 01FF,F9,E80C, C207,F1,E808
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 23h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 24h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 23h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 24h
 $92:B6FD             dx 0002, C207,E9,E808, C3FF,F1,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 22h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 22h
 $92:B709             dx 0002, C205,E1,E808, C3FD,F1,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 21h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 21h
 $92:B715             dx 0004, 0005,F1,E80A, C3FD,E1,E808, 01FD,F1,E80B, 01FD,F9,E80C
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 20h
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Fh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 20h
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Fh
 $92:B72B             dx 0002, C3F7,E0,E808, C3F7,F0,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Eh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Eh
 $92:B737             dx 0002, C3F3,E2,E808, C3F3,F2,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Ch
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Dh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Ch
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Dh
 $92:B743             dx 0002, C3E9,E1,E808, C3F1,F1,E80A
 
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Ah
-; Bottom half - B2h: Facing clockwise     - grapple swinging - frame 3Bh
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Ah
+; Bottom half - B2h: Facing anticlockwise - grapple swinging - frame 3Bh
 $92:B74F             dx 0002, C3E1,EC,E808, C3F1,F4,E80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 7
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 8
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 9
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 7
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 8
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 9
 $92:B767             dx 0003, 0010,04,680A, 0010,FC,680B, C200,FC,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Ah
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Bh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Ah
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Bh
 $92:B778             dx 0006, 000F,0D,680A, 000F,05,680B, 000F,FD,680C, 01FF,0D,680D, 0007,0D,680E, C3FF,FD,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Ch
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Dh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Ch
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Dh
 $92:B798             dx 0003, C207,07,6808, 000F,FF,680C, C3FF,FF,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Eh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Eh
 $92:B7A9             dx 0004, 0000,10,680A, 0008,10,680B, 0008,08,680C, C3F8,00,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame Fh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame Fh
 $92:B7BF             dx 0005, 01F5,10,680A, 01FD,10,680B, 0005,10,680C, 0005,08,680D, C3F5,00,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 10h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 10h
 $92:B7DA             dx 0005, 0003,08,680A, 01F3,10,680B, 01FB,10,680C, 0003,10,680D, C3F3,00,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 11h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 11h
 $92:B7F5             dx 0003, 01F3,10,680A, 01FB,10,680B, C3F3,00,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 12h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 12h
 $92:B806             dx 0004, 01E9,0F,680A, 01F1,0F,680B, 01F9,FF,680C, C3E9,FF,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 13h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 14h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 13h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 14h
 $92:B81C             dx 0004, 01F1,0B,680A, 01E9,0B,680B, 01E9,03,680C, C3F1,FB,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 15h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 16h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 15h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 16h
 $92:B832             dx 0005, 01F0,08,680A, 01E8,F8,680B, 01E8,08,680C, 01E8,00,680D, C3F0,F8,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 40h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 40h
 $92:B85E             dx 0002, C3F8,10,6808, C3F8,00,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 41h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 41h
 $92:B86A             dx 0002, C3F8,10,6808, C3F8,00,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 27h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 28h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 29h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 27h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 28h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 29h
 $92:B876             dx 0002, C200,F9,6808, C210,F9,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Ah
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Bh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Ah
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Bh
 $92:B882             dx 0004, 0017,0F,680A, 0017,07,680B, 01FF,FF,680C, C207,FF,6808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Ch
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Dh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Ch
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Dh
 $92:B898             dx 0002, C207,07,6808, C3FF,FF,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Eh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Eh
 $92:B8A4             dx 0002, C205,0F,6808, C3FD,FF,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2Fh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2Fh
 $92:B8B0             dx 0004, 0005,07,680A, C3FD,0F,6808, 01FD,07,680B, 01FD,FF,680C
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 30h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 30h
 $92:B8C6             dx 0002, C3F7,10,6808, C3F7,00,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 31h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 31h
 $92:B8D2             dx 0002, C3F3,0E,6808, C3F3,FE,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 32h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 32h
 $92:B8DE             dx 0002, C3E9,0F,6808, C3F1,FF,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 33h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 34h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 33h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 34h
 $92:B8EA             dx 0004, 01E0,10,680C, 01E0,08,680D, C3E8,08,6808, C3F0,00,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 35h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 36h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 35h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 36h
 $92:B900             dx 0002, C3E1,04,6808, C3F1,FC,680A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 17h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 18h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 19h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 17h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 18h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 19h
 $92:B918             dx 0003, 01E8,F4,A80A, 01E8,FC,A80B, C3F0,F4,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Ah
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Bh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Ah
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Bh
 $92:B929             dx 0006, 01E9,EB,A80A, 01E9,F3,A80B, 01E9,FB,A80C, 01F9,EB,A80D, 01F1,EB,A80E, C3F1,F3,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Ch
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Dh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Ch
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Dh
 $92:B949             dx 0003, C3E9,E9,A808, 01E9,F9,A80C, C3F1,F1,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Eh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Eh
 $92:B95A             dx 0004, 01F8,E8,A80A, 01F0,E8,A80B, 01F0,F0,A80C, C3F8,F0,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1Fh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1Fh
 $92:B970             dx 0005, 0003,E8,A80A, 01FB,E8,A80B, 01F3,E8,A80C, 01F3,F0,A80D, C3FB,F0,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 0
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 0
 $92:B98B             dx 0005, 01F5,F0,A80A, 0005,E8,A80B, 01FD,E8,A80C, 01F5,E8,A80D, C3FD,F0,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 1
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 1
 $92:B9A6             dx 0003, 0005,E8,A80A, 01FD,E8,A80B, C3FD,F0,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 2
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 2
 $92:B9B7             dx 0004, 000F,E9,A80A, 0007,E9,A80B, 01FF,F9,A80C, C207,F1,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 4
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 4
 $92:B9CD             dx 0004, 0007,ED,A80A, 000F,ED,A80B, 000F,F5,A80C, C3FF,F5,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 5
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 6
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 5
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 6
 $92:B9E3             dx 0005, 0008,F0,A80A, 0010,00,A80B, 0010,F0,A80C, 0010,F8,A80D, C200,F8,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 37h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 38h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 39h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 37h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 38h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 39h
 $92:BA27             dx 0002, C3F0,F7,A808, C3E0,F7,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Ah
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Bh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Ah
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Bh
 $92:BA33             dx 0004, 01E1,E9,A80A, 01E1,F1,A80B, 01F9,F9,A80C, C3E9,F1,A808
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Ch
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Dh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Ch
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Dh
 $92:BA49             dx 0002, C3E9,E9,A808, C3F1,F1,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Eh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Eh
 $92:BA55             dx 0002, C3EB,E1,A808, C3F3,F1,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 3Fh
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 3Fh
 $92:BA61             dx 0004, 01F3,F1,A80A, C3F3,E1,A808, 01FB,F1,A80B, 01FB,F9,A80C
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 20h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 20h
 $92:BA77             dx 0002, C3F9,E0,A808, C3F9,F0,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 21h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 21h
 $92:BA83             dx 0002, C3FD,E2,A808, C3FD,F2,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 22h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 22h
 $92:BA8F             dx 0002, C207,E1,A808, C3FF,F1,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 23h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 24h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 23h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 24h
 $92:BA9B             dx 0002, C20F,EC,A808, C3FF,F4,A80A
 
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 25h
-; Bottom half - B3h: Facing anticlockwise - grapple swinging - frame 26h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 25h
+; Bottom half - B3h: Facing clockwise     - grapple swinging - frame 26h
 $92:BAA7             dx 0002, C200,F8,6808, C210,F8,680A
 
 ; Bottom half - C5h: Unused - frame 7
@@ -5207,54 +5207,54 @@ $92:CE79             dx 9EE8C0, 00C0, 0040
 }
 
 
-;;; $CE80: Samus top tiles - set 3 (facing clockwise - grapple swinging - upside up) ;;;
+;;; $CE80: Samus top tiles - set 3 (facing anticlockwise - grapple swinging - upside up) ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 18h / 38h
+; B2h: Facing anticlockwise - grapple swinging - frames 18h / 38h
 $92:CE80             dx 9C9B00, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 17h / 37h
+; B2h: Facing anticlockwise - grapple swinging - frames 17h / 37h
 $92:CE87             dx 9C9C40, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 16h / 36h
+; B2h: Facing anticlockwise - grapple swinging - frames 16h / 36h
 $92:CE8E             dx 9C9D80, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 15h / 35h
+; B2h: Facing anticlockwise - grapple swinging - frames 15h / 35h
 $92:CE95             dx 9C9F00, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 14h / 34h
+; B2h: Facing anticlockwise - grapple swinging - frames 14h / 34h
 $92:CE9C             dx 9CA080, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 13h / 33h
+; B2h: Facing anticlockwise - grapple swinging - frames 13h / 33h
 $92:CEA3             dx 9CA200, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 12h / 32h
+; B2h: Facing anticlockwise - grapple swinging - frames 12h / 32h
 $92:CEAA             dx 9CA380, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 11h / 31h
+; B2h: Facing anticlockwise - grapple swinging - frames 11h / 31h
 $92:CEB1             dx 9CA500, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 10h / 30h / 40h..41h
+; B2h: Facing anticlockwise - grapple swinging - frames 10h / 30h / 40h..41h
 $92:CEB8             dx 9CA640, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames Fh / 2Fh
+; B2h: Facing anticlockwise - grapple swinging - frames Fh / 2Fh
 $92:CEBF             dx 9CA780, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames Eh / 2Eh
+; B2h: Facing anticlockwise - grapple swinging - frames Eh / 2Eh
 $92:CEC6             dx 9CA8C0, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames Dh / 2Dh
+; B2h: Facing anticlockwise - grapple swinging - frames Dh / 2Dh
 $92:CECD             dx 9CAA40, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames Ch / 2Ch
+; B2h: Facing anticlockwise - grapple swinging - frames Ch / 2Ch
 $92:CED4             dx 9CABC0, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames Bh / 2Bh
+; B2h: Facing anticlockwise - grapple swinging - frames Bh / 2Bh
 $92:CEDB             dx 9CAD40, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames Ah / 2Ah
+; B2h: Facing anticlockwise - grapple swinging - frames Ah / 2Ah
 $92:CEE2             dx 9CAEC0, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 9 / 29h
+; B2h: Facing anticlockwise - grapple swinging - frames 9 / 29h
 $92:CEE9             dx 9CB040, 00C0, 0080
 
 ; Unused
@@ -5262,54 +5262,54 @@ $92:CEF0             dx 9CB180, 00C0, 0080
 }
 
 
-;;; $CEF7: Samus top tiles - set 4 (facing anticlockwise - grapple swinging - upside up) ;;;
+;;; $CEF7: Samus top tiles - set 4 (facing clockwise - grapple swinging - upside up) ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 8 / 28h
+; B3h: Facing clockwise     - grapple swinging - frames 8 / 28h
 $92:CEF7             dx 9CB2C0, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 9 / 29h
+; B3h: Facing clockwise     - grapple swinging - frames 9 / 29h
 $92:CEFE             dx 9CB480, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames Ah / 2Ah
+; B3h: Facing clockwise     - grapple swinging - frames Ah / 2Ah
 $92:CF05             dx 9CB640, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames Bh / 2Bh
+; B3h: Facing clockwise     - grapple swinging - frames Bh / 2Bh
 $92:CF0C             dx 9CB840, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames Ch / 2Ch
+; B3h: Facing clockwise     - grapple swinging - frames Ch / 2Ch
 $92:CF13             dx 9CBA40, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames Dh / 2Dh
+; B3h: Facing clockwise     - grapple swinging - frames Dh / 2Dh
 $92:CF1A             dx 9CBC20, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames Eh / 2Eh
+; B3h: Facing clockwise     - grapple swinging - frames Eh / 2Eh
 $92:CF21             dx 9CBE00, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames Fh / 2Fh
+; B3h: Facing clockwise     - grapple swinging - frames Fh / 2Fh
 $92:CF28             dx 9CBFE0, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 10h / 30h / 40h..41h
+; B3h: Facing clockwise     - grapple swinging - frames 10h / 30h / 40h..41h
 $92:CF2F             dx 9CC1A0, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 11h / 31h
+; B3h: Facing clockwise     - grapple swinging - frames 11h / 31h
 $92:CF36             dx 9CC360, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 12h / 32h
+; B3h: Facing clockwise     - grapple swinging - frames 12h / 32h
 $92:CF3D             dx 9CC520, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 13h / 33h
+; B3h: Facing clockwise     - grapple swinging - frames 13h / 33h
 $92:CF44             dx 9CC700, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 14h / 34h
+; B3h: Facing clockwise     - grapple swinging - frames 14h / 34h
 $92:CF4B             dx 9CC900, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 15h / 35h
+; B3h: Facing clockwise     - grapple swinging - frames 15h / 35h
 $92:CF52             dx 9CCB00, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 16h / 36h
+; B3h: Facing clockwise     - grapple swinging - frames 16h / 36h
 $92:CF59             dx 9CCD00, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 17h / 37h
+; B3h: Facing clockwise     - grapple swinging - frames 17h / 37h
 $92:CF60             dx 9CCF00, 0100, 00E0
 
 ; Unused
@@ -5317,54 +5317,54 @@ $92:CF67             dx 9CD0E0, 0100, 00E0
 }
 
 
-;;; $CF6E: Samus top tiles - set 5 (facing clockwise - grapple swinging - upside down) ;;;
+;;; $CF6E: Samus top tiles - set 5 (facing anticlockwise - grapple swinging - upside down) ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 8 / 28h
+; B2h: Facing anticlockwise - grapple swinging - frames 8 / 28h
 $92:CF6E             dx 9DC980, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 7 / 27h
+; B2h: Facing anticlockwise - grapple swinging - frames 7 / 27h
 $92:CF75             dx 9DCAC0, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 6 / 26h
+; B2h: Facing anticlockwise - grapple swinging - frames 6 / 26h
 $92:CF7C             dx 9DCC00, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 5 / 25h
+; B2h: Facing anticlockwise - grapple swinging - frames 5 / 25h
 $92:CF83             dx 9DCD80, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 4 / 24h
+; B2h: Facing anticlockwise - grapple swinging - frames 4 / 24h
 $92:CF8A             dx 9DCF00, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 3 / 23h
+; B2h: Facing anticlockwise - grapple swinging - frames 3 / 23h
 $92:CF91             dx 9DD080, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 2 / 22h
+; B2h: Facing anticlockwise - grapple swinging - frames 2 / 22h
 $92:CF98             dx 9DD200, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 1 / 21h
+; B2h: Facing anticlockwise - grapple swinging - frames 1 / 21h
 $92:CF9F             dx 9DD380, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 0 / 20h
+; B2h: Facing anticlockwise - grapple swinging - frames 0 / 20h
 $92:CFA6             dx 9DD4C0, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Fh / 3Fh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Fh / 3Fh
 $92:CFAD             dx 9DD600, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Eh / 3Eh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Eh / 3Eh
 $92:CFB4             dx 9DD740, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Dh / 3Dh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Dh / 3Dh
 $92:CFBB             dx 9DD8C0, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Ch / 3Ch
+; B2h: Facing anticlockwise - grapple swinging - frames 1Ch / 3Ch
 $92:CFC2             dx 9DDA40, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Bh / 3Bh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Bh / 3Bh
 $92:CFC9             dx 9DDBC0, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Ah / 3Ah
+; B2h: Facing anticlockwise - grapple swinging - frames 1Ah / 3Ah
 $92:CFD0             dx 9DDD40, 00C0, 00C0
 
-; B2h: Facing clockwise     - grapple swinging - frames 19h / 39h
+; B2h: Facing anticlockwise - grapple swinging - frames 19h / 39h
 $92:CFD7             dx 9DDEC0, 00C0, 0080
 
 ; Unused
@@ -5372,54 +5372,54 @@ $92:CFDE             dx 9DE000, 00C0, 0080
 }
 
 
-;;; $CFE5: Samus top tiles - set 6 (facing anticlockwise - grapple swinging - upside down) ;;;
+;;; $CFE5: Samus top tiles - set 6 (facing clockwise - grapple swinging - upside down) ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 18h / 38h
+; B3h: Facing clockwise     - grapple swinging - frames 18h / 38h
 $92:CFE5             dx 9DE140, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 19h / 39h
+; B3h: Facing clockwise     - grapple swinging - frames 19h / 39h
 $92:CFEC             dx 9DE300, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Ah / 3Ah
+; B3h: Facing clockwise     - grapple swinging - frames 1Ah / 3Ah
 $92:CFF3             dx 9DE4C0, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Bh / 3Bh
+; B3h: Facing clockwise     - grapple swinging - frames 1Bh / 3Bh
 $92:CFFA             dx 9DE6C0, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Ch / 3Ch
+; B3h: Facing clockwise     - grapple swinging - frames 1Ch / 3Ch
 $92:D001             dx 9DE8C0, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Dh / 3Dh
+; B3h: Facing clockwise     - grapple swinging - frames 1Dh / 3Dh
 $92:D008             dx 9DEAA0, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Eh / 3Eh
+; B3h: Facing clockwise     - grapple swinging - frames 1Eh / 3Eh
 $92:D00F             dx 9DEC80, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Fh / 3Fh
+; B3h: Facing clockwise     - grapple swinging - frames 1Fh / 3Fh
 $92:D016             dx 9DEE60, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 0 / 20h
+; B3h: Facing clockwise     - grapple swinging - frames 0 / 20h
 $92:D01D             dx 9DF020, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1 / 21h
+; B3h: Facing clockwise     - grapple swinging - frames 1 / 21h
 $92:D024             dx 9DF1E0, 0100, 00C0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 2 / 22h
+; B3h: Facing clockwise     - grapple swinging - frames 2 / 22h
 $92:D02B             dx 9DF3A0, 0100, 00E0
 
-; B3h: Facing anticlockwise - grapple swinging - frames 3 / 23h
+; B3h: Facing clockwise     - grapple swinging - frames 3 / 23h
 $92:D032             dx 9DF580, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 4 / 24h
+; B3h: Facing clockwise     - grapple swinging - frames 4 / 24h
 $92:D039             dx 9FED80, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 5 / 25h
+; B3h: Facing clockwise     - grapple swinging - frames 5 / 25h
 $92:D040             dx 9FEF80, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 6 / 26h
+; B3h: Facing clockwise     - grapple swinging - frames 6 / 26h
 $92:D047             dx 9FF180, 0100, 0100
 
-; B3h: Facing anticlockwise - grapple swinging - frames 7 / 27h
+; B3h: Facing clockwise     - grapple swinging - frames 7 / 27h
 $92:D04E             dx 9FF380, 0100, 00E0
 
 ; Unused
@@ -6241,75 +6241,75 @@ $92:D357             dx 9DC8E0, 0060, 0040
 }
 
 
-;;; $D35E: Samus bottom tiles - set 2 (facing clockwise - grappling - in air - upside up) ;;;
+;;; $D35E: Samus bottom tiles - set 2 (facing anticlockwise - grappling - in air - upside up) ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 17h..19h
+; B2h: Facing anticlockwise - grapple swinging - frames 17h..19h
 $92:D35E             dx 9F8000, 0080, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 15h..16h
+; B2h: Facing anticlockwise - grapple swinging - frames 15h..16h
 $92:D365             dx 9F80C0, 00E0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 13h..14h
+; B2h: Facing anticlockwise - grapple swinging - frames 13h..14h
 $92:D36C             dx 9F81E0, 00A0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 12h
+; B2h: Facing anticlockwise - grapple swinging - frame 12h
 $92:D373             dx 9F8300, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 11h
+; B2h: Facing anticlockwise - grapple swinging - frame 11h
 $92:D37A             dx 9F83E0, 00C0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 10h
+; B2h: Facing anticlockwise - grapple swinging - frame 10h
 $92:D381             dx 9F84E0, 00C0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame Fh
+; B2h: Facing anticlockwise - grapple swinging - frame Fh
 $92:D388             dx 9F85E0, 0080, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame Eh
+; B2h: Facing anticlockwise - grapple swinging - frame Eh
 $92:D38F             dx 9F86A0, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames Ch..Dh
+; B2h: Facing anticlockwise - grapple swinging - frames Ch..Dh
 $92:D396             dx 9F8780, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames Ah..Bh
+; B2h: Facing anticlockwise - grapple swinging - frames Ah..Bh
 $92:D39D             dx 9F8860, 00C0, 0040
 
 ; Unused
 $92:D3A4             dx 9F8960, 00A0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 40h
+; B2h: Facing anticlockwise - grapple swinging - frame 40h
 $92:D3AB             dx 9F8A80, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 41h
+; B2h: Facing anticlockwise - grapple swinging - frame 41h
 $92:D3B2             dx 9F8B80, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 37h..39h
+; B2h: Facing anticlockwise - grapple swinging - frames 37h..39h
 $92:D3B9             dx 9F8C80, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 35h..36h
+; B2h: Facing anticlockwise - grapple swinging - frames 35h..36h
 $92:D3C0             dx 9F8D80, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 33h..34h
+; B2h: Facing anticlockwise - grapple swinging - frames 33h..34h
 $92:D3C7             dx 9F8E60, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 32h
+; B2h: Facing anticlockwise - grapple swinging - frame 32h
 $92:D3CE             dx 9F8F60, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 31h
+; B2h: Facing anticlockwise - grapple swinging - frame 31h
 $92:D3D5             dx 9F9060, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 30h
+; B2h: Facing anticlockwise - grapple swinging - frame 30h
 $92:D3DC             dx 9F9140, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 2Fh
+; B2h: Facing anticlockwise - grapple swinging - frame 2Fh
 $92:D3E3             dx 9F9240, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 2Eh
+; B2h: Facing anticlockwise - grapple swinging - frame 2Eh
 $92:D3EA             dx 9F9340, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 2Ch..2Dh
+; B2h: Facing anticlockwise - grapple swinging - frames 2Ch..2Dh
 $92:D3F1             dx 9F9440, 00C0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 2Ah..2Bh
+; B2h: Facing anticlockwise - grapple swinging - frames 2Ah..2Bh
 $92:D3F8             dx 9F9580, 0080, 0080
 
 ; Unused
@@ -6317,36 +6317,36 @@ $92:D3FF             dx 9F9680, 0080, 0080
 }
 
 
-;;; $D406: Samus bottom tiles - set 4 (facing clockwise - grappling - in air - upside down) ;;;
+;;; $D406: Samus bottom tiles - set 4 (facing anticlockwise - grappling - in air - upside down) ;;;
 {
-; B2h: Facing clockwise     - grapple swinging - frames 7..9
+; B2h: Facing anticlockwise - grapple swinging - frames 7..9
 $92:D406             dx 9F9780, 0080, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 5..6
+; B2h: Facing anticlockwise - grapple swinging - frames 5..6
 $92:D40D             dx 9F9840, 00E0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 3..4
+; B2h: Facing anticlockwise - grapple swinging - frames 3..4
 $92:D414             dx 9F9960, 00A0, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 2
+; B2h: Facing anticlockwise - grapple swinging - frame 2
 $92:D41B             dx 9F9A80, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 1
+; B2h: Facing anticlockwise - grapple swinging - frame 1
 $92:D422             dx 9F9B60, 00C0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 0
+; B2h: Facing anticlockwise - grapple swinging - frame 0
 $92:D429             dx 9F9C60, 00C0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 1Fh
+; B2h: Facing anticlockwise - grapple swinging - frame 1Fh
 $92:D430             dx 9F9D60, 0080, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frame 1Eh
+; B2h: Facing anticlockwise - grapple swinging - frame 1Eh
 $92:D437             dx 9F9E20, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Ch..1Dh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Ch..1Dh
 $92:D43E             dx 9F9F00, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 1Ah..1Bh
+; B2h: Facing anticlockwise - grapple swinging - frames 1Ah..1Bh
 $92:D445             dx 9F9FE0, 00C0, 0040
 
 ; Unused
@@ -6354,31 +6354,31 @@ $92:D44C             dx 9FA0E0, 00A0, 0080
 $92:D453             dx 9FA200, 0080, 0080
 $92:D45A             dx 9FA300, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 27h..29h
+; B2h: Facing anticlockwise - grapple swinging - frames 27h..29h
 $92:D461             dx 9FA400, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 25h..26h
+; B2h: Facing anticlockwise - grapple swinging - frames 25h..26h
 $92:D468             dx 9FA500, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 23h..24h
+; B2h: Facing anticlockwise - grapple swinging - frames 23h..24h
 $92:D46F             dx 9FA5E0, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 22h
+; B2h: Facing anticlockwise - grapple swinging - frame 22h
 $92:D476             dx 9FA6E0, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 21h
+; B2h: Facing anticlockwise - grapple swinging - frame 21h
 $92:D47D             dx 9FA7E0, 00A0, 0040
 
-; B2h: Facing clockwise     - grapple swinging - frames 20h / 3Fh
+; B2h: Facing anticlockwise - grapple swinging - frames 20h / 3Fh
 $92:D484             dx 9FA8C0, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frame 3Eh
+; B2h: Facing anticlockwise - grapple swinging - frame 3Eh
 $92:D48B             dx 9FA9C0, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 3Ch..3Dh
+; B2h: Facing anticlockwise - grapple swinging - frames 3Ch..3Dh
 $92:D492             dx 9FAAC0, 0080, 0080
 
-; B2h: Facing clockwise     - grapple swinging - frames 3Ah..3Bh
+; B2h: Facing anticlockwise - grapple swinging - frames 3Ah..3Bh
 $92:D499             dx 9FABC0, 0080, 0080
 
 ; Unused
@@ -6386,75 +6386,75 @@ $92:D4A0             dx 9FACC0, 0080, 0080
 }
 
 
-;;; $D4A7: Samus bottom tiles - set 5 (facing anticlockwise - grappling - in air - upside up) ;;;
+;;; $D4A7: Samus bottom tiles - set 5 (facing clockwise - grappling - in air - upside up) ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 7..9
+; B3h: Facing clockwise     - grapple swinging - frames 7..9
 $92:D4A7             dx 9FADC0, 0080, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames Ah..Bh
+; B3h: Facing clockwise     - grapple swinging - frames Ah..Bh
 $92:D4AE             dx 9FAE80, 00E0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames Ch..Dh
+; B3h: Facing clockwise     - grapple swinging - frames Ch..Dh
 $92:D4B5             dx 9FAFA0, 00A0, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame Eh
+; B3h: Facing clockwise     - grapple swinging - frame Eh
 $92:D4BC             dx 9FB0C0, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame Fh
+; B3h: Facing clockwise     - grapple swinging - frame Fh
 $92:D4C3             dx 9FB1A0, 00C0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 10h
+; B3h: Facing clockwise     - grapple swinging - frame 10h
 $92:D4CA             dx 9FB2A0, 00C0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 11h
+; B3h: Facing clockwise     - grapple swinging - frame 11h
 $92:D4D1             dx 9FB3A0, 0080, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 12h
+; B3h: Facing clockwise     - grapple swinging - frame 12h
 $92:D4D8             dx 9FB460, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 13h..14h
+; B3h: Facing clockwise     - grapple swinging - frames 13h..14h
 $92:D4DF             dx 9FB540, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 15h..16h
+; B3h: Facing clockwise     - grapple swinging - frames 15h..16h
 $92:D4E6             dx 9FB620, 00C0, 0040
 
 ; Unused
 $92:D4ED             dx 9FB720, 00A0, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 40h
+; B3h: Facing clockwise     - grapple swinging - frame 40h
 $92:D4F4             dx 9FB840, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 41h
+; B3h: Facing clockwise     - grapple swinging - frame 41h
 $92:D4FB             dx 9FB940, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 27h..29h
+; B3h: Facing clockwise     - grapple swinging - frames 27h..29h
 $92:D502             dx 9FBA40, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 2Ah..2Bh
+; B3h: Facing clockwise     - grapple swinging - frames 2Ah..2Bh
 $92:D509             dx 9FBB40, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 2Ch..2Dh
+; B3h: Facing clockwise     - grapple swinging - frames 2Ch..2Dh
 $92:D510             dx 9FBC20, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 2Eh
+; B3h: Facing clockwise     - grapple swinging - frame 2Eh
 $92:D517             dx 9FBD20, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 2Fh
+; B3h: Facing clockwise     - grapple swinging - frame 2Fh
 $92:D51E             dx 9FBE20, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 30h
+; B3h: Facing clockwise     - grapple swinging - frame 30h
 $92:D525             dx 9FBF00, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 31h
+; B3h: Facing clockwise     - grapple swinging - frame 31h
 $92:D52C             dx 9FC000, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 32h
+; B3h: Facing clockwise     - grapple swinging - frame 32h
 $92:D533             dx 9FC100, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 33h..34h
+; B3h: Facing clockwise     - grapple swinging - frames 33h..34h
 $92:D53A             dx 9FC200, 00C0, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 35h..36h
+; B3h: Facing clockwise     - grapple swinging - frames 35h..36h
 $92:D541             dx 9FC340, 0080, 0080
 
 ; Unused
@@ -6462,36 +6462,36 @@ $92:D548             dx 9FC440, 0080, 0080
 }
 
 
-;;; $D54F: Samus bottom tiles - set 6 (facing anticlockwise - grappling - in air - upside down) ;;;
+;;; $D54F: Samus bottom tiles - set 6 (facing clockwise - grappling - in air - upside down) ;;;
 {
-; B3h: Facing anticlockwise - grapple swinging - frames 17h..19h
+; B3h: Facing clockwise     - grapple swinging - frames 17h..19h
 $92:D54F             dx 9FC540, 0080, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Ah..1Bh
+; B3h: Facing clockwise     - grapple swinging - frames 1Ah..1Bh
 $92:D556             dx 9FC600, 00E0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 1Ch..1Dh
+; B3h: Facing clockwise     - grapple swinging - frames 1Ch..1Dh
 $92:D55D             dx 9FC720, 00A0, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 1Eh
+; B3h: Facing clockwise     - grapple swinging - frame 1Eh
 $92:D564             dx 9FC840, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 1Fh
+; B3h: Facing clockwise     - grapple swinging - frame 1Fh
 $92:D56B             dx 9FC920, 00C0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 0
+; B3h: Facing clockwise     - grapple swinging - frame 0
 $92:D572             dx 9FCA20, 00C0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 1
+; B3h: Facing clockwise     - grapple swinging - frame 1
 $92:D579             dx 9FCB20, 0080, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 2
+; B3h: Facing clockwise     - grapple swinging - frame 2
 $92:D580             dx 9FCBE0, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 3..4
+; B3h: Facing clockwise     - grapple swinging - frames 3..4
 $92:D587             dx 9FCCC0, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 5..6
+; B3h: Facing clockwise     - grapple swinging - frames 5..6
 $92:D58E             dx 9FCDA0, 00C0, 0040
 
 ; Unused
@@ -6499,34 +6499,34 @@ $92:D595             dx 9FCEA0, 00A0, 0080
 $92:D59C             dx 9FCFC0, 0080, 0080
 $92:D5A3             dx 9FD0C0, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 37h..39h
+; B3h: Facing clockwise     - grapple swinging - frames 37h..39h
 $92:D5AA             dx 9FD1C0, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 3Ah..3Bh
+; B3h: Facing clockwise     - grapple swinging - frames 3Ah..3Bh
 $92:D5B1             dx 9FD2C0, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frames 3Ch..3Dh
+; B3h: Facing clockwise     - grapple swinging - frames 3Ch..3Dh
 $92:D5B8             dx 9FD3A0, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 3Eh
+; B3h: Facing clockwise     - grapple swinging - frame 3Eh
 $92:D5BF             dx 9FD4A0, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 3Fh
+; B3h: Facing clockwise     - grapple swinging - frame 3Fh
 $92:D5C6             dx 9FD5A0, 00A0, 0040
 
-; B3h: Facing anticlockwise - grapple swinging - frame 20h
+; B3h: Facing clockwise     - grapple swinging - frame 20h
 $92:D5CD             dx 9FD680, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 21h
+; B3h: Facing clockwise     - grapple swinging - frame 21h
 $92:D5D4             dx 9FD780, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frame 22h
+; B3h: Facing clockwise     - grapple swinging - frame 22h
 $92:D5DB             dx 9FD880, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 23h..24h
+; B3h: Facing clockwise     - grapple swinging - frames 23h..24h
 $92:D5E2             dx 9FD980, 0080, 0080
 
-; B3h: Facing anticlockwise - grapple swinging - frames 25h..26h
+; B3h: Facing clockwise     - grapple swinging - frames 25h..26h
 $92:D5E9             dx 9FDA80, 0080, 0080
 }
 
@@ -7409,7 +7409,7 @@ $92:E048             db 01,0C,00,1A
 ; B9h: Facing right - grapple wall jump pose
 $92:E04C             db 01,0B,00,19
 
-; B2h: Facing clockwise     - grapple swinging
+; B2h: Facing anticlockwise - grapple swinging
 $92:E050             db 05,08,04,05, 05,07,04,04, 05,06,04,03, 05,05,04,02, 05,04,04,02, 05,03,04,01, 05,02,04,01, 05,01,04,00,
                         05,00,04,00, 03,0F,04,00, 03,0E,02,09, 03,0D,02,09, 03,0C,02,08, 03,0B,02,08, 03,0A,02,07, 03,09,02,06,
                         03,08,02,05, 03,07,02,04, 03,06,02,03, 03,05,02,02, 03,04,02,02, 03,03,02,01, 03,02,02,01, 03,01,02,00,
@@ -7420,7 +7420,7 @@ $92:E050             db 05,08,04,05, 05,07,04,04, 05,06,04,03, 05,05,04,02, 05,0
                         03,00,02,0D, 05,0F,02,0D, 05,0E,04,15, 05,0D,04,15, 05,0C,04,14, 05,0B,04,14, 05,0A,04,13, 05,09,04,12,
                         03,08,02,0B, 03,08,02,0C
 
-; B3h: Facing anticlockwise - grapple swinging
+; B3h: Facing clockwise     - grapple swinging
 $92:E158             db 06,08,06,05, 06,09,06,06, 06,0A,06,07, 06,0B,06,08, 06,0C,06,08, 06,0D,06,09, 06,0E,06,09, 06,0F,05,00,
                         04,00,05,00, 04,01,05,00, 04,02,05,01, 04,03,05,01, 04,04,05,02, 04,05,05,02, 04,06,05,03, 04,07,05,04,
                         04,08,05,05, 04,09,05,06, 04,0A,05,07, 04,0B,05,08, 04,0C,05,08, 04,0D,05,09, 04,0E,05,09, 04,0F,06,00,

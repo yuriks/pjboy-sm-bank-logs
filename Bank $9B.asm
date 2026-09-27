@@ -3442,10 +3442,10 @@ $9B:C8C4 60          RTS
 $9B:C8C5 A9 07 00    LDA #$0007             ;\
 $9B:C8C8 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 7, sound library 1, max queued sounds allowed = 15 (grapple end)
 $9B:C8CC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$9B:C8CF C9 B2 00    CMP #$00B2             ;} If [Samus pose] = facing clockwise - grapple swinging: go to BRANCH_CLOCKWISE
+$9B:C8CF C9 B2 00    CMP #$00B2             ;} If [Samus pose] = facing anticlockwise - grapple swinging: go to BRANCH_ANTICLOCKWISE
 $9B:C8D2 F0 12       BEQ $12    [$C8E6]     ;/
 $9B:C8D4 C9 B3 00    CMP #$00B3             ;\
-$9B:C8D7 F0 15       BEQ $15    [$C8EE]     ;} If [Samus pose] = facing anticlockwise - grapple swinging: go to BRANCH_ANTICLOCKWISE
+$9B:C8D7 F0 15       BEQ $15    [$C8EE]     ;} If [Samus pose] = facing clockwise - grapple swinging: go to BRANCH_CLOCKWISE
 $9B:C8D9 80 1B       BRA $1B    [$C8F6]     ; Go to BRANCH_NOT_SWINGING
 
 ; BRANCH_CANCEL
@@ -3454,12 +3454,12 @@ $9B:C8DE 29 FF 00    AND #$00FF             ;|
 $9B:C8E1 C9 04 00    CMP #$0004             ;} If [Samus pose X direction] = left: go to BRANCH_ANTICLOCKWISE
 $9B:C8E4 F0 08       BEQ $08    [$C8EE]     ;/
 
-; BRANCH_CLOCKWISE
+; BRANCH_ANTICLOCKWISE
 $9B:C8E6 A9 01 00    LDA #$0001             ;\
 $9B:C8E9 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - normal
 $9B:C8EC 80 67       BRA $67    [$C955]     ; Go to BRANCH_MERGE
 
-; BRANCH_ANTICLOCKWISE
+; BRANCH_CLOCKWISE
 $9B:C8EE A9 02 00    LDA #$0002             ;\
 $9B:C8F1 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - normal
 $9B:C8F4 80 5F       BRA $5F    [$C955]     ; Go to BRANCH_MERGE
@@ -3547,6 +3547,17 @@ $9B:C9B6 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = 0
 $9B:C9B9 60          RTS
 
 ; Poses
+;                        _______________________________________ 0: Up, facing right
+;                       |    ___________________________________ 1: Up-right
+;                       |   |    _______________________________ 2: Right
+;                       |   |   |    ___________________________ 3: Down-right
+;                       |   |   |   |    _______________________ 4: Down, facing right
+;                       |   |   |   |   |    ___________________ 5: Down, facing left
+;                       |   |   |   |   |   |    _______________ 6: Down-left
+;                       |   |   |   |   |   |   |    ___________ 7: Left
+;                       |   |   |   |   |   |   |   |    _______ 8: Up-left
+;                       |   |   |   |   |   |   |   |   |    ___ 9: Up, facing left
+;                       |   |   |   |   |   |   |   |   |   |
 $9B:C9BA             db 03, 05, 01, 07, 01, 02, 08, 02, 06, 04 ; Standing
 $9B:C9C4             db 85, 71, 27, 73, 27, 28, 74, 28, 72, 86 ; Crouching
 }

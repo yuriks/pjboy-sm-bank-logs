@@ -2703,8 +2703,8 @@ $91:9EE2             dw A0DE, A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A1
 ; AFh: Unused. Facing left  - grappling - in air - aiming down
 ; B0h: Unused. Facing right - grappling - in air - aiming down-right
 ; B1h: Unused. Facing left  - grappling - in air - aiming down-left
-; B2h: Facing clockwise     - grapple swinging
-; B3h: Facing anticlockwise - grapple swinging
+; B2h: Facing anticlockwise - grapple swinging
+; B3h: Facing clockwise     - grapple swinging
 ; B4h: Facing right - grappling - crouching
 ; B5h: Facing left  - grappling - crouching
 ; B6h: Facing right - grappling - crouching - aiming down-right
@@ -4009,8 +4009,8 @@ $91:B2BC             db 02,
 $91:B2C0             db 02,
                         10, FE,01
 
-; B2h: Facing clockwise     - grapple swinging
-; B3h: Facing anticlockwise - grapple swinging
+; B2h: Facing anticlockwise - grapple swinging
+; B3h: Facing clockwise     - grapple swinging
 ; These delays don't really take effect, Samus animation frame is set every frame during grapple swinging
                         ; Swinging
 $91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08,
@@ -4690,8 +4690,8 @@ $91:BB99             db 08,16,2D,04,06,00,0A,00 ; AEh: Unused. Facing right - gr
 $91:BBA1             db 04,16,2E,05,06,00,0A,00 ; AFh: Unused. Facing left  - grappling - in air - aiming down
 $91:BBA9             db 08,16,6F,03,08,00,13,00 ; B0h: Unused. Facing right - grappling - in air - aiming down-right
 $91:BBB1             db 04,16,70,06,08,00,13,00 ; B1h: Unused. Facing left  - grappling - in air - aiming down-left
-$91:BBB9             db 08,16,B2,FF,10,00,11,00 ; B2h: Facing clockwise     - grapple swinging
-$91:BBC1             db 04,16,B3,FF,10,00,11,00 ; B3h: Facing anticlockwise - grapple swinging
+$91:BBB9             db 08,16,B2,FF,10,00,11,00 ; B2h: Facing anticlockwise - grapple swinging
+$91:BBC1             db 04,16,B3,FF,10,00,11,00 ; B3h: Facing clockwise     - grapple swinging
 $91:BBC9             db 08,16,27,02,00,00,10,00 ; B4h: Facing right - grappling - crouching
 $91:BBD1             db 04,16,28,07,00,00,10,00 ; B5h: Facing left  - grappling - crouching
 $91:BBD9             db 08,16,27,03,00,00,10,00 ; B6h: Facing right - grappling - crouching - aiming down-right
